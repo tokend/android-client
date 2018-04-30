@@ -1,0 +1,64 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 27
+
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 27
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+}
+
+ext {
+    anko_version = '0.10.5'
+    support_lib_version = '27.1.1'
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation "com.android.support:appcompat-v7:${support_lib_version}"
+    implementation "com.android.support:appcompat-v7:${support_lib_version}"
+    implementation "com.android.support:recyclerview-v7:${support_lib_version}"
+    implementation "com.android.support:support-annotations:${support_lib_version}"
+    implementation "com.android.support:design:${support_lib_version}"
+    implementation 'com.google.android.gms:play-services-base:11.0.4'
+    implementation 'com.android.support:multidex:1.0.3'
+
+    implementation 'org.jetbrains.anko:anko-sdk15:0.9.1'
+    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
+    implementation("com.mikepenz:materialdrawer:6.0.7@aar") { transitive = true }
+
+    implementation "org.tokend:sdk:0.42"
+    implementation "org.tokend:wallet:1.0"
+
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'
+    implementation "io.reactivex.rxjava2:rxjava:2.1.7"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'com.trello.rxlifecycle2:rxlifecycle:2.2.1'
+    implementation 'com.trello.rxlifecycle2:rxlifecycle-kotlin:2.2.1'
+    implementation 'com.trello.rxlifecycle2:rxlifecycle-components:2.2.1'
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}
+
+apply from: "app_config.gradle"

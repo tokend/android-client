@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">TokenD template</string>
+
+    <string name="sign_up">Sign up</string>
+    <string name="sign_in">Sign in</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="back_to_sign_in">Back to Sign in</string>
+    <string name="i_agree_to_the">I agree to the</string>
+    <string name="terms_of_service">Terms of Service</string>
+
+    <string name="error_cannot_be_empty">Cannot be empty</string>
+    <string name="error_invalid_email">Invalid email</string>
+    <string name="error_passwords_mismatch">Password doesn\'t match confirmation</string>
+    <string name="error_weak_password">Password is weak</string>
+    <string name="error_email_already_taken">Email is already taken</string>
+    <string name="error_try_again">An error occurred. Try again later</string>
+    <string name="error_connection_try_again">Connection error. Try again later</string>
+    <string name="error_not_found_try_again">Not found. Try again later</string>
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Text sizes -->
+    <dimen name="text_size_default">15sp</dimen>
+    <dimen name="text_size_hint">12sp</dimen>
+    <dimen name="text_size_heading">20sp</dimen>
+    <dimen name="text_size_heading_large">36sp</dimen>
+
+    <!-- General margins -->
+    <dimen name="hepta_margin">96dp</dimen>
+    <dimen name="hexa_margin">80dp</dimen>
+    <dimen name="quadra_margin">64dp</dimen>
+    <dimen name="triple_margin">48dp</dimen>
+    <dimen name="double_margin">32dp</dimen>
+    <dimen name="standard_margin">16dp</dimen>
+    <dimen name="half_standard_margin">8dp</dimen>
+    <dimen name="quarter_standard_margin">4dp</dimen>
+
+    <!-- General paddings -->
+    <dimen name="standard_padding">24dp</dimen>
+    <dimen name="double_padding">48dp</dimen>
+    <dimen name="half_standard_padding">12dp</dimen>
+
+    <!-- Elevations -->
+    <dimen name="card_elevation">2dp</dimen>
+    <dimen name="appbar_elevation">3dp</dimen>
+
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="divider_with_icon_padding_left">72dp</dimen>
+</resources>

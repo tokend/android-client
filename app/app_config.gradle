@@ -1,0 +1,76 @@
+android {
+    defaultConfig {
+        // ----- Android params -----
+
+        // Application ID - unique identifier of the app in Google Play and on user's device
+        applicationId "org.tokend.template"
+        // Version Name - human-readable app version
+        versionName "0.1"
+        // Version Code - code number for version,
+        // must be incremented after each release
+        versionCode 1
+
+        // --------------------------
+
+
+        // ----- Network params -----
+
+        // API URL - TokenD instance root URL
+        buildConfigField 'String', 'API_URL', '"https://api.testnet.tokend.org"'
+
+        // Storage URL - Root URL of file storage
+        buildConfigField 'String', 'STORAGE_URL', '"https://storage.api.testnet.tokend.org"'
+
+        // Web-client URL - Root URL of the related web-client,
+        // will be opened if some functions are not available in mobile app
+        buildConfigField 'String', 'WEB_CLIENT_URL', '"https://testnet.tokend.org"'
+
+        // App host - Host of the related web-client,
+        // used to open verification and referral links in app
+        resValue "string", "app_host", "testnet.tokend.org"
+
+        // Terms of Service URL - Link to the Terms of Service page of your project,
+        // used during sign in
+        buildConfigField 'String', 'TERMS_URL', '"https://testnet.tokend.org/terms"'
+
+        // --------------------------
+
+
+        // ----- Appearance -----
+
+        // Primary color - color of app toolbar
+        resValue "color", "primary", "#0066cc"
+        // Primary dark - color of status bar above toolbar
+        resValue "color", "primary_dark", "#01579B"
+
+        // Accent color - color of actions and controls by default
+        resValue "color", "accent", "#ef5350"
+
+        // Background color - used as a background color on screens with cards
+        resValue "color", "background", "#e8e8e8"
+
+        // Primary text - color of all text labels and fields
+        resValue "color", "primary_text", "#212121"
+        // Secondary text - color of hints
+        resValue "color", "secondary_text", "#803f4244"
+
+        // Primary action - custom color for action controls,
+        // same as Accent by default
+        resValue "color", "primary_action", "#ef5350"
+        // Primary action disabled - color of disabled action control,
+        // usually it's just a Primary action color with some transparency
+        resValue "color", "primary_action_disabled", "#80ef5350"
+
+        // Icons - color of all icons in app except menus
+        resValue "color", "icons", "#6F6F6F"
+
+        // Error - color of error messages,
+        // usually a shade of red
+        resValue "color", "error", "#c2243b"
+        // Ok - color of success messages,
+        // usually a shade of green
+        resValue "color", "ok", "#3fa595"
+
+        // ----------------------
+    }
+}
