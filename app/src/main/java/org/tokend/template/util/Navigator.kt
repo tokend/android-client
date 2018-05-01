@@ -6,6 +6,7 @@ import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.singleTop
 import org.tokend.template.R
 import org.tokend.template.activities.*
+import org.tokend.template.activities.settings.SettingsActivity
 
 /**
  * Performs transitions between screens.
@@ -31,17 +32,22 @@ object Navigator {
     }
 
     fun toSignIn(activity: Activity) {
-        activity.finish()
         activity.startActivity(activity.intentFor<SignInActivity>().singleTop())
+        activity.finish()
     }
 
     fun toDashboard(activity: Activity) {
-        fadeOut(activity)
         activity.startActivity(activity.intentFor<DashboardActivity>())
+        fadeOut(activity)
     }
 
     fun toWallet(activity: Activity) {
-        fadeOut(activity)
         activity.startActivity(activity.intentFor<WalletActivity>())
+        fadeOut(activity)
+    }
+
+    fun toSettings(activity: Activity) {
+        activity.startActivity(activity.intentFor<SettingsActivity>())
+        fadeOut(activity)
     }
 }
