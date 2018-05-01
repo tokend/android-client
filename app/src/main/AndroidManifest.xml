@@ -39,7 +39,11 @@
             android:name=".activities.DashboardActivity"
             android:label="@string/dashboard_title"
             android:theme="@style/AppTheme.NoActionBar.CardsBackground" />
-        <activity android:name=".activities.WalletActivity"></activity>
+        <activity android:name=".activities.WalletActivity" />
+        <activity
+            android:name=".activities.settings.SettingsActivity"
+            android:label="@string/settings_title" />
+        <activity android:name=".activities.qr.ShareQrActivity" />
     </application>
 
 </manifest>

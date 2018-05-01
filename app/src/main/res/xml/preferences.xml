@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.v7.preference.PreferenceCategory
+        android:layout="@layout/preference_category_layout"
+        android:title="@string/settings_account_group">
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_account"
+            android:key="account_id"
+            android:layout="@layout/preference_layout"
+            android:title="@string/account_id_title" />
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_account_check"
+            android:key="kyc"
+            android:layout="@layout/preference_layout"
+            android:summary="@string/verification_summary"
+            android:title="@string/verification_title" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory
+        android:layout="@layout/preference_category_layout_divider"
+        android:title="@string/settings_security_group">
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:icon="@drawable/ic_security"
+            android:key="tfa"
+            android:layout="@layout/preference_layout"
+            android:title="@string/tfa_title" />
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:icon="@drawable/ic_fingerprint"
+            android:key="fingerprint"
+            android:layout="@layout/preference_layout"
+            android:title="@string/fingerprint_title" />
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_lock"
+            android:key="change_password"
+            android:layout="@layout/preference_layout"
+            android:title="@string/change_password_title" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+</android.support.v7.preference.PreferenceScreen>

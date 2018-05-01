@@ -6,6 +6,7 @@ import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.singleTop
 import org.tokend.template.R
 import org.tokend.template.activities.*
+import org.tokend.template.activities.qr.ShareQrActivity
 import org.tokend.template.activities.settings.SettingsActivity
 
 /**
@@ -49,5 +50,18 @@ object Navigator {
     fun toSettings(activity: Activity) {
         activity.startActivity(activity.intentFor<SettingsActivity>())
         fadeOut(activity)
+    }
+
+    fun openQrShare(activity: Activity,
+                    title: String,
+                    data: String,
+                    shareDialogText: String,
+                    topText: String? = null) {
+        activity.startActivity(activity.intentFor<ShareQrActivity>(
+                ShareQrActivity.DATA_EXTRA to data,
+                ShareQrActivity.TITLE_EXTRA to title,
+                ShareQrActivity.SHARE_DIALOG_TEXT_EXTRA to shareDialogText,
+                ShareQrActivity.TOP_TEXT_EXTRA to topText
+        ))
     }
 }

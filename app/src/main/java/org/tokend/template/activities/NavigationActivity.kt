@@ -117,8 +117,6 @@ abstract class NavigationActivity : BaseActivity() {
                     return@withOnDrawerItemClickListener onNavigationItemSelected(item)
                 }
                 .build()
-
-        overridePendingTransition(0, R.anim.activity_fade_out)
     }
 
     protected open fun onNavigationItemSelected(item: IDrawerItem<Any, RecyclerView.ViewHolder>)
@@ -140,6 +138,7 @@ abstract class NavigationActivity : BaseActivity() {
             TRADE_ITEM -> {
             }
             SETTINGS_ITEM -> {
+                Navigator.toSettings(this)
             }
             SIGN_OUT_ITEM -> {
             }

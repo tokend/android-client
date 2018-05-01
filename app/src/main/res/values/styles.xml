@@ -6,6 +6,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColor">@color/primary_text</item>
         <item name="android:textColorSecondary">@color/secondary_text</item>
+        <item name="preferenceTheme">@style/PreferenceTheme</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
@@ -100,4 +101,8 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="PreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="android:tint">@color/colorPrimary</item>
+        <item name="android:dividerHeight">0dp</item>
+    </style>
 </resources>
