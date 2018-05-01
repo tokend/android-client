@@ -72,5 +72,11 @@ android {
         resValue "color", "ok", "#3fa595"
 
         // ----------------------
+
+        // ----- Security -----
+        // Secure content - when set to "true" app content will not be
+        // shown in multitasking, also user will not be allowed to take
+        // screenshots
+        buildConfigField 'Boolean', 'SECURE_CONTENT', 'false'
     }
 }

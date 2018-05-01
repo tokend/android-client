@@ -14,6 +14,15 @@
     <string name="new_password">New password</string>
     <string name="confirm_new_password">Confirm new password</string>
     <string name="recover_account">Recover account</string>
+    <string name="sign_out">Sign out</string>
+
+    <string name="dashboard_title">Dashboard</string>
+    <string name="wallet_title">Wallet</string>
+    <string name="deposit_title">Deposit</string>
+    <string name="withdraw_title">Withdraw</string>
+    <string name="explore_title">Explore</string>
+    <string name="trade_title">Trade</string>
+    <string name="settings_title">Settings</string>
 
     <string name="error_cannot_be_empty">Cannot be empty</string>
     <string name="error_invalid_email">Invalid email</string>

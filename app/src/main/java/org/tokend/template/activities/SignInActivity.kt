@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.enabled
@@ -122,6 +123,9 @@ class SignInActivity : AppCompatActivity() {
                 .doOnTerminate {
                     isLoading = false
                 }
-                .subscribe()
+                .subscribeBy {
+                    finish()
+                    startActivity<DashboardActivity>()
+                }
     }
 }
