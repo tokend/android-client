@@ -11,12 +11,12 @@ import kotlinx.android.synthetic.main.activity_sign_in.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
-import org.jetbrains.anko.startActivity
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SoftInputUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
@@ -83,13 +83,12 @@ class SignInActivity : AppCompatActivity() {
         }
 
         sign_up_button.onClick {
-            startActivity<SignUpActivity>()
+            Navigator.openSignUp(this)
         }
 
         recovery_button.onClick {
-            startActivity<RecoveryActivity>(
-                    RecoveryActivity.EMAIL_EXTRA to email_edit_text.text.toString()
-            )
+            Navigator.openRecovery(this,
+                    email_edit_text.text.toString())
         }
     }
     // endregion
@@ -124,8 +123,7 @@ class SignInActivity : AppCompatActivity() {
                     isLoading = false
                 }
                 .subscribeBy {
-                    finish()
-                    startActivity<WalletActivity>()
+                    Navigator.toWallet(this)
                 }
     }
 }

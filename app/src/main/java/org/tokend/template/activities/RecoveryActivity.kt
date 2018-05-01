@@ -7,10 +7,10 @@ import kotlinx.android.synthetic.main.activity_recovery.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
-import org.jetbrains.anko.startActivity
 import org.tokend.template.R
 import org.tokend.template.extensions.getStringExtra
 import org.tokend.template.extensions.hasError
+import org.tokend.template.util.Navigator
 import org.tokend.template.view.util.EditTextHelper
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.SimpleTextWatcher
@@ -94,8 +94,7 @@ class RecoveryActivity : AppCompatActivity() {
         }
 
         sign_in_text_view.onClick {
-            finish()
-            startActivity<SignInActivity>()
+            Navigator.toSignIn(this)
         }
     }
     // endregion

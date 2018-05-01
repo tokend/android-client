@@ -14,6 +14,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
 import org.tokend.template.R
+import org.tokend.template.util.Navigator
 
 abstract class NavigationActivity : BaseActivity() {
     companion object {
@@ -125,8 +126,10 @@ abstract class NavigationActivity : BaseActivity() {
         when (item.identifier) {
             getSelectedNavigationItemId() -> return false
             DASHBOARD_ITEM -> {
+                Navigator.toDashboard(this)
             }
             WALLET_ITEM -> {
+                Navigator.toWallet(this)
             }
             DEPOSIT_ITEM -> {
             }
