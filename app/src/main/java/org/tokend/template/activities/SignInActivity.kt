@@ -125,7 +125,7 @@ class SignInActivity : AppCompatActivity() {
                 }
                 .subscribeBy {
                     finish()
-                    startActivity<DashboardActivity>()
+                    startActivity<WalletActivity>()
                 }
     }
 }

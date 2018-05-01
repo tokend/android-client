@@ -47,7 +47,7 @@
 
                     <org.tokend.template.view.PickerTabLayout
                         android:id="@+id/asset_tabs"
-                        style="@style/AssetTabPicker"
+                        style="@style/TabPicker"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 

@@ -39,6 +39,7 @@
             android:name=".activities.DashboardActivity"
             android:label="@string/dashboard_title"
             android:theme="@style/AppTheme.NoActionBar.CardsBackground" />
+        <activity android:name=".activities.WalletActivity"></activity>
     </application>
 
 </manifest>
