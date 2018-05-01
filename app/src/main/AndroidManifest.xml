@@ -37,7 +37,8 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.DashboardActivity"
-            android:label="@string/dashboard_title" />
+            android:label="@string/dashboard_title"
+            android:theme="@style/AppTheme.NoActionBar.CardsBackground" />
     </application>
 
 </manifest>

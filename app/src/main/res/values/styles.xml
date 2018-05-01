@@ -13,6 +13,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.NoActionBar.CardsBackground" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
@@ -61,5 +65,23 @@
         <item name="colorControlNormal">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
         <item name="actionMenuTextColor">@color/white</item>
+    </style>
+
+    <style name="CardStyle">
+        <item name="cardElevation">@dimen/card_elevation</item>
+        <item name="contentPadding">@dimen/standard_margin</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="android:layout_marginTop">@dimen/half_standard_margin</item>
+    </style>
+
+    <style name="AssetTabPicker">
+        <item name="tabGravity">fill</item>
+        <item name="tabMode">scrollable</item>
+        <item name="tabSelectedTextColor">@color/primary</item>
+        <item name="tabIndicatorColor">@color/primary</item>
+        <item name="tabTextColor">@color/primary_text</item>
+        <item name="android:requiresFadingEdge">horizontal</item>
+        <item name="android:fadingEdgeLength">@dimen/standard_margin</item>
     </style>
 </resources>
