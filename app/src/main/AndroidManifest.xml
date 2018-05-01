@@ -20,6 +20,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.SignInActivity"
+            android:launchMode="singleTask"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +31,9 @@
         <activity
             android:name=".activities.SignUpActivity"
             android:label="@string/sign_up" />
+        <activity
+            android:name=".activities.RecoveryActivity"
+            android:label="@string/recover_account" />
     </application>
 
 </manifest>

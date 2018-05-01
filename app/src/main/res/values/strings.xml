@@ -10,6 +10,10 @@
     <string name="back_to_sign_in">Back to Sign in</string>
     <string name="i_agree_to_the">I agree to the</string>
     <string name="terms_of_service">Terms of Service</string>
+    <string name="recovery_seed">Recovery seed</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="recover_account">Recover account</string>
 
     <string name="error_cannot_be_empty">Cannot be empty</string>
     <string name="error_invalid_email">Invalid email</string>

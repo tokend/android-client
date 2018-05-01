@@ -51,7 +51,7 @@ class SignInActivity : AppCompatActivity() {
         initVersion()
         initFields()
         initButtons()
-        
+
         canSignIn = false
     }
 
@@ -86,7 +86,9 @@ class SignInActivity : AppCompatActivity() {
         }
 
         recovery_button.onClick {
-
+            startActivity<RecoveryActivity>(
+                    RecoveryActivity.EMAIL_EXTRA to email_edit_text.text.toString()
+            )
         }
     }
     // endregion
