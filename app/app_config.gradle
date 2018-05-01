@@ -71,6 +71,11 @@ android {
         // usually a shade of green
         resValue "color", "ok", "#3fa595"
 
+        // Received - color of income amounts
+        resValue "color", "received", "#689F38"
+        // Sent - color of spent amounts
+        resValue "color", "sent", "#D32F2F"
+
         // ----------------------
 
         // ----- Security -----

@@ -27,6 +27,13 @@
     <string name="trade_title">Trade</string>
     <string name="settings_title">Settings</string>
 
+    <string name="tx_state_rejected">Rejected</string>
+    <string name="tx_state_pending">Pending</string>
+    <string name="tx_state_success">Success</string>
+    <string name="tx_state_cancelled">Cancelled</string>
+    <string name="template_tx_from">From %1$s</string>
+    <string name="template_tx_to">To %1$s</string>
+
     <string name="error_cannot_be_empty">Cannot be empty</string>
     <string name="error_invalid_email">Invalid email</string>
     <string name="error_passwords_mismatch">Password doesn\'t match confirmation</string>

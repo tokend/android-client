@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/tx_list_item_height">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/tx_icon_image_view"
+        android:layout_width="@dimen/tx_list_item_icon_size"
+        android:layout_height="@dimen/tx_list_item_icon_size"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/standard_margin" />
+
+    <LinearLayout
+        android:id="@+id/tx_amount_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tx_amount_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/accent"
+            android:textSize="16sp"
+            tools:text="100 BTC" />
+
+        <TextView
+            android:id="@+id/tx_below_amount_text_view"
+            style="@style/SecondaryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/half_standard_margin"
+            android:gravity="end"
+            tools:text="Pending" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tx_info_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_toEndOf="@id/tx_icon_image_view"
+        android:layout_toStartOf="@id/tx_amount_layout"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tx_action_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="16sp"
+            tools:text="Sent" />
+
+        <TextView
+            android:id="@+id/tx_counterparty_text_view"
+            style="@style/SecondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/half_standard_margin"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            tools:text="From oleg@radiokot.com.ua" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@id/tx_info_layout"
+        android:background="@color/material_drawer_divider" />
+
+</RelativeLayout>
