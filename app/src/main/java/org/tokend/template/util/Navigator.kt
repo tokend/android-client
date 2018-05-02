@@ -5,9 +5,11 @@ import android.support.v4.app.ActivityCompat
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.singleTop
 import org.tokend.template.R
-import org.tokend.template.activities.*
+import org.tokend.template.activities.MainActivity
+import org.tokend.template.activities.RecoveryActivity
+import org.tokend.template.activities.SignInActivity
+import org.tokend.template.activities.SignUpActivity
 import org.tokend.template.activities.qr.ShareQrActivity
-import org.tokend.template.activities.settings.SettingsActivity
 
 /**
  * Performs transitions between screens.
@@ -37,18 +39,8 @@ object Navigator {
         activity.finish()
     }
 
-    fun toDashboard(activity: Activity) {
-        activity.startActivity(activity.intentFor<DashboardActivity>())
-        fadeOut(activity)
-    }
-
-    fun toWallet(activity: Activity) {
-        activity.startActivity(activity.intentFor<WalletActivity>())
-        fadeOut(activity)
-    }
-
-    fun toSettings(activity: Activity) {
-        activity.startActivity(activity.intentFor<SettingsActivity>())
+    fun toMainActivity(activity: Activity) {
+        activity.startActivity(activity.intentFor<MainActivity>())
         fadeOut(activity)
     }
 

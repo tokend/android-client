@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.preference.ListPreference
 import android.support.v7.preference.PreferenceFragmentCompat
-import android.support.v7.preference.PreferenceScreen
 import android.view.View
 import org.tokend.template.R
 
@@ -69,17 +68,5 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         updateSummary(key)
-    }
-
-    override fun onNavigateToScreen(preferenceScreen: PreferenceScreen) {
-        (activity as SettingsActivity).onNavigateToScreen(preferenceScreen.key)
-    }
-
-    protected fun showProgress() {
-        (activity as? SettingsActivity)?.showProgress()
-    }
-
-    protected fun hideProgress() {
-        (activity as? SettingsActivity)?.hideProgress()
     }
 }

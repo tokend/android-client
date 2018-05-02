@@ -16,12 +16,12 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_share_qr.*
 import org.jetbrains.anko.dimen
 import org.tokend.template.R
-import org.tokend.template.activities.BaseActivity
+import org.tokend.template.activities.ToolbarActivity
 import org.tokend.template.extensions.getStringExtra
 import org.tokend.template.util.ObservableTransformers
 import java.util.concurrent.TimeUnit
 
-class ShareQrActivity : BaseActivity() {
+class ShareQrActivity : ToolbarActivity() {
     companion object {
         const val TITLE_EXTRA = "title"
         const val DATA_EXTRA = "data"

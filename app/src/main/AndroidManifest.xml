@@ -44,6 +44,7 @@
             android:name=".activities.settings.SettingsActivity"
             android:label="@string/settings_title" />
         <activity android:name=".activities.qr.ShareQrActivity" />
+        <activity android:name=".activities.MainActivity"></activity>
     </application>
 
 </manifest>

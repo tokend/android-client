@@ -123,7 +123,7 @@ class SignInActivity : AppCompatActivity() {
                     isLoading = false
                 }
                 .subscribeBy {
-                    Navigator.toWallet(this)
+                    Navigator.toMainActivity(this)
                 }
     }
 }
