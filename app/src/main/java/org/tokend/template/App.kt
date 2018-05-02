@@ -11,7 +11,7 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
 import io.reactivex.subjects.BehaviorSubject
-import org.tokend.template.logic.AppState
+import org.tokend.template.base.logic.AppState
 import java.util.*
 
 class App : MultiDexApplication() {

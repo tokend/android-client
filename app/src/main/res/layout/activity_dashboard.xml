@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="org.tokend.template.activities.DashboardActivity">
+    tools:context=".base.activities.DashboardActivity">
 
     <include layout="@layout/appbar" />
 
@@ -45,13 +45,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <org.tokend.template.view.PickerTabLayout
+                    <org.tokend.template.base.view.PickerTabLayout
                         android:id="@+id/asset_tabs"
                         style="@style/TabPicker"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                    <org.tokend.template.view.ContentLoadingProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+                    <org.tokend.template.base.view.ContentLoadingProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/activity_progress"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"

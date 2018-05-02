@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".activities.SignInActivity"
+            android:name="org.tokend.template.base.activities.SignInActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,23 +28,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.SignUpActivity"
+            android:name="org.tokend.template.base.activities.SignUpActivity"
             android:label="@string/sign_up"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activities.RecoveryActivity"
+            android:name="org.tokend.template.base.activities.RecoveryActivity"
             android:label="@string/recover_account"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activities.DashboardActivity"
+            android:name="org.tokend.template.base.activities.DashboardActivity"
             android:label="@string/dashboard_title"
             android:theme="@style/AppTheme.NoActionBar.CardsBackground" />
-        <activity android:name=".activities.WalletActivity" />
+        <activity android:name="org.tokend.template.base.activities.WalletActivity" />
         <activity
-            android:name=".activities.settings.SettingsActivity"
+            android:name="org.tokend.template.base.fragments.settings.SettingsActivity"
             android:label="@string/settings_title" />
-        <activity android:name=".activities.qr.ShareQrActivity" />
-        <activity android:name=".activities.MainActivity"></activity>
+        <activity android:name="org.tokend.template.base.activities.qr.ShareQrActivity" />
+        <activity android:name="org.tokend.template.base.activities.MainActivity"></activity>
     </application>
 
 </manifest>

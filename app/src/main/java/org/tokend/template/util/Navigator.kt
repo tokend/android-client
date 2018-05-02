@@ -5,11 +5,11 @@ import android.support.v4.app.ActivityCompat
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.singleTop
 import org.tokend.template.R
-import org.tokend.template.activities.MainActivity
-import org.tokend.template.activities.RecoveryActivity
-import org.tokend.template.activities.SignInActivity
-import org.tokend.template.activities.SignUpActivity
-import org.tokend.template.activities.qr.ShareQrActivity
+import org.tokend.template.base.activities.MainActivity
+import org.tokend.template.base.activities.RecoveryActivity
+import org.tokend.template.base.activities.SignInActivity
+import org.tokend.template.base.activities.SignUpActivity
+import org.tokend.template.base.activities.qr.ShareQrActivity
 
 /**
  * Performs transitions between screens.
