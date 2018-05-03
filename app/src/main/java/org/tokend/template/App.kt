@@ -3,7 +3,6 @@ package org.tokend.template
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import android.support.v7.app.AppCompatDelegate
 import android.util.Log
@@ -11,7 +10,6 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
 import io.reactivex.subjects.BehaviorSubject
-import org.tokend.template.base.logic.AppState
 import java.util.*
 
 class App : MultiDexApplication() {
@@ -22,9 +20,6 @@ class App : MultiDexApplication() {
         private var _context: Context? = null
         val context: Context
             get() = _context!!
-
-        var state: AppState? = null
-            private set
 
         val areGooglePlayServicesAvailable: Boolean
             get() {
@@ -38,10 +33,6 @@ class App : MultiDexApplication() {
          * [true] means that the app is currently in the background.
          */
         val backgroundStateSubject = BehaviorSubject.createDefault(false)
-
-        fun clearState() {
-            state = AppState()
-        }
     }
 
     private var isInForeground = false
@@ -63,8 +54,6 @@ class App : MultiDexApplication() {
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
-        clearState()
-
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityResumed(a: Activity) {
                 setIsInForeground(true)
@@ -84,11 +73,6 @@ class App : MultiDexApplication() {
 
             override fun onActivityDestroyed(a: Activity) {}
         })
-    }
-
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
-        MultiDex.install(base)
     }
 
     // region Background/Foreground state.

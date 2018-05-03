@@ -53,4 +53,6 @@
     <string name="error_try_again">An error occurred. Try again later</string>
     <string name="error_connection_try_again">Connection error. Try again later</string>
     <string name="error_not_found_try_again">Not found. Try again later</string>
+    <string name="error_invalid_password">Invalid password</string>
+    <string name="error_email_not_verified">Email is not verified</string>
 </resources>
