@@ -20,6 +20,7 @@
     <string name="retry">Retry</string>
     <string name="share">Share</string>
     <string name="share_account_id">Share Account ID</string>
+    <string name="check_your_email_to_verify_account">Check your email to verify account</string>
 
     <string name="dashboard_title">Dashboard</string>
     <string name="wallet_title">Wallet</string>

@@ -2,6 +2,7 @@ package org.tokend.template.util
 
 import android.app.Activity
 import android.support.v4.app.ActivityCompat
+import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.singleTop
 import org.tokend.template.R
@@ -35,7 +36,9 @@ object Navigator {
     }
 
     fun toSignIn(activity: Activity) {
-        activity.startActivity(activity.intentFor<SignInActivity>().singleTop())
+        activity.startActivity(activity.intentFor<SignInActivity>()
+                .singleTop()
+                .clearTop())
         activity.finish()
     }
 
