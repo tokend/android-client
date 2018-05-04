@@ -105,4 +105,11 @@
         <item name="android:tint">@color/colorPrimary</item>
         <item name="android:dividerHeight">0dp</item>
     </style>
+
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/primary_action</item>
+
+        <item name="android:textColor">@null</item>
+        <item name="android:textSize">@null</item>
+    </style>
 </resources>

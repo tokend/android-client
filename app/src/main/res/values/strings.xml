@@ -21,6 +21,19 @@
     <string name="share">Share</string>
     <string name="share_account_id">Share Account ID</string>
     <string name="check_your_email_to_verify_account">Check your email to verify account</string>
+    <string name="save_recovery_seed">Save your recovery seed</string>
+    <string name="continue_action">Continue</string>
+    <string name="validate_recovery_seed">Validate recovery seed</string>
+    <string name="recovery_seed_explanation">Save this seed in a secure place.
+        In case you lose your password you will be able to recover access to your account
+        by using this seed</string>
+    <string name="validate_recovery_seed_explanation">Please validate this seed in the field below to ensure that you copied it properly</string>
+    <string name="seed_copied">Seed is copied to the clipboard</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="seed_not_copied_confirmation">This seed is the only way to recover your account
+    in case of password loss. You will not be able to get it later</string>
+    <string name="i_understand">I understand</string>
+    <string name="cancel">Cancel</string>
 
     <string name="dashboard_title">Dashboard</string>
     <string name="wallet_title">Wallet</string>
@@ -56,4 +69,5 @@
     <string name="error_not_found_try_again">Not found. Try again later</string>
     <string name="error_invalid_password">Invalid password</string>
     <string name="error_email_not_verified">Email is not verified</string>
+    <string name="error_seed_mismatch">Seed doesn\'t match confirmation</string>
 </resources>

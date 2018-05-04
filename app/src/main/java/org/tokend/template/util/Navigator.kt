@@ -9,8 +9,9 @@ import org.tokend.template.R
 import org.tokend.template.base.activities.MainActivity
 import org.tokend.template.base.activities.RecoveryActivity
 import org.tokend.template.base.activities.SignInActivity
-import org.tokend.template.base.activities.SignUpActivity
 import org.tokend.template.base.activities.qr.ShareQrActivity
+import org.tokend.template.base.activities.signup.RecoverySeedActivity
+import org.tokend.template.base.activities.signup.SignUpActivity
 
 /**
  * Performs transitions between screens.
@@ -58,5 +59,11 @@ object Navigator {
                 ShareQrActivity.SHARE_DIALOG_TEXT_EXTRA to shareDialogText,
                 ShareQrActivity.TOP_TEXT_EXTRA to topText
         ))
+    }
+
+    fun openRecoverySeedSaving(activity: Activity, requestCode: Int, seed: String) {
+        activity.startActivityForResult(activity.intentFor<RecoverySeedActivity>(
+                RecoverySeedActivity.SEED_EXTRA to seed
+        ), requestCode)
     }
 }

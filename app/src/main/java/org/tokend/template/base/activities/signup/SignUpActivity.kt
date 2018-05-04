@@ -1,5 +1,6 @@
-package org.tokend.template.base.activities
+package org.tokend.template.base.activities.signup
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import com.trello.rxlifecycle2.android.ActivityEvent
@@ -31,6 +32,10 @@ import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import org.tokend.wallet.Account
 
 class SignUpActivity : RxAppCompatActivity() {
+    companion object {
+        private val SAVE_SEED_REQUEST = "save_recovery_seed".hashCode() and 0xffff
+    }
+
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress.show() },
             hideLoading = { progress.hide() }
@@ -133,9 +138,11 @@ class SignUpActivity : RxAppCompatActivity() {
         val email = email_edit_text.text.toString()
         val password = password_edit_text.text.toString()
 
+        var recoverySeed: String? = null
         Single.zip(getRandomAccount(), getRandomAccount(),
                 BiFunction { key1: Account, key2: Account -> Pair(key1, key2) })
                 .flatMapCompletable { (rootAccount, recoveryAccount) ->
+                    recoverySeed = recoveryAccount.secretSeed
                     SignUpManager.signUp(email, password, rootAccount, recoveryAccount)
                 }
                 .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
@@ -148,11 +155,18 @@ class SignUpActivity : RxAppCompatActivity() {
                 }
                 .subscribeBy(
                         onComplete = {
-                            ToastManager.short(getString(R.string.check_your_email_to_verify_account))
+                            recoverySeed.let {
+                                if (it != null) {
+                                    Navigator.openRecoverySeedSaving(this,
+                                            SAVE_SEED_REQUEST, it)
+                                } else {
+                                    onSuccessfulSignUp()
+                                }
+                            }
                         },
                         onError = {
                             it.printStackTrace()
-                            handleSignInError(it)
+                            handleSignUpError(it)
                         }
                 )
     }
@@ -163,7 +177,7 @@ class SignUpActivity : RxAppCompatActivity() {
         }.toSingle()
     }
 
-    private fun handleSignInError(error: Throwable) {
+    private fun handleSignUpError(error: Throwable) {
         when (error) {
             is EmailAlreadyTakenException ->
                 email_edit_text.setErrorAndFocus(R.string.error_email_already_taken)
@@ -171,5 +185,17 @@ class SignUpActivity : RxAppCompatActivity() {
                 ErrorHandlerFactory.getDefault().handle(error)
         }
         updateSignUpAvailability()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SAVE_SEED_REQUEST) {
+            onSuccessfulSignUp()
+        }
+    }
+
+    private fun onSuccessfulSignUp() {
+        ToastManager.long(R.string.check_your_email_to_verify_account)
+        Navigator.toSignIn(this)
     }
 }
