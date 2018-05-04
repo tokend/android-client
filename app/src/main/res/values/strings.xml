@@ -40,6 +40,7 @@
         Please check your spam folder or request a new letter
     </string>
     <string name="resend_letter">Resend letter</string>
+    <string name="paste">Paste</string>
 
     <string name="dashboard_title">Dashboard</string>
     <string name="wallet_title">Wallet</string>
@@ -76,4 +77,10 @@
     <string name="error_invalid_password">Invalid password</string>
     <string name="error_email_not_verified">Email is not verified</string>
     <string name="error_seed_mismatch">Seed doesn\'t match confirmation</string>
+
+    <string name="tfa_dialog_title">Two-factor authentication</string>
+    <string name="totp_dialog_message">Enter code from the authentication app</string>
+    <string name="totp_verification_code">Verification code</string>
+    <string name="error_invalid_totp_code">Invalid code</string>
+    <string name="enter_your_password">Enter your password</string>
 </resources>

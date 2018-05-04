@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/standard_padding"
+    android:paddingRight="@dimen/standard_padding"
+    android:paddingTop="@dimen/half_standard_margin">
+
+    <TextView
+        android:id="@+id/tfa_message_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_dialog" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/tfa_input_edit_text"
+        style="@style/EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_margin"
+        app:met_helperText=" "
+        app:met_helperTextAlwaysShown="true" />
+
+    <include layout="@layout/layout_progress" />
+
+</LinearLayout>

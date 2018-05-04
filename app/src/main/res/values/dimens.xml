@@ -2,6 +2,7 @@
 <resources>
     <!-- Text sizes -->
     <dimen name="text_size_default">15sp</dimen>
+    <dimen name="text_size_dialog">16sp</dimen>
     <dimen name="text_size_hint">12sp</dimen>
     <dimen name="text_size_heading">20sp</dimen>
     <dimen name="text_size_heading_large">36sp</dimen>

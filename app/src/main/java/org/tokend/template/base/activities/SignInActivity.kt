@@ -14,11 +14,15 @@ import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.ApiFactory
+import org.tokend.sdk.api.tfa.TfaCallback
+import org.tokend.sdk.api.tfa.TfaVerifier
 import org.tokend.sdk.federation.EmailNotVerifiedException
 import org.tokend.sdk.federation.InvalidCredentialsException
+import org.tokend.sdk.federation.NeedTfaException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.logic.SignInManager
+import org.tokend.template.base.tfa.TfaDialogFactory
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
 import org.tokend.template.extensions.hasError
@@ -31,7 +35,7 @@ import org.tokend.template.util.SoftInputUtil
 import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
-class SignInActivity : RxAppCompatActivity() {
+class SignInActivity : RxAppCompatActivity(), TfaCallback {
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress.show() },
             hideLoading = { progress.hide() }
@@ -124,7 +128,7 @@ class SignInActivity : RxAppCompatActivity() {
         val email = email_edit_text.text.toString()
         val password = password_edit_text.text.toString()
 
-        val d = SignInManager.signIn(email, password)
+        SignInManager(this).signIn(email, password)
                 .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
@@ -182,5 +186,14 @@ class SignInActivity : RxAppCompatActivity() {
                             ErrorHandlerFactory.getDefault().handle(it)
                         }
                 )
+    }
+
+    override fun onTfaRequired(exception: NeedTfaException,
+                               verifierInterface: TfaVerifier.Interface) {
+        runOnUiThread {
+            TfaDialogFactory(this).getForException(exception, verifierInterface)
+                    ?.show()
+                    ?: verifierInterface.cancelVerification()
+        }
     }
 }

@@ -3,6 +3,7 @@ package org.tokend.template.base.logic
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import org.tokend.sdk.api.tfa.TfaCallback
 import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.BuildConfig
@@ -10,7 +11,7 @@ import org.tokend.template.base.logic.di.AccountModule
 import org.tokend.template.base.logic.di.WalletInfoModule
 import org.tokend.wallet.Account
 
-object SignInManager {
+class SignInManager(private val tfaCallback: TfaCallback) {
     fun signIn(email: String, password: String): Completable {
         return getWalletInfo(email, password)
                 .flatMap { walletInfo ->
@@ -26,7 +27,7 @@ object SignInManager {
 
     private fun getWalletInfo(email: String, password: String): Observable<WalletInfo> {
         return Observable.defer {
-            Observable.just(KeyStorage(BuildConfig.API_URL)
+            Observable.just(KeyStorage(BuildConfig.API_URL, tfaCallback)
                     .getWalletInfo(email, password))
         }
     }

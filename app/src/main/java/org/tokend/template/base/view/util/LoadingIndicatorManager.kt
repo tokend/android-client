@@ -10,7 +10,7 @@ class LoadingIndicatorManager(private val showLoading: () -> Unit,
     var isLoading: Boolean = false
         private set
 
-    fun setLoading(isLoading: Boolean, tag: String) {
+    fun setLoading(isLoading: Boolean, tag: String = "main") {
         if (isLoading) {
             show(tag)
         } else {
@@ -18,12 +18,12 @@ class LoadingIndicatorManager(private val showLoading: () -> Unit,
         }
     }
 
-    fun show(tag: String) {
+    fun show(tag: String = "main") {
         requests.add(tag)
         updateVisibility()
     }
 
-    fun hide(tag: String) {
+    fun hide(tag: String = "main") {
         requests.remove(tag)
         updateVisibility()
     }
