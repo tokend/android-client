@@ -83,4 +83,20 @@
     <string name="totp_verification_code">Verification code</string>
     <string name="error_invalid_totp_code">Invalid code</string>
     <string name="enter_your_password">Enter your password</string>
+
+    <!-- withdraw -->
+    <string-array name="currencies">
+        <item>BTC</item>
+        <item>ETH</item>
+    </string-array>
+    <string name="amount_label">Amount</string>
+    <string name="address_label">Destination address</string>
+    <string name="go_to_confirmation_btn_label">go to confirmation</string>
+
+    <!-- Deposit -->
+    <string name="currency">Currency</string>
+    <string name="personal_address">Personal address</string>
+    <string name="to_make_deposit_send_asset">To make a deposit send %1$s to this address</string>
+    <string name="share_label">share</string>
+    <string name="show_qr_label">Show QR code</string>
 </resources>
