@@ -3,6 +3,7 @@ package org.tokend.template.base.activities
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.text.Editable
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
@@ -12,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_sign_in.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
+import org.tokend.sdk.api.ApiFactory
 import org.tokend.sdk.federation.EmailNotVerifiedException
 import org.tokend.sdk.federation.InvalidCredentialsException
 import org.tokend.template.BuildConfig
@@ -22,6 +24,7 @@ import org.tokend.template.base.view.util.SimpleTextWatcher
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
+import org.tokend.template.extensions.toCompletable
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SoftInputUtil
@@ -147,10 +150,37 @@ class SignInActivity : RxAppCompatActivity() {
             is InvalidCredentialsException ->
                 password_edit_text.setErrorAndFocus(R.string.error_invalid_password)
             is EmailNotVerifiedException ->
-                ToastManager.short(R.string.error_email_not_verified)
+                displayEmailNotVerifiedDialog(error.walletId)
             else ->
                 ErrorHandlerFactory.getDefault().handle(error)
         }
         updateSignInAvailability()
+    }
+
+    private fun displayEmailNotVerifiedDialog(walletId: String) {
+        AlertDialog.Builder(this, R.style.AlertDialogStyle)
+                .setTitle(R.string.error_email_not_verified)
+                .setMessage(R.string.email_not_verified_explanation)
+                .setPositiveButton(R.string.ok, null)
+                .setNeutralButton(R.string.resend_letter) { _, _ ->
+                    resendVerificationEmail(walletId)
+                }
+                .show()
+    }
+
+    private fun resendVerificationEmail(walletId: String) {
+        ApiFactory.getApiService(BuildConfig.API_URL)
+                .requestVerificationLink(walletId)
+                .toCompletable()
+                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
+                .compose(ObservableTransformers.defaultSchedulersCompletable())
+                .subscribeBy(
+                        onComplete = {
+                            ToastManager.long(R.string.check_your_email_to_verify_account)
+                        },
+                        onError = {
+                            ErrorHandlerFactory.getDefault().handle(it)
+                        }
+                )
     }
 }

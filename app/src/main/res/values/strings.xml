@@ -34,6 +34,12 @@
     in case of password loss. You will not be able to get it later</string>
     <string name="i_understand">I understand</string>
     <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="email_not_verified_explanation">
+        It seems that your email is not verified yet.
+        Please check your spam folder or request a new letter
+    </string>
+    <string name="resend_letter">Resend letter</string>
 
     <string name="dashboard_title">Dashboard</string>
     <string name="wallet_title">Wallet</string>
