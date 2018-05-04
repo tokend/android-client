@@ -1,21 +1,20 @@
 package org.tokend.template.base.activities
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import kotlinx.android.synthetic.main.activity_recovery.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.extensions.getStringExtra
-import org.tokend.template.extensions.hasError
-import org.tokend.template.util.Navigator
 import org.tokend.template.base.view.util.EditTextHelper
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
+import org.tokend.template.extensions.getStringExtra
+import org.tokend.template.extensions.hasError
+import org.tokend.template.util.Navigator
 
-class RecoveryActivity : AppCompatActivity() {
+class RecoveryActivity : BaseActivity() {
     companion object {
         const val EMAIL_EXTRA = "email"
     }
@@ -42,8 +41,7 @@ class RecoveryActivity : AppCompatActivity() {
     private val email: String
         get() = intent.getStringExtra(EMAIL_EXTRA, "")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_recovery)
 
         initFields()

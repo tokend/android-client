@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sign_in.*
@@ -14,15 +13,11 @@ import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.ApiFactory
-import org.tokend.sdk.api.tfa.TfaCallback
-import org.tokend.sdk.api.tfa.TfaVerifier
 import org.tokend.sdk.federation.EmailNotVerifiedException
 import org.tokend.sdk.federation.InvalidCredentialsException
-import org.tokend.sdk.federation.NeedTfaException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.logic.SignInManager
-import org.tokend.template.base.tfa.TfaDialogFactory
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
 import org.tokend.template.extensions.hasError
@@ -35,7 +30,7 @@ import org.tokend.template.util.SoftInputUtil
 import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
-class SignInActivity : RxAppCompatActivity(), TfaCallback {
+class SignInActivity : BaseActivity() {
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress.show() },
             hideLoading = { progress.hide() }
@@ -53,9 +48,7 @@ class SignInActivity : RxAppCompatActivity(), TfaCallback {
             sign_in_button.enabled = value
         }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_sign_in)
         window.setBackgroundDrawable(
                 ColorDrawable(ContextCompat.getColor(this, R.color.white)))
@@ -128,7 +121,7 @@ class SignInActivity : RxAppCompatActivity(), TfaCallback {
         val email = email_edit_text.text.toString()
         val password = password_edit_text.text.toString()
 
-        SignInManager(this).signIn(email, password)
+        SignInManager(appTfaCallback).signIn(email, password)
                 .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
@@ -186,14 +179,5 @@ class SignInActivity : RxAppCompatActivity(), TfaCallback {
                             ErrorHandlerFactory.getDefault().handle(it)
                         }
                 )
-    }
-
-    override fun onTfaRequired(exception: NeedTfaException,
-                               verifierInterface: TfaVerifier.Interface) {
-        runOnUiThread {
-            TfaDialogFactory(this).getForException(exception, verifierInterface)
-                    ?.show()
-                    ?: verifierInterface.cancelVerification()
-        }
     }
 }

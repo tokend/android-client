@@ -3,11 +3,23 @@ package org.tokend.template.base.activities
 import android.os.Bundle
 import android.view.WindowManager
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
+import org.tokend.sdk.api.tfa.TfaCallback
+import org.tokend.sdk.api.tfa.TfaVerifier
+import org.tokend.sdk.federation.NeedTfaException
 import org.tokend.template.BuildConfig
+import org.tokend.template.base.logic.AppTfaCallback
+import org.tokend.template.base.logic.di.DaggerAppStateComponent
+import org.tokend.template.base.tfa.TfaDialogFactory
+import javax.inject.Inject
 
-abstract class BaseActivity : RxAppCompatActivity() {
+abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
+    @Inject
+    lateinit var appTfaCallback: AppTfaCallback
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        DaggerAppStateComponent.create().inject(this)
 
         if (BuildConfig.SECURE_CONTENT) {
             try {
@@ -22,4 +34,23 @@ abstract class BaseActivity : RxAppCompatActivity() {
     }
 
     abstract fun onCreateAllowed(savedInstanceState: Bundle?)
+
+    override fun onStart() {
+        super.onStart()
+        appTfaCallback.registerHandler(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        appTfaCallback.unregisterHandler(this)
+    }
+
+    override fun onTfaRequired(exception: NeedTfaException,
+                               verifierInterface: TfaVerifier.Interface) {
+        runOnUiThread {
+            TfaDialogFactory(this).getForException(exception, verifierInterface)
+                    ?.show()
+                    ?: verifierInterface.cancelVerification()
+        }
+    }
 }
