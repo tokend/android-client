@@ -1,40 +1,40 @@
 package org.tokend.template.base.logic
 
 import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import org.tokend.sdk.api.tfa.TfaCallback
 import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.BuildConfig
-import org.tokend.template.base.logic.di.AccountModule
-import org.tokend.template.base.logic.di.WalletInfoModule
+import org.tokend.template.base.logic.di.providers.AccountProvider
+import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.wallet.Account
 
-class SignInManager(private val tfaCallback: TfaCallback) {
+class SignInManager(
+        private val keyStorage: KeyStorage,
+        private val walletInfoProvider: WalletInfoProvider,
+        private val accountProvider: AccountProvider) {
     fun signIn(email: String, password: String): Completable {
         return getWalletInfo(email, password)
                 .flatMap { walletInfo ->
-                    WalletInfoModule.walletInfo = walletInfo
-
+                    walletInfoProvider.setWalletInfo(walletInfo)
                     getAccount(walletInfo.secretSeed)
                 }
-                .doOnNext { account ->
-                    AccountModule.account = account
+                .doOnSuccess { account ->
+                    accountProvider.setAccount(account)
                 }
-                .ignoreElements()
+                .toCompletable()
     }
 
-    private fun getWalletInfo(email: String, password: String): Observable<WalletInfo> {
-        return Observable.defer {
-            Observable.just(KeyStorage(BuildConfig.API_URL, tfaCallback)
-                    .getWalletInfo(email, password))
-        }
+    private fun getWalletInfo(email: String, password: String): Single<WalletInfo> {
+        return {
+            keyStorage.getWalletInfo(email, password)
+        }.toSingle()
     }
 
-    private fun getAccount(seed: String): Observable<Account> {
-        return Observable.defer {
-            Observable.just(Account.fromSecretSeed(seed))
-        }.subscribeOn(Schedulers.computation())
+    private fun getAccount(seed: String): Single<Account> {
+        return {
+            Account.fromSecretSeed(seed)
+        }.toSingle().subscribeOn(Schedulers.computation())
     }
 }

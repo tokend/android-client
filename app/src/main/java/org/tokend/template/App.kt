@@ -6,10 +6,16 @@ import android.os.Bundle
 import android.support.multidex.MultiDexApplication
 import android.support.v7.app.AppCompatDelegate
 import android.util.Log
+import com.franmontiel.persistentcookiejar.PersistentCookieJar
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
 import io.reactivex.subjects.BehaviorSubject
+import org.tokend.template.base.logic.di.ApiProviderModule
+import org.tokend.template.base.logic.di.AppStateComponent
+import org.tokend.template.base.logic.di.DaggerAppStateComponent
 import java.util.*
 
 class App : MultiDexApplication() {
@@ -38,6 +44,8 @@ class App : MultiDexApplication() {
     private var isInForeground = false
     private val goToBackgroundTimer = Timer()
     private var goToBackgroundTask: TimerTask? = null
+
+    lateinit var stateComponent: AppStateComponent
 
     override fun onCreate() {
         super.onCreate()
@@ -73,6 +81,18 @@ class App : MultiDexApplication() {
 
             override fun onActivityDestroyed(a: Activity) {}
         })
+
+        initStateComponent()
+    }
+
+    fun initStateComponent() {
+        val cookieJar = PersistentCookieJar(
+                SetCookieCache(), SharedPrefsCookiePersistor(this)
+        )
+
+        stateComponent = DaggerAppStateComponent.builder()
+                .apiProviderModule(ApiProviderModule(BuildConfig.API_URL, cookieJar))
+                .build()
     }
 
     // region Background/Foreground state.

@@ -2,7 +2,6 @@ package org.tokend.template.base.fragments
 
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +9,9 @@ import android.view.ViewGroup
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.collapsing_balance_appbar.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-
 import org.tokend.template.R
 
-class WalletFragment : Fragment(), ToolbarProvider {
+class WalletFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
 
     private val defaultAsset: String?

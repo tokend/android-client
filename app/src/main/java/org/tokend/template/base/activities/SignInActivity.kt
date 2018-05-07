@@ -121,7 +121,9 @@ class SignInActivity : BaseActivity() {
         val email = email_edit_text.text.toString()
         val password = password_edit_text.text.toString()
 
-        SignInManager(appTfaCallback).signIn(email, password)
+        SignInManager(
+                apiProvider.getKeyStorage(), walletInfoProvider, accountProvider
+        ).signIn(email, password)
                 .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {

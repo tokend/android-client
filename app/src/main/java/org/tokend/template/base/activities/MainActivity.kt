@@ -20,10 +20,10 @@ import io.reactivex.disposables.Disposable
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
 import org.tokend.template.R
-import org.tokend.template.base.fragments.settings.GeneralSettingsFragment
-import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.fragments.WalletFragment
+import org.tokend.template.base.fragments.settings.GeneralSettingsFragment
+import org.tokend.template.features.dashboard.DashboardFragment
 
 class MainActivity : BaseActivity() {
     companion object {
@@ -46,13 +46,12 @@ class MainActivity : BaseActivity() {
 
         initNavigation()
 
-        displayFragment(getDashboardFragment())
         navigationDrawer?.setSelection(DASHBOARD)
     }
 
     // region Init
     private fun initNavigation() {
-        val email = "email"
+        val email = walletInfoProvider.getWalletInfo()?.email
         val profileHeader = AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackgroundScaleType(ImageView.ScaleType.FIT_START)

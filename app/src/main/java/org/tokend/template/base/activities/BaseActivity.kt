@@ -6,20 +6,29 @@ import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
 import org.tokend.sdk.api.tfa.TfaCallback
 import org.tokend.sdk.api.tfa.TfaVerifier
 import org.tokend.sdk.federation.NeedTfaException
+import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.base.logic.AppTfaCallback
-import org.tokend.template.base.logic.di.DaggerAppStateComponent
+import org.tokend.template.base.logic.di.providers.AccountProvider
+import org.tokend.template.base.logic.di.providers.ApiProvider
+import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.template.base.tfa.TfaDialogFactory
 import javax.inject.Inject
 
 abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
     @Inject
     lateinit var appTfaCallback: AppTfaCallback
+    @Inject
+    lateinit var accountProvider: AccountProvider
+    @Inject
+    lateinit var apiProvider: ApiProvider
+    @Inject
+    lateinit var walletInfoProvider: WalletInfoProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerAppStateComponent.create().inject(this)
+        (application as App).stateComponent.inject(this)
 
         if (BuildConfig.SECURE_CONTENT) {
             try {
