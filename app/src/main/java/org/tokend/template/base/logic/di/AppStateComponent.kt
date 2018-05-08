@@ -10,7 +10,8 @@ import javax.inject.Singleton
     AccountProviderModule::class,
     WalletInfoProviderModule::class,
     AppTfaCallbackModule::class,
-    ApiProviderModule::class
+    ApiProviderModule::class,
+    RepositoriesModule::class
 ])
 interface AppStateComponent {
     fun inject(baseActivity: BaseActivity)

@@ -1,20 +1,19 @@
 package org.tokend.template.base.logic.repository.base
 
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.CompletableSubject
 
 abstract class SimpleMultipleItemsRepository<T> : MultipleItemsRepository<T>() {
-    private var updateResultSubject: PublishSubject<Boolean>? = null
+    private var updateResultSubject: CompletableSubject? = null
 
     private var updateDisposable: Disposable? = null
-    override fun update(): Observable<Boolean> {
+    override fun update(): Completable {
         return synchronized(this) {
             val resultSubject = updateResultSubject.let {
                 if (it == null) {
-                    val new = PublishSubject.create<Boolean>()
+                    val new = CompletableSubject.create()
                     updateResultSubject = new
                     new
                 } else {
@@ -33,14 +32,11 @@ abstract class SimpleMultipleItemsRepository<T> : MultipleItemsRepository<T>() {
             updateDisposable?.dispose()
             updateDisposable = loadItemsFromDb.andThen(getItems())
                     .subscribeBy(
-                            onNext = { items ->
+                            onSuccess = { items ->
                                 onNewItems(items)
-                            },
-                            onComplete = {
-                                isLoading = false
 
+                                isLoading = false
                                 updateResultSubject = null
-                                resultSubject.onNext(true)
                                 resultSubject.onComplete()
                             },
                             onError = {
@@ -49,7 +45,6 @@ abstract class SimpleMultipleItemsRepository<T> : MultipleItemsRepository<T>() {
 
                                 updateResultSubject = null
                                 resultSubject.onError(it)
-                                resultSubject.onComplete()
                             }
                     )
 

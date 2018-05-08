@@ -1,6 +1,6 @@
 package org.tokend.template.base.logic.repository.base
 
-import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.subjects.BehaviorSubject
 
 /**
@@ -16,7 +16,7 @@ abstract class MultipleItemsRepository<T> : Repository() {
         itemsSubject.onNext(itemsCache.items)
     }
 
-    protected abstract fun getItems(): Observable<List<T>>
+    protected abstract fun getItems(): Single<List<T>>
 
     protected open fun onNewItems(newItems: List<T>) {
         isNeverUpdated = false

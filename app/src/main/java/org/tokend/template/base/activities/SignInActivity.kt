@@ -121,9 +121,13 @@ class SignInActivity : BaseActivity() {
         val email = email_edit_text.text.toString()
         val password = password_edit_text.text.toString()
 
-        SignInManager(
+        val signInManager = SignInManager(
                 apiProvider.getKeyStorage(), walletInfoProvider, accountProvider
-        ).signIn(email, password)
+        )
+
+        signInManager
+                .signIn(email, password)
+                .andThen(signInManager.doPostSignIn(repositoryProvider))
                 .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {

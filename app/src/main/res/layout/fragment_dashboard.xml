@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/colorBackground">
+    android:background="@color/colorBackground"
+    android:orientation="vertical">
 
     <include layout="@layout/appbar" />
 
@@ -49,7 +49,8 @@
                         android:id="@+id/asset_tabs"
                         style="@style/TabPicker"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp" />
 
                     <org.tokend.template.base.view.ContentLoadingProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/activity_progress"

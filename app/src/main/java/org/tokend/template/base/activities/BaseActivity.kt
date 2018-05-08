@@ -11,6 +11,7 @@ import org.tokend.template.BuildConfig
 import org.tokend.template.base.logic.AppTfaCallback
 import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.ApiProvider
+import org.tokend.template.base.logic.di.providers.RepositoryProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.template.base.tfa.TfaDialogFactory
 import javax.inject.Inject
@@ -24,6 +25,8 @@ abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
     lateinit var apiProvider: ApiProvider
     @Inject
     lateinit var walletInfoProvider: WalletInfoProvider
+    @Inject
+    lateinit var repositoryProvider: RepositoryProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
