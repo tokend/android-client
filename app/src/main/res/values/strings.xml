@@ -41,6 +41,7 @@
     </string>
     <string name="resend_letter">Resend letter</string>
     <string name="paste">Paste</string>
+    <string name="no_transaction_history">No transaction history</string>
 
     <string name="dashboard_title">Dashboard</string>
     <string name="wallet_title">Wallet</string>
@@ -56,6 +57,16 @@
     <string name="tx_state_cancelled">Cancelled</string>
     <string name="template_tx_from">From %1$s</string>
     <string name="template_tx_to">To %1$s</string>
+    <string name="tx_action_deposit">Deposit</string>
+    <string name="tx_action_withdrawal">Withdrawal</string>
+    <string name="tx_action_investment">Investment</string>
+    <string name="tx_action_received">Received</string>
+    <string name="tx_action_sent">Sent</string>
+    <string name="tx_action_bought">Bought</string>
+    <string name="tx_action_sold">Sold</string>
+    <string name="tx_action_spent">Spent</string>
+    <string name="template_tx_for">For %1$s</string>
+    <string name="template_tx_in">In %1$s</string>
 
     <string name="settings_account_group">Account</string>
     <string name="settings_security_group">Security</string>

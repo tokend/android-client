@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.TextView
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
-import org.tokend.sdk.api.models.transactions.Transaction
+import org.tokend.sdk.api.models.transactions.TransactionState
 import org.tokend.template.R
 import org.tokend.template.base.view.adapter.base.BaseViewHolder
 import org.tokend.template.base.view.util.AmountFormatter
@@ -40,6 +40,9 @@ class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) 
     }
     private val secondaryTextColor: Int by lazy {
         ContextCompat.getColor(view.context, R.color.secondary_text)
+    }
+    private val errorColor: Int by lazy {
+        ContextCompat.getColor(view.context, R.color.error)
     }
 
     var dividerIsVisible: Boolean = true
@@ -85,17 +88,26 @@ class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) 
     }
 
     private fun displayAction(item: TxHistoryItem) {
-        actionTextView.text = item.action
+        actionTextView.text = LocalizedName(view.context).forTransactionAction(item.action)
     }
 
     private fun displayCounterpartyIfNeeded(item: TxHistoryItem) {
         if (item.counterparty != null) {
             counterpartyTextView.visibility = View.VISIBLE
             counterpartyTextView.text =
-                    if (item.isReceived)
-                        view.context.getString(R.string.template_tx_from, item.counterparty)
-                    else
-                        view.context.getString(R.string.template_tx_to, item.counterparty)
+                    when (item.action) {
+                        TxHistoryItem.Action.SENT,
+                        TxHistoryItem.Action.WITHDRAWAL ->
+                            view.context.getString(R.string.template_tx_to, item.counterparty)
+                        TxHistoryItem.Action.RECEIVED ->
+                            view.context.getString(R.string.template_tx_from, item.counterparty)
+                        TxHistoryItem.Action.SOLD,
+                        TxHistoryItem.Action.BOUGHT ->
+                            view.context.getString(R.string.template_tx_for, item.counterparty)
+                        TxHistoryItem.Action.INVESTMENT ->
+                            view.context.getString(R.string.template_tx_in, item.counterparty)
+                        else -> ""
+                    }
         } else {
             counterpartyTextView.visibility = View.GONE
         }
@@ -103,9 +115,16 @@ class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) 
 
     @SuppressLint("RestrictedApi")
     private fun displayStateIfNeeded(item: TxHistoryItem) {
-        if (item.state != Transaction.PaymentState.SUCCESS) {
+        if (item.state != TransactionState.SUCCESS) {
             extraInfoTextView.visibility = View.VISIBLE
-            extraInfoTextView.text = LocalizedName(view.context).forPaymentState(item.state)
+            extraInfoTextView.text = LocalizedName(view.context).forTransactionState(item.state)
+
+            if (item.state == TransactionState.REJECTED) {
+                extraInfoTextView.textColor = errorColor
+            } else {
+                extraInfoTextView.textColor = secondaryTextColor
+            }
+
             amountTextView.textColor = secondaryTextColor
             iconImageView.supportImageTintList = ColorStateList.valueOf(secondaryTextColor)
             actionTextView.textColor = secondaryTextColor

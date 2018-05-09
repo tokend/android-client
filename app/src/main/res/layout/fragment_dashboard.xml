@@ -125,7 +125,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
-                            android:layout_margin="@dimen/standard_margin"
+                            android:layout_marginTop="@dimen/half_standard_margin"
+                            android:layout_marginBottom="@dimen/half_standard_padding"
+                            android:layout_marginEnd="@dimen/half_standard_padding"
                             android:text="@string/view_more" />
                     </LinearLayout>
                 </LinearLayout>

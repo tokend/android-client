@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
+import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 /**
  * Used to display empty or error state.
@@ -58,7 +59,8 @@ class ErrorEmptyView : LinearLayout {
     }
 
     fun showError(throwable: Throwable, actionButtonClick: (() -> Unit)? = null) {
-        showError(throwable.message, actionButtonClick)
+        showError(ErrorHandlerFactory.getDefault().getErrorMessage(throwable),
+                actionButtonClick)
     }
 
     fun showError(error: String?, actionButtonClick: (() -> Unit)? = null) {
@@ -102,6 +104,8 @@ class ErrorEmptyView : LinearLayout {
                 } else {
                     if (!emptyViewDenial()) {
                         showEmpty(messageProvider())
+                    } else {
+                        hide()
                     }
                 }
             }

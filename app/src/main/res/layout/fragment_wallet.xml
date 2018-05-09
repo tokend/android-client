@@ -32,6 +32,17 @@
                     android:layout_height="match_parent"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+                <org.tokend.template.base.view.TxDateTextSwitcher
+                    android:id="@+id/date_text_switcher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/tx_date_text_switcher_background"
+                    android:measureAllChildren="true"
+                    android:visibility="invisible" />
+
             </RelativeLayout>
 
         </LinearLayout>

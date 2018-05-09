@@ -134,6 +134,10 @@ abstract class RepositoryCache<T> {
         return changesOccurred
     }
 
+    open fun clear() {
+        merge(emptyList())
+    }
+
     protected open fun sortItems() { }
 
     // region Abstract

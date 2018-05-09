@@ -3,17 +3,26 @@ package org.tokend.template.base.fragments
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.collapsing_balance_appbar.*
 import kotlinx.android.synthetic.main.fragment_wallet.*
+import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.template.R
+import org.tokend.template.base.logic.repository.TxRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
+import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
+import org.tokend.template.base.view.adapter.history.TxHistoryItem
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.util.ObservableTransformers
@@ -28,15 +37,22 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     )
 
     private lateinit var balancesRepository: BalancesRepository
+    private val txRepository: TxRepository
+        get() = repositoryProvider.transactions(asset)
 
     private val defaultAsset: String?
         get() = arguments?.getString(ASSET_EXTRA)
+
+    private val needAssetTabs: Boolean
+        get() = true
 
     private var asset: String = ""
         set(value) {
             field = value
             onAssetChanged()
         }
+
+    private val txAdapter = TxHistoryAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +70,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
         initAssetTabs()
         initBalance()
+        initHistory()
         initSwipeRefresh()
 
         subscribeToBalances()
@@ -64,10 +81,56 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         asset_tabs.onItemSelected {
             asset = it
         }
+
+        if (!needAssetTabs) {
+            asset_tabs.visibility = View.GONE
+        } else {
+            asset_tabs.visibility = View.VISIBLE
+
+            val tabsOffset = resources.getDimensionPixelSize(R.dimen.standard_padding)
+            collapsing_toolbar.layoutParams =
+                    collapsing_toolbar.layoutParams.apply {
+                        height -= 2 * tabsOffset
+                    }
+            collapsing_toolbar.expandedTitleMarginBottom -= tabsOffset
+            converted_balance_text_view.layoutParams =
+                    (converted_balance_text_view.layoutParams as FrameLayout.LayoutParams).apply {
+                        setMargins(leftMargin, topMargin, rightMargin,
+                                bottomMargin - tabsOffset)
+                    }
+        }
     }
 
     private fun initBalance() {
         converted_balance_text_view.text = "0 USD"
+    }
+
+    private val hideFabScrollListener =
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                    if (dy > 2) {
+                        send_fab.hide()
+                    } else if (dy < -2 && send_fab.isEnabled) {
+                        send_fab.show()
+                    }
+                }
+            }
+
+    private fun initHistory() {
+        error_empty_view.setPadding(0, 0, 0,
+                resources.getDimensionPixelSize(R.dimen.quadra_margin))
+        error_empty_view.observeAdapter(txAdapter, R.string.no_transaction_history)
+        error_empty_view.setEmptyViewDenial { txRepository.isNeverUpdated }
+
+        history_list.adapter = txAdapter
+        history_list.layoutManager = LinearLayoutManager(context!!)
+        history_list.addOnScrollListener(hideFabScrollListener)
+
+//        date_text_switcher.init(history_list, txAdapter)
+
+        history_list.listenBottomReach({ txAdapter.getDataItemCount() }) {
+            txRepository.loadMore() || txRepository.noMoreItems
+        }
     }
 
     private fun initSwipeRefresh() {
@@ -79,31 +142,86 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     private fun update(force: Boolean = false) {
         if (!force) {
             balancesRepository.updateIfNotFresh()
+            txRepository.updateIfNotFresh()
         } else {
             balancesRepository.update()
+            txRepository.update()
         }
     }
 
     private fun subscribeToBalances() {
         balancesRepository.itemsSubject
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY)
+                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
                     displayAssetTabs(it.map { it.asset })
                     displayBalance()
                 }
         balancesRepository.loadingSubject
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY)
+                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
                     loadingIndicator.setLoading(it, "balances")
                 }
         balancesRepository.errorsSubject
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY)
+                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
                     ErrorHandlerFactory.getDefault().handle(it)
                 }
+    }
+
+    private var transactionsDisposable: Disposable? = null
+    private var transactionsLoadingDisposable: Disposable? = null
+    private var transactionsErrorsDisposable: Disposable? = null
+    private fun subscribeToTransactions() {
+        val contextAccountId = walletInfoProvider.getWalletInfo()?.accountId ?: ""
+        transactionsDisposable?.dispose()
+        transactionsDisposable =
+                txRepository.itemsSubject
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .subscribe {
+                            txAdapter.setData(it.map {
+                                TxHistoryItem.fromTransaction(
+                                        contextAccountId,
+                                        it
+                                )
+                            })
+                        }
+
+        transactionsLoadingDisposable?.dispose()
+        transactionsLoadingDisposable =
+                txRepository.loadingSubject
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .subscribe { loading ->
+                            if (loading) {
+                                if (txRepository.isOnFirstPage) {
+                                    loadingIndicator.show("transactions")
+                                } else {
+                                    txAdapter.showLoadingFooter()
+                                }
+                            } else {
+                                loadingIndicator.hide("transactions")
+                                txAdapter.hideLoadingFooter()
+                            }
+                        }
+
+        transactionsErrorsDisposable?.dispose()
+        transactionsErrorsDisposable =
+                txRepository.errorsSubject
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .subscribe { error ->
+                            if (!txAdapter.hasData) {
+                                error_empty_view.showError(error) {
+                                    update(true)
+                                }
+                            } else {
+                                ErrorHandlerFactory.getDefault().handle(error)
+                            }
+                        }
     }
 
     private fun displayAssetTabs(assets: List<String>) {
@@ -121,6 +239,10 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     private fun onAssetChanged() {
         displayBalance()
+        subscribeToTransactions()
+        date_text_switcher.init(history_list, txAdapter)
+        history_list.scrollToPosition(0)
+        update()
     }
 
     companion object {
