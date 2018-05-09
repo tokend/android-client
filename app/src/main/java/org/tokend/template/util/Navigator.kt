@@ -1,6 +1,8 @@
 package org.tokend.template.util
 
 import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor

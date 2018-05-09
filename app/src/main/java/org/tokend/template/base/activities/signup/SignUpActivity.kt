@@ -136,15 +136,18 @@ class SignUpActivity : RxAppCompatActivity() {
 
     private fun signUp() {
         val email = email_edit_text.text.toString()
-        val password = password_edit_text.text.toString()
+        val passwordLength = password_edit_text.text.length
+        val password = CharArray(passwordLength)
+        password_edit_text.text.getChars(0, passwordLength, password, 0)
 
         var recoverySeed: String? = null
         Single.zip(getRandomAccount(), getRandomAccount(),
                 BiFunction { key1: Account, key2: Account -> Pair(key1, key2) })
                 .flatMapCompletable { (rootAccount, recoveryAccount) ->
-                    recoverySeed = recoveryAccount.secretSeed
+                    recoverySeed = recoveryAccount.secretSeed?.joinToString("")
                     SignUpManager.signUp(email, password, rootAccount, recoveryAccount)
                 }
+                .doOnComplete { password.fill('0') }
                 .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {

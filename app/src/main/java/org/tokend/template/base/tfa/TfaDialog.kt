@@ -88,15 +88,18 @@ abstract class TfaDialog(protected val context: Context,
         return !inputEditText.hasError() && !loadingIndicator.isLoading
     }
 
-    protected open fun getOtp(input: String): String {
-        return input
+    protected open fun getOtp(input: CharArray): String {
+        return input.contentToString()
     }
 
     protected open fun verify() {
         loadingIndicator.show()
 
         doAsync {
-            val otp = getOtp(inputEditText.text.toString().trim())
+            val inputLength = inputEditText.text.length
+            val input = CharArray(inputLength)
+            inputEditText.text.getChars(0, inputLength, input, 0)
+            val otp = getOtp(input)
 
             uiThread {
                 if (!dialog.isShowing) {

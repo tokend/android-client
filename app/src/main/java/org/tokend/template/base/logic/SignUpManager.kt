@@ -21,7 +21,7 @@ object SignUpManager {
         lateinit var loginParams: LoginParamsResponse
     }
 
-    fun signUp(email: String, password: String,
+    fun signUp(email: String, password: CharArray,
                rootAccount: Account, recoveryAccount: Account,
                derivationSalt: ByteArray = SecureRandom.getSeed(SEED_LENGTH)): Completable {
 
@@ -52,7 +52,7 @@ object SignUpManager {
         }.toSingle()
     }
 
-    private fun getWalletKeys(email: String, password: String, kdfAttributes: KdfAttributes)
+    private fun getWalletKeys(email: String, password: CharArray, kdfAttributes: KdfAttributes)
             : Single<Pair<String, ByteArray>> {
         return {
             Pair(

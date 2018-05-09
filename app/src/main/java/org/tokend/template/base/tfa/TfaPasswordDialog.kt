@@ -20,7 +20,7 @@ class TfaPasswordDialog(context: Context, tfaVerifierInterface: TfaVerifier.Inte
         }
     }
 
-    override fun getOtp(input: String): String {
+    override fun getOtp(input: CharArray): String {
         return PasswordTfaOtpGenerator().generate(tfaException, email, input)
     }
 

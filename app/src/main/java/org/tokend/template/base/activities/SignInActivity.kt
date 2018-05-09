@@ -119,7 +119,9 @@ class SignInActivity : BaseActivity() {
 
     private fun signIn() {
         val email = email_edit_text.text.toString()
-        val password = password_edit_text.text.toString()
+        val passwordLength = password_edit_text.text.length
+        val password = CharArray(passwordLength)
+        password_edit_text.text.getChars(0, passwordLength, password, 0)
 
         val signInManager = SignInManager(
                 apiProvider.getKeyStorage(), walletInfoProvider, accountProvider
@@ -127,6 +129,7 @@ class SignInActivity : BaseActivity() {
 
         signInManager
                 .signIn(email, password)
+                .doOnComplete { password.fill('0') }
                 .andThen(signInManager.doPostSignIn(repositoryProvider))
                 .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())

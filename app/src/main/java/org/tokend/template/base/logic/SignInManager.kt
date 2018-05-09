@@ -16,25 +16,26 @@ class SignInManager(
         private val walletInfoProvider: WalletInfoProvider,
         private val accountProvider: AccountProvider) {
     // region Sign in
-    fun signIn(email: String, password: String): Completable {
+    fun signIn(email: String, password: CharArray): Completable {
         return getWalletInfo(email, password)
                 .flatMap { walletInfo ->
                     walletInfoProvider.setWalletInfo(walletInfo)
                     getAccount(walletInfo.secretSeed)
                 }
                 .doOnSuccess { account ->
+                    walletInfoProvider.getWalletInfo()?.secretSeed?.fill('0')
                     accountProvider.setAccount(account)
                 }
                 .toCompletable()
     }
 
-    private fun getWalletInfo(email: String, password: String): Single<WalletInfo> {
+    private fun getWalletInfo(email: String, password: CharArray): Single<WalletInfo> {
         return {
             keyStorage.getWalletInfo(email, password)
         }.toSingle()
     }
 
-    private fun getAccount(seed: String): Single<Account> {
+    private fun getAccount(seed: CharArray): Single<Account> {
         return {
             Account.fromSecretSeed(seed)
         }.toSingle().subscribeOn(Schedulers.computation())
