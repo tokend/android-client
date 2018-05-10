@@ -15,7 +15,8 @@ import org.tokend.template.extensions.toSingle
 class TxRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
-        private val asset: String
+        private val asset: String,
+        private val accountDetailsRepository: AccountDetailsRepository? = null
 ) : PagedDataRepository<Transaction,
         TxRepository.RequestParams>() {
     class RequestParams(val asset: String,
@@ -30,7 +31,7 @@ class TxRepository(
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
-        val accountsToLoad = mutableListOf<String?>()
+        val accountsToLoad = mutableListOf<String>()
         var nextCursor = ""
         var isLast = false
 
@@ -61,6 +62,27 @@ class TxRepository(
                             accountsToLoad.add(transaction.destAccount)
                         }
                     }
+                }
+                .flatMap { transactions ->
+                    accountDetailsRepository
+                            ?.getDetails(accountsToLoad.toList())
+                            ?.onErrorReturnItem(emptyMap())
+                            ?.map { detailsMap ->
+                                transactions.forEach {
+                                    if (it is PaymentTransaction) {
+                                        if (it.isSent(accountId)) {
+                                            it.counterpartyNickname =
+                                                    detailsMap[it.destAccount]?.email
+                                        } else {
+                                            it.counterpartyNickname =
+                                                    detailsMap[it.sourceAccount]?.email
+                                        }
+                                    }
+                                }
+
+                                transactions
+                            }
+                            ?: Single.just(transactions)
                 }
                 .map { DataPage(nextCursor, it, isLast) }
     }
