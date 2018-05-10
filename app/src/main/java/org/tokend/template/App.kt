@@ -4,10 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.support.multidex.MultiDexApplication
+import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatDelegate
 import android.util.Log
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
+import com.franmontiel.persistentcookiejar.cache.CookieCache
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
+import com.franmontiel.persistentcookiejar.persistence.CookiePersistor
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -16,6 +19,7 @@ import io.reactivex.subjects.BehaviorSubject
 import org.tokend.template.base.logic.di.ApiProviderModule
 import org.tokend.template.base.logic.di.AppStateComponent
 import org.tokend.template.base.logic.di.DaggerAppStateComponent
+import org.tokend.template.util.Navigator
 import java.util.*
 
 class App : MultiDexApplication() {
@@ -44,6 +48,9 @@ class App : MultiDexApplication() {
     private var isInForeground = false
     private val goToBackgroundTimer = Timer()
     private var goToBackgroundTask: TimerTask? = null
+
+    private lateinit var cookiePersistor: CookiePersistor
+    private lateinit var cookieCache: CookieCache
 
     lateinit var stateComponent: AppStateComponent
 
@@ -82,18 +89,45 @@ class App : MultiDexApplication() {
             override fun onActivityDestroyed(a: Activity) {}
         })
 
+        initCookies()
         initStateComponent()
     }
 
-    fun initStateComponent() {
-        val cookieJar = PersistentCookieJar(
-                SetCookieCache(), SharedPrefsCookiePersistor(this)
-        )
+    // region State
+    private fun initCookies() {
+        cookiePersistor = SharedPrefsCookiePersistor(this)
+        cookieCache = SetCookieCache()
+    }
+
+    private fun initStateComponent() {
+        val cookieJar = PersistentCookieJar(cookieCache, cookiePersistor)
 
         stateComponent = DaggerAppStateComponent.builder()
                 .apiProviderModule(ApiProviderModule(BuildConfig.API_URL, cookieJar))
                 .build()
     }
+
+    private fun clearState() {
+        initStateComponent()
+    }
+
+    private fun clearCookies() {
+        cookiePersistor.clear()
+        cookieCache.clear()
+    }
+
+    fun signOut(activity: Activity?) {
+        clearCookies()
+        clearState()
+
+        Navigator.toSignIn(this)
+
+        activity?.let {
+            it.setResult(Activity.RESULT_CANCELED, null)
+            ActivityCompat.finishAffinity(it)
+        }
+    }
+    // endregion
 
     // region Background/Foreground state.
     fun setIsInForeground(isInForeground: Boolean) {

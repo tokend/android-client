@@ -1,11 +1,11 @@
 package org.tokend.template.util
 
 import android.app.Activity
-import android.content.Intent
-import android.os.Bundle
+import android.content.Context
 import android.support.v4.app.ActivityCompat
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
 import org.tokend.template.R
 import org.tokend.template.base.activities.MainActivity
@@ -36,6 +36,11 @@ object Navigator {
         activity.startActivity(activity.intentFor<RecoveryActivity>(
                 RecoveryActivity.EMAIL_EXTRA to email
         ))
+    }
+
+    fun toSignIn(context: Context) {
+        context.startActivity(context.intentFor<SignInActivity>()
+                .newTask())
     }
 
     fun toSignIn(activity: Activity) {

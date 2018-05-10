@@ -61,6 +61,8 @@
     <string name="investment_details_title">Investment details</string>
     <string name="template_price_one_for">1 %1$s for %2$s %3$s</string>
     <string name="offer_match_details_title">Offer match details</string>
+    <string name="sign_out_confirmation">Are you sure want to sign out?</string>
+    <string name="yes">Yes</string>
 
     <string name="dashboard_title">Dashboard</string>
     <string name="wallet_title">Wallet</string>

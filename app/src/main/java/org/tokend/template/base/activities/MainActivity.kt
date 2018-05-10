@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
@@ -19,6 +20,7 @@ import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.disposables.Disposable
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
+import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.fragments.WalletFragment
@@ -135,7 +137,11 @@ class MainActivity : BaseActivity() {
     // region Navigation
     private fun onNavigationItemSelected(item: IDrawerItem<Any, RecyclerView.ViewHolder>)
             : Boolean {
-        navigateTo(item.identifier)
+        if (item.identifier == SIGN_OUT) {
+            signOutWithConfirmation()
+        } else {
+            navigateTo(item.identifier)
+        }
         return false
     }
 
@@ -180,6 +186,16 @@ class MainActivity : BaseActivity() {
         }
     }
     // endregion
+
+    private fun signOutWithConfirmation() {
+        AlertDialog.Builder(this, R.style.AlertDialogStyle)
+                .setMessage(R.string.sign_out_confirmation)
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    (application as App).signOut(this)
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+    }
 
     override fun onBackPressed() {
         if (navigationDrawer?.isDrawerOpen == true) {
