@@ -42,6 +42,30 @@
             android:label="@string/save_recovery_seed"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".base.activities.tx_details.PaymentDetailsActivity"
+            android:label="@string/payment_details_title"
+            android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".base.activities.tx_details.UnknownTxDetailsActivity"
+            android:label="@string/transaction_details_title"
+            android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".base.activities.tx_details.DepositDetailsActivity"
+            android:label="@string/deposit_details_title"
+            android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".base.activities.tx_details.WithdrawalDetailsActivity"
+            android:label="@string/withdrawal_details_title"
+            android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".base.activities.tx_details.InvestmentDetailsActivity"
+            android:label="@string/investment_details_title"
+            android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".base.activities.tx_details.OfferMatchDetailsActivity"
+            android:label="@string/offer_match_details_title"
+            android:theme="@style/AppTheme.CardsBackground" />
     </application>
 
 </manifest>

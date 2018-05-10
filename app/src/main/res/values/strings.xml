@@ -42,6 +42,25 @@
     <string name="resend_letter">Resend letter</string>
     <string name="paste">Paste</string>
     <string name="no_transaction_history">No transaction history</string>
+    <string name="date">Date</string>
+    <string name="tx_state">State</string>
+    <string name="payment_details_title">Payment details</string>
+    <string name="paid">Paid</string>
+    <string name="received">Received</string>
+    <string name="sent">Sent</string>
+    <string name="invested">Invested</string>
+    <string name="price">Price</string>
+    <string name="amount_sent">Amount sent</string>
+    <string name="payment_description">Description</string>
+    <string name="transaction_details_title">Transaction details</string>
+    <string name="deposit_details_title">Deposit details</string>
+    <string name="withdrawal_details_title">Withdrawal details</string>
+    <string name="amount">Amount</string>
+    <string name="unknown">Unknown</string>
+    <string name="template_withdrawal_fee_warning">Received amount may be lower due to %1$s fees</string>
+    <string name="investment_details_title">Investment details</string>
+    <string name="template_price_one_for">1 %1$s for %2$s %3$s</string>
+    <string name="offer_match_details_title">Offer match details</string>
 
     <string name="dashboard_title">Dashboard</string>
     <string name="wallet_title">Wallet</string>
@@ -65,6 +84,15 @@
     <string name="tx_action_bought">Bought</string>
     <string name="tx_action_sold">Sold</string>
     <string name="tx_action_spent">Spent</string>
+    <string name="tx_sender">Sender</string>
+    <string name="tx_recipient">Recipient</string>
+    <string name="tx_fee">Fee</string>
+    <string name="tx_fixed_fee">Fixed fee</string>
+    <string name="tx_percent_fee">Percent fee</string>
+    <string name="tx_type">Type</string>
+    <string name="tx_cause">Cause</string>
+    <string name="tx_reference">Reference</string>
+    <string name="tx_withdrawal_destination">Destination address</string>
     <string name="template_tx_for">For %1$s</string>
     <string name="template_tx_in">In %1$s</string>
 

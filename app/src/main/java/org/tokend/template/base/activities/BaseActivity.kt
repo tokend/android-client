@@ -1,6 +1,7 @@
 package org.tokend.template.base.activities
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.WindowManager
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
 import org.tokend.sdk.api.tfa.TfaCallback
@@ -64,5 +65,12 @@ abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
                     ?.show()
                     ?: verifierInterface.cancelVerification()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

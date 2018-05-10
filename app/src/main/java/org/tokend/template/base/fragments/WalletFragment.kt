@@ -18,7 +18,9 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.collapsing_balance_appbar.*
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
+import org.tokend.sdk.api.models.transactions.*
 import org.tokend.template.R
+import org.tokend.template.base.activities.tx_details.*
 import org.tokend.template.base.logic.repository.TxRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
 import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
@@ -117,6 +119,10 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             }
 
     private fun initHistory() {
+        txAdapter.onItemClick { _, item ->
+            item.source?.let { openTransactionDetails(it) }
+        }
+
         error_empty_view.setPadding(0, 0, 0,
                 resources.getDimensionPixelSize(R.dimen.quadra_margin))
         error_empty_view.observeAdapter(txAdapter, R.string.no_transaction_history)
@@ -125,8 +131,6 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         history_list.adapter = txAdapter
         history_list.layoutManager = LinearLayoutManager(context!!)
         history_list.addOnScrollListener(hideFabScrollListener)
-
-//        date_text_switcher.init(history_list, txAdapter)
 
         history_list.listenBottomReach({ txAdapter.getDataItemCount() }) {
             txRepository.loadMore() || txRepository.noMoreItems
@@ -243,6 +247,31 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         date_text_switcher.init(history_list, txAdapter)
         history_list.scrollToPosition(0)
         update()
+    }
+
+    private fun openTransactionDetails(tx: Transaction) {
+        when (tx) {
+            is PaymentTransaction ->
+                TxDetailsActivity
+                        .start<PaymentDetailsActivity, PaymentTransaction>(activity!!, tx)
+            is IssuanceTransaction ->
+                TxDetailsActivity
+                        .start<DepositDetailsActivity, IssuanceTransaction>(activity!!, tx)
+            is WithdrawalTransaction ->
+                TxDetailsActivity
+                        .start<WithdrawalDetailsActivity, WithdrawalTransaction>(activity!!, tx)
+            is InvestmentTransaction ->
+                TxDetailsActivity
+                        .start<InvestmentDetailsActivity, InvestmentTransaction>(activity!!, tx)
+            is MatchTransaction ->
+                TxDetailsActivity
+                        .start<OfferMatchDetailsActivity, MatchTransaction>(activity!!, tx)
+            else ->
+                (tx as? BaseTransaction)?.let {
+                    TxDetailsActivity
+                            .start<UnknownTxDetailsActivity, BaseTransaction>(activity!!, it)
+                }
+        }
     }
 
     companion object {
