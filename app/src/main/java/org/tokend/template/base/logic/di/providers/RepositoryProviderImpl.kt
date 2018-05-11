@@ -1,6 +1,7 @@
 package org.tokend.template.base.logic.di.providers
 
 import org.tokend.template.base.logic.repository.AccountDetailsRepository
+import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.base.logic.repository.TxRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
 
@@ -15,6 +16,9 @@ class RepositoryProviderImpl(
     private val accountDetails: AccountDetailsRepository by lazy {
         AccountDetailsRepository(apiProvider)
     }
+    private val systemInfoRepository: SystemInfoRepository by lazy {
+        SystemInfoRepository(apiProvider.getApi())
+    }
 
     override fun balances(): BalancesRepository {
         return balancesRepository
@@ -28,5 +32,9 @@ class RepositoryProviderImpl(
 
     override fun accountDetails(): AccountDetailsRepository {
         return accountDetails
+    }
+
+    override fun systemInfo(): SystemInfoRepository {
+        return systemInfoRepository
     }
 }

@@ -7,4 +7,5 @@ interface ApiProvider {
     fun getApi(): ApiService
     fun getSignedApi(): ApiService?
     fun getKeyStorage(): KeyStorage
+    fun getSignedKeyStorage(): KeyStorage?
 }

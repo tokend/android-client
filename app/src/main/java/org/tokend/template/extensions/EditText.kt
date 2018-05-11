@@ -1,6 +1,7 @@
 package org.tokend.template.extensions
 
 import android.support.annotation.StringRes
+import android.text.Editable
 import android.widget.EditText
 import org.tokend.template.util.SoftInputUtil
 
@@ -24,4 +25,11 @@ fun EditText.onEditorAction(callback: () -> Unit) {
         callback()
         true
     }
+}
+
+fun Editable.getChars(): CharArray {
+    val textLength = this.length
+    val chars = CharArray(textLength)
+    this.getChars(0, textLength, chars, 0)
+    return chars
 }

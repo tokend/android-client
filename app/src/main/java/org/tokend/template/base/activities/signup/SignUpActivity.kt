@@ -9,7 +9,6 @@ import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.rxkotlin.toSingle
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.browse
@@ -141,11 +140,12 @@ class SignUpActivity : RxAppCompatActivity() {
         password_edit_text.text.getChars(0, passwordLength, password, 0)
 
         var recoverySeed: String? = null
-        Single.zip(getRandomAccount(), getRandomAccount(),
+        Single.zip(SignUpManager.getRandomAccount(), SignUpManager.getRandomAccount(),
                 BiFunction { key1: Account, key2: Account -> Pair(key1, key2) })
                 .flatMapCompletable { (rootAccount, recoveryAccount) ->
                     recoverySeed = recoveryAccount.secretSeed?.joinToString("")
-                    SignUpManager.signUp(email, password, rootAccount, recoveryAccount)
+                    SignUpManager()
+                            .signUp(email, password, rootAccount, recoveryAccount)
                 }
                 .doOnComplete { password.fill('0') }
                 .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
@@ -172,12 +172,6 @@ class SignUpActivity : RxAppCompatActivity() {
                             handleSignUpError(it)
                         }
                 )
-    }
-
-    private fun getRandomAccount(): Single<Account> {
-        return {
-            Account.random()
-        }.toSingle()
     }
 
     private fun handleSignUpError(error: Throwable) {

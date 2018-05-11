@@ -6,7 +6,7 @@ import okhttp3.CookieJar
 import org.tokend.template.base.logic.AppTfaCallback
 import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.ApiProvider
-import org.tokend.template.base.logic.di.providers.ApiProviderImpl
+import org.tokend.template.base.logic.di.providers.ApiProviderFactory
 import javax.inject.Singleton
 
 @Module
@@ -17,6 +17,6 @@ class ApiProviderModule(
     @Singleton
     fun apiProvider(accountProvider: AccountProvider,
                     tfaCallback: AppTfaCallback): ApiProvider {
-        return ApiProviderImpl(url, accountProvider, tfaCallback, cookieJar)
+        return ApiProviderFactory().createApiProvider(url, accountProvider, tfaCallback, cookieJar)
     }
 }

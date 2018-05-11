@@ -32,6 +32,7 @@ class ApiProviderImpl(
     }
 
     private var signedApiByAccountHash: Pair<Int, ApiService>? = null
+    private var signedKeyStorageByAccountHash: Pair<Int, KeyStorage>? = null
 
     override fun getApi(): ApiService {
         return mApi
@@ -57,8 +58,34 @@ class ApiProviderImpl(
         return signedApi
     }
 
+    override fun getSignedKeyStorage(): KeyStorage? {
+        val account = accountProvider.getAccount() ?: return null
+
+        val signedKeyStorage =
+                signedKeyStorageByAccountHash
+                        ?.takeIf { (accountHash, _) ->
+                            accountHash == account.hashCode()
+                        }
+                        ?.second
+                        ?: createSignedKeyStorageWithAccount(account)
+
+        signedKeyStorageByAccountHash = Pair(account.hashCode(), signedKeyStorage)
+
+        return signedKeyStorage
+    }
+
     private fun createSignedApiWithAccount(account: Account): ApiService {
         return ApiFactory.getApiService(url, account.accountId,
+                object : RequestSigner {
+                    override fun signToBase64(data: ByteArray): String {
+                        return account.signDecorated(data).toBase64()
+                    }
+                },
+                tfaCallback, cookieJarProvider)
+    }
+
+    private fun createSignedKeyStorageWithAccount(account: Account): KeyStorage {
+        return KeyStorage(url, account.accountId,
                 object : RequestSigner {
                     override fun signToBase64(data: ByteArray): String {
                         return account.signDecorated(data).toBase64()
