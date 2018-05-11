@@ -78,7 +78,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         subscribeToBalances()
     }
 
-    // region init
+    // region Init
     private fun initAssetTabs() {
         asset_tabs.onItemSelected {
             asset = it
@@ -143,16 +143,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     }
     // endregion
 
-    private fun update(force: Boolean = false) {
-        if (!force) {
-            balancesRepository.updateIfNotFresh()
-            txRepository.updateIfNotFresh()
-        } else {
-            balancesRepository.update()
-            txRepository.update()
-        }
-    }
-
+    // region Subscriptions
     private fun subscribeToBalances() {
         balancesRepository.itemsSubject
                 .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
@@ -227,7 +218,9 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                             }
                         }
     }
+    // endregion
 
+    // region Display
     private fun displayAssetTabs(assets: List<String>) {
         asset_tabs.setItems(assets, true)
     }
@@ -239,6 +232,17 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                     collapsing_toolbar.title = AmountFormatter.formatAssetAmount(balanceItem.balance, asset) +
                             " $asset"
                 }
+    }
+    // endregion
+
+    private fun update(force: Boolean = false) {
+        if (!force) {
+            balancesRepository.updateIfNotFresh()
+            txRepository.updateIfNotFresh()
+        } else {
+            balancesRepository.update()
+            txRepository.update()
+        }
     }
 
     private fun onAssetChanged() {

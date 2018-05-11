@@ -115,6 +115,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     }
     // endregion
 
+    // region Subscriptions
     private fun subscribeToBalances() {
         balancesRepository.itemsSubject
                 .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
@@ -170,7 +171,9 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                             }
                         }
     }
+    // endregion
 
+    // region Display
     private fun displayAssetTabs(assets: List<String>) {
         asset_tabs.setItems(assets, true)
     }
@@ -184,6 +187,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                     ) + " $asset"
                 }
     }
+    // endregion
 
     private fun update() {
         balancesRepository.updateIfNotFresh()
