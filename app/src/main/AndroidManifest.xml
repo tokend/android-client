@@ -40,8 +40,8 @@
         <activity
             android:name=".base.activities.signup.RecoverySeedActivity"
             android:label="@string/save_recovery_seed"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".base.activities.tx_details.PaymentDetailsActivity"
             android:label="@string/payment_details_title"
@@ -66,6 +66,10 @@
             android:name=".base.activities.tx_details.OfferMatchDetailsActivity"
             android:label="@string/offer_match_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".base.activities.ChangePasswordActivity"
+            android:label="@string/change_password_title"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

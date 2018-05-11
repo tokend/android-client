@@ -34,6 +34,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         super.reloadPreferences()
 
         initAccountCategory()
+        initSecurityCategory()
     }
 
     // region Account
@@ -45,7 +46,8 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun initAccountIdItem() {
         val accountIdPreference = findPreference("account_id")
         accountIdPreference?.setOnPreferenceClickListener {
-            val accountId = "account id"
+            val accountId = walletInfoProvider.getWalletInfo()?.accountId
+                    ?: getString(R.string.error_try_again)
             activity?.let { parentActivity ->
                 Navigator.openQrShare(parentActivity,
                         data = accountId,
@@ -62,6 +64,23 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         val kycPreference = findPreference("kyc")
         kycPreference?.setOnPreferenceClickListener {
             activity?.browse(BuildConfig.WEB_CLIENT_URL, true)
+            true
+        }
+    }
+    // endregion
+
+    // region Security
+    private fun initSecurityCategory() {
+        initChangePasswordItem()
+    }
+
+    private fun initChangePasswordItem() {
+        val changePasswordPreference = findPreference("change_password")
+        changePasswordPreference?.setOnPreferenceClickListener {
+            activity?.let { parentActivity ->
+                Navigator.openPasswordChange(parentActivity, 3597)
+            }
+
             true
         }
     }

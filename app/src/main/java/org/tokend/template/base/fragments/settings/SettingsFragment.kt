@@ -5,10 +5,21 @@ import android.os.Bundle
 import android.support.v7.preference.ListPreference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.view.View
+import org.tokend.template.App
 import org.tokend.template.R
+import org.tokend.template.base.logic.di.providers.RepositoryProvider
+import org.tokend.template.base.logic.di.providers.WalletInfoProvider
+import javax.inject.Inject
 
 abstract class SettingsFragment : PreferenceFragmentCompat(),
         SharedPreferences.OnSharedPreferenceChangeListener {
+    @Inject
+    lateinit var walletInfoProvider: WalletInfoProvider
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (activity?.application as? App)?.stateComponent?.inject(this)
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         reloadPreferences()

@@ -8,6 +8,7 @@ import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
 import org.tokend.template.R
+import org.tokend.template.base.activities.ChangePasswordActivity
 import org.tokend.template.base.activities.MainActivity
 import org.tokend.template.base.activities.RecoveryActivity
 import org.tokend.template.base.activities.SignInActivity
@@ -72,5 +73,10 @@ object Navigator {
         activity.startActivityForResult(activity.intentFor<RecoverySeedActivity>(
                 RecoverySeedActivity.SEED_EXTRA to seed
         ), requestCode)
+    }
+    
+    fun openPasswordChange(activity: Activity, requestCode: Int) {
+        activity.startActivityForResult(activity.intentFor<ChangePasswordActivity>(),
+                requestCode)
     }
 }

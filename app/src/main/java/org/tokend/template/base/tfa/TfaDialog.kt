@@ -20,7 +20,8 @@ import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 abstract class TfaDialog(protected val context: Context,
-                         private val tfaVerifierInterface: TfaVerifier.Interface) {
+                         private val tfaVerifierInterface: TfaVerifier.Interface
+) {
     protected val inputEditText: MaterialEditText
     protected val messageTextView: TextView
     protected lateinit var progress: ProgressBar
@@ -89,7 +90,7 @@ abstract class TfaDialog(protected val context: Context,
     }
 
     protected open fun getOtp(input: CharArray): String {
-        return input.contentToString()
+        return input.joinToString("")
     }
 
     protected open fun verify() {

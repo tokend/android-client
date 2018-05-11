@@ -13,8 +13,14 @@ class PasswordTfaOtpGenerator() {
                 256, 4096, 1, 8, tfaException.salt)
         val key = KeyStorage.getWalletKey(email, password, kdfAttributes)
         val keychainData = KeychainData.fromRawString(tfaException.keychainData)
-        val seed = KeyStorage.decryptSecretSeed(keychainData.iv, keychainData.cipherText, key)
-        key.fill(0)
+        val seed = try {
+            KeyStorage.decryptSecretSeed(keychainData.iv, keychainData.cipherText, key)
+        } catch (e: Exception) {
+            return ""
+        } finally {
+            key.fill(0)
+        }
+
         val account = Account.Companion.fromSecretSeed(seed)
         seed.fill('0')
         val signature = account.sign(tfaException.token.toByteArray())

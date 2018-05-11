@@ -64,6 +64,8 @@
     <string name="sign_out_confirmation">Are you sure want to sign out?</string>
     <string name="yes">Yes</string>
     <string name="password_was_changed">Password was successfully changed</string>
+    <string name="change_password_action">Change</string>
+    <string name="current_password">Current password</string>
 
     <string name="dashboard_title">Dashboard</string>
     <string name="wallet_title">Wallet</string>

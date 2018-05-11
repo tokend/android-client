@@ -5,13 +5,12 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import org.tokend.sdk.api.ApiService
+import org.spongycastle.util.encoders.Base64
 import org.tokend.sdk.api.models.WalletData
 import org.tokend.sdk.api.requests.DataEntity
 import org.tokend.sdk.api.responses.AccountResponse
-import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.base.logic.di.providers.ApiProviderFactory
+import org.tokend.template.base.logic.di.providers.*
 import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.extensions.toSingle
 import org.tokend.wallet.*
@@ -27,62 +26,93 @@ class WalletPasswordManager(
     fun restore(email: String, recoverySeed: CharArray,
                 newAccount: Account, newPassword: CharArray): Completable {
         val data = object {
-            lateinit var account: Account
-            lateinit var signedKeyStorage: KeyStorage
-            lateinit var signedApi: ApiService
-            lateinit var walletManager: WalletManager
-            lateinit var wallet: WalletInfo
+            lateinit var accountProvider: AccountProvider
+            lateinit var apiProvider: ApiProvider
         }
 
         return createAccountFromSeed(recoverySeed)
                 // Create API provider for recovery account.
                 .map { account ->
-                    data.account = account
-                    ApiProviderFactory().createApiProvider(account)
+                    data.accountProvider = AccountProviderFactory().createAccountProvider(account)
+                    ApiProviderFactory().createApiProvider(data.accountProvider)
                 }
                 // Create WalletManager signed with recovery account.
                 .map { apiProvider ->
-                    data.signedKeyStorage = apiProvider.getSignedKeyStorage()
+                    data.apiProvider = apiProvider
+                    val signedKeyStorage = apiProvider.getSignedKeyStorage()
                             ?: throw IllegalStateException("Cannot obtain signed KeyStorage")
-                    data.signedApi = apiProvider.getSignedApi()
-                            ?: throw IllegalStateException("Cannot obtain signed API")
-
-                    WalletManager(data.signedKeyStorage)
+                    WalletManager(signedKeyStorage)
                 }
                 // Get info for wallet to recover.
                 .flatMap { walletManager ->
-                    data.walletManager = walletManager
                     walletManager.getWalletInfo(email, recoverySeed, true)
                 }
-                // Simultaneously get network params and original account signers.
-                .flatMap { wallet ->
-                    data.wallet = wallet
-                    Single.zip(
-                            systemInfoRepository.getNetworkParams(),
-                            data.signedApi.getAccountSigners(wallet.accountId)
-                                    .toSingle()
-                                    .map { it.signers ?: emptyList() }
-                                    .onErrorResumeNext { error ->
-                                        // When account is not yet exists return empty signers list.
-                                        return@onErrorResumeNext if (error is HttpException
-                                                && error.code() == HttpURLConnection.HTTP_NOT_FOUND) {
-                                            Single.just(emptyList())
-                                        } else {
-                                            Single.error(error)
-                                        }
-                                    },
-
-                            BiFunction { t1: NetworkParams, t2: Collection<AccountResponse.Signer> ->
-                                Pair(t1, t2)
-                            }
+                // Update wallet with new password.
+                .flatMapCompletable { wallet ->
+                    updateWalletWithNewPassword(
+                            data.apiProvider,
+                            data.accountProvider,
+                            WalletInfoProviderFactory().createWalletInfoProvider(wallet),
+                            newAccount,
+                            newPassword
                     )
                 }
+    }
+
+    fun changePassword(apiProvider: ApiProvider, accountProvider: AccountProvider,
+                       walletInfoProvider: WalletInfoProvider,
+                       newAccount: Account, newPassword: CharArray): Completable {
+        return updateWalletWithNewPassword(apiProvider, accountProvider, walletInfoProvider,
+                newAccount, newPassword)
+    }
+
+    private fun updateWalletWithNewPassword(apiProvider: ApiProvider,
+                                            accountProvider: AccountProvider,
+                                            walletInfoProvider: WalletInfoProvider,
+                                            newAccount: Account,
+                                            newPassword: CharArray): Completable {
+        val account = accountProvider.getAccount()
+                ?: return Completable.error(IllegalStateException("Cannot obtain current account"))
+        val wallet = walletInfoProvider.getWalletInfo()
+                ?: return Completable.error(IllegalStateException("Cannot obtain current wallet"))
+        val signedKeyStorage = apiProvider.getSignedKeyStorage()
+                ?: return Completable.error(IllegalStateException("Cannot obtain signed KeyStorage"))
+        val signedApi = apiProvider.getSignedApi()
+                ?: return Completable.error(IllegalStateException("Cannot obtain signed API"))
+        val walletManager = WalletManager(signedKeyStorage)
+
+        val data = object {
+            lateinit var newSalt: String
+            lateinit var newWalletId: String
+        }
+
+        // Simultaneously get network params and original account signers.
+        return Single.zip(
+                systemInfoRepository.getNetworkParams(),
+
+                signedApi.getAccountSigners(wallet.accountId)
+                        .toSingle()
+                        .map { it.signers ?: emptyList() }
+                        .onErrorResumeNext { error ->
+                            // When account is not yet exists return empty signers list.
+                            return@onErrorResumeNext if (error is HttpException
+                                    && error.code() == HttpURLConnection.HTTP_NOT_FOUND) {
+                                Single.just(emptyList())
+                            } else {
+                                Single.error(error)
+                            }
+                        },
+
+                BiFunction { t1: NetworkParams, t2: Collection<AccountResponse.Signer> ->
+                    Pair(t1, t2)
+                }
+        )
                 // Create new wallet with signers update transaction inside.
                 .flatMap { (netParams, signers) ->
                     createWalletForPasswordChange(
                             networkParams = netParams,
-                            currentWallet = data.wallet,
-                            currentAccount = data.account,
+                            currentWallet = wallet,
+                            currentAccount = account,
                             currentSigners = signers,
                             newAccount = newAccount,
                             newPassword = newPassword
@@ -90,8 +120,18 @@ class WalletPasswordManager(
                 }
                 // Update current wallet with it.
                 .flatMapCompletable { newWallet ->
-                    data.walletManager.updateWallet(data.wallet.walletIdHex,
-                            newWallet)
+                    data.newSalt = newWallet.attributes?.salt ?: ""
+                    data.newWalletId = newWallet.id ?: ""
+                    walletManager.updateWallet(wallet.walletIdHex, newWallet)
+                }
+                // Update current credentials.
+                .doOnComplete {
+                    walletInfoProvider.getWalletInfo()?.apply {
+                        loginParams.kdfAttributes.encodedSalt =
+                                Base64.toBase64String(data.newSalt.toByteArray())
+                        walletIdHex = data.newWalletId
+                    }
+                    accountProvider.setAccount(newAccount)
                 }
     }
 
