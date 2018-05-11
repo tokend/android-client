@@ -1,4 +1,4 @@
-package org.tokend.template.base.logic.repository
+package org.tokend.template.base.logic.repository.transactions
 
 import io.reactivex.Single
 import org.tokend.sdk.api.models.transactions.PaymentTransaction
@@ -6,6 +6,7 @@ import org.tokend.sdk.api.models.transactions.Transaction
 import org.tokend.sdk.utils.PaymentRecordConverter
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
+import org.tokend.template.base.logic.repository.AccountDetailsRepository
 import org.tokend.template.base.logic.repository.base.pagination.DataPage
 import org.tokend.template.base.logic.repository.base.pagination.PageParams
 import org.tokend.template.base.logic.repository.base.pagination.PagedDataRepository

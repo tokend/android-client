@@ -1,4 +1,4 @@
-package org.tokend.template.base.logic.repository
+package org.tokend.template.base.logic.repository.transactions
 
 import io.reactivex.Single
 import org.tokend.sdk.api.models.transactions.Transaction

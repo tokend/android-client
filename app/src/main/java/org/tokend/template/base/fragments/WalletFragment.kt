@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.sdk.api.models.transactions.*
 import org.tokend.template.R
 import org.tokend.template.base.activities.tx_details.*
-import org.tokend.template.base.logic.repository.TxRepository
+import org.tokend.template.base.logic.repository.transactions.TxRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
 import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
