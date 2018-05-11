@@ -25,6 +25,8 @@ import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import org.tokend.wallet.Base32Check
 
 class RecoveryActivity : BaseActivity() {
+    override val allowUnauthorized = true
+
     companion object {
         const val EMAIL_EXTRA = "email"
     }

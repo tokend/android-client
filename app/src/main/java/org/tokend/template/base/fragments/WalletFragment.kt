@@ -66,8 +66,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         return inflater.inflate(R.layout.fragment_wallet, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onInitAllowed() {
         toolbarSubject.onNext(toolbar)
 
         initAssetTabs()

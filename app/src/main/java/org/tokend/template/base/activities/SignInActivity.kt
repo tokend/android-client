@@ -31,6 +31,8 @@ import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 class SignInActivity : BaseActivity() {
+    override val allowUnauthorized = true
+
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress.show() },
             hideLoading = { progress.hide() }

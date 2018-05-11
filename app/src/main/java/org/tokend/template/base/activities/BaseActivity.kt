@@ -29,21 +29,27 @@ abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
     @Inject
     lateinit var repositoryProvider: RepositoryProvider
 
+    protected open val allowUnauthorized = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        (application as App).stateComponent.inject(this)
+        (application as? App)?.stateComponent?.inject(this)
 
         if (BuildConfig.SECURE_CONTENT) {
             try {
                 window.setFlags(WindowManager.LayoutParams.FLAG_SECURE,
                         WindowManager.LayoutParams.FLAG_SECURE)
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
 
-        onCreateAllowed(savedInstanceState)
+        if (accountProvider.getAccount() != null || allowUnauthorized) {
+            onCreateAllowed(savedInstanceState)
+        } else {
+            (application as? App)?.signOut(this)
+        }
     }
 
     abstract fun onCreateAllowed(savedInstanceState: Bundle?)

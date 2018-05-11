@@ -58,8 +58,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         return inflater.inflate(R.layout.fragment_dashboard, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onInitAllowed() {
         toolbarSubject.onNext(toolbar)
 
         toolbar.title = getString(R.string.dashboard_title)

@@ -1,6 +1,7 @@
 package org.tokend.template.base.fragments
 
 import android.os.Bundle
+import android.view.View
 import com.trello.rxlifecycle2.components.support.RxFragment
 import org.tokend.template.App
 import org.tokend.template.base.logic.AppTfaCallback
@@ -26,4 +27,13 @@ abstract class BaseFragment: RxFragment() {
         super.onCreate(savedInstanceState)
         (activity?.application as? App)?.stateComponent?.inject(this)
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState == null) {
+            onInitAllowed()
+        }
+    }
+
+    abstract fun onInitAllowed()
 }
