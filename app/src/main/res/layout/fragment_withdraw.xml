@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardUseCompatPadding="false">
+
+        <TextView
+            android:id="@+id/balance_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            tools:text="Balance: 101 BTC"/>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        app:cardUseCompatPadding="false">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/amount_edit_text"
+                style="@style/EditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:gravity="right"
+                android:hint="@string/amount_label"
+                android:inputType="numberDecimal"
+                app:layout_constraintEnd_toStartOf="@+id/currency_spinner"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/currency_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="6dp"
+                android:entries="@array/currencies"
+                android:spinnerMode="dropdown"
+                app:layout_constraintBottom_toBottomOf="@+id/amount_edit_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/amount_edit_text" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/address_edit_text"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:hint="@string/address_label"
+                android:inputType="textNoSuggestions"
+                android:paddingEnd="42dp"
+                android:paddingRight="42dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/amount_edit_text" />
+
+            <ImageView
+                android:id="@+id/scan_qr_btn"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                app:layout_constraintBottom_toBottomOf="@+id/address_edit_text"
+                app:layout_constraintEnd_toEndOf="@+id/address_edit_text"
+                app:layout_constraintTop_toTopOf="@+id/address_edit_text"
+                app:srcCompat="@drawable/ic_qr_code_scan" />
+
+            <Button
+                android:id="@+id/go_to_confirmation"
+                style="@style/PrimaryButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/go_to_confirmation_btn_label"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/address_edit_text" />
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+</android.support.constraint.ConstraintLayout>
