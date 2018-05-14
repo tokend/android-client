@@ -67,7 +67,8 @@ abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
     override fun onTfaRequired(exception: NeedTfaException,
                                verifierInterface: TfaVerifier.Interface) {
         runOnUiThread {
-            TfaDialogFactory(this).getForException(exception, verifierInterface)
+            val email = walletInfoProvider.getWalletInfo()?.email
+            TfaDialogFactory(this).getForException(exception, verifierInterface, email)
                     ?.show()
                     ?: verifierInterface.cancelVerification()
         }

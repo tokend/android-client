@@ -14,7 +14,7 @@ class TfaPasswordDialog(context: Context, tfaVerifierInterface: TfaVerifier.Inte
         super.beforeDialogShow()
 
         inputEditText.apply {
-            inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             floatingLabelText = context.getString(R.string.password)
             hint = context.getString(R.string.password)
         }

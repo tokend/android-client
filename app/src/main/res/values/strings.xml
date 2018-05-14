@@ -66,6 +66,8 @@
     <string name="password_was_changed">Password was successfully changed</string>
     <string name="change_password_action">Change</string>
     <string name="current_password">Current password</string>
+    <string name="open_action">Open</string>
+    <string name="copy_action">Copy</string>
 
     <string name="dashboard_title">Dashboard</string>
     <string name="wallet_title">Wallet</string>
@@ -128,4 +130,9 @@
     <string name="totp_verification_code">Verification code</string>
     <string name="error_invalid_totp_code">Invalid code</string>
     <string name="enter_your_password">Enter your password</string>
+    <string name="tfa_add_dialog_title">Set up 2FA</string>
+    <string name="template_tfa_add_dialog_message">To enable Two-factor authentication
+        open Google Authenticator or similar app with the button below or
+        copy and manually enter this key:\n\n%1$s</string>
+    <string name="tfa_key_copied">Key has been copied to the clipboard</string>
 </resources>

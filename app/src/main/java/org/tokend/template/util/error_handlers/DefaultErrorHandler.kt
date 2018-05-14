@@ -3,8 +3,8 @@ package org.tokend.template.util.error_handlers
 import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.util.ToastManager
-import retrofit2.HttpException
 import java.io.IOException
+import java.io.InterruptedIOException
 import java.util.concurrent.CancellationException
 
 open class DefaultErrorHandler : ErrorHandler {
@@ -30,9 +30,9 @@ open class DefaultErrorHandler : ErrorHandler {
      */
     override fun getErrorMessage(error: Throwable): String? {
         return when (error) {
-            is CancellationException ->
+            is CancellationException, is InterruptedIOException ->
                 null
-            is IOException, is HttpException ->
+            is IOException ->
                 App.context.getString(R.string.error_connection_try_again)
             else -> {
                 App.context.getString(R.string.error_try_again)

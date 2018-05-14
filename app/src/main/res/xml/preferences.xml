@@ -25,10 +25,10 @@
         android:title="@string/settings_security_group">
 
         <android.support.v7.preference.SwitchPreferenceCompat
-            android:defaultValue="false"
             android:icon="@drawable/ic_security"
             android:key="tfa"
             android:layout="@layout/preference_layout"
+            android:persistent="false"
             android:title="@string/tfa_title" />
 
         <android.support.v7.preference.SwitchPreferenceCompat

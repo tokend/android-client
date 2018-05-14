@@ -15,15 +15,17 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
         SharedPreferences.OnSharedPreferenceChangeListener {
     @Inject
     lateinit var walletInfoProvider: WalletInfoProvider
+    @Inject
+    lateinit var repositoryProvider: RepositoryProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity?.application as? App)?.stateComponent?.inject(this)
-    }
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         reloadPreferences()
     }
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {}
 
     protected open fun reloadPreferences() {
         preferenceScreen = null
