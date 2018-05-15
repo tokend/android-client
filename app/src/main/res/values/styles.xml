@@ -54,6 +54,10 @@
         <item name="android:textColor">@color/secondary_text</item>
     </style>
 
+    <style name="DialogButton" parent="SecondaryButton">
+        <item name="android:textColor">@color/primary_action</item>
+    </style>
+
     <style name="PrimaryActionTextView">
         <item name="android:textColor">@color/primary_action</item>
     </style>

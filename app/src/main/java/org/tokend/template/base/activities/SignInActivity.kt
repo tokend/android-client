@@ -56,11 +56,13 @@ class SignInActivity : BaseActivity() {
                 ColorDrawable(ContextCompat.getColor(this, R.color.white)))
         setTitle(R.string.sign_in)
 
-        initVersion()
-        initFields()
-        initButtons()
+        Navigator.toMainActivity(this)
 
-        canSignIn = false
+//        initVersion()
+//        initFields()
+//        initButtons()
+//
+//        canSignIn = false
     }
 
     // region Init

@@ -152,4 +152,8 @@
     <string name="to_make_deposit_send_asset">To make a deposit send %1$s to this address</string>
     <string name="share_label">share</string>
     <string name="show_qr_label">Show QR code</string>
+
+    <!-- Trade -->
+    <string name="add_order_title">Add order</string>
+
 </resources>

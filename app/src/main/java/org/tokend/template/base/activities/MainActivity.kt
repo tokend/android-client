@@ -26,6 +26,7 @@ import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.fragments.settings.GeneralSettingsFragment
 import org.tokend.template.features.dashboard.DashboardFragment
+import org.tokend.template.features.trade.TradeFragment
 
 class MainActivity : BaseActivity() {
     companion object {
@@ -150,6 +151,7 @@ class MainActivity : BaseActivity() {
             DASHBOARD -> displayFragment(getDashboardFragment())
             WALLET -> displayFragment(getWalletFragment())
             SETTINGS -> displayFragment(getSettingsFragment())
+            TRADE -> displayFragment(getTradeFragment())
         }
     }
     // endregion
@@ -165,6 +167,10 @@ class MainActivity : BaseActivity() {
 
     private fun getSettingsFragment(): Fragment {
         return GeneralSettingsFragment()
+    }
+
+    private fun getTradeFragment(): Fragment {
+        return TradeFragment()
     }
 
     private var fragmentToolbarDisposable: Disposable? = null

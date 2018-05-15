@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/add_order"
+        android:title="@string/add_order_title"
+        android:icon="@drawable/ic_plus_white"
+        app:showAsAction="always"/>
+
+</menu>

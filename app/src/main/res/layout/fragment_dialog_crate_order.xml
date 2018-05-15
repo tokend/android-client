@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="Add order"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/price_edit_text"
+        style="@style/EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:hint="Price"
+        android:inputType="numberDecimal"
+        android:lines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_text_view"/>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/amount_edit_text"
+        style="@style/EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:hint="Amount"
+        android:inputType="numberDecimal"
+        android:lines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/price_edit_text" />
+
+    <TextView
+        android:id="@+id/total_title_text_view"
+        style="@style/SecondaryText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="Total:"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/total_amount_text_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/total_amount_text_view" />
+
+    <TextView
+        android:id="@+id/total_amount_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="0.000000"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/total_title_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/amount_edit_text" />
+
+    <Button
+        android:id="@+id/buy_btn"
+        style="@style/DialogButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:text="BUY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/total_amount_text_view"
+        android:enabled="false"/>
+
+    <Button
+        android:id="@+id/sell_btn"
+        style="@style/DialogButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:enabled="false"
+        android:text="SELL"
+        app:layout_constraintEnd_toStartOf="@id/buy_btn"
+        app:layout_constraintTop_toBottomOf="@id/total_amount_text_view" />
+
+    <Button
+        android:id="@+id/cancel_btn"
+        style="@style/DialogButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="CANCEL"
+        app:layout_constraintEnd_toStartOf="@+id/sell_btn"
+        app:layout_constraintTop_toBottomOf="@+id/total_amount_text_view" />
+
+</android.support.constraint.ConstraintLayout>
