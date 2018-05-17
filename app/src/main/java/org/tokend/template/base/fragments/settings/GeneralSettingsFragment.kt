@@ -33,7 +33,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     override fun getScreenKey(): String? = null
 
-    private val TFA_BACKEND_TYPE = TfaBackend.TYPE_TOTP
+    private val TFA_BACKEND_TYPE = TfaBackend.Type.TOTP
 
     private val tfaRepository: TfaBackendsRepository
         get() = repositoryProvider.tfaBackends()

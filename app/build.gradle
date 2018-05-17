@@ -57,7 +57,7 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.13'
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
-    implementation "org.tokend:sdk:0.57"
+    implementation "org.tokend:sdk:0.58"
     implementation "org.tokend:wallet:1.0.3"
 
     implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'
@@ -70,6 +70,9 @@ dependencies {
     implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.1.1'
     implementation 'com.jakewharton.rxbinding2:rxbinding-support-v4:2.1.1'
     implementation 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1'
+
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
 
     implementation 'com.android.support:support-v4:27.1.1'
     testImplementation 'junit:junit:4.12'

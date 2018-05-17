@@ -31,13 +31,13 @@ class TfaBackendsRepository(
                 .map { it.data }
     }
 
-    fun addBackend(type: String): Single<TfaBackend> {
+    fun addBackend(type: TfaBackend.Type): Single<TfaBackend> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
-        return signedApi.createTfaBackend(walletId, DataEntity(CreateTfaRequestBody(type)))
+        return signedApi.createTfaBackend(walletId, DataEntity(CreateTfaRequestBody(type.literal)))
                 .toSingle()
                 .map {
                     it.data ?: throw IllegalStateException("Unable to get added TFA backend")
@@ -107,7 +107,7 @@ class TfaBackendsRepository(
                 .doOnTerminate { isLoading = false }
     }
 
-    fun getBackendByType(type: String): Maybe<TfaBackend> {
+    fun getBackendByType(type: TfaBackend.Type): Maybe<TfaBackend> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Maybe.error(IllegalStateException("No signed API instance found"))
         val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex

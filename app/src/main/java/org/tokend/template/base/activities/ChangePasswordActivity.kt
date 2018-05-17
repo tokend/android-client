@@ -168,7 +168,7 @@ class ChangePasswordActivity : BaseActivity() {
     override fun onTfaRequired(exception: NeedTfaException,
                                verifierInterface: TfaVerifier.Interface) {
         when (exception.backendType) {
-            TfaBackend.TYPE_PASSWORD -> verifyPasswordTfaSilently(exception, verifierInterface)
+            TfaBackend.Type.PASSWORD -> verifyPasswordTfaSilently(exception, verifierInterface)
             else -> super.onTfaRequired(exception, verifierInterface)
         }
     }

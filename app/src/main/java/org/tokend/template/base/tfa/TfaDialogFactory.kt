@@ -11,14 +11,14 @@ class TfaDialogFactory(private val context: Context) {
                         verifierInterface: TfaVerifier.Interface,
                         email: String? = null): TfaDialog? {
         return when (tfaException.backendType) {
-            TfaBackend.TYPE_PASSWORD -> {
+            TfaBackend.Type.PASSWORD -> {
                 if (email != null)
                     TfaPasswordDialog(context, verifierInterface,
                             tfaException, email)
                 else
                     null
             }
-            TfaBackend.TYPE_TOTP -> TfaTotpDialog(context, verifierInterface)
+            TfaBackend.Type.TOTP -> TfaTotpDialog(context, verifierInterface)
             else -> null
         }
     }
