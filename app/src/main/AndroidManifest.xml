@@ -73,7 +73,10 @@
         <activity
             android:name=".features.withdraw.WithdrawalConfirmationActivity"
             android:label="@string/withdrawal_confirmation_title"
-            android:theme="@style/AppTheme.CardsBackground"/>
+            android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".features.explore.AssetDetailsActivity"
+            android:theme="@style/AppTheme.CardsBackground" />
     </application>
 
 </manifest>

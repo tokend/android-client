@@ -44,4 +44,6 @@
     <dimen name="tx_list_item_height">83dp</dimen>
 
     <dimen name="spinner_arrow_align_margin">-8dp</dimen>
+
+    <dimen name="asset_list_item_logo_size">56dp</dimen>
 </resources>

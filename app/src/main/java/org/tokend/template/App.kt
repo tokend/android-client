@@ -15,6 +15,8 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
+import com.jakewharton.picasso.OkHttp3Downloader
+import com.squareup.picasso.Picasso
 import io.reactivex.subjects.BehaviorSubject
 import org.tokend.template.base.logic.di.ApiProviderModule
 import org.tokend.template.base.logic.di.AppStateComponent
@@ -25,6 +27,7 @@ import java.util.*
 class App : MultiDexApplication() {
     companion object {
         private const val GO_TO_BACKGROUND_TIMEOUT = 2000
+        private const val IMAGE_CACHE_SIZE_MB = 8L
         private const val LOG_TAG = "TokenD App"
 
         private var _context: Context? = null
@@ -91,6 +94,15 @@ class App : MultiDexApplication() {
 
         initCookies()
         initStateComponent()
+        initPicasso()
+    }
+
+    private fun initPicasso() {
+        val picasso = Picasso.Builder(this)
+                .downloader(OkHttp3Downloader(cacheDir,
+                        IMAGE_CACHE_SIZE_MB * 1024 * 1024))
+                .build()
+        Picasso.setSingletonInstance(picasso)
     }
 
     // region State

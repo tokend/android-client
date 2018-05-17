@@ -1,5 +1,6 @@
 package org.tokend.template.base.activities
 
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.WindowManager
@@ -49,6 +50,14 @@ abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
             onCreateAllowed(savedInstanceState)
         } else {
             (application as? App)?.signOut(this)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val enterTransition = window?.enterTransition
+            if (enterTransition != null) {
+                enterTransition.excludeTarget(android.R.id.statusBarBackground, true)
+                enterTransition.excludeTarget(android.R.id.navigationBarBackground, true)
+            }
         }
     }
 

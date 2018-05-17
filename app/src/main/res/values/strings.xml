@@ -74,12 +74,26 @@
     <string name="confirm_action">Confirm</string>
     <string name="processing_progress">Processing…</string>\
     <string name="withdrawal_request_created">Withdrawal request created</string>
+    <string name="details">Details</string>
+    <string name="create_balance_action">Create balance</string>
+    <string name="view_asset_history_action">View history</string>
+    <string name="no_assets_found">No tokens found</string>
+    <string name="asset_balance_exists">Balance exists</string>
+    <string name="template_asset_details">%1$s details</string>
+    <string name="template_file_download_location">File will be downloaded to the \"%1$s\" directory</string>
+    <string name="template_asset_balance_created">%1$s balance created</string>
+
+    <string name="asset_summary_title">Token summary</string>
+    <string name="asset_available">Available</string>
+    <string name="asset_issued">Issued</string>
+    <string name="asset_maximum">Maximum</string>
+    <string name="asset_terms_of_use">Terms of Use</string>
 
     <string name="dashboard_title">Dashboard</string>
     <string name="wallet_title">Wallet</string>
     <string name="deposit_title">Deposit</string>
     <string name="withdraw_title">Withdraw</string>
-    <string name="explore_title">Explore</string>
+    <string name="explore_title">Explore tokens</string>
     <string name="trade_title">Trade</string>
     <string name="settings_title">Settings</string>
 

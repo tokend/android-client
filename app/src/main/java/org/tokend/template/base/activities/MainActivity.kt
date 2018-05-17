@@ -26,6 +26,7 @@ import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.fragments.settings.GeneralSettingsFragment
 import org.tokend.template.features.dashboard.DashboardFragment
+import org.tokend.template.features.explore.ExploreAssetsFragment
 import org.tokend.template.features.trade.TradeFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 
@@ -152,6 +153,7 @@ class MainActivity : BaseActivity() {
             DASHBOARD -> displayFragment(getDashboardFragment())
             WALLET -> displayFragment(getWalletFragment())
             WITHDRAW -> displayFragment(getWithdrawFragment())
+            EXPLORE -> displayFragment(getExploreFragment())
             SETTINGS -> displayFragment(getSettingsFragment())
             TRADE -> displayFragment(getTradeFragment())
         }
@@ -177,6 +179,10 @@ class MainActivity : BaseActivity() {
 
     private fun getWithdrawFragment(): Fragment {
         return WithdrawFragment()
+    }
+
+    private fun getExploreFragment(): Fragment {
+        return ExploreAssetsFragment()
     }
 
     private var fragmentToolbarDisposable: Disposable? = null

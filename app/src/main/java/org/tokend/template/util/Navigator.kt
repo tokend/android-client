@@ -2,11 +2,15 @@ package org.tokend.template.util
 
 import android.app.Activity
 import android.content.Context
+import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityOptionsCompat
+import android.view.View
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
+import org.tokend.sdk.api.models.Asset
 import org.tokend.template.R
 import org.tokend.template.base.activities.ChangePasswordActivity
 import org.tokend.template.base.activities.MainActivity
@@ -15,6 +19,7 @@ import org.tokend.template.base.activities.SignInActivity
 import org.tokend.template.base.activities.qr.ShareQrActivity
 import org.tokend.template.base.activities.signup.RecoverySeedActivity
 import org.tokend.template.base.activities.signup.SignUpActivity
+import org.tokend.template.features.explore.AssetDetailsActivity
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 
@@ -28,6 +33,25 @@ object Navigator {
         ActivityCompat.finishAfterTransition(activity)
         activity.overridePendingTransition(0, R.anim.activity_fade_out)
         activity.finish()
+    }
+
+    private fun createTransitionBundle(activity: Activity,
+                                       vararg pairs: Pair<View?, String>): Bundle {
+        val sharedViews = arrayListOf<android.support.v4.util.Pair<View, String>>()
+
+        pairs.forEach {
+            val view = it.first
+            if (view != null) {
+                sharedViews.add(android.support.v4.util.Pair(view, it.second))
+            }
+        }
+
+        return if (sharedViews.isEmpty()) {
+            Bundle.EMPTY
+        } else {
+            ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                    *sharedViews.toTypedArray()).toBundle() ?: Bundle.EMPTY
+        }
     }
 
     fun openSignUp(activity: Activity) {
@@ -87,5 +111,16 @@ object Navigator {
         activity.startActivityForResult(activity.intentFor<WithdrawalConfirmationActivity>(
                 WithdrawalConfirmationActivity.WITHDRAWAL_REQUEST_EXTRA to withdrawalRequest
         ), requestCode)
+    }
+
+    fun openAssetDetails(activity: Activity, requestCode: Int,
+                         asset: Asset,
+                         cardView: View? = null) {
+        val transitionBundle = createTransitionBundle(activity,
+                cardView to activity.getString(R.string.transition_asset_card)
+        )
+        activity.startActivityForResult(activity.intentFor<AssetDetailsActivity>(
+                AssetDetailsActivity.ASSET_EXTRA to asset
+        ), requestCode, transitionBundle)
     }
 }
