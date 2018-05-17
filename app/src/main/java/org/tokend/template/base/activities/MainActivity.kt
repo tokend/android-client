@@ -27,6 +27,7 @@ import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.fragments.settings.GeneralSettingsFragment
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.trade.TradeFragment
+import org.tokend.template.features.withdraw.WithdrawFragment
 
 class MainActivity : BaseActivity() {
     companion object {
@@ -150,6 +151,7 @@ class MainActivity : BaseActivity() {
         when (screenIdentifier) {
             DASHBOARD -> displayFragment(getDashboardFragment())
             WALLET -> displayFragment(getWalletFragment())
+            WITHDRAW -> displayFragment(getWithdrawFragment())
             SETTINGS -> displayFragment(getSettingsFragment())
             TRADE -> displayFragment(getTradeFragment())
         }
@@ -171,6 +173,10 @@ class MainActivity : BaseActivity() {
 
     private fun getTradeFragment(): Fragment {
         return TradeFragment()
+    }
+
+    private fun getWithdrawFragment(): Fragment {
+        return WithdrawFragment()
     }
 
     private var fragmentToolbarDisposable: Disposable? = null

@@ -42,4 +42,6 @@
 
     <dimen name="tx_list_item_icon_size">50dp</dimen>
     <dimen name="tx_list_item_height">83dp</dimen>
+
+    <dimen name="spinner_arrow_align_margin">-8dp</dimen>
 </resources>

@@ -15,6 +15,8 @@ import org.tokend.template.base.activities.SignInActivity
 import org.tokend.template.base.activities.qr.ShareQrActivity
 import org.tokend.template.base.activities.signup.RecoverySeedActivity
 import org.tokend.template.base.activities.signup.SignUpActivity
+import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
+import org.tokend.template.features.withdraw.model.WithdrawalRequest
 
 /**
  * Performs transitions between screens.
@@ -74,9 +76,16 @@ object Navigator {
                 RecoverySeedActivity.SEED_EXTRA to seed
         ), requestCode)
     }
-    
+
     fun openPasswordChange(activity: Activity, requestCode: Int) {
         activity.startActivityForResult(activity.intentFor<ChangePasswordActivity>(),
                 requestCode)
+    }
+
+    fun openWithdrawalConfirmation(activity: Activity, requestCode: Int,
+                                   withdrawalRequest: WithdrawalRequest) {
+        activity.startActivityForResult(activity.intentFor<WithdrawalConfirmationActivity>(
+                WithdrawalConfirmationActivity.WITHDRAWAL_REQUEST_EXTRA to withdrawalRequest
+        ), requestCode)
     }
 }

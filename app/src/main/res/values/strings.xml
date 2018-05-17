@@ -57,7 +57,7 @@
     <string name="withdrawal_details_title">Withdrawal details</string>
     <string name="amount">Amount</string>
     <string name="unknown">Unknown</string>
-    <string name="template_withdrawal_fee_warning">Received amount may be lower due to %1$s fees</string>
+    <string name="template_withdrawal_fee_warning">Received amount may be lower due to %1$s network fees</string>
     <string name="investment_details_title">Investment details</string>
     <string name="template_price_one_for">1 %1$s for %2$s %3$s</string>
     <string name="offer_match_details_title">Offer match details</string>
@@ -68,6 +68,12 @@
     <string name="current_password">Current password</string>
     <string name="open_action">Open</string>
     <string name="copy_action">Copy</string>
+    <string name="template_balance">Balance: %1$s %2$s</string>
+    <string name="to_pay">To pay</string>
+    <string name="to_receive">To receive</string>
+    <string name="confirm_action">Confirm</string>
+    <string name="processing_progress">Processing…</string>\
+    <string name="withdrawal_request_created">Withdrawal request created</string>
 
     <string name="dashboard_title">Dashboard</string>
     <string name="wallet_title">Wallet</string>
@@ -124,6 +130,18 @@
     <string name="error_email_not_verified">Email is not verified</string>
     <string name="error_seed_mismatch">Seed doesn\'t match confirmation</string>
     <string name="error_invalid_seed">Invalid seed</string>
+    <string name="error_insufficient_balance">Insufficient balance</string>
+
+    <string name="error_tx_general">Transaction failed. Try again later</string>
+    <string name="error_tx_bad_auth">Transaction signature is invalid</string>
+    <string name="error_tx_limits">Limits has been exceeded</string>
+    <string name="error_tx_insufficient_balance">@string/error_insufficient_balance</string>
+    <string name="error_tx_invalid_amount">Transaction amount is invalid</string>
+    <string name="error_tx_malformed">Transaction is malformed</string>
+    <string name="error_tx_account_blocked">Your account is blocked</string>
+    <string name="error_tx_invalid_fee">Transaction fee is invalid</string>
+    <string name="error_tx_not_allowed">You are not allowed to perform this action</string>
+    <string name="error_tx_cross_self">Current offer crosses one of your existing offers</string>
 
     <string name="tfa_dialog_title">Two-factor authentication</string>
     <string name="totp_dialog_message">Enter code from the authentication app</string>
@@ -138,13 +156,10 @@
 
 
     <!-- withdraw -->
-    <string-array name="currencies">
-        <item>BTC</item>
-        <item>ETH</item>
-    </string-array>
     <string name="amount_label">Amount</string>
     <string name="address_label">Destination address</string>
     <string name="go_to_confirmation_btn_label">go to confirmation</string>
+    <string name="withdrawal_confirmation_title">Withdrawal confirmation</string>
 
     <!-- Deposit -->
     <string name="currency">Currency</string>
