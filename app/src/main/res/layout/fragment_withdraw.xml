@@ -8,6 +8,8 @@
 
     <include layout="@layout/appbar" />
 
+    <include layout="@layout/include_error_empty_view" />
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"

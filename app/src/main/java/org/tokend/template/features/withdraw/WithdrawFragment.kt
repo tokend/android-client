@@ -18,6 +18,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_withdraw.*
+import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import kotlinx.android.synthetic.main.layout_balance_card.*
 import kotlinx.android.synthetic.main.layout_progress.*
@@ -200,6 +201,11 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                 .map {
                     it.code
                 }
+
+        if (withdrawableAssets.isEmpty()) {
+            error_empty_view.showEmpty(R.string.error_no_withdrawable_assets)
+            return
+        }
 
         asset_spinner.setSimpleItems(withdrawableAssets)
     }
