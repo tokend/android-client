@@ -2,12 +2,18 @@ package org.tokend.template.features.explore
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.support.transition.Fade
+import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Observable
@@ -29,8 +35,11 @@ import org.tokend.template.features.explore.adapter.AssetListItem
 import org.tokend.template.features.explore.adapter.AssetsAdapter
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.SearchUtil
 import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import java.util.concurrent.TimeUnit
+
 
 class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -46,6 +55,13 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         get() = repositoryProvider.balances()
 
     private val assetsAdapter = AssetsAdapter()
+    private var filter: String? = null
+        set(value) {
+            if (value != field) {
+                field = value
+                onFilterChanged()
+            }
+        }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_explore, container, false)
@@ -58,6 +74,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
         initSwipeRefresh()
         initAssetsList()
+        initMenu()
 
         subscribeToAssets()
         subscribeToBalances()
@@ -87,6 +104,51 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
             }
         }
     }
+
+    private fun initMenu() {
+        toolbar.inflateMenu(R.menu.explore)
+        val menu = toolbar.menu
+
+        val searchItem = menu?.findItem(R.id.search) ?: return
+        val searchView = searchItem.actionView as? SearchView ?: return
+
+        (searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text) as? EditText)
+                ?.apply {
+                    setHintTextColor(ContextCompat.getColor(context!!, R.color.white_almost))
+                    setTextColor(ContextCompat.getColor(context!!, R.color.white))
+                }
+        searchView.queryHint = getString(R.string.search)
+        searchView.setOnQueryTextFocusChangeListener { _, focused ->
+            if (!focused && searchView.query.isBlank()) {
+                searchItem.collapseActionView()
+            }
+        }
+
+        RxSearchView.queryTextChanges(searchView)
+                .skipInitialValue()
+                .debounce(400, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    filter = it.trim().toString().takeIf { it.isNotEmpty() }
+                }
+
+        searchItem.setOnMenuItemClickListener {
+            TransitionManager.beginDelayedTransition(toolbar, Fade().setDuration(
+                    resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+            ))
+            searchItem.expandActionView()
+            true
+        }
+
+        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                filter = null
+                return true
+            }
+        })
+    }
     // endregion
 
     // region Assets
@@ -104,7 +166,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                         }
                         .compose(ObservableTransformers.defaultSchedulers())
                         .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
-                        .subscribe { assets ->
+                        .subscribe {
                             displayAssets()
                         },
                 assetsRepository.loadingSubject
@@ -135,14 +197,25 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                     AssetListItem(asset,
                             balances.find { it.asset == asset.code } != null)
                 }
-        assetsAdapter.setData(
-                items
-                        .sortedWith(Comparator { o1, o2 ->
-                            return@Comparator o1.balanceExists.compareTo(o2.balanceExists)
-                                    .takeIf { it != 0 }
-                                    ?: o1.code.compareTo(o2.code)
-                        })
-        )
+                .sortedWith(Comparator { o1, o2 ->
+                    return@Comparator o1.balanceExists.compareTo(o2.balanceExists)
+                            .takeIf { it != 0 }
+                            ?: o1.code.compareTo(o2.code)
+                })
+                .let { items ->
+                    filter?.let {
+                        items.filter { item ->
+                            SearchUtil.isMatchGeneralCondition(it, item.code, item.name)
+                        }
+                    } ?: items
+                }
+
+
+        assetsAdapter.setData(items)
+    }
+
+    private fun onFilterChanged() {
+        displayAssets()
     }
     // endregion
 

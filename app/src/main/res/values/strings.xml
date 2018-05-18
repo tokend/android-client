@@ -82,6 +82,7 @@
     <string name="template_asset_details">%1$s details</string>
     <string name="template_file_download_location">File will be downloaded to the \"%1$s\" directory</string>
     <string name="template_asset_balance_created">%1$s balance created</string>
+    <string name="search">Search</string>
 
     <string name="asset_summary_title">Token summary</string>
     <string name="asset_available">Available</string>

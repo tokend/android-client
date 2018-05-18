@@ -37,10 +37,6 @@ class AssetDetailsActivity : BaseActivity() {
         get() = repositoryProvider.balances().itemsSubject.value
                 .find { it.asset == asset.code } != null
 
-    private val logoSize: Int by lazy {
-        resources.getDimensionPixelSize(R.dimen.asset_list_item_logo_size)
-    }
-
     private val fileDownloader = FileDownloader(this)
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
@@ -55,10 +51,9 @@ class AssetDetailsActivity : BaseActivity() {
         supportPostponeEnterTransition()
 
         displayDetails()
+        initButtons()
 
         supportStartPostponedEnterTransition()
-
-        initButtons()
     }
 
     // region Display
