@@ -1,8 +1,7 @@
-package ua.com.radiokot.pc.util.text_validators
+package org.tokend.template.util.validators
 
-/**
- * Created by Oleg Koretsky on 2/13/18.
- */
+import ua.com.radiokot.pc.util.text_validators.CharSequenceValidator
+
 open class RegexValidator(pattern: String) : CharSequenceValidator {
     private val regex = Regex(pattern)
 

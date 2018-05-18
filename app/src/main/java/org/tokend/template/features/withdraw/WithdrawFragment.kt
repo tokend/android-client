@@ -19,6 +19,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_withdraw.*
+import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
+import kotlinx.android.synthetic.main.layout_balance_card.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.enabled

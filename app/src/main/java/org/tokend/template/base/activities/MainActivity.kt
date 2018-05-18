@@ -22,6 +22,7 @@ import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
 import org.tokend.template.App
 import org.tokend.template.R
+import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.fragments.settings.GeneralSettingsFragment
@@ -42,6 +43,7 @@ class MainActivity : BaseActivity() {
         private val TRADE = counter++
         private val SETTINGS = counter++
         private val SIGN_OUT = counter++
+        private val SEND = counter++
     }
 
     private var navigationDrawer: Drawer? = null
@@ -91,8 +93,16 @@ class MainActivity : BaseActivity() {
                 .withIdentifier(WITHDRAW)
                 .withIcon(R.drawable.ic_withdraw)
 
+        val sendItem = PrimaryDrawerItem()
+                .withName(R.string.send_title)
+                .withIdentifier(SEND)
+                .withIcon(R.drawable.ic_send)
+                .withIconColorRes(R.color.icons)
+                .withSelectedIconColorRes(R.color.icons)
+                .withIconTintingEnabled(true)
+
         val exploreItem = PrimaryDrawerItem()
-                .withName(R.string.explore_title)
+                .withName(R.string.explore_title_short)
                 .withIdentifier(EXPLORE)
                 .withIcon(R.drawable.ic_coins)
 
@@ -123,6 +133,7 @@ class MainActivity : BaseActivity() {
                         DividerDrawerItem(),
                         depositItem,
                         withdrawItem,
+                        sendItem,
                         exploreItem,
                         tradeItem,
                         DividerDrawerItem(),
@@ -153,6 +164,7 @@ class MainActivity : BaseActivity() {
             DASHBOARD -> displayFragment(getDashboardFragment())
             WALLET -> displayFragment(getWalletFragment())
             WITHDRAW -> displayFragment(getWithdrawFragment())
+            SEND -> displayFragment(getSendFragment())
             EXPLORE -> displayFragment(getExploreFragment())
             SETTINGS -> displayFragment(getSettingsFragment())
             TRADE -> displayFragment(getTradeFragment())
@@ -179,6 +191,10 @@ class MainActivity : BaseActivity() {
 
     private fun getWithdrawFragment(): Fragment {
         return WithdrawFragment()
+    }
+
+    private fun getSendFragment(): Fragment {
+        return SendFragment()
     }
 
     private fun getExploreFragment(): Fragment {

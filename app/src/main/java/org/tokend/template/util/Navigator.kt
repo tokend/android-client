@@ -12,13 +12,11 @@ import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
 import org.tokend.sdk.api.models.Asset
 import org.tokend.template.R
-import org.tokend.template.base.activities.ChangePasswordActivity
-import org.tokend.template.base.activities.MainActivity
-import org.tokend.template.base.activities.RecoveryActivity
-import org.tokend.template.base.activities.SignInActivity
+import org.tokend.template.base.activities.*
 import org.tokend.template.base.activities.qr.ShareQrActivity
 import org.tokend.template.base.activities.signup.RecoverySeedActivity
 import org.tokend.template.base.activities.signup.SignUpActivity
+import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.features.explore.AssetDetailsActivity
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
@@ -122,5 +120,12 @@ object Navigator {
         activity.startActivityForResult(activity.intentFor<AssetDetailsActivity>(
                 AssetDetailsActivity.ASSET_EXTRA to asset
         ), requestCode, transitionBundle)
+    }
+
+    fun openPaymentConfirmation(activity: Activity, requestCode: Int,
+                                paymentRequest: PaymentRequest) {
+        activity.startActivityForResult(activity.intentFor<PaymentConfirmationActivity>(
+                PaymentConfirmationActivity.PAYMENT_REQUEST_EXTRA to paymentRequest
+        ), requestCode)
     }
 }

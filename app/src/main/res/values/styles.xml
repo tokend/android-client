@@ -128,4 +128,9 @@
         <item name="cardUseCompatPadding">true</item>
         <item name="android:layout_marginTop">@dimen/half_standard_margin</item>
     </style>
+
+    <style name="HeadingText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/text_size_heading</item>
+    </style>
 </resources>

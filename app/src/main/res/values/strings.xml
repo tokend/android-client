@@ -83,6 +83,10 @@
     <string name="template_file_download_location">File will be downloaded to the \"%1$s\" directory</string>
     <string name="template_asset_balance_created">%1$s balance created</string>
     <string name="search">Search</string>
+    <string name="recipient_label">Recipient\'s email or account</string>
+    <string name="payment_description_label">Description (optional)</string>
+    <string name="payment_confirmation_title">Payment confirmation</string>
+    <string name="payment_successfully_sent">Successfully sent</string>
 
     <string name="asset_summary_title">Token summary</string>
     <string name="asset_available">Available</string>
@@ -95,6 +99,8 @@
     <string name="deposit_title">Deposit</string>
     <string name="withdraw_title">Withdraw</string>
     <string name="explore_title">Explore tokens</string>
+    <string name="send_title">Send</string>
+    <string name="explore_title_short">Explore</string>
     <string name="trade_title">Trade</string>
     <string name="settings_title">Settings</string>
 
@@ -123,6 +129,7 @@
     <string name="tx_withdrawal_destination">Destination address</string>
     <string name="template_tx_for">For %1$s</string>
     <string name="template_tx_in">In %1$s</string>
+    <string name="pay_recipient_fee_action">Pay recipient\'s fee</string>
 
     <string name="settings_account_group">Account</string>
     <string name="settings_security_group">Security</string>
@@ -146,6 +153,8 @@
     <string name="error_seed_mismatch">Seed doesn\'t match confirmation</string>
     <string name="error_invalid_seed">Invalid seed</string>
     <string name="error_insufficient_balance">Insufficient balance</string>
+    <string name="error_no_transferable_assets">No transferable tokens found</string>
+    <string name="error_invalid_recipient">Invalid recipient</string>
 
     <string name="error_tx_general">Transaction failed. Try again later</string>
     <string name="error_tx_bad_auth">Transaction signature is invalid</string>

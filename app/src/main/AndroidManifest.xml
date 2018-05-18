@@ -77,6 +77,10 @@
         <activity
             android:name=".features.explore.AssetDetailsActivity"
             android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".base.activities.PaymentConfirmationActivity"
+            android:label="@string/payment_confirmation_title"
+            android:theme="@style/AppTheme.CardsBackground" />
     </application>
 
 </manifest>

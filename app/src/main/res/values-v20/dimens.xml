@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="navigation_profile_header_top_margin">48dp</dimen>
-    <dimen name="spinner_arrow_align_margin">-16dp</dimen>
+    <dimen name="spinner_arrow_align_margin">-6dp</dimen>
 </resources>
