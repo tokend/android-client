@@ -1,13 +1,14 @@
-package org.tokend.template.base.view
+package org.tokend.template.base.view.picker
+
 
 import android.content.Context
 import android.support.design.widget.TabLayout
 import android.util.AttributeSet
 
 /**
- * Simple value picker based on {@link android.support.design.widget.TabLayout}
+ * Simple value picker based on [TabLayout]
  */
-class PickerTabLayout : TabLayout {
+class PickerTabLayout : TabLayout, Picker {
     constructor(context: Context, attributeSet: AttributeSet?) :
             super(context, attributeSet)
 
@@ -16,12 +17,20 @@ class PickerTabLayout : TabLayout {
 
     constructor(context: Context) : super(context)
 
-    private var items = listOf<String>()
-    private var itemSelectionListener: ((String) -> Unit)? = null
+    private var items = listOf<PickerItem>()
+    private var itemSelectionListener: ((PickerItem) -> Unit)? = null
     private var suspendEvent = false
 
-    val selectedItem: String?
-        get() = items.getOrNull(selectedTabPosition)
+    override var selectedItemIndex: Int
+        get() = selectedTabPosition
+        set(value) {
+            (getTabAt(value) ?: getTabAt(0))?.select()
+        }
+    override var selectedItem: PickerItem?
+        get() = items.getOrNull(selectedItemIndex)
+        set(value) {
+            selectedItemIndex = items.indexOf(value)
+        }
 
     init {
         addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -30,45 +39,35 @@ class PickerTabLayout : TabLayout {
             override fun onTabUnselected(tab: Tab?) {}
 
             override fun onTabSelected(tab: Tab?) {
-                (tab?.tag as? String)?.takeIf { !suspendEvent }?.let {
+                (tab?.tag as? PickerItem)?.takeIf { !suspendEvent }?.let {
                     itemSelectionListener?.invoke(it)
                 }
             }
         })
     }
 
-    fun setItems(items: List<String>, keepSelected: Boolean = false) {
+    override fun setItems(items: List<PickerItem>, keepSelection: Boolean) {
         val selected = selectedItem
         this.items = items
-        if (keepSelected) {
+        if (keepSelection) {
             initTabs(selected)
         } else {
             initTabs()
         }
     }
 
-    fun setSelectedItem(selected: String) {
-        items.indexOf(selected)
-                .takeIf { it >= 0 }
-                ?.let { setSelectedItemIndex(it) }
-    }
-
-    fun setSelectedItemIndex(index: Int) {
-        getTabAt(index)?.select()
-    }
-
-    fun onItemSelected(listener: ((String) -> Unit)?) {
+    override fun onItemSelected(listener: ((PickerItem) -> Unit)?) {
         this.itemSelectionListener = listener
     }
 
-    private fun initTabs(selected: String? = null) {
+    private fun initTabs(selected: PickerItem? = null) {
         if (selected != null) {
             suspendEvent = true
         }
         removeAllTabs()
         items.forEachIndexed { i, item ->
-            addTab(newTab().setText(item).setTag(item),
-                    item == selected || selected == null && i == 0)
+            addTab(newTab().setText(item.text).setTag(item),
+                    item.text == selected?.text || selected == null && i == 0)
         }
         suspendEvent = false
     }

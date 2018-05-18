@@ -80,7 +80,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     // region Init
     private fun initAssetTabs() {
         asset_tabs.onItemSelected {
-            asset = it
+            asset = it.text
         }
 
         if (!needAssetTabs) {
@@ -221,7 +221,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     // region Display
     private fun displayAssetTabs(assets: List<String>) {
-        asset_tabs.setItems(assets, true)
+        asset_tabs.setSimpleItems(assets, true)
     }
 
     private fun displayBalance() {

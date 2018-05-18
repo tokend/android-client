@@ -43,7 +43,7 @@
 
     </android.support.design.widget.CollapsingToolbarLayout>
 
-    <org.tokend.template.base.view.PickerTabLayout
+    <org.tokend.template.base.view.picker.PickerTabLayout
         android:id="@+id/asset_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
