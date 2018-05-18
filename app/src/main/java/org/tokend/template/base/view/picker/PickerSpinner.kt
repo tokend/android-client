@@ -63,16 +63,20 @@ class PickerSpinner : AppCompatSpinner, Picker {
     }
 
     private fun initItems(selected: PickerItem? = null) {
-        if (selected != null) {
-            suspendEvent = true
-        }
+        val indexToSelect = items.indexOfFirst { it.text == selected?.text }
+                .let { index ->
+                    if (index < 0) {
+                        suspendEvent = false
+                        0
+                    } else {
+                        index
+                    }
+                }
 
         adapter = ArrayAdapter<String>(context, R.layout.spinner_item,
                 items.map { it.text })
 
-        if (selected != null) {
-            selectedItemIndex = items.indexOfFirst { it.text == selected.text }
-        }
+        selectedItemIndex = indexToSelect
 
         suspendEvent = false
     }

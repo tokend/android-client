@@ -3,18 +3,17 @@ package org.tokend.template.base.fragments
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import com.google.zxing.integration.android.IntentIntegrator
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Single
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
@@ -92,40 +91,19 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
         initFields()
         initButtons()
-        initAssets()
+        initAssetSelection()
+        initSwipeRefresh()
 
         subscribeToBalances()
+        balancesRepository.updateIfNotFresh()
 
         canConfirm = false
     }
 
     // region Init
-    private fun initAssets() {
-        val transferableAssets = balancesRepository.itemsSubject.value
-                .map {
-                    it.assetDetails
-                }
-                .filterNotNull()
-                .filter {
-                    it.isTransferable()
-                }
-
-        if (transferableAssets.isEmpty()) {
-            error_empty_view.showEmpty(R.string.error_no_transferable_assets)
-            return
-        }
-
-        asset_spinner.adapter = ArrayAdapter<String>(context, R.layout.spinner_item,
-                transferableAssets.map { it.code })
-
-
-        asset_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?,
-                                        position: Int, id: Long) {
-                asset = transferableAssets[position].code
-            }
+    private fun initAssetSelection() {
+        asset_spinner.onItemSelected {
+            asset = it.text
         }
     }
 
@@ -159,20 +137,38 @@ class SendFragment : BaseFragment(), ToolbarProvider {
             }
         })
     }
+
+    private fun initSwipeRefresh() {
+        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
+        swipe_refresh.setOnRefreshListener { balancesRepository.update() }
+    }
     // endregion
 
     // region Balance
-    private var balancesDisposable: Disposable? = null
+    private var balancesDisposable: CompositeDisposable? = null
 
     private fun subscribeToBalances() {
         balancesDisposable?.dispose()
-        balancesDisposable = balancesRepository.itemsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
-                .subscribe {
-                    updateBalance()
-                    displayBalance()
-                }
+        balancesDisposable = CompositeDisposable(
+                balancesRepository.itemsSubject
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .subscribe {
+                            onBalancesUpdated()
+                        },
+                balancesRepository.loadingSubject
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .subscribe { swipe_refresh.isRefreshing = it }
+        )
+    }
+
+    private fun onBalancesUpdated() {
+        updateBalance()
+        displayBalance()
+        displayTransferableAssets()
+        checkAmount()
+        updateConfirmAvailability()
     }
 
     private fun updateBalance() {
@@ -186,6 +182,26 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 AmountFormatter.formatAssetAmount(assetBalance),
                 asset
         )
+    }
+
+    private fun displayTransferableAssets() {
+        val transferableAssets = balancesRepository.itemsSubject.value
+                .mapNotNull {
+                    it.assetDetails
+                }
+                .filter {
+                    it.isTransferable()
+                }
+                .map {
+                    it.code
+                }
+
+        if (transferableAssets.isEmpty()) {
+            error_empty_view.showEmpty(R.string.error_no_transferable_assets)
+            return
+        }
+
+        asset_spinner.setSimpleItems(transferableAssets)
     }
     // endregion
 

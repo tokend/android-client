@@ -61,13 +61,19 @@ class PickerTabLayout : TabLayout, Picker {
     }
 
     private fun initTabs(selected: PickerItem? = null) {
-        if (selected != null) {
-            suspendEvent = true
-        }
+        val indexToSelect = items.indexOfFirst { it.text == selected?.text }
+                .let { index ->
+                    if (index < 0) {
+                        suspendEvent = false
+                        0
+                    } else {
+                        index
+                    }
+                }
         removeAllTabs()
         items.forEachIndexed { i, item ->
             addTab(newTab().setText(item.text).setTag(item),
-                    item.text == selected?.text || selected == null && i == 0)
+                    i == indexToSelect)
         }
         suspendEvent = false
     }

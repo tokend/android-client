@@ -3,18 +3,17 @@ package org.tokend.template.features.withdraw
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import com.google.zxing.integration.android.IntentIntegrator
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Single
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
@@ -88,33 +87,18 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         initFields()
         initButtons()
         initAssetSelection()
+        initSwipeRefresh()
 
         subscribeToBalances()
+        balancesRepository.updateIfNotFresh()
 
         canConfirm = false
     }
 
     // region Init
     private fun initAssetSelection() {
-        val withdrawableAssets = balancesRepository.itemsSubject.value
-                .map {
-                    it.assetDetails
-                }
-                .filterNotNull()
-                .filter {
-                    it.isWithdrawable()
-                }
-
-        asset_spinner.adapter = ArrayAdapter<String>(context, R.layout.spinner_item,
-                withdrawableAssets.map { it.code })
-
-        asset_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?,
-                                        position: Int, id: Long) {
-                asset = withdrawableAssets[position].code
-            }
+        asset_spinner.onItemSelected {
+            asset = it.text
         }
     }
 
@@ -142,6 +126,11 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
             }
         })
     }
+
+    private fun initSwipeRefresh() {
+        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
+        swipe_refresh.setOnRefreshListener { balancesRepository.update() }
+    }
     // endregion
 
     // region QR
@@ -160,18 +149,31 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     }
     // endregion
 
-    // region Balance
-    private var balancesDisposable: Disposable? = null
+    // region Balances
+    private var balancesDisposable: CompositeDisposable? = null
 
     private fun subscribeToBalances() {
         balancesDisposable?.dispose()
-        balancesDisposable = balancesRepository.itemsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
-                .subscribe {
-                    updateBalance()
-                    displayBalance()
-                }
+        balancesDisposable = CompositeDisposable(
+                balancesRepository.itemsSubject
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .subscribe {
+                            onBalancesUpdated()
+                        },
+                balancesRepository.loadingSubject
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .subscribe { swipe_refresh.isRefreshing = it }
+        )
+    }
+
+    private fun onBalancesUpdated() {
+        updateBalance()
+        displayBalance()
+        displayWithdrawableAssets()
+        checkAmount()
+        updateConfirmAvailability()
     }
 
     private fun updateBalance() {
@@ -185,6 +187,21 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                 AmountFormatter.formatAssetAmount(assetBalance),
                 asset
         )
+    }
+
+    private fun displayWithdrawableAssets() {
+        val withdrawableAssets = balancesRepository.itemsSubject.value
+                .mapNotNull {
+                    it.assetDetails
+                }
+                .filter {
+                    it.isWithdrawable()
+                }
+                .map {
+                    it.code
+                }
+
+        asset_spinner.setSimpleItems(withdrawableAssets)
     }
     // endregion
 
