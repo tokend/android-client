@@ -17,6 +17,7 @@ import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.repository.AccountRepository
+import org.tokend.template.base.view.picker.PickerItem
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -88,15 +89,15 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initAssets(externalAccounts: List<AccountResponse.ExternalAccount>) {
-        val assets = ArrayList<String>()
+        val assets = ArrayList<PickerItem>()
         for(account in externalAccounts) {
-            assets += account.type.name
+            assets += PickerItem(account.type.name)
         }
 
         asset_tab_layout.onItemSelected({
             val index = assets.indexOfFirst{item -> item == it }
             val address = externalAccounts[index].data
-            val replacement = asset_tab_layout.selectedItem?: ""
+            val replacement = asset_tab_layout.selectedItem?.text
             address_text_view.text = address
 
             to_make_deposit_text_view.text = getString(R.string.to_make_deposit_send_asset, replacement)
