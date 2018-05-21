@@ -78,7 +78,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private fun initButtons() {
         show_qr_text_view.onClick{
             Navigator.openQrShare(this.requireActivity(),
-                    "${getString(R.string.deposit_title)} ${asset_tab_layout.selectedItem}",
+                    "${getString(R.string.deposit_title)} ${asset_tab_layout.selectedItem?.text}",
                     address_text_view.text.toString(),
                     getString(R.string.share_address_label))
         }
