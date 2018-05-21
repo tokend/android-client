@@ -6,6 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background">
 
+    <include
+        android:id="@+id/include3"
+        layout="@layout/appbar" />
+
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,37 +19,34 @@
         app:cardUseCompatPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/include3">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/textView"
-                style="@style/SecondaryText"
-                android:layout_width="wrap_content"
+            <org.tokend.template.base.view.PickerTabLayout
+                android:id="@+id/asset_tab_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/currency"
+                android:saveEnabled="true"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/currency_text_view"
-                style="@style/PrimaryActionTextView"
-                android:layout_width="wrap_content"
+            <org.tokend.template.base.view.ContentLoadingProgressBar
+                android:id="@+id/activity_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:text="BTC"
-                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintTop_toBottomOf="@id/asset_tab_layout"
+                android:indeterminate="true"
+                android:visibility="gone"/>
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/address_label_text_view"
                 style="@style/SecondaryText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,7 +54,7 @@
                 android:layout_marginTop="24dp"
                 android:text="@string/personal_address"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/currency_text_view" />
+                app:layout_constraintTop_toBottomOf="@+id/asset_tab_layout" />
 
             <TextView
                 android:id="@+id/address_text_view"
@@ -61,9 +62,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="s0mE0uT5taNd1nGAdDrEsS666"
+                tools:text="s0mE0uT5taNd1nGAdDrEsS666"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                app:layout_constraintTop_toBottomOf="@+id/address_label_text_view" />
 
             <TextView
                 android:id="@+id/to_make_deposit_text_view"
@@ -72,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/to_make_deposit_send_asset"
+                tools:text="@string/to_make_deposit_send_asset"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/address_text_view" />
@@ -102,7 +103,6 @@
                 app:layout_constraintBottom_toBottomOf="@+id/share_btn"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/share_btn" />
-
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 </android.support.constraint.ConstraintLayout>
