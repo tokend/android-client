@@ -85,9 +85,29 @@
             android:name=".features.trade.OfferConfirmationActivity"
             android:label="@string/offer_confirmation_title"
             android:theme="@style/AppTheme.CardsBackground" />
-        <activity android:name=".features.trade.adapter.OffersActivity"
+        <activity
+            android:name=".features.trade.adapter.OffersActivity"
             android:label="@string/pending_offers_title"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".base.activities.ProcessLinkActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/SplashTheme"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/app_host"
+                    android:scheme="http" />
+                <data
+                    android:host="@string/app_host"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

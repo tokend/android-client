@@ -110,6 +110,7 @@
     <string name="cancel_offer_action">Cancel offer</string>
     <string name="cancel_offer_confirmation">Are you sure want to cancel this offer?</string>
     <string name="offer_canceled">Offer has been canceled</string>
+    <string name="email_verified">Email has been verified</string>
 
     <string name="asset_summary_title">Token summary</string>
     <string name="asset_available">Available</string>
