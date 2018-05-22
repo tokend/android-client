@@ -28,6 +28,7 @@ import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.fragments.settings.GeneralSettingsFragment
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.explore.ExploreAssetsFragment
+import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.trade.TradeFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 
@@ -168,6 +169,7 @@ class MainActivity : BaseActivity() {
             EXPLORE -> displayFragment(getExploreFragment())
             SETTINGS -> displayFragment(getSettingsFragment())
             TRADE -> displayFragment(getTradeFragment())
+            DEPOSIT -> displayFragment(getDepositFragment())
         }
     }
     // endregion
@@ -199,6 +201,10 @@ class MainActivity : BaseActivity() {
 
     private fun getExploreFragment(): Fragment {
         return ExploreAssetsFragment()
+    }
+
+    private fun getDepositFragment(): Fragment {
+        return DepositFragment()
     }
 
     private var fragmentToolbarDisposable: Disposable? = null

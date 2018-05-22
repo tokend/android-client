@@ -1,6 +1,7 @@
 package org.tokend.template.base.logic.di.providers
 
 import org.tokend.template.base.logic.repository.AccountDetailsRepository
+import org.tokend.template.base.logic.repository.AccountRepository
 import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.base.logic.repository.assets.AssetsRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
@@ -20,4 +21,5 @@ interface RepositoryProvider {
     fun assetPairs(): AssetPairsRepository
     fun orderBook(baseAsset: String, quoteAsset: String, isBuy: Boolean): OrderBookRepository
     fun offers(): OffersRepository
+    fun account(): AccountRepository
 }

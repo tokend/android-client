@@ -1,6 +1,7 @@
 package org.tokend.template.base.logic.di.providers
 
 import org.tokend.template.base.logic.repository.AccountDetailsRepository
+import org.tokend.template.base.logic.repository.AccountRepository
 import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.base.logic.repository.assets.AssetsRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
@@ -36,6 +37,9 @@ class RepositoryProviderImpl(
     }
     private val offersRepository: OffersRepository by lazy {
         OffersRepository(apiProvider, walletInfoProvider)
+    }
+    private val accountRepository: AccountRepository by lazy {
+        AccountRepository(apiProvider, walletInfoProvider)
     }
 
     override fun balances(): BalancesRepository {
@@ -79,5 +83,9 @@ class RepositoryProviderImpl(
 
     override fun offers(): OffersRepository {
         return offersRepository
+    }
+        
+    override fun account(): AccountRepository {
+        return accountRepository
     }
 }
