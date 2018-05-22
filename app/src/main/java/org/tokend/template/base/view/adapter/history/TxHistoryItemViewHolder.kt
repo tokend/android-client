@@ -88,20 +88,7 @@ class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) 
     }
 
     private fun displayAction(item: TxHistoryItem) {
-        val isOfferMatch =
-                item.action == TxHistoryItem.Action.BOUGHT
-                        || item.action == TxHistoryItem.Action.SOLD
-        val isPendingOffer = item.state == TransactionState.PENDING && isOfferMatch
-
-        if (isPendingOffer) {
-            actionTextView.text =
-                    if (item.isReceived)
-                        view.context.getString(R.string.buy)
-                    else
-                        view.context.getString(R.string.sell)
-        } else {
-            actionTextView.text = LocalizedName(view.context).forTransactionAction(item.action)
-        }
+        actionTextView.text = LocalizedName(view.context).forTransactionAction(item.action)
     }
 
     private fun displayCounterpartyIfNeeded(item: TxHistoryItem) {
@@ -115,11 +102,13 @@ class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) 
                         TxHistoryItem.Action.RECEIVED ->
                             view.context.getString(R.string.template_tx_from, item.counterparty)
                         TxHistoryItem.Action.SOLD,
-                        TxHistoryItem.Action.BOUGHT ->
+                        TxHistoryItem.Action.BOUGHT,
+                        TxHistoryItem.Action.SELL,
+                        TxHistoryItem.Action.BUY ->
                             view.context.getString(R.string.template_tx_for, item.counterparty)
                         TxHistoryItem.Action.INVESTMENT ->
                             view.context.getString(R.string.template_tx_in, item.counterparty)
-                        else -> ""
+                        else -> item.counterparty
                     }
         } else {
             counterpartyTextView.visibility = View.GONE
@@ -128,10 +117,9 @@ class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) 
 
     @SuppressLint("RestrictedApi")
     private fun displayStateIfNeeded(item: TxHistoryItem) {
-        val isOfferMatch =
-                item.action == TxHistoryItem.Action.BOUGHT
-                        || item.action == TxHistoryItem.Action.SOLD
-        val isPendingOffer = item.state == TransactionState.PENDING && isOfferMatch
+        val isPendingOffer =
+                item.action == TxHistoryItem.Action.BUY
+                        || item.action == TxHistoryItem.Action.SELL
 
         if (item.state != TransactionState.SUCCESS && !isPendingOffer) {
             extraInfoTextView.visibility = View.VISIBLE

@@ -22,7 +22,9 @@ class TxHistoryItem(
         SENT,
         BOUGHT,
         SOLD,
-        SPENT;
+        SPENT,
+        BUY,
+        SELL;
     }
 
     companion object {
@@ -34,10 +36,17 @@ class TxHistoryItem(
                         TransactionType.WITHDRAWAL -> Action.WITHDRAWAL
                         TransactionType.INVESTMENT -> Action.INVESTMENT
                         TransactionType.OFFER_MATCH ->
-                            if (isReceived)
-                                Action.BOUGHT
-                            else
-                                Action.SOLD
+                            if (tx.state == TransactionState.PENDING) {
+                                if (isReceived)
+                                    Action.BUY
+                                else
+                                    Action.SELL
+                            } else {
+                                if (isReceived)
+                                    Action.BOUGHT
+                                else
+                                    Action.SOLD
+                            }
                         TransactionType.PAYMENT ->
                             if (isReceived)
                                 Action.RECEIVED

@@ -25,6 +25,8 @@ class LocalizedName(private val context: Context) {
             TxHistoryItem.Action.BOUGHT -> context.getString(R.string.tx_action_bought)
             TxHistoryItem.Action.SOLD -> context.getString(R.string.tx_action_sold)
             TxHistoryItem.Action.SPENT -> context.getString(R.string.tx_action_spent)
+            TxHistoryItem.Action.BUY -> context.getString(R.string.buy)
+            TxHistoryItem.Action.SELL -> context.getString(R.string.sell)
         }
     }
 }
