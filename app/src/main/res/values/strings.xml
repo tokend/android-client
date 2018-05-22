@@ -83,7 +83,7 @@
     <string name="template_file_download_location">File will be downloaded to the \"%1$s\" directory</string>
     <string name="template_asset_balance_created">%1$s balance created</string>
     <string name="search">Search</string>
-    <string name="recipient_label">Recipient\'s email or account</string>
+    <string name="recipient_label">Recipient\'s email, account or balance</string>
     <string name="payment_description_label">Description (optional)</string>
     <string name="payment_confirmation_title">Payment confirmation</string>
     <string name="payment_successfully_sent">Successfully sent</string>
@@ -181,6 +181,7 @@
     <string name="error_invalid_recipient">Invalid recipient</string>
     <string name="error_no_withdrawable_assets">No withdrawable tokens found</string>
     <string name="error_no_tradeable_pairs">No tradeable pairs found</string>
+    <string name="error_cannot_send_to_yourself">Send to yourself is not allowed</string>
 
     <string name="error_tx_general">Transaction failed. Try again later</string>
     <string name="error_tx_bad_auth">Transaction signature is invalid</string>

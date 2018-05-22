@@ -263,6 +263,8 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
+    private class SendToYourselfException : Exception()
+
     private fun confirm() {
         val amount = amountEditTextWrapper.scaledAmount
         val asset = this.asset
@@ -283,6 +285,10 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 BiFunction { t1: String, t2: String -> Pair(t1, t2) }
         )
                 .flatMap { (currentAccount, recipientAccount) ->
+                    if (currentAccount == recipientAccount) {
+                        throw SendToYourselfException()
+                    }
+
                     data.senderAccount = currentAccount
                     data.recipientAccount = recipientAccount
 
@@ -335,6 +341,10 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                                 is NoRecipientBalanceException ->
                                     recipient_edit_text.setErrorAndFocus(
                                             R.string.error_invalid_recipient
+                                    )
+                                is SendToYourselfException ->
+                                    recipient_edit_text.setErrorAndFocus(
+                                            R.string.error_cannot_send_to_yourself
                                     )
                                 else ->
                                     ErrorHandlerFactory.getDefault().handle(it)
