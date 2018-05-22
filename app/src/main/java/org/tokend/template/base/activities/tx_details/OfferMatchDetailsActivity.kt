@@ -50,12 +50,12 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>() {
     }
 
     private fun displayPaid(tx: MatchTransaction) {
-        val amount =
-                if (isIncome) tx.matchData.quoteAmount + tx.fee else tx.amount
-        val paidAmount =
-                if (isIncome) amount + tx.fee else amount
         val paidAsset = if (isIncome) tx.matchData.quoteAsset else tx.asset
         val receivedAsset = if (isIncome) tx.asset else tx.matchData.quoteAsset
+        val amount =
+                if (isIncome) tx.matchData.quoteAmount else tx.amount
+        val paidAmount =
+                if (tx.feeAsset == paidAsset) amount + tx.fee else amount
 
         val headingRes =
                 if (!isPending)
@@ -63,7 +63,7 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>() {
                 else
                     R.string.to_pay
 
-        if (!isIncome) {
+        if (tx.feeAsset != paidAsset) {
             InfoCard(cards_layout)
                     .setHeading(headingRes, "${AmountFormatter.formatAssetAmount(paidAmount)} " +
                             paidAsset)
@@ -86,12 +86,12 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>() {
     }
 
     private fun displayReceived(tx: MatchTransaction) {
+        val receivedAsset = if (isIncome) tx.asset else tx.matchData.quoteAsset
+        val paidAsset = if (isIncome) tx.matchData.quoteAsset else tx.asset
         val amount =
                 if (isIncome) tx.amount else tx.matchData.quoteAmount
         val receivedAmount =
-                if (isIncome) amount else amount - tx.fee
-        val receivedAsset = if (isIncome) tx.asset else tx.matchData.quoteAsset
-        val paidAsset = if (isIncome) tx.matchData.quoteAsset else tx.asset
+                if (tx.feeAsset == receivedAsset) amount - tx.fee else amount
 
         val headingRes =
                 if (!isPending)
@@ -99,7 +99,7 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>() {
                 else
                     R.string.to_receive
 
-        if (!isIncome) {
+        if (tx.feeAsset == receivedAsset) {
             InfoCard(cards_layout)
                     .setHeading(headingRes,
                             "${AmountFormatter.formatAssetAmount(receivedAmount, receivedAsset)

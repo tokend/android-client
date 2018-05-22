@@ -77,14 +77,6 @@
         <item name="actionMenuTextColor">@color/white</item>
     </style>
 
-    <style name="CardStyle">
-        <item name="cardElevation">@dimen/card_elevation</item>
-        <item name="contentPadding">@dimen/standard_margin</item>
-        <item name="cardUseCompatPadding">true</item>
-        <item name="cardBackgroundColor">@color/white</item>
-        <item name="android:layout_marginTop">@dimen/half_standard_margin</item>
-    </style>
-
     <style name="TabPicker">
         <item name="tabGravity">fill</item>
         <item name="tabMode">scrollable</item>
