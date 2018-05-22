@@ -2,6 +2,7 @@ package org.tokend.template.features.deposit
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_deposit.*
+import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.responses.AccountResponse
@@ -29,8 +31,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private lateinit var accountRepository: AccountRepository
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { activity_progress.show() },
-            hideLoading = { activity_progress.hide() }
+            showLoading = { swipe_refresh.isRefreshing = true },
+            hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -45,6 +47,11 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     override fun onInitAllowed() {
 
         initToolbar()
+        initSwipeRefresh()
+
+        if (accountRepository.isNeverUpdated) {
+            error_empty_view.showEmpty("")
+        }
 
         accountRepository.updateIfNotFresh()
 
@@ -75,6 +82,11 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         toolbar.title = getString(R.string.deposit_title)
     }
 
+    private fun initSwipeRefresh() {
+        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
+        swipe_refresh.setOnRefreshListener { accountRepository.update() }
+    }
+
     private fun initButtons() {
         show_qr_text_view.onClick{
             Navigator.openQrShare(this.requireActivity(),
@@ -89,6 +101,12 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initAssets(externalAccounts: List<AccountResponse.ExternalAccount>) {
+        if (externalAccounts.isEmpty()) {
+            error_empty_view.showEmpty(R.string.error_deposit_unavailable)
+        } else {
+            error_empty_view.hide()
+        }
+
         val assets = ArrayList<PickerItem>()
         for(account in externalAccounts) {
             assets += PickerItem(account.type.name)
