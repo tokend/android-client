@@ -253,8 +253,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         progress.setCancelable(false)
 
         repositoryProvider.balances()
-                .create(asset, accountProvider, repositoryProvider.systemInfo(),
-                        TxManager(apiProvider))
+                .create(accountProvider, repositoryProvider.systemInfo(),
+                        TxManager(apiProvider), asset)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .doOnSubscribe {

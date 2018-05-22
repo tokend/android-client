@@ -1,148 +1,245 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".features.trade.TradeFragment">
+    android:orientation="vertical">
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/appbar" />
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView2"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        app:cardUseCompatPadding="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include">
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
-        <android.support.constraint.ConstraintLayout
+        <include layout="@layout/toolbar" />
+
+        <org.tokend.template.base.view.picker.PickerTabLayout
+            android:id="@+id/pairs_tabs"
+            style="@style/TabPicker.Inverse"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:tabGravity="fill" />
 
-            <TextView
-                android:id="@+id/balance_label"
-                style="@style/SecondaryText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="2dp"
-                android:gravity="end"
-                android:text="Balance:"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@id/balance_text_view"
-                app:layout_constraintEnd_toStartOf="@id/balance_text_view"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/balance_text_view" />
+    </android.support.design.widget.AppBarLayout>
 
-            <TextView
-                android:id="@+id/balance_text_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="16dp"
-                android:gravity="start"
-                android:text="101 BTC"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/balance_label"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView3"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        app:cardUseCompatPadding="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2">
+        android:layout_height="match_parent">
 
-        <android.support.constraint.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:orientation="vertical">
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/asset_tabs"
+            <include layout="@layout/include_error_empty_view" />
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/balance_card"
+                style="@style/InfoCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:tabMode="fixed">
-
-                <android.support.design.widget.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="BTC/ETH"/>
-
-                <android.support.design.widget.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ETH/BTC"/>
-
-            </android.support.design.widget.TabLayout>
-
-            <TextView
-                android:id="@+id/bid_text_view"
-                style="@style/SecondaryText"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:text="BID"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="0dp"
+                app:cardUseCompatPadding="false"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ask_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/asset_tabs" />
-
-            <TextView
-                android:id="@+id/ask_text_view"
-                style="@style/SecondaryText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="8dp"
-                android:gravity="end"
-                android:text="ASK"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/bid_text_view"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/asset_tabs" />
+                app:layout_constraintTop_toBottomOf="@id/error_empty_view">
 
-        </android.support.constraint.ConstraintLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-    </android.support.v7.widget.CardView>
+                    <TextView
+                        android:id="@+id/balance_text_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        tools:text="Balance: 101 BTC" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/orders_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView3" />
+                    <TextView
+                        android:id="@+id/price_text_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/quarter_standard_margin"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        tools:text="1 TKD = 0.5 BTC" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
 
-    <View
-        android:id="@+id/grid_divider"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:background="@drawable/line_divider"
-        app:layout_constraintBottom_toBottomOf="@id/orders_recycler_view"
-        app:layout_constraintEnd_toEndOf="@id/orders_recycler_view"
-        app:layout_constraintStart_toStartOf="@id/orders_recycler_view"
-        app:layout_constraintTop_toTopOf="@id/orders_recycler_view" />
+            <android.support.v7.widget.CardView
+                android:id="@+id/order_book_heading_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_margin"
+                app:cardCornerRadius="0dp"
+                app:cardUseCompatPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/balance_card">
 
-</android.support.constraint.ConstraintLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/half_standard_margin"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/standard_margin"
+                        android:paddingEnd="@dimen/half_standard_margin"
+                        android:paddingStart="@dimen/half_standard_margin">
+
+                        <TextView
+                            android:id="@+id/bid_heading"
+                            style="@style/HeadingText"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="18sp"
+                            tools:text="Buy" />
+
+                        <TextView
+                            android:id="@+id/ask_heading"
+                            style="@style/HeadingText"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingStart="@dimen/half_standard_margin"
+                            android:textSize="18sp"
+                            tools:text="Sell" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/quarter_standard_margin"
+                        android:paddingEnd="@dimen/half_standard_margin"
+                        android:paddingStart="@dimen/half_standard_margin">
+
+                        <TextView
+                            android:id="@+id/buy_amount_hint"
+                            style="@style/SecondaryText"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="@dimen/text_size_hint"
+                            tools:text="Amount" />
+
+                        <TextView
+                            android:id="@+id/buy_price_hint"
+                            style="@style/SecondaryText"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:paddingEnd="@dimen/half_standard_margin"
+                            android:textSize="@dimen/text_size_hint"
+                            tools:text="Price" />
+
+                        <TextView
+                            android:id="@+id/sell_price_hint"
+                            style="@style/SecondaryText"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingStart="@dimen/half_standard_margin"
+                            android:textSize="@dimen/text_size_hint"
+                            tools:text="Price" />
+
+                        <TextView
+                            android:id="@+id/sell_amount_hint"
+                            style="@style/SecondaryText"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textSize="@dimen/text_size_hint"
+                            tools:text="Amount" />
+                    </LinearLayout>
+
+                    <include layout="@layout/layout_progress" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:minHeight="@dimen/quadra_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/order_book_heading_card">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <org.tokend.template.base.view.PaginationRecyclerView
+                        android:id="@+id/buy_offers_recycler_view"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:clipToPadding="false"
+                        android:overScrollMode="never"
+                        android:paddingBottom="@dimen/standard_margin"
+                        android:paddingStart="@dimen/half_standard_margin" />
+
+                    <org.tokend.template.base.view.PaginationRecyclerView
+                        android:id="@+id/sell_offers_recycler_view"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:clipToPadding="false"
+                        android:overScrollMode="never"
+                        android:paddingBottom="@dimen/standard_margin"
+                        android:paddingEnd="@dimen/half_standard_margin" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@color/material_drawer_divider" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/half_standard_margin">
+
+                    <TextView
+                        android:id="@+id/bids_empty_view"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/no_bids"
+                        android:textColor="@color/secondary_text"
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:id="@+id/asks_empty_view"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/no_asks"
+                        android:textColor="@color/secondary_text"
+                        android:visibility="invisible" />
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

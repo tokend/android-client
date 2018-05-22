@@ -29,10 +29,10 @@ class BalancesRepository(
         return signedApi.getBalancesDetails(accountId).toSingle()
     }
 
-    fun create(asset: String,
-               accountProvider: AccountProvider,
+    fun create(accountProvider: AccountProvider,
                systemInfoRepository: SystemInfoRepository,
-               txManager: TxManager): Completable {
+               txManager: TxManager,
+               vararg assets: String): Completable {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Completable.error(IllegalStateException("No wallet info found"))
         val account = accountProvider.getAccount()
@@ -40,12 +40,13 @@ class BalancesRepository(
 
         return systemInfoRepository.getNetworkParams()
                 .flatMap { netParams ->
-                    createBalanceCreationTransaction(netParams, accountId, account, asset)
+                    createBalanceCreationTransaction(netParams, accountId, account, assets)
                 }
                 .flatMap { transition ->
                     txManager.submit(transition)
                 }
                 .flatMapCompletable {
+                    invalidate()
                     updateDeferred()
                 }
                 .doOnSubscribe {
@@ -59,13 +60,19 @@ class BalancesRepository(
     private fun createBalanceCreationTransaction(networkParams: NetworkParams,
                                                  sourceAccountId: String,
                                                  signer: Account,
-                                                 asset: String): Single<Transaction> {
+                                                 assets: Array<out String>): Single<Transaction> {
         return Single.defer {
-            val operation = CreateBalanceOp(sourceAccountId, asset)
+            val operations = assets.map {
+                CreateBalanceOp(sourceAccountId, it)
+            }
 
             val transaction =
                     TransactionBuilder(networkParams, PublicKeyFactory.fromAccountId(sourceAccountId))
-                            .addOperation(Operation.OperationBody.ManageBalance(operation))
+                            .apply {
+                                operations.forEach {
+                                    addOperation(Operation.OperationBody.ManageBalance(it))
+                                }
+                            }
                             .build()
 
             transaction.addSignature(signer)

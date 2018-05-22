@@ -88,7 +88,20 @@ class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) 
     }
 
     private fun displayAction(item: TxHistoryItem) {
-        actionTextView.text = LocalizedName(view.context).forTransactionAction(item.action)
+        val isOfferMatch =
+                item.action == TxHistoryItem.Action.BOUGHT
+                        || item.action == TxHistoryItem.Action.SOLD
+        val isPendingOffer = item.state == TransactionState.PENDING && isOfferMatch
+
+        if (isPendingOffer) {
+            actionTextView.text =
+                    if (item.isReceived)
+                        view.context.getString(R.string.buy)
+                    else
+                        view.context.getString(R.string.sell)
+        } else {
+            actionTextView.text = LocalizedName(view.context).forTransactionAction(item.action)
+        }
     }
 
     private fun displayCounterpartyIfNeeded(item: TxHistoryItem) {
@@ -115,7 +128,12 @@ class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) 
 
     @SuppressLint("RestrictedApi")
     private fun displayStateIfNeeded(item: TxHistoryItem) {
-        if (item.state != TransactionState.SUCCESS) {
+        val isOfferMatch =
+                item.action == TxHistoryItem.Action.BOUGHT
+                        || item.action == TxHistoryItem.Action.SOLD
+        val isPendingOffer = item.state == TransactionState.PENDING && isOfferMatch
+
+        if (item.state != TransactionState.SUCCESS && !isPendingOffer) {
             extraInfoTextView.visibility = View.VISIBLE
             extraInfoTextView.text = LocalizedName(view.context).forTransactionState(item.state)
 

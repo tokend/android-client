@@ -81,6 +81,13 @@
             android:name=".base.activities.PaymentConfirmationActivity"
             android:label="@string/payment_confirmation_title"
             android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".features.trade.OfferConfirmationActivity"
+            android:label="@string/offer_confirmation_title"
+            android:theme="@style/AppTheme.CardsBackground" />
+        <activity android:name=".features.trade.adapter.OffersActivity"
+            android:label="@string/pending_offers_title"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

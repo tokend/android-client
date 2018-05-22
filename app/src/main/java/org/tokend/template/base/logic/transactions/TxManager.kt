@@ -1,12 +1,14 @@
 package org.tokend.template.base.logic.transactions
 
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import okhttp3.ResponseBody
 import org.tokend.sdk.api.ApiFactory
 import org.tokend.sdk.api.responses.SubmitTransactionResponse
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.extensions.toSingle
-import org.tokend.wallet.Transaction
+import org.tokend.wallet.*
+import org.tokend.wallet.xdr.Operation
 import retrofit2.HttpException
 import java.net.HttpURLConnection
 import java.nio.charset.Charset
@@ -46,6 +48,30 @@ class TxManager(
             null
         } finally {
             buffer.close()
+        }
+    }
+
+    companion object {
+        fun createSignedTransaction(networkParams: NetworkParams,
+                                            sourceAccountId: String,
+                                            signer: Account,
+                                            vararg operations: Operation.OperationBody
+        ): Single<Transaction> {
+            return Single.defer {
+                val transaction =
+                        TransactionBuilder(networkParams,
+                                PublicKeyFactory.fromAccountId(sourceAccountId))
+                                .apply {
+                                    operations.forEach {
+                                        addOperation(it)
+                                    }
+                                }
+                                .build()
+
+                transaction.addSignature(signer)
+
+                Single.just(transaction)
+            }.subscribeOn(Schedulers.computation())
         }
     }
 }

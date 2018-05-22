@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/cancel_offer"
+        android:icon="@drawable/ic_close_cancel"
+        android:title="@string/cancel_offer_action"
+        app:showAsAction="ifRoom" />
+</menu>

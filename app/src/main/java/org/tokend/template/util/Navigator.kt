@@ -5,12 +5,14 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
+import android.support.v4.app.Fragment
 import android.view.View
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
 import org.tokend.sdk.api.models.Asset
+import org.tokend.sdk.api.models.Offer
 import org.tokend.template.R
 import org.tokend.template.base.activities.*
 import org.tokend.template.base.activities.qr.ShareQrActivity
@@ -18,6 +20,8 @@ import org.tokend.template.base.activities.signup.RecoverySeedActivity
 import org.tokend.template.base.activities.signup.SignUpActivity
 import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.features.explore.AssetDetailsActivity
+import org.tokend.template.features.trade.OfferConfirmationActivity
+import org.tokend.template.features.trade.adapter.OffersActivity
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 
@@ -126,6 +130,18 @@ object Navigator {
                                 paymentRequest: PaymentRequest) {
         activity.startActivityForResult(activity.intentFor<PaymentConfirmationActivity>(
                 PaymentConfirmationActivity.PAYMENT_REQUEST_EXTRA to paymentRequest
+        ), requestCode)
+    }
+
+    fun openOfferConfirmation(fragment: Fragment, requestCode: Int,
+                              offer: Offer) {
+        fragment.startActivityForResult(fragment.context?.intentFor<OfferConfirmationActivity>(
+                OfferConfirmationActivity.OFFER_EXTRA to offer
+        ), requestCode)
+    }
+
+    fun openPendingOffers(fragment: Fragment, requestCode: Int) {
+        fragment.startActivityForResult(fragment.context?.intentFor<OffersActivity>(
         ), requestCode)
     }
 }

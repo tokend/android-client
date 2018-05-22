@@ -131,8 +131,8 @@ class AssetDetailsActivity : BaseActivity() {
         progress.setCancelable(false)
 
         repositoryProvider.balances()
-                .create(asset.code, accountProvider, repositoryProvider.systemInfo(),
-                        TxManager(apiProvider))
+                .create(accountProvider, repositoryProvider.systemInfo(),
+                        TxManager(apiProvider), asset.code)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .doOnSubscribe {

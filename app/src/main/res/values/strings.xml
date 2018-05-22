@@ -87,6 +87,29 @@
     <string name="payment_description_label">Description (optional)</string>
     <string name="payment_confirmation_title">Payment confirmation</string>
     <string name="payment_successfully_sent">Successfully sent</string>
+    <string name="template_balance_two_assets">Balance: %1$s\u00A0%2$s, %3$s\u00A0%4$s</string>
+    <string name="no_bids">No bids</string>
+    <string name="no_asks">No asks</string>
+    <string name="template_buy_bid_asset">Buy %1$s</string>
+    <string name="template_sell_ask_asset">Sell %1$s</string>
+    <string name="template_offer_amount_asset">Amount\n%1$s</string>
+    <string name="template_offer_price_asset">Price\n%1$s</string>
+    <string name="template_asset_pair">%1$s/%2$s</string>
+    <string name="create_offer_title">Create offer</string>
+    <string name="create_offer_dialog_total">"Total: "</string>
+    <string name="buy_action">Buy</string>
+    <string name="sell_action">Sell</string>
+    <string name="offer_confirmation_title">Offer confirmation</string>
+    <string name="offer_created">Offer created</string>
+    <string name="pending_offers_title">Pending offers</string>
+    <string name="no_pending_offers">No pending offers</string>
+    <string name="pending_offer_details_title">Pending offer details</string>
+    <string name="buy">Buy</string>
+    <string name="sell">Sell</string>
+    <string name="template_price_one_equals">1 %1$s = %2$s %3$s</string>
+    <string name="cancel_offer_action">Cancel offer</string>
+    <string name="cancel_offer_confirmation">Are you sure want to cancel this offer?</string>
+    <string name="offer_canceled">Offer has been canceled</string>
 
     <string name="asset_summary_title">Token summary</string>
     <string name="asset_available">Available</string>
@@ -156,6 +179,7 @@
     <string name="error_no_transferable_assets">No transferable tokens found</string>
     <string name="error_invalid_recipient">Invalid recipient</string>
     <string name="error_no_withdrawable_assets">No withdrawable tokens found</string>
+    <string name="error_no_tradeable_pairs">No tradeable pairs found</string>
 
     <string name="error_tx_general">Transaction failed. Try again later</string>
     <string name="error_tx_bad_auth">Transaction signature is invalid</string>
@@ -192,8 +216,5 @@
     <string name="to_make_deposit_send_asset">To make a deposit send %1$s to this address</string>
     <string name="share_label">share</string>
     <string name="show_qr_label">Show QR code</string>
-
-    <!-- Trade -->
-    <string name="add_order_title">Add order</string>
 
 </resources>

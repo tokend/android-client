@@ -1,6 +1,8 @@
 package org.tokend.template.extensions
 
 import org.tokend.sdk.api.models.Asset
+import org.tokend.sdk.api.models.AssetPair
+import org.tokend.wallet.xdr.AssetPairPolicy
 import org.tokend.wallet.xdr.AssetPolicy
 
 fun Asset.isTransferable(): Boolean {
@@ -13,6 +15,10 @@ fun Asset.isBase(): Boolean {
 
 fun Asset.isWithdrawable(): Boolean {
     return checkPolicy(policy, AssetPolicy.WITHDRAWABLE.value)
+}
+
+fun AssetPair.isTradeable(): Boolean {
+    return checkPolicy(policy, AssetPairPolicy.TRADEABLE_SECONDARY_MARKET.value)
 }
 
 private fun checkPolicy(policy: Int, mask: Int): Boolean {

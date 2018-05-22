@@ -101,8 +101,9 @@ class PaymentConfirmationActivity : BaseActivity() {
     }
 
     private fun displayToReceive() {
-        val toReceive = request.amount -
-                if (!payRecipientFee) request.recipientFee.total else BigDecimal.ZERO
+        val toReceive = (request.amount -
+                if (!payRecipientFee) request.recipientFee.total else BigDecimal.ZERO)
+                .takeIf { it.signum() > 0 } ?: BigDecimal.ZERO
         receive_total_text_view.text =
                 "${AmountFormatter.formatAssetAmount(toReceive)} ${request.asset}"
 
