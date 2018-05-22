@@ -90,7 +90,6 @@
                         android:text="@string/loading_data"
                         android:visibility="gone" />
 
-
                     <LinearLayout
                         android:id="@+id/activity_layout"
                         android:layout_width="match_parent"
@@ -126,9 +125,90 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
-                            android:layout_marginTop="@dimen/half_standard_margin"
                             android:layout_marginBottom="@dimen/half_standard_padding"
                             android:layout_marginEnd="@dimen/half_standard_padding"
+                            android:layout_marginTop="@dimen/half_standard_margin"
+                            android:text="@string/view_more" />
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                style="@style/InfoCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_margin"
+                app:cardUseCompatPadding="false"
+                app:contentPadding="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/HeadingText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_margin"
+                        android:text="@string/pending_offers_title" />
+
+                    <org.tokend.template.base.view.ContentLoadingProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/offers_progress"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/offers_empty_view"
+                        style="@style/SecondaryText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/double_margin"
+                        android:layout_marginTop="@dimen/double_margin"
+                        android:gravity="center"
+                        android:text="@string/loading_data"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/offers_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <android.support.v4.widget.NestedScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:descendantFocusability="blocksDescendants"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false">
+
+                                <android.support.v7.widget.RecyclerView
+                                    android:id="@+id/offers_list"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:clipToPadding="false"
+                                    android:focusable="false"
+                                    android:focusableInTouchMode="false" />
+                            </LinearLayout>
+
+                        </android.support.v4.widget.NestedScrollView>
+
+                        <Button
+                            android:id="@+id/view_more_offers_button"
+                            style="@style/PrimaryButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginBottom="@dimen/half_standard_padding"
+                            android:layout_marginEnd="@dimen/half_standard_padding"
+                            android:layout_marginTop="@dimen/half_standard_margin"
                             android:text="@string/view_more" />
                     </LinearLayout>
                 </LinearLayout>

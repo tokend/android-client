@@ -8,23 +8,28 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
+import org.tokend.sdk.api.models.transactions.MatchTransaction
 import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
+import org.tokend.template.base.logic.repository.base.MultipleItemsRepository
 import org.tokend.template.base.logic.repository.transactions.TxRepository
 import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
@@ -42,16 +47,15 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
             onAssetChanged()
         }
 
-    private lateinit var balancesRepository: BalancesRepository
+    private val balancesRepository: BalancesRepository
+        get() = repositoryProvider.balances()
     private val txRepository: TxRepository
         get() = repositoryProvider.transactions(asset)
+    private val offersRepository: OffersRepository
+        get() = repositoryProvider.offers()
 
     private val activityAdapter = TxHistoryAdapter()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        balancesRepository = repositoryProvider.balances()
-    }
+    private val offersAdapter = TxHistoryAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -66,8 +70,10 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         initAssetTabs()
         initBalance()
         initRecentActivity()
+        initPendingOffers()
 
         subscribeToBalances()
+        subscribeToOffers()
 
         update()
     }
@@ -83,32 +89,61 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         converted_balance_text_view.text = "0 USD"
     }
 
-    private val emptyViewObserver =
-            object : RecyclerView.AdapterDataObserver() {
-                override fun onChanged() {
-                    if (activityAdapter.hasData) {
-                        empty_view.visibility = View.GONE
-                        activity_layout.visibility = View.VISIBLE
+    private fun getEmptyViewObserver(emptyView: TextView,
+                                     emptyText: String,
+                                     contentView: View,
+                                     repository: () -> MultipleItemsRepository<out Any>
+    ): RecyclerView.AdapterDataObserver {
+        return object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() {
+                if (repository().itemsSubject.value.isNotEmpty()) {
+                    emptyView.visibility = View.GONE
+                    contentView.visibility = View.VISIBLE
+                } else {
+                    if (repository().isNeverUpdated) {
+                        emptyView.text = getString(R.string.loading_data)
                     } else {
-                        if (txRepository.isNeverUpdated) {
-                            empty_view.text = getString(R.string.loading_data)
-                        } else {
-                            empty_view.text = getString(R.string.no_transaction_history)
-                        }
-                        empty_view.visibility = View.VISIBLE
-                        activity_layout.visibility = View.GONE
+                        emptyView.text = emptyText
                     }
+                    emptyView.visibility = View.VISIBLE
+                    contentView.visibility = View.GONE
                 }
             }
+        }
+    }
 
     private fun initRecentActivity() {
-        activityAdapter.registerAdapterDataObserver(emptyViewObserver)
+        activityAdapter.registerAdapterDataObserver(
+                getEmptyViewObserver(empty_view,
+                        getString(R.string.no_transaction_history),
+                        activity_layout) {
+                    txRepository
+                }
+        )
 
         activity_list.layoutManager = LinearLayoutManager(context)
         activity_list.adapter = activityAdapter
         activity_list.isNestedScrollingEnabled = false
 
         view_more_button.onClick {
+            it?.isEnabled = false
+        }
+    }
+
+    private fun initPendingOffers() {
+        offersAdapter.registerAdapterDataObserver(
+                getEmptyViewObserver(offers_empty_view,
+                        getString(R.string.no_pending_offers),
+                        offers_layout) {
+                    offersRepository
+                }
+        )
+
+        offers_list.layoutManager = LinearLayoutManager(context)
+        offers_list.adapter = offersAdapter
+        offers_list.isNestedScrollingEnabled = false
+
+        view_more_offers_button.onClick {
             it?.isEnabled = false
         }
     }
@@ -170,6 +205,38 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                             }
                         }
     }
+
+    private var offersDisposable: CompositeDisposable? = null
+
+    private fun subscribeToOffers() {
+        val contextAccountId = walletInfoProvider.getWalletInfo()?.accountId ?: ""
+        offersDisposable?.dispose()
+        offersDisposable = CompositeDisposable(
+                offersRepository.itemsSubject
+                        .map { it.subList(0, Math.min(it.size, TRANSACTIONS_TO_DISPLAY)) }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .subscribe {
+                            offersAdapter.setData(it.map {
+                                TxHistoryItem.fromTransaction(
+                                        contextAccountId,
+                                        MatchTransaction.fromOffer(it)
+                                )
+                            })
+                        },
+                offersRepository.loadingSubject
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .subscribe { loading ->
+                            if (loading) {
+                                offers_progress.show()
+                                offers_empty_view.text = getString(R.string.loading_data)
+                            } else {
+                                offers_progress.hide()
+                            }
+                        }
+        )
+    }
     // endregion
 
     // region Display
@@ -190,6 +257,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
 
     private fun update() {
         balancesRepository.updateIfNotFresh()
+        offersRepository.updateIfNotFresh()
     }
 
     private fun onAssetChanged() {
