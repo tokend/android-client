@@ -76,7 +76,8 @@ object Navigator {
         activity.startActivity(activity.intentFor<SignInActivity>()
                 .singleTop()
                 .clearTop())
-        activity.finish()
+        activity.setResult(Activity.RESULT_CANCELED, null)
+        ActivityCompat.finishAffinity(activity)
     }
 
     fun toMainActivity(activity: Activity) {

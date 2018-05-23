@@ -1,7 +1,9 @@
 package org.tokend.template
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.multidex.MultiDexApplication
 import android.support.v4.app.ActivityCompat
@@ -21,6 +23,7 @@ import io.reactivex.subjects.BehaviorSubject
 import org.tokend.template.base.logic.di.ApiProviderModule
 import org.tokend.template.base.logic.di.AppStateComponent
 import org.tokend.template.base.logic.di.DaggerAppStateComponent
+import org.tokend.template.base.logic.di.PersistenceModule
 import org.tokend.template.util.Navigator
 import java.util.*
 
@@ -111,11 +114,17 @@ class App : MultiDexApplication() {
         cookieCache = SetCookieCache()
     }
 
+    private fun getCredentialsPreferences(): SharedPreferences {
+        return getSharedPreferences("CredentialsPersistence",
+                Context.MODE_PRIVATE)
+    }
+
     private fun initStateComponent() {
         val cookieJar = PersistentCookieJar(cookieCache, cookiePersistor)
 
         stateComponent = DaggerAppStateComponent.builder()
                 .apiProviderModule(ApiProviderModule(BuildConfig.API_URL, cookieJar))
+                .persistenceModule(PersistenceModule(getCredentialsPreferences()))
                 .build()
     }
 
@@ -128,7 +137,9 @@ class App : MultiDexApplication() {
         cookieCache.clear()
     }
 
+    @SuppressLint("ApplySharedPref")
     fun signOut(activity: Activity?) {
+        getCredentialsPreferences().edit().clear().commit()
         clearCookies()
         clearState()
 

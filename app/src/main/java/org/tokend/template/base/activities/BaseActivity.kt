@@ -15,7 +15,9 @@ import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.base.logic.di.providers.RepositoryProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
+import org.tokend.template.base.logic.persistance.CredentialsPersistor
 import org.tokend.template.base.tfa.TfaDialogFactory
+import org.tokend.template.util.Navigator
 import javax.inject.Inject
 
 abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
@@ -29,6 +31,8 @@ abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
     lateinit var walletInfoProvider: WalletInfoProvider
     @Inject
     lateinit var repositoryProvider: RepositoryProvider
+    @Inject
+    lateinit var credentialsPersistor: CredentialsPersistor
 
     protected open val allowUnauthorized = false
 
@@ -49,7 +53,7 @@ abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
         if (accountProvider.getAccount() != null || allowUnauthorized) {
             onCreateAllowed(savedInstanceState)
         } else {
-            (application as? App)?.signOut(this)
+            Navigator.toSignIn(this)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

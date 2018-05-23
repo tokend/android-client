@@ -12,7 +12,8 @@ import javax.inject.Singleton
     WalletInfoProviderModule::class,
     AppTfaCallbackModule::class,
     ApiProviderModule::class,
-    RepositoriesModule::class
+    RepositoriesModule::class,
+    PersistenceModule::class
 ])
 interface AppStateComponent {
     fun inject(baseActivity: BaseActivity)
