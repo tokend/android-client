@@ -1,87 +1,114 @@
+ext {
+    // ----- Android params -----
+
+    // Application ID - unique identifier of the app in Google Play and on user's device
+    application_id = 'org.tokend.template'
+    // Version Name - human-readable app version
+    version_name = '0.1'
+    // Version Code - code number for version,
+    // must be incremented after each release
+    version_code = 1
+
+    // --------------------------
+
+
+    // ----- Network params -----
+
+    // API URL - TokenD instance root URL
+    api_url = '"https://api.testnet.tokend.org"'
+
+    // Storage URL - Root URL of file storage
+    storage_url = '"https://storage.api.testnet.tokend.org"'
+
+    // Web-client URL - Root URL of the related web-client,
+    // will be opened if some functions are not available in mobile app
+    web_client_url = '"https://testnet.tokend.org"'
+
+    // App host - Host of the related web-client,
+    // used to open verification and referral links in app
+    app_host = '"testnet.tokend.org"'
+
+    // Terms of Service URL - Link to the Terms of Service page of your project,
+    // used during sign in
+    terms_url = '"https://testnet.tokend.org/terms"'
+
+    // --------------------------
+
+
+    // ----- Appearance -----
+
+    // Primary color - color of app toolbar
+    color_primary = '#0066cc'
+    // Primary dark - color of status bar above toolbar
+    color_primary_dark =  '#01579B'
+
+    // Accent color - color of actions and controls by default
+    color_accent = '#ef5350'
+
+    // Background color - used as a background color on screens with cards
+    color_background = '#e8e8e8'
+
+    // Primary text - color of all text labels and fields
+    color_primary_text = '#212121'
+    // Secondary text - color of hints
+    color_secondary_text = '#803f4244'
+
+    // Primary action - custom color for action controls,
+    // same as Accent by default
+    color_primary_action = '#ef5350'
+    // Primary action disabled - color of disabled action control,
+    // usually it's just a Primary action color with some transparency
+    color_primary_action_disabled = '#80ef5350'
+
+    // Icons - color of all icons in app except menus
+    color_icons = '#6F6F6F'
+
+    // Error - color of error messages,
+    // usually a shade of red
+    color_error = '#c2243b'
+    // Ok - color of success messages,
+    // usually a shade of green
+    color_ok = '#3fa595'
+
+    // Received - color of income amounts
+    color_received = '#689F38'
+    // Sent - color of spent amounts
+    color_sent = '#D32F2F'
+
+    // ----------------------
+
+    // ----- Security -----
+    // Secure content - when set to "true" app content will not be
+    // shown in multitasking, also user will not be allowed to take
+    // screenshots
+    secure_content = 'false'
+}
+
 android {
     defaultConfig {
-        // ----- Android params -----
+        applicationId "${application_id}"
+        versionName "${version_name}"
+        versionCode version_code
 
-        // Application ID - unique identifier of the app in Google Play and on user's device
-        applicationId "org.tokend.template"
-        // Version Name - human-readable app version
-        versionName "0.1"
-        // Version Code - code number for version,
-        // must be incremented after each release
-        versionCode 1
+        buildConfigField 'String', 'API_URL', "${api_url}"
+        buildConfigField 'String', 'STORAGE_URL', "${storage_url}"
+        buildConfigField 'String', 'WEB_CLIENT_URL', "${web_client_url}"
+        buildConfigField 'String', 'TERMS_URL', "${terms_url}"
+        buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"
 
-        // --------------------------
-
-
-        // ----- Network params -----
-
-        // API URL - TokenD instance root URL
-        buildConfigField 'String', 'API_URL', '"https://api.testnet.tokend.org"'
-
-        // Storage URL - Root URL of file storage
-        buildConfigField 'String', 'STORAGE_URL', '"https://storage.api.testnet.tokend.org"'
-
-        // Web-client URL - Root URL of the related web-client,
-        // will be opened if some functions are not available in mobile app
-        buildConfigField 'String', 'WEB_CLIENT_URL', '"https://testnet.tokend.org"'
-
-        // App host - Host of the related web-client,
-        // used to open verification and referral links in app
-        resValue "string", "app_host", "testnet.tokend.org"
-
-        // Terms of Service URL - Link to the Terms of Service page of your project,
-        // used during sign in
-        buildConfigField 'String', 'TERMS_URL', '"https://testnet.tokend.org/terms"'
-
-        // --------------------------
-
-
-        // ----- Appearance -----
-
-        // Primary color - color of app toolbar
-        resValue "color", "primary", "#0066cc"
-        // Primary dark - color of status bar above toolbar
-        resValue "color", "primary_dark", "#01579B"
-
-        // Accent color - color of actions and controls by default
-        resValue "color", "accent", "#ef5350"
-
-        // Background color - used as a background color on screens with cards
-        resValue "color", "background", "#e8e8e8"
-
-        // Primary text - color of all text labels and fields
-        resValue "color", "primary_text", "#212121"
-        // Secondary text - color of hints
-        resValue "color", "secondary_text", "#803f4244"
-
-        // Primary action - custom color for action controls,
-        // same as Accent by default
-        resValue "color", "primary_action", "#ef5350"
-        // Primary action disabled - color of disabled action control,
-        // usually it's just a Primary action color with some transparency
-        resValue "color", "primary_action_disabled", "#80ef5350"
-
-        // Icons - color of all icons in app except menus
-        resValue "color", "icons", "#6F6F6F"
-
-        // Error - color of error messages,
-        // usually a shade of red
-        resValue "color", "error", "#c2243b"
-        // Ok - color of success messages,
-        // usually a shade of green
-        resValue "color", "ok", "#3fa595"
-
-        // Received - color of income amounts
-        resValue "color", "received", "#689F38"
-        // Sent - color of spent amounts
-        resValue "color", "sent", "#D32F2F"
-
-        // ----------------------
-
-        // ----- Security -----
-        // Secure content - when set to "true" app content will not be
-        // shown in multitasking, also user will not be allowed to take
-        // screenshots
-        buildConfigField 'Boolean', 'SECURE_CONTENT', 'false'
+        resValue "string", "app_host", "${app_host}"
+        resValue "color", "primary", "${color_primary}"
+        resValue "color", "primary_dark", "${color_primary_dark}"
+        resValue "color", "accent", "${color_accent}"
+        resValue "color", "background", "${color_background}"
+        resValue "color", "primary_text", "${color_primary_text}"
+        resValue "color", "secondary_text", "${color_secondary_text}"
+        resValue "color", "primary_action", "${color_primary_action}"
+        resValue "color", "primary_action_disabled", "${color_primary_action_disabled}"
+        resValue "color", "icons", "${color_icons}"
+        resValue "color", "error", "${color_error}"
+        resValue "color", "ok", "${color_ok}"
+        resValue "color", "received", "${color_received}"
+        resValue "color", "sent", "${color_sent}"
     }
 }
