@@ -5,8 +5,10 @@ import org.tokend.sdk.api.responses.SubmitTransactionResponse
 class TransactionFailedException(val submitResponse: SubmitTransactionResponse): Exception() {
     val transactionResultCode: String
         get() = submitResponse.extras.resultCodes.transactionResultCode
+    val operationResultCodes: Collection<String>
+        get() = submitResponse.extras.resultCodes.operationsResultCodes
     val firstOperationResultCode: String?
-        get() = submitResponse.extras.resultCodes.operationsResultCodes.firstOrNull {
+        get() = operationResultCodes.firstOrNull {
             it != "op_success"
         }
 
@@ -25,5 +27,6 @@ class TransactionFailedException(val submitResponse: SubmitTransactionResponse):
         const val OP_INACTIVE_SALE = "op_sale_is_not_active"
         const val OP_ENDED_SALE = "op_sale_already_ended"
         const val OP_OFFER_CROSS_SELF = "op_cross_self"
+        const val OP_NO_AVAILABLE_EXTERNAL_ACCOUNTS = "op_no_available_id"
     }
 }

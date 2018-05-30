@@ -220,5 +220,12 @@
     <string name="show_qr_label">Show QR code</string>
     <string name="share_address_label">Share address</string>
     <string name="error_deposit_unavailable">Deposit is unavailable</string>
+    <string name="template_no_personal_asset_address">No personal %1$s address</string>
+    <string name="get_personal_address_action">Get address</string>
+    <string name="deposit_address_expiration_date">Expiration date</string>
+    <string name="renew_personal_address_action">Renew</string>
+    <string name="no_addresses_in_pool_title">No available addresses</string>
+    <string name="no_addresses_in_pool_explanation">No addresses are currently available
+        for this asset. Try again later or contact support</string>
 
 </resources>

@@ -1,5 +1,7 @@
 package org.tokend.template.features.deposit
 
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -9,18 +11,25 @@ import android.view.View
 import android.view.ViewGroup
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_deposit.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
+import org.tokend.sdk.api.models.Asset
 import org.tokend.sdk.api.responses.AccountResponse
+import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.repository.AccountRepository
+import org.tokend.template.base.logic.repository.assets.AssetsRepository
+import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.picker.PickerItem
 import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.util.DateFormatter
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
@@ -29,11 +38,22 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
     private lateinit var accountRepository: AccountRepository
+    private lateinit var assetsRepository: AssetsRepository
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },
             hideLoading = { swipe_refresh.isRefreshing = false }
     )
+
+    private var currentAsset: Asset? = null
+        set(value) {
+            field = value
+            onAssetChanged()
+        }
+    private val externalAccount: AccountResponse.ExternalAccount?
+        get() = accountRepository.itemSubject.value
+                ?.externalAccounts
+                ?.find { it.type.typeI == currentAsset?.details?.externalSystemType }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_deposit, container, false)
@@ -42,40 +62,79 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         accountRepository = repositoryProvider.account()
+        assetsRepository = repositoryProvider.assets()
     }
 
     override fun onInitAllowed() {
-
         initToolbar()
         initSwipeRefresh()
 
-        if (accountRepository.isNeverUpdated) {
-            error_empty_view.showEmpty("")
-        }
-
-        accountRepository.updateIfNotFresh()
-
-        accountRepository.itemSubject
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe ({
-                    initAssets(it.externalAccounts)
-                })
-        accountRepository.loadingSubject
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    loadingIndicator.setLoading(it, "deposit")
-                }
-        accountRepository.errorsSubject
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    ErrorHandlerFactory.getDefault().handle(it)
-                }
-
         initButtons()
+
+        subscribeToAccount()
+        subscribeToAssets()
+
+        update()
     }
+
+    // region Subscribe
+    private var accountDisposable: CompositeDisposable? = null
+
+    private fun subscribeToAccount() {
+        accountDisposable?.dispose()
+        accountDisposable = CompositeDisposable(
+                accountRepository.itemSubject
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .subscribe({
+                            displayAddress()
+                        }),
+                accountRepository.loadingSubject
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .subscribe {
+                            loadingIndicator.setLoading(it, "account")
+                        },
+                accountRepository.errorsSubject
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .subscribe {
+                            ErrorHandlerFactory.getDefault().handle(it)
+                        }
+        )
+    }
+
+    private var assetsDisposable: CompositeDisposable? = null
+    private fun subscribeToAssets() {
+        assetsDisposable?.dispose()
+        assetsDisposable = CompositeDisposable(
+                assetsRepository.itemsSubject
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .subscribe({
+                            initAssets(it)
+                        }),
+                assetsRepository.loadingSubject
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .subscribe {
+                            loadingIndicator.setLoading(it, "assets")
+                        },
+                assetsRepository.errorsSubject
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .subscribe {
+                            if (assetsRepository.isNeverUpdated) {
+                                error_empty_view.showError(it) {
+                                    update()
+                                }
+                            } else {
+                                ErrorHandlerFactory.getDefault().handle(it)
+                            }
+                        }
+        )
+    }
+    // endregion
 
     private fun initToolbar() {
         toolbarSubject.onNext(toolbar)
@@ -84,11 +143,11 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
-        swipe_refresh.setOnRefreshListener { accountRepository.update() }
+        swipe_refresh.setOnRefreshListener { update(true) }
     }
 
     private fun initButtons() {
-        show_qr_text_view.onClick{
+        show_qr_text_view.onClick {
             Navigator.openQrShare(this.requireActivity(),
                     "${getString(R.string.deposit_title)} ${asset_tab_layout.selectedItem?.text}",
                     address_text_view.text.toString(),
@@ -98,30 +157,89 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         share_btn.onClick {
             shareData()
         }
+
+        listOf(get_address_btn, renew_btn).forEach {
+            it.onClick {
+                bindExternalAccount()
+            }
+        }
     }
 
-    private fun initAssets(externalAccounts: List<AccountResponse.ExternalAccount>) {
-        if (externalAccounts.isEmpty()) {
-            error_empty_view.showEmpty(R.string.error_deposit_unavailable)
+    private fun initAssets(assets: List<Asset>) {
+        val depositableAssets = assets.filter { it.isBackedByExternalSystem }
+
+        if (depositableAssets.isEmpty()) {
+            if (assetsRepository.isNeverUpdated) {
+                error_empty_view.showEmpty("")
+            } else {
+                asset_tab_layout.visibility = View.GONE
+                error_empty_view.showEmpty(R.string.error_deposit_unavailable)
+            }
         } else {
+            asset_tab_layout.visibility = View.VISIBLE
             error_empty_view.hide()
         }
 
-        val assets = ArrayList<PickerItem>()
-        for(account in externalAccounts) {
-            assets += PickerItem(account.type.name)
-        }
+        asset_tab_layout.setItems(
+                depositableAssets.map {
+                    PickerItem(it.code, it)
+                }
+        )
 
         asset_tab_layout.onItemSelected({
-            val index = assets.indexOfFirst{item -> item == it }
-            val address = externalAccounts[index].data
-            val replacement = asset_tab_layout.selectedItem?.text
-            address_text_view.text = address
-
-            to_make_deposit_text_view.text = getString(R.string.to_make_deposit_send_asset, replacement)
+            (it.tag as? Asset)?.let { currentAsset = it }
         })
+    }
 
-        asset_tab_layout.setItems(assets)
+    private fun update(force: Boolean = false) {
+        if (!force) {
+            accountRepository.updateIfNotFresh()
+            assetsRepository.updateIfNotFresh()
+        } else {
+            accountRepository.update()
+            assetsRepository.update()
+        }
+    }
+
+    private fun onAssetChanged() {
+        displayAddress()
+    }
+
+    private fun displayAddress() {
+        externalAccount?.data.let { address ->
+            if (address != null) {
+                deposit_address_layout.visibility = View.VISIBLE
+                no_address_layout.visibility = View.GONE
+
+                address_text_view.text = address
+                to_make_deposit_text_view.text = getString(R.string.to_make_deposit_send_asset,
+                        currentAsset?.code)
+
+                externalAccount?.expirationDate.let { expirationDate ->
+                    if (expirationDate != null) {
+                        address_expiration_card.visibility = View.VISIBLE
+                        address_expiration_text_view.text =
+                                DateFormatter(context ?: App.context)
+                                        .formatLong(expirationDate)
+                    } else {
+                        address_expiration_card.visibility = View.GONE
+                    }
+                }
+            } else {
+                deposit_address_layout.visibility = View.GONE
+                address_expiration_card.visibility = View.GONE
+                no_address_layout.visibility = View.VISIBLE
+
+                if (accountRepository.isNeverUpdated) {
+                    no_address_text_view.text = getString(R.string.loading_data)
+                    get_address_btn.visibility = View.GONE
+                } else {
+                    no_address_text_view.text = getString(R.string.template_no_personal_asset_address,
+                            currentAsset?.code)
+                    get_address_btn.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 
     private fun shareData() {
@@ -131,5 +249,58 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 getString(R.string.app_name))
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, address_text_view.text)
         startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_address_label)))
+    }
+
+    private fun bindExternalAccount() {
+        val asset = currentAsset?.code
+                ?: return
+        val type = currentAsset?.details?.externalSystemType
+                ?: return
+
+        val progress = ProgressDialog(context)
+        progress.isIndeterminate = true
+        progress.setMessage(getString(R.string.processing_progress))
+        progress.setCancelable(false)
+
+        DepositManager(
+                walletInfoProvider,
+                repositoryProvider.balances(),
+                accountRepository
+        )
+                .bindExternalAccount(
+                        accountProvider,
+                        repositoryProvider.systemInfo(),
+                        TxManager(apiProvider),
+                        asset,
+                        type
+                )
+                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                .compose(ObservableTransformers.defaultSchedulersCompletable())
+                .doOnSubscribe {
+                    progress.show()
+                }
+                .doOnTerminate {
+                    progress.dismiss()
+                }
+                .subscribeBy(
+                        onComplete = {
+                            update()
+                        },
+                        onError = {
+                            if (it is DepositManager.NoAvailableExternalAccountsException) {
+                                displayEmptyPoolError()
+                            } else {
+                                ErrorHandlerFactory.getDefault().handle(it)
+                            }
+                        }
+                )
+    }
+
+    private fun displayEmptyPoolError() {
+        AlertDialog.Builder(context, R.style.AlertDialogStyle)
+                .setTitle(R.string.no_addresses_in_pool_title)
+                .setMessage(R.string.no_addresses_in_pool_explanation)
+                .setPositiveButton(R.string.ok, null)
+                .show()
     }
 }
