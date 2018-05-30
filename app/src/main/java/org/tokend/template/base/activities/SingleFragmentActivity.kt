@@ -12,30 +12,35 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
+import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.fragments.WalletFragment
+import org.tokend.template.features.dashboard.DashboardFragment
+import org.tokend.template.features.explore.ExploreAssetsFragment
 
-class ExploreAssetActivity : BaseActivity() {
+class SingleFragmentActivity : BaseActivity() {
 
     private var asset: String? = null
+    private var screenId : Long? = null
 
-    private var walletFragment: WalletFragment? = null
+    private var fragment: Fragment? = null
 
     private var navigationDrawer: Drawer? = null
 
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_explore_asset)
-        asset = intent.getStringExtra("asset")
+        asset = intent.getStringExtra(ASSET_EXTRA)
+        screenId = intent.getLongExtra(SCREEN_ID,DashboardFragment.ID)
+
         initFragment()
-        displayFragment(walletFragment!!)
+        displayFragment(fragment!!)
     }
 
     private fun initFragment() {
-        walletFragment = WalletFragment()
-        walletFragment?.arguments = Bundle().apply {
-            putString("asset", asset)
-
+        when(screenId){
+            WalletFragment.ID -> fragment = WalletFragment.newInstance(asset)
+            SendFragment.ID -> fragment = SendFragment.newInstance(asset)
         }
     }
 
@@ -62,6 +67,11 @@ class ExploreAssetActivity : BaseActivity() {
                     }
 
         }
+    }
+
+    companion object {
+        private const val SCREEN_ID = "screenId"
+        private const val ASSET_EXTRA = "asset"
     }
 }
 

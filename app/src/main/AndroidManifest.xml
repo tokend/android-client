@@ -127,7 +127,7 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name=".base.activities.ExploreAssetActivity"
+        <activity android:name=".base.activities.SingleFragmentActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

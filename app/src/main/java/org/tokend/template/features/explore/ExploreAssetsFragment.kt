@@ -283,4 +283,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
             assetsRepository.update()
         }
     }
+
+    companion object {
+         const val ID = 1114L
+    }
 }

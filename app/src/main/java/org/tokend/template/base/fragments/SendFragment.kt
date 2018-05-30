@@ -436,13 +436,15 @@ class SendFragment : BaseFragment(), ToolbarProvider {
             updateConfirmAvailability()
         }
 
-        if(resultCode == Activity.RESULT_OK && requestCode == PAYMENT_CONFIRMATION)
-            Navigator.toWallet(this,asset)
-    }
+        if(resultCode == Activity.RESULT_OK && requestCode == PAYMENT_CONFIRMATION) {
+            Navigator.toWallet(this, asset)
+        }
+   }
 
     companion object {
         private const val PAYMENT_CONFIRMATION = 1234
         private const val ASSET_EXTRA = "asset"
+        const val ID = 1118L
 
 
         fun newInstance(asset: String? = null): SendFragment{

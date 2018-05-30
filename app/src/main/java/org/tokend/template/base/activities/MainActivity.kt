@@ -26,38 +26,31 @@ import org.tokend.template.R
 import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.fragments.WalletFragment
-import org.tokend.template.base.fragments.settings.GeneralSettingsFragment
+import org.tokend.template.base.fragments.settings.SettingsFragment
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.explore.ExploreAssetsFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.trade.TradeFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
+import org.tokend.template.util.FragmentFactory
 
 class MainActivity : BaseActivity() {
     companion object {
-        private var counter = 0L
-
-        private val DASHBOARD = counter++
-        private val WALLET = counter++
-        private val DEPOSIT = counter++
-        private val WITHDRAW = counter++
-        private val EXPLORE = counter++
-        private val TRADE = counter++
-        private val SETTINGS = counter++
-        private val SIGN_OUT = counter++
-        private val SEND = counter++
+        private val SIGN_OUT = 7L
 
         private const val ASSET_EXTRA = "asset"
+        private const val SCREEN_ID = "screenId"
     }
 
     private var navigationDrawer: Drawer? = null
+    private val factory = FragmentFactory()
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
 
         initNavigation()
 
-        navigationDrawer?.setSelection(DASHBOARD)
+        navigationDrawer?.setSelection(DashboardFragment.ID)
     }
 
     // region Init
@@ -79,27 +72,27 @@ class MainActivity : BaseActivity() {
 
         val dashboardItem = PrimaryDrawerItem()
                 .withName(R.string.dashboard_title)
-                .withIdentifier(DASHBOARD)
+                .withIdentifier(DashboardFragment.ID)
                 .withIcon(R.drawable.ic_dashboard)
 
         val walletItem = PrimaryDrawerItem()
                 .withName(R.string.wallet_title)
-                .withIdentifier(WALLET)
+                .withIdentifier(WalletFragment.ID)
                 .withIcon(R.drawable.ic_balance)
 
         val depositItem = PrimaryDrawerItem()
                 .withName(R.string.deposit_title)
-                .withIdentifier(DEPOSIT)
+                .withIdentifier(DepositFragment.ID)
                 .withIcon(R.drawable.ic_deposit)
 
         val withdrawItem = PrimaryDrawerItem()
                 .withName(R.string.withdraw_title)
-                .withIdentifier(WITHDRAW)
+                .withIdentifier(WithdrawFragment.ID)
                 .withIcon(R.drawable.ic_withdraw)
 
         val sendItem = PrimaryDrawerItem()
                 .withName(R.string.send_title)
-                .withIdentifier(SEND)
+                .withIdentifier(SendFragment.ID)
                 .withIcon(R.drawable.ic_send)
                 .withIconColorRes(R.color.icons)
                 .withSelectedIconColorRes(R.color.icons)
@@ -107,17 +100,17 @@ class MainActivity : BaseActivity() {
 
         val exploreItem = PrimaryDrawerItem()
                 .withName(R.string.explore_title_short)
-                .withIdentifier(EXPLORE)
+                .withIdentifier(ExploreAssetsFragment.ID)
                 .withIcon(R.drawable.ic_coins)
 
         val tradeItem = PrimaryDrawerItem()
                 .withName(R.string.trade_title)
-                .withIdentifier(TRADE)
+                .withIdentifier(TradeFragment.ID)
                 .withIcon(R.drawable.ic_trade)
 
         val settingsItem = PrimaryDrawerItem()
                 .withName(R.string.settings_title)
-                .withIdentifier(SETTINGS)
+                .withIdentifier(SettingsFragment.ID)
                 .withIcon(R.drawable.ic_settings)
 
         val signOutItem = PrimaryDrawerItem()
@@ -171,14 +164,14 @@ class MainActivity : BaseActivity() {
     private fun navigateTo(screenIdentifier: Long) {
         val fragment =
             when (screenIdentifier) {
-                DASHBOARD -> getDashboardFragment()
-                WALLET -> getWalletFragment()
-                WITHDRAW -> getWithdrawFragment()
-                SEND -> getSendFragment()
-                EXPLORE -> getExploreFragment()
-                SETTINGS -> getSettingsFragment()
-                TRADE -> getTradeFragment()
-                DEPOSIT -> getDepositFragment()
+                DashboardFragment.ID -> factory.getDashboardFragment()
+                WalletFragment.ID -> factory.getWalletFragment()
+                WithdrawFragment.ID -> factory.getWithdrawFragment()
+                SendFragment.ID -> factory.getSendFragment()
+                ExploreAssetsFragment.ID -> factory.getExploreFragment()
+                SettingsFragment.ID -> factory.getSettingsFragment()
+                TradeFragment.ID -> factory.getTradeFragment()
+                DepositFragment.ID -> factory.getDepositFragment()
                 else -> null
             }
 
@@ -189,37 +182,7 @@ class MainActivity : BaseActivity() {
     // endregion
 
     // region Fragments
-    private fun getDashboardFragment(): Fragment {
-        return DashboardFragment.newInstance()
-    }
 
-    private fun getWalletFragment(asset: String? = null): Fragment {
-        return WalletFragment.newInstance(asset)
-    }
-
-    private fun getSettingsFragment(): Fragment {
-        return GeneralSettingsFragment()
-    }
-
-    private fun getTradeFragment(): Fragment {
-        return TradeFragment()
-    }
-
-    private fun getWithdrawFragment(asset: String? = null): Fragment {
-        return WithdrawFragment.newInstance(asset)
-    }
-
-    private fun getSendFragment(asset: String? = null): Fragment {
-        return SendFragment.newInstance(asset)
-    }
-
-    private fun getExploreFragment(): Fragment {
-        return ExploreAssetsFragment()
-    }
-
-    private fun getDepositFragment(): Fragment {
-        return DepositFragment()
-    }
 
     private var fragmentToolbarDisposable: Disposable? = null
     private fun displayFragment(fragment: Fragment) {
@@ -262,19 +225,22 @@ class MainActivity : BaseActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        val screenId = intent!!.getLongExtra("screenId", 0L)
+        val screenId = intent!!.getLongExtra(SCREEN_ID, DashboardFragment.ID)
         val asset : String? = intent.getStringExtra(ASSET_EXTRA)
 
         if(asset != null){
             var fragment: Fragment? = null
-            if(screenId == 1L)
-                fragment = getWalletFragment(asset)
-            else if(screenId == 8L){
-                fragment = getSendFragment(asset)
+            if(screenId == WalletFragment.ID) {
+                fragment = factory.getWalletFragment(asset)
             }
+            else if(screenId == SendFragment.ID){
+                fragment = factory.getSendFragment(asset)
+            }
+
             navigateTo(screenId,fragment!!)
-        }else
-        navigateTo(screenId)
+        }else {
+            navigateTo(screenId)
+        }
 
     }
 

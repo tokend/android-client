@@ -82,4 +82,8 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         updateSummary(key)
     }
+
+    companion object {
+        const val ID = 1116L
+    }
 }

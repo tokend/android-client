@@ -24,8 +24,10 @@ import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.transactions.MatchTransaction
 import org.tokend.template.R
 import org.tokend.template.base.activities.MainActivity
+import org.tokend.template.base.activities.SingleFragmentActivity
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
+import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
 import org.tokend.template.base.logic.repository.base.MultipleItemsRepository
 import org.tokend.template.base.logic.repository.transactions.TxRepository
@@ -131,12 +133,8 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         activity_list.isNestedScrollingEnabled = false
 
         view_more_button.onClick {
-
-            var toSend = Intent(context,MainActivity::class.java)
-            toSend.putExtra("screenId",1L)
-            startActivity(view!!.context.intentFor<MainActivity>("screenId" to 1L,
+            startActivity(view!!.context.intentFor<SingleFragmentActivity>(SCREEN_ID to WalletFragment.ID,
                     ASSET_EXTRA to asset))
-
         }
     }
 
@@ -154,7 +152,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         offers_list.isNestedScrollingEnabled = false
 
         view_more_offers_button.onClick {
-            var offersIntent = Intent(view!!.context,OffersActivity::class.java)
+            val offersIntent = Intent(view!!.context,OffersActivity::class.java)
             startActivity(offersIntent)
         }
     }
@@ -280,6 +278,8 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     companion object {
         private const val TRANSACTIONS_TO_DISPLAY = 3
         private const val ASSET_EXTRA = "asset"
+        private const val SCREEN_ID = "screenId"
+        const val ID = 1110L
 
         fun newInstance(): DashboardFragment {
             val fragment = DashboardFragment()

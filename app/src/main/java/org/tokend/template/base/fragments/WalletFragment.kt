@@ -24,6 +24,7 @@ import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.transactions.*
 import org.tokend.template.R
 import org.tokend.template.base.activities.MainActivity
+import org.tokend.template.base.activities.SingleFragmentActivity
 import org.tokend.template.base.activities.tx_details.*
 import org.tokend.template.base.logic.repository.transactions.TxRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
@@ -86,7 +87,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     private fun initSend(){
         send_fab.onClick {
-            startActivity(view!!.context.intentFor<MainActivity>("screenId" to 8L, ASSET_EXTRA to asset))
+            startActivity(view!!.context.intentFor<SingleFragmentActivity>(SCREEN_ID to SendFragment.ID, ASSET_EXTRA to asset))
         }
     }
 
@@ -294,6 +295,8 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     companion object {
         private const val ASSET_EXTRA = "asset"
+        private const val SCREEN_ID = "screenId"
+        const val ID = 1111L
 
         fun newInstance(asset: String? = null): WalletFragment {
             val fragment = WalletFragment()

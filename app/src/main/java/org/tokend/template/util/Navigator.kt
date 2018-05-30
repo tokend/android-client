@@ -19,7 +19,9 @@ import org.tokend.template.base.activities.*
 import org.tokend.template.base.activities.qr.ShareQrActivity
 import org.tokend.template.base.activities.signup.RecoverySeedActivity
 import org.tokend.template.base.activities.signup.SignUpActivity
+import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.logic.payment.PaymentRequest
+import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.explore.AssetDetailsActivity
 import org.tokend.template.features.trade.OfferConfirmationActivity
 import org.tokend.template.features.trade.adapter.OffersActivity
@@ -32,6 +34,9 @@ import org.tokend.template.features.withdraw.model.WithdrawalRequest
  * 'to-' will open related screen and finish current.
  */
 object Navigator {
+    private const val ASSET_EXTRA = "asset"
+    private const val SCREEN_ID = "screenId"
+
     private fun fadeOut(activity: Activity) {
         ActivityCompat.finishAfterTransition(activity)
         activity.overridePendingTransition(0, R.anim.activity_fade_out)
@@ -112,21 +117,22 @@ object Navigator {
 
     fun openWithdrawalConfirmation(fragment: Fragment, requestCode: Int,
                                    withdrawalRequest: WithdrawalRequest) {
-        var toSend = Intent(fragment.context,WithdrawalConfirmationActivity::class.java)
+        val toSend = Intent(fragment.context,WithdrawalConfirmationActivity::class.java)
         toSend.putExtra(WithdrawalConfirmationActivity.WITHDRAWAL_REQUEST_EXTRA,withdrawalRequest)
         fragment.startActivityForResult(toSend,requestCode)
     }
 
     fun toWallet(fragment: Fragment, asset: String? = null,isExplore: Boolean? = null){
-        var toSend: Intent?
+        val toSend: Intent?
 
         if(isExplore == true){
-            toSend = Intent(fragment.context,ExploreAssetActivity::class.java)
-                    .putExtra("asset",asset)
+            toSend = Intent(fragment.context,SingleFragmentActivity::class.java)
+                    .putExtra(ASSET_EXTRA,asset)
+                    .putExtra(SCREEN_ID,WalletFragment.ID)
         }else {
             toSend = Intent(fragment.context, MainActivity::class.java)
-                    .putExtra("screenId", 1L)
-                    .putExtra("asset", asset)
+                    .putExtra(SCREEN_ID, WalletFragment.ID)
+                    .putExtra(ASSET_EXTRA, asset)
                     .clearTop()
                     .singleTop()
         }
@@ -135,9 +141,9 @@ object Navigator {
 
     }
     fun toDashBoard(fragment: Fragment, asset: String?){
-        var toSend = Intent(fragment.context,MainActivity::class.java)
-                .putExtra("screenId",0L)
-                .putExtra("asset",asset)
+        val toSend = Intent(fragment.context,MainActivity::class.java)
+                .putExtra(SCREEN_ID,DashboardFragment.ID)
+                .putExtra(ASSET_EXTRA,asset)
                 .clearTop()
                 .singleTop()
         fragment.startActivity(toSend)
@@ -157,7 +163,7 @@ object Navigator {
 
     fun openPaymentConfirmation(fragment: Fragment, requestCode: Int,
                                 paymentRequest: PaymentRequest) {
-        var toSend = Intent(fragment.context,PaymentConfirmationActivity::class.java)
+        val toSend = Intent(fragment.context,PaymentConfirmationActivity::class.java)
                 .putExtra(PaymentConfirmationActivity.PAYMENT_REQUEST_EXTRA,paymentRequest)
         fragment.startActivityForResult(toSend,requestCode)
 

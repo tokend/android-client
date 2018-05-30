@@ -315,9 +315,10 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     companion object {
         private const val WITHDRAW_CONFIRMATION = 4321
         private const val ASSET_EXTRA = "asset"
+        const val ID = 1113L
 
         fun newInstance(asset: String? = null) : WithdrawFragment{
-            var fragment = WithdrawFragment()
+            val fragment = WithdrawFragment()
             fragment.arguments = Bundle().apply {
                 putString(ASSET_EXTRA,asset)
             }

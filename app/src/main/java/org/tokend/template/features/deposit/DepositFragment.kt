@@ -132,4 +132,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, address_text_view.text)
         startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_address_label)))
     }
+
+    companion object {
+        const val ID = 1112L
+    }
 }
