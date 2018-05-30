@@ -1,6 +1,7 @@
 package org.tokend.template.features.dashboard
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.jakewharton.rxbinding2.view.enabled
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,9 +19,11 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.transactions.MatchTransaction
 import org.tokend.template.R
+import org.tokend.template.base.activities.MainActivity
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
@@ -29,6 +33,7 @@ import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.features.trade.adapter.OffersActivity
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
@@ -126,7 +131,12 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         activity_list.isNestedScrollingEnabled = false
 
         view_more_button.onClick {
-            it?.isEnabled = false
+
+            var toSend = Intent(context,MainActivity::class.java)
+            toSend.putExtra("screenId",1L)
+            startActivity(view!!.context.intentFor<MainActivity>("screenId" to 1L,
+                    ASSET_EXTRA to asset))
+
         }
     }
 
@@ -144,7 +154,8 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         offers_list.isNestedScrollingEnabled = false
 
         view_more_offers_button.onClick {
-            it?.isEnabled = false
+            var offersIntent = Intent(view!!.context,OffersActivity::class.java)
+            startActivity(offersIntent)
         }
     }
     // endregion
@@ -268,6 +279,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
 
     companion object {
         private const val TRANSACTIONS_TO_DISPLAY = 3
+        private const val ASSET_EXTRA = "asset"
 
         fun newInstance(): DashboardFragment {
             val fragment = DashboardFragment()

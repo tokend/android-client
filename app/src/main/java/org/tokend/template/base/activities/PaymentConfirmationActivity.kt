@@ -2,6 +2,7 @@ package org.tokend.template.base.activities
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -17,6 +18,7 @@ import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
@@ -167,6 +169,7 @@ class PaymentConfirmationActivity : BaseActivity() {
                         }
                 )
     }
+
 
     private fun finishWithSuccess() {
         setResult(Activity.RESULT_OK)

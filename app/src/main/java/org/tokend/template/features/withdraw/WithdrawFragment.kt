@@ -1,6 +1,7 @@
 package org.tokend.template.features.withdraw
 
 import android.Manifest
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -64,6 +65,9 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
             field = value
             go_to_confirmation_button.enabled = value
         }
+
+    private val defaultAsset: String?
+    get() = arguments?.getString("asset")
 
     private var asset: String = ""
         set(value) {
@@ -208,6 +212,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         }
 
         asset_spinner.setSimpleItems(withdrawableAssets)
+        asset_spinner.selectedItemIndex = (withdrawableAssets.indexOf(defaultAsset))
     }
     // endregion
 
@@ -271,8 +276,9 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                                     fee = fee
                             )
 
-                            Navigator.openWithdrawalConfirmation(activity!!,
-                                    4511, request)
+                            Navigator.openWithdrawalConfirmation(this,
+                                    WITHDRAW_CONFIRMATION, request)
+
                         },
                         onError = { ErrorHandlerFactory.getDefault().handle(it) }
                 )
@@ -284,6 +290,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         updateConfirmAvailability()
         displayBalance()
     }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
                                             grantResults: IntArray) {
@@ -299,6 +306,22 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
         if (scanResult != null && scanResult.contents != null) {
             address_edit_text.setText(scanResult.contents)
+        }
+
+        if (resultCode == RESULT_OK && requestCode == WITHDRAW_CONFIRMATION)
+            Navigator.toWallet(this,asset)
+    }
+
+    companion object {
+        private const val WITHDRAW_CONFIRMATION = 4321
+        private const val ASSET_EXTRA = "asset"
+
+        fun newInstance(asset: String? = null) : WithdrawFragment{
+            var fragment = WithdrawFragment()
+            fragment.arguments = Bundle().apply {
+                putString(ASSET_EXTRA,asset)
+            }
+            return fragment
         }
     }
 }

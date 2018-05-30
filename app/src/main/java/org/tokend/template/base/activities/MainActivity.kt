@@ -1,5 +1,6 @@
 package org.tokend.template.base.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
@@ -45,6 +46,8 @@ class MainActivity : BaseActivity() {
         private val SETTINGS = counter++
         private val SIGN_OUT = counter++
         private val SEND = counter++
+
+        private const val ASSET_EXTRA = "asset"
     }
 
     private var navigationDrawer: Drawer? = null
@@ -160,16 +163,27 @@ class MainActivity : BaseActivity() {
         return false
     }
 
+    private fun navigateTo(screenIdentifier: Long, fragment: Fragment) {
+        navigationDrawer?.setSelection(screenIdentifier, false)
+        displayFragment(fragment)
+    }
+
     private fun navigateTo(screenIdentifier: Long) {
-        when (screenIdentifier) {
-            DASHBOARD -> displayFragment(getDashboardFragment())
-            WALLET -> displayFragment(getWalletFragment())
-            WITHDRAW -> displayFragment(getWithdrawFragment())
-            SEND -> displayFragment(getSendFragment())
-            EXPLORE -> displayFragment(getExploreFragment())
-            SETTINGS -> displayFragment(getSettingsFragment())
-            TRADE -> displayFragment(getTradeFragment())
-            DEPOSIT -> displayFragment(getDepositFragment())
+        val fragment =
+            when (screenIdentifier) {
+                DASHBOARD -> getDashboardFragment()
+                WALLET -> getWalletFragment()
+                WITHDRAW -> getWithdrawFragment()
+                SEND -> getSendFragment()
+                EXPLORE -> getExploreFragment()
+                SETTINGS -> getSettingsFragment()
+                TRADE -> getTradeFragment()
+                DEPOSIT -> getDepositFragment()
+                else -> null
+            }
+
+        if (fragment != null) {
+            navigateTo(screenIdentifier, fragment)
         }
     }
     // endregion
@@ -179,8 +193,8 @@ class MainActivity : BaseActivity() {
         return DashboardFragment.newInstance()
     }
 
-    private fun getWalletFragment(): Fragment {
-        return WalletFragment.newInstance()
+    private fun getWalletFragment(asset: String? = null): Fragment {
+        return WalletFragment.newInstance(asset)
     }
 
     private fun getSettingsFragment(): Fragment {
@@ -191,12 +205,12 @@ class MainActivity : BaseActivity() {
         return TradeFragment()
     }
 
-    private fun getWithdrawFragment(): Fragment {
-        return WithdrawFragment()
+    private fun getWithdrawFragment(asset: String? = null): Fragment {
+        return WithdrawFragment.newInstance(asset)
     }
 
-    private fun getSendFragment(): Fragment {
-        return SendFragment()
+    private fun getSendFragment(asset: String? = null): Fragment {
+        return SendFragment.newInstance(asset)
     }
 
     private fun getExploreFragment(): Fragment {
@@ -209,6 +223,7 @@ class MainActivity : BaseActivity() {
 
     private var fragmentToolbarDisposable: Disposable? = null
     private fun displayFragment(fragment: Fragment) {
+
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_layout, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -244,4 +259,23 @@ class MainActivity : BaseActivity() {
             moveTaskToBack(true)
         }
     }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val screenId = intent!!.getLongExtra("screenId", 0L)
+        val asset : String? = intent.getStringExtra(ASSET_EXTRA)
+
+        if(asset != null){
+            var fragment: Fragment? = null
+            if(screenId == 1L)
+                fragment = getWalletFragment(asset)
+            else if(screenId == 8L){
+                fragment = getSendFragment(asset)
+            }
+            navigateTo(screenId,fragment!!)
+        }else
+        navigateTo(screenId)
+
+    }
+
 }

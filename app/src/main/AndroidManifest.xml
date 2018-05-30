@@ -41,7 +41,8 @@
         <activity android:name=".base.activities.qr.ShareQrActivity" />
         <activity
             android:name=".base.activities.MainActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop" />
         <activity
             android:name=".base.activities.signup.RecoverySeedActivity"
             android:configChanges="orientation|screenSize"
@@ -126,6 +127,9 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
+        <activity android:name=".base.activities.ExploreAssetActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

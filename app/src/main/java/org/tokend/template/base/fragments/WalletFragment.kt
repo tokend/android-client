@@ -1,6 +1,7 @@
 package org.tokend.template.base.fragments
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -18,8 +19,11 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.collapsing_balance_appbar.*
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.transactions.*
 import org.tokend.template.R
+import org.tokend.template.base.activities.MainActivity
 import org.tokend.template.base.activities.tx_details.*
 import org.tokend.template.base.logic.repository.transactions.TxRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
@@ -44,6 +48,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     private val defaultAsset: String?
         get() = arguments?.getString(ASSET_EXTRA)
+
 
     private val needAssetTabs: Boolean
         get() = true
@@ -73,8 +78,16 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         initBalance()
         initHistory()
         initSwipeRefresh()
+        initSend()
 
         subscribeToBalances()
+
+    }
+
+    private fun initSend(){
+        send_fab.onClick {
+            startActivity(view!!.context.intentFor<MainActivity>("screenId" to 8L, ASSET_EXTRA to asset))
+        }
     }
 
     // region Init
@@ -135,6 +148,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             txRepository.loadMore() || txRepository.noMoreItems
         }
     }
+
 
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
@@ -222,6 +236,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     // region Display
     private fun displayAssetTabs(assets: List<String>) {
         asset_tabs.setSimpleItems(assets, true)
+        asset_tabs.selectedItemIndex = assets.indexOf(defaultAsset)
     }
 
     private fun displayBalance() {

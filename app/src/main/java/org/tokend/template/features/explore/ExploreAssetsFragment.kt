@@ -236,7 +236,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         if (!item.balanceExists) {
             createBalance(item.code)
         } else {
-            // TODO: Navigate to Wallet
+            Navigator.toWallet(this,item.code,true)
         }
     }
 

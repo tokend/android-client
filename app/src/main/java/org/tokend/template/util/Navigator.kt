@@ -2,6 +2,7 @@ package org.tokend.template.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
@@ -109,11 +110,37 @@ object Navigator {
                 requestCode)
     }
 
-    fun openWithdrawalConfirmation(activity: Activity, requestCode: Int,
+    fun openWithdrawalConfirmation(fragment: Fragment, requestCode: Int,
                                    withdrawalRequest: WithdrawalRequest) {
-        activity.startActivityForResult(activity.intentFor<WithdrawalConfirmationActivity>(
-                WithdrawalConfirmationActivity.WITHDRAWAL_REQUEST_EXTRA to withdrawalRequest
-        ), requestCode)
+        var toSend = Intent(fragment.context,WithdrawalConfirmationActivity::class.java)
+        toSend.putExtra(WithdrawalConfirmationActivity.WITHDRAWAL_REQUEST_EXTRA,withdrawalRequest)
+        fragment.startActivityForResult(toSend,requestCode)
+    }
+
+    fun toWallet(fragment: Fragment, asset: String? = null,isExplore: Boolean? = null){
+        var toSend: Intent?
+
+        if(isExplore == true){
+            toSend = Intent(fragment.context,ExploreAssetActivity::class.java)
+                    .putExtra("asset",asset)
+        }else {
+            toSend = Intent(fragment.context, MainActivity::class.java)
+                    .putExtra("screenId", 1L)
+                    .putExtra("asset", asset)
+                    .clearTop()
+                    .singleTop()
+        }
+
+        fragment.startActivity(toSend)
+
+    }
+    fun toDashBoard(fragment: Fragment, asset: String?){
+        var toSend = Intent(fragment.context,MainActivity::class.java)
+                .putExtra("screenId",0L)
+                .putExtra("asset",asset)
+                .clearTop()
+                .singleTop()
+        fragment.startActivity(toSend)
     }
 
     fun openAssetDetails(activity: Activity, requestCode: Int,
@@ -127,12 +154,15 @@ object Navigator {
         ), requestCode, transitionBundle)
     }
 
-    fun openPaymentConfirmation(activity: Activity, requestCode: Int,
+
+    fun openPaymentConfirmation(fragment: Fragment, requestCode: Int,
                                 paymentRequest: PaymentRequest) {
-        activity.startActivityForResult(activity.intentFor<PaymentConfirmationActivity>(
-                PaymentConfirmationActivity.PAYMENT_REQUEST_EXTRA to paymentRequest
-        ), requestCode)
+        var toSend = Intent(fragment.context,PaymentConfirmationActivity::class.java)
+                .putExtra(PaymentConfirmationActivity.PAYMENT_REQUEST_EXTRA,paymentRequest)
+        fragment.startActivityForResult(toSend,requestCode)
+
     }
+
 
     fun openOfferConfirmation(fragment: Fragment, requestCode: Int,
                               offer: Offer) {
@@ -145,4 +175,5 @@ object Navigator {
         fragment.startActivityForResult(fragment.context?.intentFor<OffersActivity>(
         ), requestCode)
     }
+
 }
