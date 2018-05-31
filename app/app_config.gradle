@@ -75,6 +75,9 @@ ext {
     // Sent - color of spent amounts
     color_sent = '#D32F2F'
 
+    //Warning - color of warning message
+    color_warning = '#EF6C00'
+
     // ----------------------
 
     // ----- Security -----
@@ -110,5 +113,6 @@ android {
         resValue "color", "ok", "${color_ok}"
         resValue "color", "received", "${color_received}"
         resValue "color", "sent", "${color_sent}"
+        resValue "color", "warning", "${color_warning}"
     }
 }

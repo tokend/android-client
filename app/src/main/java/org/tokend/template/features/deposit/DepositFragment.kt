@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.fragment_deposit.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
+import org.jetbrains.anko.runOnUiThread
 import org.tokend.sdk.api.models.Asset
 import org.tokend.sdk.api.responses.AccountResponse
 import org.tokend.template.R
@@ -32,12 +33,15 @@ import org.tokend.template.util.DateFormatter
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import java.util.*
 
 class DepositFragment : BaseFragment(), ToolbarProvider {
 
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
     private lateinit var accountRepository: AccountRepository
     private lateinit var assetsRepository: AssetsRepository
+    private lateinit var timer: Timer
+    private lateinit var timerTask: TimerTask
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },
@@ -188,6 +192,36 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         )
     }
 
+    // region Timer
+    private fun initTask() {
+        timerTask = object : TimerTask() {
+            override fun run() {
+                requireContext().runOnUiThread {
+                    displayAddress()
+                }
+            }
+        }
+    }
+
+    private fun initTimer() {
+        timer = Timer(false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        initTask()
+        initTimer()
+        timer.schedule(timerTask, 0L, 1000L)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        timerTask.cancel()
+        timer.cancel()
+        timer.purge()
+    }
+    // endregion
+
     private fun update(force: Boolean = false) {
         if (!force) {
             accountRepository.updateIfNotFresh()
@@ -202,41 +236,64 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         displayAddress()
     }
 
+    // region Address display
     private fun displayAddress() {
         externalAccount?.data.let { address ->
-            if (address != null) {
-                deposit_address_layout.visibility = View.VISIBLE
-                no_address_layout.visibility = View.GONE
-
-                address_text_view.text = address
-                to_make_deposit_text_view.text = getString(R.string.to_make_deposit_send_asset,
-                        currentAsset?.code)
-
-                externalAccount?.expirationDate.let { expirationDate ->
-                    if (expirationDate != null) {
-                        address_expiration_card.visibility = View.VISIBLE
-                        address_expiration_text_view.text =
-                                DateFormatter(requireActivity())
-                                        .formatLong(expirationDate)
-                    } else {
-                        address_expiration_card.visibility = View.GONE
-                    }
-                }
+            val expirationDate = externalAccount?.expirationDate
+            val isExpired = expirationDate != null && expirationDate <= Date()
+            if (address != null && !isExpired) {
+                displayExistingAddress(address, expirationDate)
             } else {
-                deposit_address_layout.visibility = View.GONE
-                address_expiration_card.visibility = View.GONE
-                no_address_layout.visibility = View.VISIBLE
-
-                if (accountRepository.isNeverUpdated) {
-                    no_address_text_view.text = getString(R.string.loading_data)
-                    get_address_btn.visibility = View.GONE
-                } else {
-                    no_address_text_view.text = getString(R.string.template_no_personal_asset_address,
-                            currentAsset?.code)
-                    get_address_btn.visibility = View.VISIBLE
-                }
+                displayAddressEmptyView()
             }
         }
+    }
+
+    private fun displayExistingAddress(address: String, expirationDate: Date?) {
+        deposit_address_layout.visibility = View.VISIBLE
+        no_address_layout.visibility = View.GONE
+
+        address_text_view.text = address
+        to_make_deposit_text_view.text = getString(R.string.to_make_deposit_send_asset,
+                currentAsset?.code)
+
+        if (expirationDate != null) {
+            address_expiration_card.visibility = View.VISIBLE
+            address_expiration_text_view.text =
+                    DateFormatter(requireActivity())
+                            .formatLong(expirationDate)
+            updateExpirationDateColor(expirationDate)
+        } else {
+            address_expiration_card.visibility = View.GONE
+        }
+    }
+
+    private fun displayAddressEmptyView() {
+        deposit_address_layout.visibility = View.GONE
+        address_expiration_card.visibility = View.GONE
+        no_address_layout.visibility = View.VISIBLE
+
+        if (accountRepository.isNeverUpdated) {
+            no_address_text_view.text = getString(R.string.loading_data)
+            get_address_btn.visibility = View.GONE
+        } else {
+            no_address_text_view.text = getString(R.string.template_no_personal_asset_address,
+                    currentAsset?.code)
+            get_address_btn.visibility = View.VISIBLE
+        }
+    }
+
+    private fun updateExpirationDateColor(expirationDate: Date) {
+        val rest = expirationDate.time - System.currentTimeMillis()
+        val colorId = when {
+            rest < CRITICAL_EXPIRATION_WARNING_THRESHOLD -> R.color.error
+            rest < EXPIRATION_WARNING_THRESHOLD -> R.color.warning
+            else -> R.color.primary_text
+        }
+
+        address_expiration_text_view.setTextColor(
+                ContextCompat.getColor(requireContext(), colorId)
+        )
     }
 
     private fun shareData() {
@@ -271,6 +328,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                     currentAsset?.code, externalAccount.data)
         }
     }
+    // endregion
 
     private fun bindExternalAccount() {
         val asset = currentAsset?.code
@@ -327,5 +385,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     companion object {
         const val ID = 1112L
+        private const val EXPIRATION_WARNING_THRESHOLD = 6 * 60 * 60 * 1000L
+        private const val CRITICAL_EXPIRATION_WARNING_THRESHOLD = 30 * 60 * 1000L
     }
 }
