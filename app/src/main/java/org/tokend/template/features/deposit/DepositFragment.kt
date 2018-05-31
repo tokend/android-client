@@ -282,7 +282,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 val colorId: Int = when {
                     rest < CRITICAL_CONFIRMATION_WARNING -> R.color.error
                     rest < CONFIRMATION_WARNING -> R.color.warning
-                    else -> android.R.color.black
+                    else -> R.color.primary_text
                 }
 
                 this@DepositFragment.activity?.runOnUiThread {
