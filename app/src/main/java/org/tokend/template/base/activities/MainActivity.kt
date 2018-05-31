@@ -1,5 +1,6 @@
 package org.tokend.template.base.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -27,11 +28,13 @@ import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.fragments.settings.SettingsFragment
+import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.features.dashboard.DashboardFragment
-import org.tokend.template.features.explore.ExploreAssetsFragment
 import org.tokend.template.features.deposit.DepositFragment
+import org.tokend.template.features.explore.ExploreAssetsFragment
 import org.tokend.template.features.trade.TradeFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
+import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.util.FragmentFactory
 
 class MainActivity : BaseActivity() {
@@ -163,26 +166,23 @@ class MainActivity : BaseActivity() {
 
     private fun navigateTo(screenIdentifier: Long) {
         val fragment =
-            when (screenIdentifier) {
-                DashboardFragment.ID -> factory.getDashboardFragment()
-                WalletFragment.ID -> factory.getWalletFragment()
-                WithdrawFragment.ID -> factory.getWithdrawFragment()
-                SendFragment.ID -> factory.getSendFragment()
-                ExploreAssetsFragment.ID -> factory.getExploreFragment()
-                SettingsFragment.ID -> factory.getSettingsFragment()
-                TradeFragment.ID -> factory.getTradeFragment()
-                DepositFragment.ID -> factory.getDepositFragment()
-                else -> null
-            }
+                when (screenIdentifier) {
+                    DashboardFragment.ID -> factory.getDashboardFragment()
+                    WalletFragment.ID -> factory.getWalletFragment()
+                    WithdrawFragment.ID -> factory.getWithdrawFragment()
+                    SendFragment.ID -> factory.getSendFragment()
+                    ExploreAssetsFragment.ID -> factory.getExploreFragment()
+                    SettingsFragment.ID -> factory.getSettingsFragment()
+                    TradeFragment.ID -> factory.getTradeFragment()
+                    DepositFragment.ID -> factory.getDepositFragment()
+                    else -> null
+                }
 
         if (fragment != null) {
             navigateTo(screenIdentifier, fragment)
         }
     }
     // endregion
-
-    // region Fragments
-
 
     private var fragmentToolbarDisposable: Disposable? = null
     private fun displayFragment(fragment: Fragment) {
@@ -203,7 +203,6 @@ class MainActivity : BaseActivity() {
                     }
         }
     }
-    // endregion
 
     private fun signOutWithConfirmation() {
         AlertDialog.Builder(this, R.style.AlertDialogStyle)
@@ -223,28 +222,25 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        val screenId = intent!!.getLongExtra(SCREEN_ID, DashboardFragment.ID)
-        val asset : String? = intent.getStringExtra(ASSET_EXTRA)
-
-        if(asset != null){
-
-            val fragment =
-                    when(screenId){
-                        WalletFragment.ID -> factory.getWalletFragment(asset)
-                        SendFragment.ID -> factory.getSendFragment(asset)
-                        else -> null
-                    }
-
-            if (fragment != null) {
-                navigateTo(screenId,fragment)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                SendFragment.PAYMENT_CONFIRMATION_REQUEST -> {
+                    data?.getNullableStringExtra(PaymentConfirmationActivity.ASSET_RESULT_EXTRA)
+                            ?.also { paymentAsset ->
+                                navigateTo(WalletFragment.ID,
+                                        factory.getWalletFragment(paymentAsset))
+                            }
+                }
+                WithdrawFragment.WITHDRAWAL_CONFIRMATION_REQUEST -> {
+                    data?.getNullableStringExtra(WithdrawalConfirmationActivity.ASSET_RESULT_EXTRA)
+                            ?.also { withdrawalAsset ->
+                                navigateTo(WalletFragment.ID,
+                                        factory.getWalletFragment(withdrawalAsset))
+                            }
+                }
             }
-
-        }else {
-            navigateTo(screenId)
         }
-
     }
-
 }

@@ -1,6 +1,8 @@
 package org.tokend.template.base.activities
 
+import android.app.Activity
 import android.app.FragmentTransaction
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.trello.rxlifecycle2.android.ActivityEvent
@@ -49,6 +51,16 @@ class SingleFragmentActivity : BaseActivity() {
                         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
                         supportActionBar!!.title = asset
                     }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        setResult(resultCode)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                SendFragment.PAYMENT_CONFIRMATION_REQUEST -> finish()
+            }
         }
     }
 

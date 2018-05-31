@@ -1,7 +1,6 @@
 package org.tokend.template.features.withdraw
 
 import android.Manifest
-import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -67,7 +66,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         }
 
     private val defaultAsset: String?
-    get() = arguments?.getString("asset")
+        get() = arguments?.getString("asset")
 
     private var asset: String = ""
         set(value) {
@@ -276,8 +275,8 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                                     fee = fee
                             )
 
-                            Navigator.openWithdrawalConfirmation(this,
-                                    WITHDRAW_CONFIRMATION, request)
+                            Navigator.openWithdrawalConfirmation(requireActivity(),
+                                    WITHDRAWAL_CONFIRMATION_REQUEST, request)
 
                         },
                         onError = { ErrorHandlerFactory.getDefault().handle(it) }
@@ -307,20 +306,17 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         if (scanResult != null && scanResult.contents != null) {
             address_edit_text.setText(scanResult.contents)
         }
-
-        if (resultCode == RESULT_OK && requestCode == WITHDRAW_CONFIRMATION)
-            Navigator.toWallet(this,asset)
     }
 
     companion object {
-        private const val WITHDRAW_CONFIRMATION = 4321
         private const val ASSET_EXTRA = "asset"
         const val ID = 1113L
+        val WITHDRAWAL_CONFIRMATION_REQUEST = "confirm_withdrawal".hashCode() and 0xffff
 
-        fun newInstance(asset: String? = null) : WithdrawFragment{
+        fun newInstance(asset: String? = null): WithdrawFragment {
             val fragment = WithdrawFragment()
             fragment.arguments = Bundle().apply {
-                putString(ASSET_EXTRA,asset)
+                putString(ASSET_EXTRA, asset)
             }
             return fragment
         }

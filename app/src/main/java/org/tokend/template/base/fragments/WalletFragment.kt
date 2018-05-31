@@ -1,6 +1,7 @@
 package org.tokend.template.base.fragments
 
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -23,8 +24,8 @@ import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.transactions.*
 import org.tokend.template.R
 import org.tokend.template.base.activities.tx_details.*
-import org.tokend.template.base.logic.repository.transactions.TxRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
+import org.tokend.template.base.logic.repository.transactions.TxRepository
 import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
 import org.tokend.template.base.view.util.AmountFormatter
@@ -83,9 +84,9 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     }
 
-    private fun initSend(){
+    private fun initSend() {
         send_fab.onClick {
-            Navigator.openSend(this,asset)
+            Navigator.openSend(this, asset, SEND_REQUEST)
         }
     }
 
@@ -291,9 +292,18 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                SEND_REQUEST -> update()
+            }
+        }
+    }
+
     companion object {
         private const val ASSET_EXTRA = "asset"
-        private const val SCREEN_ID = "screenId"
+        private val SEND_REQUEST = "send".hashCode() and 0xffff
         const val ID = 1111L
 
         fun newInstance(asset: String? = null): WalletFragment {

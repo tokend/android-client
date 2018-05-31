@@ -1,7 +1,6 @@
 package org.tokend.template.base.fragments
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -29,7 +28,6 @@ import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.Fee
 import org.tokend.template.R
-import org.tokend.template.base.activities.MainActivity
 import org.tokend.template.base.logic.FeeManager
 import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.base.logic.repository.AccountDetailsRepository
@@ -72,7 +70,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         }
 
     private val defaultAsset: String?
-    get() = arguments?.getString(ASSET_EXTRA)
+        get() = arguments?.getString(ASSET_EXTRA)
 
     private var asset: String = ""
         set(value) {
@@ -83,7 +81,6 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
-
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -209,7 +206,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         }
 
         asset_spinner.setSimpleItems(transferableAssets)
-        asset_spinner.selectedItemIndex= transferableAssets.indexOf(defaultAsset)
+        asset_spinner.selectedItemIndex = transferableAssets.indexOf(defaultAsset)
     }
     // endregion
 
@@ -340,8 +337,8 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 }
                 .subscribeBy(
                         onSuccess = { request ->
-                            Navigator.openPaymentConfirmation(this,
-                                    PAYMENT_CONFIRMATION, request)
+                            Navigator.openPaymentConfirmation(requireActivity(),
+                                    PAYMENT_CONFIRMATION_REQUEST, request)
                         },
                         onError = {
                             when (it) {
@@ -435,19 +432,14 @@ class SendFragment : BaseFragment(), ToolbarProvider {
             checkRecipient()
             updateConfirmAvailability()
         }
-
-        if(resultCode == Activity.RESULT_OK && requestCode == PAYMENT_CONFIRMATION) {
-            Navigator.toWallet(this, asset)
-        }
-   }
+    }
 
     companion object {
-        private const val PAYMENT_CONFIRMATION = 1234
         private const val ASSET_EXTRA = "asset"
         const val ID = 1118L
+        val PAYMENT_CONFIRMATION_REQUEST = "confirm_payment".hashCode() and 0xffff
 
-
-        fun newInstance(asset: String? = null): SendFragment{
+        fun newInstance(asset: String? = null): SendFragment {
             val fragment = SendFragment()
             fragment.arguments = Bundle().apply {
                 putString(ASSET_EXTRA, asset)
@@ -455,6 +447,4 @@ class SendFragment : BaseFragment(), ToolbarProvider {
             return fragment
         }
     }
-
-
 }

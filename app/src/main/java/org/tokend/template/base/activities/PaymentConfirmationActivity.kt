@@ -18,7 +18,6 @@ import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
-import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
@@ -170,13 +169,14 @@ class PaymentConfirmationActivity : BaseActivity() {
                 )
     }
 
-
     private fun finishWithSuccess() {
-        setResult(Activity.RESULT_OK)
+        setResult(Activity.RESULT_OK,
+                Intent().putExtra(ASSET_RESULT_EXTRA, request.asset))
         finish()
     }
 
     companion object {
         const val PAYMENT_REQUEST_EXTRA = "payment_request"
+        const val ASSET_RESULT_EXTRA = "asset"
     }
 }

@@ -121,13 +121,14 @@ class WithdrawalConfirmationActivity : BaseActivity() {
     }
 
 
-
     private fun finishWithSuccess() {
-        setResult(Activity.RESULT_OK)
+        setResult(Activity.RESULT_OK,
+                Intent().putExtra(ASSET_RESULT_EXTRA, request.asset))
         finish()
     }
 
     companion object {
         const val WITHDRAWAL_REQUEST_EXTRA = "withdrawal_request"
+        const val ASSET_RESULT_EXTRA = "asset"
     }
 }
