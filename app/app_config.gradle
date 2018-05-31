@@ -76,7 +76,7 @@ ext {
     color_sent = '#D32F2F'
 
     //Warning - color of warning message
-    color_warning = '#ffff00'
+    color_warning = '#EF6C00'
 
     // ----------------------
 

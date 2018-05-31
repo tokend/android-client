@@ -3,7 +3,6 @@ package org.tokend.template.features.deposit
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
@@ -40,8 +39,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
     private lateinit var accountRepository: AccountRepository
     private lateinit var assetsRepository: AssetsRepository
-    private lateinit var timer : Timer
-    private lateinit var task : TimerTask
+    private lateinit var timer: Timer
+    private lateinit var task: TimerTask
 
 
     private val loadingIndicator = LoadingIndicatorManager(
@@ -67,8 +66,6 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         super.onCreate(savedInstanceState)
         accountRepository = repositoryProvider.account()
         assetsRepository = repositoryProvider.assets()
-        initTask()
-        initTimer()
     }
 
     override fun onInitAllowed() {
@@ -143,12 +140,16 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     override fun onStart() {
         super.onStart()
-        timer.schedule(task,0L,1000L)
+        initTask()
+        initTimer()
+        timer.schedule(task, 0L, 1000L)
     }
 
     override fun onStop() {
         super.onStop()
+        task.cancel()
         timer.cancel()
+        timer.purge()
     }
     // endregion
 
@@ -205,29 +206,10 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         )
     }
 
-    private fun initTask(){
-        task = object: TimerTask(){
+    private fun initTask() {
+        task = object : TimerTask() {
             override fun run() {
-                externalAccount?.expirationDate.let { expirationDate ->
-                    if(expirationDate != null){
-                        val rest = expirationDate.time - System.currentTimeMillis()
-
-                        if(rest < 0L){
-                            address_expiration_card.visibility = View.GONE
-                        }
-                        else {
-                            val colorId: Int = when {
-                                rest < THIRTY_MIN -> R.color.error
-                                rest < SIX_HOURS -> R.color.warning
-                                else -> R.color.white
-                            }
-
-                            this@DepositFragment.activity?.runOnUiThread {
-                                address_expiration_card.setCardBackgroundColor(ContextCompat.getColor(this@DepositFragment.context!!,colorId))
-                            }
-                        }
-                    }
-                }
+                updateExpirationDate(externalAccount?.expirationDate)
             }
 
         }
@@ -235,7 +217,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
 
-    fun initTimer(){
+    fun initTimer() {
         timer = Timer(false)
     }
 
@@ -269,6 +251,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                         address_expiration_text_view.text =
                                 DateFormatter(requireActivity())
                                         .formatLong(expirationDate)
+                        updateExpirationDate(expirationDate)
                     } else {
                         address_expiration_card.visibility = View.GONE
                     }
@@ -285,6 +268,25 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                     no_address_text_view.text = getString(R.string.template_no_personal_asset_address,
                             currentAsset?.code)
                     get_address_btn.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    private fun updateExpirationDate(date: Date?) {
+        date?.let { expirationDate ->
+            val rest = expirationDate.time - System.currentTimeMillis()
+            if (rest < 0L) {
+                address_expiration_card.visibility = View.GONE
+            } else {
+                val colorId: Int = when {
+                    rest < CRITICAL_CONFIRMATION_WARNING -> R.color.error
+                    rest < CONFIRMATION_WARNING -> R.color.warning
+                    else -> android.R.color.black
+                }
+
+                this@DepositFragment.activity?.runOnUiThread {
+                    address_expiration_text_view.setTextColor(ContextCompat.getColor(this@DepositFragment.context!!, colorId))
                 }
             }
         }
@@ -377,7 +379,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     companion object {
-        private const val SIX_HOURS = 21600000L
-        private const val THIRTY_MIN = 1800000L
+        private const val CONFIRMATION_WARNING = 21_600_000L
+        private const val CRITICAL_CONFIRMATION_WARNING = 1_800_000L
     }
 }
