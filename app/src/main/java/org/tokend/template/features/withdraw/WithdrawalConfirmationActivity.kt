@@ -2,6 +2,7 @@ package org.tokend.template.features.withdraw
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,12 +10,16 @@ import com.trello.rxlifecycle2.android.ActivityEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
+import org.jetbrains.anko.clearTop
+import org.jetbrains.anko.singleTop
 import org.tokend.template.R
 import org.tokend.template.base.activities.BaseActivity
+import org.tokend.template.base.activities.MainActivity
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
@@ -115,12 +120,15 @@ class WithdrawalConfirmationActivity : BaseActivity() {
                 )
     }
 
+
     private fun finishWithSuccess() {
-        setResult(Activity.RESULT_OK)
+        setResult(Activity.RESULT_OK,
+                Intent().putExtra(ASSET_RESULT_EXTRA, request.asset))
         finish()
     }
 
     companion object {
         const val WITHDRAWAL_REQUEST_EXTRA = "withdrawal_request"
+        const val ASSET_RESULT_EXTRA = "asset"
     }
 }

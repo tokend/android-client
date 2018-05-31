@@ -2,6 +2,7 @@ package org.tokend.template.base.activities
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -169,11 +170,13 @@ class PaymentConfirmationActivity : BaseActivity() {
     }
 
     private fun finishWithSuccess() {
-        setResult(Activity.RESULT_OK)
+        setResult(Activity.RESULT_OK,
+                Intent().putExtra(ASSET_RESULT_EXTRA, request.asset))
         finish()
     }
 
     companion object {
         const val PAYMENT_REQUEST_EXTRA = "payment_request"
+        const val ASSET_RESULT_EXTRA = "asset"
     }
 }

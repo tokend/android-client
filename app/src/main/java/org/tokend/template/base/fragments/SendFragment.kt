@@ -69,6 +69,9 @@ class SendFragment : BaseFragment(), ToolbarProvider {
             go_to_confirmation_button.enabled = value
         }
 
+    private val defaultAsset: String?
+        get() = arguments?.getString(ASSET_EXTRA)
+
     private var asset: String = ""
         set(value) {
             field = value
@@ -78,6 +81,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -202,6 +206,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         }
 
         asset_spinner.setSimpleItems(transferableAssets)
+        asset_spinner.selectedItemIndex = transferableAssets.indexOf(defaultAsset)
     }
     // endregion
 
@@ -332,8 +337,8 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 }
                 .subscribeBy(
                         onSuccess = { request ->
-                            Navigator.openPaymentConfirmation(activity!!,
-                                    4612, request)
+                            Navigator.openPaymentConfirmation(requireActivity(),
+                                    PAYMENT_CONFIRMATION_REQUEST, request)
                         },
                         onError = {
                             when (it) {
@@ -408,6 +413,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         displayBalance()
     }
 
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
                                             grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -425,6 +431,20 @@ class SendFragment : BaseFragment(), ToolbarProvider {
             recipient_edit_text.setSelection(recipient_edit_text.text.length)
             checkRecipient()
             updateConfirmAvailability()
+        }
+    }
+
+    companion object {
+        private const val ASSET_EXTRA = "asset"
+        const val ID = 1118L
+        val PAYMENT_CONFIRMATION_REQUEST = "confirm_payment".hashCode() and 0xffff
+
+        fun newInstance(asset: String? = null): SendFragment {
+            val fragment = SendFragment()
+            fragment.arguments = Bundle().apply {
+                putString(ASSET_EXTRA, asset)
+            }
+            return fragment
         }
     }
 }

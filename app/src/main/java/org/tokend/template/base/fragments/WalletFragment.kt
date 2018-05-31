@@ -1,6 +1,8 @@
 package org.tokend.template.base.fragments
 
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -18,6 +20,7 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.collapsing_balance_appbar.*
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
+import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.BalanceDetails
 import org.tokend.sdk.api.models.transactions.*
 import org.tokend.template.R
@@ -29,6 +32,7 @@ import org.tokend.template.base.view.adapter.history.TxHistoryItem
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.isTransferable
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
@@ -46,6 +50,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     private val defaultAsset: String?
         get() = arguments?.getString(ASSET_EXTRA)
+
 
     private val needAssetTabs: Boolean
         get() = true
@@ -75,8 +80,16 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         initBalance()
         initHistory()
         initSwipeRefresh()
+        initSend()
 
         subscribeToBalances()
+
+    }
+
+    private fun initSend() {
+        send_fab.onClick {
+            Navigator.openSend(this, asset, SEND_REQUEST)
+        }
     }
 
     // region Init
@@ -137,6 +150,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             txRepository.loadMore() || txRepository.noMoreItems
         }
     }
+
 
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
@@ -223,6 +237,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     // region Display
     private fun displayAssetTabs(assets: List<String>) {
         asset_tabs.setSimpleItems(assets, true)
+        asset_tabs.selectedItemIndex = assets.indexOf(defaultAsset)
     }
 
     private fun displayBalance() {
@@ -301,8 +316,19 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                SEND_REQUEST -> update()
+            }
+        }
+    }
+
     companion object {
         private const val ASSET_EXTRA = "asset"
+        private val SEND_REQUEST = "send".hashCode() and 0xffff
+        const val ID = 1111L
 
         fun newInstance(asset: String? = null): WalletFragment {
             val fragment = WalletFragment()

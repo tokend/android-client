@@ -1,5 +1,7 @@
 package org.tokend.template.base.activities
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
@@ -25,36 +27,33 @@ import org.tokend.template.R
 import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.fragments.WalletFragment
-import org.tokend.template.base.fragments.settings.GeneralSettingsFragment
+import org.tokend.template.base.fragments.settings.SettingsFragment
+import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.features.dashboard.DashboardFragment
-import org.tokend.template.features.explore.ExploreAssetsFragment
 import org.tokend.template.features.deposit.DepositFragment
+import org.tokend.template.features.explore.ExploreAssetsFragment
 import org.tokend.template.features.trade.TradeFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
+import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
+import org.tokend.template.util.FragmentFactory
 
 class MainActivity : BaseActivity() {
     companion object {
-        private var counter = 0L
+        private const val SIGN_OUT = 7L
 
-        private val DASHBOARD = counter++
-        private val WALLET = counter++
-        private val DEPOSIT = counter++
-        private val WITHDRAW = counter++
-        private val EXPLORE = counter++
-        private val TRADE = counter++
-        private val SETTINGS = counter++
-        private val SIGN_OUT = counter++
-        private val SEND = counter++
+        const val ASSET_EXTRA = "asset"
+        const val SCREEN_ID = "screenId"
     }
 
     private var navigationDrawer: Drawer? = null
+    private val factory = FragmentFactory()
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
 
         initNavigation()
 
-        navigationDrawer?.setSelection(DASHBOARD)
+        navigationDrawer?.setSelection(DashboardFragment.ID)
     }
 
     // region Init
@@ -76,27 +75,27 @@ class MainActivity : BaseActivity() {
 
         val dashboardItem = PrimaryDrawerItem()
                 .withName(R.string.dashboard_title)
-                .withIdentifier(DASHBOARD)
+                .withIdentifier(DashboardFragment.ID)
                 .withIcon(R.drawable.ic_dashboard)
 
         val walletItem = PrimaryDrawerItem()
                 .withName(R.string.wallet_title)
-                .withIdentifier(WALLET)
+                .withIdentifier(WalletFragment.ID)
                 .withIcon(R.drawable.ic_balance)
 
         val depositItem = PrimaryDrawerItem()
                 .withName(R.string.deposit_title)
-                .withIdentifier(DEPOSIT)
+                .withIdentifier(DepositFragment.ID)
                 .withIcon(R.drawable.ic_deposit)
 
         val withdrawItem = PrimaryDrawerItem()
                 .withName(R.string.withdraw_title)
-                .withIdentifier(WITHDRAW)
+                .withIdentifier(WithdrawFragment.ID)
                 .withIcon(R.drawable.ic_withdraw)
 
         val sendItem = PrimaryDrawerItem()
                 .withName(R.string.send_title)
-                .withIdentifier(SEND)
+                .withIdentifier(SendFragment.ID)
                 .withIcon(R.drawable.ic_send)
                 .withIconColorRes(R.color.icons)
                 .withSelectedIconColorRes(R.color.icons)
@@ -104,17 +103,17 @@ class MainActivity : BaseActivity() {
 
         val exploreItem = PrimaryDrawerItem()
                 .withName(R.string.explore_title_short)
-                .withIdentifier(EXPLORE)
+                .withIdentifier(ExploreAssetsFragment.ID)
                 .withIcon(R.drawable.ic_coins)
 
         val tradeItem = PrimaryDrawerItem()
                 .withName(R.string.trade_title)
-                .withIdentifier(TRADE)
+                .withIdentifier(TradeFragment.ID)
                 .withIcon(R.drawable.ic_trade)
 
         val settingsItem = PrimaryDrawerItem()
                 .withName(R.string.settings_title)
-                .withIdentifier(SETTINGS)
+                .withIdentifier(SettingsFragment.ID)
                 .withIcon(R.drawable.ic_settings)
 
         val signOutItem = PrimaryDrawerItem()
@@ -160,55 +159,34 @@ class MainActivity : BaseActivity() {
         return false
     }
 
+    private fun navigateTo(screenIdentifier: Long, fragment: Fragment) {
+        navigationDrawer?.setSelection(screenIdentifier, false)
+        displayFragment(fragment)
+    }
+
     private fun navigateTo(screenIdentifier: Long) {
-        when (screenIdentifier) {
-            DASHBOARD -> displayFragment(getDashboardFragment())
-            WALLET -> displayFragment(getWalletFragment())
-            WITHDRAW -> displayFragment(getWithdrawFragment())
-            SEND -> displayFragment(getSendFragment())
-            EXPLORE -> displayFragment(getExploreFragment())
-            SETTINGS -> displayFragment(getSettingsFragment())
-            TRADE -> displayFragment(getTradeFragment())
-            DEPOSIT -> displayFragment(getDepositFragment())
+        val fragment =
+                when (screenIdentifier) {
+                    DashboardFragment.ID -> factory.getDashboardFragment()
+                    WalletFragment.ID -> factory.getWalletFragment()
+                    WithdrawFragment.ID -> factory.getWithdrawFragment()
+                    SendFragment.ID -> factory.getSendFragment()
+                    ExploreAssetsFragment.ID -> factory.getExploreFragment()
+                    SettingsFragment.ID -> factory.getSettingsFragment()
+                    TradeFragment.ID -> factory.getTradeFragment()
+                    DepositFragment.ID -> factory.getDepositFragment()
+                    else -> null
+                }
+
+        if (fragment != null) {
+            navigateTo(screenIdentifier, fragment)
         }
     }
     // endregion
 
-    // region Fragments
-    private fun getDashboardFragment(): Fragment {
-        return DashboardFragment.newInstance()
-    }
-
-    private fun getWalletFragment(): Fragment {
-        return WalletFragment.newInstance()
-    }
-
-    private fun getSettingsFragment(): Fragment {
-        return GeneralSettingsFragment()
-    }
-
-    private fun getTradeFragment(): Fragment {
-        return TradeFragment()
-    }
-
-    private fun getWithdrawFragment(): Fragment {
-        return WithdrawFragment()
-    }
-
-    private fun getSendFragment(): Fragment {
-        return SendFragment()
-    }
-
-    private fun getExploreFragment(): Fragment {
-        return ExploreAssetsFragment()
-    }
-
-    private fun getDepositFragment(): Fragment {
-        return DepositFragment()
-    }
-
     private var fragmentToolbarDisposable: Disposable? = null
     private fun displayFragment(fragment: Fragment) {
+
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_layout, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -225,7 +203,6 @@ class MainActivity : BaseActivity() {
                     }
         }
     }
-    // endregion
 
     private fun signOutWithConfirmation() {
         AlertDialog.Builder(this, R.style.AlertDialogStyle)
@@ -242,6 +219,28 @@ class MainActivity : BaseActivity() {
             navigationDrawer?.closeDrawer()
         } else {
             moveTaskToBack(true)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                SendFragment.PAYMENT_CONFIRMATION_REQUEST -> {
+                    data?.getNullableStringExtra(PaymentConfirmationActivity.ASSET_RESULT_EXTRA)
+                            ?.also { paymentAsset ->
+                                navigateTo(WalletFragment.ID,
+                                        factory.getWalletFragment(paymentAsset))
+                            }
+                }
+                WithdrawFragment.WITHDRAWAL_CONFIRMATION_REQUEST -> {
+                    data?.getNullableStringExtra(WithdrawalConfirmationActivity.ASSET_RESULT_EXTRA)
+                            ?.also { withdrawalAsset ->
+                                navigateTo(WalletFragment.ID,
+                                        factory.getWalletFragment(withdrawalAsset))
+                            }
+                }
+            }
         }
     }
 }

@@ -324,4 +324,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 .setPositiveButton(R.string.ok, null)
                 .show()
     }
+
+    companion object {
+        const val ID = 1112L
+    }
 }

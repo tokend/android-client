@@ -65,6 +65,9 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
             go_to_confirmation_button.enabled = value
         }
 
+    private val defaultAsset: String?
+        get() = arguments?.getString("asset")
+
     private var asset: String = ""
         set(value) {
             field = value
@@ -208,6 +211,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         }
 
         asset_spinner.setSimpleItems(withdrawableAssets)
+        asset_spinner.selectedItemIndex = (withdrawableAssets.indexOf(defaultAsset))
     }
     // endregion
 
@@ -271,8 +275,9 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                                     fee = fee
                             )
 
-                            Navigator.openWithdrawalConfirmation(activity!!,
-                                    4511, request)
+                            Navigator.openWithdrawalConfirmation(requireActivity(),
+                                    WITHDRAWAL_CONFIRMATION_REQUEST, request)
+
                         },
                         onError = { ErrorHandlerFactory.getDefault().handle(it) }
                 )
@@ -284,6 +289,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         updateConfirmAvailability()
         displayBalance()
     }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
                                             grantResults: IntArray) {
@@ -299,6 +305,20 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
         if (scanResult != null && scanResult.contents != null) {
             address_edit_text.setText(scanResult.contents)
+        }
+    }
+
+    companion object {
+        private const val ASSET_EXTRA = "asset"
+        const val ID = 1113L
+        val WITHDRAWAL_CONFIRMATION_REQUEST = "confirm_withdrawal".hashCode() and 0xffff
+
+        fun newInstance(asset: String? = null): WithdrawFragment {
+            val fragment = WithdrawFragment()
+            fragment.arguments = Bundle().apply {
+                putString(ASSET_EXTRA, asset)
+            }
+            return fragment
         }
     }
 }

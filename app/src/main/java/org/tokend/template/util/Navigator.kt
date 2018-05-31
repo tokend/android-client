@@ -2,6 +2,7 @@ package org.tokend.template.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
@@ -18,6 +19,8 @@ import org.tokend.template.base.activities.*
 import org.tokend.template.base.activities.qr.ShareQrActivity
 import org.tokend.template.base.activities.signup.RecoverySeedActivity
 import org.tokend.template.base.activities.signup.SignUpActivity
+import org.tokend.template.base.fragments.SendFragment
+import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.features.explore.AssetDetailsActivity
 import org.tokend.template.features.trade.OfferConfirmationActivity
@@ -31,6 +34,7 @@ import org.tokend.template.features.withdraw.model.WithdrawalRequest
  * 'to-' will open related screen and finish current.
  */
 object Navigator {
+
     private fun fadeOut(activity: Activity) {
         ActivityCompat.finishAfterTransition(activity)
         activity.overridePendingTransition(0, R.anim.activity_fade_out)
@@ -118,6 +122,23 @@ object Navigator {
         ), requestCode)
     }
 
+    fun openWallet(fragment: Fragment, asset: String) {
+        val toSend = Intent(fragment.context, SingleFragmentActivity::class.java)
+                .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
+                .putExtra(SingleFragmentActivity.SCREEN_ID, WalletFragment.ID)
+
+        fragment.startActivity(toSend)
+    }
+
+    fun openSend(fragment: Fragment, asset: String,
+                 requestCode: Int) {
+        val toSend = Intent(fragment.context, SingleFragmentActivity::class.java)
+                .putExtra(SingleFragmentActivity.SCREEN_ID, SendFragment.ID)
+                .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
+
+        fragment.startActivityForResult(toSend, requestCode)
+    }
+
     fun openAssetDetails(activity: Activity, requestCode: Int,
                          asset: Asset,
                          cardView: View? = null) {
@@ -128,6 +149,7 @@ object Navigator {
                 AssetDetailsActivity.ASSET_EXTRA to asset
         ), requestCode, transitionBundle)
     }
+
 
     fun openPaymentConfirmation(activity: Activity, requestCode: Int,
                                 paymentRequest: PaymentRequest) {
@@ -147,4 +169,5 @@ object Navigator {
         fragment.startActivityForResult(fragment.context?.intentFor<OffersActivity>(
         ), requestCode)
     }
+
 }

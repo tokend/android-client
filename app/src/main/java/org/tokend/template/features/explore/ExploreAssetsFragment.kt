@@ -238,7 +238,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         if (!item.balanceExists) {
             createBalanceWithConfirmation(item.code)
         } else {
-            // TODO: Navigate to Wallet
+            Navigator.openWallet(this,item.code)
         }
     }
 
@@ -294,5 +294,9 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
             balancesRepository.invalidate()
             assetsRepository.update()
         }
+    }
+
+    companion object {
+         const val ID = 1114L
     }
 }

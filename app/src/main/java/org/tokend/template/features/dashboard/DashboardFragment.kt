@@ -1,6 +1,7 @@
 package org.tokend.template.features.dashboard
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -29,7 +30,9 @@ import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.features.trade.adapter.OffersActivity
 import org.tokend.template.features.trade.repository.offers.OffersRepository
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
@@ -126,7 +129,8 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         activity_list.isNestedScrollingEnabled = false
 
         view_more_button.onClick {
-            it?.isEnabled = false
+            Navigator.openWallet(this,asset)
+
         }
     }
 
@@ -144,7 +148,8 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         offers_list.isNestedScrollingEnabled = false
 
         view_more_offers_button.onClick {
-            it?.isEnabled = false
+            val offersIntent = Intent(view!!.context,OffersActivity::class.java)
+            startActivity(offersIntent)
         }
     }
     // endregion
@@ -268,6 +273,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
 
     companion object {
         private const val TRANSACTIONS_TO_DISPLAY = 3
+        const val ID = 1110L
 
         fun newInstance(): DashboardFragment {
             val fragment = DashboardFragment()

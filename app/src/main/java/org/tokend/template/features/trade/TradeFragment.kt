@@ -423,5 +423,6 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     companion object {
         private val CREATE_OFFER_REQUEST = "create_offer".hashCode() and 0xffff
         private val CANCEL_OFFER_REQUEST = "cancel_offer".hashCode() and 0xffff
+        const val ID = 1115L
     }
 }
