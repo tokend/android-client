@@ -36,7 +36,7 @@ import org.tokend.template.util.FragmentFactory
 
 class MainActivity : BaseActivity() {
     companion object {
-        private val SIGN_OUT = 7L
+        private const val SIGN_OUT = 7L
 
         const val ASSET_EXTRA = "asset"
         const val SCREEN_ID = "screenId"

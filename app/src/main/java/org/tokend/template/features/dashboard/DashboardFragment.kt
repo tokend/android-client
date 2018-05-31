@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.jakewharton.rxbinding2.view.enabled
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,15 +18,11 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.transactions.MatchTransaction
 import org.tokend.template.R
-import org.tokend.template.base.activities.MainActivity
-import org.tokend.template.base.activities.SingleFragmentActivity
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
-import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
 import org.tokend.template.base.logic.repository.base.MultipleItemsRepository
 import org.tokend.template.base.logic.repository.transactions.TxRepository
