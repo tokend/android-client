@@ -18,15 +18,17 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.collapsing_balance_appbar.*
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
+import org.tokend.sdk.api.models.BalanceDetails
 import org.tokend.sdk.api.models.transactions.*
 import org.tokend.template.R
 import org.tokend.template.base.activities.tx_details.*
-import org.tokend.template.base.logic.repository.transactions.TxRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
+import org.tokend.template.base.logic.repository.transactions.TxRepository
 import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.extensions.isTransferable
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
@@ -148,8 +150,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                 .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
-                    displayAssetTabs(it.map { it.asset })
-                    displayBalance()
+                    onBalancesUpdated(it)
                 }
         balancesRepository.loadingSubject
                 .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
@@ -232,6 +233,22 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                             " $asset"
                 }
     }
+
+    private fun displaySendIfNeeded() {
+        (balancesRepository.itemsSubject.value
+                .find { it.asset == asset }
+                ?.assetDetails
+                ?.isTransferable() == true)
+                .let { isTransferable ->
+                    if (!isTransferable) {
+                        send_fab.hide()
+                        send_fab.isEnabled = false
+                    } else {
+                        send_fab.show()
+                        send_fab.isEnabled = true
+                    }
+                }
+    }
     // endregion
 
     private fun update(force: Boolean = false) {
@@ -244,11 +261,18 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
+    private fun onBalancesUpdated(balances: List<BalanceDetails>) {
+        displayAssetTabs(balances.map { it.asset })
+        displayBalance()
+        displaySendIfNeeded()
+    }
+
     private fun onAssetChanged() {
         displayBalance()
         subscribeToTransactions()
         date_text_switcher.init(history_list, txAdapter)
         history_list.scrollToPosition(0)
+        displaySendIfNeeded()
         update()
     }
 
