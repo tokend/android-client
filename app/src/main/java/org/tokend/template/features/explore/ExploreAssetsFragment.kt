@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.transition.Fade
 import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
@@ -24,6 +25,7 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_explore.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
@@ -234,7 +236,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
     private fun performPrimaryAssetAction(item: AssetListItem) {
         if (!item.balanceExists) {
-            createBalance(item.code)
+            createBalanceWithConfirmation(item.code)
         } else {
             // TODO: Navigate to Wallet
         }
@@ -273,6 +275,16 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                             ErrorHandlerFactory.getDefault().handle(it)
                         }
                 )
+    }
+
+    private fun createBalanceWithConfirmation(asset: String) {
+        AlertDialog.Builder(this.context!!, R.style.AlertDialogStyle)
+                .setMessage(resources.getString(R.string.create_balance_confirmation,asset))
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    createBalance(asset)
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
     }
 
     fun update(force: Boolean = false) {

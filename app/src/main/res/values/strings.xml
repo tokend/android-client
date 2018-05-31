@@ -214,6 +214,7 @@
 
     <!-- Deposit -->
     <string name="currency">Currency</string>
+    <string name="create_balance_confirmation">Are you sure that you want to create %1s balance?</string>
     <string name="personal_address">Personal address</string>
     <string name="to_make_deposit_send_asset">To make a deposit send %1$s to this address</string>
     <string name="share_label">share</string>
