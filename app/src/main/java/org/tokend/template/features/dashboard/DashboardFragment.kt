@@ -37,6 +37,7 @@ import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.features.trade.adapter.OffersActivity
 import org.tokend.template.features.trade.repository.offers.OffersRepository
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
@@ -133,8 +134,8 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         activity_list.isNestedScrollingEnabled = false
 
         view_more_button.onClick {
-            startActivity(view!!.context.intentFor<SingleFragmentActivity>(SCREEN_ID to WalletFragment.ID,
-                    ASSET_EXTRA to asset))
+            Navigator.openWallet(this,asset)
+
         }
     }
 
@@ -277,8 +278,6 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
 
     companion object {
         private const val TRANSACTIONS_TO_DISPLAY = 3
-        private const val ASSET_EXTRA = "asset"
-        private const val SCREEN_ID = "screenId"
         const val ID = 1110L
 
         fun newInstance(): DashboardFragment {

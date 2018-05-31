@@ -19,6 +19,7 @@ import org.tokend.template.base.activities.*
 import org.tokend.template.base.activities.qr.ShareQrActivity
 import org.tokend.template.base.activities.signup.RecoverySeedActivity
 import org.tokend.template.base.activities.signup.SignUpActivity
+import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.features.dashboard.DashboardFragment
@@ -34,8 +35,6 @@ import org.tokend.template.features.withdraw.model.WithdrawalRequest
  * 'to-' will open related screen and finish current.
  */
 object Navigator {
-    private const val ASSET_EXTRA = "asset"
-    private const val SCREEN_ID = "screenId"
 
     private fun fadeOut(activity: Activity) {
         ActivityCompat.finishAfterTransition(activity)
@@ -122,30 +121,29 @@ object Navigator {
         fragment.startActivityForResult(toSend,requestCode)
     }
 
-    fun toWallet(fragment: Fragment, asset: String? = null,isExplore: Boolean? = null){
-        val toSend: Intent?
-
-        if(isExplore == true){
-            toSend = Intent(fragment.context,SingleFragmentActivity::class.java)
-                    .putExtra(ASSET_EXTRA,asset)
-                    .putExtra(SCREEN_ID,WalletFragment.ID)
-        }else {
-            toSend = Intent(fragment.context, MainActivity::class.java)
-                    .putExtra(SCREEN_ID, WalletFragment.ID)
-                    .putExtra(ASSET_EXTRA, asset)
-                    .clearTop()
-                    .singleTop()
-        }
+    fun toWallet(fragment: Fragment, asset: String? = null){
+        val toSend: Intent? = Intent(fragment.context, MainActivity::class.java)
+                            .putExtra(MainActivity.SCREEN_ID, WalletFragment.ID)
+                            .putExtra(MainActivity.ASSET_EXTRA, asset)
+                            .clearTop()
+                            .singleTop()
 
         fragment.startActivity(toSend)
-
     }
-    fun toDashBoard(fragment: Fragment, asset: String?){
-        val toSend = Intent(fragment.context,MainActivity::class.java)
-                .putExtra(SCREEN_ID,DashboardFragment.ID)
-                .putExtra(ASSET_EXTRA,asset)
-                .clearTop()
-                .singleTop()
+
+    fun openWallet(fragment: Fragment,asset: String){
+        val toSend = Intent(fragment.context,SingleFragmentActivity::class.java)
+                .putExtra(SingleFragmentActivity.ASSET_EXTRA,asset)
+                .putExtra(SingleFragmentActivity.SCREEN_ID,WalletFragment.ID)
+
+        fragment.startActivity(toSend)
+    }
+
+    fun openSend(fragment: Fragment,asset: String){
+        val toSend = Intent(fragment.context,SingleFragmentActivity::class.java)
+                .putExtra(SingleFragmentActivity.SCREEN_ID,SendFragment.ID)
+                .putExtra(SingleFragmentActivity.ASSET_EXTRA,asset)
+
         fragment.startActivity(toSend)
     }
 

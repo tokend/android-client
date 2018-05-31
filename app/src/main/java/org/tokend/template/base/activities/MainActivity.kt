@@ -38,8 +38,8 @@ class MainActivity : BaseActivity() {
     companion object {
         private val SIGN_OUT = 7L
 
-        private const val ASSET_EXTRA = "asset"
-        private const val SCREEN_ID = "screenId"
+        const val ASSET_EXTRA = "asset"
+        const val SCREEN_ID = "screenId"
     }
 
     private var navigationDrawer: Drawer? = null
@@ -229,15 +229,18 @@ class MainActivity : BaseActivity() {
         val asset : String? = intent.getStringExtra(ASSET_EXTRA)
 
         if(asset != null){
-            var fragment: Fragment? = null
-            if(screenId == WalletFragment.ID) {
-                fragment = factory.getWalletFragment(asset)
-            }
-            else if(screenId == SendFragment.ID){
-                fragment = factory.getSendFragment(asset)
+
+            val fragment =
+                    when(screenId){
+                        WalletFragment.ID -> factory.getWalletFragment(asset)
+                        SendFragment.ID -> factory.getSendFragment(asset)
+                        else -> null
+                    }
+
+            if (fragment != null) {
+                navigateTo(screenId,fragment)
             }
 
-            navigateTo(screenId,fragment!!)
         }else {
             navigateTo(screenId)
         }

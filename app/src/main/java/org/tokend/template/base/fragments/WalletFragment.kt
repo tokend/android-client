@@ -19,12 +19,9 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.collapsing_balance_appbar.*
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.transactions.*
 import org.tokend.template.R
-import org.tokend.template.base.activities.MainActivity
-import org.tokend.template.base.activities.SingleFragmentActivity
 import org.tokend.template.base.activities.tx_details.*
 import org.tokend.template.base.logic.repository.transactions.TxRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
@@ -32,6 +29,7 @@ import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
@@ -87,7 +85,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     private fun initSend(){
         send_fab.onClick {
-            startActivity(view!!.context.intentFor<SingleFragmentActivity>(SCREEN_ID to SendFragment.ID, ASSET_EXTRA to asset))
+            Navigator.openSend(this,asset)
         }
     }
 

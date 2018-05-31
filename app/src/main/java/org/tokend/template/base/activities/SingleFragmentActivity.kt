@@ -1,31 +1,22 @@
 package org.tokend.template.base.activities
 
-import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.app.FragmentTransaction
-import android.support.v7.widget.Toolbar
-import com.mikepenz.materialdrawer.Drawer
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
-import io.reactivex.disposables.Disposable
-import io.reactivex.rxkotlin.addTo
-import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.features.dashboard.DashboardFragment
-import org.tokend.template.features.explore.ExploreAssetsFragment
+import org.tokend.template.util.FragmentFactory
 
 class SingleFragmentActivity : BaseActivity() {
 
     private var asset: String? = null
     private var screenId : Long? = null
-
-    private var fragment: Fragment? = null
-
-    private var navigationDrawer: Drawer? = null
+    private val factory = FragmentFactory()
 
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
@@ -33,14 +24,15 @@ class SingleFragmentActivity : BaseActivity() {
         asset = intent.getStringExtra(ASSET_EXTRA)
         screenId = intent.getLongExtra(SCREEN_ID,DashboardFragment.ID)
 
-        initFragment()
-        displayFragment(fragment!!)
+        getFragment()?.let{ fragment -> displayFragment(fragment)}
+        ?: finish()
     }
 
-    private fun initFragment() {
-        when(screenId){
-            WalletFragment.ID -> fragment = WalletFragment.newInstance(asset)
-            SendFragment.ID -> fragment = SendFragment.newInstance(asset)
+    private fun getFragment(): Fragment? {
+        return when(screenId){
+            WalletFragment.ID -> factory.getWalletFragment(asset)
+            SendFragment.ID -> factory.getSendFragment(asset)
+            else -> null
         }
     }
 
@@ -53,25 +45,23 @@ class SingleFragmentActivity : BaseActivity() {
 
 
         // Bind navigation drawer to fragment's toolbar.
-        var fragmentToolbarDisposable: Disposable? = null
 
-        fragmentToolbarDisposable?.dispose()
         if (fragment is ToolbarProvider) {
-            fragmentToolbarDisposable = fragment.toolbarSubject
+
+            fragment.toolbarSubject
                     .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                     .subscribe { fragmentToolbar ->
-                        navigationDrawer?.setToolbar(this, fragmentToolbar,
-                                true)
                         setSupportActionBar(fragmentToolbar)
                         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+                        supportActionBar!!.title = asset
                     }
 
         }
     }
 
     companion object {
-        private const val SCREEN_ID = "screenId"
-        private const val ASSET_EXTRA = "asset"
+         const val SCREEN_ID = "screenId"
+         const val ASSET_EXTRA = "asset"
     }
 }
 
