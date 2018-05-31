@@ -86,7 +86,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
                 Navigator.openQrShare(parentActivity,
                         data = accountId,
                         title = getString(R.string.account_id_title),
-                        shareDialogText = getString(R.string.share_account_id)
+                        shareLabel = getString(R.string.share_account_id)
                 )
             }
 

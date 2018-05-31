@@ -88,13 +88,15 @@ object Navigator {
     fun openQrShare(activity: Activity,
                     title: String,
                     data: String,
-                    shareDialogText: String,
+                    shareLabel: String,
+                    shareText: String? = data,
                     topText: String? = null) {
         activity.startActivity(activity.intentFor<ShareQrActivity>(
                 ShareQrActivity.DATA_EXTRA to data,
                 ShareQrActivity.TITLE_EXTRA to title,
-                ShareQrActivity.SHARE_DIALOG_TEXT_EXTRA to shareDialogText,
-                ShareQrActivity.TOP_TEXT_EXTRA to topText
+                ShareQrActivity.SHARE_DIALOG_TEXT_EXTRA to shareLabel,
+                ShareQrActivity.TOP_TEXT_EXTRA to topText,
+                ShareQrActivity.SHARE_TEXT_EXTRA to shareText
         ))
     }
 

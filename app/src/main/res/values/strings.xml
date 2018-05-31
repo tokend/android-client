@@ -227,5 +227,7 @@
     <string name="no_addresses_in_pool_title">No available addresses</string>
     <string name="no_addresses_in_pool_explanation">No addresses are currently available
         for this asset. Try again later or contact support</string>
+    <string name="template_deposit_address_with_expiration">Deposit %1$s:\n%2$s\nExpires at %3$s</string>
+    <string name="template_deposit_address">Deposit %1$s:\n%2$s</string>
 
 </resources>

@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.Asset
 import org.tokend.sdk.api.responses.AccountResponse
-import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
@@ -148,10 +147,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     private fun initButtons() {
         show_qr_text_view.onClick {
-            Navigator.openQrShare(this.requireActivity(),
-                    "${getString(R.string.deposit_title)} ${asset_tab_layout.selectedItem?.text}",
-                    address_text_view.text.toString(),
-                    getString(R.string.share_address_label))
+            openQr()
         }
 
         share_btn.onClick {
@@ -175,20 +171,21 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 asset_tab_layout.visibility = View.GONE
                 error_empty_view.showEmpty(R.string.error_deposit_unavailable)
             }
+            return
         } else {
             asset_tab_layout.visibility = View.VISIBLE
             error_empty_view.hide()
         }
+
+        asset_tab_layout.onItemSelected({
+            (it.tag as? Asset)?.let { currentAsset = it }
+        })
 
         asset_tab_layout.setItems(
                 depositableAssets.map {
                     PickerItem(it.code, it)
                 }
         )
-
-        asset_tab_layout.onItemSelected({
-            (it.tag as? Asset)?.let { currentAsset = it }
-        })
     }
 
     private fun update(force: Boolean = false) {
@@ -219,7 +216,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                     if (expirationDate != null) {
                         address_expiration_card.visibility = View.VISIBLE
                         address_expiration_text_view.text =
-                                DateFormatter(context ?: App.context)
+                                DateFormatter(requireActivity())
                                         .formatLong(expirationDate)
                     } else {
                         address_expiration_card.visibility = View.GONE
@@ -243,12 +240,36 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun shareData() {
-        val sharingIntent = Intent(Intent.ACTION_SEND)
-        sharingIntent.type = "text/plain"
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
-                getString(R.string.app_name))
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, address_text_view.text)
-        startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_address_label)))
+        getAddressShareMessage()?.let { shareMessage ->
+            val sharingIntent = Intent(Intent.ACTION_SEND)
+            sharingIntent.type = "text/plain"
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+                    getString(R.string.app_name))
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage)
+            startActivity(Intent.createChooser(sharingIntent,
+                    getString(R.string.share_address_label)))
+        }
+    }
+
+    private fun openQr() {
+        Navigator.openQrShare(this.requireActivity(),
+                title =
+                "${getString(R.string.deposit_title)} ${asset_tab_layout.selectedItem?.text}",
+                data = address_text_view.text.toString(),
+                shareLabel = getString(R.string.share_address_label),
+                shareText = getAddressShareMessage())
+    }
+
+    private fun getAddressShareMessage(): String? {
+        return externalAccount?.let { externalAccount ->
+            externalAccount.expirationDate?.let { expirationDate ->
+                getString(R.string.template_deposit_address_with_expiration,
+                        currentAsset?.code, externalAccount.data,
+                        DateFormatter(requireActivity()).formatCompact(expirationDate)
+                )
+            } ?: getString(R.string.template_deposit_address,
+                    currentAsset?.code, externalAccount.data)
+        }
     }
 
     private fun bindExternalAccount() {

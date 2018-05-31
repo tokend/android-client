@@ -26,6 +26,7 @@ class ShareQrActivity : ToolbarActivity() {
         const val TITLE_EXTRA = "title"
         const val DATA_EXTRA = "data"
         const val SHARE_DIALOG_TEXT_EXTRA = "share_dialog_text"
+        const val SHARE_TEXT_EXTRA = "share_text"
         const val TOP_TEXT_EXTRA = "top_text"
     }
 
@@ -37,12 +38,10 @@ class ShareQrActivity : ToolbarActivity() {
         get() = intent.getStringExtra(DATA_EXTRA, "")
     private val shareDialogText: String
         get() = intent.getStringExtra(SHARE_DIALOG_TEXT_EXTRA, "")
+    private val shareText: String
+        get() = intent.getStringExtra(SHARE_TEXT_EXTRA, data)
     private val topText: String
         get() = intent.getStringExtra(TOP_TEXT_EXTRA, "")
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_share_qr)
@@ -66,7 +65,7 @@ class ShareQrActivity : ToolbarActivity() {
         sharingIntent.type = "text/plain"
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
                 getString(R.string.app_name))
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, data)
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareText)
         startActivity(Intent.createChooser(sharingIntent, shareDialogText))
     }
 
