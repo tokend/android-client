@@ -2,6 +2,7 @@ package org.tokend.template.base.tfa
 
 import android.content.Context
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.AppCompatImageView
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -23,6 +24,7 @@ abstract class TfaDialog(protected val context: Context,
                          private val tfaVerifierInterface: TfaVerifier.Interface
 ) {
     protected val inputEditText: MaterialEditText
+    protected val inputButtonImageView: AppCompatImageView
     protected val messageTextView: TextView
     protected lateinit var progress: ProgressBar
     protected val dialog: AlertDialog
@@ -38,6 +40,7 @@ abstract class TfaDialog(protected val context: Context,
         progress = view.find(R.id.progress)
         messageTextView = view.find(R.id.tfa_message_text_view)
         inputEditText = view.find(R.id.tfa_input_edit_text)
+        inputButtonImageView = view.find(R.id.tfa_input_button_image_view)
 
         dialog = AlertDialog.Builder(context, R.style.AlertDialogStyle)
                 .setTitle(R.string.tfa_dialog_title)

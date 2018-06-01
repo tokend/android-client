@@ -92,7 +92,7 @@ class WalletManager(
                         KeyStorage.getWalletIdHex(email, password, kdfAttributes),
                         KeyStorage.getWalletKey(email, password, kdfAttributes)
                 )
-            }.toSingle().subscribeOn(Schedulers.computation())
+            }.toSingle().subscribeOn(Schedulers.newThread())
         }
         // endregion
     }

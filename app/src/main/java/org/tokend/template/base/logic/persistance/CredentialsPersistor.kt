@@ -2,6 +2,7 @@ package org.tokend.template.base.logic.persistance
 
 import android.content.SharedPreferences
 import android.os.Build
+import android.support.annotation.RequiresApi
 import org.tokend.sdk.api.ApiFactory
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.extensions.toByteArray
@@ -36,13 +37,26 @@ class CredentialsPersistor(
         preferences.edit().putString(EMAIL_KEY, email).apply()
     }
 
-    fun hasCredentials(email: String): Boolean {
-        return getSavedEmail() == email
-    }
-
     fun getSavedEmail(): String? {
         return preferences.getString(EMAIL_KEY, "")
                 .takeIf { it.isNotEmpty() }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun hasSavedPassword(): Boolean {
+        val password = getSavedPassword()
+        val hasPassword = password != null
+        password?.fill('0')
+        return hasPassword
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun getSavedPassword(): CharArray? {
+        val passwordBytes = secureStorage.load(PASSWORD_KEY)
+                ?: return null
+        val password = passwordBytes.toCharArray()
+        passwordBytes.fill(0)
+        return password
     }
 
     fun loadCredentials(password: CharArray): WalletInfo? {

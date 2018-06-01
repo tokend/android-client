@@ -11,6 +11,7 @@ import org.tokend.sdk.api.requests.DataEntity
 import org.tokend.sdk.api.responses.AccountResponse
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.base.logic.di.providers.*
+import org.tokend.template.base.logic.persistance.CredentialsPersistor
 import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.extensions.toSingle
 import org.tokend.wallet.*
@@ -53,6 +54,7 @@ class WalletPasswordManager(
                             data.apiProvider,
                             data.accountProvider,
                             WalletInfoProviderFactory().createWalletInfoProvider(wallet),
+                            null,
                             newAccount,
                             newPassword
                     )
@@ -61,14 +63,17 @@ class WalletPasswordManager(
 
     fun changePassword(apiProvider: ApiProvider, accountProvider: AccountProvider,
                        walletInfoProvider: WalletInfoProvider,
+                       credentialsPersistor: CredentialsPersistor,
                        newAccount: Account, newPassword: CharArray): Completable {
-        return updateWalletWithNewPassword(apiProvider, accountProvider, walletInfoProvider,
+        return updateWalletWithNewPassword(apiProvider, accountProvider,
+                walletInfoProvider, credentialsPersistor,
                 newAccount, newPassword)
     }
 
     private fun updateWalletWithNewPassword(apiProvider: ApiProvider,
                                             accountProvider: AccountProvider,
                                             walletInfoProvider: WalletInfoProvider,
+                                            credentialsPersistor: CredentialsPersistor?,
                                             newAccount: Account,
                                             newPassword: CharArray): Completable {
         val account = accountProvider.getAccount()
@@ -126,12 +131,23 @@ class WalletPasswordManager(
                 }
                 // Update current credentials.
                 .doOnComplete {
-                    walletInfoProvider.getWalletInfo()?.apply {
+                    val currentWalletInfo = walletInfoProvider.getWalletInfo()
+                            ?: return@doOnComplete
+
+                    // Update in memory.
+                    currentWalletInfo.apply {
                         loginParams.kdfAttributes.encodedSalt =
                                 Base64.toBase64String(data.newSalt.toByteArray())
                         walletIdHex = data.newWalletId
                     }
                     accountProvider.setAccount(newAccount)
+
+                    // Update in persistent storage.
+                    val walletInfoToSave = currentWalletInfo.copy(
+                            secretSeed = newAccount.secretSeed ?: CharArray(0)
+                    )
+                    credentialsPersistor?.saveCredentials(walletInfoToSave, newPassword)
+                    walletInfoToSave.secretSeed.fill('0')
                 }
     }
 

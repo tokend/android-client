@@ -38,7 +38,8 @@ class SignInManager(
 
     private fun getWalletInfo(email: String, password: CharArray): Single<WalletInfo> {
         return {
-            credentialsPersistor.takeIf { it.hasCredentials(email) }
+            credentialsPersistor
+                    .takeIf { it.getSavedEmail() == email }
                     ?.loadCredentials(password)
                     ?: keyStorage.getWalletInfo(email, password)
         }.toSingle()

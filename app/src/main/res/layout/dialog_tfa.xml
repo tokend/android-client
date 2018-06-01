@@ -14,14 +14,30 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_dialog" />
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/tfa_input_edit_text"
-        style="@style/EditText"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/standard_margin"
-        app:met_helperText=" "
-        app:met_helperTextAlwaysShown="true" />
+        android:layout_marginTop="@dimen/standard_margin">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/tfa_input_edit_text"
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:met_helperText=" "
+            app:met_helperTextAlwaysShown="true"  />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/tfa_input_button_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/half_standard_padding"
+            android:padding="@dimen/half_standard_margin"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
     <include layout="@layout/layout_progress" />
 

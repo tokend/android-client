@@ -3,6 +3,7 @@ package org.tokend.template.base.activities
 import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
+import android.view.View
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.rxkotlin.subscribeBy
@@ -17,7 +18,9 @@ import org.tokend.sdk.federation.NeedTfaException
 import org.tokend.template.R
 import org.tokend.template.base.logic.SignUpManager
 import org.tokend.template.base.logic.WalletPasswordManager
+import org.tokend.template.base.logic.persistance.FingerprintAuthManager
 import org.tokend.template.base.tfa.PasswordTfaOtpGenerator
+import org.tokend.template.base.view.util.AnimationUtil
 import org.tokend.template.base.view.util.EditTextHelper
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
@@ -42,6 +45,8 @@ class ChangePasswordActivity : BaseActivity() {
             updateChangeAvailability()
         }
 
+    private lateinit var fingerprintAuthManager: FingerprintAuthManager
+
     private var canChange: Boolean = false
         set(value) {
             field = value
@@ -56,6 +61,8 @@ class ChangePasswordActivity : BaseActivity() {
 
         initFields()
         initButtons()
+
+        fingerprintAuthManager = FingerprintAuthManager(this, credentialsPersistor)
 
         canChange = false
     }
@@ -90,6 +97,25 @@ class ChangePasswordActivity : BaseActivity() {
         change_password_button.onClick {
             tryToChangePassword()
         }
+    }
+    // endregion
+
+    // region Fingerprint
+    private fun requestFingerprintAuthIfAvailable() {
+        fingerprint_indicator.visibility = View.GONE
+        fingerprintAuthManager.requestAuthIfAvailable(
+                onAuthStart = { AnimationUtil.fadeInView(fingerprint_indicator) },
+                onSuccess = { _, password ->
+                    current_password_edit_text.setText(password, 0, password.size)
+                    new_password_edit_text.requestFocus()
+                    password.fill('0')
+                },
+                onError = { ToastManager.short(it) }
+        )
+    }
+
+    private fun cancelFingerprintAuth() {
+        fingerprintAuthManager.cancelAuth()
     }
     // endregion
 
@@ -140,6 +166,7 @@ class ChangePasswordActivity : BaseActivity() {
                             apiProvider,
                             accountProvider,
                             walletInfoProvider,
+                            credentialsPersistor,
                             account,
                             passwordChars
                     )
@@ -202,5 +229,15 @@ class ChangePasswordActivity : BaseActivity() {
     private fun finishWithSuccess() {
         setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requestFingerprintAuthIfAvailable()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        cancelFingerprintAuth()
     }
 }
