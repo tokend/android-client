@@ -68,6 +68,8 @@
                         android:layout_marginTop="@dimen/standard_padding"
                         android:gravity="center"
                         android:paddingBottom="0dp"
+                        android:layout_marginLeft="@dimen/standard_margin"
+                        android:layout_marginRight="@dimen/standard_margin"
                         android:textSize="@dimen/text_size_heading_large"
                         tools:text="12 TKD" />
 
