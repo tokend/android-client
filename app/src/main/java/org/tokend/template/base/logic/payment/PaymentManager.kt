@@ -85,6 +85,6 @@ class PaymentManager(
             transaction.addSignature(account)
 
             Single.just(transaction)
-        }.subscribeOn(Schedulers.computation())
+        }.subscribeOn(Schedulers.newThread())
     }
 }

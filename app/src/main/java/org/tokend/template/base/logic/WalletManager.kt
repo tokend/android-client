@@ -78,7 +78,7 @@ class WalletManager(
                         passwordFactorAccount.accountId, encryptedPasswordFactor))
 
                 wallet
-            }.toSingle().subscribeOn(Schedulers.computation())
+            }.toSingle().subscribeOn(Schedulers.newThread())
         }
 
         /**

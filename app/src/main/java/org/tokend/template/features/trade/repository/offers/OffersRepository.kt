@@ -118,7 +118,7 @@ class OffersRepository(
             )
         }
                 .toSingle()
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.newThread())
                 .map { Operation.OperationBody.ManageOffer(it) }
                 .flatMap {
                     TxManager.createSignedTransaction(networkParams, sourceAccountId, signer, it)
@@ -166,7 +166,7 @@ class OffersRepository(
             CancelOfferOp(offer.id, offer.isBuy)
         }
                 .toSingle()
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.newThread())
                 .map { Operation.OperationBody.ManageOffer(it) }
                 .flatMap {
                     TxManager.createSignedTransaction(networkParams, sourceAccountId, signer, it)

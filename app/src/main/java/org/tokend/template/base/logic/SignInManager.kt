@@ -48,7 +48,7 @@ class SignInManager(
     private fun getAccount(seed: CharArray): Single<Account> {
         return {
             Account.fromSecretSeed(seed)
-        }.toSingle().subscribeOn(Schedulers.computation())
+        }.toSingle().subscribeOn(Schedulers.newThread())
     }
     // endregion
 

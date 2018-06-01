@@ -71,7 +71,7 @@ class TxManager(
                 transaction.addSignature(signer)
 
                 Single.just(transaction)
-            }.subscribeOn(Schedulers.computation())
+            }.subscribeOn(Schedulers.newThread())
         }
     }
 }

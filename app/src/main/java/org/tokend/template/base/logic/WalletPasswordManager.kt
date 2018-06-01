@@ -155,7 +155,7 @@ class WalletPasswordManager(
     private fun createAccountFromSeed(seed: CharArray): Single<Account> {
         return {
             Account.fromSecretSeed(seed)
-        }.toSingle().subscribeOn(Schedulers.computation())
+        }.toSingle().subscribeOn(Schedulers.newThread())
     }
 
     private fun createWalletForPasswordChange(networkParams: NetworkParams,
@@ -261,7 +261,7 @@ class WalletPasswordManager(
             transaction.addSignature(currentAccount)
 
             Single.just(transaction)
-        }.subscribeOn(Schedulers.computation())
+        }.subscribeOn(Schedulers.newThread())
     }
     // endregion
 }
