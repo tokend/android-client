@@ -29,6 +29,7 @@ class TxHistoryAdapter : PaginationRecyclerAdapter<TxHistoryItem, BaseViewHolder
         val isLastInSection =
                 position == itemCount - (if (needLoadingFooter) 2 else 1)
         (holder as? TxHistoryItemViewHolder)?.dividerIsVisible = !isLastInSection
+        (holder as? TxHistoryItemViewHolder)?.iconIsSmall = true
     }
 
     override fun bindFooterViewHolder(holder: BaseViewHolder<TxHistoryItem>) {}

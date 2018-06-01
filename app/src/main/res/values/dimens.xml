@@ -42,6 +42,8 @@
     <dimen name="toolbar_subtitle_margin_bottom">45dp</dimen>
 
     <dimen name="tx_list_item_icon_size">50dp</dimen>
+    <dimen name="tx_list_item_icon_size_small">25dp</dimen>
+
     <dimen name="tx_list_item_height">83dp</dimen>
 
     <dimen name="spinner_arrow_align_margin">9dp</dimen>
