@@ -38,7 +38,9 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/recover_account"
             android:theme="@style/AppTheme" />
-        <activity android:name=".base.activities.qr.ShareQrActivity" />
+        <activity
+            android:name=".base.activities.qr.ShareQrActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".base.activities.MainActivity"
             android:configChanges="orientation|screenSize"
@@ -127,7 +129,8 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name=".base.activities.SingleFragmentActivity"
+        <activity
+            android:name=".base.activities.SingleFragmentActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

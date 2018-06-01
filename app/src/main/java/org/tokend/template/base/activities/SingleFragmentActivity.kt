@@ -1,7 +1,6 @@
 package org.tokend.template.base.activities
 
 import android.app.Activity
-import android.app.FragmentTransaction
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.trello.rxlifecycle2.android.ActivityEvent
@@ -39,8 +38,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
 
     private fun displayFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-                .replace(R.id.wallet_fragment_container, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .add(R.id.wallet_fragment_container, fragment)
                 .commit()
 
         // Bind navigation drawer to fragment's toolbar.

@@ -8,6 +8,12 @@
         <item name="android:textColorSecondary">@color/secondary_text</item>
         <item name="preferenceTheme">@style/PreferenceTheme</item>
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
+        <item name="android:windowAnimationStyle">@style/AppAnimationStyle</item>
+    </style>
+
+    <style name="AppAnimationStyle" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenExitAnimation">@anim/stay_visible</item>
+        <item name="android:activityCloseEnterAnimation">@anim/stay_visible</item>
     </style>
 
     <style name="AppTheme.CardsBackground" parent="AppTheme">
