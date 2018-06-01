@@ -188,7 +188,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         asset_tab_layout.setItems(
                 depositableAssets.map {
                     PickerItem(it.code, it)
-                }
+                },
+                depositableAssets.indexOfFirst { it.code == currentAsset?.code }
         )
     }
 
@@ -197,7 +198,9 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         timerTask = object : TimerTask() {
             override fun run() {
                 requireContext().runOnUiThread {
-                    displayAddress()
+                    if (isVisible) {
+                        displayAddress()
+                    }
                 }
             }
         }
