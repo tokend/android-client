@@ -72,15 +72,15 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     override fun onInitAllowed() {
         toolbarSubject.onNext(toolbar)
 
-        arguments?.getString(ASSET_EXTRA)?.let { requiredAsset ->
-            asset = requiredAsset
-        }
-
         initAssetTabs()
         initBalance()
         initHistory()
         initSwipeRefresh()
         initSend()
+
+        arguments?.getString(ASSET_EXTRA)?.let { requiredAsset ->
+            asset = requiredAsset
+        }
 
         subscribeToBalances()
     }
