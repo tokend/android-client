@@ -1,6 +1,7 @@
 package org.tokend.template.features.withdraw
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -30,6 +31,7 @@ import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.FeeManager
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
+import org.tokend.template.base.activities.WalletEventsListener
 import org.tokend.template.base.view.AmountEditTextWrapper
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
@@ -275,7 +277,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                                     fee = fee
                             )
 
-                            Navigator.openWithdrawalConfirmation(requireActivity(),
+                            Navigator.openWithdrawalConfirmation(this,
                                     WITHDRAWAL_CONFIRMATION_REQUEST, request)
 
                         },
@@ -305,6 +307,21 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
         if (scanResult != null && scanResult.contents != null) {
             address_edit_text.setText(scanResult.contents)
+        }
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                WITHDRAWAL_CONFIRMATION_REQUEST -> {
+                    val confirmedRequest =
+                            data?.getSerializableExtra(
+                                    WithdrawalConfirmationActivity.WITHDRAWAL_REQUEST_EXTRA
+                            ) as? WithdrawalRequest
+                    if (confirmedRequest != null) {
+                        (activity as? WalletEventsListener)
+                                ?.onWithdrawalRequestConfirmed(confirmedRequest)
+                    }
+                }
+            }
         }
     }
 

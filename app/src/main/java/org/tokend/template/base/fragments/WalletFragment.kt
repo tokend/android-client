@@ -48,10 +48,6 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     private val txRepository: TxRepository
         get() = repositoryProvider.transactions(asset)
 
-    private val defaultAsset: String?
-        get() = arguments?.getString(ASSET_EXTRA)
-
-
     private val needAssetTabs: Boolean
         get() = true
 
@@ -76,6 +72,10 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     override fun onInitAllowed() {
         toolbarSubject.onNext(toolbar)
 
+        arguments?.getString(ASSET_EXTRA)?.let { requiredAsset ->
+            asset = requiredAsset
+        }
+
         initAssetTabs()
         initBalance()
         initHistory()
@@ -83,7 +83,6 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         initSend()
 
         subscribeToBalances()
-
     }
 
     private fun initSend() {
@@ -236,8 +235,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     // region Display
     private fun displayAssetTabs(assets: List<String>) {
-        asset_tabs.setSimpleItems(assets, true)
-        asset_tabs.selectedItemIndex = assets.indexOf(defaultAsset)
+        asset_tabs.setSimpleItems(assets, asset)
     }
 
     private fun displayBalance() {
@@ -320,7 +318,9 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                SEND_REQUEST -> update()
+                SEND_REQUEST -> {
+                    update()
+                }
             }
         }
     }

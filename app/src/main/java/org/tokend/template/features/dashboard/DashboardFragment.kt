@@ -129,7 +129,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         activity_list.isNestedScrollingEnabled = false
 
         view_more_button.onClick {
-            Navigator.openWallet(this,asset)
+            Navigator.openWallet(this, asset)
 
         }
     }
@@ -148,7 +148,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         offers_list.isNestedScrollingEnabled = false
 
         view_more_offers_button.onClick {
-            val offersIntent = Intent(view!!.context,OffersActivity::class.java)
+            val offersIntent = Intent(view!!.context, OffersActivity::class.java)
             startActivity(offersIntent)
         }
     }
@@ -246,7 +246,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
 
     // region Display
     private fun displayAssetTabs(assets: List<String>) {
-        asset_tabs.setSimpleItems(assets, true)
+        asset_tabs.setSimpleItems(assets)
     }
 
     private fun displayBalance() {

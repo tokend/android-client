@@ -115,11 +115,11 @@ object Navigator {
                 requestCode)
     }
 
-    fun openWithdrawalConfirmation(activity: Activity, requestCode: Int,
+    fun openWithdrawalConfirmation(fragment: Fragment, requestCode: Int,
                                    withdrawalRequest: WithdrawalRequest) {
-        activity.startActivityForResult(activity.intentFor<WithdrawalConfirmationActivity>(
-                WithdrawalConfirmationActivity.WITHDRAWAL_REQUEST_EXTRA to withdrawalRequest
-        ), requestCode)
+        val confirmationIntent = Intent(fragment.context, WithdrawalConfirmationActivity::class.java)
+                .putExtra(WithdrawalConfirmationActivity.WITHDRAWAL_REQUEST_EXTRA, withdrawalRequest)
+        fragment.startActivityForResult(confirmationIntent, requestCode)
     }
 
     fun openWallet(fragment: Fragment, asset: String) {
@@ -151,11 +151,11 @@ object Navigator {
     }
 
 
-    fun openPaymentConfirmation(activity: Activity, requestCode: Int,
+    fun openPaymentConfirmation(fragment: Fragment, requestCode: Int,
                                 paymentRequest: PaymentRequest) {
-        activity.startActivityForResult(activity.intentFor<PaymentConfirmationActivity>(
-                PaymentConfirmationActivity.PAYMENT_REQUEST_EXTRA to paymentRequest
-        ), requestCode)
+        val confirmationIntent = Intent(fragment.context, PaymentConfirmationActivity::class.java)
+                .putExtra(PaymentConfirmationActivity.PAYMENT_REQUEST_EXTRA, paymentRequest)
+        fragment.startActivityForResult(confirmationIntent, requestCode)
     }
 
     fun openOfferConfirmation(fragment: Fragment, requestCode: Int,

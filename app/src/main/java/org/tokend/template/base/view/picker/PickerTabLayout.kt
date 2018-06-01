@@ -46,14 +46,10 @@ class PickerTabLayout : TabLayout, Picker {
         })
     }
 
-    override fun setItems(items: List<PickerItem>, keepSelection: Boolean) {
-        val selected = selectedItem
+    override fun setItems(items: List<PickerItem>, selectedIndex: Int) {
+        val toSelect = items.getOrNull(selectedIndex)
         this.items = items
-        if (keepSelection) {
-            initTabs(selected)
-        } else {
-            initTabs()
-        }
+        initTabs(toSelect)
     }
 
     override fun onItemSelected(listener: ((PickerItem) -> Unit)?) {
@@ -67,6 +63,7 @@ class PickerTabLayout : TabLayout, Picker {
                         suspendEvent = false
                         0
                     } else {
+                        suspendEvent = true
                         index
                     }
                 }

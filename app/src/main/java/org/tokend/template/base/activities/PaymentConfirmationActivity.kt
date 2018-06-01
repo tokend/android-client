@@ -171,12 +171,11 @@ class PaymentConfirmationActivity : BaseActivity() {
 
     private fun finishWithSuccess() {
         setResult(Activity.RESULT_OK,
-                Intent().putExtra(ASSET_RESULT_EXTRA, request.asset))
+                Intent().putExtra(PAYMENT_REQUEST_EXTRA, request))
         finish()
     }
 
     companion object {
         const val PAYMENT_REQUEST_EXTRA = "payment_request"
-        const val ASSET_RESULT_EXTRA = "asset"
     }
 }

@@ -21,6 +21,7 @@ class PickerSpinner : AppCompatSpinner, Picker {
     constructor(context: Context) : super(context)
 
     private var items = listOf<PickerItem>()
+    private val itemsAdapter = ArrayAdapter<String>(context, R.layout.spinner_item)
     private var itemSelectionListener: ((PickerItem) -> Unit)? = null
     private var suspendEvent = false
 
@@ -36,6 +37,7 @@ class PickerSpinner : AppCompatSpinner, Picker {
         }
 
     init {
+        adapter = itemsAdapter
         onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
@@ -48,14 +50,10 @@ class PickerSpinner : AppCompatSpinner, Picker {
         }
     }
 
-    override fun setItems(items: List<PickerItem>, keepSelection: Boolean) {
-        val selected = selectedItem
+    override fun setItems(items: List<PickerItem>, selectedIndex: Int) {
+        val selected = items.getOrNull(selectedIndex)
         this.items = items
-        if (keepSelection) {
-            initItems(selected)
-        } else {
-            initItems()
-        }
+        initItems(selected)
     }
 
     override fun onItemSelected(listener: ((PickerItem) -> Unit)?) {
@@ -69,15 +67,18 @@ class PickerSpinner : AppCompatSpinner, Picker {
                         suspendEvent = false
                         0
                     } else {
+                        suspendEvent = true
                         index
                     }
                 }
 
-        adapter = ArrayAdapter<String>(context, R.layout.spinner_item,
-                items.map { it.text })
+        post {
+            itemsAdapter.clear()
+            itemsAdapter.addAll(items.map { it.text })
 
-        selectedItemIndex = indexToSelect
+            selectedItemIndex = indexToSelect
 
-        suspendEvent = false
+            suspendEvent = false
+        }
     }
 }

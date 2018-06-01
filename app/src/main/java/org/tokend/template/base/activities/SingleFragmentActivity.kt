@@ -2,7 +2,6 @@ package org.tokend.template.base.activities
 
 import android.app.Activity
 import android.app.FragmentTransaction
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.trello.rxlifecycle2.android.ActivityEvent
@@ -11,10 +10,12 @@ import org.tokend.template.R
 import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.fragments.WalletFragment
+import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.features.dashboard.DashboardFragment
+import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.util.FragmentFactory
 
-class SingleFragmentActivity : BaseActivity() {
+class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
     private var asset: String? = null
     private var screenId: Long? = null
     private val factory = FragmentFactory()
@@ -54,14 +55,13 @@ class SingleFragmentActivity : BaseActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        setResult(resultCode)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                SendFragment.PAYMENT_CONFIRMATION_REQUEST -> finish()
-            }
-        }
+    override fun onPaymentRequestConfirmed(paymentRequest: PaymentRequest) {
+        setResult(Activity.RESULT_OK)
+        finish()
+    }
+
+    override fun onWithdrawalRequestConfirmed(withdrawalRequest: WithdrawalRequest) {
+        setResult(Activity.RESULT_OK)
     }
 
     companion object {

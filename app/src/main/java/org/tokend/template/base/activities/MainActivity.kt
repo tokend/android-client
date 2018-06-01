@@ -1,7 +1,5 @@
 package org.tokend.template.base.activities
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
@@ -28,21 +26,18 @@ import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.fragments.settings.SettingsFragment
-import org.tokend.template.extensions.getNullableStringExtra
+import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.explore.ExploreAssetsFragment
 import org.tokend.template.features.trade.TradeFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
-import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
+import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.util.FragmentFactory
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), WalletEventsListener {
     companion object {
         private const val SIGN_OUT = 7L
-
-        const val ASSET_EXTRA = "asset"
-        const val SCREEN_ID = "screenId"
     }
 
     private var navigationDrawer: Drawer? = null
@@ -222,25 +217,11 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                SendFragment.PAYMENT_CONFIRMATION_REQUEST -> {
-                    data?.getNullableStringExtra(PaymentConfirmationActivity.ASSET_RESULT_EXTRA)
-                            ?.also { paymentAsset ->
-                                navigateTo(WalletFragment.ID,
-                                        factory.getWalletFragment(paymentAsset))
-                            }
-                }
-                WithdrawFragment.WITHDRAWAL_CONFIRMATION_REQUEST -> {
-                    data?.getNullableStringExtra(WithdrawalConfirmationActivity.ASSET_RESULT_EXTRA)
-                            ?.also { withdrawalAsset ->
-                                navigateTo(WalletFragment.ID,
-                                        factory.getWalletFragment(withdrawalAsset))
-                            }
-                }
-            }
-        }
+    override fun onPaymentRequestConfirmed(paymentRequest: PaymentRequest) {
+        navigateTo(WalletFragment.ID, factory.getWalletFragment(paymentRequest.asset))
+    }
+
+    override fun onWithdrawalRequestConfirmed(withdrawalRequest: WithdrawalRequest) {
+        navigateTo(WalletFragment.ID, factory.getWalletFragment(withdrawalRequest.asset))
     }
 }
