@@ -7,7 +7,8 @@ import org.tokend.template.R
 import org.tokend.template.base.view.adapter.base.BaseViewHolder
 import org.tokend.template.base.view.adapter.base.PaginationRecyclerAdapter
 
-class TxHistoryAdapter : PaginationRecyclerAdapter<TxHistoryItem, BaseViewHolder<TxHistoryItem>>() {
+class TxHistoryAdapter(private val setSmallIcon: Boolean = false) : PaginationRecyclerAdapter<TxHistoryItem, BaseViewHolder<TxHistoryItem>>() {
+
     class FooterViewHolder(v: View) : BaseViewHolder<TxHistoryItem>(v) {
         override fun bind(item: TxHistoryItem) {}
     }
@@ -29,6 +30,7 @@ class TxHistoryAdapter : PaginationRecyclerAdapter<TxHistoryItem, BaseViewHolder
         val isLastInSection =
                 position == itemCount - (if (needLoadingFooter) 2 else 1)
         (holder as? TxHistoryItemViewHolder)?.dividerIsVisible = !isLastInSection
+        (holder as? TxHistoryItemViewHolder)?.iconIsSmall = setSmallIcon
     }
 
     override fun bindFooterViewHolder(holder: BaseViewHolder<TxHistoryItem>) {}

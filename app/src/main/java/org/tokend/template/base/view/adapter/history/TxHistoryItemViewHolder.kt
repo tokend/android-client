@@ -6,7 +6,10 @@ import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatImageView
 import android.view.View
+import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.TextView
+import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
 import org.tokend.sdk.api.models.transactions.TransactionState
@@ -54,6 +57,20 @@ class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) 
                     else
                         View.GONE
         }
+
+    var iconIsSmall: Boolean = true
+        set(value) {
+            field = value
+                    if (field) {
+                        iconImageView.layoutParams.height = iconImageView.context.resources.getDimension(R.dimen.tx_list_item_icon_size_small).toInt()
+                        iconImageView.layoutParams.width = iconImageView.context.resources.getDimension(R.dimen.tx_list_item_icon_size_small).toInt()
+                    }
+
+                else {
+                        iconImageView.layoutParams.height = iconImageView.context.resources.getDimension(R.dimen.tx_list_item_icon_size).toInt()
+                        iconImageView.layoutParams.width = iconImageView.context.resources.getDimension(R.dimen.tx_list_item_icon_size).toInt()                    }
+        }
+
 
     override fun bind(item: TxHistoryItem) {
         displayIcon(item)

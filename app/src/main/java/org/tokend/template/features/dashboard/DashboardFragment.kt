@@ -57,8 +57,8 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     private val offersRepository: OffersRepository
         get() = repositoryProvider.offers()
 
-    private val activityAdapter = TxHistoryAdapter()
-    private val offersAdapter = TxHistoryAdapter()
+    private val activityAdapter = TxHistoryAdapter(true)
+    private val offersAdapter = TxHistoryAdapter(true)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
