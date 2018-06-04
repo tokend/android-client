@@ -58,7 +58,9 @@ class FingerprintUtil(context: Context) {
 
             override fun onAuthenticationHelp(helpMsgId: Int, helpString: CharSequence?) {
                 super.onAuthenticationHelp(helpMsgId, helpString)
-                onHelp(helpString?.toString())
+                if(helpMsgId < 1000) {
+                    onHelp(helpString?.toString())
+                }
             }
 
             override fun onAuthenticationFailed() {
