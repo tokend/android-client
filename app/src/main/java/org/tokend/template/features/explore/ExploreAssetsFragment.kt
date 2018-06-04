@@ -1,6 +1,8 @@
 package org.tokend.template.features.explore
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.transition.Fade
 import android.support.transition.TransitionManager
@@ -151,6 +153,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
             }
         })
     }
+
+
     // endregion
 
     // region Assets
@@ -244,7 +248,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun openAssetDetails(view: View?, item: AssetListItem) {
-        Navigator.openAssetDetails(activity!!, 314, item.source,
+        Navigator.openAssetDetails(this, CREATE_REQUEST, item.source,
                 cardView = view
         )
     }
@@ -297,7 +301,25 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == CREATE_REQUEST && resultCode == Activity.RESULT_OK){
+            update(true)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        assets_recycler_view.isLayoutFrozen = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        assets_recycler_view.isLayoutFrozen = true
+    }
+
     companion object {
          const val ID = 1114L
+         const val CREATE_REQUEST = 314
     }
 }

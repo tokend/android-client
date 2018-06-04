@@ -139,13 +139,13 @@ object Navigator {
         fragment.startActivityForResult(toSend, requestCode)
     }
 
-    fun openAssetDetails(activity: Activity, requestCode: Int,
+    fun openAssetDetails(fragment: Fragment, requestCode: Int,
                          asset: Asset,
                          cardView: View? = null) {
-        val transitionBundle = createTransitionBundle(activity,
-                cardView to activity.getString(R.string.transition_asset_card)
+        val transitionBundle = createTransitionBundle(fragment.activity!!,
+                cardView to fragment.activity!!.getString(R.string.transition_asset_card)
         )
-        activity.startActivityForResult(activity.intentFor<AssetDetailsActivity>(
+        fragment.startActivityForResult(fragment.context!!.intentFor<AssetDetailsActivity>(
                 AssetDetailsActivity.ASSET_EXTRA to asset
         ), requestCode, transitionBundle)
     }

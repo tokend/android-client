@@ -158,6 +158,7 @@ class AssetDetailsActivity : BaseActivity() {
                         },
                         onError = { ErrorHandlerFactory.getDefault().handle(it) }
                 )
+
     }
 
     private fun onBalanceCreated() {
@@ -167,6 +168,7 @@ class AssetDetailsActivity : BaseActivity() {
         setResult(Activity.RESULT_OK)
         displayLogoAndName()
         initButtons()
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
