@@ -163,7 +163,6 @@
     <string name="verification_title">Verification</string>
     <string name="verification_summary">In order to verify your account data use web client</string>
     <string name="tfa_title">Two-factor authentication</string>
-    <string name="fingerprint_title">Use fingerprint</string>
     <string name="change_password_title">Change password</string>
 
     <string name="error_cannot_be_empty">Cannot be empty</string>

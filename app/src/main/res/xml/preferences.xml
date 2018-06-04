@@ -31,12 +31,6 @@
             android:persistent="false"
             android:title="@string/tfa_title" />
 
-        <android.support.v7.preference.SwitchPreferenceCompat
-            android:defaultValue="false"
-            android:icon="@drawable/ic_fingerprint"
-            android:key="fingerprint"
-            android:layout="@layout/preference_layout"
-            android:title="@string/fingerprint_title" />
 
         <android.support.v7.preference.Preference
             android:icon="@drawable/ic_lock"
