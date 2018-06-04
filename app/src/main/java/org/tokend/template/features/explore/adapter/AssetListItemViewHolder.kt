@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.TextView
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.find
-import org.jetbrains.anko.imageBitmap
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.base.view.adapter.base.BaseViewHolder
@@ -48,7 +47,7 @@ class AssetListItemViewHolder(view: View) : BaseViewHolder<AssetListItem>(view) 
         codeTextView.text = item.code
 
         nameTextView.text = item.name
-        if (item.name.isNotBlank()) {
+        if (!item.name.isNullOrEmpty()) {
             nameTextView.visibility = View.VISIBLE
         } else {
             nameTextView.visibility = View.GONE

@@ -25,21 +25,18 @@ class PaymentDetailsActivity: TxDetailsActivity<PaymentTransaction>() {
     }
 
     private fun displayReceiverSender(tx: PaymentTransaction) {
-        val isSent = tx.isSent(walletInfoProvider.getWalletInfo()?.accountId ?: "")
-
         val receiverSenderCard = InfoCard(cards_layout)
-                .setHeading(if (isSent) R.string.tx_recipient else R.string.tx_sender, null)
+                .setHeading(if (tx.isSent) R.string.tx_recipient else R.string.tx_sender, null)
 
-        if (isSent && tx.counterpartyNickname != null) {
+        if (tx.isSent && tx.counterpartyNickname != null) {
             receiverSenderCard.addRow(tx.counterpartyNickname, null)
         }
 
-        receiverSenderCard.addRow(if (isSent) tx.destAccount else tx.sourceAccount, null)
+        receiverSenderCard.addRow(if (tx.isSent) tx.destAccount else tx.sourceAccount, null)
     }
 
     private fun displayAmount(tx: PaymentTransaction) {
-        val isSent = tx.isSent(walletInfoProvider.getWalletInfo()?.accountId ?: "")
-        if (isSent) {
+        if (tx.isSent) {
             val paidAmount = getPaidAmount(tx)
             var fixedFee = tx.senderFee.fixed
             var percentFee = tx.senderFee.percent

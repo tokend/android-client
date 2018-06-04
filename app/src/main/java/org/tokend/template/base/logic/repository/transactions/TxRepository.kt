@@ -71,7 +71,7 @@ class TxRepository(
                             ?.map { detailsMap ->
                                 transactions.forEach {
                                     if (it is PaymentTransaction) {
-                                        if (it.isSent(accountId)) {
+                                        if (it.isSent) {
                                             it.counterpartyNickname =
                                                     detailsMap[it.destAccount]?.email
                                         } else {

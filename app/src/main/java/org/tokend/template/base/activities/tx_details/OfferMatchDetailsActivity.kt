@@ -23,7 +23,6 @@ import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>() {
     private var isPending = false
-    private var isIncome = false
     private lateinit var tx: MatchTransaction
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
@@ -35,7 +34,6 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>() {
     override fun displayDetails(item: MatchTransaction) {
         tx = item
         isPending = item.state == TransactionState.PENDING
-        isIncome = !item.isSent(walletInfoProvider.getWalletInfo()?.accountId ?: "")
 
         if (isPending) {
             setTitle(R.string.pending_offer_details_title)
@@ -50,10 +48,10 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>() {
     }
 
     private fun displayPaid(tx: MatchTransaction) {
-        val paidAsset = if (isIncome) tx.matchData.quoteAsset else tx.asset
-        val receivedAsset = if (isIncome) tx.asset else tx.matchData.quoteAsset
+        val paidAsset = if (tx.isReceived) tx.matchData.quoteAsset else tx.asset
+        val receivedAsset = if (tx.isReceived) tx.asset else tx.matchData.quoteAsset
         val amount =
-                if (isIncome) tx.matchData.quoteAmount else tx.amount
+                if (tx.isReceived) tx.matchData.quoteAmount else tx.amount
         val paidAmount =
                 if (tx.feeAsset == paidAsset) amount + tx.fee else amount
 
@@ -86,10 +84,10 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>() {
     }
 
     private fun displayReceived(tx: MatchTransaction) {
-        val receivedAsset = if (isIncome) tx.asset else tx.matchData.quoteAsset
-        val paidAsset = if (isIncome) tx.matchData.quoteAsset else tx.asset
+        val receivedAsset = if (tx.isReceived) tx.asset else tx.matchData.quoteAsset
+        val paidAsset = if (tx.isReceived) tx.matchData.quoteAsset else tx.asset
         val amount =
-                if (isIncome) tx.amount else tx.matchData.quoteAmount
+                if (tx.isReceived) tx.amount else tx.matchData.quoteAmount
         val receivedAmount =
                 if (tx.feeAsset == receivedAsset) amount - tx.fee else amount
 

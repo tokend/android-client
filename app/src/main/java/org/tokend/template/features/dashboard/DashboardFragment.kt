@@ -180,7 +180,6 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     private var transactionsDisposable: Disposable? = null
     private var transactionsLoadingDisposable: Disposable? = null
     private fun subscribeToTransactions() {
-        val contextAccountId = walletInfoProvider.getWalletInfo()?.accountId ?: ""
         transactionsDisposable?.dispose()
         transactionsDisposable =
                 txRepository.itemsSubject
@@ -189,10 +188,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                         .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             activityAdapter.setData(it.map {
-                                TxHistoryItem.fromTransaction(
-                                        contextAccountId,
-                                        it
-                                )
+                                TxHistoryItem.fromTransaction(it)
                             })
                         }
 
@@ -214,7 +210,6 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     private var offersDisposable: CompositeDisposable? = null
 
     private fun subscribeToOffers() {
-        val contextAccountId = walletInfoProvider.getWalletInfo()?.accountId ?: ""
         offersDisposable?.dispose()
         offersDisposable = CompositeDisposable(
                 offersRepository.itemsSubject
@@ -224,7 +219,6 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                         .subscribe {
                             offersAdapter.setData(it.map {
                                 TxHistoryItem.fromTransaction(
-                                        contextAccountId,
                                         MatchTransaction.fromOffer(it)
                                 )
                             })

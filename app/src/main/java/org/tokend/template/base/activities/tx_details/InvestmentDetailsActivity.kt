@@ -21,11 +21,9 @@ class InvestmentDetailsActivity : TxDetailsActivity<InvestmentTransaction>() {
     }
 
     private fun displayInvested(tx: InvestmentTransaction) {
-        val isIncome = !tx.isSent(walletInfoProvider.getWalletInfo()?.accountId ?: "")
-
         val investedAmount =
-                if (isIncome) tx.matchData.quoteAmount else tx.amount
-        val investedAsset = if (isIncome) tx.matchData.quoteAsset else tx.asset
+                if (tx.isReceived) tx.matchData.quoteAmount else tx.amount
+        val investedAsset = if (tx.isReceived) tx.matchData.quoteAsset else tx.asset
 
         InfoCard(cards_layout)
                 .setHeading(R.string.invested, "${AmountFormatter.formatAssetAmount(investedAmount)} " +
@@ -35,12 +33,10 @@ class InvestmentDetailsActivity : TxDetailsActivity<InvestmentTransaction>() {
     }
 
     private fun displayReceived(tx: InvestmentTransaction) {
-        val isIncome = !tx.isSent(walletInfoProvider.getWalletInfo()?.accountId ?: "")
-
         val receivedAmount =
-                if (isIncome) tx.amount else tx.matchData.quoteAmount
-        val receivedAsset = if (isIncome) tx.asset else tx.matchData.quoteAsset
-        val investedAsset = if (isIncome) tx.matchData.quoteAsset else tx.asset
+                if (tx.isReceived) tx.amount else tx.matchData.quoteAmount
+        val receivedAsset = if (tx.isReceived) tx.asset else tx.matchData.quoteAsset
+        val investedAsset = if (tx.isReceived) tx.matchData.quoteAsset else tx.asset
 
         InfoCard(cards_layout)
                 .setHeading(R.string.received,

@@ -5,7 +5,7 @@ import org.tokend.template.BuildConfig
 
 class AssetListItem(
         val code: String,
-        val name: String,
+        val name: String?,
         val balanceExists: Boolean,
         val logoUrl: String?,
         val source: Asset
@@ -15,9 +15,9 @@ class AssetListItem(
             balanceExists: Boolean
     ) : this(
             code = asset.code,
-            name = asset.details.name,
-            logoUrl = asset.details.logo.let { logo ->
-                logo.getUrl(BuildConfig.STORAGE_URL).takeIf { logo.isImage }
+            name = asset.details?.name,
+            logoUrl = asset.details?.logo.let { logo ->
+                logo?.getUrl(BuildConfig.STORAGE_URL)?.takeIf { logo.isImage }
             },
             balanceExists = balanceExists,
             source = asset

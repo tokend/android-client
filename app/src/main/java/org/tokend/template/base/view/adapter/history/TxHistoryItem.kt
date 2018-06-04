@@ -28,8 +28,7 @@ class TxHistoryItem(
     }
 
     companion object {
-        fun fromTransaction(contextAccountId: String, tx: Transaction): TxHistoryItem {
-            val isReceived = tx.isReceived(contextAccountId)
+        fun fromTransaction(tx: Transaction): TxHistoryItem {
             val action =
                     when (tx.type) {
                         TransactionType.ISSUANCE -> Action.DEPOSIT
@@ -37,23 +36,23 @@ class TxHistoryItem(
                         TransactionType.INVESTMENT -> Action.INVESTMENT
                         TransactionType.OFFER_MATCH ->
                             if (tx.state == TransactionState.PENDING) {
-                                if (isReceived)
+                                if (tx.isReceived)
                                     Action.BUY
                                 else
                                     Action.SELL
                             } else {
-                                if (isReceived)
+                                if (tx.isReceived)
                                     Action.BOUGHT
                                 else
                                     Action.SOLD
                             }
                         TransactionType.PAYMENT ->
-                            if (isReceived)
+                            if (tx.isReceived)
                                 Action.RECEIVED
                             else
                                 Action.SENT
                         else ->
-                            if (isReceived)
+                            if (tx.isReceived)
                                 Action.RECEIVED
                             else
                                 Action.SPENT
@@ -63,19 +62,19 @@ class TxHistoryItem(
             var counterparty: String? = null
             if (tx is PaymentTransaction) {
                 counterparty =
-                        if (isReceived)
+                        if (tx.isReceived)
                             tx.counterpartyNickname ?: tx.sourceAccount
                         else
                             tx.counterpartyNickname ?: tx.destAccount
             } else if (tx is MatchTransaction
-                    && !(action == TxHistoryItem.Action.INVESTMENT && isReceived)) {
+                    && !(action == TxHistoryItem.Action.INVESTMENT && tx.isReceived)) {
                 counterparty = tx.matchData.quoteAsset
             } else if (tx is WithdrawalTransaction) {
                 counterparty = tx.destAddress
             }
 
             return TxHistoryItem(tx.amount, tx.asset, action, counterparty, tx.state, tx.date,
-                    isReceived, tx)
+                    tx.isReceived, tx)
         }
     }
 }

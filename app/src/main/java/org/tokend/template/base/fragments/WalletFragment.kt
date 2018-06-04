@@ -183,7 +183,6 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     private var transactionsLoadingDisposable: Disposable? = null
     private var transactionsErrorsDisposable: Disposable? = null
     private fun subscribeToTransactions() {
-        val contextAccountId = walletInfoProvider.getWalletInfo()?.accountId ?: ""
         transactionsDisposable?.dispose()
         transactionsDisposable =
                 txRepository.itemsSubject
@@ -191,10 +190,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                         .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             txAdapter.setData(it.map {
-                                TxHistoryItem.fromTransaction(
-                                        contextAccountId,
-                                        it
-                                )
+                                TxHistoryItem.fromTransaction(it)
                             })
                         }
 

@@ -109,15 +109,13 @@ class OffersActivity : BaseActivity() {
     }
 
     private fun displayOffers(items: List<Offer>) {
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId ?: ""
-
         txAdapter.setData(
                 items
                         .map {
                             MatchTransaction.fromOffer(it)
                         }
                         .map {
-                            TxHistoryItem.fromTransaction(accountId, it)
+                            TxHistoryItem.fromTransaction(it)
                         }
         )
     }

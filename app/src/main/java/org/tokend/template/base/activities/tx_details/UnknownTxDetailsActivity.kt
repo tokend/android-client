@@ -21,9 +21,8 @@ class UnknownTxDetailsActivity : TxDetailsActivity<BaseTransaction>() {
     }
 
     private fun displayAmount(item: BaseTransaction) {
-        val isSent = item.isSent(walletInfoProvider.getWalletInfo()?.accountId ?: "")
         InfoCard(cards_layout)
-                .setHeading(if (isSent) R.string.paid else R.string.received, null)
+                .setHeading(if (item.isSent) R.string.paid else R.string.received, null)
                 .addRow("${
                 AmountFormatter.formatAssetAmount(item.amount,
                         minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
