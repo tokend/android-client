@@ -234,6 +234,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         )
     }
 
+
     private fun performPrimaryAssetAction(item: AssetListItem) {
         if (!item.balanceExists) {
             createBalanceWithConfirmation(item.code)

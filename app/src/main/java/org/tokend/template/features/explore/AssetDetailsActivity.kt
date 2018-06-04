@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.CardView
 import android.view.View
 import android.widget.ImageView
@@ -39,7 +40,7 @@ class AssetDetailsActivity : BaseActivity() {
 
     private val fileDownloader = FileDownloader(this)
 
-    override fun onCreateAllowed(savedInstanceState: Bundle?) {
+    override fun onCreateAllowed(savedITxHnstanceState: Bundle?) {
         setContentView(R.layout.activity_asset_details)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -116,12 +117,22 @@ class AssetDetailsActivity : BaseActivity() {
             asset_primary_action_button.visibility = View.VISIBLE
             asset_primary_action_button.text = getString(R.string.create_balance_action)
             asset_primary_action_button.onClick {
-                createBalance()
+                createBalanceWithConfirmation()
             }
         } else {
             asset_primary_action_button.visibility = View.GONE
             asset_card_divider.visibility = View.GONE
         }
+    }
+
+    private fun createBalanceWithConfirmation() {
+        AlertDialog.Builder(this, R.style.AlertDialogStyle)
+                .setMessage(resources.getString(R.string.create_balance_confirmation,asset.code))
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    createBalance()
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
     }
 
     private fun createBalance() {
