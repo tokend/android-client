@@ -56,6 +56,7 @@ class SignInManager(
     fun doPostSignIn(repositoryProvider: RepositoryProvider): Completable {
         val parallelActions = listOf<Completable>(
                 // Added actions will be performed simultaneously.
+
                 repositoryProvider.balances().updateDeferred()
                         .onErrorResumeNext {
                             if (it is HttpException
@@ -80,13 +81,25 @@ class SignInManager(
         val syncActions = listOf<Completable>(
                 // Added actions will be performed on after another in
                 // provided order.
+
+                // Update account just to create user for the first time.
+                repositoryProvider.account().updateDeferred()
+                        .onErrorResumeNext { error ->
+                            if (error is HttpException
+                                    && error.code() == HttpURLConnection.HTTP_NOT_FOUND) {
+                                repositoryProvider.user().createUnverified()
+                            } else {
+                                // Other account update errors are not critical.
+                                Completable.complete()
+                            }
+                        }
         )
 
         val performParallelActions = Completable.merge(parallelActions)
         val performSyncActions = Completable.concat(syncActions)
 
-        return performParallelActions
-                .andThen(performSyncActions)
+        return performSyncActions
+                .andThen(performParallelActions)
                 .doOnError {
                     if (it is InvalidPersistedCredentialsException) {
                         credentialsPersistor.clear(keepEmail = true)
