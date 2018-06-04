@@ -183,6 +183,7 @@
     <string name="error_no_withdrawable_assets">No withdrawable tokens found</string>
     <string name="error_no_tradeable_pairs">No tradeable pairs found</string>
     <string name="error_cannot_send_to_yourself">Send to yourself is not allowed</string>
+    <string name="error_fingerprint_locked">Too many failed attempts. Try again later</string>
 
     <string name="error_tx_general">Transaction failed. Try again later</string>
     <string name="error_tx_bad_auth">Transaction signature is invalid</string>

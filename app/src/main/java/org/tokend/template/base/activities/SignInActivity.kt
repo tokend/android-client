@@ -218,7 +218,6 @@ class SignInActivity : BaseActivity() {
             else ->
                 ErrorHandlerFactory.getDefault().handle(error)
         }
-        requestFingerprintAuthIfAvailable()
         updateSignInAvailability()
     }
 

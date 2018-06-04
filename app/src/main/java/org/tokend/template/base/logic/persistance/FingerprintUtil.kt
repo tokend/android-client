@@ -6,8 +6,9 @@ import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat
 import android.support.v4.os.CancellationSignal
+import org.tokend.template.R
 
-class FingerprintUtil(context: Context) {
+class FingerprintUtil(private val context: Context) {
     private val fingerprintManager: FingerprintManagerCompat =
             FingerprintManagerCompat.from(context)
     private val keyguardManager: KeyguardManager =
@@ -47,7 +48,11 @@ class FingerprintUtil(context: Context) {
             override fun onAuthenticationError(errMsgId: Int, errString: CharSequence?) {
                 super.onAuthenticationError(errMsgId, errString)
                 if (errMsgId != FingerprintManager.FINGERPRINT_ERROR_CANCELED) {
-                    onError(errString?.toString())
+                    val message = when(errMsgId){
+                        FingerprintManager.FINGERPRINT_ERROR_LOCKOUT -> context.getString(R.string.error_fingerprint_locked)
+                        else -> errString?.toString()
+                    }
+                    onError(message)
                 }
             }
 
