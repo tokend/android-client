@@ -108,7 +108,7 @@ class RecoveryActivity : BaseActivity() {
         }
 
         sign_in_text_view.onClick {
-            Navigator.toSignIn(this)
+            Navigator.toSignIn(this, false)
         }
     }
     // endregion

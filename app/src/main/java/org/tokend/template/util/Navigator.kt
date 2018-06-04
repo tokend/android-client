@@ -76,12 +76,16 @@ object Navigator {
                 .newTask())
     }
 
-    fun toSignIn(activity: Activity) {
+    fun toSignIn(activity: Activity, finishAffinity: Boolean = false) {
         activity.startActivity(activity.intentFor<SignInActivity>()
                 .singleTop()
                 .clearTop())
-        activity.setResult(Activity.RESULT_CANCELED, null)
-        ActivityCompat.finishAffinity(activity)
+        if (finishAffinity) {
+            activity.setResult(Activity.RESULT_CANCELED, null)
+            ActivityCompat.finishAffinity(activity)
+        } else {
+            activity.finish()
+        }
     }
 
     fun toMainActivity(activity: Activity) {

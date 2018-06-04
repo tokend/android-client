@@ -96,7 +96,7 @@ class SignUpActivity : RxAppCompatActivity() {
         }
 
         sign_in_text_view.onClick {
-            Navigator.toSignIn(this)
+            Navigator.toSignIn(this, false)
         }
 
         terms_text_view.onClick {
@@ -193,6 +193,6 @@ class SignUpActivity : RxAppCompatActivity() {
 
     private fun onSuccessfulSignUp() {
         ToastManager.long(R.string.check_your_email_to_verify_account)
-        Navigator.toSignIn(this)
+        Navigator.toSignIn(this, false)
     }
 }
