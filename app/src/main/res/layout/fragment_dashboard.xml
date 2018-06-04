@@ -61,16 +61,19 @@
                         android:indeterminate="true"
                         android:visibility="gone" />
 
-                    <TextView
+                    <me.grantland.widget.AutofitTextView
                         android:id="@+id/balance_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/standard_padding"
-                        android:gravity="center"
-                        android:paddingBottom="0dp"
                         android:layout_marginLeft="@dimen/standard_margin"
                         android:layout_marginRight="@dimen/standard_margin"
+                        android:layout_marginTop="@dimen/standard_padding"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:paddingBottom="0dp"
                         android:textSize="@dimen/text_size_heading_large"
+                        app:minTextSize="@dimen/text_size_heading"
+                        tools:ignore="MissingPrefix"
                         tools:text="12 TKD" />
 
                     <TextView
