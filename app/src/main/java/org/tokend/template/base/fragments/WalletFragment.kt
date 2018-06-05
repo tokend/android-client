@@ -23,6 +23,7 @@ import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.BalanceDetails
 import org.tokend.sdk.api.models.transactions.*
+import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.activities.tx_details.*
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
@@ -243,7 +244,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                 ?.assetDetails
                 ?.isTransferable() == true)
                 .let { isTransferable ->
-                    if (!isTransferable) {
+                    if (!isTransferable || !BuildConfig.IS_SEND_ALLOWED) {
                         send_fab.hide()
                         send_fab.isEnabled = false
                     } else {

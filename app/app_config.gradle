@@ -74,17 +74,38 @@ ext {
     color_received = '#689F38'
     // Sent - color of spent amounts
     color_sent = '#D32F2F'
-
     //Warning - color of warning message
     color_warning = '#EF6C00'
 
     // ----------------------
 
     // ----- Security -----
+
     // Secure content - when set to "true" app content will not be
     // shown in multitasking, also user will not be allowed to take
     // screenshots
     secure_content = 'false'
+
+    // ----------------------
+
+    // --- Functionality ---
+
+    // Allow send - Controls sending functionality availability.
+    // It doesn't affect the display of payment transactions in the history.
+    allow_send = 'true'
+    // Allow trade - Controls trading functionality availability.
+    // It doesn't affect the display of offer match transactions in the history.
+    allow_trade = 'true'
+    // Allow deposit - Controls deposit functionality availability.
+    // It doesn't affect the display of deposit transactions in the history.
+    allow_deposit = 'true'
+    // Allow withdraw - Controls withdrawal functionality availability.
+    // It doesn't affect the display of withdrawal transactions in the history.
+    allow_withdraw = 'true'
+    // Allow explore - Controls explore tokens functionality availability.
+    allow_explore = 'true'
+
+    // ----------------------
 }
 
 android {
@@ -98,6 +119,12 @@ android {
         buildConfigField 'String', 'WEB_CLIENT_URL', "${web_client_url}"
         buildConfigField 'String', 'TERMS_URL', "${terms_url}"
         buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"
+
+        buildConfigField 'Boolean', 'IS_SEND_ALLOWED', "${allow_send}"
+        buildConfigField 'Boolean', 'IS_TRADE_ALLOWED', "${allow_trade}"
+        buildConfigField 'Boolean', 'IS_DEPOSIT_ALLOWED', "${allow_deposit}"
+        buildConfigField 'Boolean', 'IS_WITHDRAW_ALLOWED', "${allow_withdraw}"
+        buildConfigField 'Boolean', 'IS_EXPLORE_ALLOWED', "${allow_explore}"
 
         resValue "string", "app_host", "${app_host}"
         resValue "color", "primary", "${color_primary}"

@@ -54,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/standard_margin"
         android:layout_marginEnd="@dimen/standard_margin"
+        android:visibility="gone"
         app:layout_anchor="@id/swipe_refresh"
         app:layout_anchorGravity="bottom|right|end"
         app:srcCompat="@drawable/ic_send" />

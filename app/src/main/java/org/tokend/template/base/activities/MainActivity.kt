@@ -21,6 +21,7 @@ import io.reactivex.disposables.Disposable
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
 import org.tokend.template.App
+import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.ToolbarProvider
@@ -124,17 +125,41 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withSliderBackgroundColorRes(R.color.material_drawer_background)
                 .addDrawerItems(
                         dashboardItem,
-                        walletItem,
-                        DividerDrawerItem(),
-                        depositItem,
-                        withdrawItem,
-                        sendItem,
-                        exploreItem,
-                        tradeItem,
+                        walletItem
+                )
+                .apply {
+                    if (BuildConfig.IS_DEPOSIT_ALLOWED
+                            || BuildConfig.IS_WITHDRAW_ALLOWED
+                            || BuildConfig.IS_SEND_ALLOWED
+                            || BuildConfig.IS_EXPLORE_ALLOWED
+                            || BuildConfig.IS_TRADE_ALLOWED) {
+                        addDrawerItems(DividerDrawerItem())
+
+                        if (BuildConfig.IS_DEPOSIT_ALLOWED) {
+                            addDrawerItems(depositItem)
+                        }
+
+                        if (BuildConfig.IS_WITHDRAW_ALLOWED) {
+                            addDrawerItems(withdrawItem)
+                        }
+
+                        if (BuildConfig.IS_SEND_ALLOWED) {
+                            addDrawerItems(sendItem)
+                        }
+
+                        if (BuildConfig.IS_EXPLORE_ALLOWED) {
+                            addDrawerItems(exploreItem)
+                        }
+
+                        if (BuildConfig.IS_TRADE_ALLOWED) {
+                            addDrawerItems(tradeItem)
+                        }
+                    }
+                }
+                .addDrawerItems(
                         DividerDrawerItem(),
                         settingsItem,
                         signOutItem
-
                 )
                 .withOnDrawerItemClickListener { _, _, item ->
                     return@withOnDrawerItemClickListener onNavigationItemSelected(item)
