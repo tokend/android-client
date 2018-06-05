@@ -16,8 +16,8 @@ class FragmentFactory {
         return DashboardFragment.newInstance()
     }
 
-     fun getWalletFragment(asset: String? = null): Fragment {
-        return WalletFragment.newInstance(asset)
+     fun getWalletFragment(asset: String? = null, needTabs: Boolean = true): Fragment {
+        return WalletFragment.newInstance(asset, needTabs)
     }
 
      fun getSettingsFragment(): Fragment {

@@ -33,13 +33,12 @@
     <dimen name="navigation_profile_header_top_margin">24dp</dimen>
 
     <dimen name="toolbar_expanded_height">200dp</dimen>
-    <dimen name="toolbar_expanded_height_2">150dp</dimen>
     <dimen name="toolbar_title_size">28sp</dimen>
     <dimen name="toolbar_subtitle_size">20sp</dimen>
     <dimen name="toolbar_text_padding_start">48dp</dimen>
     <dimen name="toolbar_text_padding_end">32dp</dimen>
-    <dimen name="toolbar_title_margin_bottom">80dp</dimen>
-    <dimen name="toolbar_subtitle_margin_bottom">45dp</dimen>
+    <dimen name="toolbar_expanded_title_margin_top">72dp</dimen>
+    <dimen name="toolbar_expanded_subtitle_margin_top">108dp</dimen>
 
     <dimen name="tx_list_item_icon_size">50dp</dimen>
     <dimen name="tx_list_item_icon_size_small">25dp</dimen>

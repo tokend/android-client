@@ -30,7 +30,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
 
     private fun getFragment(): Fragment? {
         return when (screenId) {
-            WalletFragment.ID -> factory.getWalletFragment(asset)
+            WalletFragment.ID -> factory.getWalletFragment(asset, false)
             SendFragment.ID -> factory.getSendFragment(asset)
             else -> null
         }

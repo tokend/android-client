@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,6 +19,7 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.collapsing_balance_appbar.*
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
+import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.BalanceDetails
 import org.tokend.sdk.api.models.transactions.*
@@ -49,7 +49,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         get() = repositoryProvider.transactions(asset)
 
     private val needAssetTabs: Boolean
-        get() = true
+        get() = arguments?.getBoolean(NEED_TABS_EXTRA) == true
 
     private var asset: String = ""
         set(value) {
@@ -102,16 +102,10 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         } else {
             asset_tabs.visibility = View.VISIBLE
 
-            val tabsOffset = resources.getDimensionPixelSize(R.dimen.standard_padding)
+            val tabsOffset = requireContext().dip(24)
             collapsing_toolbar.layoutParams =
                     collapsing_toolbar.layoutParams.apply {
                         height -= 2 * tabsOffset
-                    }
-            collapsing_toolbar.expandedTitleMarginBottom -= tabsOffset
-            converted_balance_text_view.layoutParams =
-                    (converted_balance_text_view.layoutParams as FrameLayout.LayoutParams).apply {
-                        setMargins(leftMargin, topMargin, rightMargin,
-                                bottomMargin - tabsOffset)
                     }
         }
     }
@@ -323,13 +317,15 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     companion object {
         private const val ASSET_EXTRA = "asset"
+        private const val NEED_TABS_EXTRA = "need_tabs"
         private val SEND_REQUEST = "send".hashCode() and 0xffff
         const val ID = 1111L
 
-        fun newInstance(asset: String? = null): WalletFragment {
+        fun newInstance(asset: String? = null, needTabs: Boolean = true): WalletFragment {
             val fragment = WalletFragment()
             fragment.arguments = Bundle().apply {
                 putString(ASSET_EXTRA, asset)
+                putBoolean(NEED_TABS_EXTRA, needTabs)
             }
             return fragment
         }

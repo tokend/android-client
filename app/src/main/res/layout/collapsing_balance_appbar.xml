@@ -15,9 +15,10 @@
         android:fitsSystemWindows="true"
         app:collapsedTitleTextAppearance="@style/CollapsedTitleAppearance"
         app:contentScrim="?attr/colorPrimary"
-        app:expandedTitleMarginBottom="@dimen/toolbar_title_margin_bottom"
+        app:expandedTitleGravity="top"
         app:expandedTitleMarginEnd="@dimen/toolbar_text_padding_end"
         app:expandedTitleMarginStart="@dimen/toolbar_text_padding_start"
+        app:expandedTitleMarginTop="@dimen/toolbar_expanded_title_margin_top"
         app:expandedTitleTextAppearance="@style/ExpandedTitleAppearance"
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -25,13 +26,14 @@
             android:id="@+id/converted_balance_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="@dimen/toolbar_subtitle_margin_bottom"
+            android:layout_gravity="top"
             android:layout_marginEnd="@dimen/toolbar_text_padding_end"
             android:layout_marginStart="@dimen/toolbar_text_padding_start"
+            android:layout_marginTop="@dimen/toolbar_expanded_subtitle_margin_top"
             android:textColor="@android:color/white"
             android:textSize="@dimen/toolbar_subtitle_size"
-            app:layout_collapseMode="parallax" />
+            app:layout_collapseMode="parallax"
+            tools:text="12 USD" />
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -39,15 +41,16 @@
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/ToolbarStyle"
             app:layout_collapseMode="pin"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            tools:title="1 TKD" />
 
     </android.support.design.widget.CollapsingToolbarLayout>
 
     <org.tokend.template.base.view.picker.PickerTabLayout
         android:id="@+id/asset_tabs"
+        style="@style/TabPicker.Inverse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="@color/white"
-        style="@style/TabPicker.Inverse"/>
+        app:tabIndicatorColor="@color/white" />
 
 </android.support.design.widget.AppBarLayout>
