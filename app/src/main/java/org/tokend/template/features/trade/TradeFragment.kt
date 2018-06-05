@@ -33,7 +33,7 @@ import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.isTradeable
 import org.tokend.template.features.trade.adapter.OrderBookAdapter
 import org.tokend.template.features.trade.repository.order_book.OrderBookRepository
-import org.tokend.template.features.trade.repository.pairs.AssetPairsRepository
+import org.tokend.template.base.logic.repository.pairs.AssetPairsRepository
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory

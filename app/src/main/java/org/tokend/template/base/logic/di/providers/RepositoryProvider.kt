@@ -10,7 +10,7 @@ import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
 import org.tokend.template.base.logic.repository.transactions.TxRepository
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.features.trade.repository.order_book.OrderBookRepository
-import org.tokend.template.features.trade.repository.pairs.AssetPairsRepository
+import org.tokend.template.base.logic.repository.pairs.AssetPairsRepository
 
 interface RepositoryProvider {
     fun balances(): BalancesRepository

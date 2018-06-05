@@ -10,6 +10,7 @@ import java.text.NumberFormat
 
 object AmountFormatter {
     const val ASSET_DECIMAL_DIGITS = 6
+    const val FIAT_DECIMAL_DIGITS = 2
 
     fun formatAssetAmount(amount: BigDecimal?,
                           asset: String? = "",
@@ -57,7 +58,10 @@ object AmountFormatter {
     }
 
     fun getDecimalDigitsCount(asset: String?): Int {
-        return ASSET_DECIMAL_DIGITS
+        return when (asset) {
+            "USD", "EUR" -> FIAT_DECIMAL_DIGITS
+            else -> ASSET_DECIMAL_DIGITS
+        }
     }
 
     private fun buildDecimalFormatter(maxZerosCount: Int, minZerosCount: Int): NumberFormat {

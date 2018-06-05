@@ -11,7 +11,6 @@ ext {
 
     // --------------------------
 
-
     // ----- Network params -----
 
     // API URL - TokenD instance root URL
@@ -34,13 +33,12 @@ ext {
 
     // --------------------------
 
-
     // ----- Appearance -----
 
     // Primary color - color of app toolbar
     color_primary = '#0066cc'
     // Primary dark - color of status bar above toolbar
-    color_primary_dark =  '#01579B'
+    color_primary_dark = '#01579B'
 
     // Accent color - color of actions and controls by default
     color_accent = '#ef5350'
@@ -118,8 +116,8 @@ android {
         buildConfigField 'String', 'STORAGE_URL', "${storage_url}"
         buildConfigField 'String', 'WEB_CLIENT_URL', "${web_client_url}"
         buildConfigField 'String', 'TERMS_URL', "${terms_url}"
-        buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"
 
+        buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"
         buildConfigField 'Boolean', 'IS_SEND_ALLOWED', "${allow_send}"
         buildConfigField 'Boolean', 'IS_TRADE_ALLOWED', "${allow_trade}"
         buildConfigField 'Boolean', 'IS_DEPOSIT_ALLOWED', "${allow_deposit}"

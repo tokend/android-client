@@ -6,6 +6,7 @@ import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletInfo
+import org.tokend.template.BuildConfig
 import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.RepositoryProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider

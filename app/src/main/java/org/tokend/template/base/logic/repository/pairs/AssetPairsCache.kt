@@ -1,4 +1,4 @@
-package org.tokend.template.features.trade.repository.pairs
+package org.tokend.template.base.logic.repository.pairs
 
 import io.reactivex.Single
 import org.tokend.sdk.api.models.AssetPair
