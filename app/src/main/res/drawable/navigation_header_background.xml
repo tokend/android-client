@@ -7,9 +7,9 @@
     </item>
 
     <item
-        android:bottom="@dimen/quadra_margin"
+        android:bottom="56dp"
         android:drawable="@mipmap/product_logo"
         android:gravity="start|bottom"
-        android:left="@dimen/standard_margin"
+        android:left="12dp"
         android:top="@dimen/navigation_profile_header_top_margin" />
 </layer-list>

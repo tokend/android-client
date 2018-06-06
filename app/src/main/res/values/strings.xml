@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TokenD template</string>
+    <string name="app_name">TokenD</string>
 
     <string name="sign_up">Sign up</string>
     <string name="sign_in">Sign in</string>
