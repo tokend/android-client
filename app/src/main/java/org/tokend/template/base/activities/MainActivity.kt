@@ -238,7 +238,11 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         if (navigationDrawer?.isDrawerOpen == true) {
             navigationDrawer?.closeDrawer()
         } else {
-            moveTaskToBack(true)
+            if(navigationDrawer?.currentSelection == DashboardFragment.ID){
+                moveTaskToBack(true)
+            }else{
+                navigateTo(DashboardFragment.ID)
+            }
         }
     }
 
