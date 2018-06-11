@@ -19,6 +19,7 @@ android {
     if (file("dev_app_config.gradle").exists()) {
         apply from: "dev_app_config.gradle"
     }
+    applyAppConfig(android.defaultConfig)
 
     buildTypes {
         staging {

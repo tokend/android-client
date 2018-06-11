@@ -148,5 +148,3 @@ ext.applyAppConfig = { buildConfig ->
     b.resValue "color", "sent", "${color_sent}"
     b.resValue "color", "warning", "${color_warning}"
 }
-
-applyAppConfig(android.defaultConfig)
