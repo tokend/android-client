@@ -106,38 +106,47 @@ ext {
     // ----------------------
 }
 
-android {
-    defaultConfig {
-        applicationId "${application_id}"
-        versionName "${version_name}"
-        versionCode version_code
 
-        buildConfigField 'String', 'API_URL', "${api_url}"
-        buildConfigField 'String', 'STORAGE_URL', "${storage_url}"
-        buildConfigField 'String', 'WEB_CLIENT_URL', "${web_client_url}"
-        buildConfigField 'String', 'TERMS_URL', "${terms_url}"
 
-        buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"
-        buildConfigField 'Boolean', 'IS_SEND_ALLOWED', "${allow_send}"
-        buildConfigField 'Boolean', 'IS_TRADE_ALLOWED', "${allow_trade}"
-        buildConfigField 'Boolean', 'IS_DEPOSIT_ALLOWED', "${allow_deposit}"
-        buildConfigField 'Boolean', 'IS_WITHDRAW_ALLOWED', "${allow_withdraw}"
-        buildConfigField 'Boolean', 'IS_EXPLORE_ALLOWED', "${allow_explore}"
 
-        resValue "string", "app_host", "${app_host}"
-        resValue "color", "primary", "${color_primary}"
-        resValue "color", "primary_dark", "${color_primary_dark}"
-        resValue "color", "accent", "${color_accent}"
-        resValue "color", "background", "${color_background}"
-        resValue "color", "primary_text", "${color_primary_text}"
-        resValue "color", "secondary_text", "${color_secondary_text}"
-        resValue "color", "primary_action", "${color_primary_action}"
-        resValue "color", "primary_action_disabled", "${color_primary_action_disabled}"
-        resValue "color", "icons", "${color_icons}"
-        resValue "color", "error", "${color_error}"
-        resValue "color", "ok", "${color_ok}"
-        resValue "color", "received", "${color_received}"
-        resValue "color", "sent", "${color_sent}"
-        resValue "color", "warning", "${color_warning}"
+ext.applyAppConfig = { buildConfig ->
+    android {
+        defaultConfig {
+            applicationId "${application_id}"
+            versionName "${version_name}"
+            versionCode version_code
+        }
     }
+
+    def b = buildConfig
+
+    b.buildConfigField 'String', 'API_URL', "${api_url}"
+    b.buildConfigField 'String', 'STORAGE_URL', "${storage_url}"
+    b.buildConfigField 'String', 'WEB_CLIENT_URL', "${web_client_url}"
+    b.buildConfigField 'String', 'TERMS_URL', "${terms_url}"
+
+    b.buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"
+    b.buildConfigField 'Boolean', 'IS_SEND_ALLOWED', "${allow_send}"
+    b.buildConfigField 'Boolean', 'IS_TRADE_ALLOWED', "${allow_trade}"
+    b.buildConfigField 'Boolean', 'IS_DEPOSIT_ALLOWED', "${allow_deposit}"
+    b.buildConfigField 'Boolean', 'IS_WITHDRAW_ALLOWED', "${allow_withdraw}"
+    b.buildConfigField 'Boolean', 'IS_EXPLORE_ALLOWED', "${allow_explore}"
+
+    b.resValue "string", "app_host", "${app_host}"
+    b.resValue "color", "primary", "${color_primary}"
+    b.resValue "color", "primary_dark", "${color_primary_dark}"
+    b.resValue "color", "accent", "${color_accent}"
+    b.resValue "color", "background", "${color_background}"
+    b.resValue "color", "primary_text", "${color_primary_text}"
+    b.resValue "color", "secondary_text", "${color_secondary_text}"
+    b.resValue "color", "primary_action", "${color_primary_action}"
+    b.resValue "color", "primary_action_disabled", "${color_primary_action_disabled}"
+    b.resValue "color", "icons", "${color_icons}"
+    b.resValue "color", "error", "${color_error}"
+    b.resValue "color", "ok", "${color_ok}"
+    b.resValue "color", "received", "${color_received}"
+    b.resValue "color", "sent", "${color_sent}"
+    b.resValue "color", "warning", "${color_warning}"
 }
+
+applyAppConfig(android.defaultConfig)

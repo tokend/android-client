@@ -14,8 +14,30 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
+
+    apply from: "app_config.gradle"
+    if (file("dev_app_config.gradle").exists()) {
+        apply from: "dev_app_config.gradle"
+    }
+
     buildTypes {
+        staging {
+            if (file("stage_app_config.gradle").exists()) {
+                apply from: "stage_app_config.gradle"
+                applyAppConfig(android.buildTypes.staging)
+            }
+
+            signingConfig signingConfigs.debug
+            debuggable = true
+        }
+
         release {
+            if (file("release_app_config.gradle").exists()) {
+                apply from: "release_app_config.gradle"
+                applyAppConfig(android.buildTypes.release)
+            }
+
+            signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -77,10 +99,4 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-}
-
-apply from: "app_config.gradle"
-
-if (file("dev_app_config.gradle").exists()) {
-    apply from: "dev_app_config.gradle"
 }
