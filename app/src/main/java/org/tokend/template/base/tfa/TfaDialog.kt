@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.AppCompatImageView
 import android.view.View
+import android.view.WindowManager
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.rengwuxian.materialedittext.MaterialEditText
@@ -61,6 +62,7 @@ abstract class TfaDialog(protected val context: Context,
     open fun show() {
         if (!dialog.isShowing) {
             beforeDialogShow()
+            dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
             dialog.show()
             afterDialogShown()
         }
