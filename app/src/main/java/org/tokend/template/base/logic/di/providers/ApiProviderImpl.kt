@@ -1,11 +1,11 @@
 package org.tokend.template.base.logic.di.providers
 
 import okhttp3.CookieJar
-import org.tokend.sdk.api.ApiFactory
 import org.tokend.sdk.api.ApiService
 import org.tokend.sdk.api.requests.CookieJarProvider
 import org.tokend.sdk.api.requests.RequestSigner
 import org.tokend.sdk.api.tfa.TfaCallback
+import org.tokend.sdk.factory.ApiFactory
 import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.wallet.Account
 
@@ -24,7 +24,7 @@ class ApiProviderImpl(
     }
 
     private val mApi: ApiService by lazy {
-        ApiFactory.getApiService(url, tfaCallback, cookieJarProvider)
+        ApiFactory(url).getApiService(null, tfaCallback, cookieJarProvider)
     }
 
     private val mKeyStorage: KeyStorage by lazy {
@@ -75,8 +75,10 @@ class ApiProviderImpl(
     }
 
     private fun createSignedApiWithAccount(account: Account): ApiService {
-        return ApiFactory.getApiService(url, account.accountId,
+        return ApiFactory(url).getApiService(
                 object : RequestSigner {
+                    override val accountId: String = account.accountId
+
                     override fun signToBase64(data: ByteArray): String {
                         return account.signDecorated(data).toBase64()
                     }
@@ -85,12 +87,13 @@ class ApiProviderImpl(
     }
 
     private fun createSignedKeyStorageWithAccount(account: Account): KeyStorage {
-        return KeyStorage(url, account.accountId,
+        return KeyStorage(url, tfaCallback, cookieJarProvider,
                 object : RequestSigner {
+                    override val accountId: String = account.accountId
+
                     override fun signToBase64(data: ByteArray): String {
                         return account.signDecorated(data).toBase64()
                     }
-                },
-                tfaCallback, cookieJarProvider)
+                })
     }
 }

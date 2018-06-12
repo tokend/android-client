@@ -8,10 +8,10 @@ import com.trello.rxlifecycle2.android.ActivityEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.layout_progress.*
-import org.tokend.sdk.api.ApiFactory
 import org.tokend.sdk.api.requests.AttributesEntity
 import org.tokend.sdk.api.requests.DataEntity
 import org.tokend.sdk.api.requests.models.VerifyWalletRequestBody
+import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
 import org.tokend.template.extensions.toCompletable
 import org.tokend.template.util.Navigator
@@ -69,10 +69,10 @@ class ProcessLinkActivity : BaseActivity() {
             val decodedData = String(BaseEncoding.base64Url().decode(encodedData))
 
             try {
-                val linkData = ApiFactory.getBaseGson().fromJson(decodedData,
+                val linkData = GsonFactory().getBaseGson().fromJson(decodedData,
                         LinkData::class.java)
                 when (linkData.action) {
-                    1 -> performVerification(ApiFactory.getBaseGson()
+                    1 -> performVerification(GsonFactory().getBaseGson()
                             .fromJson(linkData.data,
                                     VerificationData::class.java))
                 }

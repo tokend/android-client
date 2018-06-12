@@ -3,8 +3,8 @@ package org.tokend.template.base.logic.transactions
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import okhttp3.ResponseBody
-import org.tokend.sdk.api.ApiFactory
 import org.tokend.sdk.api.responses.SubmitTransactionResponse
+import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.extensions.toSingle
 import org.tokend.wallet.*
@@ -35,7 +35,7 @@ class TxManager(
                     }
                 }
                 // Magic delay is required because
-                // API not syncs with Horizon immediately.
+                // API doesn't sync with Horizon immediately.
                 .delay(1, TimeUnit.SECONDS)
     }
 
@@ -43,7 +43,7 @@ class TxManager(
         val buffer = errorBody.source().buffer().clone()
         val string = buffer.readString(Charset.defaultCharset())
         return try {
-            ApiFactory.getBaseGson().fromJson(string, SubmitTransactionResponse::class.java)
+            GsonFactory().getBaseGson().fromJson(string, SubmitTransactionResponse::class.java)
         } catch (e: Exception) {
             null
         } finally {
@@ -53,9 +53,9 @@ class TxManager(
 
     companion object {
         fun createSignedTransaction(networkParams: NetworkParams,
-                                            sourceAccountId: String,
-                                            signer: Account,
-                                            vararg operations: Operation.OperationBody
+                                    sourceAccountId: String,
+                                    signer: Account,
+                                    vararg operations: Operation.OperationBody
         ): Single<Transaction> {
             return Single.defer {
                 val transaction =

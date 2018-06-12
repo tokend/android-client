@@ -3,7 +3,7 @@ package org.tokend.template.base.logic.persistance
 import android.content.SharedPreferences
 import android.os.Build
 import android.support.annotation.RequiresApi
-import org.tokend.sdk.api.ApiFactory
+import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.extensions.toByteArray
 import org.tokend.template.extensions.toCharArray
@@ -11,7 +11,7 @@ import org.tokend.template.extensions.toCharArray
 class CredentialsPersistor(
         private val preferences: SharedPreferences
 ) {
-    val secureStorage = SecureStorage(preferences)
+    private val secureStorage = SecureStorage(preferences)
 
     /**
      * @param credentials [WalletInfo] with filled [WalletInfo.secretSeed] field.
@@ -20,7 +20,7 @@ class CredentialsPersistor(
     fun saveCredentials(credentials: WalletInfo, password: CharArray) {
         val email = credentials.email
         val nonSensitiveData =
-                ApiFactory.getBaseGson().toJson(
+                GsonFactory().getBaseGson().toJson(
                         credentials.copy(secretSeed = CharArray(0))
                 ).toByteArray()
         val sensitiveData = credentials.secretSeed.toByteArray()
@@ -63,7 +63,7 @@ class CredentialsPersistor(
         try {
             val walletInfoBytes = secureStorage.loadWithPassword(WALLET_INFO_KEY, password)
                     ?: return null
-            val walletInfo = ApiFactory.getBaseGson()
+            val walletInfo = GsonFactory().getBaseGson()
                     .fromJson(String(walletInfoBytes), WalletInfo::class.java)
 
             val seedBytes = secureStorage.loadWithPassword(SEED_KEY, password)
@@ -92,6 +92,6 @@ class CredentialsPersistor(
         private const val SEED_KEY = "(◕‿◕✿)"
         private const val WALLET_INFO_KEY = "ಠ_ಠ"
         private const val PASSWORD_KEY = "(¬_¬)"
-        private val EMAIL_KEY = "email"
+        private const val EMAIL_KEY = "email"
     }
 }

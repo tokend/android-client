@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.ApiFactory
 import org.tokend.sdk.federation.EmailNotVerifiedException
 import org.tokend.sdk.federation.InvalidCredentialsException
 import org.tokend.template.BuildConfig
@@ -233,7 +232,7 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun resendVerificationEmail(walletId: String) {
-        ApiFactory.getApiService(BuildConfig.API_URL)
+        apiProvider.getApi()
                 .requestVerificationLink(walletId)
                 .toCompletable()
                 .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)

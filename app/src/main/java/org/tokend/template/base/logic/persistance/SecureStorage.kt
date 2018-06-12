@@ -8,8 +8,8 @@ import android.support.annotation.RequiresApi
 import org.tokend.crypto.cipher.Aes256GCM
 import org.tokend.kdf.KeyDerivationFunction
 import org.tokend.kdf.ScryptKeyDerivation
-import org.tokend.sdk.api.ApiFactory
 import org.tokend.sdk.api.models.KeychainData
+import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.KdfAttributes
 import org.tokend.sdk.utils.extentions.toBytes
 import org.tokend.template.extensions.toByteArray
@@ -125,7 +125,7 @@ class SecureStorage(
                 .edit()
                 .putString(
                         key,
-                        ApiFactory.getBaseGson().toJson(data)
+                        GsonFactory().getBaseGson().toJson(data)
                 )
                 .apply()
     }
