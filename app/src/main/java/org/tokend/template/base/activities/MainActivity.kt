@@ -2,7 +2,6 @@ package org.tokend.template.base.activities
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
@@ -208,8 +207,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     private fun displayFragment(fragment: Fragment) {
 
         supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.stay_visible, R.anim.activity_fade_out)
                 .replace(R.id.fragment_container_layout, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit()
 
         // Bind navigation drawer to fragment's toolbar.
