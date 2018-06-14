@@ -17,19 +17,21 @@ class AccountDetailsRepository(
     private val detailsByAccountId = mutableMapOf<String, AccountsDetailsResponse.AccountDetails>()
     private val accountIdByEmail = mutableMapOf<String, String>()
 
-    fun getDetails(accounts: List<String>):
+    fun getDetails(accounts: List<String?>):
             Single<Map<String, AccountsDetailsResponse.AccountDetails>> {
         val toReturn = mutableMapOf<String, AccountsDetailsResponse.AccountDetails>()
         val toRequest = mutableListOf<String>()
 
-        accounts.forEach {
-            val cached = detailsByAccountId[it]
-            if (cached != null) {
-                toReturn[it] = cached
-            } else {
-                toRequest.add(it)
-            }
-        }
+        accounts
+                .filterNotNull()
+                .forEach {
+                    val cached = detailsByAccountId[it]
+                    if (cached != null) {
+                        toReturn[it] = cached
+                    } else {
+                        toRequest.add(it)
+                    }
+                }
 
         if (toRequest.isEmpty()) {
             return Single.just(toReturn)
@@ -38,7 +40,7 @@ class AccountDetailsRepository(
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
-        return signedApi.getAccountsDetails(AccountsDetailsRequestBody(accounts))
+        return signedApi.getAccountsDetails(AccountsDetailsRequestBody(toRequest))
                 .toSingle()
                 .map { it.users }
                 .map { detailsMap ->
