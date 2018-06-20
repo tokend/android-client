@@ -37,7 +37,7 @@ class UserRepository(private val apiProvider: ApiProvider,
         return signedApi.createUser(accountId,
                 DataEntity(
                         AttributesEntity(
-                                CreateUserRequestBody(DEFAULT_USER_TYPE.toString())
+                                CreateUserRequestBody(DEFAULT_USER_TYPE)
                         )
                 )
         )
@@ -45,6 +45,6 @@ class UserRepository(private val apiProvider: ApiProvider,
     }
 
     companion object {
-        const val DEFAULT_USER_TYPE = 1
+        const val DEFAULT_USER_TYPE = "not_verified"
     }
 }
