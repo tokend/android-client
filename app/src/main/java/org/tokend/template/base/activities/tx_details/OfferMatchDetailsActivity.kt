@@ -21,7 +21,7 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
-class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>() {
+class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>(MatchTransaction::class) {
     private var isPending = false
     private lateinit var tx: MatchTransaction
 

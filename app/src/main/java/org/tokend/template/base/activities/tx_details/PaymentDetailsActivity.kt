@@ -8,7 +8,7 @@ import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 import java.math.BigDecimal
 
-class PaymentDetailsActivity: TxDetailsActivity<PaymentTransaction>() {
+class PaymentDetailsActivity: TxDetailsActivity<PaymentTransaction>(PaymentTransaction::class) {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details)
         setTitle(R.string.payment_details_title)

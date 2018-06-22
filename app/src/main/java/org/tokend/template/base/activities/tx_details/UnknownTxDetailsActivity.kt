@@ -7,7 +7,7 @@ import org.tokend.template.R
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 
-class UnknownTxDetailsActivity : TxDetailsActivity<BaseTransaction>() {
+class UnknownTxDetailsActivity : TxDetailsActivity<BaseTransaction>(BaseTransaction::class) {
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details)

@@ -1,6 +1,6 @@
 package org.tokend.template.base.tfa
 
-import com.google.common.io.BaseEncoding
+import android.util.Base64
 import org.tokend.sdk.api.models.KeychainData
 import org.tokend.sdk.federation.NeedTfaException
 import org.tokend.sdk.keyserver.KeyStorage
@@ -25,6 +25,6 @@ class PasswordTfaOtpGenerator() {
         seed.fill('0')
         val signature = account.sign(tfaException.token.toByteArray())
 
-        return BaseEncoding.base64().encode(signature)
+        return Base64.encodeToString(signature, Base64.NO_WRAP or Base64.URL_SAFE)
     }
 }

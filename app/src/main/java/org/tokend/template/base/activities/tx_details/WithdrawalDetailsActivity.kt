@@ -7,7 +7,7 @@ import org.tokend.template.R
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 
-class WithdrawalDetailsActivity : TxDetailsActivity<WithdrawalTransaction>() {
+class WithdrawalDetailsActivity : TxDetailsActivity<WithdrawalTransaction>(WithdrawalTransaction::class) {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details)
         setTitle(R.string.withdrawal_details_title)
