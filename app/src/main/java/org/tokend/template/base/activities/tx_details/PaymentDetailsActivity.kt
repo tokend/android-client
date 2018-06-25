@@ -8,7 +8,7 @@ import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 import java.math.BigDecimal
 
-class PaymentDetailsActivity: TxDetailsActivity<PaymentTransaction>(PaymentTransaction::class) {
+class PaymentDetailsActivity : TxDetailsActivity<PaymentTransaction>(PaymentTransaction::class) {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details)
         setTitle(R.string.payment_details_title)
@@ -28,7 +28,7 @@ class PaymentDetailsActivity: TxDetailsActivity<PaymentTransaction>(PaymentTrans
         val receiverSenderCard = InfoCard(cards_layout)
                 .setHeading(if (tx.isSent) R.string.tx_recipient else R.string.tx_sender, null)
 
-        if (tx.isSent && tx.counterpartyNickname != null) {
+        if (tx.counterpartyNickname != null) {
             receiverSenderCard.addRow(tx.counterpartyNickname, null)
         }
 
