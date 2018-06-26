@@ -1,8 +1,10 @@
 package org.tokend.template.base.view
 
 import android.support.annotation.StringRes
+import android.support.v7.widget.SwitchCompat
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import org.jetbrains.anko.find
@@ -67,6 +69,26 @@ class InfoCard(parent: ViewGroup) {
         }
 
         return this
+    }
+
+    fun addSwitcherRow(title: String, switchListener: CompoundButton.OnCheckedChangeListener?): InfoCard {
+        val rowView =
+                context.layoutInflater.inflate(R.layout.layout_info_card_switch_row, contentLayout,
+                        false)
+
+        val titleTextView = rowView.find<TextView>(R.id.title)
+        val switcherView = rowView.find<SwitchCompat>(R.id.switcher)
+
+        titleTextView.text = title
+        if (switchListener != null) {
+            switcherView.setOnCheckedChangeListener(switchListener)
+        }
+
+        return addView(rowView)
+    }
+
+    fun addSwitcherRow(@StringRes title: Int, switchListener: CompoundButton.OnCheckedChangeListener?): InfoCard {
+        return addSwitcherRow(context.getString(title), switchListener)
     }
 
     fun addView(view: View?): InfoCard {
