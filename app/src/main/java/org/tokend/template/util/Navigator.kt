@@ -126,12 +126,12 @@ object Navigator {
         fragment.startActivityForResult(confirmationIntent, requestCode)
     }
 
-    fun openWallet(fragment: Fragment, asset: String) {
-        val toSend = Intent(fragment.context, SingleFragmentActivity::class.java)
-                .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
-                .putExtra(SingleFragmentActivity.SCREEN_ID, WalletFragment.ID)
-
-        fragment.startActivity(toSend)
+    fun openWallet(fragment: Fragment, requestCode: Int, asset: String) {
+        fragment.startActivityForResult(
+                Intent(fragment.context, SingleFragmentActivity::class.java)
+                        .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
+                        .putExtra(SingleFragmentActivity.SCREEN_ID, WalletFragment.ID)
+                , requestCode)
     }
 
     fun openSend(fragment: Fragment, asset: String,

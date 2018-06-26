@@ -1,6 +1,7 @@
 package org.tokend.template.features.dashboard
 
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -129,8 +130,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         activity_list.isNestedScrollingEnabled = false
 
         view_more_button.onClick {
-            Navigator.openWallet(this, asset)
-
+            Navigator.openWallet(this, SEND_REQUEST, asset)
         }
     }
 
@@ -148,8 +148,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         offers_list.isNestedScrollingEnabled = false
 
         view_more_offers_button.onClick {
-            val offersIntent = Intent(view!!.context, OffersActivity::class.java)
-            startActivity(offersIntent)
+            Navigator.openPendingOffers(this, CANCEL_OFFER_REQUEST)
         }
     }
     // endregion
@@ -270,7 +269,18 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         txRepository.updateIfNotFresh()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                CANCEL_OFFER_REQUEST,
+                SEND_REQUEST -> update()
+            }
+        }
+    }
     companion object {
+        private val CANCEL_OFFER_REQUEST = "cancel_offer".hashCode() and 0xffff
+        private val SEND_REQUEST = "send".hashCode() and 0xffff
         private const val TRANSACTIONS_TO_DISPLAY = 3
         const val ID = 1110L
 
