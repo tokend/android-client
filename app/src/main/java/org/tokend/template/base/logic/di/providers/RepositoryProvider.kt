@@ -22,7 +22,7 @@ interface RepositoryProvider {
     fun assets(): AssetsRepository
     fun assetPairs(): AssetPairsRepository
     fun orderBook(baseAsset: String, quoteAsset: String, isBuy: Boolean): OrderBookRepository
-    fun offers(): OffersRepository
+    fun offers(onlyPrimaryMarket: Boolean = true): OffersRepository
     fun account(): AccountRepository
     fun user(): UserRepository
     fun favorites(): FavoritesRepository

@@ -37,9 +37,7 @@ class RepositoryProviderImpl(
     private val assetPairsRepository: AssetPairsRepository by lazy {
         AssetPairsRepository(apiProvider)
     }
-    private val offersRepository: OffersRepository by lazy {
-        OffersRepository(apiProvider, walletInfoProvider)
-    }
+    private val offersRepositories = mutableMapOf<String, OffersRepository>()
     private val accountRepository: AccountRepository by lazy {
         AccountRepository(apiProvider, walletInfoProvider)
     }
@@ -89,8 +87,11 @@ class RepositoryProviderImpl(
         }
     }
 
-    override fun offers(): OffersRepository {
-        return offersRepository
+    override fun offers(onlyPrimaryMarket: Boolean): OffersRepository {
+        val key = "$onlyPrimaryMarket"
+        return offersRepositories.getOrPut(key) {
+            OffersRepository(apiProvider, walletInfoProvider, onlyPrimaryMarket)
+        }
     }
 
     override fun account(): AccountRepository {
