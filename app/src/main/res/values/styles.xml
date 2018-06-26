@@ -55,6 +55,8 @@
     <style name="PrimaryButton" parent="Base.Widget.AppCompat.Button.Colored">
         <item name="android:theme">@style/PrimaryButton.Overlay</item>
         <item name="android:textColor">@color/md_white_1000</item>
+        <item name="android:paddingStart">@dimen/double_margin</item>
+        <item name="android:paddingEnd">@dimen/double_margin</item>
     </style>
 
     <style name="SecondaryButton" parent="Widget.AppCompat.Button.Borderless">
