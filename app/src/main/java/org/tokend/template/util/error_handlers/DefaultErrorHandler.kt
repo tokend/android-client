@@ -63,6 +63,8 @@ open class DefaultErrorHandler : ErrorHandler {
                         App.context.getString(R.string.error_tx_not_allowed)
                     TransactionFailedException.OP_OFFER_CROSS_SELF ->
                         App.context.getString(R.string.error_tx_cross_self)
+                    TransactionFailedException.OP_AMOUNT_LESS_THEN_DEST_FEE ->
+                            App.context.getString(R.string.error_payment_amount_less_than_fee)
                     else ->
                         App.context.getString(R.string.error_tx_general)
                 }

@@ -8,7 +8,7 @@ data class PaymentRequest(
         val amount: BigDecimal,
         val asset: String,
         val senderBalanceId: String,
-        val recipientBalanceId: String,
+        val recipientAccountId: String,
         val recipientNickname: String,
         val senderFee: Fee,
         val recipientFee: Fee,

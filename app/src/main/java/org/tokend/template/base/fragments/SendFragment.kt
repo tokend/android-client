@@ -285,7 +285,6 @@ class SendFragment : BaseFragment(), ToolbarProvider {
             lateinit var senderAccount: String
             lateinit var senderBalance: String
             lateinit var recipientAccount: String
-            lateinit var recipientBalance: String
         }
 
         Single.zip(
@@ -307,15 +306,14 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                             BiFunction { t1: String, t2: String -> Pair(t1, t2) }
                     )
                 }
-                .flatMap { (currentBalance, recipientBalance) ->
+                .flatMap { (currentBalance) ->
                     data.senderBalance = currentBalance
-                    data.recipientBalance = recipientBalance
 
                     Single.zip(
                             FeeManager(apiProvider)
-                                    .getPaymentFee(data.senderAccount, asset, amount),
+                                    .getPaymentFee(data.senderAccount, asset, amount,true),
                             FeeManager(apiProvider)
-                                    .getPaymentFee(data.recipientBalance, asset, amount),
+                                    .getPaymentFee(data.recipientAccount, asset, amount,false),
                             BiFunction { t1: Fee, t2: Fee -> Pair(t1, t2) }
                     )
                 }
@@ -326,7 +324,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                             recipientFee = recipientFee,
                             senderFee = senderFee,
                             senderBalanceId = data.senderBalance,
-                            recipientBalanceId = data.recipientBalance,
+                            recipientAccountId = data.recipientAccount,
                             recipientNickname = recipient,
                             paymentSubject = subject
                     )

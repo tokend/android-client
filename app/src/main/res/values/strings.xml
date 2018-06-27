@@ -159,6 +159,7 @@
     <string name="tx_sender_fee">Sender\'s fee</string>
     <string name="tx_recipient_fee">Recipient\'s fee</string>
 
+
     <string name="settings_account_group">Account</string>
     <string name="settings_security_group">Security</string>
     <string name="account_id_title">Account ID</string>
@@ -186,6 +187,7 @@
     <string name="error_no_tradeable_pairs">No tradeable pairs found</string>
     <string name="error_cannot_send_to_yourself">Send to yourself is not allowed</string>
     <string name="error_fingerprint_locked">Too many failed attempts. Try again later</string>
+    <string name="error_payment_amount_less_than_fee">Payment amount is less than recipient\'s fee</string>
 
     <string name="error_tx_general">Transaction failed. Try again later</string>
     <string name="error_tx_bad_auth">Transaction signature is invalid</string>
