@@ -120,6 +120,10 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
         swipe_refresh.setOnRefreshListener { update(true) }
+
+        balance_app_bar.addOnOffsetChangedListener { _, verticalOffset ->
+            swipe_refresh.isEnabled = verticalOffset == 0
+        }
     }
 
     private fun initMenu() {
