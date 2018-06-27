@@ -1,13 +1,10 @@
 package org.tokend.template.util
 
-import com.google.common.base.CharMatcher
-
 /**
  * Contains different conditions of matching some query with given fields.
  */
 object SearchUtil {
-    private const val WHITESPACE = " "
-    private val whitespaceMatcher = CharMatcher.WHITESPACE.or(CharMatcher.BREAKING_WHITESPACE)
+    private const val WHITESPACE = "/\\s+/"
 
     fun isMatchGeneralCondition(query: String, vararg fields: String?): Boolean {
         val unmatchedFieldsParts = fields.fold(mutableSetOf<String>()) { acc, item ->
@@ -45,8 +42,6 @@ object SearchUtil {
     }
 
     private fun splitByWhitespace(text: String): Collection<String> {
-        return whitespaceMatcher
-                .replaceFrom(text, WHITESPACE)
-                .split(WHITESPACE)
+        return text.split(WHITESPACE)
     }
 }

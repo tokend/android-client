@@ -7,7 +7,8 @@ import org.tokend.template.R
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 
-class DepositDetailsActivity : TxDetailsActivity<IssuanceTransaction>() {
+class DepositDetailsActivity :
+        TxDetailsActivity<IssuanceTransaction>(IssuanceTransaction::class) {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details)
         setTitle(R.string.deposit_details_title)

@@ -3,7 +3,6 @@ package org.tokend.template.base.activities.tx_details
 import android.app.Activity
 import android.os.Bundle
 import android.view.ViewGroup
-import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import org.jetbrains.anko.intentFor
 import org.tokend.sdk.api.models.transactions.Transaction
@@ -13,8 +12,11 @@ import org.tokend.template.base.activities.BaseActivity
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.LocalizedName
 import org.tokend.template.util.DateFormatter
+import kotlin.reflect.KClass
 
-abstract class TxDetailsActivity<in T : Transaction> : BaseActivity() {
+abstract class TxDetailsActivity<in T : Transaction>(
+        private val typeClass: KClass<T>
+) : BaseActivity() {
     companion object {
         const val ITEM_JSON_EXTRA = "item_json"
 
@@ -46,7 +48,7 @@ abstract class TxDetailsActivity<in T : Transaction> : BaseActivity() {
     private fun getItemFromIntent(): T? {
         try {
             val jsonString = intent.getStringExtra(ITEM_JSON_EXTRA)
-            return Gson().fromJson(jsonString, object : TypeToken<T>(javaClass) {}.type)
+            return Gson().fromJson<T>(jsonString, typeClass.java)
         } catch (e: Exception) {
             e.printStackTrace()
             return null

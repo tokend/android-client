@@ -8,7 +8,7 @@ import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 import java.math.BigDecimal
 
-class PaymentDetailsActivity: TxDetailsActivity<PaymentTransaction>() {
+class PaymentDetailsActivity : TxDetailsActivity<PaymentTransaction>(PaymentTransaction::class) {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details)
         setTitle(R.string.payment_details_title)
@@ -28,7 +28,7 @@ class PaymentDetailsActivity: TxDetailsActivity<PaymentTransaction>() {
         val receiverSenderCard = InfoCard(cards_layout)
                 .setHeading(if (tx.isSent) R.string.tx_recipient else R.string.tx_sender, null)
 
-        if (tx.isSent && tx.counterpartyNickname != null) {
+        if (tx.counterpartyNickname != null) {
             receiverSenderCard.addRow(tx.counterpartyNickname, null)
         }
 
@@ -37,71 +37,32 @@ class PaymentDetailsActivity: TxDetailsActivity<PaymentTransaction>() {
 
     private fun displayAmount(tx: PaymentTransaction) {
         if (tx.isSent) {
-            val paidAmount = getPaidAmount(tx)
-            var fixedFee = tx.senderFee.fixed
-            var percentFee = tx.senderFee.percent
-
+            val infoCard = InfoCard(cards_layout)
+                    .setHeading(R.string.amount,
+                            "${AmountFormatter.formatAssetAmount(tx.amount)} ${tx.asset}")
+                    .addRow(R.string.tx_fee,
+                            "${AmountFormatter.formatAssetAmount(tx.senderFee.total)
+                            } ${tx.senderFee.asset}")
             if (tx.feePaidBySender) {
-                fixedFee += tx.recipientFee.fixed
-                percentFee += tx.recipientFee.percent
+                infoCard
+                        .addRow(R.string.tx_recipient_fee,
+                                "${AmountFormatter.formatAssetAmount(tx.recipientFee.total)
+                                } ${tx.recipientFee.asset}")
             }
+        } else {
+            val fee =
+                    if (tx.feePaidBySender)
+                        BigDecimal.ZERO
+                    else
+                        tx.recipientFee.total
 
             InfoCard(cards_layout)
-                    .setHeading(R.string.paid,
-                            "${AmountFormatter.formatAssetAmount(paidAmount)} ${tx.asset}")
-                    .addRow(R.string.amount_sent,
-                            "+${AmountFormatter.formatAssetAmount(tx.amount,
-                                    minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                            } ${tx.asset}")
-                    .addRow(R.string.tx_fixed_fee,
-                            "+${AmountFormatter.formatAssetAmount(fixedFee,
-                                    minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                            } ${tx.asset}")
-                    .addRow(R.string.tx_percent_fee,
-                            "+${AmountFormatter.formatAssetAmount(percentFee,
-                                    minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                            } ${tx.asset}")
-        } else {
-            val receivedAmount = getReceivedAmount(tx)
-            val infoCard = InfoCard(cards_layout)
-                    .setHeading(R.string.received,
-                            "${AmountFormatter.formatAssetAmount(receivedAmount)} ${tx.asset}")
-                    .addRow(R.string.amount_sent,
-                            "+${AmountFormatter.formatAssetAmount(tx.amount,
-                                    minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                            } ${tx.asset}")
-            if (!tx.feePaidBySender) {
-                infoCard
-                        .addRow(R.string.tx_fixed_fee,
-                                "-${AmountFormatter.formatAssetAmount(tx.recipientFee.fixed,
-                                        minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                                } ${tx.asset}")
-                        .addRow(R.string.tx_percent_fee,
-                                "-${AmountFormatter.formatAssetAmount(tx.recipientFee.percent,
-                                        minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                                } ${tx.asset}")
-            }
+                    .setHeading(R.string.amount,
+                            "${AmountFormatter.formatAssetAmount(tx.amount)} ${tx.asset}")
+                    .addRow(R.string.tx_fee,
+                            "${AmountFormatter.formatAssetAmount(fee)
+                            } ${tx.recipientFee.asset}")
         }
-    }
-
-    private fun getReceivedAmount(tx: PaymentTransaction): BigDecimal {
-        var amount = tx.amount
-
-        if (!tx.feePaidBySender) {
-            amount -= tx.recipientFee.total
-        }
-
-        return amount
-    }
-
-    private fun getPaidAmount(tx: PaymentTransaction): BigDecimal {
-        var amount = tx.amount + tx.senderFee.total
-
-        if (tx.feePaidBySender) {
-            amount += tx.recipientFee.total
-        }
-
-        return amount
     }
 
     private fun displaySubject(item: PaymentTransaction) {

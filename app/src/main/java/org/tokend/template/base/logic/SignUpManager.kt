@@ -1,6 +1,6 @@
 package org.tokend.template.base.logic
 
-import com.google.common.io.BaseEncoding
+import android.util.Base64
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
@@ -26,7 +26,7 @@ class SignUpManager {
                 .flatMap { loginParams ->
                     // Complete default login params with derivation salt.
                     loginParams.kdfAttributes.encodedSalt =
-                            BaseEncoding.base64().encode(derivationSalt)
+                            Base64.encodeToString(derivationSalt, Base64.NO_WRAP)
                     data.loginParams = loginParams
 
                     WalletManager.deriveKeys(email, password, loginParams.kdfAttributes)

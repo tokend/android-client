@@ -26,10 +26,11 @@ import java.math.BigDecimal
 
 class OffersRepository(
         private val apiProvider: ApiProvider,
-        private val walletInfoProvider: WalletInfoProvider
+        private val walletInfoProvider: WalletInfoProvider,
+        private val onlyPrimary: Boolean
 ) : PagedDataRepository<Offer, OffersRepository.OffersRequestParams>() {
     class OffersRequestParams(val onlyPrimaryMarket: Boolean,
-                              val orderBookId: Long,
+                              val orderBookId: Long?,
                               val baseAsset: String?,
                               val quoteAsset: String?,
                               val isBuy: Boolean?,
@@ -39,12 +40,12 @@ class OffersRepository(
     override val itemsCache = OffersCache()
 
     override fun getNextPageRequestParams(): OffersRequestParams {
-        return OffersRequestParams(true,
-                0,
-                null,
-                null,
-                null,
-                PageParams(cursor = nextCursor))
+        return OffersRequestParams(onlyPrimary,
+                orderBookId = if (onlyPrimary) null else 0L,
+                baseAsset = null,
+                quoteAsset = null,
+                isBuy = if (onlyPrimary) true else null,
+                pageParams = PageParams(cursor = nextCursor))
     }
 
     override fun getItems(): Single<List<Offer>> = Single.just(emptyList())
@@ -63,6 +64,7 @@ class OffersRepository(
                 limit = requestParams.pageParams.limit,
                 cursor = requestParams.pageParams.cursor,
                 orderBookId = requestParams.orderBookId,
+                onlyPrimary = requestParams.onlyPrimaryMarket,
                 order = "desc"
         )
                 .toSingle()

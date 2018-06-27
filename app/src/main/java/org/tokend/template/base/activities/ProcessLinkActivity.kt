@@ -1,7 +1,7 @@
 package org.tokend.template.base.activities
 
 import android.os.Bundle
-import com.google.common.io.BaseEncoding
+import android.util.Base64
 import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 import com.trello.rxlifecycle2.android.ActivityEvent
@@ -66,7 +66,8 @@ class ProcessLinkActivity : BaseActivity() {
             }
 
             val encodedData = split[1]
-            val decodedData = String(BaseEncoding.base64Url().decode(encodedData))
+            val decodedData = String(Base64.decode(encodedData,
+                    Base64.NO_WRAP or Base64.URL_SAFE))
 
             try {
                 val linkData = GsonFactory().getBaseGson().fromJson(decodedData,

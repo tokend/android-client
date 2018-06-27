@@ -6,11 +6,12 @@ import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.base.logic.repository.UserRepository
 import org.tokend.template.base.logic.repository.assets.AssetsRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
+import org.tokend.template.base.logic.repository.favorites.FavoritesRepository
+import org.tokend.template.base.logic.repository.pairs.AssetPairsRepository
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
 import org.tokend.template.base.logic.repository.transactions.TxRepository
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.features.trade.repository.order_book.OrderBookRepository
-import org.tokend.template.base.logic.repository.pairs.AssetPairsRepository
 
 class RepositoryProviderImpl(
         private val apiProvider: ApiProvider,
@@ -36,14 +37,15 @@ class RepositoryProviderImpl(
     private val assetPairsRepository: AssetPairsRepository by lazy {
         AssetPairsRepository(apiProvider)
     }
-    private val offersRepository: OffersRepository by lazy {
-        OffersRepository(apiProvider, walletInfoProvider)
-    }
+    private val offersRepositories = mutableMapOf<String, OffersRepository>()
     private val accountRepository: AccountRepository by lazy {
         AccountRepository(apiProvider, walletInfoProvider)
     }
     private val userRepository: UserRepository by lazy {
         UserRepository(apiProvider, walletInfoProvider)
+    }
+    private val favoritesRepository: FavoritesRepository by lazy {
+        FavoritesRepository(apiProvider, walletInfoProvider)
     }
 
     override fun balances(): BalancesRepository {
@@ -85,8 +87,11 @@ class RepositoryProviderImpl(
         }
     }
 
-    override fun offers(): OffersRepository {
-        return offersRepository
+    override fun offers(onlyPrimaryMarket: Boolean): OffersRepository {
+        val key = "$onlyPrimaryMarket"
+        return offersRepositories.getOrPut(key) {
+            OffersRepository(apiProvider, walletInfoProvider, onlyPrimaryMarket)
+        }
     }
 
     override fun account(): AccountRepository {
@@ -95,5 +100,9 @@ class RepositoryProviderImpl(
 
     override fun user(): UserRepository {
         return userRepository
+    }
+
+    override fun favorites(): FavoritesRepository {
+        return favoritesRepository
     }
 }

@@ -156,6 +156,8 @@
     <string name="template_tx_for">For %1$s</string>
     <string name="template_tx_in">In %1$s</string>
     <string name="pay_recipient_fee_action">Pay recipient\'s fee</string>
+    <string name="tx_sender_fee">Sender\'s fee</string>
+    <string name="tx_recipient_fee">Recipient\'s fee</string>
 
     <string name="settings_account_group">Account</string>
     <string name="settings_security_group">Security</string>
