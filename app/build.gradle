@@ -81,7 +81,7 @@ dependencies {
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
     implementation "org.tokend:sdk:0.73"
-    implementation "org.tokend:wallet:1.0.6"
+    implementation "org.tokend:wallet:1.0.7"
 
     implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'
     implementation "io.reactivex.rxjava2:rxjava:2.1.7"
