@@ -3,23 +3,33 @@ package org.tokend.template.features.trade
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.ContextCompat.getDrawable
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import com.trello.rxlifecycle2.android.ActivityEvent
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.android.synthetic.main.activity_asset_chart.*
 import kotlinx.android.synthetic.main.fragment_trade.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.onClick
+import org.jetbrains.anko.sp
+import org.tokend.sdk.api.models.AssetChartData
 import org.tokend.sdk.api.models.AssetPair
 import org.tokend.sdk.api.models.Offer
 import org.tokend.template.R
@@ -34,6 +44,7 @@ import org.tokend.template.extensions.isTradeable
 import org.tokend.template.features.trade.adapter.OrderBookAdapter
 import org.tokend.template.features.trade.repository.order_book.OrderBookRepository
 import org.tokend.template.base.logic.repository.pairs.AssetPairsRepository
+import org.tokend.template.extensions.toSingle
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
@@ -78,6 +89,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         initLists()
         initPairSelection()
         initSwipeRefresh()
+        initChart()
 
         subscribeToPairs()
         subscribeToBalances()
@@ -126,6 +138,57 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
+    private fun initChart() {
+
+        pair_chart.apply {
+            post {
+                this.valueTextSizePx = this@TradeFragment.context!!.resources.getDimension(R.dimen.text_size_heading_large)
+                val asset = currentPair.quote
+
+                visibility = View.VISIBLE
+                this.asset = asset
+                valueHint = getString(R.string.deployed_hint)
+
+
+                peek.onClick {
+                    val bottomSheet = BottomSheetBehavior.from(bottom_sheet)
+
+                    val state = when (bottomSheet.state) {
+                        BottomSheetBehavior.STATE_COLLAPSED -> BottomSheetBehavior.STATE_EXPANDED
+                        else -> BottomSheetBehavior.STATE_COLLAPSED
+                    }
+
+                    bottomSheet.state = state
+                }
+
+                BottomSheetBehavior.from(bottom_sheet).setBottomSheetCallback(
+                        object : BottomSheetBehavior.BottomSheetCallback(){
+                            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                            }
+
+                            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                                when(newState){
+                                    BottomSheetBehavior.STATE_EXPANDED -> {
+
+                                        peek_image.setImageDrawable(getDrawable(context,R.drawable.chevron_down))
+                                        BottomSheetBehavior.STATE_EXPANDED
+                                    }
+                                    BottomSheetBehavior.STATE_COLLAPSED -> {
+
+                                        peek_image.setImageDrawable(getDrawable(context,R.drawable.chevron_up))
+                                        BottomSheetBehavior.STATE_COLLAPSED
+                                    }
+                                    else -> {}
+                                }
+                            }
+
+                        }
+                )
+            }
+        }
+    }
+
+
     private fun initMenu() {
         toolbar.menu.clear()
         toolbar.inflateMenu(R.menu.menu_trade)
@@ -148,6 +211,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
             }
         }
     }
+
     // endregion
 
     // region Balances
@@ -204,6 +268,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                         .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { loadingIndicator.setLoading(it, "pairs") }
         )
+
     }
 
     private fun onNewPairs(newPairs: List<AssetPair>) {
@@ -244,12 +309,19 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         )
     }
 
+
     private fun onPairChanged() {
+        pair_chart.asset = currentPair.quote
+        pair_chart.total = currentPair.price
+        pair_chart.valueHint = getString(R.string.asset_price_for_one_part, currentPair.base)
+
         displayOrderBookHeaders()
         displayBalance()
         displayPrice()
 
         subscribeToOrderBook()
+
+        updateChart()
         updateOrderBook()
     }
 
@@ -273,6 +345,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     }
 
+
     private fun updateOrderBook(force: Boolean = false) {
         if (force) {
             buyRepository.update()
@@ -282,6 +355,33 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
             sellRepository.updateIfNotFresh()
         }
     }
+
+    private var chartDisposable: Disposable? = null
+
+    private fun updateChart() {
+        chartDisposable?.dispose()
+        chartDisposable = apiProvider.getApi().getAssetChart("${currentPair.base}-${currentPair.quote}")
+                .toSingle()
+                .compose(ObservableTransformers.defaultSchedulersSingle())
+                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                .doOnSubscribe {
+                    loadingIndicator.show("chart")
+                }
+                .doOnEvent { _, _ ->
+                    loadingIndicator.hide("chart")
+                }
+                .subscribeBy(
+                        onSuccess = {
+                            pair_chart.post {
+                                pair_chart.data = it
+                            }
+                        },
+                        onError = {
+                            ErrorHandlerFactory.getDefault().handle(it)
+                        }
+                )
+    }
+
 
     private var orderBookDisposable: CompositeDisposable? = null
     private fun subscribeToOrderBook() {
@@ -332,6 +432,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 // endregion
         )
     }
+
 
     private fun displayBuyItems(items: Collection<Offer>) {
         buyAdapter.setData(items)

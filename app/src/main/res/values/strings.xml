@@ -237,4 +237,14 @@
     <string name="template_deposit_address_with_expiration">Deposit %1$s:\n%2$s\nExpires at %3$s</string>
     <string name="template_deposit_address">Deposit %1$s:\n%2$s</string>
 
+    <string name="chart_highlight_at_hint">%1$s at %2$s</string>
+    <string name="since_last_time_hint">since last %1$s</string>
+    <string name="no_growth">No growth</string>
+    <string name="no_data">No data</string>
+    <string name="deployed_hint">deployed</string>
+    <string name="asset_price_for_one_part">for 1 %1$s</string>
+    <string name="peek_show_text">Price chart</string>
+    <string name="peek_hide_text">Hide chart</string>
+
+
 </resources>

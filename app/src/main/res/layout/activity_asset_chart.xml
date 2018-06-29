@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="60dp"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <View
+        android:layout_height="4dp"
+        android:layout_width="match_parent"
+        android:background="@drawable/bottom_sheet_shadow">
+
+    </View>
+    <RelativeLayout
+        android:id="@+id/peek"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:layout_marginBottom="-10dp">
+        <TextView
+            android:id="@+id/peek_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/peek_show_text"
+            style="@style/HeadingText"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:gravity="start|center_vertical"/>
+
+        <ImageView
+            android:id="@+id/peek_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="24dp"
+            app:srcCompat="@drawable/chevron_up" />
+    </RelativeLayout>
+
+    <org.tokend.template.base.view.asset_chart.AssetChartCard
+        android:id="@+id/pair_chart"
+        style="@style/InfoCard"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:contentPadding="0dp" />
+
+</LinearLayout>

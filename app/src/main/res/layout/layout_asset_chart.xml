@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <me.grantland.widget.AutofitTextView
+        android:id="@+id/issued_text_view"
+        style="@style/HeadingText"
+        android:layout_width="match_parent"
+        android:layout_marginStart="@dimen/half_standard_padding"
+        android:layout_marginEnd="@dimen/half_standard_padding"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_padding"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:paddingBottom="0dp"
+        android:textSize="@dimen/text_size_heading_large" />
+
+    <TextView
+        android:id="@+id/issued_hint_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/text_size_hint" />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/chart_scale_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_margin"
+        app:tabGravity="fill"
+        app:tabMode="fixed" />
+
+    <org.tokend.template.base.view.ContentLoadingProgressBar
+        android:id="@+id/asset_chart_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/half_standard_margin"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/growth_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:gravity="center_horizontal"
+        android:textColor="@color/ok" />
+
+    <TextView
+        android:id="@+id/growth_hint_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/text_size_hint" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/asset_line_chart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:visibility="visible" />
+
+</LinearLayout>

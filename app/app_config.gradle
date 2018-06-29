@@ -40,6 +40,8 @@ ext {
     // Primary dark - color of status bar above toolbar
     color_primary_dark = '#01579B'
 
+    // Primary-half color - color of asset charts
+    color_primary_half = '#800066cc'
     // Accent color - color of actions and controls by default
     color_accent = '#ef5350'
 
@@ -134,6 +136,7 @@ ext.applyAppConfig = { buildConfig ->
 
     b.resValue "string", "app_host", "${app_host}"
     b.resValue "color", "primary", "${color_primary}"
+    b.resValue "color", "primary_half", "${color_primary_half}"
     b.resValue "color", "primary_dark", "${color_primary_dark}"
     b.resValue "color", "accent", "${color_accent}"
     b.resValue "color", "background", "${color_background}"
