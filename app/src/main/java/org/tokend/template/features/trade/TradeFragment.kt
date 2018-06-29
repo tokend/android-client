@@ -8,11 +8,16 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.content.ContextCompat.getDrawable
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
+import android.transition.Transition
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.view.animation.RotateAnimation
+import com.transitionseverywhere.Rotate
+import com.transitionseverywhere.TransitionManager
+
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
@@ -49,6 +54,8 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import java.math.BigDecimal
+
+
 
 class TradeFragment : BaseFragment(), ToolbarProvider {
 
@@ -169,14 +176,12 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                             override fun onStateChanged(bottomSheet: View, newState: Int) {
                                 when(newState){
                                     BottomSheetBehavior.STATE_EXPANDED -> {
-
-                                        peek_image.setImageDrawable(getDrawable(context,R.drawable.chevron_down))
-                                        BottomSheetBehavior.STATE_EXPANDED
+                                        TransitionManager.beginDelayedTransition(bottom_sheet, Rotate())
+                                        peek_image.rotation = 180f
                                     }
                                     BottomSheetBehavior.STATE_COLLAPSED -> {
-
-                                        peek_image.setImageDrawable(getDrawable(context,R.drawable.chevron_up))
-                                        BottomSheetBehavior.STATE_COLLAPSED
+                                        TransitionManager.beginDelayedTransition(bottom_sheet,Rotate())
+                                        peek_image.rotation = 0f
                                     }
                                     else -> {}
                                 }
@@ -366,9 +371,11 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .doOnSubscribe {
                     loadingIndicator.show("chart")
+                    pair_chart.isLoading = true
                 }
                 .doOnEvent { _, _ ->
                     loadingIndicator.hide("chart")
+                    pair_chart.isLoading = false
                 }
                 .subscribeBy(
                         onSuccess = {
