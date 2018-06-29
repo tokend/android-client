@@ -137,7 +137,6 @@
             android:name=".base.activities.SingleFragmentActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".base.activities.AssetChartActivity"></activity>
     </application>
 
 </manifest>

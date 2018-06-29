@@ -5,13 +5,12 @@ import android.content.Context
 import android.os.Build
 import android.support.design.widget.TabLayout
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.LimitLine
@@ -343,8 +342,8 @@ class AssetChartCard : LinearLayout {
 
     // region Interaction
     @SuppressLint("ClickableViewAccessibility")
-    fun applyScrollViewHook(parentScrollView: ScrollView) {
-        parentScrollView.setOnTouchListener { _, event ->
+    fun applyTouchHook(parent: View) {
+        parent.setOnTouchListener { _, event ->
             if (passScrollToChart) {
                 event.offsetLocation(-chartXOffset, 0f)
                 chart.dispatchTouchEvent(event)

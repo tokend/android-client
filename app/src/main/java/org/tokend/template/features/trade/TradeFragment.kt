@@ -5,20 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.ContextCompat.getDrawable
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
-import android.transition.Transition
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import android.view.animation.RotateAnimation
-import com.transitionseverywhere.Rotate
-import com.transitionseverywhere.TransitionManager
-
-import com.trello.rxlifecycle2.android.ActivityEvent
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Single
@@ -27,14 +18,12 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.android.synthetic.main.activity_asset_chart.*
 import kotlinx.android.synthetic.main.fragment_trade.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
+import kotlinx.android.synthetic.main.layout_asset_chart_sheet.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
-import org.jetbrains.anko.sp
-import org.tokend.sdk.api.models.AssetChartData
 import org.tokend.sdk.api.models.AssetPair
 import org.tokend.sdk.api.models.Offer
 import org.tokend.template.R
@@ -42,19 +31,18 @@ import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.FeeManager
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
+import org.tokend.template.base.logic.repository.pairs.AssetPairsRepository
 import org.tokend.template.base.view.picker.PickerItem
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.isTradeable
+import org.tokend.template.extensions.toSingle
 import org.tokend.template.features.trade.adapter.OrderBookAdapter
 import org.tokend.template.features.trade.repository.order_book.OrderBookRepository
-import org.tokend.template.base.logic.repository.pairs.AssetPairsRepository
-import org.tokend.template.extensions.toSingle
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import java.math.BigDecimal
-
 
 
 class TradeFragment : BaseFragment(), ToolbarProvider {
@@ -146,7 +134,6 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initChart() {
-
         pair_chart.apply {
             post {
                 this.valueTextSizePx = this@TradeFragment.context!!.resources.getDimension(R.dimen.text_size_heading_large)
@@ -156,6 +143,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 this.asset = asset
                 valueHint = getString(R.string.deployed_hint)
 
+                applyTouchHook(root_layout)
 
                 peek.onClick {
                     val bottomSheet = BottomSheetBehavior.from(bottom_sheet)
@@ -169,24 +157,18 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 }
 
                 BottomSheetBehavior.from(bottom_sheet).setBottomSheetCallback(
-                        object : BottomSheetBehavior.BottomSheetCallback(){
+                        object : BottomSheetBehavior.BottomSheetCallback() {
                             override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                                peek_image.rotation = 180 * slideOffset
                             }
 
                             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                                when(newState){
-                                    BottomSheetBehavior.STATE_EXPANDED -> {
-                                        TransitionManager.beginDelayedTransition(bottom_sheet, Rotate())
-                                        peek_image.rotation = 180f
-                                    }
-                                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                                        TransitionManager.beginDelayedTransition(bottom_sheet,Rotate())
-                                        peek_image.rotation = 0f
-                                    }
-                                    else -> {}
+                                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                                    chart_sheet_elevation_view.visibility = View.GONE
+                                } else {
+                                    chart_sheet_elevation_view.visibility = View.VISIBLE
                                 }
                             }
-
                         }
                 )
             }
@@ -217,7 +199,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
-    // endregion
+// endregion
 
     // region Balances
     private var balancesDisposable: CompositeDisposable? = null
@@ -254,7 +236,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 AmountFormatter.formatAssetAmount(firstBalance), currentPair.base,
                 AmountFormatter.formatAssetAmount(secondBalance), currentPair.quote)
     }
-    // endregion
+// endregion
 
     // region Pairs
     private var assetPairsDisposable: CompositeDisposable? = null
@@ -334,7 +316,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         price_text_view.text = getString(R.string.template_price_one_equals, currentPair.base,
                 AmountFormatter.formatAssetAmount(currentPair.price), currentPair.quote)
     }
-    // endregion
+// endregion
 
     // region Order book
     private fun displayOrderBookHeaders() {
@@ -370,11 +352,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .doOnSubscribe {
-                    loadingIndicator.show("chart")
                     pair_chart.isLoading = true
                 }
                 .doOnEvent { _, _ ->
-                    loadingIndicator.hide("chart")
                     pair_chart.isLoading = false
                 }
                 .subscribeBy(
@@ -458,7 +438,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
             asks_empty_view.visibility = View.INVISIBLE
         }
     }
-    // endregion
+// endregion
 
     private fun update(force: Boolean = false) {
         listOf(
@@ -519,7 +499,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                         IllegalStateException("Cannot obtain current account ID")
                 ))
     }
-    // endregion
+// endregion
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
