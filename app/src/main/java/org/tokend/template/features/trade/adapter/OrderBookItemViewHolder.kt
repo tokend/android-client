@@ -18,7 +18,7 @@ import org.tokend.template.base.view.util.AmountFormatter
 class OrderBookItemViewHolder(view: View) : BaseViewHolder<Offer>(view) {
     private val priceTextView = view.find<TextView>(R.id.price_text_view)
     private val volumeTextView = view.find<TextView>(R.id.volume_text_view)
-    private val rootLayout = view.find<ViewGroup>(R.id.root_layout)
+
     private var isBuy = false
 
     private val textSize: Float by lazy {
@@ -26,40 +26,17 @@ class OrderBookItemViewHolder(view: View) : BaseViewHolder<Offer>(view) {
     }
 
     override fun bind(item: Offer) {
+        isBuy = item.isBuy
+
         volumeTextView.text = AmountFormatter.formatAssetAmount(item.baseAmount, item.baseAsset)
         priceTextView.text = AmountFormatter.formatAssetAmount(item.price, item.quoteAsset,
                 minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-
-        isBuy = item.isBuy
-
         if (isBuy) {
-            ViewCompat.setLayoutDirection(rootLayout, ViewCompat.LAYOUT_DIRECTION_LTR);
-            priceTextView.textColor =
+            priceTextView!!.textColor =
                     ContextCompat.getColor(view.context, R.color.received)
-            volumeTextView.gravity = Gravity.LEFT
-            priceTextView.gravity = Gravity.RIGHT
         } else {
-            ViewCompat.setLayoutDirection(rootLayout, ViewCompat.LAYOUT_DIRECTION_RTL);
             priceTextView.textColor =
                     ContextCompat.getColor(view.context, R.color.sent)
-            volumeTextView.gravity = Gravity.RIGHT
-            priceTextView.gravity = Gravity.LEFT
-        }
-    }
-
-    fun setDecimalPointAlignment(maxBuyAmountWidth: Float, maxSellPriceWidth: Float) {
-        if (isBuy) {
-            val paddingDelta = maxBuyAmountWidth - measureText(volumeTextView.text?.toString(),
-                    textSize,
-                    Typeface.DEFAULT)
-            volumeTextView.setPadding(paddingDelta.toInt(), 0, 0, 0)
-            priceTextView.setPadding(0, 0, 0, 0)
-        } else {
-            val paddingDelta = maxSellPriceWidth - measureText(priceTextView.text?.toString(),
-                    textSize,
-                    Typeface.DEFAULT_BOLD)
-            priceTextView.setPadding(paddingDelta.toInt(), 0, 0, 0)
-            volumeTextView.setPadding(0, 0, 0, 0)
         }
     }
 

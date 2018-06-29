@@ -71,8 +71,8 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     private val sellRepository: OrderBookRepository
         get() = repositoryProvider.orderBook(currentPair.base, currentPair.quote, false)
 
-    private val buyAdapter = OrderBookAdapter()
-    private val sellAdapter = OrderBookAdapter()
+    private val buyAdapter = OrderBookAdapter(true)
+    private val sellAdapter = OrderBookAdapter(false)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
