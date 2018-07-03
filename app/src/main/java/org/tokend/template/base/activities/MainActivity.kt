@@ -41,6 +41,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     private var navigationDrawer: Drawer? = null
+    private var onBackPressedListener: OnBackPressedListener? = null
     private val factory = FragmentFactory()
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
@@ -194,12 +195,11 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     SettingsFragment.ID -> factory.getSettingsFragment()
                     TradeFragment.ID -> factory.getTradeFragment()
                     DepositFragment.ID -> factory.getDepositFragment()
-                    else -> null
+                    else -> return
                 }
 
-        if (fragment != null) {
-            navigateTo(screenIdentifier, fragment)
-        }
+        onBackPressedListener = fragment as? OnBackPressedListener
+        navigateTo(screenIdentifier, fragment)
     }
     // endregion
 
@@ -240,7 +240,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
             if (navigationDrawer?.currentSelection == DashboardFragment.ID) {
                 moveTaskToBack(true)
             } else {
-                navigateTo(DashboardFragment.ID)
+                if (onBackPressedListener?.onBackPressed() != false)
+                    navigateTo(DashboardFragment.ID)
             }
         }
     }

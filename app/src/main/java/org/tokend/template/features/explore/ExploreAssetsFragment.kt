@@ -27,7 +27,6 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_explore.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
@@ -52,6 +51,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
             showLoading = { swipe_refresh.isRefreshing = true },
             hideLoading = { swipe_refresh.isRefreshing = false }
     )
+
+    private var searchItem: MenuItem? = null
 
     private val assetsRepository: AssetsRepository
         get() = repositoryProvider.assets()
@@ -113,8 +114,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         toolbar.inflateMenu(R.menu.explore)
         val menu = toolbar.menu
 
-        val searchItem = menu?.findItem(R.id.search) ?: return
-        val searchView = searchItem.actionView as? SearchView ?: return
+        searchItem = menu?.findItem(R.id.search) ?: return
+        val searchView = searchItem?.actionView as? SearchView ?: return
 
         (searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text) as? EditText)
                 ?.apply {
@@ -124,7 +125,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         searchView.queryHint = getString(R.string.search)
         searchView.setOnQueryTextFocusChangeListener { _, focused ->
             if (!focused && searchView.query.isBlank()) {
-                searchItem.collapseActionView()
+                searchItem?.collapseActionView()
             }
         }
 
@@ -136,15 +137,15 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                     filter = it.trim().toString().takeIf { it.isNotEmpty() }
                 }
 
-        searchItem.setOnMenuItemClickListener {
+        searchItem?.setOnMenuItemClickListener {
             TransitionManager.beginDelayedTransition(toolbar, Fade().setDuration(
                     resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
             ))
-            searchItem.expandActionView()
+            searchItem?.expandActionView()
             true
         }
 
-        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+        searchItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
@@ -284,7 +285,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
     private fun createBalanceWithConfirmation(asset: String) {
         AlertDialog.Builder(this.context!!, R.style.AlertDialogStyle)
-                .setMessage(resources.getString(R.string.create_balance_confirmation,asset))
+                .setMessage(resources.getString(R.string.create_balance_confirmation, asset))
                 .setPositiveButton(R.string.yes) { _, _ ->
                     createBalance(asset)
                 }
@@ -302,7 +303,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == CREATE_REQUEST && resultCode == Activity.RESULT_OK){
+        if (requestCode == CREATE_REQUEST && resultCode == Activity.RESULT_OK) {
             update(true)
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -318,8 +319,14 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         assets_recycler_view.isLayoutFrozen = true
     }
 
+    override fun onBackPressed(): Boolean {
+        return searchItem?.isActionViewExpanded == false.also {
+            searchItem?.collapseActionView()
+        }
+    }
+
     companion object {
-         const val ID = 1114L
-         const val CREATE_REQUEST = 314
+        const val ID = 1114L
+        const val CREATE_REQUEST = 314
     }
 }

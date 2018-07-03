@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.trello.rxlifecycle2.components.support.RxFragment
 import org.tokend.template.App
+import org.tokend.template.base.activities.OnBackPressedListener
 import org.tokend.template.base.logic.AppTfaCallback
 import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.ApiProvider
@@ -11,7 +12,7 @@ import org.tokend.template.base.logic.di.providers.RepositoryProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import javax.inject.Inject
 
-abstract class BaseFragment: RxFragment() {
+abstract class BaseFragment : RxFragment(), OnBackPressedListener {
     @Inject
     lateinit var appTfaCallback: AppTfaCallback
     @Inject
@@ -22,6 +23,8 @@ abstract class BaseFragment: RxFragment() {
     lateinit var walletInfoProvider: WalletInfoProvider
     @Inject
     lateinit var repositoryProvider: RepositoryProvider
+
+    override fun onBackPressed() = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
