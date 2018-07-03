@@ -17,19 +17,19 @@ ext {
     api_url = '"https://api.testnet.tokend.org"'
 
     // Storage URL - Root URL of file storage
-    storage_url = '"https://storage.api.testnet.tokend.org"'
+    storage_url = '"https://storage.testnet.tokend.org/api/"'
 
     // Web-client URL - Root URL of the related web-client,
     // will be opened if some functions are not available in mobile app
-    web_client_url = '"https://testnet.tokend.org"'
+    web_client_url = '"https://demo.tokend.org"'
 
     // App host - Host of the related web-client,
     // used to open verification and referral links in app
-    app_host = '"testnet.tokend.org"'
+    app_host = '"demo.tokend.org"'
 
     // Terms of Service URL - Link to the Terms of Service page of your project,
     // used during sign in
-    terms_url = '"https://testnet.tokend.org/terms"'
+    terms_url = '"https://demo.tokend.org/terms"'
 
     // --------------------------
 
