@@ -244,11 +244,13 @@ class AssetChartCard : LinearLayout {
             color = ContextCompat.getColor(context, R.color.accent)
             lineWidth = 2f
 
+            setDrawFilled(true)
             if (Build.VERSION.SDK_INT >= 18) {
-                setDrawFilled(true)
                 fillDrawable =
                         ContextCompat.getDrawable(context,
                                 R.drawable.dashboard_chart_fill)
+            } else {
+                fillColor = ContextCompat.getColor(context, R.color.accent)
             }
 
             mode = LineDataSet.Mode.HORIZONTAL_BEZIER
