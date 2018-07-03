@@ -39,6 +39,7 @@ class FavoritesRepository(
                     isLoading = false
                     invalidate()
                 }
+                .doOnDispose { isLoading = false }
                 .andThen(updateDeferred())
     }
 
@@ -55,6 +56,7 @@ class FavoritesRepository(
                     broadcast()
                 }
                 .doOnSubscribe { isLoading = true }
+                .doOnDispose { isLoading = false }
                 .doOnTerminate { isLoading = false }
     }
 }

@@ -47,6 +47,7 @@ class TfaBackendsRepository(
                     broadcast()
                 }
                 .doOnSubscribe { isLoading = true }
+                .doOnDispose { isLoading = false }
                 .doOnEvent { _, _ -> isLoading = false }
     }
 
@@ -88,6 +89,7 @@ class TfaBackendsRepository(
                     }
                 }
                 .doOnSubscribe { isLoading = true }
+                .doOnDispose { isLoading = false }
                 .doOnTerminate { isLoading = false }
     }
 
@@ -100,10 +102,11 @@ class TfaBackendsRepository(
         return signedApi.deleteTfaBackend(walletId, id)
                 .toCompletable()
                 .doOnComplete {
-                    itemsCache.merge(emptyList(), { it.id == id })
+                    itemsCache.merge(emptyList()) { it.id == id }
                     broadcast()
                 }
                 .doOnSubscribe { isLoading = true }
+                .doOnDispose { isLoading = false }
                 .doOnTerminate { isLoading = false }
     }
 
