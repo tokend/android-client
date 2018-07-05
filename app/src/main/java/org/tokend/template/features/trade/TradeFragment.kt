@@ -250,6 +250,18 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                         .subscribe {
                             onNewPairs(it)
                         },
+                assetPairsRepository.errorsSubject
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
+                        .subscribe { error ->
+                            if (assetPairsRepository.isNeverUpdated) {
+                                error_empty_view.showError(error) {
+                                    update(true)
+                                }
+                            } else {
+                                ErrorHandlerFactory.getDefault().handle(error)
+                            }
+                        },
                 assetPairsRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
                         .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
@@ -275,6 +287,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
         if (pairs.isEmpty()) {
             pairs_tabs.visibility = View.GONE
+            bottom_sheet.visibility = View.GONE
             error_empty_view.showEmpty(
                     if (assetPairsRepository.isNeverUpdated)
                         ""
@@ -283,8 +296,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
             )
             return
         } else {
-            pairs_tabs.visibility = View.VISIBLE
             error_empty_view.hide()
+            bottom_sheet.visibility = View.VISIBLE
+            pairs_tabs.visibility = View.VISIBLE
         }
 
         pairs_tabs.setItems(
