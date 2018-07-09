@@ -22,6 +22,7 @@ import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_explore.*
@@ -97,9 +98,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         assets_recycler_view.layoutManager = LinearLayoutManager(context)
         assets_recycler_view.adapter = assetsAdapter
 
-        error_empty_view.hide()
         error_empty_view.observeAdapter(assetsAdapter, R.string.no_assets_found)
-        error_empty_view.setEmptyViewDenial { assetsRepository.isNeverUpdated }
+        error_empty_view.setEmptyViewDenial { assetsRepository.isNeverUpdated || balancesRepository.isNeverUpdated }
 
         assetsAdapter.onItemClick { view, item ->
             if (view?.tag == "primary_action") {
@@ -165,12 +165,13 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         assetsDisposable?.dispose()
         assetsDisposable = CompositeDisposable()
         assetsDisposable?.addAll(
-                assetsRepository.itemsSubject
-                        .flatMap { assets ->
-                            balancesRepository.updateIfNotFreshDeferred()
-                                    .onErrorComplete()
-                                    .andThen(Observable.just(assets))
-                        }
+                Observable.zip(
+                        assetsRepository.itemsSubject
+                                .filter { assetsRepository.isFresh },
+                        balancesRepository.itemsSubject
+                                .filter { balancesRepository.isFresh },
+                        BiFunction { _: Any, _: Any -> }
+                )
                         .compose(ObservableTransformers.defaultSchedulers())
                         .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
@@ -239,7 +240,6 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         )
     }
 
-
     private fun performPrimaryAssetAction(item: AssetListItem) {
         if (!item.balanceExists) {
             createBalanceWithConfirmation(item.code)
@@ -295,9 +295,10 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
     fun update(force: Boolean = false) {
         if (!force) {
+            balancesRepository.updateIfNotFresh()
             assetsRepository.updateIfNotFresh()
         } else {
-            balancesRepository.invalidate()
+            balancesRepository.update()
             assetsRepository.update()
         }
     }
