@@ -225,8 +225,6 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayBalance() {
-        balance_card.radius = 0f
-
         val balances = balancesRepository.itemsSubject.value
 
         val firstBalance = balances.find { it.asset == currentPair.base }?.balance

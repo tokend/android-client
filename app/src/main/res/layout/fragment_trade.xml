@@ -56,56 +56,42 @@
                         <android.support.design.widget.CollapsingToolbarLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:layout_scrollFlags="snap|scroll|enterAlways">
+                            app:layout_scrollFlags="scroll|enterAlways">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:background="@color/background"
                                 android:orientation="vertical">
 
-                                <android.support.v7.widget.CardView
-                                    android:id="@+id/balance_card"
-                                    style="@style/InfoCard"
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="0dp"
-                                    app:cardUseCompatPadding="false"
-                                    app:layout_collapseMode="pin"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@id/error_empty_view">
+                                    android:background="@color/white"
+                                    android:orientation="vertical"
+                                    android:padding="@dimen/half_standard_padding">
 
-                                    <LinearLayout
+                                    <TextView
+                                        android:id="@+id/balance_text_view"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:orientation="vertical">
+                                        android:gravity="center"
+                                        tools:text="Balance: 101 BTC" />
 
-                                        <TextView
-                                            android:id="@+id/balance_text_view"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:gravity="center"
-                                            tools:text="Balance: 101 BTC" />
+                                    <TextView
+                                        android:id="@+id/price_text_view"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="@dimen/quarter_standard_margin"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:gravity="center"
+                                        android:textSize="18sp"
+                                        tools:text="1 TKD = 0.5 BTC" />
+                                </LinearLayout>
 
-                                        <TextView
-                                            android:id="@+id/price_text_view"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginTop="@dimen/quarter_standard_margin"
-                                            android:fontFamily="sans-serif-medium"
-                                            android:gravity="center"
-                                            android:textSize="18sp"
-                                            tools:text="1 TKD = 0.5 BTC" />
-                                    </LinearLayout>
-                                </android.support.v7.widget.CardView>
-
-                                <FrameLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="@dimen/standard_margin"
-                                    android:background="@color/background" />
+                                <include layout="@layout/layout_cards_divider" />
 
                             </LinearLayout>
-
 
                         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -114,19 +100,16 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/white"
                         android:clipToPadding="false"
                         android:orientation="vertical"
                         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                        <android.support.v7.widget.CardView
-                            android:id="@+id/order_book_heading_card"
+                        <android.support.v4.widget.NestedScrollView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:cardCornerRadius="0dp"
-                            app:cardUseCompatPadding="false"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/balance_card">
+                            android:clipToPadding="false"
+                            android:paddingBottom="3dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -214,16 +197,19 @@
                                 <include layout="@layout/layout_progress" />
 
                             </LinearLayout>
+                        </android.support.v4.widget.NestedScrollView>
 
-                        </android.support.v7.widget.CardView>
 
                         <FrameLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@color/white"
-                            android:minHeight="@dimen/quadra_margin"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/order_book_heading_card">
+                            android:minHeight="@dimen/quadra_margin">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="3dp"
+                                android:background="@drawable/below_shadow" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
