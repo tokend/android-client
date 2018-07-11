@@ -21,10 +21,10 @@ class PasswordTfaOtpGenerator() {
             key.fill(0)
         }
 
-        val account = Account.Companion.fromSecretSeed(seed)
+        val account = Account.fromSecretSeed(seed)
         seed.fill('0')
         val signature = account.sign(tfaException.token.toByteArray())
 
-        return Base64.encodeToString(signature, Base64.NO_WRAP or Base64.URL_SAFE)
+        return Base64.encodeToString(signature, Base64.NO_WRAP)
     }
 }
