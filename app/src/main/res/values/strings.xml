@@ -111,7 +111,7 @@
     <string name="cancel_offer_confirmation">Are you sure want to cancel this offer?</string>
     <string name="offer_canceled">Offer has been canceled</string>
     <string name="email_verified">Email has been verified</string>
-    <string name="touch_sensor">Touch sensor</string>
+    <string name="touch_sensor">Touch the sensor</string>
     <string name="password_request_hint">Enter your password</string>
 
     <string name="asset_summary_title">Token summary</string>
