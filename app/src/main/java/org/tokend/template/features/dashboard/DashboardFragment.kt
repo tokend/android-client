@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +32,7 @@ import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.trade.adapter.OffersActivity
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.Navigator
@@ -80,6 +82,14 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         subscribeToOffers()
 
         update()
+
+        val r = SalesRepository(apiProvider, repositoryProvider.accountDetails())
+        r.itemsSubject.subscribe {
+            it.firstOrNull()?.also {
+                Log.i("Oleg", it.details.name)
+            }
+        }
+        r.update()
     }
 
     // region Init

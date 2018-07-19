@@ -17,12 +17,12 @@ import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.android.synthetic.main.list_item_asset.*
 import org.jetbrains.anko.find
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.models.Asset
 import org.tokend.template.R
 import org.tokend.template.base.activities.BaseActivity
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
+import org.tokend.template.extensions.Asset
 import org.tokend.template.features.explore.adapter.AssetListItem
 import org.tokend.template.features.explore.adapter.AssetListItemViewHolder
 import org.tokend.template.util.FileDownloader

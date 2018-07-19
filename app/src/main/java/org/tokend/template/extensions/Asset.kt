@@ -1,9 +1,11 @@
 package org.tokend.template.extensions
 
-import org.tokend.sdk.api.models.Asset
 import org.tokend.sdk.api.models.AssetPair
+import org.tokend.sdk.api.models.SimpleAsset
 import org.tokend.wallet.xdr.AssetPairPolicy
 import org.tokend.wallet.xdr.AssetPolicy
+
+typealias Asset = SimpleAsset
 
 fun Asset.isTransferable(): Boolean {
     return checkPolicy(policy, AssetPolicy.TRANSFERABLE.value)

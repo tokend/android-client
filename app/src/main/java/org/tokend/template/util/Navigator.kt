@@ -12,7 +12,6 @@ import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
-import org.tokend.sdk.api.models.Asset
 import org.tokend.sdk.api.models.Offer
 import org.tokend.template.R
 import org.tokend.template.base.activities.*
@@ -22,6 +21,7 @@ import org.tokend.template.base.activities.signup.SignUpActivity
 import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.logic.payment.PaymentRequest
+import org.tokend.template.extensions.Asset
 import org.tokend.template.features.explore.AssetDetailsActivity
 import org.tokend.template.features.trade.OfferConfirmationActivity
 import org.tokend.template.features.trade.adapter.OffersActivity

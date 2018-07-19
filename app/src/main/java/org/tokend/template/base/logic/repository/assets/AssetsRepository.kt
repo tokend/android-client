@@ -1,9 +1,9 @@
 package org.tokend.template.base.logic.repository.assets
 
 import io.reactivex.Single
-import org.tokend.sdk.api.models.Asset
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.base.logic.repository.base.SimpleMultipleItemsRepository
+import org.tokend.template.extensions.Asset
 import org.tokend.template.extensions.toSingle
 
 class AssetsRepository(

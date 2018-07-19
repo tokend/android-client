@@ -1,7 +1,7 @@
 package org.tokend.template.features.explore.adapter
 
-import org.tokend.sdk.api.models.Asset
 import org.tokend.template.BuildConfig
+import org.tokend.template.extensions.Asset
 
 class AssetListItem(
         val code: String,

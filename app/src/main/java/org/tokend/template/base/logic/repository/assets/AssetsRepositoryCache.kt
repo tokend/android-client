@@ -1,8 +1,8 @@
 package org.tokend.template.base.logic.repository.assets
 
 import io.reactivex.Single
-import org.tokend.sdk.api.models.Asset
 import org.tokend.template.base.logic.repository.base.RepositoryCache
+import org.tokend.template.extensions.Asset
 
 class AssetsRepositoryCache : RepositoryCache<Asset>() {
     override fun isContentSame(first: Asset, second: Asset): Boolean {

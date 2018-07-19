@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.runOnUiThread
-import org.tokend.sdk.api.models.Asset
 import org.tokend.sdk.api.responses.AccountResponse
 import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
@@ -29,6 +28,7 @@ import org.tokend.template.base.logic.repository.assets.AssetsRepository
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.picker.PickerItem
 import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.extensions.Asset
 import org.tokend.template.util.DateFormatter
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -56,7 +56,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private val externalAccount: AccountResponse.ExternalAccount?
         get() = accountRepository.itemSubject.value
                 ?.externalAccounts
-                ?.find { it.type.typeI == currentAsset?.details?.externalSystemType }
+                ?.find { it.type.value == currentAsset?.details?.externalSystemType }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_deposit, container, false)
@@ -181,9 +181,9 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             error_empty_view.hide()
         }
 
-        asset_tab_layout.onItemSelected({
+        asset_tab_layout.onItemSelected {
             (it.tag as? Asset)?.let { currentAsset = it }
-        })
+        }
 
         asset_tab_layout.setItems(
                 depositableAssets.map {
