@@ -104,7 +104,8 @@ ext {
     allow_withdraw = 'true'
     // Allow explore - Controls explore tokens functionality availability.
     allow_explore = 'true'
-
+    // Allow invest - Controls investment functionality availability.
+    allow_invest = 'true'
     // ----------------------
 }
 
@@ -133,6 +134,7 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'IS_DEPOSIT_ALLOWED', "${allow_deposit}"
     b.buildConfigField 'Boolean', 'IS_WITHDRAW_ALLOWED', "${allow_withdraw}"
     b.buildConfigField 'Boolean', 'IS_EXPLORE_ALLOWED', "${allow_explore}"
+    b.buildConfigField 'Boolean', 'IS_INVEST_ALLOWED', "${allow_invest}"
 
     b.resValue "string", "app_host", "${app_host}"
     b.resValue "color", "primary", "${color_primary}"

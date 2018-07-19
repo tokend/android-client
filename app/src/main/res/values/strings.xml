@@ -124,9 +124,8 @@
     <string name="wallet_title">Wallet</string>
     <string name="deposit_title">Deposit</string>
     <string name="withdraw_title">Withdraw</string>
-    <string name="explore_title">Explore tokens</string>
+    <string name="explore_tokens_title">Explore tokens</string>
     <string name="send_title">Send</string>
-    <string name="explore_title_short">Explore</string>
     <string name="trade_title">Trade</string>
     <string name="settings_title">Settings</string>
 
@@ -246,5 +245,13 @@
     <string name="peek_show_text">Price chart</string>
     <string name="peek_hide_text">Hide chart</string>
 
+    <string name="template_sale_invested">%1$s invested</string>
+    <string name="template_sale_days_to_go">%1$d %2$s to go</string>
+    <string name="template_sale_starts_in">Starts in %1$d %2$s</string>
+    <string name="template_sale_max_investment">Max investment is %1$s %2$s</string>
+    <string name="sales_search_name_hint">Name</string>
+    <string name="sales_search_token_hint">Token code</string>
+    <string name="explore_sales_title">Explore funds</string>
+    <string name="no_sales_found">No funds found</string>
 
 </resources>

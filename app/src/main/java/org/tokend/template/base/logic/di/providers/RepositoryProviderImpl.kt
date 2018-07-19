@@ -10,6 +10,7 @@ import org.tokend.template.base.logic.repository.favorites.FavoritesRepository
 import org.tokend.template.base.logic.repository.pairs.AssetPairsRepository
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
 import org.tokend.template.base.logic.repository.transactions.TxRepository
+import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.features.trade.repository.order_book.OrderBookRepository
 
@@ -46,6 +47,9 @@ class RepositoryProviderImpl(
     }
     private val favoritesRepository: FavoritesRepository by lazy {
         FavoritesRepository(apiProvider, walletInfoProvider)
+    }
+    private val salesRepository: SalesRepository by lazy {
+        SalesRepository(apiProvider, accountDetails())
     }
 
     override fun balances(): BalancesRepository {
@@ -104,5 +108,9 @@ class RepositoryProviderImpl(
 
     override fun favorites(): FavoritesRepository {
         return favoritesRepository
+    }
+
+    override fun sales(): SalesRepository {
+        return salesRepository
     }
 }

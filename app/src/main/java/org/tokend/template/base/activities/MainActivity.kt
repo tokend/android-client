@@ -30,6 +30,7 @@ import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.explore.ExploreAssetsFragment
+import org.tokend.template.features.invest.SalesFragment
 import org.tokend.template.features.trade.TradeFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
@@ -97,8 +98,13 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withSelectedIconColorRes(R.color.icons)
                 .withIconTintingEnabled(true)
 
+        val investItem = PrimaryDrawerItem()
+                .withName(R.string.explore_sales_title)
+                .withIdentifier(SalesFragment.ID)
+                .withIcon(R.drawable.ic_invest)
+
         val exploreItem = PrimaryDrawerItem()
-                .withName(R.string.explore_title_short)
+                .withName(R.string.explore_tokens_title)
                 .withIdentifier(ExploreAssetsFragment.ID)
                 .withIcon(R.drawable.ic_coins)
 
@@ -132,7 +138,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                             || BuildConfig.IS_WITHDRAW_ALLOWED
                             || BuildConfig.IS_SEND_ALLOWED
                             || BuildConfig.IS_EXPLORE_ALLOWED
-                            || BuildConfig.IS_TRADE_ALLOWED) {
+                            || BuildConfig.IS_TRADE_ALLOWED
+                            || BuildConfig.IS_INVEST_ALLOWED) {
                         addDrawerItems(DividerDrawerItem())
 
                         if (BuildConfig.IS_DEPOSIT_ALLOWED) {
@@ -145,6 +152,10 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
                         if (BuildConfig.IS_SEND_ALLOWED) {
                             addDrawerItems(sendItem)
+                        }
+
+                        if (BuildConfig.IS_INVEST_ALLOWED) {
+                            addDrawerItems(investItem)
                         }
 
                         if (BuildConfig.IS_EXPLORE_ALLOWED) {
@@ -195,6 +206,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     SettingsFragment.ID -> factory.getSettingsFragment()
                     TradeFragment.ID -> factory.getTradeFragment()
                     DepositFragment.ID -> factory.getDepositFragment()
+                    SalesFragment.ID -> factory.getSalesFragment()
                     else -> return
                 }
 

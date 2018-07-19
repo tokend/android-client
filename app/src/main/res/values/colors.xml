@@ -5,6 +5,7 @@
     <color name="colorAccent">@color/accent</color>
     <color name="colorBackground">@color/background</color>
     <color name="transparentFloatingViewBackground">#3e000000</color>
+    <color name="saleImagePlaceholder">#bcbcbc</color>
 
     <color name="white">#ffffff</color>
     <color name="white_almost">#a0ffffff</color>
