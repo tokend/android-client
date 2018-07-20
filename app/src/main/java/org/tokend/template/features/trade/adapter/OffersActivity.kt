@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_offers.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.sdk.api.models.Offer
 import org.tokend.sdk.api.models.transactions.BaseTransaction
+import org.tokend.sdk.api.models.transactions.InvestmentTransaction
 import org.tokend.sdk.api.models.transactions.MatchTransaction
 import org.tokend.sdk.api.models.transactions.Transaction
 import org.tokend.template.R
@@ -125,8 +126,12 @@ class OffersActivity : BaseActivity() {
     private fun displayOffers(items: List<Offer>) {
         txAdapter.setData(
                 items
+
                         .map {
-                            MatchTransaction.fromOffer(it)
+                            if (onlyPrimary)
+                                InvestmentTransaction.fromOffer(it)
+                            else
+                                MatchTransaction.fromOffer(it)
                         }
                         .map {
                             TxHistoryItem.fromTransaction(it)

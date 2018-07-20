@@ -60,6 +60,10 @@ class TxHistoryItem(
                     }
 
             var counterparty: String? = null
+            var amount = tx.amount
+            var asset = tx.asset
+            var isReceived = tx.isReceived
+
             if (tx is PaymentTransaction) {
                 counterparty =
                         if (tx.isReceived)
@@ -71,10 +75,20 @@ class TxHistoryItem(
                 counterparty = tx.matchData.quoteAsset
             } else if (tx is WithdrawalTransaction) {
                 counterparty = tx.destAddress
+            }else if(tx is InvestmentTransaction){
+                if (tx.state == TransactionState.PENDING) {
+                    isReceived = false
+                }
+
+                if (!isReceived) {
+                    counterparty = tx.asset
+                    asset = tx.matchData.quoteAsset
+                    amount = tx.matchData.quoteAmount
+                }
             }
 
-            return TxHistoryItem(tx.amount, tx.asset, action, counterparty, tx.state, tx.date,
-                    tx.isReceived, tx)
+            return TxHistoryItem(amount, asset, action, counterparty, tx.state, tx.date,
+                    isReceived, tx)
         }
     }
 }

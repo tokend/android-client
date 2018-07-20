@@ -137,6 +137,8 @@ class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) 
         val isPendingOffer =
                 item.action == TxHistoryItem.Action.BUY
                         || item.action == TxHistoryItem.Action.SELL
+                        || (item.action == TxHistoryItem.Action.INVESTMENT
+                        && item.state == TransactionState.PENDING)
 
         if (item.state != TransactionState.SUCCESS && !isPendingOffer) {
             extraInfoTextView.visibility = View.VISIBLE
