@@ -69,6 +69,7 @@
     <string name="open_action">Open</string>
     <string name="copy_action">Copy</string>
     <string name="template_balance">Balance: %1$s %2$s</string>
+    <string name="template_available">Available: %1$s %2$s</string>
     <string name="to_pay">To pay</string>
     <string name="to_receive">To receive</string>
     <string name="confirm_action">Confirm</string>
@@ -255,5 +256,10 @@
     <string name="no_sales_found">No funds found</string>
     <string name="pending_investments_title">Pending investments</string>
     <string name="no_pending_investments">No pending investments</string>
-
+    <string name="add_to_favorites_action">Add to favorites</string>
+    <string name="remove_from_favorites_action">Remove from favorites</string>
+    <string name="sale_investing">Investing</string>
+    <string name="invest_action">Invest</string>
+    <string name="cancel_investment_action">Cancel investment</string>
+    <string name="sale_more_info">More info</string>
 </resources>

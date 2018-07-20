@@ -13,6 +13,8 @@ import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
 import org.tokend.sdk.api.models.Offer
+import org.tokend.sdk.api.models.sale.SimpleSale
+import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
 import org.tokend.template.base.activities.*
 import org.tokend.template.base.activities.qr.ShareQrActivity
@@ -23,6 +25,7 @@ import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.extensions.Asset
 import org.tokend.template.features.explore.AssetDetailsActivity
+import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.trade.OfferConfirmationActivity
 import org.tokend.template.features.trade.adapter.OffersActivity
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
@@ -169,6 +172,19 @@ object Navigator {
         ), requestCode)
     }
 
+    fun openOfferConfirmation(activity: Activity, requestCode: Int,
+                              offer: Offer, offerToCancel: Offer? = null,
+                              displayToReceive: Boolean = true,
+                              assetName: String? = null) {
+
+        activity.startActivityForResult(activity.intentFor<OfferConfirmationActivity>(
+                OfferConfirmationActivity.OFFER_EXTRA to offer,
+                OfferConfirmationActivity.OFFER_TO_CANCEL_EXTRA to offerToCancel,
+                OfferConfirmationActivity.DISPLAY_TO_RECEIVE to displayToReceive,
+                OfferConfirmationActivity.ASSET_NAME_EXTRA to assetName
+        ), requestCode)
+    }
+
     fun openPendingOffers(fragment: Fragment, requestCode: Int,
                           onlyPrimary: Boolean = false) {
         fragment.startActivityForResult(fragment.context?.intentFor<OffersActivity>(
@@ -176,4 +192,9 @@ object Navigator {
         ), requestCode)
     }
 
+    fun openSaleDetails(fragment: Fragment, requestCode: Int, sale: SimpleSale) {
+        fragment.startActivityForResult(fragment.requireContext().intentFor<SaleActivity>(
+                SaleActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
+        ), requestCode)
+    }
 }

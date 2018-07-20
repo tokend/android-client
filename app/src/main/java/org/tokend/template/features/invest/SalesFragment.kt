@@ -85,21 +85,26 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initSalesList() {
-        sales_list.layoutManager = LinearLayoutManager(requireContext())
-        sales_list.adapter = salesAdapter
-
         error_empty_view.observeAdapter(salesAdapter, R.string.no_sales_found)
         error_empty_view.setEmptyViewDenial { !hasFilter && salesRepository.isNeverUpdated }
 
         salesAdapter.onItemClick { _, sale ->
-            //            Navigator.openSaleDetails(this, INVESTMENT_REQUEST, sale)
+            Navigator.openSaleDetails(this, INVESTMENT_REQUEST, sale)
         }
 
-        sales_list.listenBottomReach({ salesAdapter.getDataItemCount() }) {
-            salesRepository.loadMore() || salesRepository.noMoreItems
-        }
+        sales_list.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = salesAdapter
 
-        (sales_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+            listenBottomReach({ salesAdapter.getDataItemCount() }) {
+                salesRepository.loadMore() || salesRepository.noMoreItems
+            }
+
+            setItemViewCacheSize(20)
+            isDrawingCacheEnabled = true
+            drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
+            (sales_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        }
     }
 
     private fun initMenu() {

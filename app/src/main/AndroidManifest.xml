@@ -137,6 +137,10 @@
             android:name=".base.activities.SingleFragmentActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".features.invest.activities.SaleActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.CardsBackground" />
     </application>
 
 </manifest>

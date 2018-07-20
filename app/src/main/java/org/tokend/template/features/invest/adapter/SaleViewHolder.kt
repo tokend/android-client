@@ -7,7 +7,7 @@ import org.tokend.sdk.api.models.sale.SimpleSale
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.view.adapter.base.BaseViewHolder
-import org.tokend.template.features.tco.view.SaleProgressWrapper
+import org.tokend.template.features.invest.view.SaleProgressWrapper
 
 class SaleViewHolder(view: View) : BaseViewHolder<SimpleSale>(view) {
     private val pictureImageView = view.sale_picture_image_view

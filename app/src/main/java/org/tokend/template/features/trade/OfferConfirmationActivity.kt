@@ -227,5 +227,8 @@ class OfferConfirmationActivity : BaseActivity() {
 
     companion object {
         const val OFFER_EXTRA = "offer"
+        const val OFFER_TO_CANCEL_EXTRA = "offer_to_cancel"
+        const val DISPLAY_TO_RECEIVE = "display_to_receive"
+        const val ASSET_NAME_EXTRA = "asset_name"
     }
 }

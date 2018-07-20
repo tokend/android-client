@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="org.tokend.template.features.invest.activities.SaleActivity">
+
+    <include layout="@layout/layout_progress" />
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:id="@+id/cards_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/standard_margin"
+            android:paddingEnd="13dp"
+            android:paddingStart="13dp"
+            android:paddingTop="@dimen/half_standard_margin">
+
+            <android.support.v7.widget.CardView
+                style="@style/InfoCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/quarter_standard_margin"
+                app:contentPadding="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_margin"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/asset_logo_image_view"
+                            android:layout_width="@dimen/asset_list_item_logo_size"
+                            android:layout_height="@dimen/asset_list_item_logo_size" />
+
+                        <TextView
+                            android:id="@+id/sale_name_text_view"
+                            style="@style/HeadingText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/standard_margin"
+                            android:layout_marginStart="@dimen/standard_margin"
+                            android:paddingBottom="0dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/standard_margin"
+                        android:layout_marginStart="@dimen/standard_margin"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/sale_description_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <RelativeLayout
+                            android:id="@+id/video_preview_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/standard_margin"
+                            android:paddingBottom="@dimen/quarter_standard_margin"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:id="@+id/video_preview_image_view"
+                                android:layout_width="128dp"
+                                android:layout_height="72dp" />
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/double_padding"
+                                android:layout_alignEnd="@id/video_preview_image_view"
+                                android:layout_alignStart="@id/video_preview_image_view"
+                                android:layout_centerVertical="true"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/ic_youtube_transparent" />
+                        </RelativeLayout>
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/half_standard_margin" />
+
+                        <include layout="@layout/layout_sale_progress" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/standard_margin"
+                        android:background="@color/material_drawer_divider" />
+
+                    <Button
+                        android:id="@+id/more_info_button"
+                        style="@style/DialogButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="@dimen/half_standard_margin"
+                        android:layout_marginStart="@dimen/half_standard_margin"
+                        android:text="@string/sale_more_info"
+                        android:theme="@style/PrimaryButton.Overlay" />
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/sale_invest_card"
+                style="@style/InfoCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/half_standard_margin"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/HeadingText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/standard_padding"
+                        android:text="@string/sale_investing" />
+
+                    <include layout="@layout/layout_amount_with_spinner" />
+
+                    <TextView
+                        android:id="@+id/sale_available_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="@dimen/text_size_hint" />
+
+                    <include
+                        android:id="@+id/sale_invest_progress"
+                        layout="@layout/layout_progress" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/standard_margin">
+
+                        <Button
+                            android:id="@+id/invest_button"
+                            style="@style/PrimaryButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:paddingEnd="32dp"
+                            android:paddingStart="32dp"
+                            android:text="@string/invest_action" />
+
+                        <TextView
+                            android:id="@+id/cancel_investment_button"
+                            style="@style/PrimaryActionTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@id/invest_button"
+                            android:layout_alignParentStart="true"
+                            android:layout_toStartOf="@id/invest_button"
+                            android:text="@string/cancel_investment_action" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/asset_chart_card"
+                style="@style/InfoCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:contentPadding="0dp">
+
+                <org.tokend.template.base.view.asset_chart.AssetChartCard
+                    android:id="@+id/asset_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="384dp" />
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <requestFocus />
+    </View>
+
+</LinearLayout>
