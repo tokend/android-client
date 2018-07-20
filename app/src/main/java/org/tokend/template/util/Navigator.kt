@@ -169,8 +169,10 @@ object Navigator {
         ), requestCode)
     }
 
-    fun openPendingOffers(fragment: Fragment, requestCode: Int) {
+    fun openPendingOffers(fragment: Fragment, requestCode: Int,
+                          onlyPrimary: Boolean = false) {
         fragment.startActivityForResult(fragment.context?.intentFor<OffersActivity>(
+                OffersActivity.ONLY_PRIMARY_EXTRA to onlyPrimary
         ), requestCode)
     }
 

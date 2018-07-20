@@ -34,6 +34,7 @@ import org.tokend.template.base.view.util.AnimationUtil
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.features.invest.adapter.SalesAdapter
 import org.tokend.template.features.invest.repository.SalesRepository
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.SoftInputUtil
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import java.util.concurrent.TimeUnit
@@ -171,6 +172,11 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
                         return trueCollapse
                     }
                 })
+
+        pendingOffersItem?.setOnMenuItemClickListener {
+            Navigator.openPendingOffers(this, CANCEL_OFFER_REQUEST, true)
+            true
+        }
     }
     // endregion
 
@@ -274,7 +280,8 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                INVESTMENT_REQUEST -> {
+                INVESTMENT_REQUEST,
+                CANCEL_OFFER_REQUEST -> {
                     update(force = true)
                 }
             }
@@ -290,5 +297,6 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     companion object {
         val ID = "sales_fragment".hashCode().toLong() and 0xffff
         private val INVESTMENT_REQUEST = "invest".hashCode() and 0xfff
+        private val CANCEL_OFFER_REQUEST = "cancel_offer".hashCode() and 0xffff
     }
 }

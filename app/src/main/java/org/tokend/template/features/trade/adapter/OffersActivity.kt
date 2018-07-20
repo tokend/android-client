@@ -25,8 +25,11 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 class OffersActivity : BaseActivity() {
+    private val onlyPrimary: Boolean
+        get() = intent.getBooleanExtra(ONLY_PRIMARY_EXTRA, false)
+
     private val offersRepository: OffersRepository
-        get() = repositoryProvider.offers()
+        get() = repositoryProvider.offers(onlyPrimary)
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },
@@ -38,6 +41,12 @@ class OffersActivity : BaseActivity() {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_offers)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        if (onlyPrimary) {
+            setTitle(R.string.pending_investments_title)
+        } else {
+            setTitle(R.string.pending_offers_title)
+        }
 
         initSwipeRefresh()
         initHistory()
@@ -58,7 +67,12 @@ class OffersActivity : BaseActivity() {
             openDetails(item.source)
         }
 
-        error_empty_view.observeAdapter(txAdapter, R.string.no_pending_offers)
+        error_empty_view.observeAdapter(txAdapter) {
+            if (onlyPrimary)
+                getString(R.string.no_pending_investments)
+            else
+                getString(R.string.no_pending_offers)
+        }
         error_empty_view.setEmptyViewDenial { offersRepository.isNeverUpdated }
 
         history_list.adapter = txAdapter
@@ -145,6 +159,7 @@ class OffersActivity : BaseActivity() {
     }
 
     companion object {
+        const val ONLY_PRIMARY_EXTRA = "only_primary"
         private val CANCEL_OFFER_REQUEST = "cancel_offer".hashCode() and 0xffff
     }
 }
