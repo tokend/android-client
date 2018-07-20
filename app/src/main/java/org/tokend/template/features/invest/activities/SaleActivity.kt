@@ -52,6 +52,7 @@ import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import org.tokend.wallet.xdr.SaleType
 import java.math.BigDecimal
 import java.math.MathContext
 
@@ -252,6 +253,7 @@ class SaleActivity : BaseActivity() {
                                     this.saleAsset = asset
                                     this.existingOffers = offers.associateBy { it.quoteAsset }
 
+                                    displayChangeableSaleInfo()
                                     displayAssetDetails()
                                     initInvestIfNeeded()
                                     displayExistingInvestmentAmount()
@@ -273,8 +275,6 @@ class SaleActivity : BaseActivity() {
 
         isFollowed = getFavoriteEntry() != null
 
-        SaleProgressWrapper(scroll_view).displayProgress(sale)
-
         if (sale.details.youtubeVideo != null) {
             displayYoutubePreview()
         }
@@ -285,6 +285,12 @@ class SaleActivity : BaseActivity() {
                 updateChart()
             }
         }
+
+        displayChangeableSaleInfo()
+    }
+
+    private fun displayChangeableSaleInfo() {
+        SaleProgressWrapper(scroll_view).displayProgress(sale)
     }
 
     private fun displayAssetDetails() {
@@ -504,6 +510,8 @@ class SaleActivity : BaseActivity() {
         val amount = investAmountWrapper.scaledAmount
         val receiveAmount = receiveAmount
         val price = currentPrice
+        val orderBookId = sale.id
+        val orderId = if (cancel) existingOffers?.get(asset)?.id ?: return else 0L
 
         val getNewOffer =
                 if (cancel)
@@ -512,7 +520,9 @@ class SaleActivity : BaseActivity() {
                                     baseAsset = sale.baseAsset,
                                     quoteAsset = asset,
                                     price = price,
-                                    isBuy = true
+                                    isBuy = true,
+                                    orderBookId = orderBookId,
+                                    id = orderId
                             )
                     )
                 else
@@ -550,8 +560,11 @@ class SaleActivity : BaseActivity() {
                                 onSuccess = { offer ->
                                     Navigator.openOfferConfirmation(this,
                                             INVESTMENT_REQUEST,
-                                            offer,
-                                            existingOffers?.get(investAsset)
+                                            offer = offer,
+                                            offerToCancel = existingOffers?.get(investAsset),
+                                            assetName = sale.baseAsset,
+                                            displayToReceive =
+                                            sale.type.value == SaleType.BASIC_SALE.value
                                     )
                                 },
                                 onError = {

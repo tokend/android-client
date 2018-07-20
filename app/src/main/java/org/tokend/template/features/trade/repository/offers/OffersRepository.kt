@@ -1,7 +1,9 @@
 package org.tokend.template.features.trade.repository.offers
 
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.api.models.Offer
@@ -21,7 +23,6 @@ import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.Transaction
 import org.tokend.wallet.xdr.ManageOfferOp
 import org.tokend.wallet.xdr.Operation
-import org.tokend.wallet.xdr.op_extensions.CancelOfferOp
 import java.math.BigDecimal
 
 class OffersRepository(
@@ -77,7 +78,8 @@ class OffersRepository(
     fun create(accountProvider: AccountProvider,
                systemInfoRepository: SystemInfoRepository,
                txManager: TxManager,
-               offer: Offer): Completable {
+               offer: Offer,
+               offerToCancel: Offer? = null): Completable {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Completable.error(IllegalStateException("No wallet info found"))
         val account = accountProvider.getAccount()
@@ -85,7 +87,8 @@ class OffersRepository(
 
         return systemInfoRepository.getNetworkParams()
                 .flatMap { netParams ->
-                    createOfferCreationTransaction(netParams, accountId, account, offer)
+                    createOfferCreationTransaction(netParams, accountId, account,
+                            offer, offerToCancel)
                 }
                 .flatMap { transition ->
                     txManager.submit(transition)
@@ -105,25 +108,56 @@ class OffersRepository(
     private fun createOfferCreationTransaction(networkParams: NetworkParams,
                                                sourceAccountId: String,
                                                signer: Account,
-                                               offer: Offer): Single<Transaction> {
-        return {
-            ManageOfferOp(
-                    baseBalance = PublicKeyFactory.fromBalanceId(offer.baseBalance ?: ""),
-                    quoteBalance = PublicKeyFactory.fromBalanceId(offer.quoteBalance ?: ""),
-                    amount = networkParams.amountToPrecised(offer.baseAmount),
-                    price = networkParams.amountToPrecised(offer.price),
-                    fee = networkParams.amountToPrecised(offer.fee ?: BigDecimal.ZERO),
-                    isBuy = offer.isBuy,
-                    orderBookID = 0L,
-                    offerID = 0L,
-                    ext = ManageOfferOp.ManageOfferOpExt.EmptyVersion()
-            )
-        }
-                .toSingle()
+                                               offer: Offer,
+                                               offerToCancel: Offer?): Single<Transaction> {
+        return offerToCancel
+                .toMaybe()
+                .toObservable()
+                .map<ManageOfferOp> {
+                    ManageOfferOp(
+                            baseBalance =
+                            PublicKeyFactory.fromBalanceId(it.baseBalance
+                                    ?: EMPTY_BALANCE_ID),
+                            quoteBalance =
+                            PublicKeyFactory.fromBalanceId(it.quoteBalance
+                                    ?: EMPTY_BALANCE_ID),
+                            amount = 0,
+                            price = networkParams.amountToPrecised(it.price),
+                            fee = networkParams.amountToPrecised(it.fee
+                                    ?: BigDecimal.ZERO),
+                            isBuy = it.isBuy,
+                            orderBookID = it.orderBookId,
+                            offerID = it.id,
+                            ext = ManageOfferOp.ManageOfferOpExt.EmptyVersion()
+                    )
+                }
+                .concatWith(
+                        Observable.just(
+                                ManageOfferOp(
+                                        baseBalance =
+                                        PublicKeyFactory.fromBalanceId(offer.baseBalance
+                                                ?: EMPTY_BALANCE_ID),
+                                        quoteBalance =
+                                        PublicKeyFactory.fromBalanceId(offer.quoteBalance
+                                                ?: EMPTY_BALANCE_ID),
+                                        amount = networkParams.amountToPrecised(offer.baseAmount),
+                                        price = networkParams.amountToPrecised(offer.price),
+                                        fee = networkParams.amountToPrecised(offer.fee
+                                                ?: BigDecimal.ZERO),
+                                        isBuy = offer.isBuy,
+                                        orderBookID = offer.orderBookId,
+                                        offerID = 0L,
+                                        ext = ManageOfferOp.ManageOfferOpExt.EmptyVersion()
+                                )
+                        )
+                )
                 .subscribeOn(Schedulers.newThread())
                 .map { Operation.OperationBody.ManageOffer(it) }
-                .flatMap {
-                    TxManager.createSignedTransaction(networkParams, sourceAccountId, signer, it)
+                .toList()
+                .map { it.toTypedArray() }
+                .flatMap { operations ->
+                    TxManager.createSignedTransaction(networkParams, sourceAccountId, signer,
+                            *operations)
                 }
     }
     // endregion
@@ -165,7 +199,20 @@ class OffersRepository(
                                                    signer: Account,
                                                    offer: Offer): Single<Transaction> {
         return {
-            CancelOfferOp(offer.id, offer.isBuy)
+            ManageOfferOp(
+                    baseBalance =
+                    PublicKeyFactory.fromBalanceId(offer.baseBalance ?: EMPTY_BALANCE_ID),
+                    quoteBalance =
+                    PublicKeyFactory.fromBalanceId(offer.quoteBalance ?: EMPTY_BALANCE_ID),
+                    amount = 0,
+                    price = networkParams.amountToPrecised(offer.price),
+                    fee = networkParams.amountToPrecised(offer.fee
+                            ?: BigDecimal.ZERO),
+                    isBuy = offer.isBuy,
+                    orderBookID = offer.orderBookId,
+                    offerID = offer.id,
+                    ext = ManageOfferOp.ManageOfferOpExt.EmptyVersion()
+            )
         }
                 .toSingle()
                 .subscribeOn(Schedulers.newThread())
@@ -175,4 +222,9 @@ class OffersRepository(
                 }
     }
     // endregion
+
+    companion object {
+        private const val EMPTY_BALANCE_ID =
+                "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZBO"
+    }
 }

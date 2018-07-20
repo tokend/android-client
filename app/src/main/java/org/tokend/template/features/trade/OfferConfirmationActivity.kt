@@ -15,6 +15,7 @@ import org.tokend.template.base.activities.BaseActivity
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
+import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
@@ -22,6 +23,8 @@ import java.math.BigDecimal
 
 class OfferConfirmationActivity : BaseActivity() {
     private lateinit var offer: Offer
+    private var prevOffer: Offer? = null
+    private var assetName: String? = null
 
     private val payAsset: String
         get() =
@@ -49,6 +52,12 @@ class OfferConfirmationActivity : BaseActivity() {
             else
                 offer.baseAmount).takeIf { it.signum() > 0 } ?: BigDecimal.ZERO
 
+    private val isPrimaryMarket: Boolean
+        get() = offer.orderBookId != 0L
+
+    private val displayToReceive: Boolean
+        get() = intent.getBooleanExtra(DISPLAY_TO_RECEIVE, true)
+
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details)
 
@@ -57,6 +66,12 @@ class OfferConfirmationActivity : BaseActivity() {
         offer =
                 (intent.getSerializableExtra(OFFER_EXTRA) as? Offer)
                 ?: return
+        prevOffer = intent.getSerializableExtra(OFFER_TO_CANCEL_EXTRA) as? Offer
+        assetName = intent.getNullableStringExtra(ASSET_NAME_EXTRA)
+
+        if (isPrimaryMarket) {
+            setTitle(R.string.investment_confirmation_title)
+        }
 
         displayDetails()
     }
@@ -64,8 +79,22 @@ class OfferConfirmationActivity : BaseActivity() {
     // region Display
     private fun displayDetails() {
         cards_layout.removeAllViews()
+
+        if (assetName != null) {
+            displayToken()
+        }
+
         displayToPay()
-        displayToReceive()
+
+        if (displayToReceive) {
+            displayToReceive()
+        }
+    }
+
+    private fun displayToken() {
+        InfoCard(cards_layout)
+                .setHeading(R.string.sale_token, null)
+                .addRow(assetName, offer.baseAsset)
     }
 
     private fun displayToPay() {
@@ -81,7 +110,13 @@ class OfferConfirmationActivity : BaseActivity() {
                         } $payAsset")
 
         if (offer.isBuy) {
-            card.addRow(R.string.amount,
+            val amountRes =
+                    if (isPrimaryMarket)
+                        R.string.investment_amount
+                    else
+                        R.string.amount
+
+            card.addRow(amountRes,
                     "+${AmountFormatter.formatAssetAmount(payBaseAmount,
                             payAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
                     } $payAsset")
@@ -142,33 +177,60 @@ class OfferConfirmationActivity : BaseActivity() {
         progress.setMessage(getString(R.string.processing_progress))
         progress.setCancelable(false)
 
+        val cancellationOnly = offer.baseAmount.signum() == 0 && prevOffer != null
+
         getBalances(offer.baseAsset, offer.quoteAsset)
                 .flatMapCompletable { (baseBalance, quoteBalance) ->
                     offer.baseBalance = baseBalance
                     offer.quoteBalance = quoteBalance
+                    prevOffer?.baseBalance = baseBalance
+                    prevOffer?.quoteBalance = quoteBalance
 
-                    repositoryProvider.offers().create(
-                            accountProvider,
-                            repositoryProvider.systemInfo(),
-                            TxManager(apiProvider),
-                            offer
-                    )
+                    if (cancellationOnly)
+                        repositoryProvider.offers(isPrimaryMarket)
+                                .cancel(accountProvider,
+                                        repositoryProvider.systemInfo(),
+                                        TxManager(apiProvider),
+                                        prevOffer!!)
+                    else
+                        repositoryProvider.offers(isPrimaryMarket)
+                                .create(
+                                        accountProvider,
+                                        repositoryProvider.systemInfo(),
+                                        TxManager(apiProvider),
+                                        offer,
+                                        prevOffer
+                                )
                 }
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe { progress.show() }
                 .doOnTerminate { progress.dismiss() }
                 .doOnComplete {
-                    repositoryProvider.orderBook(
-                            offer.baseAsset,
-                            offer.quoteAsset,
-                            offer.isBuy
-                    ).invalidate()
+                    if (!isPrimaryMarket) {
+                        repositoryProvider.orderBook(
+                                offer.baseAsset,
+                                offer.quoteAsset,
+                                offer.isBuy
+                        ).invalidate()
+                    }
+                    if (isPrimaryMarket) {
+                        repositoryProvider.sales().invalidate()
+                    }
                     repositoryProvider.balances().invalidate()
                 }
                 .subscribeBy(
                         onComplete = {
                             progress.dismiss()
-                            ToastManager.long(R.string.offer_created)
+                            if (isPrimaryMarket) {
+                                if (cancellationOnly) {
+                                    ToastManager.short(R.string.investment_canceled)
+                                } else {
+                                    ToastManager.short(R.string.successfully_invested)
+
+                                }
+                            } else {
+                                ToastManager.short(R.string.offer_canceled)
+                            }
                             finishWithSuccess()
                         },
                         onError = {
