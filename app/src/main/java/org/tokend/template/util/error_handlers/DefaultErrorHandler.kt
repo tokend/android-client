@@ -6,6 +6,7 @@ import org.tokend.template.base.logic.transactions.TransactionFailedException
 import org.tokend.template.util.ToastManager
 import java.io.IOException
 import java.io.InterruptedIOException
+import java.net.SocketTimeoutException
 import java.util.concurrent.CancellationException
 
 open class DefaultErrorHandler : ErrorHandler {
@@ -31,6 +32,8 @@ open class DefaultErrorHandler : ErrorHandler {
      */
     override fun getErrorMessage(error: Throwable): String? {
         return when (error) {
+            is SocketTimeoutException ->
+                App.context.getString(R.string.error_connection_try_again)
             is CancellationException, is InterruptedIOException ->
                 null
             is IOException ->
@@ -64,7 +67,7 @@ open class DefaultErrorHandler : ErrorHandler {
                     TransactionFailedException.OP_OFFER_CROSS_SELF ->
                         App.context.getString(R.string.error_tx_cross_self)
                     TransactionFailedException.OP_AMOUNT_LESS_THEN_DEST_FEE ->
-                            App.context.getString(R.string.error_payment_amount_less_than_fee)
+                        App.context.getString(R.string.error_payment_amount_less_than_fee)
                     else ->
                         App.context.getString(R.string.error_tx_general)
                 }
