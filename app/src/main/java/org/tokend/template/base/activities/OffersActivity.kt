@@ -1,4 +1,4 @@
-package org.tokend.template.features.trade.adapter
+package org.tokend.template.base.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,18 +9,16 @@ import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import kotlinx.android.synthetic.main.activity_offers.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.sdk.api.models.Offer
-import org.tokend.sdk.api.models.transactions.BaseTransaction
 import org.tokend.sdk.api.models.transactions.InvestmentTransaction
 import org.tokend.sdk.api.models.transactions.MatchTransaction
 import org.tokend.sdk.api.models.transactions.Transaction
 import org.tokend.template.R
-import org.tokend.template.base.activities.BaseActivity
 import org.tokend.template.base.activities.tx_details.OfferMatchDetailsActivity
 import org.tokend.template.base.activities.tx_details.TxDetailsActivity
-import org.tokend.template.base.activities.tx_details.UnknownTxDetailsActivity
 import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
 import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
@@ -141,12 +139,13 @@ class OffersActivity : BaseActivity() {
 
     private fun openDetails(tx: Transaction?) {
         when (tx) {
+            is InvestmentTransaction -> TxDetailsActivity
+                    .startForResult<InvestmentDetailsActivity, InvestmentTransaction>(
+                            this, tx, CANCEL_OFFER_REQUEST
+                    )
             is MatchTransaction -> TxDetailsActivity
                     .startForResult<OfferMatchDetailsActivity, MatchTransaction>(
                             this, tx, CANCEL_OFFER_REQUEST)
-            else -> (tx as? BaseTransaction)?.let {
-                TxDetailsActivity.start<UnknownTxDetailsActivity, BaseTransaction>(this, it)
-            }
         }
     }
 

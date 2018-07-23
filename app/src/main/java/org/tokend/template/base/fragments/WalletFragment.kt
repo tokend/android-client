@@ -33,6 +33,7 @@ import org.tokend.template.base.view.adapter.history.TxHistoryItem
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.isTransferable
+import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory

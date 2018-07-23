@@ -267,4 +267,6 @@
     <string name="successfully_invested">Successfully invested</string>
     <string name="investment_canceled">Investment has been canceled</string>
     <string name="investment_amount">Investment</string>
+    <string name="pending_investment_details_title">Pending investment details</string>
+    <string name="cancel_investment_confirmation">Are you sure want to cancel this investment?</string>
 </resources>

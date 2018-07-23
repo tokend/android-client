@@ -27,7 +27,7 @@ import org.tokend.template.extensions.Asset
 import org.tokend.template.features.explore.AssetDetailsActivity
 import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.trade.OfferConfirmationActivity
-import org.tokend.template.features.trade.adapter.OffersActivity
+import org.tokend.template.base.activities.OffersActivity
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 

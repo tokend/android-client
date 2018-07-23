@@ -229,7 +229,7 @@ class OfferConfirmationActivity : BaseActivity() {
 
                                 }
                             } else {
-                                ToastManager.short(R.string.offer_canceled)
+                                ToastManager.short(R.string.offer_created)
                             }
                             finishWithSuccess()
                         },

@@ -15,7 +15,7 @@ import org.tokend.template.util.DateFormatter
 import kotlin.reflect.KClass
 
 abstract class TxDetailsActivity<in T : Transaction>(
-        private val typeClass: KClass<T>
+        private val typeClass: KClass<out T>
 ) : BaseActivity() {
     companion object {
         const val ITEM_JSON_EXTRA = "item_json"

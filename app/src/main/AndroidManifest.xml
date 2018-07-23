@@ -76,11 +76,6 @@
             android:label="@string/withdrawal_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".base.activities.tx_details.InvestmentDetailsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/investment_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
-        <activity
             android:name=".base.activities.tx_details.OfferMatchDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/offer_match_details_title"
@@ -110,7 +105,7 @@
             android:label="@string/offer_confirmation_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".features.trade.adapter.OffersActivity"
+            android:name=".base.activities.OffersActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/pending_offers_title"
             android:theme="@style/AppTheme" />
@@ -141,6 +136,10 @@
             android:name=".features.invest.activities.SaleActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".features.invest.activities.InvestmentDetailsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/investment_details_title"
+            android:theme="@style/AppTheme.CardsBackground" />
     </application>
-
 </manifest>

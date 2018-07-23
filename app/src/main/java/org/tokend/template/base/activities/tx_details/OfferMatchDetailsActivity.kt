@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.sdk.api.models.Offer
 import org.tokend.sdk.api.models.transactions.MatchTransaction
 import org.tokend.sdk.api.models.transactions.TransactionState
+import org.tokend.sdk.api.models.transactions.TransactionType
 import org.tokend.template.R
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.InfoCard
@@ -20,10 +21,14 @@ import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import kotlin.reflect.KClass
 
-class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>(MatchTransaction::class) {
-    private var isPending = false
-    private lateinit var tx: MatchTransaction
+open class OfferMatchDetailsActivity(
+        clazz: KClass<out MatchTransaction> = MatchTransaction::class
+) : TxDetailsActivity<MatchTransaction>(clazz) {
+    protected var isPending = false
+    protected lateinit var tx: MatchTransaction
+    protected var isPrimaryMarket = false
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details)
@@ -34,6 +39,7 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>(MatchTrans
     override fun displayDetails(item: MatchTransaction) {
         tx = item
         isPending = item.state == TransactionState.PENDING
+        isPrimaryMarket = item.type == TransactionType.INVESTMENT
 
         if (isPending) {
             setTitle(R.string.pending_offer_details_title)
@@ -47,7 +53,7 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>(MatchTrans
         displayDate(item, cards_layout)
     }
 
-    private fun displayPaid(tx: MatchTransaction) {
+    protected open fun displayPaid(tx: MatchTransaction) {
         val paidAsset = if (tx.isReceived) tx.matchData.quoteAsset else tx.asset
         val receivedAsset = if (tx.isReceived) tx.asset else tx.matchData.quoteAsset
         val amount =
@@ -83,7 +89,7 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>(MatchTrans
         }
     }
 
-    private fun displayReceived(tx: MatchTransaction) {
+    protected open fun displayReceived(tx: MatchTransaction) {
         val receivedAsset = if (tx.isReceived) tx.asset else tx.matchData.quoteAsset
         val paidAsset = if (tx.isReceived) tx.matchData.quoteAsset else tx.asset
         val amount =
@@ -137,12 +143,20 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>(MatchTrans
     // region Cancel
     private fun confirmOfferCancellation() {
         AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                .setMessage(R.string.cancel_offer_confirmation)
+                .setMessage(getOfferCancellationMessage())
                 .setPositiveButton(R.string.yes) { _, _ ->
                     cancelOffer()
                 }
                 .setNegativeButton(R.string.cancel, null)
                 .show()
+    }
+
+    protected open fun getOfferCancellationMessage(): String {
+        return getString(R.string.cancel_offer_confirmation)
+    }
+
+    protected open fun getOfferCanceledMessage(): String {
+        return getString(R.string.offer_canceled)
     }
 
     private fun cancelOffer() {
@@ -153,7 +167,7 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>(MatchTrans
 
         val offer = getOfferToCancel()
 
-        repositoryProvider.offers()
+        repositoryProvider.offers(isPrimaryMarket)
                 .cancel(accountProvider,
                         repositoryProvider.systemInfo(),
                         TxManager(apiProvider),
@@ -163,29 +177,36 @@ class OfferMatchDetailsActivity : TxDetailsActivity<MatchTransaction>(MatchTrans
                 .doOnSubscribe { progress.show() }
                 .doOnTerminate { progress.dismiss() }
                 .doOnComplete {
-                    repositoryProvider.orderBook(
-                            offer.baseAsset,
-                            offer.quoteAsset,
-                            offer.isBuy
-                    ).invalidate()
+                    if (!isPrimaryMarket) {
+                        repositoryProvider.orderBook(
+                                offer.baseAsset,
+                                offer.quoteAsset,
+                                offer.isBuy
+                        ).invalidate()
+                    }
                     repositoryProvider.balances().invalidate()
                 }
                 .subscribeBy(
                         onComplete = {
                             progress.dismiss()
-                            ToastManager.short(R.string.offer_canceled)
+                            ToastManager.short(getOfferCanceledMessage())
                             finishWithSuccess()
                         },
                         onError = { ErrorHandlerFactory.getDefault().handle(it) }
                 )
     }
 
-    private fun getOfferToCancel(): Offer {
+    protected open fun getOfferToCancel(): Offer {
+        val balances = repositoryProvider.balances().itemsSubject.value
+
         return Offer(
                 id = tx.id.toLongOrNull() ?: 0L,
+                orderBookId = tx.matchData.orderBookId ?: 0L,
                 isBuy = tx.matchData.isBuy,
                 baseAsset = tx.asset,
-                quoteAsset = tx.matchData.quoteAsset
+                quoteAsset = tx.matchData.quoteAsset,
+                quoteBalance = balances.find { it.asset == tx.matchData.quoteAsset }?.balanceId,
+                baseBalance = balances.find { it.asset == tx.asset }?.balanceId
         )
     }
     // endregion
