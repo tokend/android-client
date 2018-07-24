@@ -19,3 +19,31 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# SDK
+-dontwarn com.squareup.**
+-dontwarn okio.**
+-dontnote retrofit2.Platform
+-dontwarn retrofit2.Platform$Java8
+-dontwarn java.lang.**
+-dontwarn javax.lang.**
+-dontwarn javax.annotation.**
+
+# JSON
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.** { *; }
+-keepclassmembers enum * { *; }
+-keep class org.codehaus.** { *; }
+-keep class com.fasterxml.jackson.annotation.** { *; }
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
+
+# Debug
+-keepattributes *Annotation*
+-keepattributes Exceptions, SourceFile, LineNumberTable
+-keep public class * extends java.lang.Exception
+
+# Optimize
+-repackageclasses
+-optimizations !method/removal/parameter
