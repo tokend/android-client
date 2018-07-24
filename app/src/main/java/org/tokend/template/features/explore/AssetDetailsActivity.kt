@@ -10,8 +10,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.android.synthetic.main.list_item_asset.*
@@ -145,7 +143,6 @@ class AssetDetailsActivity : BaseActivity() {
                 .create(accountProvider, repositoryProvider.systemInfo(),
                         TxManager(apiProvider), asset.code)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .doOnSubscribe {
                     progress.show()
                 }

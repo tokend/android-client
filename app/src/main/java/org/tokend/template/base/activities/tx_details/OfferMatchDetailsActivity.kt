@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
-import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.sdk.api.models.Offer
@@ -173,7 +171,6 @@ open class OfferMatchDetailsActivity(
                         TxManager(apiProvider),
                         offer)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .doOnSubscribe { progress.show() }
                 .doOnTerminate { progress.dismiss() }
                 .doOnComplete {

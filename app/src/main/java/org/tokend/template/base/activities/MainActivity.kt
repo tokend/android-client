@@ -14,9 +14,8 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
-import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.addTo
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
 import org.tokend.template.App
@@ -227,11 +226,11 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         fragmentToolbarDisposable?.dispose()
         if (fragment is ToolbarProvider) {
             fragmentToolbarDisposable = fragment.toolbarSubject
-                    .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                     .subscribe { fragmentToolbar ->
                         navigationDrawer?.setToolbar(this, fragmentToolbar,
                                 true)
                     }
+                    .addTo(compositeDisposable)
         }
     }
 

@@ -3,11 +3,9 @@ package org.tokend.template.base.activities.signup
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.layout_progress.*
@@ -18,6 +16,7 @@ import org.jetbrains.anko.onClick
 import org.tokend.sdk.federation.EmailAlreadyTakenException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
+import org.tokend.template.base.activities.BaseActivity
 import org.tokend.template.base.logic.SignUpManager
 import org.tokend.template.base.view.util.EditTextHelper
 import org.tokend.template.base.view.util.LoadingIndicatorManager
@@ -30,10 +29,12 @@ import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import org.tokend.wallet.Account
 
-class SignUpActivity : RxAppCompatActivity() {
+class SignUpActivity : BaseActivity() {
     companion object {
         private val SAVE_SEED_REQUEST = "save_recovery_seed".hashCode() and 0xffff
     }
+
+    override val allowUnauthorized = true
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress.show() },
@@ -54,8 +55,7 @@ class SignUpActivity : RxAppCompatActivity() {
 
     private var passwordsMatch = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_sign_up)
 
         initFields()
@@ -148,7 +148,6 @@ class SignUpActivity : RxAppCompatActivity() {
                             .signUp(email, password, rootAccount, recoveryAccount)
                 }
                 .doOnComplete { password.fill('0') }
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     isLoading = true
@@ -172,6 +171,7 @@ class SignUpActivity : RxAppCompatActivity() {
                             handleSignUpError(it)
                         }
                 )
+                .addTo(compositeDisposable)
     }
 
     private fun handleSignUpError(error: Throwable) {

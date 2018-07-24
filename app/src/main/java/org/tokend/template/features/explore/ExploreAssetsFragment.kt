@@ -17,12 +17,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView
-import com.trello.rxlifecycle2.android.FragmentEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_explore.*
@@ -163,8 +163,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
     private fun subscribeToAssets() {
         assetsDisposable?.dispose()
-        assetsDisposable = CompositeDisposable()
-        assetsDisposable?.addAll(
+        assetsDisposable = CompositeDisposable(
                 Observable.zip(
                         assetsRepository.itemsSubject
                                 .filter { assetsRepository.isFresh },
@@ -173,19 +172,16 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                         BiFunction { _: Any, _: Any -> }
                 )
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             displayAssets()
                         },
                 assetsRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             loadingIndicator.setLoading(it, "assets")
                         },
                 assetsRepository.errorsSubject
                         .observeOn(AndroidSchedulers.mainThread())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { error ->
                             if (!assetsAdapter.hasData) {
                                 error_empty_view.showError(error) {
@@ -195,7 +191,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                                 ErrorHandlerFactory.getDefault().handle(error)
                             }
                         }
-        )
+        ).also { it.addTo(compositeDisposable) }
     }
 
     private fun displayAssets() {
@@ -227,17 +223,16 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
     // endregion
 
-    private var balancesDisposable: CompositeDisposable? = null
+    private var balancesDisposable: Disposable? = null
     private fun subscribeToBalances() {
         balancesDisposable?.dispose()
-        balancesDisposable = CompositeDisposable(
+        balancesDisposable =
                 balancesRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             loadingIndicator.setLoading(it, "balances")
                         }
-        )
+                        .addTo(compositeDisposable)
     }
 
     private fun performPrimaryAssetAction(item: AssetListItem) {
@@ -264,7 +259,6 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 .create(accountProvider, repositoryProvider.systemInfo(),
                         TxManager(apiProvider), asset)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .doOnSubscribe {
                     progress.show()
                 }

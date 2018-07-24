@@ -4,8 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
+import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_offers.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.sdk.api.models.Offer
@@ -88,12 +87,11 @@ class OffersActivity : BaseActivity() {
     private fun subscribeToOffers() {
         offersRepository.itemsSubject
                 .compose(ObservableTransformers.defaultSchedulers())
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .subscribe { displayOffers(it) }
+                .addTo(compositeDisposable)
 
         offersRepository.loadingSubject
                 .compose(ObservableTransformers.defaultSchedulers())
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .subscribe { isLoading ->
                     if (isLoading) {
                         if (offersRepository.isOnFirstPage) {
@@ -106,10 +104,10 @@ class OffersActivity : BaseActivity() {
                         txAdapter.hideLoadingFooter()
                     }
                 }
+                .addTo(compositeDisposable)
 
         offersRepository.errorsSubject
                 .compose(ObservableTransformers.defaultSchedulers())
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .subscribe { error ->
                     if (!txAdapter.hasData) {
                         error_empty_view.showError(error) {
@@ -119,6 +117,7 @@ class OffersActivity : BaseActivity() {
                         ErrorHandlerFactory.getDefault().handle(error)
                     }
                 }
+                .addTo(compositeDisposable)
     }
 
     private fun displayOffers(items: List<Offer>) {

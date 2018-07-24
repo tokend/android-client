@@ -1,15 +1,13 @@
 package org.tokend.template.base.fragments.settings
 
-import android.arch.lifecycle.Lifecycle
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.SwitchPreferenceCompat
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.LinearLayout
-import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Completable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.layout_progress.*
@@ -47,8 +45,6 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
             showLoading = { progress?.show() },
             hideLoading = { progress?.hide() }
     )
-
-    private val lifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -139,18 +135,17 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun subscribeToTfaBackends() {
         tfaRepository.itemsSubject
                 .compose(ObservableTransformers.defaultSchedulers())
-                .bindUntilEvent(lifecycleProvider, Lifecycle.Event.ON_DESTROY)
                 .subscribe {
                     updateTfaPreference()
                 }
 
         tfaRepository.loadingSubject
                 .compose(ObservableTransformers.defaultSchedulers())
-                .bindUntilEvent(lifecycleProvider, Lifecycle.Event.ON_DESTROY)
                 .subscribe {
                     loadingIndicator.setLoading(it, "tfa")
                     updateTfaPreference()
                 }
+                .addTo(compositeDisposable)
     }
 
     private fun updateTfaPreference() {
@@ -169,10 +164,10 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun disableTfa() {
         tfaRepository.deleteBackend(tfaBackend!!.id!!)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .bindUntilEvent(lifecycleProvider, Lifecycle.Event.ON_DESTROY)
                 .subscribeBy(
                         onError = { ErrorHandlerFactory.getDefault().handle(it) }
                 )
+                .addTo(compositeDisposable)
     }
 
     private fun addAndEnableNewTfaBackend() {
@@ -181,11 +176,11 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         } ?: Completable.complete())
                 .andThen(tfaRepository.addBackend(TFA_BACKEND_TYPE))
                 .compose(ObservableTransformers.defaultSchedulersSingle())
-                .bindUntilEvent(lifecycleProvider, Lifecycle.Event.ON_DESTROY)
                 .subscribeBy(
                         onSuccess = { tryToEnableTfaBackend(it) },
                         onError = { ErrorHandlerFactory.getDefault().handle(it) }
                 )
+                .addTo(compositeDisposable)
     }
 
     private fun tryToEnableTfaBackend(backend: TfaBackend) {
@@ -221,10 +216,10 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun enableTfaBackend(id: Int) {
         tfaRepository.setBackendAsMain(id)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .bindUntilEvent(lifecycleProvider, Lifecycle.Event.ON_DESTROY)
                 .subscribeBy(
                         onError = { ErrorHandlerFactory.getDefault().handle(it) }
                 )
+                .addTo(compositeDisposable)
     }
     // endregion
 }

@@ -11,10 +11,9 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.trello.rxlifecycle2.android.FragmentEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.collapsing_balance_appbar.*
 import kotlinx.android.synthetic.main.fragment_wallet.*
@@ -156,23 +155,23 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     // region Subscriptions
     private fun subscribeToBalances() {
         balancesRepository.itemsSubject
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
                     onBalancesUpdated(it)
                 }
+                .addTo(compositeDisposable)
         balancesRepository.loadingSubject
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
                     loadingIndicator.setLoading(it, "balances")
                 }
+                .addTo(compositeDisposable)
         balancesRepository.errorsSubject
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
                     ErrorHandlerFactory.getDefault().handle(it)
                 }
+                .addTo(compositeDisposable)
     }
 
     private var transactionsDisposable: Disposable? = null
@@ -183,18 +182,17 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         transactionsDisposable =
                 txRepository.itemsSubject
                         .observeOn(AndroidSchedulers.mainThread())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             txAdapter.setData(it.map {
                                 TxHistoryItem.fromTransaction(it)
                             })
                         }
+                        .addTo(compositeDisposable)
 
         transactionsLoadingDisposable?.dispose()
         transactionsLoadingDisposable =
                 txRepository.loadingSubject
                         .observeOn(AndroidSchedulers.mainThread())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { loading ->
                             if (loading) {
                                 if (txRepository.isOnFirstPage) {
@@ -207,12 +205,12 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                                 txAdapter.hideLoadingFooter()
                             }
                         }
+                        .addTo(compositeDisposable)
 
         transactionsErrorsDisposable?.dispose()
         transactionsErrorsDisposable =
                 txRepository.errorsSubject
                         .observeOn(AndroidSchedulers.mainThread())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { error ->
                             if (!txAdapter.hasData) {
                                 error_empty_view.showError(error) {
@@ -222,6 +220,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                                 ErrorHandlerFactory.getDefault().handle(error)
                             }
                         }
+                        .addTo(compositeDisposable)
     }
     // endregion
 

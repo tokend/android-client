@@ -1,8 +1,9 @@
 package org.tokend.template.base.fragments
 
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.view.View
-import com.trello.rxlifecycle2.components.support.RxFragment
+import io.reactivex.disposables.CompositeDisposable
 import org.tokend.template.App
 import org.tokend.template.base.activities.OnBackPressedListener
 import org.tokend.template.base.logic.AppTfaCallback
@@ -12,7 +13,7 @@ import org.tokend.template.base.logic.di.providers.RepositoryProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import javax.inject.Inject
 
-abstract class BaseFragment : RxFragment(), OnBackPressedListener {
+abstract class BaseFragment : Fragment(), OnBackPressedListener {
     @Inject
     lateinit var appTfaCallback: AppTfaCallback
     @Inject
@@ -26,6 +27,8 @@ abstract class BaseFragment : RxFragment(), OnBackPressedListener {
 
     override fun onBackPressed() = true
 
+    protected val compositeDisposable: CompositeDisposable = CompositeDisposable()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity?.application as? App)?.stateComponent?.inject(this)
@@ -36,6 +39,11 @@ abstract class BaseFragment : RxFragment(), OnBackPressedListener {
         if (savedInstanceState == null) {
             onInitAllowed()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        compositeDisposable.dispose()
     }
 
     abstract fun onInitAllowed()

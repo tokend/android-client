@@ -6,9 +6,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.view.View
-import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Single
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import kotlinx.android.synthetic.main.layout_progress.*
@@ -184,7 +183,6 @@ class SignInActivity : BaseActivity() {
                             .doOnComplete { password.fill('0') }
                 }
                 .andThen(signInManager.doPostSignIn(repositoryProvider))
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .retry { attempt, error ->
                     error is SignInManager.InvalidPersistedCredentialsException && attempt == 1
@@ -206,6 +204,7 @@ class SignInActivity : BaseActivity() {
                             handleSignInError(it)
                         }
                 )
+                .addTo(compositeDisposable)
     }
 
     private fun handleSignInError(error: Throwable) {
@@ -235,7 +234,6 @@ class SignInActivity : BaseActivity() {
         apiProvider.getApi()
                 .requestVerificationLink(walletId)
                 .toCompletable()
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(
                         onComplete = {
@@ -245,6 +243,7 @@ class SignInActivity : BaseActivity() {
                             ErrorHandlerFactory.getDefault().handle(it)
                         }
                 )
+                .addTo(compositeDisposable)
     }
 
     override fun onResume() {

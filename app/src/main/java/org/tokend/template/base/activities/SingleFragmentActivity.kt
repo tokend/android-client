@@ -3,8 +3,7 @@ package org.tokend.template.base.activities
 import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
+import io.reactivex.rxkotlin.addTo
 import org.tokend.template.R
 import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.ToolbarProvider
@@ -44,12 +43,12 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         // Bind navigation drawer to fragment's toolbar.
         if (fragment is ToolbarProvider) {
             fragment.toolbarSubject
-                    .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                     .subscribe { fragmentToolbar ->
                         setSupportActionBar(fragmentToolbar)
                         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
                         supportActionBar!!.title = asset
                     }
+                    .addTo(compositeDisposable)
         }
     }
 

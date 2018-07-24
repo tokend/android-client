@@ -9,9 +9,8 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.trello.rxlifecycle2.android.FragmentEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_deposit.*
@@ -87,24 +86,21 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         accountDisposable?.dispose()
         accountDisposable = CompositeDisposable(
                 accountRepository.itemSubject
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe({
+                        .subscribe {
                             displayAddress()
-                        }),
+                        },
                 accountRepository.loadingSubject
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe {
                             loadingIndicator.setLoading(it, "account")
                         },
                 accountRepository.errorsSubject
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe {
                             ErrorHandlerFactory.getDefault().handle(it)
                         }
-        )
+        ).also { it.addTo(compositeDisposable) }
     }
 
     private var assetsDisposable: CompositeDisposable? = null
@@ -112,19 +108,16 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         assetsDisposable?.dispose()
         assetsDisposable = CompositeDisposable(
                 assetsRepository.itemsSubject
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe({
+                        .subscribe {
                             initAssets(it)
-                        }),
+                        },
                 assetsRepository.loadingSubject
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe {
                             loadingIndicator.setLoading(it, "assets")
                         },
                 assetsRepository.errorsSubject
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe {
                             if (assetsRepository.isNeverUpdated) {
@@ -135,7 +128,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                                 ErrorHandlerFactory.getDefault().handle(it)
                             }
                         }
-        )
+        ).also { it.addTo(compositeDisposable) }
     }
     // endregion
 
@@ -356,7 +349,6 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                         asset,
                         type
                 )
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     progress.show()

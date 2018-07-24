@@ -11,12 +11,11 @@ import android.view.View
 import android.widget.RelativeLayout
 import com.google.gson.JsonSyntaxException
 import com.squareup.picasso.Picasso
-import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function3
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
 import kotlinx.android.synthetic.main.activity_sale.*
@@ -238,7 +237,6 @@ class SaleActivity : BaseActivity() {
                             getMaxFees().map { offersSalePair }
                         }
                         .compose(ObservableTransformers.defaultSchedulersSingle())
-                        .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                         .doOnSubscribe {
                             mainLoading.show()
                             updateInvestAvailability()
@@ -265,6 +263,7 @@ class SaleActivity : BaseActivity() {
                                     ErrorHandlerFactory.getDefault().handle(it)
                                 }
                         )
+                        .addTo(compositeDisposable)
     }
 
     // region Info display
@@ -474,7 +473,6 @@ class SaleActivity : BaseActivity() {
     private fun updateChart() {
         updateChartDisposable?.dispose()
         updateChartDisposable = apiProvider.getApi().getAssetChart(sale.baseAsset).toSingle()
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe {
                     asset_chart.isLoading = true
@@ -492,6 +490,7 @@ class SaleActivity : BaseActivity() {
                             ErrorHandlerFactory.getDefault().handle(error)
                         }
                 )
+                .addTo(compositeDisposable)
     }
     // endregion
 
@@ -547,7 +546,6 @@ class SaleActivity : BaseActivity() {
         investDisposable =
                 getNewOffer
                         .compose(ObservableTransformers.defaultSchedulersSingle())
-                        .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                         .doOnSubscribe {
                             investLoading.show()
                             updateInvestAvailability()
@@ -571,6 +569,7 @@ class SaleActivity : BaseActivity() {
                                     ErrorHandlerFactory.getDefault().handle(it)
                                 }
                         )
+                        .addTo(compositeDisposable)
     }
     // endregion
 
@@ -622,11 +621,11 @@ class SaleActivity : BaseActivity() {
         followingDisposable?.dispose()
         followingDisposable = performSwitch
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .subscribeBy(
                         onComplete = { isFollowed = !isFollowed },
                         onError = { ErrorHandlerFactory.getDefault().handle(it) }
                 )
+                .addTo(compositeDisposable)
     }
     // endregion
 

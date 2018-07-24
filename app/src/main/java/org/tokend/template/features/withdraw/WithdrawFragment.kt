@@ -11,10 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.zxing.integration.android.IntentIntegrator
-import com.trello.rxlifecycle2.android.FragmentEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
@@ -27,11 +26,11 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
+import org.tokend.template.base.activities.WalletEventsListener
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.FeeManager
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
-import org.tokend.template.base.activities.WalletEventsListener
 import org.tokend.template.base.view.AmountEditTextWrapper
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
@@ -163,15 +162,13 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         balancesDisposable = CompositeDisposable(
                 balancesRepository.itemsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             onBalancesUpdated()
                         },
                 balancesRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { swipe_refresh.isRefreshing = it }
-        )
+        ).also { it.addTo(compositeDisposable) }
     }
 
     private fun onBalancesUpdated() {
@@ -261,7 +258,6 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                     FeeManager(apiProvider).getWithdrawalFee(accountId, asset, amount)
                 }
                 .compose(ObservableTransformers.defaultSchedulersSingle())
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .doOnSubscribe {
                     isLoading = true
                 }
@@ -283,6 +279,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                         },
                         onError = { ErrorHandlerFactory.getDefault().handle(it) }
                 )
+                .addTo(compositeDisposable)
     }
 
     private fun onAssetChanged() {
@@ -291,7 +288,6 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         updateConfirmAvailability()
         displayBalance()
     }
-
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
                                             grantResults: IntArray) {

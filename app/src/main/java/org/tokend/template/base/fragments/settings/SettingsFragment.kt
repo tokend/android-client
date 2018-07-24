@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.preference.ListPreference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.view.View
+import io.reactivex.disposables.CompositeDisposable
 import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.base.logic.di.providers.RepositoryProvider
@@ -17,6 +18,8 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
     lateinit var walletInfoProvider: WalletInfoProvider
     @Inject
     lateinit var repositoryProvider: RepositoryProvider
+
+    protected val compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +84,11 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         updateSummary(key)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        compositeDisposable.dispose()
     }
 
     companion object {

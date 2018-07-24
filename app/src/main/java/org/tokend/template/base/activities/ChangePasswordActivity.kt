@@ -4,8 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
-import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_change_password.*
 import kotlinx.android.synthetic.main.layout_progress.*
@@ -172,7 +171,6 @@ class ChangePasswordActivity : BaseActivity() {
                     )
                 }
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .doOnSubscribe {
                     isLoading = true
                 }
@@ -190,6 +188,7 @@ class ChangePasswordActivity : BaseActivity() {
                             updateChangeAvailability()
                         }
                 )
+                .addTo(compositeDisposable)
     }
 
     override fun onTfaRequired(exception: NeedTfaException,

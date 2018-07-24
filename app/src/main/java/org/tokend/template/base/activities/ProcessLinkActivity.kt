@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.util.Base64
 import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
-import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.tokend.sdk.api.requests.AttributesEntity
@@ -97,7 +96,6 @@ class ProcessLinkActivity : BaseActivity() {
         )
                 .toCompletable()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .subscribeBy(
                         onComplete = {
                             ToastManager.short(R.string.email_verified)
@@ -108,5 +106,6 @@ class ProcessLinkActivity : BaseActivity() {
                             finish()
                         }
                 )
+                .addTo(compositeDisposable)
     }
 }

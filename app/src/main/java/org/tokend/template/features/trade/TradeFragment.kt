@@ -10,11 +10,10 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.trello.rxlifecycle2.android.FragmentEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
@@ -209,15 +208,13 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         balancesDisposable = CompositeDisposable(
                 balancesRepository.itemsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             onBalancesUpdated()
                         },
                 balancesRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { loadingIndicator.setLoading(it, "balances") }
-        )
+        ).also { it.addTo(compositeDisposable) }
     }
 
     private fun onBalancesUpdated() {
@@ -244,13 +241,11 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         assetPairsDisposable = CompositeDisposable(
                 assetPairsRepository.itemsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             onNewPairs(it)
                         },
                 assetPairsRepository.errorsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { error ->
                             if (assetPairsRepository.isNeverUpdated) {
                                 error_empty_view.showError(error) {
@@ -262,10 +257,8 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                         },
                 assetPairsRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { loadingIndicator.setLoading(it, "pairs") }
-        )
-
+        ).also { it.addTo(compositeDisposable) }
     }
 
     private fun onNewPairs(newPairs: List<AssetPair>) {
@@ -362,7 +355,6 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         chartDisposable = apiProvider.getApi().getAssetChart("${currentPair.base}-${currentPair.quote}")
                 .toSingle()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .doOnSubscribe {
                     pair_chart.isLoading = true
                 }
@@ -379,8 +371,8 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                             ErrorHandlerFactory.getDefault().handle(it)
                         }
                 )
+                .addTo(compositeDisposable)
     }
-
 
     private var orderBookDisposable: CompositeDisposable? = null
     private fun subscribeToOrderBook() {
@@ -389,13 +381,11 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 // region Items
                 buyRepository.itemsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             displayBuyItems(it)
                         },
                 sellRepository.itemsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             displaySellItems(it)
                         },
@@ -404,7 +394,6 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 // region Loading
                 buyRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { isLoading ->
                             //loadingIndicator.setLoading(it, "buy")
 
@@ -418,7 +407,6 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
                 sellRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { isLoading ->
                             //                            loadingIndicator.setLoading(it, "sell")
                             if (isLoading) {
@@ -429,7 +417,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                             }
                         }
                 // endregion
-        )
+        ).also { it.addTo(compositeDisposable) }
     }
 
 
@@ -491,7 +479,6 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                             offer.quoteAsset, offer.quoteAmount)
                 }
                 .compose(ObservableTransformers.defaultSchedulersSingle())
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .doOnSubscribe { progress.show() }
                 .doOnEvent { _, _ -> progress.hide() }
                 .subscribeBy(
@@ -503,6 +490,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                         },
                         onError = { ErrorHandlerFactory.getDefault().handle(it) }
                 )
+                .addTo(compositeDisposable)
     }
 
     private fun getCurrentAccountId(): Single<String> {

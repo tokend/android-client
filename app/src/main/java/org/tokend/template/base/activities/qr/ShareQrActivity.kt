@@ -10,8 +10,7 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.widget.Toast
-import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_share_qr.*
 import org.jetbrains.anko.dimen
@@ -92,11 +91,9 @@ class ShareQrActivity : BaseActivity() {
     }
 
     private fun displayQrCode(text: String) {
-
         QrGenerator(this).bitmap(text, maxQrSize)
                 .delay(300, TimeUnit.MILLISECONDS)
                 .compose(ObservableTransformers.defaultSchedulers())
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .doOnSubscribe {
                     qr_code_image_view.visibility = View.INVISIBLE
                 }
@@ -112,6 +109,7 @@ class ShareQrActivity : BaseActivity() {
                                     .show()
                         }
                 )
+                .addTo(compositeDisposable)
     }
 
     private fun animateQrCode() {

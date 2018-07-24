@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CompoundButton
-import com.trello.rxlifecycle2.android.ActivityEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
@@ -98,7 +96,6 @@ class PaymentConfirmationActivity : BaseActivity() {
                 TxManager(apiProvider))
                 .submit(request)
                 .compose(ObservableTransformers.defaultSchedulersSingle())
-                .bindUntilEvent(lifecycle(), ActivityEvent.DESTROY)
                 .doOnSubscribe {
                     progress.show()
                 }

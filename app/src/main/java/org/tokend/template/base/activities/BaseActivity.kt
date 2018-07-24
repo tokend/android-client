@@ -2,9 +2,10 @@ package org.tokend.template.base.activities
 
 import android.os.Build
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.WindowManager
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
+import io.reactivex.disposables.CompositeDisposable
 import org.tokend.sdk.api.tfa.TfaCallback
 import org.tokend.sdk.api.tfa.TfaVerifier
 import org.tokend.sdk.federation.NeedTfaException
@@ -20,7 +21,7 @@ import org.tokend.template.base.tfa.TfaDialogFactory
 import org.tokend.template.util.Navigator
 import javax.inject.Inject
 
-abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
+abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     @Inject
     lateinit var appTfaCallback: AppTfaCallback
     @Inject
@@ -35,6 +36,8 @@ abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
     lateinit var credentialsPersistor: CredentialsPersistor
 
     protected open val allowUnauthorized = false
+
+    protected val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +78,7 @@ abstract class BaseActivity : RxAppCompatActivity(), TfaCallback {
     override fun onDestroy() {
         super.onDestroy()
         appTfaCallback.unregisterHandler(this)
+        compositeDisposable.dispose()
     }
 
     override fun onTfaRequired(exception: NeedTfaException,

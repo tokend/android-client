@@ -11,11 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.trello.rxlifecycle2.android.FragmentEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -155,24 +154,24 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     // region Subscriptions
     private fun subscribeToBalances() {
         balancesRepository.itemsSubject
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
                     displayAssetTabs(it.map { it.asset })
                     displayBalance()
                 }
+                .addTo(compositeDisposable)
         balancesRepository.loadingSubject
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
                     loadingIndicator.setLoading(it, "balances")
                 }
+                .addTo(compositeDisposable)
         balancesRepository.errorsSubject
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
                     ErrorHandlerFactory.getDefault().handle(it)
                 }
+                .addTo(compositeDisposable)
     }
 
     private var transactionsDisposable: Disposable? = null
@@ -183,18 +182,17 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                 txRepository.itemsSubject
                         .map { it.subList(0, Math.min(it.size, TRANSACTIONS_TO_DISPLAY)) }
                         .observeOn(AndroidSchedulers.mainThread())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             activityAdapter.setData(it.map {
                                 TxHistoryItem.fromTransaction(it)
                             })
                         }
+                        .addTo(compositeDisposable)
 
         transactionsLoadingDisposable?.dispose()
         transactionsLoadingDisposable =
                 txRepository.loadingSubject
                         .observeOn(AndroidSchedulers.mainThread())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { loading ->
                             if (loading) {
                                 loadingIndicator.show("transactions")
@@ -203,6 +201,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                                 loadingIndicator.hide("transactions")
                             }
                         }
+                        .addTo(compositeDisposable)
     }
 
     private var offersDisposable: CompositeDisposable? = null
@@ -213,7 +212,6 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                 offersRepository.itemsSubject
                         .map { it.subList(0, Math.min(it.size, TRANSACTIONS_TO_DISPLAY)) }
                         .observeOn(AndroidSchedulers.mainThread())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             offersAdapter.setData(it.map {
                                 TxHistoryItem.fromTransaction(
@@ -223,7 +221,6 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                         },
                 offersRepository.loadingSubject
                         .observeOn(AndroidSchedulers.mainThread())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { loading ->
                             if (loading) {
                                 offers_progress.show()
@@ -232,7 +229,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                                 offers_progress.hide()
                             }
                         }
-        )
+        ).also { it.addTo(compositeDisposable) }
     }
     // endregion
 

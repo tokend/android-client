@@ -13,12 +13,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding2.widget.RxTextView
-import com.trello.rxlifecycle2.android.FragmentEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_sales.*
@@ -196,7 +195,6 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         salesDisposable = CompositeDisposable(
                 salesRepository.loadingSubject
                         .observeOn(AndroidSchedulers.mainThread())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .doOnDispose {
                             swipe_refresh.isRefreshing = false
                             salesAdapter.hideLoadingFooter()
@@ -215,15 +213,13 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
                         },
                 salesRepository.errorsSubject
                         .observeOn(AndroidSchedulers.mainThread())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { handleSalesError(it) },
                 salesRepository.itemsSubject
                         .observeOn(AndroidSchedulers.mainThread())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             salesAdapter.setData(it)
                         }
-        )
+        ).also { it.addTo(compositeDisposable) }
     }
 
     private fun unsubscribeFromSales() {
@@ -268,7 +264,6 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
                         ))
                         .map { it.items }
                         .observeOn(AndroidSchedulers.mainThread())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .doOnSubscribe {
                             loadingIndicator.show()
                         }
@@ -279,6 +274,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
                                 onSuccess = { salesAdapter.setData(it) },
                                 onError = { handleSalesError(it) }
                         )
+                        .addTo(compositeDisposable)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

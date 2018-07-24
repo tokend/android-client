@@ -11,11 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.zxing.integration.android.IntentIntegrator
-import com.trello.rxlifecycle2.android.FragmentEvent
-import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
@@ -30,11 +29,11 @@ import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.Fee
 import org.tokend.template.R
 import org.tokend.template.base.activities.PaymentConfirmationActivity
+import org.tokend.template.base.activities.WalletEventsListener
 import org.tokend.template.base.logic.FeeManager
 import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.base.logic.repository.AccountDetailsRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
-import org.tokend.template.base.activities.WalletEventsListener
 import org.tokend.template.base.view.AmountEditTextWrapper
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
@@ -161,15 +160,13 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         balancesDisposable = CompositeDisposable(
                 balancesRepository.itemsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe {
                             onBalancesUpdated()
                         },
                 balancesRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                         .subscribe { swipe_refresh.isRefreshing = it }
-        )
+        ).also { it.addTo(compositeDisposable) }
     }
 
     private fun onBalancesUpdated() {
@@ -330,7 +327,6 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                     )
                 }
                 .compose(ObservableTransformers.defaultSchedulersSingle())
-                .bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW)
                 .doOnSubscribe {
                     isLoading = true
                 }
@@ -359,6 +355,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                             updateConfirmAvailability()
                         }
                 )
+                .addTo(compositeDisposable)
     }
 
     // region Pre confirmation requests.
