@@ -53,8 +53,17 @@ class InfoCard(parent: ViewGroup) {
         val titleTextView = rowView.find<TextView>(R.id.title)
         val valueTextView = rowView.find<TextView>(R.id.value)
 
-        titleTextView.text = title ?: ""
-        valueTextView.text = value ?: ""
+        if (title.isNullOrBlank()) {
+            titleTextView.visibility = View.GONE
+        } else {
+            titleTextView.text = title
+        }
+
+        if (value.isNullOrBlank()) {
+            valueTextView.visibility = View.GONE
+        } else {
+            valueTextView.text = value
+        }
 
         return addView(rowView)
     }
