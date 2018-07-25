@@ -269,4 +269,8 @@
     <string name="investment_amount">Investment</string>
     <string name="pending_investment_details_title">Pending investment details</string>
     <string name="cancel_investment_confirmation">Are you sure want to cancel this investment?</string>
+    <string name="sale_details_title">Fund details</string>
+    <string name="sale_overview_title">Overview</string>
+    <string name="sale_token_title">Token</string>
+    <string name="sale_general_info_title">General</string>
 </resources>

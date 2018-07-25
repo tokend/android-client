@@ -150,13 +150,25 @@ class SaleActivity : BaseActivity() {
             update()
         } catch (e: JsonSyntaxException) {
             finish()
+            return
+        } finally {
+            supportStartPostponedEnterTransition()
         }
 
-        supportStartPostponedEnterTransition()
-
-        investAmountWrapper = AmountEditTextWrapper(amount_edit_text)
+        initButtons()
+        initFields()
 
         canInvest = false
+    }
+
+    private fun initButtons() {
+        more_info_button.onClick {
+            Navigator.openSaleDetails(this, sale)
+        }
+    }
+
+    private fun initFields() {
+        investAmountWrapper = AmountEditTextWrapper(amount_edit_text)
     }
 
     private var saleDisposable: Disposable? = null

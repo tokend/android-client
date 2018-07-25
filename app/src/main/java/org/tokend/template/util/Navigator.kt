@@ -26,8 +26,8 @@ import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.extensions.Asset
 import org.tokend.template.features.explore.AssetDetailsActivity
 import org.tokend.template.features.invest.activities.SaleActivity
+import org.tokend.template.features.invest.sale_details.SaleDetailsActivity
 import org.tokend.template.features.trade.OfferConfirmationActivity
-import org.tokend.template.base.activities.OffersActivity
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 
@@ -192,9 +192,15 @@ object Navigator {
         ), requestCode)
     }
 
-    fun openSaleDetails(fragment: Fragment, requestCode: Int, sale: SimpleSale) {
+    fun openSale(fragment: Fragment, requestCode: Int, sale: SimpleSale) {
         fragment.startActivityForResult(fragment.requireContext().intentFor<SaleActivity>(
                 SaleActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
         ), requestCode)
+    }
+
+    fun openSaleDetails(activity: Activity, sale: SimpleSale) {
+        activity.startActivity(activity.intentFor<SaleDetailsActivity>(
+                SaleDetailsActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
+        ))
     }
 }

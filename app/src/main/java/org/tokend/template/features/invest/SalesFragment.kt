@@ -88,7 +88,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         error_empty_view.setEmptyViewDenial { !hasFilter && salesRepository.isNeverUpdated }
 
         salesAdapter.onItemClick { _, sale ->
-            Navigator.openSaleDetails(this, INVESTMENT_REQUEST, sale)
+            Navigator.openSale(this, INVESTMENT_REQUEST, sale)
         }
 
         sales_list.apply {

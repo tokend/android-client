@@ -141,5 +141,11 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/investment_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".features.invest.sale_details.SaleDetailsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/sale_details_title"
+            android:theme="@style/AppTheme.NoActionBar.CardsBackground" />
     </application>
+
 </manifest>
