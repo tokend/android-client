@@ -1,6 +1,7 @@
 package org.tokend.template.util
 
 import android.support.v4.app.Fragment
+import org.tokend.sdk.api.models.sale.SimpleSale
 import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.fragments.settings.GeneralSettingsFragment
@@ -10,6 +11,8 @@ import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.explore.AssetDetailsFragment
 import org.tokend.template.features.explore.ExploreAssetsFragment
 import org.tokend.template.features.invest.SalesFragment
+import org.tokend.template.features.invest.sale_details.fragments.SaleGeneralInfoFragment
+import org.tokend.template.features.invest.sale_details.fragments.SaleOverviewFragment
 import org.tokend.template.features.trade.TradeFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 
@@ -23,8 +26,12 @@ class FragmentFactory {
         return WalletFragment.newInstance(asset, needTabs)
     }
 
-    fun getAssetDetailsFragment(asset: Asset): Fragment {
-        return AssetDetailsFragment.newInstance(asset)
+    fun getAssetDetailsFragment(asset: Asset, balanceCreation: Boolean = true): Fragment {
+        return AssetDetailsFragment.newInstance(asset, balanceCreation)
+    }
+
+    fun getAssetDetailsFragment(assetCode: String, balanceCreation: Boolean = true): Fragment {
+        return AssetDetailsFragment.newInstance(assetCode, balanceCreation)
     }
 
     fun getSettingsFragment(): Fragment {
@@ -53,5 +60,13 @@ class FragmentFactory {
 
     fun getSalesFragment(): Fragment {
         return SalesFragment()
+    }
+
+    fun getSaleOverviewFragment(blobId: String): Fragment {
+        return SaleOverviewFragment.newInstance(blobId)
+    }
+
+    fun getSaleGeneralInfoFragment(sale: SimpleSale): Fragment {
+        return SaleGeneralInfoFragment.newInstance(sale)
     }
 }

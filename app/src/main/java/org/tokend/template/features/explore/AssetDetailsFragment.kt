@@ -13,8 +13,12 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import io.reactivex.Single
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.toMaybe
 import kotlinx.android.synthetic.main.activity_details.*
+import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.list_item_asset.*
 import kotlinx.android.synthetic.main.list_item_asset.view.*
 import org.jetbrains.anko.find
@@ -24,6 +28,7 @@ import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
+import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.Asset
 import org.tokend.template.features.explore.adapter.AssetListItem
 import org.tokend.template.features.explore.adapter.AssetListItemViewHolder
@@ -34,15 +39,26 @@ import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 
 class AssetDetailsFragment : BaseFragment() {
+    private lateinit var asset: Asset
 
-    private val asset: Asset
-        get() = arguments!!.getSerializable(ASSET) as Asset
+    private val assetCode: String? by lazy {
+        arguments?.getString(ASSET_CODE_EXTRA)
+    }
+
+    private val isBalanceCreationEnabled: Boolean by lazy {
+        arguments?.getBoolean(BALANCE_CREATION_EXTRA) ?: true
+    }
 
     private val balanceExists: Boolean
         get() = repositoryProvider.balances().itemsSubject.value
                 .find { it.asset == asset.code } != null
 
     private lateinit var fileDownloader: FileDownloader
+
+    private val loadingIndicator = LoadingIndicatorManager(
+            showLoading = { progress.show() },
+            hideLoading = { progress.hide() }
+    )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_asset_details, container, false)
@@ -59,8 +75,30 @@ class AssetDetailsFragment : BaseFragment() {
     }
 
     override fun onInitAllowed() {
-        displayDetails()
-        initButtons()
+        getAsset()
+                .compose(ObservableTransformers.defaultSchedulersSingle())
+                .doOnSubscribe { loadingIndicator.show() }
+                .doOnEvent { _, _ -> loadingIndicator.hide() }
+                .subscribeBy(
+                        onSuccess = {
+                            asset = it
+                            displayDetails()
+                            initButtons()
+                        },
+                        onError = {
+                            ErrorHandlerFactory.getDefault().handle(it)
+                        }
+                )
+                .addTo(compositeDisposable)
+    }
+
+    private fun getAsset(): Single<Asset> {
+        return (arguments?.getSerializable(ASSET_EXTRA) as? Asset)
+                .toMaybe()
+                .switchIfEmpty(
+                        assetCode?.let { repositoryProvider.assets().getSingle(it) }
+                                ?: Single.error(IllegalStateException("Unable to obtain asset"))
+                )
     }
 
     // region Display
@@ -119,7 +157,7 @@ class AssetDetailsFragment : BaseFragment() {
     private fun initButtons() {
         asset_details_button.visibility = View.GONE
 
-        if (!balanceExists) {
+        if (!balanceExists && isBalanceCreationEnabled) {
             asset_primary_action_button.visibility = View.VISIBLE
             asset_primary_action_button.text = getString(R.string.create_balance_action)
             asset_primary_action_button.onClick {
@@ -181,12 +219,24 @@ class AssetDetailsFragment : BaseFragment() {
     }
 
     companion object {
-        const val ASSET = "asset"
+        private const val ASSET_EXTRA = "asset"
+        private const val ASSET_CODE_EXTRA = "asset_code"
+        private const val BALANCE_CREATION_EXTRA = "balance_creation"
 
-        fun newInstance(asset: Asset, needTabs: Boolean = true): AssetDetailsFragment {
+        fun newInstance(asset: Asset, balanceCreation: Boolean): AssetDetailsFragment {
             val fragment = AssetDetailsFragment()
             fragment.arguments = Bundle().apply {
-                putSerializable(ASSET, asset)
+                putSerializable(ASSET_EXTRA, asset)
+                putBoolean(BALANCE_CREATION_EXTRA, balanceCreation)
+            }
+            return fragment
+        }
+
+        fun newInstance(assetCode: String, balanceCreation: Boolean): AssetDetailsFragment {
+            val fragment = AssetDetailsFragment()
+            fragment.arguments = Bundle().apply {
+                putSerializable(ASSET_CODE_EXTRA, assetCode)
+                putBoolean(BALANCE_CREATION_EXTRA, balanceCreation)
             }
             return fragment
         }

@@ -14,6 +14,8 @@
         android:paddingStart="5dp"
         android:paddingTop="@dimen/half_standard_margin">
 
+        <include layout="@layout/layout_progress" />
+
         <include layout="@layout/list_item_asset" />
 
         <LinearLayout

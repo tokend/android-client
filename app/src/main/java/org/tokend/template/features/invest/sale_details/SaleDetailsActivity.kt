@@ -1,6 +1,5 @@
 package org.tokend.template.features.invest.sale_details
 
-import android.os.Build
 import android.os.Bundle
 import com.google.gson.JsonSyntaxException
 import kotlinx.android.synthetic.main.activity_sale_details.*
