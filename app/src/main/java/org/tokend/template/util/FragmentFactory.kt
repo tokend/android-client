@@ -1,11 +1,11 @@
 package org.tokend.template.util
 
 import android.support.v4.app.Fragment
-import org.tokend.sdk.api.models.sale.SimpleSale
 import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.fragments.settings.GeneralSettingsFragment
 import org.tokend.template.extensions.Asset
+import org.tokend.template.extensions.Sale
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.explore.AssetDetailsFragment
@@ -66,7 +66,7 @@ class FragmentFactory {
         return SaleOverviewFragment.newInstance(blobId)
     }
 
-    fun getSaleGeneralInfoFragment(sale: SimpleSale): Fragment {
+    fun getSaleGeneralInfoFragment(sale: Sale): Fragment {
         return SaleGeneralInfoFragment.newInstance(sale)
     }
 }

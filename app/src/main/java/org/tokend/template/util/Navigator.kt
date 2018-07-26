@@ -13,7 +13,6 @@ import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
 import org.tokend.sdk.api.models.Offer
-import org.tokend.sdk.api.models.sale.SimpleSale
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
 import org.tokend.template.base.activities.*
@@ -24,6 +23,7 @@ import org.tokend.template.base.fragments.SendFragment
 import org.tokend.template.base.fragments.WalletFragment
 import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.extensions.Asset
+import org.tokend.template.extensions.Sale
 import org.tokend.template.features.explore.AssetDetailsActivity
 import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.invest.sale_details.SaleDetailsActivity
@@ -192,13 +192,13 @@ object Navigator {
         ), requestCode)
     }
 
-    fun openSale(fragment: Fragment, requestCode: Int, sale: SimpleSale) {
+    fun openSale(fragment: Fragment, requestCode: Int, sale: Sale) {
         fragment.startActivityForResult(fragment.requireContext().intentFor<SaleActivity>(
                 SaleActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
         ), requestCode)
     }
 
-    fun openSaleDetails(activity: Activity, sale: SimpleSale) {
+    fun openSaleDetails(activity: Activity, sale: Sale) {
         activity.startActivity(activity.intentFor<SaleDetailsActivity>(
                 SaleDetailsActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
         ))

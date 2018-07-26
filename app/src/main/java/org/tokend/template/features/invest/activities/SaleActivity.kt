@@ -26,7 +26,6 @@ import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.models.FavoriteEntry
 import org.tokend.sdk.api.models.Offer
 import org.tokend.sdk.api.models.SaleFavoriteEntry
-import org.tokend.sdk.api.models.sale.SimpleSale
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.BuildConfig
@@ -41,6 +40,7 @@ import org.tokend.template.base.view.ContentLoadingProgressBar
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.AnimationUtil
 import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.toSingle
@@ -85,7 +85,7 @@ class SaleActivity : BaseActivity() {
 
     private lateinit var feeManager: FeeManager
 
-    private lateinit var sale: SimpleSale
+    private lateinit var sale: Sale
     private lateinit var saleAsset: org.tokend.template.extensions.Asset
 
     private var isFollowed = false
@@ -144,7 +144,7 @@ class SaleActivity : BaseActivity() {
         try {
             sale = GsonFactory().getBaseGson().fromJson(
                     intent.getNullableStringExtra(SALE_JSON_EXTRA),
-                    SimpleSale::class.java)
+                    Sale::class.java)
 
             displaySaleInfo()
             update()
@@ -239,7 +239,7 @@ class SaleActivity : BaseActivity() {
                                         getOffers,
                                         getDetailedSale,
                                         Function3 { asset: org.tokend.template.extensions.Asset,
-                                                    offers: List<Offer>, sale: SimpleSale ->
+                                                    offers: List<Offer>, sale: Sale ->
                                             Triple(offers, sale, asset)
                                         }
                                 )

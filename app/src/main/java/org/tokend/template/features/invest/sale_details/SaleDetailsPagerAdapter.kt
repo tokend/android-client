@@ -4,11 +4,11 @@ import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import org.tokend.sdk.api.models.sale.SimpleSale
 import org.tokend.template.R
+import org.tokend.template.extensions.Sale
 import org.tokend.template.util.FragmentFactory
 
-class SaleDetailsPagerAdapter(sale: SimpleSale,
+class SaleDetailsPagerAdapter(sale: Sale,
                               context: Context,
                               fragmentManager: FragmentManager
 ) : FragmentPagerAdapter(fragmentManager) {

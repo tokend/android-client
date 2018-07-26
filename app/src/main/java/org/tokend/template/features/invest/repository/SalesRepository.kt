@@ -7,24 +7,24 @@ import org.tokend.template.base.logic.repository.base.pagination.DataPage
 import org.tokend.template.base.logic.repository.base.pagination.PageParams
 import org.tokend.template.base.logic.repository.base.pagination.PagedDataRepository
 import org.tokend.template.base.logic.repository.base.pagination.PagedRequestParams
+import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.toSingle
-import org.tokend.sdk.api.models.sale.SimpleSale
 
 class SalesRepository(
         private val apiProvider: ApiProvider,
         private val accountDetailsRepository: AccountDetailsRepository? = null
-) : PagedDataRepository<SimpleSale, SalesRepository.SalesRequestParams>() {
+) : PagedDataRepository<Sale, SalesRepository.SalesRequestParams>() {
     class SalesRequestParams(val name: String? = null,
                              val baseAsset: String? = null,
                              val openOnly: Boolean = true,
                              pageParams: PageParams = PageParams()) : PagedRequestParams(pageParams)
 
-    override fun getItems(): Single<List<SimpleSale>> = Single.just(emptyList())
+    override fun getItems(): Single<List<Sale>> = Single.just(emptyList())
 
     override val itemsCache = SalesCache()
 
-    override fun getPage(requestParams: SalesRequestParams): Single<DataPage<SimpleSale>> {
-        var sales = listOf<SimpleSale>()
+    override fun getPage(requestParams: SalesRequestParams): Single<DataPage<Sale>> {
+        var sales = listOf<Sale>()
         var nextCursor: String? = ""
         var isLast = false
         return apiProvider.getApi()
@@ -62,7 +62,7 @@ class SalesRepository(
                 .map { DataPage(nextCursor, it, isLast) }
     }
 
-    fun getSingle(id: Long): Single<SimpleSale> {
+    fun getSingle(id: Long): Single<Sale> {
         return apiProvider.getApi()
                 .getSale(id)
                 .toSingle()

@@ -4,16 +4,16 @@ import android.support.v4.content.ContextCompat
 import android.text.SpannableString
 import android.view.View
 import kotlinx.android.synthetic.main.layout_sale_progress.view.*
-import org.tokend.sdk.api.models.sale.SimpleSale
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.base.view.util.AmountFormatter
+import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.highlight
 import java.util.*
 import kotlin.math.roundToInt
 
 class SaleProgressWrapper(private val rootView: View) {
-    fun displayProgress(sale: SimpleSale) {
+    fun displayProgress(sale: Sale) {
         val context = rootView.context
         val highlightColor = ContextCompat.getColor(context, R.color.accent)
 
