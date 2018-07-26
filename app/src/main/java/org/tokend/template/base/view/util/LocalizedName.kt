@@ -12,6 +12,7 @@ class LocalizedName(private val context: Context) {
             TransactionState.SUCCESS -> context.getString(R.string.tx_state_success)
             TransactionState.REJECTED -> context.getString(R.string.tx_state_rejected)
             TransactionState.CANCELED -> context.getString(R.string.tx_state_cancelled)
+            TransactionState.FAILED -> context.getString(R.string.tx_state_failed)
         }
     }
 

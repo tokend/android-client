@@ -82,7 +82,7 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.13'
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
-    implementation "org.tokend:sdk:0.76"
+    implementation "org.tokend:sdk:0.77"
     implementation "org.tokend:wallet:1.0.7"
 
     implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'

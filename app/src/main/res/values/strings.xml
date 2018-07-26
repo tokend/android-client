@@ -134,6 +134,7 @@
     <string name="tx_state_pending">Pending</string>
     <string name="tx_state_success">Success</string>
     <string name="tx_state_cancelled">Cancelled</string>
+    <string name="tx_state_failed">Failed</string>
     <string name="template_tx_from">From %1$s</string>
     <string name="template_tx_to">To %1$s</string>
     <string name="tx_action_deposit">Deposit</string>
