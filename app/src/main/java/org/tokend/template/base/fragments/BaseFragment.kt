@@ -27,7 +27,7 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
 
     override fun onBackPressed() = true
 
-    protected val compositeDisposable: CompositeDisposable = CompositeDisposable()
+    protected lateinit var compositeDisposable: CompositeDisposable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +36,7 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        compositeDisposable = CompositeDisposable()
         if (savedInstanceState == null) {
             onInitAllowed()
         }
