@@ -251,6 +251,7 @@
     <string name="template_sale_days_to_go">%1$d %2$s to go</string>
     <string name="template_sale_starts_in">Starts in %1$d %2$s</string>
     <string name="template_sale_max_investment">Max investment is %1$s %2$s</string>
+    <string name="template_sale_name_token">%1$s (%2$s)</string>
     <string name="sales_search_name_hint">Name</string>
     <string name="sales_search_token_hint">Token code</string>
     <string name="explore_sales_title">Explore funds</string>
