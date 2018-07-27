@@ -207,11 +207,15 @@ class OfferConfirmationActivity : BaseActivity() {
                 .doOnTerminate { progress.dismiss() }
                 .doOnComplete {
                     if (!isPrimaryMarket) {
-                        repositoryProvider.orderBook(
+                        listOf(repositoryProvider.orderBook(
                                 offer.baseAsset,
                                 offer.quoteAsset,
-                                offer.isBuy
-                        ).invalidate()
+                                true
+                        ), repositoryProvider.orderBook(
+                                offer.baseAsset,
+                                offer.quoteAsset,
+                                false
+                        )).forEach { it.invalidate() }
                     }
                     if (isPrimaryMarket) {
                         repositoryProvider.sales().invalidate()
