@@ -65,6 +65,10 @@ class CredentialsPersistor(
                     ?: return null
             val walletInfo = GsonFactory().getBaseGson()
                     .fromJson(String(walletInfoBytes), WalletInfo::class.java)
+                    .also {
+                        // Will fall with NPE on failed parsing.
+                        it.accountId.length
+                    }
 
             val seedBytes = secureStorage.loadWithPassword(SEED_KEY, password)
                     ?: return null
