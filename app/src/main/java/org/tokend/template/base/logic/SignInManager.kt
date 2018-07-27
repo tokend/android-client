@@ -6,7 +6,6 @@ import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.BuildConfig
 import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.RepositoryProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
@@ -77,7 +76,8 @@ class SignInManager(
                                 )
                             else
                                 Completable.error(it)
-                        }
+                        },
+                repositoryProvider.favorites().updateIfNotFreshDeferred()
         )
         val syncActions = listOf<Completable>(
                 // Added actions will be performed on after another in
