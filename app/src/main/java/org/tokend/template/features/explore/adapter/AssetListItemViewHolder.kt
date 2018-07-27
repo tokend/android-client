@@ -36,6 +36,7 @@ class AssetListItemViewHolder(view: View) : BaseViewHolder<AssetListItem>(view) 
         if (item.logoUrl != null) {
             Picasso.with(view.context)
                     .load(item.logoUrl)
+                    .placeholder(R.color.white)
                     .resize(logoSize, logoSize)
                     .centerInside()
                     .into(logoImageView)
