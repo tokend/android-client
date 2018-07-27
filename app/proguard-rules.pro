@@ -47,3 +47,6 @@
 # Optimize
 -repackageclasses
 -optimizations !method/removal/parameter
+
+# Markdown
+-dontwarn com.caverock.androidsvg.SVGImageView
