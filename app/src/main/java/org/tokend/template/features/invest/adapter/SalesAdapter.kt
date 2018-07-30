@@ -9,7 +9,9 @@ import org.tokend.template.base.view.adapter.base.BaseViewHolder
 import org.tokend.template.base.view.adapter.base.PaginationRecyclerAdapter
 import org.tokend.template.extensions.Sale
 
-class SalesAdapter : PaginationRecyclerAdapter<Sale, BaseViewHolder<Sale>>() {
+class SalesAdapter(
+        private val storageUrl: String
+) : PaginationRecyclerAdapter<Sale, BaseViewHolder<Sale>>() {
     class FooterViewHolder(v: View) : BaseViewHolder<Sale>(v) {
         override fun bind(item: Sale) {}
     }
@@ -25,7 +27,7 @@ class SalesAdapter : PaginationRecyclerAdapter<Sale, BaseViewHolder<Sale>>() {
     override fun createItemViewHolder(parent: ViewGroup): SaleViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_sale,
                 parent, false)
-        return SaleViewHolder(view)
+        return SaleViewHolder(view, storageUrl)
     }
 
     override fun getDiffCallback(newItems: List<Sale>): DiffUtil.Callback? {

@@ -1,15 +1,19 @@
 package org.tokend.template.base.activities
 
+import android.Manifest
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.view.View
+import com.google.zxing.integration.android.IntentIntegrator
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sign_in.*
+import kotlinx.android.synthetic.main.layout_network_field.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.enabled
@@ -19,15 +23,13 @@ import org.tokend.sdk.federation.InvalidCredentialsException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.logic.SignInManager
+import org.tokend.template.base.logic.UrlConfigManager
 import org.tokend.template.base.logic.persistance.FingerprintAuthManager
 import org.tokend.template.base.view.util.AnimationUtil
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
 import org.tokend.template.extensions.*
-import org.tokend.template.util.Navigator
-import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.SoftInputUtil
-import org.tokend.template.util.ToastManager
+import org.tokend.template.util.*
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import org.tokend.wallet.Account
 
@@ -39,7 +41,10 @@ class SignInActivity : BaseActivity() {
             hideLoading = { progress.hide() }
     )
 
+    private val cameraPermission = Permission(Manifest.permission.CAMERA, 404)
+
     private lateinit var fingerprintAuthManager: FingerprintAuthManager
+    private lateinit var urlConfigManager: UrlConfigManager
 
     private var isLoading: Boolean = false
         set(value) {
@@ -60,11 +65,17 @@ class SignInActivity : BaseActivity() {
                 ColorDrawable(ContextCompat.getColor(this, R.color.white)))
         setTitle(R.string.sign_in)
 
+        fingerprintAuthManager = FingerprintAuthManager(this, credentialsPersistor)
+        urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistor)
+        urlConfigManager.onConfigUpdated {
+            initNetworkField()
+            password_edit_text.error = null
+            updateSignInAvailability()
+        }
+
         initVersion()
         initFields()
         initButtons()
-
-        fingerprintAuthManager = FingerprintAuthManager(this, credentialsPersistor)
 
         canSignIn = false
 
@@ -78,6 +89,8 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun initFields() {
+        initNetworkField()
+
         credentialsPersistor.getSavedEmail()?.also { savedEmail ->
             email_edit_text.setText(savedEmail)
             password_edit_text.requestFocus()
@@ -95,6 +108,19 @@ class SignInActivity : BaseActivity() {
 
         password_edit_text.onEditorAction {
             tryToSignIn()
+        }
+    }
+
+    private fun initNetworkField() {
+        if (BuildConfig.IS_NETWORK_SPECIFIED_BY_USER) {
+            network_field_layout.visibility = View.VISIBLE
+            urlConfigManager.get()?.also { network_edit_text.setText(it.apiDomain) }
+
+            scan_qr_button.onClick {
+                tryOpenQrScanner()
+            }
+        } else {
+            network_field_layout.visibility = View.GONE
         }
     }
 
@@ -136,12 +162,29 @@ class SignInActivity : BaseActivity() {
     }
     // endregion
 
+    // region QR
+    private fun tryOpenQrScanner() {
+        cameraPermission.check(this) {
+            openQrScanner()
+        }
+    }
+
+    private fun openQrScanner() {
+        IntentIntegrator(this)
+                .setBeepEnabled(false)
+                .setOrientationLocked(false)
+                .setPrompt("")
+                .initiateScan()
+    }
+    // endregion
+
     private fun updateSignInAvailability() {
         canSignIn = !isLoading
                 && email_edit_text.text.isNotBlank()
                 && password_edit_text.text.isNotEmpty()
                 && !password_edit_text.hasError()
                 && !email_edit_text.hasError()
+                && urlConfigProvider.hasConfig()
     }
 
     private fun tryToSignIn() {
@@ -249,10 +292,27 @@ class SignInActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         requestFingerprintAuthIfAvailable()
+        initNetworkField()
     }
 
     override fun onPause() {
         super.onPause()
         cancelFingerprintAuth()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        val scanResult = IntentIntegrator
+                .parseActivityResult(requestCode, resultCode, data)
+
+        if (scanResult != null && scanResult.contents != null) {
+            urlConfigManager.setFromJson(scanResult.contents)
+        }
     }
 }

@@ -31,6 +31,10 @@ ext {
     // used during sign in
     terms_url = '"https://demo.tokend.org/terms"'
 
+    // KYC URL - Link to the user verification page of your project,
+    // used on settings screen
+    kyc_url = '"https://demo.tokend.org/verification/make"'
+
     // --------------------------
 
     // ----- Appearance -----
@@ -106,6 +110,9 @@ ext {
     allow_explore = 'true'
     // Allow invest - Controls investment functionality availability.
     allow_invest = 'true'
+    // Network specified by user - When set to 'true' user have to specify network to work with,
+    // URLs from config are ignored.
+    network_specified_by_user = 'true'
     // ----------------------
 }
 
@@ -127,6 +134,7 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'String', 'STORAGE_URL', "${storage_url}"
     b.buildConfigField 'String', 'WEB_CLIENT_URL', "${web_client_url}"
     b.buildConfigField 'String', 'TERMS_URL', "${terms_url}"
+    b.buildConfigField 'String', 'KYC_URL', "${kyc_url}"
 
     b.buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"
     b.buildConfigField 'Boolean', 'IS_SEND_ALLOWED', "${allow_send}"
@@ -135,6 +143,7 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'IS_WITHDRAW_ALLOWED', "${allow_withdraw}"
     b.buildConfigField 'Boolean', 'IS_EXPLORE_ALLOWED', "${allow_explore}"
     b.buildConfigField 'Boolean', 'IS_INVEST_ALLOWED', "${allow_invest}"
+    b.buildConfigField 'Boolean', 'IS_NETWORK_SPECIFIED_BY_USER', "${network_specified_by_user}"
 
     b.resValue "string", "app_host", "${app_host}"
     b.resValue "color", "primary", "${color_primary}"

@@ -195,11 +195,15 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayAssets() {
+        val storageUrl = urlConfigProvider.getConfig().storage
         val balances = balancesRepository.itemsSubject.value
         val items = assetsRepository.itemsSubject.value
                 .map { asset ->
-                    AssetListItem(asset,
-                            balances.find { it.asset == asset.code } != null)
+                    AssetListItem(
+                            asset,
+                            balances.find { it.asset == asset.code } != null,
+                            storageUrl
+                    )
                 }
                 .sortedWith(Comparator { o1, o2 ->
                     return@Comparator o1.balanceExists.compareTo(o2.balanceExists)

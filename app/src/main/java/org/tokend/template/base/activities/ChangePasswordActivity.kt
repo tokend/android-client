@@ -157,7 +157,8 @@ class ChangePasswordActivity : BaseActivity() {
 
     private fun changePassword() {
         val passwordChars = new_password_edit_text.text.getChars()
-        val walletPasswordManager = WalletPasswordManager(repositoryProvider.systemInfo())
+        val walletPasswordManager =
+                WalletPasswordManager(repositoryProvider.systemInfo(), urlConfigProvider)
 
         SignUpManager.getRandomAccount()
                 .flatMapCompletable { account ->

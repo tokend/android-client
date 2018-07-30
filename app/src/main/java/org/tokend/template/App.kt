@@ -20,10 +20,9 @@ import com.google.android.gms.security.ProviderInstaller
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import io.reactivex.subjects.BehaviorSubject
-import org.tokend.template.base.logic.di.ApiProviderModule
-import org.tokend.template.base.logic.di.AppStateComponent
-import org.tokend.template.base.logic.di.DaggerAppStateComponent
-import org.tokend.template.base.logic.di.PersistenceModule
+import org.tokend.template.base.logic.di.*
+import org.tokend.template.base.logic.model.UrlConfig
+import org.tokend.template.base.logic.persistance.UrlConfigPersistor
 import org.tokend.template.util.Navigator
 import java.util.*
 
@@ -119,12 +118,27 @@ class App : MultiDexApplication() {
                 Context.MODE_PRIVATE)
     }
 
+    private fun getNetworkPreferences(): SharedPreferences {
+        return getSharedPreferences("NetworkPersistence",
+                Context.MODE_PRIVATE)
+    }
+
     private fun initStateComponent() {
         val cookieJar = PersistentCookieJar(cookieCache, cookiePersistor)
 
         stateComponent = DaggerAppStateComponent.builder()
-                .apiProviderModule(ApiProviderModule(BuildConfig.API_URL, cookieJar))
-                .persistenceModule(PersistenceModule(getCredentialsPreferences()))
+                .urlConfigProviderModule(UrlConfigProviderModule(
+                        if (BuildConfig.IS_NETWORK_SPECIFIED_BY_USER)
+                            UrlConfigPersistor(getNetworkPreferences()).loadConfig()
+                        else
+                            UrlConfig(BuildConfig.API_URL, BuildConfig.STORAGE_URL,
+                                    BuildConfig.KYC_URL, BuildConfig.TERMS_URL)
+                ))
+                .apiProviderModule(ApiProviderModule(cookieJar))
+                .persistenceModule(PersistenceModule(
+                        getCredentialsPreferences(),
+                        getNetworkPreferences()
+                ))
                 .build()
     }
 

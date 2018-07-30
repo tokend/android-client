@@ -10,10 +10,12 @@ import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.wallet.Account
 
 class ApiProviderImpl(
-        private val url: String,
+        private val urlConfigProvider: UrlConfigProvider,
         private val accountProvider: AccountProvider,
         private val tfaCallback: TfaCallback?,
         cookieJar: CookieJar?) : ApiProvider {
+    private val url: String
+        get() = urlConfigProvider.getConfig().api
 
     private var cookieJarProvider = cookieJar?.let {
         object : CookieJarProvider {
@@ -23,23 +25,39 @@ class ApiProviderImpl(
         }
     }
 
-    private val mApi: ApiService by lazy {
-        ApiFactory(url).getApiService(null, tfaCallback, cookieJarProvider)
-    }
+    private var apiByUrl: Pair<String, ApiService>? = null
+    private var ketStorageByUrl: Pair<String, KeyStorage>? = null
 
-    private val mKeyStorage: KeyStorage by lazy {
-        KeyStorage(url, tfaCallback, cookieJarProvider)
-    }
-
+    private var signedApiUrl = ""
     private var signedApiByAccountHash: Pair<Int, ApiService>? = null
+
+    private var signedKeyStorageUrl = ""
     private var signedKeyStorageByAccountHash: Pair<Int, KeyStorage>? = null
 
     override fun getApi(): ApiService {
-        return mApi
+        val api = apiByUrl
+                ?.takeIf { (url, _) ->
+                    this.url == url
+                }
+                ?.second
+                ?: ApiFactory(url).getApiService(null, tfaCallback, cookieJarProvider)
+
+        apiByUrl = Pair(url, api)
+
+        return api
     }
 
     override fun getKeyStorage(): KeyStorage {
-        return mKeyStorage
+        val keyStorage = ketStorageByUrl
+                ?.takeIf { (url, _) ->
+                    this.url == url
+                }
+                ?.second
+                ?: KeyStorage(url, tfaCallback, cookieJarProvider)
+
+        ketStorageByUrl = Pair(url, keyStorage)
+
+        return keyStorage
     }
 
     override fun getSignedApi(): ApiService? {
@@ -49,11 +67,13 @@ class ApiProviderImpl(
                 signedApiByAccountHash
                         ?.takeIf { (accountHash, _) ->
                             accountHash == account.hashCode()
+                                    && signedApiUrl == url
                         }
                         ?.second
                         ?: createSignedApiWithAccount(account)
 
         signedApiByAccountHash = Pair(account.hashCode(), signedApi)
+        signedApiUrl = url
 
         return signedApi
     }
@@ -65,11 +85,13 @@ class ApiProviderImpl(
                 signedKeyStorageByAccountHash
                         ?.takeIf { (accountHash, _) ->
                             accountHash == account.hashCode()
+                                    && signedKeyStorageUrl == url
                         }
                         ?.second
                         ?: createSignedKeyStorageWithAccount(account)
 
         signedKeyStorageByAccountHash = Pair(account.hashCode(), signedKeyStorage)
+        signedKeyStorageUrl = url
 
         return signedKeyStorage
     }

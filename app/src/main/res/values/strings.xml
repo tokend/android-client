@@ -275,4 +275,8 @@
     <string name="sale_overview_title">Overview</string>
     <string name="sale_token_title">Token</string>
     <string name="sale_general_info_title">General</string>
+
+    <string name="tokend_network_hint">Network</string>
+    <string name="not_specified">Not specified</string>
+    <string name="error_network_not_specified">Network is not specified</string>
 </resources>

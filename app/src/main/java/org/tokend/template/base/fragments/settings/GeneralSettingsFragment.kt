@@ -16,7 +16,6 @@ import org.jetbrains.anko.browse
 import org.jetbrains.anko.clipboardManager
 import org.tokend.sdk.api.tfa.TfaBackend
 import org.tokend.template.App
-import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
@@ -95,7 +94,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun initKycItem() {
         val kycPreference = findPreference("kyc")
         kycPreference?.setOnPreferenceClickListener {
-            activity?.browse(BuildConfig.WEB_CLIENT_URL, true)
+            activity?.browse(urlConfigProvider.getConfig().kyc, true)
             true
         }
     }

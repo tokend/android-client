@@ -9,13 +9,15 @@ import android.os.Environment
 import android.support.v4.app.Fragment
 import android.webkit.MimeTypeMap
 import org.tokend.sdk.api.models.RemoteFile
-import org.tokend.template.BuildConfig
 import org.tokend.template.R
 
 /**
  * Manages [RemoteFile] downloading.
  */
-class FileDownloader(private val context: Context) {
+class FileDownloader(
+        private val context: Context,
+        private val storageUrl: String
+) {
     private val storagePermission =
             Permission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 403)
 
@@ -42,7 +44,7 @@ class FileDownloader(private val context: Context) {
                 else
                     "$name.$extension"
 
-        val request = DownloadManager.Request(Uri.parse(file.getUrl(BuildConfig.STORAGE_URL)))
+        val request = DownloadManager.Request(Uri.parse(file.getUrl(storageUrl)))
         request.setTitle(file.name)
         if (file.mimeType != null) {
             request.setMimeType(file.mimeType)

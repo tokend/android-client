@@ -13,7 +13,8 @@ import javax.inject.Singleton
     AppTfaCallbackModule::class,
     ApiProviderModule::class,
     RepositoriesModule::class,
-    PersistenceModule::class
+    PersistenceModule::class,
+    UrlConfigProviderModule::class
 ])
 interface AppStateComponent {
     fun inject(baseActivity: BaseActivity)

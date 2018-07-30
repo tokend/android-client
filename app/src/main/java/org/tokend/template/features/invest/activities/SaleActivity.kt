@@ -28,7 +28,6 @@ import org.tokend.sdk.api.models.Offer
 import org.tokend.sdk.api.models.SaleFavoriteEntry
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.utils.BigDecimalUtil
-import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.activities.BaseActivity
 import org.tokend.template.base.logic.FeeManager
@@ -66,7 +65,7 @@ class SaleActivity : BaseActivity() {
             hideLoading = { (sale_invest_progress as? ContentLoadingProgressBar)?.hide() }
     )
 
-    private val fileDownloader = FileDownloader(this)
+    private lateinit var fileDownloader: FileDownloader
 
     private val salesRepository: SalesRepository
         get() = repositoryProvider.sales()
@@ -138,6 +137,7 @@ class SaleActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         feeManager = FeeManager(apiProvider)
+        fileDownloader = FileDownloader(this, urlConfigProvider.getConfig().storage)
 
         supportPostponeEnterTransition()
 
@@ -305,7 +305,7 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun displayAssetDetails() {
-        saleAsset.details?.logo?.getUrl(BuildConfig.STORAGE_URL)?.let {
+        saleAsset.details?.logo?.getUrl(urlConfigProvider.getConfig().storage)?.let {
             Picasso.with(this)
                     .load(it)
                     .resizeDimen(R.dimen.asset_list_item_logo_size, R.dimen.asset_list_item_logo_size)

@@ -10,6 +10,8 @@
         android:layout_margin="@dimen/standard_margin"
         android:orientation="vertical">
 
+        <include layout="@layout/layout_network_field" />
+
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/email_edit_text"
             style="@style/EditText"
@@ -54,7 +56,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standard_margin">
+            android:layout_marginTop="@dimen/standard_margin"
+            android:paddingBottom="@dimen/standard_padding">
 
             <Button
                 android:id="@+id/recovery_button"

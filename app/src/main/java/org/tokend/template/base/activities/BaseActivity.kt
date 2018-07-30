@@ -12,11 +12,9 @@ import org.tokend.sdk.federation.NeedTfaException
 import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.base.logic.AppTfaCallback
-import org.tokend.template.base.logic.di.providers.AccountProvider
-import org.tokend.template.base.logic.di.providers.ApiProvider
-import org.tokend.template.base.logic.di.providers.RepositoryProvider
-import org.tokend.template.base.logic.di.providers.WalletInfoProvider
+import org.tokend.template.base.logic.di.providers.*
 import org.tokend.template.base.logic.persistance.CredentialsPersistor
+import org.tokend.template.base.logic.persistance.UrlConfigPersistor
 import org.tokend.template.base.tfa.TfaDialogFactory
 import org.tokend.template.util.Navigator
 import javax.inject.Inject
@@ -34,6 +32,10 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var repositoryProvider: RepositoryProvider
     @Inject
     lateinit var credentialsPersistor: CredentialsPersistor
+    @Inject
+    lateinit var urlConfigProvider: UrlConfigProvider
+    @Inject
+    lateinit var urlConfigPersistor: UrlConfigPersistor
 
     protected open val allowUnauthorized = false
 

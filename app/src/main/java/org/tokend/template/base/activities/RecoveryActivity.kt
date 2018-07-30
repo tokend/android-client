@@ -1,26 +1,30 @@
 package org.tokend.template.base.activities
 
+import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.view.View
+import com.google.zxing.integration.android.IntentIntegrator
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_recovery.*
+import kotlinx.android.synthetic.main.layout_network_field.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.federation.EmailNotVerifiedException
 import org.tokend.sdk.federation.InvalidCredentialsException
+import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.logic.SignUpManager
+import org.tokend.template.base.logic.UrlConfigManager
 import org.tokend.template.base.logic.WalletPasswordManager
 import org.tokend.template.base.view.util.EditTextHelper
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
 import org.tokend.template.extensions.*
-import org.tokend.template.util.Navigator
-import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.SoftInputUtil
-import org.tokend.template.util.ToastManager
+import org.tokend.template.util.*
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import org.tokend.wallet.Base32Check
 
@@ -50,11 +54,24 @@ class RecoveryActivity : BaseActivity() {
 
     private var passwordsMatch = false
 
+    private val cameraPermission = Permission(Manifest.permission.CAMERA, 404)
+    private lateinit var urlConfigManager: UrlConfigManager
+
     private val email: String
         get() = intent.getStringExtra(EMAIL_EXTRA, "")
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_recovery)
+
+        urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistor)
+        urlConfigManager.onConfigUpdated {
+            initNetworkField()
+
+            seed_edit_text.error = null
+            email_edit_text.text = email_edit_text.text
+
+            updateRecoveryAvailability()
+        }
 
         initFields()
         initButtons()
@@ -64,6 +81,8 @@ class RecoveryActivity : BaseActivity() {
 
     // region Init
     private fun initFields() {
+        initNetworkField()
+
         EditTextHelper.initPasswordEditText(password_edit_text)
 
         if (!email.isEmpty()) {
@@ -102,6 +121,19 @@ class RecoveryActivity : BaseActivity() {
         }
     }
 
+    private fun initNetworkField() {
+        if (BuildConfig.IS_NETWORK_SPECIFIED_BY_USER) {
+            network_field_layout.visibility = View.VISIBLE
+            urlConfigManager.get()?.also { network_edit_text.setText(it.apiDomain) }
+
+            scan_qr_button.onClick {
+                tryOpenQrScanner()
+            }
+        } else {
+            network_field_layout.visibility = View.GONE
+        }
+    }
+
     private fun initButtons() {
         recovery_button.onClick {
             tryToRecover()
@@ -110,6 +142,22 @@ class RecoveryActivity : BaseActivity() {
         sign_in_text_view.onClick {
             Navigator.toSignIn(this, false)
         }
+    }
+    // endregion
+
+    // region QR
+    private fun tryOpenQrScanner() {
+        cameraPermission.check(this) {
+            openQrScanner()
+        }
+    }
+
+    private fun openQrScanner() {
+        IntentIntegrator(this)
+                .setBeepEnabled(false)
+                .setOrientationLocked(false)
+                .setPrompt("")
+                .initiateScan()
     }
     // endregion
 
@@ -148,6 +196,7 @@ class RecoveryActivity : BaseActivity() {
                 && !email_edit_text.hasError()
                 && !password_edit_text.hasError()
                 && !seed_edit_text.hasError()
+                && urlConfigProvider.hasConfig()
     }
 
     private fun tryToRecover() {
@@ -167,7 +216,7 @@ class RecoveryActivity : BaseActivity() {
 
         SignUpManager.getRandomAccount()
                 .flatMapCompletable { account ->
-                    WalletPasswordManager(repositoryProvider.systemInfo())
+                    WalletPasswordManager(repositoryProvider.systemInfo(), urlConfigProvider)
                             .restore(email, seed, account, password)
                 }
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
@@ -209,6 +258,22 @@ class RecoveryActivity : BaseActivity() {
             is EmailNotVerifiedException ->
                 email_edit_text.setErrorAndFocus(R.string.error_email_not_verified)
             else -> ErrorHandlerFactory.getDefault().handle(error)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        val scanResult = IntentIntegrator
+                .parseActivityResult(requestCode, resultCode, data)
+
+        if (scanResult != null && scanResult.contents != null) {
+            urlConfigManager.setFromJson(scanResult.contents)
         }
     }
 }

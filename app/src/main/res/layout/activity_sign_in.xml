@@ -12,18 +12,13 @@
         android:layout_margin="@dimen/standard_margin"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/sign_in"
-            android:visibility="gone" />
+        <include layout="@layout/layout_network_field" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/email_edit_text"
             style="@style/EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/half_standard_margin"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
             app:met_floatingLabelText="@string/email" />
@@ -105,6 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/standard_margin"
             android:gravity="center"
+            android:paddingBottom="@dimen/standard_padding"
             tools:text="0.1(1)" />
 
     </LinearLayout>

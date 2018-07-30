@@ -7,15 +7,18 @@ import io.reactivex.rxkotlin.toSingle
 import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.LoginParamsResponse
 import org.tokend.template.base.logic.di.providers.ApiProviderFactory
+import org.tokend.template.base.logic.di.providers.UrlConfigProvider
 import org.tokend.wallet.Account
 import java.security.SecureRandom
 
-class SignUpManager {
+class SignUpManager(
+        private val urlConfigProvider: UrlConfigProvider
+) {
     fun signUp(email: String, password: CharArray,
                rootAccount: Account, recoveryAccount: Account,
                derivationSalt: ByteArray = SecureRandom.getSeed(SEED_LENGTH)): Completable {
 
-        val apiProvider = ApiProviderFactory().createApiProvider(rootAccount)
+        val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, rootAccount)
         val walletManager = WalletManager(apiProvider.getKeyStorage())
 
         val data = object {

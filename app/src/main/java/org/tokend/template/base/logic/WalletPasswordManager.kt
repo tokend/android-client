@@ -22,7 +22,8 @@ import retrofit2.HttpException
 import java.net.HttpURLConnection
 
 class WalletPasswordManager(
-        private val systemInfoRepository: SystemInfoRepository
+        private val systemInfoRepository: SystemInfoRepository,
+        private val urlConfigProvider: UrlConfigProvider
 ) {
     fun restore(email: String, recoverySeed: CharArray,
                 newAccount: Account, newPassword: CharArray): Completable {
@@ -35,7 +36,8 @@ class WalletPasswordManager(
                 // Create API provider for recovery account.
                 .map { account ->
                     data.accountProvider = AccountProviderFactory().createAccountProvider(account)
-                    ApiProviderFactory().createApiProvider(data.accountProvider)
+                    ApiProviderFactory()
+                            .createApiProvider(urlConfigProvider, data.accountProvider)
                 }
                 // Create WalletManager signed with recovery account.
                 .map { apiProvider ->

@@ -70,7 +70,7 @@ class AssetDetailsFragment : BaseFragment() {
                 return true
             }
         })
-        fileDownloader = FileDownloader(activity!!)
+        fileDownloader = FileDownloader(activity!!, urlConfigProvider.getConfig().storage)
         return view
     }
 
@@ -109,7 +109,9 @@ class AssetDetailsFragment : BaseFragment() {
     }
 
     private fun displayLogoAndName() {
-        AssetListItemViewHolder(asset_card).bind(AssetListItem(asset, balanceExists))
+        AssetListItemViewHolder(asset_card).bind(
+                AssetListItem(asset, balanceExists, urlConfigProvider.getConfig().storage)
+        )
     }
 
     private fun displaySummary() {

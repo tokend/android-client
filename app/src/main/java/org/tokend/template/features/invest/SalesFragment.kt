@@ -49,7 +49,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     private val salesRepository: SalesRepository
         get() = repositoryProvider.sales()
 
-    private val salesAdapter = SalesAdapter()
+    private lateinit var salesAdapter: SalesAdapter
 
     private var searchItem: MenuItem? = null
     private var nameQuery = ""
@@ -84,6 +84,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initSalesList() {
+        salesAdapter = SalesAdapter(urlConfigProvider.getConfig().storage)
         error_empty_view.observeAdapter(salesAdapter, R.string.no_sales_found)
         error_empty_view.setEmptyViewDenial { !hasFilter && salesRepository.isNeverUpdated }
 

@@ -7,10 +7,7 @@ import io.reactivex.disposables.CompositeDisposable
 import org.tokend.template.App
 import org.tokend.template.base.activities.OnBackPressedListener
 import org.tokend.template.base.logic.AppTfaCallback
-import org.tokend.template.base.logic.di.providers.AccountProvider
-import org.tokend.template.base.logic.di.providers.ApiProvider
-import org.tokend.template.base.logic.di.providers.RepositoryProvider
-import org.tokend.template.base.logic.di.providers.WalletInfoProvider
+import org.tokend.template.base.logic.di.providers.*
 import javax.inject.Inject
 
 abstract class BaseFragment : Fragment(), OnBackPressedListener {
@@ -24,6 +21,8 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
     lateinit var walletInfoProvider: WalletInfoProvider
     @Inject
     lateinit var repositoryProvider: RepositoryProvider
+    @Inject
+    lateinit var urlConfigProvider: UrlConfigProvider
 
     override fun onBackPressed() = true
 

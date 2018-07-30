@@ -9,6 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
 import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.base.logic.di.providers.RepositoryProvider
+import org.tokend.template.base.logic.di.providers.UrlConfigProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import javax.inject.Inject
 
@@ -18,6 +19,8 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
     lateinit var walletInfoProvider: WalletInfoProvider
     @Inject
     lateinit var repositoryProvider: RepositoryProvider
+    @Inject
+    lateinit var urlConfigProvider: UrlConfigProvider
 
     protected val compositeDisposable = CompositeDisposable()
 

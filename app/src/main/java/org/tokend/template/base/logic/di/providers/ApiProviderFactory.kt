@@ -6,27 +6,22 @@ import org.tokend.template.BuildConfig
 import org.tokend.wallet.Account
 
 class ApiProviderFactory {
-    fun createApiProvider(accountProvider: AccountProvider,
-                          tfaCallback: TfaCallback? = null,
-                          cookieJar: CookieJar? = null): ApiProvider {
-        return createApiProvider(BuildConfig.API_URL, accountProvider, tfaCallback, cookieJar)
-    }
-
-    fun createApiProvider(account: Account? = null,
+    fun createApiProvider(urlConfigProvider: UrlConfigProvider,
+                          account: Account? = null,
                           tfaCallback: TfaCallback? = null,
                           cookieJar: CookieJar? = null): ApiProvider {
         return createApiProvider(
-                BuildConfig.API_URL,
+                urlConfigProvider,
                 AccountProviderFactory().createAccountProvider(account),
                 tfaCallback,
                 cookieJar
         )
     }
 
-    fun createApiProvider(url: String,
+    fun createApiProvider(urlConfigProvider: UrlConfigProvider,
                           accountProvider: AccountProvider,
                           tfaCallback: TfaCallback? = null,
                           cookieJar: CookieJar? = null): ApiProvider {
-        return ApiProviderImpl(url, accountProvider, tfaCallback, cookieJar)
+        return ApiProviderImpl(urlConfigProvider, accountProvider, tfaCallback, cookieJar)
     }
 }

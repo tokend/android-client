@@ -88,7 +88,10 @@ class SignInManager(
                         .onErrorResumeNext { error ->
                             if (error is HttpException
                                     && error.code() == HttpURLConnection.HTTP_NOT_FOUND) {
-                                repositoryProvider.user().createUnverified()
+                                createUnverifiedUser(repositoryProvider)
+                            } else if (error is HttpException
+                                    && error.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                                Completable.error(InvalidPersistedCredentialsException())
                             } else {
                                 // Other account update errors are not critical.
                                 Completable.complete()
@@ -105,6 +108,21 @@ class SignInManager(
                     if (it is InvalidPersistedCredentialsException) {
                         credentialsPersistor.clear(keepEmail = true)
                     }
+                }
+    }
+
+    private fun createUnverifiedUser(repositoryProvider: RepositoryProvider): Completable {
+        return repositoryProvider.user().createUnverified()
+                .onErrorResumeNext {
+                    if (it is HttpException
+                            && (it.code() == HttpURLConnection.HTTP_UNAUTHORIZED
+                                    || it.code() == HttpURLConnection.HTTP_FORBIDDEN)
+                    )
+                        Completable.error(
+                                InvalidPersistedCredentialsException()
+                        )
+                    else
+                        Completable.error(it)
                 }
     }
     // endregion
