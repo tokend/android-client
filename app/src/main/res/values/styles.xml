@@ -1,0 +1,144 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textColorSecondary">@color/secondary_text</item>
+        <item name="preferenceTheme">@style/PreferenceTheme</item>
+        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
+        <item name="android:windowAnimationStyle">@style/AppAnimationStyle</item>
+    </style>
+
+    <style name="AppAnimationStyle" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenExitAnimation">@anim/stay_visible</item>
+        <item name="android:activityCloseEnterAnimation">@anim/stay_visible</item>
+    </style>
+
+    <style name="AppTheme.CardsBackground" parent="AppTheme">
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.CardsBackground" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+
+    <style name="EditText">
+        <item name="met_textColorHint">@color/secondary_text</item>
+        <item name="met_primaryColor">@color/colorAccent</item>
+        <item name="met_errorColor">@color/error</item>
+        <item name="met_floatingLabel">highlight</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="EditText.Dark" parent="EditText">
+        <item name="met_textColorHint">@color/white_almost</item>
+        <item name="met_baseColor">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="met_primaryColor">@color/white</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+
+    <style name="PrimaryButton.Overlay" parent="ThemeOverlay.AppCompat">
+        <item name="colorButtonNormal">@color/primary_action_disabled</item>
+        <item name="colorAccent">@color/primary_action</item>
+    </style>
+
+    <style name="PrimaryButton" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:theme">@style/PrimaryButton.Overlay</item>
+        <item name="android:textColor">@color/md_white_1000</item>
+        <item name="android:paddingStart">@dimen/double_margin</item>
+        <item name="android:paddingEnd">@dimen/double_margin</item>
+    </style>
+
+    <style name="SecondaryButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/secondary_text</item>
+    </style>
+
+    <style name="DialogButton" parent="SecondaryButton">
+        <item name="android:textColor">@color/primary_action</item>
+    </style>
+
+    <style name="PrimaryActionTextView">
+        <item name="android:textColor">@color/primary_action</item>
+    </style>
+
+    <style name="SecondaryText">
+        <item name="android:textColor">@color/secondary_text</item>
+    </style>
+
+    <style name="HintText" parent="@style/SecondaryText">
+        <item name="android:textSize">@dimen/text_size_hint</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="actionMenuTextColor">@color/white</item>
+    </style>
+
+    <style name="TabPicker">
+        <item name="tabGravity">fill</item>
+        <item name="tabMode">scrollable</item>
+        <item name="tabSelectedTextColor">@color/primary</item>
+        <item name="tabIndicatorColor">@color/primary</item>
+        <item name="tabTextColor">@color/primary_text</item>
+        <item name="android:requiresFadingEdge">horizontal</item>
+        <item name="android:fadingEdgeLength">@dimen/standard_margin</item>
+    </style>
+
+    <style name="TabPicker.Inverse" parent="@style/TabPicker">
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabIndicatorColor">@color/white</item>
+        <item name="tabTextColor">@color/white_almost</item>
+    </style>
+
+    <style name="ExpandedTitleAppearance" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">@dimen/toolbar_title_size</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="CollapsedTitleAppearance" parent="@style/ExpandedTitleAppearance">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="PreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="android:tint">@color/colorPrimary</item>
+        <item name="android:dividerHeight">0dp</item>
+    </style>
+
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/primary_action</item>
+
+        <item name="android:textColor">@null</item>
+        <item name="android:textSize">@null</item>
+    </style>
+
+    <style name="InfoCard">
+        <item name="cardElevation">@dimen/card_elevation</item>
+        <item name="contentPadding">@dimen/standard_margin</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="android:layout_marginTop">@dimen/half_standard_margin</item>
+    </style>
+
+    <style name="HeadingText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/text_size_heading</item>
+    </style>
+
+    <style name="SaleProgressBar" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:layout_height">4dp</item>
+        <item name="android:progressDrawable">@drawable/sale_progress</item>
+    </style>
+</resources>

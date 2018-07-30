@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <include layout="@layout/appbar" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/include_error_empty_view" />
+
+            <org.tokend.template.base.view.PaginationRecyclerView
+                android:id="@+id/sales_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingBottom="@dimen/half_standard_margin"
+                android:paddingEnd="6dp"
+                android:paddingStart="6dp"
+                android:paddingTop="@dimen/half_standard_margin" />
+
+        </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

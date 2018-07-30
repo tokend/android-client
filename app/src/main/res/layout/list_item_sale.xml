@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/InfoCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/quarter_standard_margin"
+    android:layout_marginEnd="@dimen/half_standard_margin"
+    android:layout_marginStart="@dimen/half_standard_margin"
+    android:layout_marginTop="@dimen/quarter_standard_margin"
+    app:cardPreventCornerOverlap="false"
+    app:contentPadding="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/sale_picture_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/sale_picture_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="16:9"
+                tools:src="@color/background" />
+
+            <ImageView
+                android:id="@+id/sale_upcoming_image_view"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/upcoming_label" />
+        </android.support.constraint.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/standard_margin">
+
+            <TextView
+                android:id="@+id/sale_name_text_view"
+                style="@style/HeadingText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                tools:text="Sale name" />
+
+            <TextView
+                android:id="@+id/sale_short_description_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_padding"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:minLines="3"
+                android:paddingBottom="@dimen/standard_padding"
+                tools:text="Here goes a short\nfund\ndescription" />
+
+            <include layout="@layout/layout_sale_progress" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

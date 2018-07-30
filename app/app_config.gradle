@@ -1,0 +1,163 @@
+ext {
+    // ----- Android params -----
+
+    // Application ID - unique identifier of the app in Google Play and on user's device
+    application_id = 'org.tokend.template'
+    // Version Name - human-readable app version
+    version_name = '1.0'
+    // Version Code - code number for version,
+    // must be incremented after each release
+    version_code = 2
+
+    // --------------------------
+
+    // ----- Network params -----
+
+    // API URL - TokenD instance root URL
+    api_url = '"https://api.testnet.tokend.org"'
+
+    // Storage URL - Root URL of file storage
+    storage_url = '"https://storage.testnet.tokend.org/api/"'
+
+    // Web-client URL - Root URL of the related web-client,
+    // will be opened if some functions are not available in mobile app
+    web_client_url = '"https://demo.tokend.org"'
+
+    // App host - Host of the related web-client,
+    // used to open verification and referral links in app
+    app_host = '"demo.tokend.org"'
+
+    // Terms of Service URL - Link to the Terms of Service page of your project,
+    // used during sign in
+    terms_url = '"https://demo.tokend.org/terms"'
+
+    // KYC URL - Link to the user verification page of your project,
+    // used on settings screen
+    kyc_url = '"https://demo.tokend.org/verification/make"'
+
+    // --------------------------
+
+    // ----- Appearance -----
+
+    // Primary color - color of app toolbar
+    color_primary = '#0066cc'
+    // Primary dark - color of status bar above toolbar
+    color_primary_dark = '#01579B'
+
+    // Primary-half color - color of asset charts
+    color_primary_half = '#800066cc'
+    // Accent color - color of actions and controls by default
+    color_accent = '#ef5350'
+
+    // Background color - used as a background color on screens with cards
+    color_background = '#e8e8e8'
+
+    // Primary text - color of all text labels and fields
+    color_primary_text = '#212121'
+    // Secondary text - color of hints
+    color_secondary_text = '#803f4244'
+
+    // Primary action - custom color for action controls,
+    // same as Accent by default
+    color_primary_action = '#ef5350'
+    // Primary action disabled - color of disabled action control,
+    // usually it's just a Primary action color with some transparency
+    color_primary_action_disabled = '#80ef5350'
+
+    // Icons - color of all icons in app except menus
+    color_icons = '#6F6F6F'
+
+    // Error - color of error messages,
+    // usually a shade of red
+    color_error = '#c2243b'
+    // Ok - color of success messages,
+    // usually a shade of green
+    color_ok = '#3fa595'
+
+    // Received - color of income amounts
+    color_received = '#689F38'
+    // Sent - color of spent amounts
+    color_sent = '#D32F2F'
+    //Warning - color of warning message
+    color_warning = '#EF6C00'
+
+    // ----------------------
+
+    // ----- Security -----
+
+    // Secure content - when set to "true" app content will not be
+    // shown in multitasking, also user will not be allowed to take
+    // screenshots
+    secure_content = 'false'
+
+    // ----------------------
+
+    // --- Functionality ---
+
+    // Allow send - Controls sending functionality availability.
+    // It doesn't affect the display of payment transactions in the history.
+    allow_send = 'true'
+    // Allow trade - Controls trading functionality availability.
+    // It doesn't affect the display of offer match transactions in the history.
+    allow_trade = 'true'
+    // Allow deposit - Controls deposit functionality availability.
+    // It doesn't affect the display of deposit transactions in the history.
+    allow_deposit = 'true'
+    // Allow withdraw - Controls withdrawal functionality availability.
+    // It doesn't affect the display of withdrawal transactions in the history.
+    allow_withdraw = 'true'
+    // Allow explore - Controls explore tokens functionality availability.
+    allow_explore = 'true'
+    // Allow invest - Controls investment functionality availability.
+    allow_invest = 'true'
+    // Network specified by user - When set to 'true' user have to specify network to work with.
+    network_specified_by_user = 'true'
+    // ----------------------
+}
+
+
+
+
+ext.applyAppConfig = { buildConfig ->
+    android {
+        defaultConfig {
+            applicationId "${application_id}"
+            versionName "${version_name}"
+            versionCode version_code
+        }
+    }
+
+    def b = buildConfig
+
+    b.buildConfigField 'String', 'API_URL', "${api_url}"
+    b.buildConfigField 'String', 'STORAGE_URL', "${storage_url}"
+    b.buildConfigField 'String', 'WEB_CLIENT_URL', "${web_client_url}"
+    b.buildConfigField 'String', 'TERMS_URL', "${terms_url}"
+    b.buildConfigField 'String', 'KYC_URL', "${kyc_url}"
+
+    b.buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"
+    b.buildConfigField 'Boolean', 'IS_SEND_ALLOWED', "${allow_send}"
+    b.buildConfigField 'Boolean', 'IS_TRADE_ALLOWED', "${allow_trade}"
+    b.buildConfigField 'Boolean', 'IS_DEPOSIT_ALLOWED', "${allow_deposit}"
+    b.buildConfigField 'Boolean', 'IS_WITHDRAW_ALLOWED', "${allow_withdraw}"
+    b.buildConfigField 'Boolean', 'IS_EXPLORE_ALLOWED', "${allow_explore}"
+    b.buildConfigField 'Boolean', 'IS_INVEST_ALLOWED', "${allow_invest}"
+    b.buildConfigField 'Boolean', 'IS_NETWORK_SPECIFIED_BY_USER', "${network_specified_by_user}"
+
+    b.resValue "string", "app_host", "${app_host}"
+    b.resValue "color", "primary", "${color_primary}"
+    b.resValue "color", "primary_half", "${color_primary_half}"
+    b.resValue "color", "primary_dark", "${color_primary_dark}"
+    b.resValue "color", "accent", "${color_accent}"
+    b.resValue "color", "background", "${color_background}"
+    b.resValue "color", "primary_text", "${color_primary_text}"
+    b.resValue "color", "secondary_text", "${color_secondary_text}"
+    b.resValue "color", "primary_action", "${color_primary_action}"
+    b.resValue "color", "primary_action_disabled", "${color_primary_action_disabled}"
+    b.resValue "color", "icons", "${color_icons}"
+    b.resValue "color", "error", "${color_error}"
+    b.resValue "color", "ok", "${color_ok}"
+    b.resValue "color", "received", "${color_received}"
+    b.resValue "color", "sent", "${color_sent}"
+    b.resValue "color", "warning", "${color_warning}"
+}

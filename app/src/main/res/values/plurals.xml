@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="day">
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
+    </plurals>
+
+    <plurals name="investor">
+        <item quantity="one">investor</item>
+        <item quantity="other">investors</item>
+    </plurals>
+</resources>

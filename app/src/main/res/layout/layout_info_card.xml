@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/InfoCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:contentPaddingBottom="@dimen/half_standard_padding">
+
+    <LinearLayout
+        android:id="@+id/card_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+</android.support.v7.widget.CardView>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/primary</color>
+    <color name="colorPrimaryDark">@color/primary_dark</color>
+    <color name="colorAccent">@color/accent</color>
+    <color name="colorBackground">@color/background</color>
+    <color name="transparentFloatingViewBackground">#3e000000</color>
+    <color name="saleImagePlaceholder">#bcbcbc</color>
+
+    <color name="white">#ffffff</color>
+    <color name="white_almost">#a0ffffff</color>
+
+</resources>

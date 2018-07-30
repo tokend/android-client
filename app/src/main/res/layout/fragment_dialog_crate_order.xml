@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/half_standard_padding"
+    android:paddingLeft="@dimen/half_standard_padding"
+    android:paddingRight="@dimen/half_standard_padding"
+    android:paddingTop="@dimen/standard_padding">
+
+    <TextView
+        android:id="@+id/title_text_view"
+        style="@style/HeadingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/standard_margin"
+        android:layout_marginEnd="@dimen/half_standard_padding"
+        android:layout_marginStart="@dimen/half_standard_padding"
+        android:text="@string/create_offer_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/price_edit_text"
+        style="@style/EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/half_standard_padding"
+        android:layout_marginStart="@dimen/half_standard_padding"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:hint="@string/price"
+        android:inputType="numberDecimal"
+        android:lines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_text_view" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/amount_edit_text"
+        style="@style/EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/half_standard_padding"
+        android:layout_marginStart="@dimen/half_standard_padding"
+        android:layout_marginTop="@dimen/half_standard_margin"
+        android:hint="@string/amount"
+        android:inputType="numberDecimal"
+        android:lines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/price_edit_text" />
+
+    <TextView
+        android:id="@+id/total_title_text_view"
+        style="@style/SecondaryText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/half_standard_padding"
+        android:text="@string/create_offer_dialog_total"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/total_amount_text_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/total_amount_text_view" />
+
+    <TextView
+        android:id="@+id/total_amount_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/total_title_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/amount_edit_text"
+        tools:text="0.000000" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/sell_btn"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:enabled="true"
+        android:minWidth="0dp"
+        android:text="@string/sell_action"
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/total_amount_text_view" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/buy_btn"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/half_standard_margin"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:enabled="true"
+        android:minWidth="0dp"
+        android:text="@string/buy_action"
+        android:textAllCaps="true"
+        app:layout_constraintEnd_toStartOf="@id/sell_btn"
+        app:layout_constraintTop_toBottomOf="@id/total_amount_text_view" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/cancel_btn"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:minWidth="0dp"
+        android:text="@string/cancel"
+        android:textAllCaps="true"
+        android:theme="@style/Widget.AppCompat.Button.Borderless.Colored"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/total_amount_text_view" />
+
+</android.support.constraint.ConstraintLayout>

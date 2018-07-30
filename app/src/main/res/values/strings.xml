@@ -1,0 +1,282 @@
+<resources>
+    <string name="app_name">TokenD</string>
+
+    <string name="sign_up">Sign up</string>
+    <string name="sign_in">Sign in</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="back_to_sign_in">Back to Sign in</string>
+    <string name="i_agree_to_the">I agree to the</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="recovery_seed">Recovery seed</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="recover_account">Recover account</string>
+    <string name="sign_out">Sign out</string>
+    <string name="loading_data">Loading data…</string>
+    <string name="view_more">View more</string>
+    <string name="retry">Retry</string>
+    <string name="share">Share</string>
+    <string name="share_account_id">Share Account ID</string>
+    <string name="check_your_email_to_verify_account">Check your email to verify account</string>
+    <string name="save_recovery_seed">Save your recovery seed</string>
+    <string name="continue_action">Continue</string>
+    <string name="validate_recovery_seed">Validate recovery seed</string>
+    <string name="recovery_seed_explanation">Save this seed in a secure place.
+        In case you lose your password you will be able to recover access to your account
+        by using this seed</string>
+    <string name="validate_recovery_seed_explanation">Please validate this seed in the field below to ensure that you copied it properly</string>
+    <string name="seed_copied">Seed is copied to the clipboard</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="seed_not_copied_confirmation">This seed is the only way to recover your account
+    in case of password loss. You will not be able to get it later</string>
+    <string name="i_understand">I understand</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="email_not_verified_explanation">
+        It seems that your email is not verified yet.
+        Please check your spam folder or request a new letter
+    </string>
+    <string name="resend_letter">Resend letter</string>
+    <string name="paste">Paste</string>
+    <string name="no_transaction_history">No transaction history</string>
+    <string name="date">Date</string>
+    <string name="tx_state">State</string>
+    <string name="payment_details_title">Payment details</string>
+    <string name="paid">Paid</string>
+    <string name="received">Received</string>
+    <string name="sent">Sent</string>
+    <string name="invested">Invested</string>
+    <string name="price">Price</string>
+    <string name="amount_sent">Amount sent</string>
+    <string name="payment_description">Description</string>
+    <string name="transaction_details_title">Transaction details</string>
+    <string name="deposit_details_title">Deposit details</string>
+    <string name="withdrawal_details_title">Withdrawal details</string>
+    <string name="amount">Amount</string>
+    <string name="unknown">Unknown</string>
+    <string name="template_withdrawal_fee_warning">Received amount may be lower due to %1$s network fees</string>
+    <string name="investment_details_title">Investment details</string>
+    <string name="template_price_one_for">1 %1$s for %2$s %3$s</string>
+    <string name="offer_match_details_title">Offer match details</string>
+    <string name="sign_out_confirmation">Are you sure want to sign out?</string>
+    <string name="yes">Yes</string>
+    <string name="password_was_changed">Password was successfully changed</string>
+    <string name="change_password_action">Change</string>
+    <string name="current_password">Current password</string>
+    <string name="open_action">Open</string>
+    <string name="copy_action">Copy</string>
+    <string name="template_balance">Balance: %1$s %2$s</string>
+    <string name="template_available">Available: %1$s %2$s</string>
+    <string name="to_pay">To pay</string>
+    <string name="to_receive">To receive</string>
+    <string name="confirm_action">Confirm</string>
+    <string name="processing_progress">Processing…</string>\
+    <string name="withdrawal_request_created">Withdrawal request created</string>
+    <string name="details">Details</string>
+    <string name="create_balance_action">Create balance</string>
+    <string name="view_asset_history_action">View history</string>
+    <string name="no_assets_found">No tokens found</string>
+    <string name="asset_balance_exists">Balance exists</string>
+    <string name="template_asset_details">%1$s details</string>
+    <string name="template_file_download_location">File will be downloaded to the \"%1$s\" directory</string>
+    <string name="template_asset_balance_created">%1$s balance created</string>
+    <string name="search">Search</string>
+    <string name="recipient_label">Recipient\'s email or account</string>
+    <string name="payment_description_label">Description (optional)</string>
+    <string name="payment_confirmation_title">Payment confirmation</string>
+    <string name="payment_successfully_sent">Successfully sent</string>
+    <string name="template_balance_two_assets">Balance: %1$s\u00A0%2$s, %3$s\u00A0%4$s</string>
+    <string name="no_bids">No bids</string>
+    <string name="no_asks">No asks</string>
+    <string name="template_buy_bid_asset">Buy %1$s</string>
+    <string name="template_sell_ask_asset">Sell %1$s</string>
+    <string name="template_offer_amount_asset">Amount\n%1$s</string>
+    <string name="template_offer_price_asset">Price\n%1$s</string>
+    <string name="template_asset_pair">%1$s/%2$s</string>
+    <string name="create_offer_title">Create offer</string>
+    <string name="create_offer_dialog_total">"Total: "</string>
+    <string name="buy_action">Buy</string>
+    <string name="sell_action">Sell</string>
+    <string name="offer_confirmation_title">Offer confirmation</string>
+    <string name="offer_created">Offer created</string>
+    <string name="pending_offers_title">Pending offers</string>
+    <string name="no_pending_offers">No pending offers</string>
+    <string name="pending_offer_details_title">Pending offer details</string>
+    <string name="buy">Buy</string>
+    <string name="sell">Sell</string>
+    <string name="template_price_one_equals">1 %1$s = %2$s %3$s</string>
+    <string name="cancel_offer_action">Cancel offer</string>
+    <string name="cancel_offer_confirmation">Are you sure want to cancel this offer?</string>
+    <string name="offer_canceled">Offer has been canceled</string>
+    <string name="email_verified">Email has been verified</string>
+    <string name="touch_sensor">Touch the sensor</string>
+    <string name="password_request_hint">Enter your password</string>
+
+    <string name="asset_summary_title">Token summary</string>
+    <string name="asset_available">Available</string>
+    <string name="asset_issued">Issued</string>
+    <string name="asset_maximum">Maximum</string>
+    <string name="asset_terms_of_use">Terms of Use</string>
+
+    <string name="dashboard_title">Dashboard</string>
+    <string name="wallet_title">Wallet</string>
+    <string name="deposit_title">Deposit</string>
+    <string name="withdraw_title">Withdraw</string>
+    <string name="explore_tokens_title">Explore tokens</string>
+    <string name="send_title">Send</string>
+    <string name="trade_title">Trade</string>
+    <string name="settings_title">Settings</string>
+
+    <string name="tx_state_rejected">Rejected</string>
+    <string name="tx_state_pending">Pending</string>
+    <string name="tx_state_success">Success</string>
+    <string name="tx_state_cancelled">Cancelled</string>
+    <string name="tx_state_failed">Failed</string>
+    <string name="template_tx_from">From %1$s</string>
+    <string name="template_tx_to">To %1$s</string>
+    <string name="tx_action_deposit">Deposit</string>
+    <string name="tx_action_withdrawal">Withdrawal</string>
+    <string name="tx_action_investment">Investment</string>
+    <string name="tx_action_received">Received</string>
+    <string name="tx_action_sent">Sent</string>
+    <string name="tx_action_bought">Bought</string>
+    <string name="tx_action_sold">Sold</string>
+    <string name="tx_action_spent">Spent</string>
+    <string name="tx_sender">Sender</string>
+    <string name="tx_recipient">Recipient</string>
+    <string name="tx_fee">Fee</string>
+    <string name="tx_fixed_fee">Fixed fee</string>
+    <string name="tx_percent_fee">Percent fee</string>
+    <string name="tx_type">Type</string>
+    <string name="tx_cause">Cause</string>
+    <string name="tx_reference">Reference</string>
+    <string name="tx_withdrawal_destination">Destination address</string>
+    <string name="template_tx_for">For %1$s</string>
+    <string name="template_tx_in">In %1$s</string>
+    <string name="pay_recipient_fee_action">Pay recipient\'s fee</string>
+    <string name="tx_sender_fee">Sender\'s fee</string>
+    <string name="tx_recipient_fee">Recipient\'s fee</string>
+
+
+    <string name="settings_account_group">Account</string>
+    <string name="settings_security_group">Security</string>
+    <string name="account_id_title">Account ID</string>
+    <string name="verification_title">Verification</string>
+    <string name="verification_summary">In order to verify your account data use web client</string>
+    <string name="tfa_title">Two-factor authentication</string>
+    <string name="change_password_title">Change password</string>
+
+    <string name="error_cannot_be_empty">Cannot be empty</string>
+    <string name="error_invalid_email">Invalid email</string>
+    <string name="error_passwords_mismatch">Password doesn\'t match confirmation</string>
+    <string name="error_weak_password">Password is weak</string>
+    <string name="error_email_already_taken">Email is already taken</string>
+    <string name="error_try_again">An error occurred. Try again later</string>
+    <string name="error_connection_try_again">Connection error. Try again later</string>
+    <string name="error_not_found_try_again">Not found. Try again later</string>
+    <string name="error_invalid_password">Invalid password</string>
+    <string name="error_email_not_verified">Email is not verified</string>
+    <string name="error_seed_mismatch">Seed doesn\'t match confirmation</string>
+    <string name="error_invalid_seed">Invalid seed</string>
+    <string name="error_insufficient_balance">Insufficient balance</string>
+    <string name="error_no_transferable_assets">No transferable tokens found</string>
+    <string name="error_invalid_recipient">Invalid recipient</string>
+    <string name="error_no_withdrawable_assets">No withdrawable tokens found</string>
+    <string name="error_no_tradeable_pairs">No tradeable pairs found</string>
+    <string name="error_cannot_send_to_yourself">Send to yourself is not allowed</string>
+    <string name="error_fingerprint_locked">Too many failed attempts. Try again later</string>
+    <string name="error_payment_amount_less_than_fee">Payment amount is less than recipient\'s fee</string>
+
+    <string name="error_tx_general">Transaction failed. Try again later</string>
+    <string name="error_tx_bad_auth">Transaction signature is invalid</string>
+    <string name="error_tx_limits">Limits has been exceeded</string>
+    <string name="error_tx_insufficient_balance">@string/error_insufficient_balance</string>
+    <string name="error_tx_invalid_amount">Transaction amount is invalid</string>
+    <string name="error_tx_malformed">Transaction is malformed</string>
+    <string name="error_tx_account_blocked">Your account is blocked</string>
+    <string name="error_tx_invalid_fee">Transaction fee is invalid</string>
+    <string name="error_tx_not_allowed">You are not allowed to perform this action</string>
+    <string name="error_tx_cross_self">Current offer crosses one of your existing offers</string>
+
+    <string name="tfa_dialog_title">Two-factor authentication</string>
+    <string name="totp_dialog_message">Enter code from the authentication app</string>
+    <string name="totp_verification_code">Verification code</string>
+    <string name="error_invalid_totp_code">Invalid code</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="tfa_add_dialog_title">Set up 2FA</string>
+    <string name="template_tfa_add_dialog_message">To enable Two-factor authentication
+        open Google Authenticator or similar app with the button below or
+        copy and manually enter this key:\n\n%1$s</string>
+    <string name="tfa_key_copied">Key has been copied to the clipboard</string>
+
+
+    <!-- withdraw -->
+    <string name="amount_label">Amount</string>
+    <string name="address_label">Destination address</string>
+    <string name="go_to_confirmation_btn_label">go to confirmation</string>
+    <string name="withdrawal_confirmation_title">Withdrawal confirmation</string>
+
+    <!-- Deposit -->
+    <string name="currency">Currency</string>
+    <string name="create_balance_confirmation">Are you sure that you want to create %1s balance?</string>
+    <string name="personal_address">Personal address</string>
+    <string name="to_make_deposit_send_asset">To make a deposit send %1$s to this address</string>
+    <string name="share_label">share</string>
+    <string name="show_qr_label">Show QR code</string>
+    <string name="share_address_label">Share address</string>
+    <string name="error_deposit_unavailable">Deposit is unavailable</string>
+    <string name="template_no_personal_asset_address">No personal %1$s address</string>
+    <string name="get_personal_address_action">Get address</string>
+    <string name="deposit_address_expiration_date">Expiration date</string>
+    <string name="renew_personal_address_action">Renew</string>
+    <string name="no_addresses_in_pool_title">No available addresses</string>
+    <string name="no_addresses_in_pool_explanation">No addresses are currently available
+        for this asset. Try again later or contact support</string>
+    <string name="template_deposit_address_with_expiration">Deposit %1$s:\n%2$s\nExpires at %3$s</string>
+    <string name="template_deposit_address">Deposit %1$s:\n%2$s</string>
+
+    <string name="chart_highlight_at_hint">%1$s at %2$s</string>
+    <string name="since_last_time_hint">since last %1$s</string>
+    <string name="no_growth">No growth</string>
+    <string name="no_data">No data</string>
+    <string name="deployed_hint">deployed</string>
+    <string name="asset_price_for_one_part">for 1 %1$s</string>
+    <string name="peek_show_text">Price chart</string>
+    <string name="peek_hide_text">Hide chart</string>
+
+    <string name="template_sale_invested">%1$s invested</string>
+    <string name="template_sale_days_to_go">%1$d %2$s to go</string>
+    <string name="template_sale_starts_in">Starts in %1$d %2$s</string>
+    <string name="template_sale_max_investment">Max investment is %1$s %2$s</string>
+    <string name="template_sale_name_token">%1$s (%2$s)</string>
+    <string name="sales_search_name_hint">Name</string>
+    <string name="sales_search_token_hint">Token code</string>
+    <string name="explore_sales_title">Explore funds</string>
+    <string name="no_sales_found">No funds found</string>
+    <string name="pending_investments_title">Pending investments</string>
+    <string name="no_pending_investments">No pending investments</string>
+    <string name="add_to_favorites_action">Add to favorites</string>
+    <string name="remove_from_favorites_action">Remove from favorites</string>
+    <string name="sale_investing">Investing</string>
+    <string name="invest_action">Invest</string>
+    <string name="cancel_investment_action">Cancel investment</string>
+    <string name="sale_more_info">More info</string>
+    <string name="investment_confirmation_title">Investment confirmation</string>
+    <string name="sale_token">Token</string>
+    <string name="successfully_invested">Successfully invested</string>
+    <string name="investment_canceled">Investment has been canceled</string>
+    <string name="investment_amount">Investment</string>
+    <string name="pending_investment_details_title">Pending investment details</string>
+    <string name="cancel_investment_confirmation">Are you sure want to cancel this investment?</string>
+    <string name="sale_details_title">Fund details</string>
+    <string name="sale_overview_title">Overview</string>
+    <string name="sale_token_title">Token</string>
+    <string name="sale_general_info_title">General</string>
+
+    <string name="tokend_network_hint">Network</string>
+    <string name="not_specified">Not specified</string>
+    <string name="error_network_not_specified">Network is not specified</string>
+</resources>

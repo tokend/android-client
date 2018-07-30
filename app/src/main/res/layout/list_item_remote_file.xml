@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/InfoCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/file_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/file_icon_image_view"
+            android:layout_width="@dimen/triple_margin"
+            android:layout_height="@dimen/triple_margin" />
+
+        <TextView
+            android:id="@+id/file_name_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginStart="@dimen/standard_margin"
+            tools:text="MyFile.txt" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
