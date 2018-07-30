@@ -126,13 +126,16 @@ class App : MultiDexApplication() {
     private fun initStateComponent() {
         val cookieJar = PersistentCookieJar(cookieCache, cookiePersistor)
 
+        val defaultUrlConfig = UrlConfig(BuildConfig.API_URL, BuildConfig.STORAGE_URL,
+                BuildConfig.KYC_URL, BuildConfig.TERMS_URL)
+
         stateComponent = DaggerAppStateComponent.builder()
                 .urlConfigProviderModule(UrlConfigProviderModule(
                         if (BuildConfig.IS_NETWORK_SPECIFIED_BY_USER)
                             UrlConfigPersistor(getNetworkPreferences()).loadConfig()
+                                    ?: defaultUrlConfig
                         else
-                            UrlConfig(BuildConfig.API_URL, BuildConfig.STORAGE_URL,
-                                    BuildConfig.KYC_URL, BuildConfig.TERMS_URL)
+                            defaultUrlConfig
                 ))
                 .apiProviderModule(ApiProviderModule(cookieJar))
                 .persistenceModule(PersistenceModule(
