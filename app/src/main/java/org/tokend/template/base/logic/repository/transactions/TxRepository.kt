@@ -41,6 +41,7 @@ class TxRepository(
                 limit = requestParams.pageParams.limit,
                 cursor = requestParams.pageParams.cursor,
                 order = "desc",
+                completedOnly = false,
                 asset = requestParams.asset)
                 .toSingle()
                 .map { page ->
