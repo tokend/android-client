@@ -100,10 +100,10 @@ class App : MultiDexApplication() {
         initCookies()
         initStateComponent()
         initPicasso()
-        initCrushlytics()
+        initCrashlytics()
     }
 
-    private fun initCrushlytics(){
+    private fun initCrashlytics(){
         val crashlytics = Crashlytics.Builder()
                 .core(
                         CrashlyticsCore.Builder()
