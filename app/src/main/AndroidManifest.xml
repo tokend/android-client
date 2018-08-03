@@ -22,6 +22,10 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="${fabricApiKey}"/>
         <activity
             android:name=".base.activities.SignInActivity"
             android:configChanges="orientation|screenSize"

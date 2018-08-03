@@ -112,6 +112,8 @@ ext {
     allow_invest = 'true'
     // Network specified by user - When set to 'true' user have to specify network to work with.
     network_specified_by_user = 'true'
+    //Allows to see an analytics for your app.
+    enable_analytics = 'false'
     // ----------------------
 }
 
@@ -143,6 +145,8 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'IS_EXPLORE_ALLOWED', "${allow_explore}"
     b.buildConfigField 'Boolean', 'IS_INVEST_ALLOWED', "${allow_invest}"
     b.buildConfigField 'Boolean', 'IS_NETWORK_SPECIFIED_BY_USER', "${network_specified_by_user}"
+    b.buildConfigField 'Boolean', 'ENABLE_ANALYTICS', "${enable_analytics}"
+
 
     b.resValue "string", "app_host", "${app_host}"
     b.resValue "color", "primary", "${color_primary}"

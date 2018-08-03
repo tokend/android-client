@@ -9,6 +9,8 @@ import android.support.multidex.MultiDexApplication
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatDelegate
 import android.util.Log
+import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.CookieCache
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
@@ -19,6 +21,7 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
+import io.fabric.sdk.android.Fabric
 import io.reactivex.subjects.BehaviorSubject
 import org.tokend.template.base.logic.di.*
 import org.tokend.template.base.logic.model.UrlConfig
@@ -97,6 +100,18 @@ class App : MultiDexApplication() {
         initCookies()
         initStateComponent()
         initPicasso()
+        initCrushlytics()
+    }
+
+    private fun initCrushlytics(){
+        val crashlytics = Crashlytics.Builder()
+                .core(
+                        CrashlyticsCore.Builder()
+                                .disabled(!BuildConfig.ENABLE_ANALYTICS)
+                                .build()
+                )
+                .build()
+        Fabric.with(this, crashlytics)
     }
 
     private fun initPicasso() {

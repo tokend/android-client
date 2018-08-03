@@ -3,6 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+def keystorePropertiesFile = rootProject.file("app/keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    apply plugin: 'io.fabric'
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+
 android {
     compileSdkVersion 27
 
@@ -13,6 +21,12 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         resConfigs "en"
+        manifestPlaceholders = [
+                fabricApiKey: keystoreProperties['FabricApiKey'] != null
+                        ? keystoreProperties['FabricApiKey']
+                        : ""
+        ]
+
     }
 
 
@@ -97,6 +111,9 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'ru.noties:markwon:1.0.1'
     implementation 'ru.noties:markwon-image-loader:1.0.1'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
+        transitive = true;
+    }
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
