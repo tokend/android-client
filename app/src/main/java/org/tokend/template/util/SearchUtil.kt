@@ -4,17 +4,17 @@ package org.tokend.template.util
  * Contains different conditions of matching some query with given fields.
  */
 object SearchUtil {
-    private const val WHITESPACE = "/\\s+/"
+    private val WHITESPACE_REGEX = "\\s+".toRegex()
 
     fun isMatchGeneralCondition(query: String, vararg fields: String?): Boolean {
         val unmatchedFieldsParts = fields.fold(mutableSetOf<String>()) { acc, item ->
             if (item != null) {
-                acc.addAll(splitByWhitespace(item))
+                acc.addAll(splitByWhitespace(item.toLowerCase()))
             }
             acc
         }
 
-        val unmatchedQueryParts = splitByWhitespace(query).toMutableList()
+        val unmatchedQueryParts = splitByWhitespace(query.toLowerCase()).toMutableList()
         var unmatchedChanged = true
         while (unmatchedFieldsParts.isNotEmpty()
                 && unmatchedQueryParts.isNotEmpty()
@@ -42,6 +42,6 @@ object SearchUtil {
     }
 
     private fun splitByWhitespace(text: String): Collection<String> {
-        return text.split(WHITESPACE)
+        return text.split(WHITESPACE_REGEX)
     }
 }
