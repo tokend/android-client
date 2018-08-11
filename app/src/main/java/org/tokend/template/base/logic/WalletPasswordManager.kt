@@ -1,11 +1,11 @@
 package org.tokend.template.base.logic
 
+import android.util.Base64
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import org.spongycastle.util.encoders.Base64
 import org.tokend.sdk.api.models.WalletData
 import org.tokend.sdk.api.requests.DataEntity
 import org.tokend.sdk.api.responses.AccountResponse
@@ -20,6 +20,7 @@ import org.tokend.wallet.xdr.op_extensions.RemoveMasterKeyOp
 import org.tokend.wallet.xdr.op_extensions.UpdateSignerOp
 import retrofit2.HttpException
 import java.net.HttpURLConnection
+import java.security.SecureRandom
 
 class WalletPasswordManager(
         private val systemInfoRepository: SystemInfoRepository,
@@ -138,8 +139,7 @@ class WalletPasswordManager(
 
                     // Update in memory.
                     currentWalletInfo.apply {
-                        loginParams.kdfAttributes.encodedSalt =
-                                Base64.toBase64String(data.newSalt.toByteArray())
+                        loginParams.kdfAttributes.encodedSalt = data.newSalt
                         walletIdHex = data.newWalletId
                     }
                     accountProvider.setAccount(newAccount)
@@ -166,8 +166,17 @@ class WalletPasswordManager(
                                               currentSigners: Collection<AccountResponse.Signer>,
                                               newPassword: CharArray,
                                               newAccount: Account): Single<WalletData> {
+        val currentLoginParams = currentWallet.loginParams
+        val newLoginParams = currentLoginParams.copy(
+                kdfAttributes = currentLoginParams.kdfAttributes.copy(
+                        encodedSalt = Base64.encodeToString(SecureRandom.getSeed(
+                                currentLoginParams.kdfAttributes.salt.size
+                        ), Base64.NO_WRAP)
+                )
+        )
+
         return WalletManager.deriveKeys(currentWallet.email, newPassword,
-                currentWallet.loginParams.kdfAttributes)
+                newLoginParams.kdfAttributes)
 
                 .flatMap { (walletId, walletKey) ->
                     Single.zip(
@@ -177,7 +186,7 @@ class WalletPasswordManager(
                                     walletKey = walletKey,
                                     rootAccount = newAccount,
                                     recoveryAccount = Account.random(),
-                                    loginParams = currentWallet.loginParams
+                                    loginParams = newLoginParams
                             ),
 
                             createSignersUpdateTransaction(networkParams, currentWallet,
