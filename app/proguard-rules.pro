@@ -50,3 +50,9 @@
 
 # Markdown
 -dontwarn com.caverock.androidsvg.SVGImageView
+
+# Kotlin issue
+# https://youtrack.jetbrains.com/issue/KT-24986
+-keepclassmembers class  *  {
+   void $$clinit();
+}
