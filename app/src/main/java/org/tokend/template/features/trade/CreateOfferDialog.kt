@@ -48,7 +48,7 @@ class CreateOfferDialog : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
         dialog.window.setLayout(
-                ((context ?: App.context).resources.displayMetrics.widthPixels * 0.8).toInt(),
+                (requireContext().resources.displayMetrics.widthPixels * 0.8).toInt(),
                 ViewGroup.LayoutParams.WRAP_CONTENT
         )
         return inflater.inflate(R.layout.fragment_dialog_crate_order, container)

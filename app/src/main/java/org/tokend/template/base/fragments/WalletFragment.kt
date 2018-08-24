@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.fragment_wallet.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.models.BalanceDetails
 import org.tokend.sdk.api.models.transactions.*
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
@@ -31,6 +30,7 @@ import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.extensions.BalanceDetails
 import org.tokend.template.extensions.isTransferable
 import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
 import org.tokend.template.util.Navigator
@@ -169,7 +169,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         balancesRepository.errorsSubject
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
-                    ErrorHandlerFactory.getDefault().handle(it)
+                    errorHandlerFactory.getDefault().handle(it)
                 }
                 .addTo(compositeDisposable)
     }
@@ -213,11 +213,11 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { error ->
                             if (!txAdapter.hasData) {
-                                error_empty_view.showError(error) {
+                                error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
                                     update(true)
                                 }
                             } else {
-                                ErrorHandlerFactory.getDefault().handle(error)
+                                errorHandlerFactory.getDefault().handle(error)
                             }
                         }
                         .addTo(compositeDisposable)

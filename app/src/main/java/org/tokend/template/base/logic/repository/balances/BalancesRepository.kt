@@ -3,13 +3,13 @@ package org.tokend.template.base.logic.repository.balances
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import org.tokend.sdk.api.models.BalanceDetails
 import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.base.logic.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.base.logic.transactions.TxManager
+import org.tokend.template.extensions.BalanceDetails
 import org.tokend.template.extensions.toSingle
 import org.tokend.wallet.*
 import org.tokend.wallet.xdr.Operation

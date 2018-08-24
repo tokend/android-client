@@ -35,17 +35,6 @@ class App : MultiDexApplication() {
         private const val IMAGE_CACHE_SIZE_MB = 8L
         private const val LOG_TAG = "TokenD App"
 
-        private var _context: Context? = null
-        val context: Context
-            get() = _context!!
-
-        val areGooglePlayServicesAvailable: Boolean
-            get() {
-                val googleApiAvailability = GoogleApiAvailability.getInstance()
-                val resultCode = googleApiAvailability.isGooglePlayServicesAvailable(context)
-                return resultCode == ConnectionResult.SUCCESS
-            }
-
         /**
          * Emits value when app goes to the background or comes to the foreground.
          * [true] means that the app is currently in the background.
@@ -62,10 +51,15 @@ class App : MultiDexApplication() {
 
     lateinit var stateComponent: AppStateComponent
 
+    private val areGooglePlayServicesAvailable: Boolean
+        get() {
+            val googleApiAvailability = GoogleApiAvailability.getInstance()
+            val resultCode = googleApiAvailability.isGooglePlayServicesAvailable(this)
+            return resultCode == ConnectionResult.SUCCESS
+        }
+
     override fun onCreate() {
         super.onCreate()
-
-        _context = this
 
         try {
             if (areGooglePlayServicesAvailable) {
@@ -103,7 +97,7 @@ class App : MultiDexApplication() {
         initCrashlytics()
     }
 
-    private fun initCrashlytics(){
+    private fun initCrashlytics() {
         val crashlytics = Crashlytics.Builder()
                 .core(
                         CrashlyticsCore.Builder()
@@ -157,6 +151,7 @@ class App : MultiDexApplication() {
                         getCredentialsPreferences(),
                         getNetworkPreferences()
                 ))
+                .utilModule(UtilModule(this))
                 .build()
     }
 

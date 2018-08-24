@@ -98,7 +98,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 accountRepository.errorsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe {
-                            ErrorHandlerFactory.getDefault().handle(it)
+                            errorHandlerFactory.getDefault().handle(it)
                         }
         ).also { it.addTo(compositeDisposable) }
     }
@@ -121,11 +121,11 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe {
                             if (assetsRepository.isNeverUpdated) {
-                                error_empty_view.showError(it) {
+                                error_empty_view.showError(it, errorHandlerFactory.getDefault()) {
                                     update()
                                 }
                             } else {
-                                ErrorHandlerFactory.getDefault().handle(it)
+                                errorHandlerFactory.getDefault().handle(it)
                             }
                         }
         ).also { it.addTo(compositeDisposable) }
@@ -364,7 +364,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                             if (it is DepositManager.NoAvailableExternalAccountsException) {
                                 displayEmptyPoolError()
                             } else {
-                                ErrorHandlerFactory.getDefault().handle(it)
+                                errorHandlerFactory.getDefault().handle(it)
                             }
                         }
                 )

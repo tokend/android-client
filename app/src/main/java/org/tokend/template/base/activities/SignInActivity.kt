@@ -139,7 +139,7 @@ class SignInActivity : BaseActivity() {
         }
 
         fingerprint_indicator.onClick {
-            ToastManager.short(R.string.touch_sensor)
+            ToastManager(this).short(R.string.touch_sensor)
         }
     }
     // endregion
@@ -153,7 +153,7 @@ class SignInActivity : BaseActivity() {
                     tryToSignInWithCredentials(email, password)
                     password.fill('0')
                 },
-                onError = { ToastManager.short(it) }
+                onError = { ToastManager(this).short(it) }
         )
     }
 
@@ -257,7 +257,7 @@ class SignInActivity : BaseActivity() {
             is EmailNotVerifiedException ->
                 displayEmailNotVerifiedDialog(error.walletId)
             else ->
-                ErrorHandlerFactory.getDefault().handle(error)
+                errorHandlerFactory.getDefault().handle(error)
         }
         updateSignInAvailability()
     }
@@ -280,10 +280,10 @@ class SignInActivity : BaseActivity() {
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(
                         onComplete = {
-                            ToastManager.long(R.string.check_your_email_to_verify_account)
+                            ToastManager(this).long(R.string.check_your_email_to_verify_account)
                         },
                         onError = {
-                            ErrorHandlerFactory.getDefault().handle(it)
+                            errorHandlerFactory.getDefault().handle(it)
                         }
                 )
                 .addTo(compositeDisposable)

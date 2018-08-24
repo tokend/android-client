@@ -109,7 +109,7 @@ class ChangePasswordActivity : BaseActivity() {
                     new_password_edit_text.requestFocus()
                     password.fill('0')
                 },
-                onError = { ToastManager.short(it) }
+                onError = { ToastManager(this).short(it) }
         )
     }
 
@@ -181,11 +181,11 @@ class ChangePasswordActivity : BaseActivity() {
                 }
                 .subscribeBy(
                         onComplete = {
-                            ToastManager.long(R.string.password_was_changed)
+                            ToastManager(this).long(R.string.password_was_changed)
                             finishWithSuccess()
                         },
                         onError = { error ->
-                            ErrorHandlerFactory.getDefault().handle(error)
+                            errorHandlerFactory.getDefault().handle(error)
                             updateChangeAvailability()
                         }
                 )

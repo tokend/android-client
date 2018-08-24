@@ -229,11 +229,11 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
 
     private fun handleSalesError(error: Throwable) {
         if (!salesAdapter.hasData) {
-            error_empty_view.showError(error) {
+            error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
                 update()
             }
         } else {
-            ErrorHandlerFactory.getDefault().handle(error)
+            errorHandlerFactory.getDefault().handle(error)
         }
     }
 

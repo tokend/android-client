@@ -186,10 +186,10 @@ open class OfferMatchDetailsActivity(
                 .subscribeBy(
                         onComplete = {
                             progress.dismiss()
-                            ToastManager.short(getOfferCanceledMessage())
+                            ToastManager(this).short(getOfferCanceledMessage())
                             finishWithSuccess()
                         },
-                        onError = { ErrorHandlerFactory.getDefault().handle(it) }
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
     }
 

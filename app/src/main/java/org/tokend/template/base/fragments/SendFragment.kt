@@ -350,7 +350,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                                             R.string.error_cannot_send_to_yourself
                                     )
                                 else ->
-                                    ErrorHandlerFactory.getDefault().handle(it)
+                                    errorHandlerFactory.getDefault().handle(it)
                             }
                             updateConfirmAvailability()
                         }

@@ -248,11 +248,11 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe { error ->
                             if (assetPairsRepository.isNeverUpdated) {
-                                error_empty_view.showError(error) {
+                                error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
                                     update(true)
                                 }
                             } else {
-                                ErrorHandlerFactory.getDefault().handle(error)
+                                errorHandlerFactory.getDefault().handle(error)
                             }
                         },
                 assetPairsRepository.loadingSubject
@@ -368,7 +368,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                             }
                         },
                         onError = {
-                            ErrorHandlerFactory.getDefault().handle(it)
+                            errorHandlerFactory.getDefault().handle(it)
                         }
                 )
                 .addTo(compositeDisposable)
@@ -488,7 +488,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                             Navigator.openOfferConfirmation(this,
                                     CREATE_OFFER_REQUEST, offer)
                         },
-                        onError = { ErrorHandlerFactory.getDefault().handle(it) }
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
     }

@@ -33,7 +33,7 @@ class SaleOverviewFragment : BaseFragment() {
     override fun onInitAllowed() {
         arguments?.getString(BLOB_ID_EXTRA).also {
             if (it == null) {
-                error_empty_view.showError(IllegalStateException())
+                error_empty_view.showError(IllegalStateException(), errorHandlerFactory.getDefault())
             } else {
                 blobId = it
                 loadBlob()
@@ -60,7 +60,7 @@ class SaleOverviewFragment : BaseFragment() {
                                     displayMarkdown(it.valueString)
                                 },
                                 onError = {
-                                    error_empty_view.showError(it) {
+                                    error_empty_view.showError(it, errorHandlerFactory.getDefault()) {
                                         loadBlob()
                                     }
                                 }

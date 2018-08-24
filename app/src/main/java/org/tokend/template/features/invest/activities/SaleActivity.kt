@@ -272,7 +272,7 @@ class SaleActivity : BaseActivity() {
                                     updateInvestAvailability()
                                 },
                                 onError = {
-                                    ErrorHandlerFactory.getDefault().handle(it)
+                                    errorHandlerFactory.getDefault().handle(it)
                                 }
                         )
                         .addTo(compositeDisposable)
@@ -499,7 +499,7 @@ class SaleActivity : BaseActivity() {
                             }
                         },
                         onError = { error ->
-                            ErrorHandlerFactory.getDefault().handle(error)
+                            errorHandlerFactory.getDefault().handle(error)
                         }
                 )
                 .addTo(compositeDisposable)
@@ -578,7 +578,7 @@ class SaleActivity : BaseActivity() {
                                     )
                                 },
                                 onError = {
-                                    ErrorHandlerFactory.getDefault().handle(it)
+                                    errorHandlerFactory.getDefault().handle(it)
                                 }
                         )
                         .addTo(compositeDisposable)
@@ -635,7 +635,7 @@ class SaleActivity : BaseActivity() {
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(
                         onComplete = { isFollowed = !isFollowed },
-                        onError = { ErrorHandlerFactory.getDefault().handle(it) }
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
     }

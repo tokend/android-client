@@ -184,11 +184,11 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { error ->
                             if (!assetsAdapter.hasData) {
-                                error_empty_view.showError(error) {
+                                error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
                                     update(true)
                                 }
                             } else {
-                                ErrorHandlerFactory.getDefault().handle(error)
+                                errorHandlerFactory.getDefault().handle(error)
                             }
                         }
         ).also { it.addTo(compositeDisposable) }
@@ -271,12 +271,12 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 }
                 .subscribeBy(
                         onComplete = {
-                            ToastManager.short(getString(R.string.template_asset_balance_created,
-                                    asset))
+                            ToastManager(requireContext())
+                                    .short(getString(R.string.template_asset_balance_created, asset))
                             displayAssets()
                         },
                         onError = {
-                            ErrorHandlerFactory.getDefault().handle(it)
+                            errorHandlerFactory.getDefault().handle(it)
                         }
                 )
     }

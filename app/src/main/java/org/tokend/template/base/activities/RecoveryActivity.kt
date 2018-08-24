@@ -230,7 +230,7 @@ class RecoveryActivity : BaseActivity() {
                 }
                 .subscribeBy(
                         onComplete = {
-                            ToastManager.long(R.string.password_was_changed)
+                            ToastManager(this).long(R.string.password_was_changed)
                             finishWithSuccess()
                         },
                         onError = {
@@ -257,7 +257,7 @@ class RecoveryActivity : BaseActivity() {
                 }
             is EmailNotVerifiedException ->
                 email_edit_text.setErrorAndFocus(R.string.error_email_not_verified)
-            else -> ErrorHandlerFactory.getDefault().handle(error)
+            else -> errorHandlerFactory.getDefault().handle(error)
         }
     }
 

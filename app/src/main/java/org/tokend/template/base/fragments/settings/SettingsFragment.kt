@@ -11,6 +11,8 @@ import org.tokend.template.R
 import org.tokend.template.base.logic.di.providers.RepositoryProvider
 import org.tokend.template.base.logic.di.providers.UrlConfigProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
+import org.tokend.template.util.ToastManager
+import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import javax.inject.Inject
 
 abstract class SettingsFragment : PreferenceFragmentCompat(),
@@ -21,6 +23,10 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
     lateinit var repositoryProvider: RepositoryProvider
     @Inject
     lateinit var urlConfigProvider: UrlConfigProvider
+    @Inject
+    lateinit var errorHandlerFactory: ErrorHandlerFactory
+    @Inject
+    lateinit var toastManager: ToastManager
 
     protected val compositeDisposable = CompositeDisposable()
 

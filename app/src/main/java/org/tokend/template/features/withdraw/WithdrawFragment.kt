@@ -277,7 +277,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                                     WITHDRAWAL_CONFIRMATION_REQUEST, request)
 
                         },
-                        onError = { ErrorHandlerFactory.getDefault().handle(it) }
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
     }

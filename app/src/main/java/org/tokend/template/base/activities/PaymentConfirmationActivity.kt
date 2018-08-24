@@ -105,11 +105,11 @@ class PaymentConfirmationActivity : BaseActivity() {
                 .subscribeBy(
                         onSuccess = {
                             progress.dismiss()
-                            ToastManager.long(R.string.payment_successfully_sent)
+                            ToastManager(this).long(R.string.payment_successfully_sent)
                             finishWithSuccess()
                         },
                         onError = {
-                            ErrorHandlerFactory.getDefault().handle(it)
+                            errorHandlerFactory.getDefault().handle(it)
                         }
                 )
     }

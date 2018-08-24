@@ -7,9 +7,12 @@ import android.text.InputType
 import org.jetbrains.anko.clipboardManager
 import org.tokend.sdk.api.tfa.TfaVerifier
 import org.tokend.template.R
+import org.tokend.template.util.error_handlers.ErrorHandler
 
-class TfaTotpDialog(context: Context, tfaVerifierInterface: TfaVerifier.Interface)
-    : TfaDialog(context, tfaVerifierInterface) {
+class TfaTotpDialog(context: Context,
+                    errorHandler: ErrorHandler,
+                    tfaVerifierInterface: TfaVerifier.Interface)
+    : TfaDialog(context, errorHandler, tfaVerifierInterface) {
 
     override fun extendDialogBuilder(builder: AlertDialog.Builder) {
         builder.setNeutralButton(R.string.paste, null)

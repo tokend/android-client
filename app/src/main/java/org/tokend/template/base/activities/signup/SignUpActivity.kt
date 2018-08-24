@@ -138,7 +138,7 @@ class SignUpActivity : BaseActivity() {
             if (urlConfigProvider.hasConfig()) {
                 browse(urlConfigProvider.getConfig().terms, true)
             } else {
-                ToastManager.short(R.string.error_network_not_specified)
+                ToastManager(this).short(R.string.error_network_not_specified)
             }
         }
     }
@@ -235,7 +235,7 @@ class SignUpActivity : BaseActivity() {
             is EmailAlreadyTakenException ->
                 email_edit_text.setErrorAndFocus(R.string.error_email_already_taken)
             else ->
-                ErrorHandlerFactory.getDefault().handle(error)
+                errorHandlerFactory.getDefault().handle(error)
         }
         updateSignUpAvailability()
     }
@@ -261,7 +261,7 @@ class SignUpActivity : BaseActivity() {
     }
 
     private fun onSuccessfulSignUp() {
-        ToastManager.long(R.string.check_your_email_to_verify_account)
+        ToastManager(this).long(R.string.check_your_email_to_verify_account)
         Navigator.toSignIn(this, false)
     }
 }

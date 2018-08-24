@@ -17,6 +17,8 @@ import org.tokend.template.base.logic.persistance.CredentialsPersistor
 import org.tokend.template.base.logic.persistance.UrlConfigPersistor
 import org.tokend.template.base.tfa.TfaDialogFactory
 import org.tokend.template.util.Navigator
+import org.tokend.template.util.ToastManager
+import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity(), TfaCallback {
@@ -36,6 +38,10 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var urlConfigProvider: UrlConfigProvider
     @Inject
     lateinit var urlConfigPersistor: UrlConfigPersistor
+    @Inject
+    lateinit var errorHandlerFactory: ErrorHandlerFactory
+    @Inject
+    lateinit var toastManager: ToastManager
 
     protected open val allowUnauthorized = false
 
@@ -87,7 +93,7 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
                                verifierInterface: TfaVerifier.Interface) {
         runOnUiThread {
             val email = walletInfoProvider.getWalletInfo()?.email
-            TfaDialogFactory(this, credentialsPersistor)
+            TfaDialogFactory(this, errorHandlerFactory.getDefault(), credentialsPersistor)
                     .getForException(exception, verifierInterface, email)
                     ?.show()
                     ?: verifierInterface.cancelVerification()
