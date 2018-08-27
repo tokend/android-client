@@ -7,6 +7,7 @@ import org.tokend.sdk.api.requests.RequestSigner
 import org.tokend.sdk.api.tfa.TfaCallback
 import org.tokend.sdk.factory.ApiFactory
 import org.tokend.sdk.keyserver.KeyStorage
+import org.tokend.sdk.utils.HashCodes
 import org.tokend.wallet.Account
 
 class ApiProviderImpl(
@@ -25,79 +26,78 @@ class ApiProviderImpl(
         }
     }
 
-    private var apiByUrl: Pair<String, ApiService>? = null
-    private var ketStorageByUrl: Pair<String, KeyStorage>? = null
+    private var apiByHash: Pair<Int, ApiService>? = null
+    private var ketStorageByHash: Pair<Int, KeyStorage>? = null
 
-    private var signedApiUrl = ""
-    private var signedApiByAccountHash: Pair<Int, ApiService>? = null
-
-    private var signedKeyStorageUrl = ""
-    private var signedKeyStorageByAccountHash: Pair<Int, KeyStorage>? = null
+    private var signedApiByHash: Pair<Int, ApiService>? = null
+    private var signedKeyStorageByHash: Pair<Int, KeyStorage>? = null
 
     override fun getApi(): ApiService {
-        val api = apiByUrl
-                ?.takeIf { (url, _) ->
-                    this.url == url
+        val hash = url.hashCode()
+
+        val api = apiByHash
+                ?.takeIf { (currentHash, _) ->
+                    currentHash == hash
                 }
                 ?.second
                 ?: ApiFactory(url).getApiService(null, tfaCallback, cookieJarProvider)
 
-        apiByUrl = Pair(url, api)
+        apiByHash = Pair(hash, api)
 
         return api
     }
 
     override fun getKeyStorage(): KeyStorage {
-        val keyStorage = ketStorageByUrl
-                ?.takeIf { (url, _) ->
-                    this.url == url
+        val hash = url.hashCode()
+
+        val keyStorage = ketStorageByHash
+                ?.takeIf { (currentHash, _) ->
+                    currentHash == hash
                 }
                 ?.second
                 ?: KeyStorage(url, tfaCallback, cookieJarProvider)
 
-        ketStorageByUrl = Pair(url, keyStorage)
+        ketStorageByHash = Pair(hash, keyStorage)
 
         return keyStorage
     }
 
     override fun getSignedApi(): ApiService? {
         val account = accountProvider.getAccount() ?: return null
+        val hash = HashCodes.ofMany(account, url)
 
         val signedApi =
-                signedApiByAccountHash
-                        ?.takeIf { (accountHash, _) ->
-                            accountHash == account.hashCode()
-                                    && signedApiUrl == url
+                signedApiByHash
+                        ?.takeIf { (currentHash, _) ->
+                            currentHash == hash
                         }
                         ?.second
-                        ?: createSignedApiWithAccount(account)
+                        ?: createSignedApiWithAccount(ApiService::class.java, account)
 
-        signedApiByAccountHash = Pair(account.hashCode(), signedApi)
-        signedApiUrl = url
+        signedApiByHash = Pair(hash, signedApi)
 
         return signedApi
     }
 
     override fun getSignedKeyStorage(): KeyStorage? {
         val account = accountProvider.getAccount() ?: return null
+        val hash = HashCodes.ofMany(account, url)
 
         val signedKeyStorage =
-                signedKeyStorageByAccountHash
-                        ?.takeIf { (accountHash, _) ->
-                            accountHash == account.hashCode()
-                                    && signedKeyStorageUrl == url
+                signedKeyStorageByHash
+                        ?.takeIf { (currentHash, _) ->
+                            currentHash == hash
                         }
                         ?.second
                         ?: createSignedKeyStorageWithAccount(account)
 
-        signedKeyStorageByAccountHash = Pair(account.hashCode(), signedKeyStorage)
-        signedKeyStorageUrl = url
+        signedKeyStorageByHash = Pair(hash, signedKeyStorage)
 
         return signedKeyStorage
     }
 
-    private fun createSignedApiWithAccount(account: Account): ApiService {
-        return ApiFactory(url).getApiService(
+    private fun <T> createSignedApiWithAccount(apiClass: Class<T>, account: Account): T {
+        return ApiFactory(url).getCustomService(apiClass,
                 object : RequestSigner {
                     override val accountId: String = account.accountId
 
