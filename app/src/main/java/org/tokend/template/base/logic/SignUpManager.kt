@@ -14,6 +14,9 @@ import java.security.SecureRandom
 class SignUpManager(
         private val urlConfigProvider: UrlConfigProvider
 ) {
+    /**
+     * Creates and submits a new wallet.
+     */
     fun signUp(email: String, password: CharArray,
                rootAccount: Account, recoveryAccount: Account,
                derivationSalt: ByteArray = SecureRandom.getSeed(SEED_LENGTH)): Completable {

@@ -5,6 +5,9 @@ import android.os.Build
 import io.reactivex.rxkotlin.toSingle
 import org.tokend.template.util.ObservableTransformers
 
+/**
+ * Manages fingerprint auth request to obtain saved credentials.
+ */
 class FingerprintAuthManager(
         context: Context,
         private val credentialsPersistor: CredentialsPersistor
@@ -12,6 +15,12 @@ class FingerprintAuthManager(
     private val fingerprintUtil = FingerprintUtil(context)
     private var isAuthCanceled = false
 
+    /**
+     * @param onAuthStart will be called when auth is available and started
+     * @param onSuccess will be called after successful auth, receives
+     * saved email and password
+     * @param onError will be called on auth error, receives system error message
+     */
     fun requestAuthIfAvailable(onAuthStart: () -> Unit,
                                onSuccess: (String, CharArray) -> Unit,
                                onError: (String) -> Unit) {

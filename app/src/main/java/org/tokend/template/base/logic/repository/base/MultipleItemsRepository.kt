@@ -22,7 +22,7 @@ abstract class MultipleItemsRepository<T> : Repository() {
         isNeverUpdated = false
         isFresh = true
 
-        itemsCache.merge(newItems)
+        itemsCache.transform(newItems)
 
         broadcast()
     }

@@ -22,6 +22,11 @@ class SignInManager(
     class InvalidPersistedCredentialsException : Exception()
 
     // region Sign in
+    /**
+     * Performs keypair loading and decryption,
+     * sets up WalletInfoProvider and AccountProvider, updates CredentialsPersistor.
+     * If CredentialsPersistor contains saved credentials no network calls will be performed.
+     */
     fun signIn(email: String, password: CharArray): Completable {
         return getWalletInfo(email, password)
                 .flatMap { walletInfo ->
@@ -53,6 +58,9 @@ class SignInManager(
     // endregion
 
     // region Post sign in
+    /**
+     * Updates all important repositories, creates account on first sign in.
+     */
     fun doPostSignIn(repositoryProvider: RepositoryProvider): Completable {
         val parallelActions = listOf<Completable>(
                 // Added actions will be performed simultaneously.
