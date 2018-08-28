@@ -4,24 +4,20 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Point
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.content.FileProvider
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.AlphaAnimation
 import android.widget.Toast
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_share_qr.*
-import org.jetbrains.anko.dimen
 import org.jetbrains.anko.doAsync
 import org.tokend.template.R
 import org.tokend.template.base.activities.BaseActivity
+import org.tokend.template.base.view.util.AnimationUtil
 import org.tokend.template.extensions.getStringExtra
 import org.tokend.template.util.ObservableTransformers
 import java.io.File
@@ -37,8 +33,6 @@ class ShareQrActivity : BaseActivity() {
         const val SHARE_TEXT_EXTRA = "share_text"
         const val TOP_TEXT_EXTRA = "top_text"
     }
-
-    private var maxQrSize: Int = 0
 
     private val title: String
         get() = intent.getStringExtra(TITLE_EXTRA, "")
@@ -58,17 +52,7 @@ class ShareQrActivity : BaseActivity() {
         setTitle(title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        initQrHolder()
-
         displayData()
-    }
-
-    private fun initQrHolder() {
-        maxQrSize = calculateMaxQrCodeSize(this)
-        qr_code_layout.layoutParams.height = (maxQrSize * 1.1).toInt()
-
-        qr_code_image_view.layoutParams.width = maxQrSize
-        qr_code_image_view.layoutParams.height = maxQrSize
     }
 
     private fun shareData() {
@@ -89,18 +73,19 @@ class ShareQrActivity : BaseActivity() {
         startActivity(Intent.createChooser(sharingIntent, shareDialogText))
     }
 
-    private fun calculateMaxQrCodeSize(activity: AppCompatActivity): Int {
-        val display = activity.windowManager.defaultDisplay
-        val size = Point()
-        display.getSize(size)
-        val width = size.x
-        val qrPadding = dimen(R.dimen.standard_padding)
-        return width - 2 * qrPadding
+    private fun getMaxQrSize(): Int {
+        val height = scroll_view.measuredHeight -
+                2 * resources.getDimensionPixelSize(R.dimen.standard_margin)
+        return Math.min(height, scroll_view.measuredWidth)
     }
 
     private fun displayData() {
-        displayQrCode(data)
+        scroll_view.post {
+            displayQrCode(data)
+        }
+
         data_text_view.text = data
+        data_text_view.setSizeToFit()
 
         if (topText.isNotBlank()) {
             top_text_view.visibility = View.VISIBLE
@@ -111,7 +96,7 @@ class ShareQrActivity : BaseActivity() {
     }
 
     private fun displayQrCode(text: String) {
-        QrGenerator(this).bitmap(text, maxQrSize)
+        QrGenerator(this).bitmap(text, getMaxQrSize())
                 .delay(300, TimeUnit.MILLISECONDS)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .doOnSubscribe {
@@ -120,7 +105,6 @@ class ShareQrActivity : BaseActivity() {
                 .subscribeBy(
                         onNext = {
                             qr_code_image_view.setImageBitmap(it)
-                            qr_code_image_view.visibility = View.VISIBLE
                             animateQrCode()
                             saveQrCode(it)
                         },
@@ -134,14 +118,7 @@ class ShareQrActivity : BaseActivity() {
     }
 
     private fun animateQrCode() {
-        val alphaAnimation = AlphaAnimation(0f, 1f)
-        alphaAnimation.interpolator = AccelerateDecelerateInterpolator()
-        alphaAnimation.duration =
-                resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-        alphaAnimation.fillAfter = true
-
-        qr_code_image_view.clearAnimation()
-        qr_code_image_view.startAnimation(alphaAnimation)
+        AnimationUtil.fadeInView(qr_code_image_view)
     }
 
     private fun saveQrCode(bitmap: Bitmap) {
