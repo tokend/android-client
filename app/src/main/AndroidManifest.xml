@@ -23,9 +23,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="${fabricApiKey}"/>
+            android:value="${fabricApiKey}" />
+
         <activity
             android:name=".base.activities.SignInActivity"
             android:configChanges="orientation|screenSize"
@@ -120,17 +131,17 @@
             android:windowSoftInputMode="adjustResize">
             <!-- Uncomment to enable links opening in app -->
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.VIEW" />-->
+            <!--<action android:name="android.intent.action.VIEW" />-->
 
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+            <!--<category android:name="android.intent.category.DEFAULT" />-->
+            <!--<category android:name="android.intent.category.BROWSABLE" />-->
 
-                <!--<data-->
-                    <!--android:host="@string/app_host"-->
-                    <!--android:scheme="http" />-->
-                <!--<data-->
-                    <!--android:host="@string/app_host"-->
-                    <!--android:scheme="https" />-->
+            <!--<data-->
+            <!--android:host="@string/app_host"-->
+            <!--android:scheme="http" />-->
+            <!--<data-->
+            <!--android:host="@string/app_host"-->
+            <!--android:scheme="https" />-->
             <!--</intent-filter>-->
         </activity>
         <activity
