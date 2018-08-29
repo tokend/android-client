@@ -279,4 +279,11 @@
     <string name="tokend_network_hint">Network</string>
     <string name="not_specified">Not specified</string>
     <string name="error_network_not_specified">Network is not specified</string>
+
+    <string name="verification_required">Verification required</string>
+    <string name="sale_verifictaion_required_details">Please verify your account to participate in this fund</string>
+    <string name="go_to_verification">Go to Verification</string>
+
+    <string name="sale_upcoming">Upcoming</string>
+
 </resources>
