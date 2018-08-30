@@ -30,7 +30,6 @@ import org.tokend.sdk.api.models.Offer
 import org.tokend.sdk.api.models.SaleFavoriteEntry
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.utils.BigDecimalUtil
-import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.activities.BaseActivity
 import org.tokend.template.base.logic.FeeManager
@@ -53,7 +52,6 @@ import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import org.tokend.wallet.xdr.AccountType
 import org.tokend.wallet.xdr.AssetPolicy
 import org.tokend.wallet.xdr.SaleType
@@ -74,7 +72,7 @@ class SaleActivity : BaseActivity() {
     private lateinit var fileDownloader: FileDownloader
 
     private val accountRepository: AccountRepository
-    get() = repositoryProvider.account()
+        get() = repositoryProvider.account()
 
     private val salesRepository: SalesRepository
         get() = repositoryProvider.sales()
@@ -314,7 +312,7 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun displayAssetDetails() {
-        saleAsset.details?.logo?.getUrl(urlConfigProvider.getConfig().storage)?.let {
+        saleAsset.details.logo.getUrl(urlConfigProvider.getConfig().storage)?.let {
             Picasso.with(this)
                     .load(it)
                     .resizeDimen(R.dimen.asset_list_item_logo_size, R.dimen.asset_list_item_logo_size)
@@ -669,19 +667,22 @@ class SaleActivity : BaseActivity() {
                                        details: String,
                                        buttonClickListener: View.OnClickListener? = null,
                                        buttonText: String = getString(R.string.details)) {
-        sale_unavailable_card.visibility = View.VISIBLE
-        sale_unavailable_icon.setImageDrawable(ContextCompat.getDrawable(this, iconResId))
-        sale_unavailable_reason_text_view.text = reason
-        sale_unavailable_details_text_view.text = details
+        sale_unavailable_card.post {
+            sale_unavailable_icon.setImageDrawable(ContextCompat.getDrawable(this, iconResId))
+            sale_unavailable_reason_text_view.text = reason
+            sale_unavailable_details_text_view.text = details
 
-        if (buttonClickListener != null) {
-            sale_unavailable_details_button.apply {
-                visibility = View.VISIBLE
-                setOnClickListener(buttonClickListener)
-                (this as Button).text = buttonText
+            if (buttonClickListener != null) {
+                sale_unavailable_details_button.apply {
+                    visibility = View.VISIBLE
+                    setOnClickListener(buttonClickListener)
+                    (this as Button).text = buttonText
+                }
+            } else {
+                sale_unavailable_details_button.visibility = View.GONE
             }
-        } else {
-            sale_unavailable_details_button.visibility = View.GONE
+
+            AnimationUtil.fadeInView(sale_unavailable_card)
         }
     }
 
