@@ -29,33 +29,40 @@ android {
 
     }
 
-
-    apply from: "app_config.gradle"
-    if (file("dev_app_config.gradle").exists()) {
-        apply from: "dev_app_config.gradle"
-    }
-    applyAppConfig(android.defaultConfig)
-
     buildTypes {
-        staging {
-            if (file("stage_app_config.gradle").exists()) {
-                apply from: "stage_app_config.gradle"
-                applyAppConfig(android.buildTypes.staging)
+        debug {
+            apply from: "app_config.gradle"
+            if (file("dev_app_config.gradle").exists()) {
+                apply from: "dev_app_config.gradle"
             }
+            applyAppConfig(android.buildTypes.debug)
 
             signingConfig signingConfigs.debug
-            debuggable = true
+            debuggable true
+        }
+
+        staging {
+            apply from: "app_config.gradle"
+            if (file("stage_app_config.gradle").exists()) {
+                apply from: "stage_app_config.gradle"
+            }
+            applyAppConfig(android.buildTypes.staging)
+
+            signingConfig signingConfigs.debug
+            debuggable true
         }
 
         release {
+            apply from: "app_config.gradle"
             if (file("release_app_config.gradle").exists()) {
                 apply from: "release_app_config.gradle"
-                applyAppConfig(android.buildTypes.release)
             }
+            applyAppConfig(android.buildTypes.release)
 
             signingConfig signingConfigs.debug
             minifyEnabled true
             shrinkResources true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
