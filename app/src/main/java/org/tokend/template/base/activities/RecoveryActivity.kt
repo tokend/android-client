@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
-import com.google.zxing.integration.android.IntentIntegrator
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_recovery.*
 import kotlinx.android.synthetic.main.layout_network_field.*
@@ -25,7 +24,6 @@ import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
 import org.tokend.template.extensions.*
 import org.tokend.template.util.*
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import org.tokend.wallet.Base32Check
 
 class RecoveryActivity : BaseActivity() {
@@ -145,21 +143,11 @@ class RecoveryActivity : BaseActivity() {
     }
     // endregion
 
-    // region QR
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
-            openQrScanner()
+            QrScannerUtil.openScanner(this)
         }
     }
-
-    private fun openQrScanner() {
-        IntentIntegrator(this)
-                .setBeepEnabled(false)
-                .setOrientationLocked(false)
-                .setPrompt("")
-                .initiateScan()
-    }
-    // endregion
 
     private fun checkPasswordsMatch() {
         val passwordChars = password_edit_text.text.getChars()
@@ -269,11 +257,8 @@ class RecoveryActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        val scanResult = IntentIntegrator
-                .parseActivityResult(requestCode, resultCode, data)
-
-        if (scanResult != null && scanResult.contents != null) {
-            urlConfigManager.setFromJson(scanResult.contents)
+        QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
+            urlConfigManager.setFromJson(it)
         }
     }
 }

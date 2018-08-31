@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.view.View
-import com.google.zxing.integration.android.IntentIntegrator
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -30,7 +29,6 @@ import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
 import org.tokend.template.extensions.*
 import org.tokend.template.util.*
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import org.tokend.wallet.Account
 
 class SignInActivity : BaseActivity() {
@@ -162,21 +160,11 @@ class SignInActivity : BaseActivity() {
     }
     // endregion
 
-    // region QR
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
-            openQrScanner()
+            QrScannerUtil.openScanner(this)
         }
     }
-
-    private fun openQrScanner() {
-        IntentIntegrator(this)
-                .setBeepEnabled(false)
-                .setOrientationLocked(false)
-                .setPrompt("")
-                .initiateScan()
-    }
-    // endregion
 
     private fun updateSignInAvailability() {
         canSignIn = !isLoading
@@ -308,11 +296,8 @@ class SignInActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        val scanResult = IntentIntegrator
-                .parseActivityResult(requestCode, resultCode, data)
-
-        if (scanResult != null && scanResult.contents != null) {
-            urlConfigManager.setFromJson(scanResult.contents)
+        QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
+            urlConfigManager.setFromJson(it)
         }
     }
 }
