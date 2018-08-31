@@ -286,13 +286,9 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                     data.senderAccount = currentAccount
                     data.recipientAccount = recipientAccount
 
-                    Single.zip(
-                            getOurBalanceId(asset),
-                            getRecipientBalanceId(recipientAccount, asset),
-                            BiFunction { t1: String, t2: String -> Pair(t1, t2) }
-                    )
+                    getOurBalanceId(asset)
                 }
-                .flatMap { (currentBalance) ->
+                .flatMap { currentBalance ->
                     data.senderBalance = currentBalance
 
                     Single.zip(
@@ -329,8 +325,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                         },
                         onError = {
                             when (it) {
-                                is AccountDetailsRepository.NoDetailsFoundException,
-                                is NoRecipientBalanceException ->
+                                is AccountDetailsRepository.NoDetailsFoundException ->
                                     recipient_edit_text.setErrorAndFocus(
                                             R.string.error_invalid_recipient
                                     )
@@ -375,22 +370,6 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                                         IllegalStateException("No balance ID found for $asset")
                                 ))
                 )
-    }
-
-    private class NoRecipientBalanceException : Exception()
-
-    private fun getRecipientBalanceId(recipientAccountId: String, asset: String): Single<String> {
-        return repositoryProvider.accountDetails().getBalancesByAccountId(recipientAccountId)
-                .flatMap { balances ->
-                    balances.find { it.asset == asset }
-                            .toMaybe()
-                            .switchIfEmpty(Single.error(
-                                    NoRecipientBalanceException()
-                            ))
-                }
-                .map { balance ->
-                    balance.balanceId
-                }
     }
     // endreigon.
 
