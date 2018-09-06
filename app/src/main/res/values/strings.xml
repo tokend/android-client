@@ -203,8 +203,9 @@
 
     <string name="tfa_dialog_title">Two-factor authentication</string>
     <string name="totp_dialog_message">Enter code from the authentication app</string>
-    <string name="totp_verification_code">Verification code</string>
-    <string name="error_invalid_totp_code">Invalid code</string>
+    <string name="email_otp_dialog_message">Verification code was sent to your email</string>
+    <string name="otp_verification_code">Verification code</string>
+    <string name="error_invalid_otp_code">Invalid code</string>
     <string name="enter_your_password">Enter your password</string>
     <string name="tfa_add_dialog_title">Set up 2FA</string>
     <string name="template_tfa_add_dialog_message">To enable Two-factor authentication
