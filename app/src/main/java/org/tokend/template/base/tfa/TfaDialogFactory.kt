@@ -24,7 +24,7 @@ class TfaDialogFactory(private val context: Context,
             }
             TfaBackend.Type.TOTP -> TfaTotpDialog(context, errorHandler, verifierInterface)
             TfaBackend.Type.EMAIL -> TfaEmailOtpDialog(context, errorHandler, verifierInterface)
-            else -> null
+            else -> TfaDefaultDialog(context, errorHandler, verifierInterface)
         }
     }
 }

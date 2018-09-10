@@ -202,6 +202,7 @@
     <string name="error_tx_cross_self">Current offer crosses one of your existing offers</string>
 
     <string name="tfa_dialog_title">Two-factor authentication</string>
+    <string name="tfa_default_dialog_message">Enter verification code</string>
     <string name="totp_dialog_message">Enter code from the authentication app</string>
     <string name="email_otp_dialog_message">Verification code was sent to your email</string>
     <string name="otp_verification_code">Verification code</string>
