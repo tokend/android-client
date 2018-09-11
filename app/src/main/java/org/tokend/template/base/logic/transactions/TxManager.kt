@@ -1,5 +1,6 @@
 package org.tokend.template.base.logic.transactions
 
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import okhttp3.ResponseBody
@@ -7,6 +8,7 @@ import org.tokend.sdk.api.responses.SubmitTransactionResponse
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.util.confirmation.ConfirmationProvider
 import org.tokend.wallet.*
 import org.tokend.wallet.xdr.Operation
 import retrofit2.HttpException
@@ -15,11 +17,19 @@ import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
 class TxManager(
-        private val apiProvider: ApiProvider
+        private val apiProvider: ApiProvider,
+        private val confirmationProvider: ConfirmationProvider<Transaction>? = null
 ) {
     fun submit(transaction: Transaction): Single<SubmitTransactionResponse> {
-        return apiProvider.getApi().pushTransaction(transaction.getEnvelope().toBase64())
-                .toSingle()
+        val confirmationCompletable =
+                confirmationProvider?.requestConfirmation(transaction)
+                        ?: Completable.complete()
+
+        return confirmationCompletable
+                .andThen(
+                        apiProvider.getApi().pushTransaction(transaction.getEnvelope().toBase64())
+                                .toSingle()
+                )
                 // Wrap failed submit response into special exception.
                 .onErrorResumeNext {
                     if (it is HttpException
