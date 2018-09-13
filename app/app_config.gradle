@@ -42,7 +42,7 @@ ext {
     // Primary color - color of app toolbar
     color_primary = '#48446a'
     // Primary dark - color of status bar above toolbar
-    color_primary_dark = '#201e38'
+    color_primary_dark = '#323051'
 
     // Primary-half color - color of asset charts
     color_primary_half = '#756f98'
@@ -53,9 +53,9 @@ ext {
     color_background = '#e8e8e8'
 
     // Primary text - color of all text labels and fields
-    color_primary_text = '#2d3168 '
+    color_primary_text = '#3a4180'
     // Secondary text - color of hints
-    color_secondary_text = '#5b5a96'
+    color_secondary_text = '#979BB9'
 
     // Primary action - custom color for action controls,
     // same as Accent by default
@@ -69,15 +69,15 @@ ext {
 
     // Error - color of error messages,
     // usually a shade of red
-    color_error = '#db3b42'
+    color_error = '#ff1744'
     // Ok - color of success messages,
     // usually a shade of green
     color_ok = '#3fa595'
 
     // Received - color of income amounts
-    color_received = '#689F38'
+    color_received = '#33A494'
     // Sent - color of spent amounts
-    color_sent = '#D32F2F'
+    color_sent = '#c2243b'
     //Warning - color of warning message
     color_warning = '#EF6C00'
 

@@ -10,9 +10,9 @@
         android:id="@+id/issued_text_view"
         style="@style/HeadingText"
         android:layout_width="match_parent"
-        android:layout_marginStart="@dimen/half_standard_padding"
-        android:layout_marginEnd="@dimen/half_standard_padding"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/half_standard_padding"
+        android:layout_marginStart="@dimen/half_standard_padding"
         android:layout_marginTop="@dimen/standard_padding"
         android:gravity="center_horizontal"
         android:maxLines="1"
@@ -29,10 +29,10 @@
 
     <android.support.design.widget.TabLayout
         android:id="@+id/chart_scale_tabs"
+        style="@style/TabPicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/standard_margin"
-        app:tabSelectedTextColor="@color/secondary_text"
         app:tabGravity="fill"
         app:tabMode="fixed" />
 
