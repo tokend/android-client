@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:paddingBottom="@dimen/standard_margin"
             android:textSize="@dimen/text_size_heading" />
 
         <FrameLayout
@@ -32,7 +35,7 @@
                 android:id="@+id/qr_code_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/windowBackground" />
+                android:contentDescription="@string/show_qr_label" />
 
         </FrameLayout>
 
@@ -43,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/half_standard_margin"
             android:gravity="center"
-            android:maxLines="2" />
+            android:maxLines="2"
+            android:paddingBottom="@dimen/standard_margin" />
     </LinearLayout>
 </ScrollView>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.tokend.template">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -22,6 +23,26 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="${fabricApiKey}" />
+
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="sensor"
+            android:stateNotNeeded="true"
+            tools:replace="android:screenOrientation" />
         <activity
             android:name=".base.activities.SignInActivity"
             android:configChanges="orientation|screenSize"
@@ -114,19 +135,20 @@
             android:configChanges="orientation|screenSize"
             android:theme="@style/SplashTheme"
             android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+            <!-- Uncomment to enable links opening in app -->
+            <!--<intent-filter>-->
+            <!--<action android:name="android.intent.action.VIEW" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+            <!--<category android:name="android.intent.category.DEFAULT" />-->
+            <!--<category android:name="android.intent.category.BROWSABLE" />-->
 
-                <data
-                    android:host="@string/app_host"
-                    android:scheme="http" />
-                <data
-                    android:host="@string/app_host"
-                    android:scheme="https" />
-            </intent-filter>
+            <!--<data-->
+            <!--android:host="@string/app_host"-->
+            <!--android:scheme="http" />-->
+            <!--<data-->
+            <!--android:host="@string/app_host"-->
+            <!--android:scheme="https" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity
             android:name=".base.activities.SingleFragmentActivity"

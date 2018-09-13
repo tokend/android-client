@@ -2,14 +2,13 @@ package org.tokend.template.base.activities.qr
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.support.v4.content.ContextCompat
+import android.graphics.Color
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.google.zxing.qrcode.encoder.Encoder
 import io.reactivex.Observable
-import org.tokend.template.R
 import java.util.*
 
 class QrGenerator(context: Context) {
@@ -17,8 +16,8 @@ class QrGenerator(context: Context) {
 
     private val ERROR_CORRECTION_LV = ErrorCorrectionLevel.H
 
-    private val darkColor = ContextCompat.getColor(context, R.color.primary_text)
-    private val lightColor = 0
+    private val darkColor = Color.BLACK
+    private val lightColor = Color.WHITE
 
     private fun generateQrBitmap(content: String, maxSize: Int): Bitmap {
         val code = Encoder.encode(content, ERROR_CORRECTION_LV, null)
@@ -43,7 +42,7 @@ class QrGenerator(context: Context) {
             }
         }
 
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height)
         return bitmap
     }

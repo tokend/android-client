@@ -10,7 +10,6 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.zxing.integration.android.IntentIntegrator
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
@@ -44,7 +43,7 @@ import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.Permission
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import org.tokend.template.util.QrScannerUtil
 import org.tokend.wallet.Base32Check
 import ua.com.radiokot.pc.util.text_validators.EmailValidator
 import java.math.BigDecimal
@@ -211,21 +210,11 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     }
     // endregion
 
-    // region QR
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
-            openQrScanner()
+            QrScannerUtil.openScanner(this)
         }
     }
-
-    private fun openQrScanner() {
-        IntentIntegrator.forSupportFragment(this)
-                .setBeepEnabled(false)
-                .setOrientationLocked(false)
-                .setPrompt("")
-                .initiateScan()
-    }
-    // endregion
 
     // region Validation
     private fun checkAmount() {
@@ -297,20 +286,16 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                     data.senderAccount = currentAccount
                     data.recipientAccount = recipientAccount
 
-                    Single.zip(
-                            getOurBalanceId(asset),
-                            getRecipientBalanceId(recipientAccount, asset),
-                            BiFunction { t1: String, t2: String -> Pair(t1, t2) }
-                    )
+                    getOurBalanceId(asset)
                 }
-                .flatMap { (currentBalance) ->
+                .flatMap { currentBalance ->
                     data.senderBalance = currentBalance
 
                     Single.zip(
                             FeeManager(apiProvider)
-                                    .getPaymentFee(data.senderAccount, asset, amount,true),
+                                    .getPaymentFee(data.senderAccount, asset, amount, true),
                             FeeManager(apiProvider)
-                                    .getPaymentFee(data.recipientAccount, asset, amount,false),
+                                    .getPaymentFee(data.recipientAccount, asset, amount, false),
                             BiFunction { t1: Fee, t2: Fee -> Pair(t1, t2) }
                     )
                 }
@@ -340,8 +325,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                         },
                         onError = {
                             when (it) {
-                                is AccountDetailsRepository.NoDetailsFoundException,
-                                is NoRecipientBalanceException ->
+                                is AccountDetailsRepository.NoDetailsFoundException ->
                                     recipient_edit_text.setErrorAndFocus(
                                             R.string.error_invalid_recipient
                                     )
@@ -350,7 +334,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                                             R.string.error_cannot_send_to_yourself
                                     )
                                 else ->
-                                    ErrorHandlerFactory.getDefault().handle(it)
+                                    errorHandlerFactory.getDefault().handle(it)
                             }
                             updateConfirmAvailability()
                         }
@@ -387,22 +371,6 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                                 ))
                 )
     }
-
-    private class NoRecipientBalanceException : Exception()
-
-    private fun getRecipientBalanceId(recipientAccountId: String, asset: String): Single<String> {
-        return repositoryProvider.accountDetails().getBalancesByAccountId(recipientAccountId)
-                .flatMap { balances ->
-                    balances.find { it.asset == asset }
-                            .toMaybe()
-                            .switchIfEmpty(Single.error(
-                                    NoRecipientBalanceException()
-                            ))
-                }
-                .map { balance ->
-                    balance.balanceId
-                }
-    }
     // endreigon.
 
     private fun onAssetChanged() {
@@ -422,11 +390,8 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        val scanResult = IntentIntegrator
-                .parseActivityResult(requestCode, resultCode, data)
-
-        if (scanResult != null && scanResult.contents != null) {
-            recipient_edit_text.setText(scanResult.contents)
+        QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
+            recipient_edit_text.setText(it)
             recipient_edit_text.setSelection(recipient_edit_text.text.length)
             checkRecipient()
             updateConfirmAvailability()

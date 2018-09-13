@@ -8,6 +8,9 @@ import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.extensions.toByteArray
 import org.tokend.template.extensions.toCharArray
 
+/**
+ * Represents secure credentials storage based on SharedPreferences.
+ */
 class CredentialsPersistor(
         private val preferences: SharedPreferences
 ) {

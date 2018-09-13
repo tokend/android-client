@@ -13,12 +13,15 @@ import org.tokend.template.base.logic.persistance.CredentialsPersistor
 import org.tokend.template.base.logic.persistance.FingerprintAuthManager
 import org.tokend.template.base.view.util.AnimationUtil
 import org.tokend.template.util.ToastManager
+import org.tokend.template.util.error_handlers.ErrorHandler
 
-class TfaPasswordDialog(context: Context, tfaVerifierInterface: TfaVerifier.Interface,
+class TfaPasswordDialog(context: Context,
+                        errorHandler: ErrorHandler,
+                        tfaVerifierInterface: TfaVerifier.Interface,
                         credentialsPersistor: CredentialsPersistor?,
                         private val tfaException: NeedTfaException,
                         private val email: String)
-    : TfaDialog(context, tfaVerifierInterface) {
+    : TfaDialog(context, errorHandler, tfaVerifierInterface) {
     private val fingerprintAuthManager = credentialsPersistor?.let {
         FingerprintAuthManager(context, it)
     }
@@ -35,7 +38,7 @@ class TfaPasswordDialog(context: Context, tfaVerifierInterface: TfaVerifier.Inte
         inputButtonImageView.apply {
             setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_fingerprint))
             onClick {
-                ToastManager.short(R.string.touch_sensor)
+                ToastManager(context).short(R.string.touch_sensor)
             }
         }
     }
@@ -48,7 +51,7 @@ class TfaPasswordDialog(context: Context, tfaVerifierInterface: TfaVerifier.Inte
                 onAuthStart = {
                     AnimationUtil.fadeInView(inputButtonImageView)
                 },
-                onError = { ToastManager.short(it) },
+                onError = { ToastManager(context).short(it) },
                 onSuccess = { _, password ->
                     inputEditText.setText(password, 0, password.size)
                     inputEditText.setSelection(password.size)

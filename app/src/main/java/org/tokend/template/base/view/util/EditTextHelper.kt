@@ -14,7 +14,7 @@ object EditTextHelper {
                 if (s.isNullOrEmpty() || EmailValidator.isValid(s)) {
                     editText.error = null
                 } else {
-                    editText.error = App.context.getString(R.string.error_invalid_email)
+                    editText.error = editText.context.getString(R.string.error_invalid_email)
                 }
             }
         }
@@ -26,7 +26,7 @@ object EditTextHelper {
                 if (s.isNullOrEmpty() || PasswordValidator.isValid(s)) {
                     editText.error = null
                 } else {
-                    editText.error = App.context.getString(R.string.error_weak_password)
+                    editText.error = editText.context.getString(R.string.error_weak_password)
                 }
             }
         }

@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.clipboardManager
 import org.tokend.sdk.api.tfa.TfaBackend
-import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
@@ -164,7 +163,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         tfaRepository.deleteBackend(tfaBackend!!.id!!)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(
-                        onError = { ErrorHandlerFactory.getDefault().handle(it) }
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
     }
@@ -177,7 +176,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .subscribeBy(
                         onSuccess = { tryToEnableTfaBackend(it) },
-                        onError = { ErrorHandlerFactory.getDefault().handle(it) }
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
     }
@@ -188,11 +187,11 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         val seed = backend.attributes?.seed
 
         if (secret == null || id == null || seed == null) {
-            ErrorHandlerFactory.getDefault().handle(IllegalStateException())
+            errorHandlerFactory.getDefault().handle(IllegalStateException())
             return
         }
 
-        val dialog = AlertDialog.Builder(context ?: App.context, R.style.AlertDialogStyle)
+        val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogStyle)
                 .setTitle(R.string.tfa_add_dialog_title)
                 .setMessage(getString(R.string.template_tfa_add_dialog_message, secret))
                 .setPositiveButton(R.string.continue_action) { _, _ ->
@@ -204,7 +203,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
         dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
             context?.clipboardManager?.text = secret
-            ToastManager.short(R.string.tfa_key_copied)
+            ToastManager(requireContext()).short(R.string.tfa_key_copied)
         }
 
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
@@ -216,7 +215,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         tfaRepository.setBackendAsMain(id)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(
-                        onError = { ErrorHandlerFactory.getDefault().handle(it) }
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
     }

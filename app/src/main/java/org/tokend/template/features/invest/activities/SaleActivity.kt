@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.RelativeLayout
 import com.google.gson.JsonSyntaxException
 import com.squareup.picasso.Picasso
@@ -31,6 +33,7 @@ import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.base.activities.BaseActivity
 import org.tokend.template.base.logic.FeeManager
+import org.tokend.template.base.logic.repository.AccountRepository
 import org.tokend.template.base.logic.repository.assets.AssetsRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
 import org.tokend.template.base.logic.repository.favorites.FavoritesRepository
@@ -49,7 +52,8 @@ import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import org.tokend.wallet.xdr.AccountType
+import org.tokend.wallet.xdr.AssetPolicy
 import org.tokend.wallet.xdr.SaleType
 import java.math.BigDecimal
 import java.math.MathContext
@@ -66,6 +70,9 @@ class SaleActivity : BaseActivity() {
     )
 
     private lateinit var fileDownloader: FileDownloader
+
+    private val accountRepository: AccountRepository
+        get() = repositoryProvider.account()
 
     private val salesRepository: SalesRepository
         get() = repositoryProvider.sales()
@@ -272,7 +279,7 @@ class SaleActivity : BaseActivity() {
                                     updateInvestAvailability()
                                 },
                                 onError = {
-                                    ErrorHandlerFactory.getDefault().handle(it)
+                                    errorHandlerFactory.getDefault().handle(it)
                                 }
                         )
                         .addTo(compositeDisposable)
@@ -305,7 +312,7 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun displayAssetDetails() {
-        saleAsset.details?.logo?.getUrl(urlConfigProvider.getConfig().storage)?.let {
+        saleAsset.details.logo.getUrl(urlConfigProvider.getConfig().storage)?.let {
             Picasso.with(this)
                     .load(it)
                     .resizeDimen(R.dimen.asset_list_item_logo_size, R.dimen.asset_list_item_logo_size)
@@ -341,10 +348,15 @@ class SaleActivity : BaseActivity() {
     // region Invest
     private fun initInvestIfNeeded() {
         if (sale.isAvailable) {
-            initInvest()
-            sale_invest_card.post {
-                if (sale_invest_card.visibility != View.VISIBLE) {
-                    AnimationUtil.fadeInView(sale_invest_card)
+            if (saleAsset.policy and AssetPolicy.REQUIRES_KYC.value == AssetPolicy.REQUIRES_KYC.value &&
+                    accountRepository.itemSubject.value.typeI == AccountType.NOT_VERIFIED.value) {
+                displayKycRequired()
+            } else {
+                initInvest()
+                sale_invest_card.post {
+                    if (sale_invest_card.visibility != View.VISIBLE) {
+                        AnimationUtil.fadeInView(sale_invest_card)
+                    }
                 }
             }
         } else {
@@ -464,7 +476,11 @@ class SaleActivity : BaseActivity() {
             this.asset = quoteAsset
             valueHint = getString(R.string.deployed_hint)
             total = sale.currentCap
-            maxY = sale.hardCap.toFloat()
+            maxY =
+                    if (sale.currentCap > sale.softCap)
+                        sale.hardCap.toFloat()
+                    else
+                        sale.softCap.toFloat()
 
             setLimitLines(listOf(
                     sale.softCap.toFloat() to
@@ -499,7 +515,7 @@ class SaleActivity : BaseActivity() {
                             }
                         },
                         onError = { error ->
-                            ErrorHandlerFactory.getDefault().handle(error)
+                            errorHandlerFactory.getDefault().handle(error)
                         }
                 )
                 .addTo(compositeDisposable)
@@ -578,7 +594,7 @@ class SaleActivity : BaseActivity() {
                                     )
                                 },
                                 onError = {
-                                    ErrorHandlerFactory.getDefault().handle(it)
+                                    errorHandlerFactory.getDefault().handle(it)
                                 }
                         )
                         .addTo(compositeDisposable)
@@ -635,11 +651,44 @@ class SaleActivity : BaseActivity() {
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(
                         onComplete = { isFollowed = !isFollowed },
-                        onError = { ErrorHandlerFactory.getDefault().handle(it) }
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
     }
     // endregion
+
+    private fun displayKycRequired() {
+        displaySaleUnavailable(R.drawable.ic_security, getString(R.string.verification_required),
+                getString(R.string.sale_verifictaion_required_details),
+                View.OnClickListener {
+                    browse(urlConfigProvider.getConfig().kyc, true)
+                },
+                getString(R.string.go_to_verification))
+    }
+
+    private fun displaySaleUnavailable(@DrawableRes iconResId: Int,
+                                       reason: String,
+                                       details: String,
+                                       buttonClickListener: View.OnClickListener? = null,
+                                       buttonText: String = getString(R.string.details)) {
+        sale_unavailable_card.post {
+            sale_unavailable_icon.setImageDrawable(ContextCompat.getDrawable(this, iconResId))
+            sale_unavailable_reason_text_view.text = reason
+            sale_unavailable_details_text_view.text = details
+
+            if (buttonClickListener != null) {
+                sale_unavailable_details_button.apply {
+                    visibility = View.VISIBLE
+                    setOnClickListener(buttonClickListener)
+                    (this as Button).text = buttonText
+                }
+            } else {
+                sale_unavailable_details_button.visibility = View.GONE
+            }
+
+            AnimationUtil.fadeInView(sale_unavailable_card)
+        }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

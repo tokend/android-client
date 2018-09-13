@@ -10,7 +10,6 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.zxing.integration.android.IntentIntegrator
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -41,7 +40,7 @@ import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.Permission
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import org.tokend.template.util.QrScannerUtil
 import java.math.BigDecimal
 
 class WithdrawFragment : BaseFragment(), ToolbarProvider {
@@ -138,21 +137,11 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     }
     // endregion
 
-    // region QR
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
-            openQrScanner()
+            QrScannerUtil.openScanner(this)
         }
     }
-
-    private fun openQrScanner() {
-        IntentIntegrator.forSupportFragment(this)
-                .setBeepEnabled(false)
-                .setOrientationLocked(false)
-                .setPrompt("")
-                .initiateScan()
-    }
-    // endregion
 
     // region Balances
     private var balancesDisposable: CompositeDisposable? = null
@@ -277,7 +266,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                                     WITHDRAWAL_CONFIRMATION_REQUEST, request)
 
                         },
-                        onError = { ErrorHandlerFactory.getDefault().handle(it) }
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
     }
@@ -298,11 +287,8 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        val scanResult = IntentIntegrator
-                .parseActivityResult(requestCode, resultCode, data)
-
-        if (scanResult != null && scanResult.contents != null) {
-            address_edit_text.setText(scanResult.contents)
+        QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
+            address_edit_text.setText(it)
         }
 
         if (resultCode == Activity.RESULT_OK) {

@@ -82,7 +82,7 @@ class RecoverySeedActivity : AppCompatActivity() {
 
         copy_button.onClick {
             clipboardManager.text = seed
-            ToastManager.short(R.string.seed_copied)
+            ToastManager(this).short(R.string.seed_copied)
         }
     }
     // endregion

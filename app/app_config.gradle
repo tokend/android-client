@@ -4,10 +4,10 @@ ext {
     // Application ID - unique identifier of the app in Google Play and on user's device
     application_id = 'org.tokend.template'
     // Version Name - human-readable app version
-    version_name = '1.0'
+    version_name = '1.1'
     // Version Code - code number for version,
     // must be incremented after each release
-    version_code = 2
+    version_code = 3
 
     // --------------------------
 
@@ -40,44 +40,44 @@ ext {
     // ----- Appearance -----
 
     // Primary color - color of app toolbar
-    color_primary = '#0066cc'
+    color_primary = '#48446a'
     // Primary dark - color of status bar above toolbar
-    color_primary_dark = '#01579B'
+    color_primary_dark = '#323051'
 
     // Primary-half color - color of asset charts
-    color_primary_half = '#800066cc'
+    color_primary_half = '#756f98'
     // Accent color - color of actions and controls by default
-    color_accent = '#ef5350'
+    color_accent = '#6454ee'
 
     // Background color - used as a background color on screens with cards
     color_background = '#e8e8e8'
 
     // Primary text - color of all text labels and fields
-    color_primary_text = '#212121'
+    color_primary_text = '#3a4180'
     // Secondary text - color of hints
-    color_secondary_text = '#803f4244'
+    color_secondary_text = '#979BB9'
 
     // Primary action - custom color for action controls,
     // same as Accent by default
-    color_primary_action = '#ef5350'
+    color_primary_action = '#6052e4'
     // Primary action disabled - color of disabled action control,
     // usually it's just a Primary action color with some transparency
-    color_primary_action_disabled = '#80ef5350'
+    color_primary_action_disabled = '#977fff'
 
     // Icons - color of all icons in app except menus
-    color_icons = '#6F6F6F'
+    color_icons = '#6E759F'
 
     // Error - color of error messages,
     // usually a shade of red
-    color_error = '#c2243b'
+    color_error = '#ff1744'
     // Ok - color of success messages,
     // usually a shade of green
     color_ok = '#3fa595'
 
     // Received - color of income amounts
-    color_received = '#689F38'
+    color_received = '#33A494'
     // Sent - color of spent amounts
-    color_sent = '#D32F2F'
+    color_sent = '#c2243b'
     //Warning - color of warning message
     color_warning = '#EF6C00'
 
@@ -112,6 +112,8 @@ ext {
     allow_invest = 'true'
     // Network specified by user - When set to 'true' user have to specify network to work with.
     network_specified_by_user = 'true'
+    //Allows to see an analytics for your app.
+    enable_analytics = 'false'
     // ----------------------
 }
 
@@ -143,6 +145,8 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'IS_EXPLORE_ALLOWED', "${allow_explore}"
     b.buildConfigField 'Boolean', 'IS_INVEST_ALLOWED', "${allow_invest}"
     b.buildConfigField 'Boolean', 'IS_NETWORK_SPECIFIED_BY_USER', "${network_specified_by_user}"
+    b.buildConfigField 'Boolean', 'ENABLE_ANALYTICS', "${enable_analytics}"
+
 
     b.resValue "string", "app_host", "${app_host}"
     b.resValue "color", "primary", "${color_primary}"

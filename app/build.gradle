@@ -3,6 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+def keystorePropertiesFile = rootProject.file("app/keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    apply plugin: 'io.fabric'
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+
 android {
     compileSdkVersion 27
 
@@ -13,35 +21,48 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         resConfigs "en"
-    }
+        manifestPlaceholders = [
+                fabricApiKey: keystoreProperties['FabricApiKey'] != null
+                        ? keystoreProperties['FabricApiKey']
+                        : ""
+        ]
 
-
-    apply from: "app_config.gradle"
-    if (file("dev_app_config.gradle").exists()) {
-        apply from: "dev_app_config.gradle"
     }
-    applyAppConfig(android.defaultConfig)
 
     buildTypes {
-        staging {
-            if (file("stage_app_config.gradle").exists()) {
-                apply from: "stage_app_config.gradle"
-                applyAppConfig(android.buildTypes.staging)
+        debug {
+            apply from: "app_config.gradle"
+            if (file("dev_app_config.gradle").exists()) {
+                apply from: "dev_app_config.gradle"
             }
+            applyAppConfig(android.buildTypes.debug)
 
             signingConfig signingConfigs.debug
-            debuggable = true
+            debuggable true
+        }
+
+        staging {
+            apply from: "app_config.gradle"
+            if (file("stage_app_config.gradle").exists()) {
+                apply from: "stage_app_config.gradle"
+            }
+            applyAppConfig(android.buildTypes.staging)
+
+            signingConfig signingConfigs.debug
+            debuggable true
         }
 
         release {
+            apply from: "app_config.gradle"
             if (file("release_app_config.gradle").exists()) {
                 apply from: "release_app_config.gradle"
-                applyAppConfig(android.buildTypes.release)
             }
+            applyAppConfig(android.buildTypes.release)
 
             signingConfig signingConfigs.debug
             minifyEnabled true
             shrinkResources true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -82,7 +103,7 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.13'
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
-    implementation "org.tokend:sdk:0.79"
+    implementation "org.tokend:sdk:0.81"
     implementation "org.tokend:wallet:1.0.7"
 
     implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'
@@ -97,6 +118,9 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'ru.noties:markwon:1.0.1'
     implementation 'ru.noties:markwon-image-loader:1.0.1'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
+        transitive = true;
+    }
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

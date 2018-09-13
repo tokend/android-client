@@ -169,7 +169,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         balancesRepository.errorsSubject
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
-                    ErrorHandlerFactory.getDefault().handle(it)
+                    errorHandlerFactory.getDefault().handle(it)
                 }
                 .addTo(compositeDisposable)
     }

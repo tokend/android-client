@@ -86,7 +86,7 @@ class AssetDetailsFragment : BaseFragment() {
                             initButtons()
                         },
                         onError = {
-                            ErrorHandlerFactory.getDefault().handle(it)
+                            errorHandlerFactory.getDefault().handle(it)
                         }
                 )
                 .addTo(compositeDisposable)
@@ -201,13 +201,13 @@ class AssetDetailsFragment : BaseFragment() {
                         onComplete = {
                             onBalanceCreated()
                         },
-                        onError = { ErrorHandlerFactory.getDefault().handle(it) }
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
 
     }
 
     private fun onBalanceCreated() {
-        ToastManager.short(getString(R.string.template_asset_balance_created,
+        ToastManager(requireContext()).short(getString(R.string.template_asset_balance_created,
                 asset.code))
 
         activity?.setResult(Activity.RESULT_OK)

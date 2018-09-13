@@ -8,6 +8,8 @@ import org.tokend.template.App
 import org.tokend.template.base.activities.OnBackPressedListener
 import org.tokend.template.base.logic.AppTfaCallback
 import org.tokend.template.base.logic.di.providers.*
+import org.tokend.template.util.ToastManager
+import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import javax.inject.Inject
 
 abstract class BaseFragment : Fragment(), OnBackPressedListener {
@@ -23,6 +25,10 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
     lateinit var repositoryProvider: RepositoryProvider
     @Inject
     lateinit var urlConfigProvider: UrlConfigProvider
+    @Inject
+    lateinit var errorHandlerFactory: ErrorHandlerFactory
+    @Inject
+    lateinit var toastManager: ToastManager
 
     override fun onBackPressed() = true
 

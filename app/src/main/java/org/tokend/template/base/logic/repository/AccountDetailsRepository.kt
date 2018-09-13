@@ -17,6 +17,11 @@ class AccountDetailsRepository(
     private val detailsByAccountId = mutableMapOf<String, AccountsDetailsResponse.AccountDetails>()
     private val accountIdByEmail = mutableMapOf<String, String>()
 
+    /**
+     * Loads details for given list of AccountIDs.
+     * Result will be cached.
+     * @param accounts list of AccountIDs
+     */
     fun getDetails(accounts: List<String?>):
             Single<Map<String, AccountsDetailsResponse.AccountDetails>> {
         val toReturn = mutableMapOf<String, AccountsDetailsResponse.AccountDetails>()

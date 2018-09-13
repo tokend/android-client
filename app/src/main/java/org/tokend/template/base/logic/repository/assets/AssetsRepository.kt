@@ -27,7 +27,7 @@ class AssetsRepository(
                                 .getAssetDetails(code)
                                 .toSingle()
                                 .doOnSuccess {
-                                    itemsCache.merge(listOf(it)) { it.code == code }
+                                    itemsCache.transform(listOf(it)) { it.code == code }
                                 }
                 )
     }

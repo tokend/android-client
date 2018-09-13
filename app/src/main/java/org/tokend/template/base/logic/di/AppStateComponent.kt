@@ -14,7 +14,8 @@ import javax.inject.Singleton
     ApiProviderModule::class,
     RepositoriesModule::class,
     PersistenceModule::class,
-    UrlConfigProviderModule::class
+    UrlConfigProviderModule::class,
+    UtilModule::class
 ])
 interface AppStateComponent {
     fun inject(baseActivity: BaseActivity)

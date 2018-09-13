@@ -104,11 +104,11 @@ class WithdrawalConfirmationActivity : BaseActivity() {
                 .subscribeBy(
                         onSuccess = {
                             progress.dismiss()
-                            ToastManager.long(R.string.withdrawal_request_created)
+                            ToastManager(this).long(R.string.withdrawal_request_created)
                             finishWithSuccess()
                         },
                         onError = {
-                            ErrorHandlerFactory.getDefault().handle(it)
+                            errorHandlerFactory.getDefault().handle(it)
                         }
                 )
     }

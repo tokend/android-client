@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import org.tokend.template.App
 
 /**
  * Handles specified Android runtime permission.
@@ -27,7 +26,7 @@ class Permission(private val permission: String,
 
     fun check(fragment: Fragment, action: () -> Unit) {
         this.grantedCallback = action
-        if (ContextCompat.checkSelfPermission(fragment.activity ?: App.context, permission) ==
+        if (ContextCompat.checkSelfPermission(fragment.requireContext(), permission) ==
                 PackageManager.PERMISSION_GRANTED) {
             action()
         } else {

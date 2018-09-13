@@ -35,7 +35,7 @@
 
     <style name="EditText">
         <item name="met_textColorHint">@color/secondary_text</item>
-        <item name="met_primaryColor">@color/colorAccent</item>
+        <item name="met_primaryColor">@color/secondary_text</item>
         <item name="met_errorColor">@color/error</item>
         <item name="met_floatingLabel">highlight</item>
         <item name="android:textSize">18sp</item>

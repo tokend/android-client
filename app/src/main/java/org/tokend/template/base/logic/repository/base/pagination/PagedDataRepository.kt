@@ -57,9 +57,9 @@ abstract class PagedDataRepository<T, R> : MultipleItemsRepository<T>()
         }
 
         if (isOnFirstPage) {
-            itemsCache.merge(newItems)
+            itemsCache.transform(newItems)
         } else {
-            itemsCache.merge(newItems, { false })
+            itemsCache.transform(newItems, { false })
         }
         broadcast()
 

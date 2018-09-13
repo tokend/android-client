@@ -187,7 +187,7 @@ class OffersRepository(
                     isLoading = false
                 }
                 .doOnComplete {
-                    itemsCache.merge(emptyList()) {
+                    itemsCache.transform(emptyList()) {
                         it.id == offer.id
                     }
                     broadcast()

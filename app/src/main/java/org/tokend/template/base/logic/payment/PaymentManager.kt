@@ -22,6 +22,10 @@ class PaymentManager(
         private val accountProvider: AccountProvider,
         private val txManager: TxManager
 ) {
+    /**
+     * Submits given request as a transaction,
+     * updates payments-related repositories.
+     */
     fun submit(request: PaymentRequest): Single<SubmitTransactionResponse> {
         return repositoryProvider.systemInfo()
                 .getNetworkParams()

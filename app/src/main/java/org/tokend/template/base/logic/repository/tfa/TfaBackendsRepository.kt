@@ -84,7 +84,7 @@ class TfaBackendsRepository(
                     itemsCache.items.find { it.id == id }?.let { updatedBackend ->
                         updatedBackend.attributes?.priority = newPriority
 
-                        itemsCache.merge(listOf(updatedBackend), { it.id == id })
+                        itemsCache.transform(listOf(updatedBackend), { it.id == id })
                         broadcast()
                     }
                 }
@@ -102,7 +102,7 @@ class TfaBackendsRepository(
         return signedApi.deleteTfaBackend(walletId, id)
                 .toCompletable()
                 .doOnComplete {
-                    itemsCache.merge(emptyList()) { it.id == id }
+                    itemsCache.transform(emptyList()) { it.id == id }
                     broadcast()
                 }
                 .doOnSubscribe { isLoading = true }

@@ -43,13 +43,12 @@ captures/
 # Keys
 *.jks
 keys/
+app/keystore.properties
+
 
 # Google Servises
 google-services.json
 */google-services.json
-
-# Keys
-app/keystore.properties
 
 # Dev template config
 dev_app_config.gradle

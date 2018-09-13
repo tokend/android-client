@@ -227,18 +227,18 @@ class OfferConfirmationActivity : BaseActivity() {
                             progress.dismiss()
                             if (isPrimaryMarket) {
                                 if (cancellationOnly) {
-                                    ToastManager.short(R.string.investment_canceled)
+                                    ToastManager(this).short(R.string.investment_canceled)
                                 } else {
-                                    ToastManager.short(R.string.successfully_invested)
+                                    ToastManager(this).short(R.string.successfully_invested)
 
                                 }
                             } else {
-                                ToastManager.short(R.string.offer_created)
+                                ToastManager(this).short(R.string.offer_created)
                             }
                             finishWithSuccess()
                         },
                         onError = {
-                            ErrorHandlerFactory.getDefault().handle(it)
+                            errorHandlerFactory.getDefault().handle(it)
                         }
                 )
     }

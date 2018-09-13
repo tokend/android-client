@@ -4,6 +4,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import org.tokend.template.util.ObservableTransformers
 
+/**
+ * Represents in-memory cache of given type with persistence.
+ */
 abstract class RepositoryCache<T> {
     protected open val mItems = mutableListOf<T>()
     open val items: List<T>
@@ -11,8 +14,11 @@ abstract class RepositoryCache<T> {
 
     protected open var isLoaded = false
 
+    /**
+     * Will replace current items with loaded from database.
+     */
     open fun loadFromDb(): Completable {
-        synchronized(this ) {
+        synchronized(this) {
             val initSingle =
                     if (!isLoaded)
                         getAllFromDb()
@@ -58,7 +64,14 @@ abstract class RepositoryCache<T> {
         }
     }
 
-    open fun merge(items: List<T>, filter: ((item: T) -> Boolean)? = null): Boolean {
+    /**
+     * Intelligently transforms current item set to the given one.
+     * You can pass an empty list to clear the cache
+     * or pass an items list and a false filter to just add them into cache.
+     * @param newStateItems new list of items
+     * @param filter predicate to form custom initial state from current items.
+     */
+    open fun transform(newStateItems: List<T>, filter: ((item: T) -> Boolean)? = null): Boolean {
         var changesOccurred = false
 
         val operatingItems =
@@ -68,12 +81,12 @@ abstract class RepositoryCache<T> {
                     mItems
 
         if (operatingItems.isEmpty()) {
-            if (items.isNotEmpty()) {
-                mItems.addAll(items)
-                addToDb(items)
+            if (newStateItems.isNotEmpty()) {
+                mItems.addAll(newStateItems)
+                addToDb(newStateItems)
                 changesOccurred = true
             }
-        } else if (items.isEmpty() && filter == null) {
+        } else if (newStateItems.isEmpty() && filter == null) {
             if (mItems.isNotEmpty()) {
                 mItems.clear()
                 clearDb()
@@ -84,7 +97,7 @@ abstract class RepositoryCache<T> {
             val removedItems = mutableListOf<T>()
             val toUpdateInDb = mutableListOf<T>()
 
-            items.forEach {
+            newStateItems.forEach {
                 if (!operatingItems.contains(it)) {
                     newItems.add(it)
                 }
@@ -97,11 +110,11 @@ abstract class RepositoryCache<T> {
                     continue
                 }
 
-                val newIndex = items.indexOf(existing)
+                val newIndex = newStateItems.indexOf(existing)
                 if (newIndex < 0) {
                     removedItems.add(existing)
                 } else {
-                    val new = items[newIndex]
+                    val new = newStateItems[newIndex]
                     if (!isContentSame(new, existing)) {
                         mItems[i] = new
                         toUpdateInDb.add(new)
@@ -135,13 +148,19 @@ abstract class RepositoryCache<T> {
     }
 
     open fun clear() {
-        merge(emptyList())
+        transform(emptyList())
     }
 
-    protected open fun sortItems() { }
+    /**
+     * Sorts inner items set if implemented.
+     */
+    protected open fun sortItems() {}
 
     // region Abstract
 
+    /**
+     * @return true if items are technically not equals but have the same content.
+     */
     protected abstract fun isContentSame(first: T, second: T): Boolean
 
     // region DB

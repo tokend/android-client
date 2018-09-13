@@ -5,6 +5,9 @@ import org.tokend.template.base.logic.di.providers.UrlConfigProvider
 import org.tokend.template.base.logic.model.UrlConfig
 import org.tokend.template.base.logic.persistance.UrlConfigPersistor
 
+/**
+ * Manages network configuration of the app.
+ */
 class UrlConfigManager(
         private val urlConfigProvider: UrlConfigProvider,
         private val urlConfigPersistor: UrlConfigPersistor

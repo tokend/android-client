@@ -58,7 +58,7 @@ class FileDownloader(
         val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         manager.enqueue(request)
 
-        ToastManager.long(context.getString(R.string.template_file_download_location,
+        ToastManager(context).long(context.getString(R.string.template_file_download_location,
                 Environment.DIRECTORY_DOWNLOADS))
     }
 }

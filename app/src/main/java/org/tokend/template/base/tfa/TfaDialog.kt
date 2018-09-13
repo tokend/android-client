@@ -19,9 +19,10 @@ import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import org.tokend.template.util.error_handlers.ErrorHandler
 
 abstract class TfaDialog(protected val context: Context,
+                         protected val errorHandler: ErrorHandler,
                          private val tfaVerifierInterface: TfaVerifier.Interface
 ) {
     protected val inputEditText: MaterialEditText
@@ -122,7 +123,7 @@ abstract class TfaDialog(protected val context: Context,
                             if (error is InvalidOtpException) {
                                 inputEditText.setErrorAndFocus(getInvalidInputError())
                             } else if (error != null) {
-                                ErrorHandlerFactory.getDefault().handle(error)
+                                errorHandler.handle(error)
                             }
                         })
             }

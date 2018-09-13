@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
-import com.google.zxing.integration.android.IntentIntegrator
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
@@ -28,11 +27,7 @@ import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.setErrorAndFocus
-import org.tokend.template.util.Navigator
-import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.Permission
-import org.tokend.template.util.ToastManager
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import org.tokend.template.util.*
 import org.tokend.wallet.Account
 
 class SignUpActivity : BaseActivity() {
@@ -138,27 +133,17 @@ class SignUpActivity : BaseActivity() {
             if (urlConfigProvider.hasConfig()) {
                 browse(urlConfigProvider.getConfig().terms, true)
             } else {
-                ToastManager.short(R.string.error_network_not_specified)
+                ToastManager(this).short(R.string.error_network_not_specified)
             }
         }
     }
     // endregion
 
-    // region QR
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
-            openQrScanner()
+            QrScannerUtil.openScanner(this)
         }
     }
-
-    private fun openQrScanner() {
-        IntentIntegrator(this)
-                .setBeepEnabled(false)
-                .setOrientationLocked(false)
-                .setPrompt("")
-                .initiateScan()
-    }
-    // endregion
 
     private fun updateSignUpAvailability() {
         canSignUp = !isLoading
@@ -235,7 +220,7 @@ class SignUpActivity : BaseActivity() {
             is EmailAlreadyTakenException ->
                 email_edit_text.setErrorAndFocus(R.string.error_email_already_taken)
             else ->
-                ErrorHandlerFactory.getDefault().handle(error)
+                errorHandlerFactory.getDefault().handle(error)
         }
         updateSignUpAvailability()
     }
@@ -251,17 +236,14 @@ class SignUpActivity : BaseActivity() {
         if (requestCode == SAVE_SEED_REQUEST) {
             onSuccessfulSignUp()
         } else {
-            val scanResult = IntentIntegrator
-                    .parseActivityResult(requestCode, resultCode, data)
-
-            if (scanResult != null && scanResult.contents != null) {
-                urlConfigManager.setFromJson(scanResult.contents)
+            QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
+                urlConfigManager.setFromJson(it)
             }
         }
     }
 
     private fun onSuccessfulSignUp() {
-        ToastManager.long(R.string.check_your_email_to_verify_account)
+        ToastManager(this).long(R.string.check_your_email_to_verify_account)
         Navigator.toSignIn(this, false)
     }
 }

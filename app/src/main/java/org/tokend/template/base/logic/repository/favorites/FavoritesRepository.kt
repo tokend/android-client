@@ -52,7 +52,7 @@ class FavoritesRepository(
         return signedApi.removeFromFavorites(accountId, entryId)
                 .toCompletable()
                 .doOnComplete {
-                    itemsCache.merge(emptyList(), { it.id == entryId })
+                    itemsCache.transform(emptyList(), { it.id == entryId })
                     broadcast()
                 }
                 .doOnSubscribe { isLoading = true }

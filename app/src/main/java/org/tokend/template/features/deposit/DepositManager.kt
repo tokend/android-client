@@ -37,7 +37,7 @@ class DepositManager(
                 // Then check if balance for current asset exists.
                 .toSingle {
                     needBalanceCreation =
-                            balancesRepository.itemsSubject.value.find { it.asset == asset } != null
+                            balancesRepository.itemsSubject.value.find { it.asset == asset } == null
                 }
                 .flatMap {
                     systemInfoRepository.getNetworkParams()
@@ -46,7 +46,7 @@ class DepositManager(
                 .flatMap { netParams ->
                     val operations = mutableListOf<Operation.OperationBody>()
 
-                    if (!needBalanceCreation) {
+                    if (needBalanceCreation) {
                         val createBalanceOp = CreateBalanceOp(accountId, asset)
                         operations.add(
                                 Operation.OperationBody.ManageBalance(createBalanceOp)

@@ -189,6 +189,53 @@
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
+                android:id="@+id/sale_unavailable_card"
+                style="@style/InfoCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/sale_unavailable_icon"
+                        android:layout_width="@dimen/quadra_margin"
+                        android:layout_height="@dimen/quadra_margin"
+                        app:srcCompat="@drawable/ic_time" />
+
+                    <TextView
+                        android:id="@+id/sale_unavailable_reason_text_view"
+                        style="@style/HeadingText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/standard_margin"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/standard_margin"
+                        android:text="@string/sale_upcoming" />
+
+                    <TextView
+                        android:id="@+id/sale_unavailable_details_text_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                    <Button
+                        android:id="@+id/sale_unavailable_details_button"
+                        style="@style/PrimaryButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="@dimen/double_margin"
+                        android:text="@string/details" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
                 android:id="@+id/asset_chart_card"
                 style="@style/InfoCard"
                 android:layout_width="match_parent"

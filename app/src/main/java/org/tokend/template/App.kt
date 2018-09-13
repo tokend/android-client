@@ -9,6 +9,8 @@ import android.support.multidex.MultiDexApplication
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatDelegate
 import android.util.Log
+import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.CookieCache
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
@@ -19,6 +21,7 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
+import io.fabric.sdk.android.Fabric
 import io.reactivex.subjects.BehaviorSubject
 import org.tokend.template.base.logic.di.*
 import org.tokend.template.base.logic.model.UrlConfig
@@ -31,17 +34,6 @@ class App : MultiDexApplication() {
         private const val GO_TO_BACKGROUND_TIMEOUT = 2000
         private const val IMAGE_CACHE_SIZE_MB = 8L
         private const val LOG_TAG = "TokenD App"
-
-        private var _context: Context? = null
-        val context: Context
-            get() = _context!!
-
-        val areGooglePlayServicesAvailable: Boolean
-            get() {
-                val googleApiAvailability = GoogleApiAvailability.getInstance()
-                val resultCode = googleApiAvailability.isGooglePlayServicesAvailable(context)
-                return resultCode == ConnectionResult.SUCCESS
-            }
 
         /**
          * Emits value when app goes to the background or comes to the foreground.
@@ -59,10 +51,15 @@ class App : MultiDexApplication() {
 
     lateinit var stateComponent: AppStateComponent
 
+    private val areGooglePlayServicesAvailable: Boolean
+        get() {
+            val googleApiAvailability = GoogleApiAvailability.getInstance()
+            val resultCode = googleApiAvailability.isGooglePlayServicesAvailable(this)
+            return resultCode == ConnectionResult.SUCCESS
+        }
+
     override fun onCreate() {
         super.onCreate()
-
-        _context = this
 
         try {
             if (areGooglePlayServicesAvailable) {
@@ -97,6 +94,18 @@ class App : MultiDexApplication() {
         initCookies()
         initStateComponent()
         initPicasso()
+        initCrashlytics()
+    }
+
+    private fun initCrashlytics() {
+        val crashlytics = Crashlytics.Builder()
+                .core(
+                        CrashlyticsCore.Builder()
+                                .disabled(!BuildConfig.ENABLE_ANALYTICS)
+                                .build()
+                )
+                .build()
+        Fabric.with(this, crashlytics)
     }
 
     private fun initPicasso() {
@@ -142,6 +151,7 @@ class App : MultiDexApplication() {
                         getCredentialsPreferences(),
                         getNetworkPreferences()
                 ))
+                .utilModule(UtilModule(this))
                 .build()
     }
 

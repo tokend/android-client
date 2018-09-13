@@ -20,7 +20,6 @@ import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 class OffersActivity : BaseActivity() {
     private val onlyPrimary: Boolean
@@ -110,11 +109,11 @@ class OffersActivity : BaseActivity() {
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe { error ->
                     if (!txAdapter.hasData) {
-                        error_empty_view.showError(error) {
+                        error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
                             update(true)
                         }
                     } else {
-                        ErrorHandlerFactory.getDefault().handle(error)
+                        errorHandlerFactory.getDefault().handle(error)
                     }
                 }
                 .addTo(compositeDisposable)

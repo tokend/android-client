@@ -2,8 +2,8 @@ package org.tokend.template.base.logic.repository.balances
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
-import org.tokend.sdk.api.models.BalanceDetails
 import org.tokend.template.base.logic.repository.base.RepositoryCache
+import org.tokend.template.extensions.BalanceDetails
 
 class BalancesCache : RepositoryCache<BalanceDetails>() {
     override fun isContentSame(first: BalanceDetails, second: BalanceDetails): Boolean {

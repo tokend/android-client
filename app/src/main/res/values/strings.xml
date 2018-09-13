@@ -202,9 +202,11 @@
     <string name="error_tx_cross_self">Current offer crosses one of your existing offers</string>
 
     <string name="tfa_dialog_title">Two-factor authentication</string>
+    <string name="tfa_default_dialog_message">Enter verification code</string>
     <string name="totp_dialog_message">Enter code from the authentication app</string>
-    <string name="totp_verification_code">Verification code</string>
-    <string name="error_invalid_totp_code">Invalid code</string>
+    <string name="email_otp_dialog_message">Verification code was sent to your email</string>
+    <string name="otp_verification_code">Verification code</string>
+    <string name="error_invalid_otp_code">Invalid code</string>
     <string name="enter_your_password">Enter your password</string>
     <string name="tfa_add_dialog_title">Set up 2FA</string>
     <string name="template_tfa_add_dialog_message">To enable Two-factor authentication
@@ -279,4 +281,11 @@
     <string name="tokend_network_hint">Network</string>
     <string name="not_specified">Not specified</string>
     <string name="error_network_not_specified">Network is not specified</string>
+
+    <string name="verification_required">Verification required</string>
+    <string name="sale_verifictaion_required_details">Please verify your account to participate in this fund</string>
+    <string name="go_to_verification">Go to Verification</string>
+
+    <string name="sale_upcoming">Upcoming</string>
+
 </resources>

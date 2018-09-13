@@ -15,21 +15,33 @@ data class UrlConfig(
         private val mTerms: String
 ) : Serializable {
     val api: String
-        get() = mApi.addTrailSlashIfNeeded()
+        get() = mApi
+                .addTrailSlashIfNeeded()
+                .addProtocolIfNeeded()
 
     val storage: String
-        get() = mStorage.addTrailSlashIfNeeded()
+        get() = mStorage
+                .addTrailSlashIfNeeded()
+                .addProtocolIfNeeded()
 
     val kyc: String
-        get() = mKyc.addTrailSlashIfNeeded()
+        get() = mKyc
+                .addTrailSlashIfNeeded()
+                .addProtocolIfNeeded()
 
     val terms: String
-        get() = mTerms.addTrailSlashIfNeeded()
+        get() = mTerms
+                .addTrailSlashIfNeeded()
+                .addProtocolIfNeeded()
 
     val apiDomain: String
         get() = HttpUrl.parse(api)?.host() ?: api
 
     private fun String.addTrailSlashIfNeeded(): String {
         return if (this.endsWith('/')) this else this + "/"
+    }
+
+    private fun String.addProtocolIfNeeded(): String {
+        return "https://" + this.replace("^.*//".toRegex(), "")
     }
 }
