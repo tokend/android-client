@@ -65,7 +65,7 @@ ext {
     color_primary_action_disabled = '#977fff'
 
     // Icons - color of all icons in app except menus
-    color_icons = '#6F6F6F'
+    color_icons = '#6E759F'
 
     // Error - color of error messages,
     // usually a shade of red
