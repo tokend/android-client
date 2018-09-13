@@ -40,36 +40,36 @@ ext {
     // ----- Appearance -----
 
     // Primary color - color of app toolbar
-    color_primary = '#0066cc'
+    color_primary = '#48446a'
     // Primary dark - color of status bar above toolbar
-    color_primary_dark = '#01579B'
+    color_primary_dark = '#201e38'
 
     // Primary-half color - color of asset charts
-    color_primary_half = '#800066cc'
+    color_primary_half = '#756f98'
     // Accent color - color of actions and controls by default
-    color_accent = '#ef5350'
+    color_accent = '#6454ee'
 
     // Background color - used as a background color on screens with cards
     color_background = '#e8e8e8'
 
     // Primary text - color of all text labels and fields
-    color_primary_text = '#212121'
+    color_primary_text = '#2d3168 '
     // Secondary text - color of hints
-    color_secondary_text = '#803f4244'
+    color_secondary_text = '#5b5a96'
 
     // Primary action - custom color for action controls,
     // same as Accent by default
-    color_primary_action = '#ef5350'
+    color_primary_action = '#6052e4'
     // Primary action disabled - color of disabled action control,
     // usually it's just a Primary action color with some transparency
-    color_primary_action_disabled = '#80ef5350'
+    color_primary_action_disabled = '#977fff'
 
     // Icons - color of all icons in app except menus
     color_icons = '#6F6F6F'
 
     // Error - color of error messages,
     // usually a shade of red
-    color_error = '#c2243b'
+    color_error = '#db3b42'
     // Ok - color of success messages,
     // usually a shade of green
     color_ok = '#3fa595'
