@@ -22,11 +22,15 @@ import com.google.android.gms.security.ProviderInstaller
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import io.fabric.sdk.android.Fabric
+import io.reactivex.exceptions.UndeliverableException
+import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
 import org.tokend.template.base.logic.di.*
 import org.tokend.template.base.logic.model.UrlConfig
 import org.tokend.template.base.logic.persistance.UrlConfigPersistor
 import org.tokend.template.util.Navigator
+import java.io.IOException
+import java.net.SocketException
 import java.util.*
 
 class App : MultiDexApplication() {
@@ -95,6 +99,7 @@ class App : MultiDexApplication() {
         initStateComponent()
         initPicasso()
         initCrashlytics()
+        initRxErrorHandler()
     }
 
     private fun initCrashlytics() {
@@ -114,6 +119,36 @@ class App : MultiDexApplication() {
                         IMAGE_CACHE_SIZE_MB * 1024 * 1024))
                 .build()
         Picasso.setSingletonInstance(picasso)
+    }
+
+    private fun initRxErrorHandler() {
+        RxJavaPlugins.setErrorHandler {
+            var e = it
+            if (e is UndeliverableException) {
+                e = e.cause
+            }
+            if ((e is IOException) || (e is SocketException)) {
+                // fine, irrelevant network problem or API that throws on cancellation
+                return@setErrorHandler
+            }
+            if (e is InterruptedException) {
+                // fine, some blocking code was interrupted by a dispose call
+                return@setErrorHandler
+            }
+            if ((e is NullPointerException) || (e is IllegalArgumentException)) {
+                // that's likely a bug in the application
+                Thread.currentThread().uncaughtExceptionHandler
+                        .uncaughtException(Thread.currentThread(), e)
+                return@setErrorHandler
+            }
+            if (e is IllegalStateException) {
+                // that's a bug in RxJava or in a custom operator
+                Thread.currentThread().uncaughtExceptionHandler
+                        .uncaughtException(Thread.currentThread(), e)
+                return@setErrorHandler
+            }
+            Log.w("RxErrorHandler", "Undeliverable exception received, not sure what to do", e)
+        }
     }
 
     // region State
