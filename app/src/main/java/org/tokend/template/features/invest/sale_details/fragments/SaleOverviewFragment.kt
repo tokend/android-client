@@ -47,6 +47,10 @@ class SaleOverviewFragment : BaseFragment() {
         loadingDisposable =
                 BlobManager(apiProvider, walletInfoProvider)
                         .getBlob(blobId)
+                        .map { it.valueString }
+                        .map { markdownString ->
+                            Markwon.markdown(requireContext(), markdownString)
+                        }
                         .compose(ObservableTransformers.defaultSchedulersSingle())
                         .doOnSubscribe {
                             loadingIndicator.show()
@@ -57,7 +61,7 @@ class SaleOverviewFragment : BaseFragment() {
                         .subscribeBy(
                                 onSuccess = {
                                     error_empty_view.hide()
-                                    displayMarkdown(it.valueString)
+                                    displayMarkdown(it)
                                 },
                                 onError = {
                                     error_empty_view.showError(it, errorHandlerFactory.getDefault()) {
@@ -68,8 +72,8 @@ class SaleOverviewFragment : BaseFragment() {
                         .addTo(compositeDisposable)
     }
 
-    private fun displayMarkdown(content: String) {
-        Markwon.setMarkdown(markdown_text_view, content)
+    private fun displayMarkdown(content: CharSequence) {
+        Markwon.setText(markdown_text_view, content)
     }
 
     companion object {
