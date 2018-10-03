@@ -228,6 +228,14 @@ class AssetChartCard : LinearLayout {
             total = finalValue
         }
 
+        chartData.maxBy { it.y }?.let { entry ->
+            chart.axisLeft.limitLines.reversed().forEach { limitLine ->
+                maxY = if(entry.y > limitLine.limit) {
+                    entry.y
+                } else limitLine.limit
+            }
+        }
+
         drawChartData()
         displayTotalValue()
         displayGrowth(growth, percentGrowth)

@@ -476,11 +476,6 @@ class SaleActivity : BaseActivity() {
             this.asset = quoteAsset
             valueHint = getString(R.string.deployed_hint)
             total = sale.currentCap
-            maxY =
-                    if (sale.currentCap > sale.softCap)
-                        sale.hardCap.toFloat()
-                    else
-                        sale.softCap.toFloat()
 
             setLimitLines(listOf(
                     sale.softCap.toFloat() to
