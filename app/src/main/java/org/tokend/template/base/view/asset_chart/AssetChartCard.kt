@@ -230,9 +230,7 @@ class AssetChartCard : LinearLayout {
 
         chartData.maxBy { it.y }?.let { entry ->
             chart.axisLeft.limitLines.reversed().forEach { limitLine ->
-                maxY = if(entry.y > limitLine.limit) {
-                    entry.y
-                } else limitLine.limit
+                maxY = Math.max(entry.y, limitLine.limit)
             }
         }
 
