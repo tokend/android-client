@@ -16,7 +16,7 @@ import org.jetbrains.anko.browse
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onCheckedChange
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.federation.EmailAlreadyTakenException
+import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.activities.BaseActivity

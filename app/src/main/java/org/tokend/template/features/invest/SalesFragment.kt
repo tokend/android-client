@@ -25,17 +25,18 @@ import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_sales_search.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.dip
+import org.tokend.sdk.api.base.params.PagingOrder
+import org.tokend.sdk.api.base.params.PagingParams
+import org.tokend.sdk.api.sales.params.SalesParams
 import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
-import org.tokend.template.base.logic.repository.base.pagination.PageParams
 import org.tokend.template.base.view.util.AnimationUtil
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.features.invest.adapter.SalesAdapter
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.SoftInputUtil
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import java.util.concurrent.TimeUnit
 
 class SalesFragment : BaseFragment(), ToolbarProvider {
@@ -258,10 +259,13 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         filterDisposable?.dispose()
         filterDisposable =
                 salesRepository
-                        .getPage(SalesRepository.SalesRequestParams(
+                        .getPage(SalesParams(
                                 name = nameQuery,
                                 baseAsset = tokenQuery,
-                                pageParams = PageParams(limit = 250)
+                                pagingParams = PagingParams(
+                                        limit = 250,
+                                        order = PagingOrder.DESC
+                                )
                         ))
                         .map { it.items }
                         .observeOn(AndroidSchedulers.mainThread())

@@ -12,8 +12,8 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.layoutInflater
 import org.jetbrains.anko.uiThread
-import org.tokend.sdk.api.tfa.InvalidOtpException
-import org.tokend.sdk.api.tfa.TfaVerifier
+import org.tokend.sdk.tfa.InvalidOtpException
+import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.hasError

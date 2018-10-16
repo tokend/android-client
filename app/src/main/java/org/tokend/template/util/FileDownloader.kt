@@ -8,7 +8,7 @@ import android.net.Uri
 import android.os.Environment
 import android.support.v4.app.Fragment
 import android.webkit.MimeTypeMap
-import org.tokend.sdk.api.models.RemoteFile
+import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.template.R
 
 /**

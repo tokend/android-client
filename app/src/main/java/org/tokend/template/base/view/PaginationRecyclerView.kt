@@ -86,4 +86,8 @@ open class PaginationRecyclerView : RecyclerView {
         this.countProvider = countProvider
         this.onBottomReachedListener = listener
     }
+
+    fun resetPagination() {
+        bottomReachHandled = false
+    }
 }

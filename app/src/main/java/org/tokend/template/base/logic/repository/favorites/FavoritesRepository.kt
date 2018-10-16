@@ -2,7 +2,7 @@ package org.tokend.template.base.logic.repository.favorites
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.tokend.sdk.api.models.FavoriteEntry
+import org.tokend.sdk.api.favorites.model.FavoriteEntry
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.template.base.logic.repository.base.SimpleMultipleItemsRepository
@@ -21,9 +21,10 @@ class FavoritesRepository(
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
-        return signedApi.getFavorites(accountId)
+        return signedApi
+                .favorites
+                .get(accountId)
                 .toSingle()
-                .map { it.data!! }
     }
 
     fun addToFavorites(entry: FavoriteEntry): Completable {
@@ -32,7 +33,9 @@ class FavoritesRepository(
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Completable.error(IllegalStateException("No wallet info found"))
 
-        return signedApi.addToFavorites(accountId, entry)
+        return signedApi
+                .favorites
+                .add(accountId, entry)
                 .toCompletable()
                 .doOnSubscribe { isLoading = true }
                 .doOnComplete {
@@ -49,11 +52,15 @@ class FavoritesRepository(
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Completable.error(IllegalStateException("No wallet info found"))
 
-        return signedApi.removeFromFavorites(accountId, entryId)
+        return signedApi
+                .favorites
+                .delete(accountId, entryId)
                 .toCompletable()
                 .doOnComplete {
-                    itemsCache.transform(emptyList(), { it.id == entryId })
-                    broadcast()
+                    itemsCache.items.find { it.id == entryId }?.also {
+                        itemsCache.delete(it)
+                        broadcast()
+                    }
                 }
                 .doOnSubscribe { isLoading = true }
                 .doOnDispose { isLoading = false }

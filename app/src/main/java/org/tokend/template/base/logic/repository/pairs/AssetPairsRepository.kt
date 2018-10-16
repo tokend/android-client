@@ -1,7 +1,7 @@
 package org.tokend.template.base.logic.repository.pairs
 
 import io.reactivex.Single
-import org.tokend.sdk.api.models.AssetPair
+import org.tokend.sdk.api.assets.model.AssetPair
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.base.logic.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.extensions.toSingle
@@ -15,7 +15,8 @@ class AssetPairsRepository(
 
     override fun getItems(): Single<List<AssetPair>> {
         return apiProvider.getApi()
-                .getAssetPairs()
+                .assets
+                .getPairs()
                 .toSingle()
     }
 

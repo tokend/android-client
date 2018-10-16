@@ -1,9 +1,9 @@
 package org.tokend.template.base.logic
 
 import android.util.Log
-import org.tokend.sdk.api.tfa.TfaCallback
-import org.tokend.sdk.api.tfa.TfaVerifier
-import org.tokend.sdk.federation.NeedTfaException
+import org.tokend.sdk.tfa.NeedTfaException
+import org.tokend.sdk.tfa.TfaCallback
+import org.tokend.sdk.tfa.TfaVerifier
 
 /**
  * Application-wide TFA callback that allows screen-specific TFA handling.

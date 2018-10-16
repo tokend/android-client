@@ -3,14 +3,11 @@ package org.tokend.template.features.trade.adapter
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
-import org.tokend.sdk.api.models.Offer
+import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
 import org.tokend.template.base.view.adapter.base.BaseViewHolder
 import org.tokend.template.base.view.util.AmountFormatter

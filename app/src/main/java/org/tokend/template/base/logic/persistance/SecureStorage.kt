@@ -8,7 +8,7 @@ import android.support.annotation.RequiresApi
 import org.tokend.crypto.cipher.Aes256GCM
 import org.tokend.kdf.KeyDerivationFunction
 import org.tokend.kdf.ScryptKeyDerivation
-import org.tokend.sdk.api.models.KeychainData
+import org.tokend.sdk.keyserver.models.KeychainData
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.KdfAttributes
 import org.tokend.sdk.utils.extentions.toBytes
@@ -40,7 +40,7 @@ class SecureStorage(
         try {
             val encryptCipher = getEncryptCipher(secretKey)!!
             val encryptedData = encryptCipher.doFinal(data)
-            val keychainData = KeychainData.fromDecoded(encryptCipher.iv, encryptedData)
+            val keychainData = KeychainData.fromRaw(encryptCipher.iv, encryptedData)
             saveKeychainData(keychainData, key)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -82,7 +82,7 @@ class SecureStorage(
                     .derive(passwordBytes, seed, KDF_PARAMS.bits.toBytes())
             val encryptedData = Aes256GCM(seed).encrypt(data, keyBytes)
             keyBytes.fill(0)
-            val keychainData = KeychainData.fromDecoded(seed, encryptedData)
+            val keychainData = KeychainData.fromRaw(seed, encryptedData)
             saveKeychainData(keychainData, key)
             true
         } catch (e: Exception) {

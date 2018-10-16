@@ -1,7 +1,7 @@
 package org.tokend.template.features.invest.activities
 
-import org.tokend.sdk.api.models.transactions.InvestmentTransaction
-import org.tokend.sdk.api.models.transactions.MatchTransaction
+import org.tokend.sdk.api.base.model.transactions.InvestmentTransaction
+import org.tokend.sdk.api.base.model.transactions.MatchTransaction
 import org.tokend.template.R
 import org.tokend.template.base.activities.tx_details.OfferMatchDetailsActivity
 

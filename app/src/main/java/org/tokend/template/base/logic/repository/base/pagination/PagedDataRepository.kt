@@ -4,17 +4,19 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
+import org.tokend.sdk.api.base.model.DataPage
+import org.tokend.sdk.api.base.params.PagingParamsHolder
 import org.tokend.template.base.logic.repository.base.MultipleItemsRepository
 
 /**
  * Repository for paged data of type [T] with request params of type [R].
  */
 abstract class PagedDataRepository<T, R> : MultipleItemsRepository<T>()
-        where R : PagedRequestParams {
-    protected var nextCursor: String = PageParams.DEFAULT_CURSOR
+        where R : PagingParamsHolder {
+    protected var nextCursor: String? = null
 
     val isOnFirstPage: Boolean
-        get() = nextCursor == PageParams.DEFAULT_CURSOR
+        get() = nextCursor == null
 
     var noMoreItems: Boolean = false
         protected set
@@ -38,7 +40,7 @@ abstract class PagedDataRepository<T, R> : MultipleItemsRepository<T>()
                                 onNewItems(it.items)
 
                                 isLoading = false
-                                nextCursor = it.nextCursor ?: ""
+                                nextCursor = it.nextCursor
                                 noMoreItems = it.isLast
                             },
                             onError = {
@@ -75,7 +77,7 @@ abstract class PagedDataRepository<T, R> : MultipleItemsRepository<T>()
     override fun update(): Completable {
         synchronized(this) {
             itemsCache.clear()
-            nextCursor = PageParams.DEFAULT_CURSOR
+            nextCursor = null
             noMoreItems = false
 
             isLoading = false

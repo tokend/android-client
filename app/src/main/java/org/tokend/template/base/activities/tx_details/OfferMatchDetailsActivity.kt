@@ -8,17 +8,16 @@ import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
-import org.tokend.sdk.api.models.Offer
-import org.tokend.sdk.api.models.transactions.MatchTransaction
-import org.tokend.sdk.api.models.transactions.TransactionState
-import org.tokend.sdk.api.models.transactions.TransactionType
+import org.tokend.sdk.api.trades.model.Offer
+import org.tokend.sdk.api.base.model.transactions.MatchTransaction
+import org.tokend.sdk.api.base.model.transactions.TransactionState
+import org.tokend.sdk.api.base.model.transactions.TransactionType
 import org.tokend.template.R
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import kotlin.reflect.KClass
 
 open class OfferMatchDetailsActivity(

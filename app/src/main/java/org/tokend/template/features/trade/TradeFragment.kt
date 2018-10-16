@@ -23,8 +23,8 @@ import kotlinx.android.synthetic.main.layout_asset_chart_sheet.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.models.AssetPair
-import org.tokend.sdk.api.models.Offer
+import org.tokend.sdk.api.assets.model.AssetPair
+import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
@@ -40,7 +40,6 @@ import org.tokend.template.features.trade.adapter.OrderBookAdapter
 import org.tokend.template.features.trade.repository.order_book.OrderBookRepository
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import java.math.BigDecimal
 
 
@@ -352,7 +351,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     private fun updateChart() {
         chartDisposable?.dispose()
-        chartDisposable = apiProvider.getApi().getAssetChart("${currentPair.base}-${currentPair.quote}")
+        chartDisposable = apiProvider.getApi()
+                .assets
+                .getChart(currentPair.base, currentPair.quote)
                 .toSingle()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe {

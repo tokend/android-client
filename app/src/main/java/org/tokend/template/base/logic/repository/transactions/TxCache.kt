@@ -1,7 +1,7 @@
 package org.tokend.template.base.logic.repository.transactions
 
 import io.reactivex.Single
-import org.tokend.sdk.api.models.transactions.Transaction
+import org.tokend.sdk.api.base.model.transactions.Transaction
 import org.tokend.template.base.logic.repository.base.RepositoryCache
 
 class TxCache : RepositoryCache<Transaction>() {

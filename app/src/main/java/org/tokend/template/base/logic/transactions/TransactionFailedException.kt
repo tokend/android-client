@@ -1,6 +1,6 @@
 package org.tokend.template.base.logic.transactions
 
-import org.tokend.sdk.api.responses.SubmitTransactionResponse
+import org.tokend.sdk.api.transactions.model.SubmitTransactionResponse
 
 class TransactionFailedException(val submitResponse: SubmitTransactionResponse): Exception() {
     val transactionResultCode: String

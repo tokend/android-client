@@ -24,7 +24,7 @@ import com.github.mikephil.charting.utils.EntryXComparator
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
-import org.tokend.sdk.api.models.AssetChartData
+import org.tokend.sdk.api.assets.model.AssetChartData
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.base.view.ContentLoadingProgressBar

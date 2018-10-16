@@ -64,6 +64,13 @@ abstract class RepositoryCache<T> {
         }
     }
 
+    fun updateOrAdd(item: T): Boolean {
+        return if (update(item))
+            true
+        else
+            add(item)
+    }
+
     /**
      * Intelligently transforms current item set to the given one.
      * You can pass an empty list to clear the cache

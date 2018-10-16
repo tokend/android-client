@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.ViewGroup
 import com.google.gson.Gson
 import org.jetbrains.anko.intentFor
-import org.tokend.sdk.api.models.transactions.Transaction
-import org.tokend.sdk.api.models.transactions.TransactionState
+import org.tokend.sdk.api.base.model.transactions.Transaction
+import org.tokend.sdk.api.base.model.transactions.TransactionState
 import org.tokend.template.R
 import org.tokend.template.base.activities.BaseActivity
 import org.tokend.template.base.view.InfoCard

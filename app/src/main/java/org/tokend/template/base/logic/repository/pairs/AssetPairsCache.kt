@@ -1,7 +1,7 @@
 package org.tokend.template.base.logic.repository.pairs
 
 import io.reactivex.Single
-import org.tokend.sdk.api.models.AssetPair
+import org.tokend.sdk.api.assets.model.AssetPair
 import org.tokend.template.base.logic.repository.base.RepositoryCache
 
 class AssetPairsCache: RepositoryCache<AssetPair>() {

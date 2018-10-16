@@ -6,9 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.WindowManager
 import io.reactivex.disposables.CompositeDisposable
-import org.tokend.sdk.api.tfa.TfaCallback
-import org.tokend.sdk.api.tfa.TfaVerifier
-import org.tokend.sdk.federation.NeedTfaException
+import org.tokend.sdk.tfa.NeedTfaException
+import org.tokend.sdk.tfa.TfaCallback
+import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.base.logic.AppTfaCallback

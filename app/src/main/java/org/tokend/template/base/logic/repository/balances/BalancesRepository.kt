@@ -26,7 +26,11 @@ class BalancesRepository(
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
-        return signedApi.getBalancesDetails(accountId).toSingle()
+
+        return signedApi
+                .accounts
+                .getBalancesDetails(accountId)
+                .toSingle()
     }
 
     fun create(accountProvider: AccountProvider,

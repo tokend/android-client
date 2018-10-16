@@ -1,50 +1,34 @@
 package org.tokend.template.features.invest.repository
 
 import io.reactivex.Single
+import org.tokend.sdk.api.base.model.DataPage
+import org.tokend.sdk.api.base.params.PagingOrder
+import org.tokend.sdk.api.base.params.PagingParams
+import org.tokend.sdk.api.sales.params.SalesParams
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.base.logic.repository.AccountDetailsRepository
-import org.tokend.template.base.logic.repository.base.pagination.DataPage
-import org.tokend.template.base.logic.repository.base.pagination.PageParams
 import org.tokend.template.base.logic.repository.base.pagination.PagedDataRepository
-import org.tokend.template.base.logic.repository.base.pagination.PagedRequestParams
 import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.toSingle
 
 class SalesRepository(
         private val apiProvider: ApiProvider,
         private val accountDetailsRepository: AccountDetailsRepository? = null
-) : PagedDataRepository<Sale, SalesRepository.SalesRequestParams>() {
-    class SalesRequestParams(val name: String? = null,
-                             val baseAsset: String? = null,
-                             val openOnly: Boolean = true,
-                             pageParams: PageParams = PageParams()) : PagedRequestParams(pageParams)
-
+) : PagedDataRepository<Sale, SalesParams>() {
     override fun getItems(): Single<List<Sale>> = Single.just(emptyList())
 
     override val itemsCache = SalesCache()
 
-    override fun getPage(requestParams: SalesRequestParams): Single<DataPage<Sale>> {
-        var sales = listOf<Sale>()
-        var nextCursor: String? = ""
-        var isLast = false
+    override fun getPage(requestParams: SalesParams): Single<DataPage<Sale>> {
+        var salesPage: DataPage<Sale>? = null
+
         return apiProvider.getApi()
-                .getSales(
-                        limit = requestParams.pageParams.limit,
-                        cursor = requestParams.pageParams.cursor,
-                        order = "desc",
-                        name = requestParams.name,
-                        baseAsset = requestParams.baseAsset,
-                        openOnly = requestParams.openOnly
-                )
+                .sales
+                .getAll(requestParams)
                 .toSingle()
-                .map {
-                    nextCursor = DataPage.getNextCursor(it)
-                    isLast = DataPage.isLast(it)
-                    it.records
-                }
-                .map { records ->
-                    sales = records
-                    sales.map { it.ownerAccount }
+                .map { page ->
+                    salesPage = page
+                    page.items.map { it.ownerAccount }
                 }
                 .flatMap { ownerAccounts ->
                     accountDetailsRepository
@@ -53,18 +37,18 @@ class SalesRepository(
                             ?: Single.just(emptyMap())
                 }
                 .map { owners ->
-                    sales.forEach {
+                    salesPage!!.items.forEach {
                         it.ownerDetails = owners[it.ownerAccount]
                     }
 
-                    sales
+                    salesPage
                 }
-                .map { DataPage(nextCursor, it, isLast) }
     }
 
     fun getSingle(id: Long): Single<Sale> {
         return apiProvider.getApi()
-                .getSale(id)
+                .sales
+                .getById(id)
                 .toSingle()
                 .flatMap { sale ->
                     val saleOwner = sale.ownerAccount
@@ -76,7 +60,13 @@ class SalesRepository(
                 }
     }
 
-    override fun getNextPageRequestParams(): SalesRequestParams {
-        return SalesRequestParams(pageParams = PageParams(cursor = nextCursor))
+    override fun getNextPageRequestParams(): SalesParams {
+        return SalesParams(
+                pagingParams = PagingParams(
+                        cursor = nextCursor,
+                        order = PagingOrder.DESC
+                ),
+                openOnly = true
+        )
     }
 }

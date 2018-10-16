@@ -1,7 +1,7 @@
 package org.tokend.template.base.view.util
 
 import android.content.Context
-import org.tokend.sdk.api.models.transactions.TransactionState
+import org.tokend.sdk.api.base.model.transactions.TransactionState
 import org.tokend.template.R
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
 

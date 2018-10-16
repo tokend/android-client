@@ -2,7 +2,7 @@ package org.tokend.template.base.activities.tx_details
 
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_details.*
-import org.tokend.sdk.api.models.transactions.WithdrawalTransaction
+import org.tokend.sdk.api.base.model.transactions.WithdrawalTransaction
 import org.tokend.template.R
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter

@@ -11,9 +11,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.MaybeSubject
 import kotlinx.android.synthetic.main.fragment_dialog_crate_order.*
-import org.tokend.sdk.api.models.Offer
+import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.utils.BigDecimalUtil
-import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.base.view.AmountEditTextWrapper
 import org.tokend.template.base.view.util.AmountFormatter

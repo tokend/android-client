@@ -1,8 +1,8 @@
 package org.tokend.template.base.logic
 
 import io.reactivex.Single
-import org.tokend.sdk.api.models.Fee
-import org.tokend.sdk.utils.BigDecimalUtil
+import org.tokend.sdk.api.fees.model.Fee
+import org.tokend.sdk.api.fees.params.FeeParams
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.extensions.toSingle
 import org.tokend.wallet.xdr.FeeType
@@ -17,8 +17,14 @@ class FeeManager(
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
-        return signedApi.getFee(type, accountId, asset,
-                BigDecimalUtil.toPlainString(amount), subtype)
+        return signedApi.fees.getByType(
+                type,
+                FeeParams(
+                        asset,
+                        accountId,
+                        amount,
+                        subtype)
+        )
                 .toSingle()
     }
 

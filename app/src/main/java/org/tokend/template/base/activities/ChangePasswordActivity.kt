@@ -11,9 +11,9 @@ import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.tfa.TfaBackend
-import org.tokend.sdk.api.tfa.TfaVerifier
-import org.tokend.sdk.federation.NeedTfaException
+import org.tokend.sdk.api.tfa.model.TfaFactor
+import org.tokend.sdk.tfa.NeedTfaException
+import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
 import org.tokend.template.base.logic.SignUpManager
 import org.tokend.template.base.logic.WalletPasswordManager
@@ -30,7 +30,6 @@ import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SoftInputUtil
 import org.tokend.template.util.ToastManager
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 class ChangePasswordActivity : BaseActivity() {
     private val loadingIndicator = LoadingIndicatorManager(
@@ -194,8 +193,8 @@ class ChangePasswordActivity : BaseActivity() {
 
     override fun onTfaRequired(exception: NeedTfaException,
                                verifierInterface: TfaVerifier.Interface) {
-        when (exception.backendType) {
-            TfaBackend.Type.PASSWORD -> verifyPasswordTfaSilently(exception, verifierInterface)
+        when (exception.factorType) {
+            TfaFactor.Type.PASSWORD -> verifyPasswordTfaSilently(exception, verifierInterface)
             else -> super.onTfaRequired(exception, verifierInterface)
         }
     }

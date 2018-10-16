@@ -1,5 +1,5 @@
 package org.tokend.template.extensions
 
-import org.tokend.sdk.api.models.sale.SimpleSale
+import org.tokend.sdk.api.sales.model.SimpleSale
 
 typealias Sale = SimpleSale

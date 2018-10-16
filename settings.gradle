@@ -1,1 +1,7 @@
 include ':app'
+
+include ":sdk"
+project(":sdk").projectDir = file("../sdk")
+
+include ":wallet"
+project(":wallet").projectDir = file("../wallet")

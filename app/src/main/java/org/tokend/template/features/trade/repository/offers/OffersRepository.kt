@@ -6,15 +6,16 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import org.tokend.sdk.api.models.Offer
+import org.tokend.sdk.api.accounts.params.OffersParams
+import org.tokend.sdk.api.base.model.DataPage
+import org.tokend.sdk.api.base.params.PagingOrder
+import org.tokend.sdk.api.base.params.PagingParams
+import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.template.base.logic.repository.SystemInfoRepository
-import org.tokend.template.base.logic.repository.base.pagination.DataPage
-import org.tokend.template.base.logic.repository.base.pagination.PageParams
 import org.tokend.template.base.logic.repository.base.pagination.PagedDataRepository
-import org.tokend.template.base.logic.repository.base.pagination.PagedRequestParams
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.extensions.toSingle
 import org.tokend.wallet.Account
@@ -29,49 +30,36 @@ class OffersRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
         private val onlyPrimary: Boolean
-) : PagedDataRepository<Offer, OffersRepository.OffersRequestParams>() {
-    class OffersRequestParams(val onlyPrimaryMarket: Boolean,
-                              val orderBookId: Long?,
-                              val baseAsset: String?,
-                              val quoteAsset: String?,
-                              val isBuy: Boolean?,
-                              pageParams: PageParams = PageParams()
-    ) : PagedRequestParams(pageParams)
-
+) : PagedDataRepository<Offer, OffersParams>() {
     override val itemsCache = OffersCache()
 
-    override fun getNextPageRequestParams(): OffersRequestParams {
-        return OffersRequestParams(onlyPrimary,
+    override fun getNextPageRequestParams(): OffersParams {
+        return OffersParams(
+                onlyPrimary = onlyPrimary,
                 orderBookId = if (onlyPrimary) null else 0L,
                 baseAsset = null,
                 quoteAsset = null,
                 isBuy = if (onlyPrimary) true else null,
-                pageParams = PageParams(cursor = nextCursor))
+                pagingParams = PagingParams(
+                        cursor = nextCursor,
+                        order = PagingOrder.DESC
+                )
+        )
     }
 
     override fun getItems(): Single<List<Offer>> = Single.just(emptyList())
 
-    override fun getPage(requestParams: OffersRequestParams): Single<DataPage<Offer>> {
+    override fun getPage(requestParams: OffersParams): Single<DataPage<Offer>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
-        return signedApi.getOffers(
+        return signedApi.accounts.getPendingOffers(
                 accountId = accountId,
-                baseAsset = requestParams.baseAsset,
-                quoteAsset = requestParams.quoteAsset,
-                isBuy = requestParams.isBuy,
-                limit = requestParams.pageParams.limit,
-                cursor = requestParams.pageParams.cursor,
-                orderBookId = requestParams.orderBookId,
-                onlyPrimary = requestParams.onlyPrimaryMarket,
-                order = "desc"
+                offersParams = requestParams
         )
                 .toSingle()
-                .map {
-                    DataPage.fromPage(it)
-                }
     }
 
     // region Create.

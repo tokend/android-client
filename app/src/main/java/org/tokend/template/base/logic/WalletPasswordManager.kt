@@ -1,15 +1,15 @@
 package org.tokend.template.base.logic
 
-import android.util.Base64
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import org.tokend.sdk.api.models.WalletData
-import org.tokend.sdk.api.requests.DataEntity
-import org.tokend.sdk.api.responses.AccountResponse
+import org.tokend.sdk.api.base.model.DataEntity
+import org.tokend.sdk.keyserver.WalletBuilder
+import org.tokend.sdk.keyserver.models.WalletData
 import org.tokend.sdk.keyserver.models.WalletInfo
+import org.tokend.sdk.utils.extentions.encodeBase64String
 import org.tokend.template.base.logic.di.providers.*
 import org.tokend.template.base.logic.persistance.CredentialsPersistor
 import org.tokend.template.base.logic.repository.SystemInfoRepository
@@ -20,7 +20,6 @@ import org.tokend.wallet.xdr.op_extensions.RemoveMasterKeyOp
 import org.tokend.wallet.xdr.op_extensions.UpdateSignerOp
 import retrofit2.HttpException
 import java.net.HttpURLConnection
-import java.security.SecureRandom
 
 class WalletPasswordManager(
         private val systemInfoRepository: SystemInfoRepository,
@@ -98,9 +97,8 @@ class WalletPasswordManager(
         return Single.zip(
                 systemInfoRepository.getNetworkParams(),
 
-                signedApi.getAccountSigners(wallet.accountId)
+                signedApi.accounts.getSigners(wallet.accountId)
                         .toSingle()
-                        .map { it.signers ?: emptyList() }
                         .onErrorResumeNext { error ->
                             // When account is not yet exists return empty signers list.
                             return@onErrorResumeNext if (error is HttpException
@@ -111,7 +109,7 @@ class WalletPasswordManager(
                             }
                         },
 
-                BiFunction { t1: NetworkParams, t2: Collection<AccountResponse.Signer> ->
+                BiFunction { t1: NetworkParams, t2: Collection<org.tokend.sdk.api.accounts.model.Account.Signer> ->
                     Pair(t1, t2)
                 }
         )
@@ -163,39 +161,32 @@ class WalletPasswordManager(
     private fun createWalletForPasswordChange(networkParams: NetworkParams,
                                               currentWallet: WalletInfo,
                                               currentAccount: Account,
-                                              currentSigners: Collection<AccountResponse.Signer>,
+                                              currentSigners: Collection<org.tokend.sdk.api.accounts.model.Account.Signer>,
                                               newPassword: CharArray,
                                               newAccount: Account): Single<WalletData> {
         val currentLoginParams = currentWallet.loginParams
+
+        val newSalt = WalletBuilder.generateKdfSalt()
         val newLoginParams = currentLoginParams.copy(
                 kdfAttributes = currentLoginParams.kdfAttributes.copy(
-                        encodedSalt = Base64.encodeToString(SecureRandom.getSeed(
-                                currentLoginParams.kdfAttributes.salt.size
-                        ), Base64.NO_WRAP)
+                        encodedSalt = newSalt.encodeBase64String()
                 )
         )
 
-        return WalletManager.deriveKeys(currentWallet.email, newPassword,
-                newLoginParams.kdfAttributes)
+        return Single.zip(
+                WalletManager.createWallet(
+                        email = currentWallet.email,
+                        password = newPassword,
+                        rootAccount = newAccount,
+                        recoveryAccount = Account.random(),
+                        loginParams = newLoginParams
+                ),
 
-                .flatMap { (walletId, walletKey) ->
-                    Single.zip(
-                            WalletManager.createWallet(
-                                    email = currentWallet.email,
-                                    walletId = walletId,
-                                    walletKey = walletKey,
-                                    rootAccount = newAccount,
-                                    recoveryAccount = Account.random(),
-                                    loginParams = newLoginParams
-                            ),
+                createSignersUpdateTransaction(networkParams, currentWallet,
+                        currentAccount, currentSigners, newAccount),
 
-                            createSignersUpdateTransaction(networkParams, currentWallet,
-                                    currentAccount, currentSigners, newAccount),
-
-                            BiFunction { t1: WalletData, t2: Transaction -> Pair(t1, t2) }
-                    )
-                }
-
+                BiFunction { t1: WalletData, t2: Transaction -> Pair(t1, t2) }
+        )
                 .map { (wallet, transaction) ->
                     wallet.relationships["transaction"] =
                             DataEntity(hashMapOf(
@@ -210,7 +201,7 @@ class WalletPasswordManager(
     private fun createSignersUpdateTransaction(networkParams: NetworkParams,
                                                currentWallet: WalletInfo,
                                                currentAccount: Account,
-                                               currentSigners: Collection<AccountResponse.Signer>,
+                                               currentSigners: Collection<org.tokend.sdk.api.accounts.model.Account.Signer>,
                                                newAccount: Account): Single<Transaction> {
         return Single.defer {
             val operationBodies = mutableListOf<Operation.OperationBody>()
@@ -219,7 +210,7 @@ class WalletPasswordManager(
             val currentSigner =
                     currentSigners.find {
                         it.accountId == currentAccount.accountId
-                    } ?: AccountResponse.Signer(currentWallet.accountId)
+                    } ?: org.tokend.sdk.api.accounts.model.Account.Signer(currentWallet.accountId)
 
             operationBodies.add(
                     Operation.OperationBody.SetOptions(

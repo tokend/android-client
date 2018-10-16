@@ -4,10 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import org.tokend.sdk.api.requests.DataEntity
-import org.tokend.sdk.api.requests.models.CreateTfaRequestBody
-import org.tokend.sdk.api.requests.models.UpdateTfaRequestBody
-import org.tokend.sdk.api.tfa.TfaBackend
+import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.template.base.logic.repository.base.SimpleMultipleItemsRepository
@@ -17,31 +14,31 @@ import org.tokend.template.extensions.toSingle
 class TfaBackendsRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider
-) : SimpleMultipleItemsRepository<TfaBackend>() {
+) : SimpleMultipleItemsRepository<TfaFactor>() {
     override val itemsCache = TfaBackendsCache()
 
-    override fun getItems(): Single<List<TfaBackend>> {
+    override fun getItems(): Single<List<TfaFactor>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
-        return signedApi.getTfaBackends(walletId)
+        return signedApi
+                .tfa
+                .getFactors(walletId)
                 .toSingle()
-                .map { it.data }
     }
 
-    fun addBackend(type: TfaBackend.Type): Single<TfaBackend> {
+    fun addBackend(type: TfaFactor.Type): Single<TfaFactor> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
-        return signedApi.createTfaBackend(walletId, DataEntity(CreateTfaRequestBody(type.literal)))
+        return signedApi
+                .tfa
+                .createFactor(walletId, type)
                 .toSingle()
-                .map {
-                    it.data ?: throw IllegalStateException("Unable to get added TFA backend")
-                }
                 .doOnSuccess {
                     itemsCache.add(it)
                     broadcast()
@@ -51,7 +48,7 @@ class TfaBackendsRepository(
                 .doOnEvent { _, _ -> isLoading = false }
     }
 
-    fun setBackendAsMain(id: Int): Completable {
+    fun setBackendAsMain(id: Long): Completable {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Completable.error(IllegalStateException("No signed API instance found"))
         val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex
@@ -73,16 +70,19 @@ class TfaBackendsRepository(
                 // Set it for given backend.
                 .flatMapCompletable { maxPriority ->
                     newPriority = maxPriority + 1
-                    signedApi.updateTfaBackend(walletId, id,
-                            DataEntity(UpdateTfaRequestBody(
-                                    TfaBackend.Attributes(priority = newPriority)
-                            )))
+                    signedApi
+                            .tfa
+                            .updateFactor(
+                                    walletId,
+                                    id,
+                                    TfaFactor.Attributes(priority = newPriority)
+                            )
                             .toCompletable()
                 }
                 // Update backend in local cache
                 .doOnComplete {
                     itemsCache.items.find { it.id == id }?.let { updatedBackend ->
-                        updatedBackend.attributes?.priority = newPriority
+                        updatedBackend.attributes.priority = newPriority
 
                         itemsCache.transform(listOf(updatedBackend), { it.id == id })
                         broadcast()
@@ -93,13 +93,15 @@ class TfaBackendsRepository(
                 .doOnTerminate { isLoading = false }
     }
 
-    fun deleteBackend(id: Int): Completable {
+    fun deleteBackend(id: Long): Completable {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Completable.error(IllegalStateException("No signed API instance found"))
         val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex
                 ?: return Completable.error(IllegalStateException("No wallet info found"))
 
-        return signedApi.deleteTfaBackend(walletId, id)
+        return signedApi
+                .tfa
+                .deleteFactor(walletId, id)
                 .toCompletable()
                 .doOnComplete {
                     itemsCache.transform(emptyList()) { it.id == id }
@@ -110,7 +112,7 @@ class TfaBackendsRepository(
                 .doOnTerminate { isLoading = false }
     }
 
-    fun getBackendByType(type: TfaBackend.Type): Maybe<TfaBackend> {
+    fun getBackendByType(type: TfaFactor.Type): Maybe<TfaFactor> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Maybe.error(IllegalStateException("No signed API instance found"))
         val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex

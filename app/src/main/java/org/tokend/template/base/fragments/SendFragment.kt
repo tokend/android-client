@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.models.Fee
+import org.tokend.sdk.api.fees.model.Fee
 import org.tokend.template.R
 import org.tokend.template.base.activities.PaymentConfirmationActivity
 import org.tokend.template.base.activities.WalletEventsListener

@@ -1,7 +1,7 @@
 package org.tokend.template.features.trade.repository.order_book
 
 import io.reactivex.Single
-import org.tokend.sdk.api.models.Offer
+import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.base.logic.repository.base.RepositoryCache
 
 class OrderBookCache(

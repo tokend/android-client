@@ -19,7 +19,7 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.models.transactions.MatchTransaction
+import org.tokend.sdk.api.base.model.transactions.MatchTransaction
 import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
@@ -33,7 +33,8 @@ import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import org.tokend.wallet.xdr.FeeType
+import org.tokend.wallet.xdr.PaymentFeeType
 
 class DashboardFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -78,6 +79,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         subscribeToOffers()
 
         update()
+        PaymentFeeType.OUTGOING
     }
 
     // region Init
@@ -274,6 +276,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
             }
         }
     }
+
     companion object {
         private val CANCEL_OFFER_REQUEST = "cancel_offer".hashCode() and 0xffff
         private val SEND_REQUEST = "send".hashCode() and 0xffff

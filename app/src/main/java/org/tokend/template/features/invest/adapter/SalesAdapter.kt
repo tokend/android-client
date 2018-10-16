@@ -33,7 +33,7 @@ class SalesAdapter(
     override fun getDiffCallback(newItems: List<Sale>): DiffUtil.Callback? {
         return object : DiffUtil.Callback() {
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return items[oldItemPosition].id == newItems[newItemPosition].id
+                return items[oldItemPosition] == newItems[newItemPosition]
             }
 
             override fun getOldListSize(): Int {
@@ -45,7 +45,11 @@ class SalesAdapter(
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return items[oldItemPosition] == newItems[newItemPosition]
+                val new = newItems[newItemPosition]
+                val old = items[oldItemPosition]
+                return new.state == old.state
+                        && new.statistics == old.statistics
+                        && new.details == old.details
             }
         }
     }

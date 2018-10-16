@@ -2,7 +2,7 @@ package org.tokend.template.features.withdraw
 
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import org.tokend.sdk.api.responses.SubmitTransactionResponse
+import org.tokend.sdk.api.transactions.model.SubmitTransactionResponse
 import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.RepositoryProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider

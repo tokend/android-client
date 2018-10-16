@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.clipboardManager
-import org.tokend.sdk.api.tfa.TfaBackend
+import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.R
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
@@ -22,19 +22,18 @@ import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
 
     override fun getScreenKey(): String? = null
 
-    private val TFA_BACKEND_TYPE = TfaBackend.Type.TOTP
+    private val TFA_BACKEND_TYPE = TfaFactor.Type.TOTP
 
     private val tfaRepository: TfaBackendsRepository
         get() = repositoryProvider.tfaBackends()
     private var tfaPreference: SwitchPreferenceCompat? = null
-    private val tfaBackend: TfaBackend?
+    private val tfaBackend: TfaFactor?
         get() = tfaRepository.itemsSubject.value.find { it.type == TFA_BACKEND_TYPE }
     private val isTfaEnabled: Boolean
         get() = tfaBackend != null && tfaBackend?.attributes?.priority?.let { it > 0 } ?: false
@@ -181,7 +180,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
                 .addTo(compositeDisposable)
     }
 
-    private fun tryToEnableTfaBackend(backend: TfaBackend) {
+    private fun tryToEnableTfaBackend(backend: TfaFactor) {
         val secret = backend.attributes?.secret
         val id = backend.id
         val seed = backend.attributes?.seed
@@ -211,7 +210,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         }
     }
 
-    private fun enableTfaBackend(id: Int) {
+    private fun enableTfaBackend(id: Long) {
         tfaRepository.setBackendAsMain(id)
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(

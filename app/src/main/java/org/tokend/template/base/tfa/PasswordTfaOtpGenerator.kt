@@ -1,10 +1,10 @@
 package org.tokend.template.base.tfa
 
 import android.util.Base64
-import org.tokend.sdk.api.models.KeychainData
-import org.tokend.sdk.federation.NeedTfaException
+import org.tokend.sdk.keyserver.models.KeychainData
 import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.KdfAttributes
+import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.wallet.Account
 
 class PasswordTfaOtpGenerator() {
@@ -12,7 +12,7 @@ class PasswordTfaOtpGenerator() {
         val kdfAttributes = KdfAttributes("scrypt",
                 256, 4096, 1, 8, tfaException.salt)
         val key = KeyStorage.getWalletKey(email, password, kdfAttributes)
-        val keychainData = KeychainData.fromRawString(tfaException.keychainData)
+        val keychainData = KeychainData.fromJsonString(tfaException.keychainData)
         val seed = try {
             KeyStorage.decryptSecretSeed(keychainData.iv, keychainData.cipherText, key)
         } catch (e: Exception) {

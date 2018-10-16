@@ -14,7 +14,8 @@ class AssetsRepository(
 
     override fun getItems(): Single<List<Asset>> {
         return apiProvider.getApi()
-                .getAssetsDetails()
+                .assets
+                .get()
                 .toSingle()
     }
 
@@ -24,10 +25,13 @@ class AssetsRepository(
                 .toMaybe()
                 .switchIfEmpty(
                         apiProvider.getApi()
-                                .getAssetDetails(code)
+                                .assets
+                                .getByCode(code)
                                 .toSingle()
-                                .doOnSuccess {
-                                    itemsCache.transform(listOf(it)) { it.code == code }
+                                .doOnSuccess { _ ->
+                                    itemsCache.items.find { it.code == code }?.also {
+                                        itemsCache.updateOrAdd(it)
+                                    }
                                 }
                 )
     }

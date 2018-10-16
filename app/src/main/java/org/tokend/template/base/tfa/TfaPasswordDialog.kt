@@ -6,8 +6,8 @@ import android.support.v7.app.AlertDialog
 import android.text.InputType
 import android.view.View
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.tfa.TfaVerifier
-import org.tokend.sdk.federation.NeedTfaException
+import org.tokend.sdk.tfa.NeedTfaException
+import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
 import org.tokend.template.base.logic.persistance.CredentialsPersistor
 import org.tokend.template.base.logic.persistance.FingerprintAuthManager

@@ -12,8 +12,8 @@ import kotlinx.android.synthetic.main.layout_network_field.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.federation.EmailNotVerifiedException
-import org.tokend.sdk.federation.InvalidCredentialsException
+import org.tokend.sdk.api.wallets.model.EmailNotVerifiedException
+import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.logic.SignUpManager

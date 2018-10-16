@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.runOnUiThread
-import org.tokend.sdk.api.responses.AccountResponse
+import org.tokend.sdk.api.accounts.model.Account
 import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
@@ -31,7 +31,6 @@ import org.tokend.template.extensions.Asset
 import org.tokend.template.util.DateFormatter
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import java.util.*
 
 class DepositFragment : BaseFragment(), ToolbarProvider {
@@ -52,7 +51,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             field = value
             onAssetChanged()
         }
-    private val externalAccount: AccountResponse.ExternalAccount?
+    private val externalAccount: Account.ExternalAccount?
         get() = accountRepository.itemSubject.value
                 ?.externalAccounts
                 ?.find { it.type.value == currentAsset?.details?.externalSystemType }

@@ -7,16 +7,12 @@ import com.google.gson.annotations.SerializedName
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.layout_progress.*
-import org.tokend.sdk.api.requests.AttributesEntity
-import org.tokend.sdk.api.requests.DataEntity
-import org.tokend.sdk.api.requests.models.VerifyWalletRequestBody
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
 import org.tokend.template.extensions.toCompletable
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 class ProcessLinkActivity : BaseActivity() {
     private class LinkData {
@@ -87,13 +83,12 @@ class ProcessLinkActivity : BaseActivity() {
     }
 
     private fun performVerification(data: VerificationData) {
-        apiProvider.getApi().verifyWallet(data.walletId,
-                DataEntity(
-                        AttributesEntity(
-                                VerifyWalletRequestBody(data.token ?: "")
-                        )
-                )
-        )
+        val walletId = data.walletId ?: return
+        val token = data.token ?: return
+
+        apiProvider.getApi()
+                .wallets
+                .verify(walletId, token)
                 .toCompletable()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(

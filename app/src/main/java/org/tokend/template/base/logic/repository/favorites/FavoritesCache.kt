@@ -1,7 +1,7 @@
 package org.tokend.template.base.logic.repository.favorites
 
 import io.reactivex.Single
-import org.tokend.sdk.api.models.FavoriteEntry
+import org.tokend.sdk.api.favorites.model.FavoriteEntry
 import org.tokend.template.base.logic.repository.base.RepositoryCache
 
 class FavoritesCache : RepositoryCache<FavoriteEntry>() {

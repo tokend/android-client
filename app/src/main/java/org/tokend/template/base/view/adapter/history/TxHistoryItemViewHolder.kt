@@ -12,7 +12,7 @@ import android.widget.TextView
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
-import org.tokend.sdk.api.models.transactions.TransactionState
+import org.tokend.sdk.api.base.model.transactions.TransactionState
 import org.tokend.template.R
 import org.tokend.template.base.view.adapter.base.BaseViewHolder
 import org.tokend.template.base.view.util.AmountFormatter

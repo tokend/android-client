@@ -5,7 +5,7 @@ import android.support.v7.app.AlertDialog
 import android.text.InputFilter
 import android.text.InputType
 import org.jetbrains.anko.clipboardManager
-import org.tokend.sdk.api.tfa.TfaVerifier
+import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
 import org.tokend.template.util.error_handlers.ErrorHandler
 

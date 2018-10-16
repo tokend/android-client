@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_wallet.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.models.transactions.*
+import org.tokend.sdk.api.base.model.transactions.*
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.activities.tx_details.*
@@ -35,7 +35,6 @@ import org.tokend.template.extensions.isTransferable
 import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 class WalletFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -186,6 +185,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                             txAdapter.setData(it.map {
                                 TxHistoryItem.fromTransaction(it)
                             })
+                            history_list.resetPagination()
                         }
                         .addTo(compositeDisposable)
 

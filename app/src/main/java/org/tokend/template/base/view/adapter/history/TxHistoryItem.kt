@@ -1,6 +1,6 @@
 package org.tokend.template.base.view.adapter.history
 
-import org.tokend.sdk.api.models.transactions.*
+import org.tokend.sdk.api.base.model.transactions.*
 import java.math.BigDecimal
 import java.util.*
 

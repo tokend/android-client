@@ -12,7 +12,7 @@ import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
-import org.tokend.sdk.api.models.Offer
+import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
 import org.tokend.template.base.activities.*

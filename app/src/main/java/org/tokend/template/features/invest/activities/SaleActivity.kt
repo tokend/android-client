@@ -25,9 +25,10 @@ import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.models.FavoriteEntry
-import org.tokend.sdk.api.models.Offer
-import org.tokend.sdk.api.models.SaleFavoriteEntry
+import org.tokend.sdk.api.accounts.params.OffersParams
+import org.tokend.sdk.api.favorites.model.FavoriteEntry
+import org.tokend.sdk.api.favorites.model.SaleFavoriteEntry
+import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
@@ -188,9 +189,9 @@ class SaleActivity : BaseActivity() {
         val getOffers =
                 if (sale.isAvailable)
                     offersRepository.getPage(
-                            OffersRepository.OffersRequestParams(
+                            OffersParams(
                                     orderBookId = sale.id,
-                                    onlyPrimaryMarket = true,
+                                    onlyPrimary = true,
                                     baseAsset = null,
                                     quoteAsset = null,
                                     isBuy = true
@@ -495,7 +496,7 @@ class SaleActivity : BaseActivity() {
     private var updateChartDisposable: Disposable? = null
     private fun updateChart() {
         updateChartDisposable?.dispose()
-        updateChartDisposable = apiProvider.getApi().getAssetChart(sale.baseAsset).toSingle()
+        updateChartDisposable = apiProvider.getApi().assets.getChart(sale.baseAsset).toSingle()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe {
                     asset_chart.isLoading = true

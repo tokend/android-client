@@ -9,7 +9,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
-import org.tokend.sdk.api.models.Offer
+import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
 import org.tokend.template.base.activities.BaseActivity
 import org.tokend.template.base.logic.transactions.TxManager
@@ -18,7 +18,6 @@ import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import java.math.BigDecimal
 
 class OfferConfirmationActivity : BaseActivity() {

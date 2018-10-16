@@ -7,10 +7,10 @@ import android.support.v7.widget.LinearLayoutManager
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_offers.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import org.tokend.sdk.api.models.Offer
-import org.tokend.sdk.api.models.transactions.InvestmentTransaction
-import org.tokend.sdk.api.models.transactions.MatchTransaction
-import org.tokend.sdk.api.models.transactions.Transaction
+import org.tokend.sdk.api.trades.model.Offer
+import org.tokend.sdk.api.base.model.transactions.InvestmentTransaction
+import org.tokend.sdk.api.base.model.transactions.MatchTransaction
+import org.tokend.sdk.api.base.model.transactions.Transaction
 import org.tokend.template.R
 import org.tokend.template.base.activities.tx_details.OfferMatchDetailsActivity
 import org.tokend.template.base.activities.tx_details.TxDetailsActivity
