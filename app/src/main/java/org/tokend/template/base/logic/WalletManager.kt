@@ -5,7 +5,6 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.keyserver.KeyStorage
-import org.tokend.sdk.keyserver.WalletBuilder
 import org.tokend.sdk.keyserver.models.LoginParams
 import org.tokend.sdk.keyserver.models.WalletData
 import org.tokend.sdk.keyserver.models.WalletInfo
@@ -46,28 +45,15 @@ class WalletManager(
                          loginParams: LoginParams): Single<WalletData> {
             return {
                 val kdf = loginParams.kdfAttributes
-                val rootSeed = rootAccount.secretSeed
-                        ?: throw IllegalStateException("Provided account has no private key")
 
-                val builder = WalletBuilder(
+                KeyStorage.createWallet(
                         email,
                         password,
-                        rootSeed,
-                        rootAccount.accountId,
                         kdf,
-                        loginParams.id
-                )
-
-                recoveryAccount.secretSeed?.also {
-                    builder.addRecoveryRelation(it, recoveryAccount.accountId)
-                }
-
-                val passwordFactorAccount = Account.random()
-                passwordFactorAccount.secretSeed?.also {
-                    builder.addPasswordFactorRelation(it, passwordFactorAccount.accountId)
-                }
-
-                builder.build()
+                        loginParams.id,
+                        rootAccount,
+                        recoveryAccount
+                ).walletData
             }.toSingle().subscribeOn(Schedulers.newThread())
         }
     }

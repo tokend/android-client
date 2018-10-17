@@ -18,7 +18,7 @@ class SystemInfoRepository(
     fun getNetworkParams(): Single<NetworkParams> {
         return updateIfNotFreshDeferred()
                 .toSingle {
-                    item?.passphrase?.let { NetworkParams(it) }
+                    item?.toNetworkParams()
                             ?: throw IllegalStateException("Missing network passphrase")
                 }
     }

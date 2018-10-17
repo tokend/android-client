@@ -3,10 +3,10 @@ package org.tokend.template.base.logic.di.providers
 import okhttp3.CookieJar
 import org.tokend.sdk.api.TokenDApi
 import org.tokend.sdk.keyserver.KeyStorage
+import org.tokend.sdk.signing.AccountRequestSigner
 import org.tokend.sdk.tfa.TfaCallback
 import org.tokend.sdk.utils.CookieJarProvider
 import org.tokend.sdk.utils.HashCodes
-import org.tokend.template.base.logic.AccountRequestSigner
 
 class ApiProviderImpl(
         private val urlConfigProvider: UrlConfigProvider,

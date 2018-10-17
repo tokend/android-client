@@ -5,19 +5,16 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import org.tokend.sdk.api.base.model.DataEntity
-import org.tokend.sdk.keyserver.WalletBuilder
+import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletData
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.sdk.utils.extentions.encodeBase64String
 import org.tokend.template.base.logic.di.providers.*
 import org.tokend.template.base.logic.persistance.CredentialsPersistor
 import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.extensions.toSingle
-import org.tokend.wallet.*
-import org.tokend.wallet.xdr.Operation
-import org.tokend.wallet.xdr.op_extensions.RemoveMasterKeyOp
-import org.tokend.wallet.xdr.op_extensions.UpdateSignerOp
+import org.tokend.wallet.Account
+import org.tokend.wallet.NetworkParams
+import org.tokend.wallet.Transaction
 import retrofit2.HttpException
 import java.net.HttpURLConnection
 
@@ -164,14 +161,8 @@ class WalletPasswordManager(
                                               currentSigners: Collection<org.tokend.sdk.api.accounts.model.Account.Signer>,
                                               newPassword: CharArray,
                                               newAccount: Account): Single<WalletData> {
-        val currentLoginParams = currentWallet.loginParams
-
-        val newSalt = WalletBuilder.generateKdfSalt()
-        val newLoginParams = currentLoginParams.copy(
-                kdfAttributes = currentLoginParams.kdfAttributes.copy(
-                        encodedSalt = newSalt.encodeBase64String()
-                )
-        )
+        val loginParams = currentWallet.loginParams
+        loginParams.kdfAttributes.salt = KeyStorage.generateKdfSalt()
 
         return Single.zip(
                 WalletManager.createWallet(
@@ -179,7 +170,7 @@ class WalletPasswordManager(
                         password = newPassword,
                         rootAccount = newAccount,
                         recoveryAccount = Account.random(),
-                        loginParams = newLoginParams
+                        loginParams = loginParams
                 ),
 
                 createSignersUpdateTransaction(networkParams, currentWallet,
@@ -188,12 +179,7 @@ class WalletPasswordManager(
                 BiFunction { t1: WalletData, t2: Transaction -> Pair(t1, t2) }
         )
                 .map { (wallet, transaction) ->
-                    wallet.relationships["transaction"] =
-                            DataEntity(hashMapOf(
-                                    "attributes" to hashMapOf(
-                                            "envelope" to transaction.getEnvelope().toBase64()
-                                    ))
-                            )
+                    wallet.addTransactionRelation(transaction)
                     wallet
                 }
     }
@@ -204,63 +190,13 @@ class WalletPasswordManager(
                                                currentSigners: Collection<org.tokend.sdk.api.accounts.model.Account.Signer>,
                                                newAccount: Account): Single<Transaction> {
         return Single.defer {
-            val operationBodies = mutableListOf<Operation.OperationBody>()
-
-            // Add new signer.
-            val currentSigner =
-                    currentSigners.find {
-                        it.accountId == currentAccount.accountId
-                    } ?: org.tokend.sdk.api.accounts.model.Account.Signer(currentWallet.accountId)
-
-            operationBodies.add(
-                    Operation.OperationBody.SetOptions(
-                            UpdateSignerOp(
-                                    newAccount.accountId,
-                                    currentSigner.weight,
-                                    currentSigner.type,
-                                    currentSigner.identity
-                            )
-                    )
+            val transaction = KeyStorage.createSignersUpdateTransaction(
+                    networkParams,
+                    currentWallet.accountId,
+                    currentAccount,
+                    currentSigners,
+                    newAccount
             )
-
-            // Remove other signers.
-            currentSigners
-                    .sortedBy {
-                        // Remove current signer lastly, otherwise tx will be failed.
-                        it.accountId == currentAccount.accountId
-                    }
-                    .forEach {
-                        if (it.accountId != newAccount.accountId) {
-                            // Master key removal is specific.
-                            if (it.accountId == currentWallet.accountId) {
-                                operationBodies.add(
-                                        Operation.OperationBody.SetOptions(
-                                                RemoveMasterKeyOp()
-                                        )
-                                )
-                            } else {
-                                // Other keys can be removed by setting 0 weight.
-                                operationBodies.add(
-                                        Operation.OperationBody.SetOptions(
-                                                UpdateSignerOp(it.accountId,
-                                                        0, 1, it.identity)
-                                        )
-                                )
-                            }
-                        }
-                    }
-
-            val transaction =
-                    TransactionBuilder(networkParams,
-                            PublicKeyFactory.fromAccountId(currentWallet.accountId))
-                            .apply {
-                                operationBodies.forEach { operationBody ->
-                                    addOperation(operationBody)
-                                }
-                            }
-                            .build()
-
-            transaction.addSignature(currentAccount)
 
             Single.just(transaction)
         }.subscribeOn(Schedulers.newThread())
