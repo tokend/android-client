@@ -1,6 +1,6 @@
 package org.tokend.template.base.view.adapter.history
 
-import org.tokend.sdk.api.base.model.transactions.*
+import org.tokend.sdk.api.base.model.operations.*
 import java.math.BigDecimal
 import java.util.*
 
@@ -9,10 +9,10 @@ class TxHistoryItem(
         val asset: String,
         val action: Action,
         val counterparty: String?,
-        val state: TransactionState,
+        val state: OperationState,
         val date: Date,
         val isReceived: Boolean,
-        val source: Transaction? = null
+        val source: TransferOperation? = null
 ) {
     enum class Action {
         DEPOSIT,
@@ -28,14 +28,14 @@ class TxHistoryItem(
     }
 
     companion object {
-        fun fromTransaction(tx: Transaction): TxHistoryItem {
+        fun fromTransaction(tx: TransferOperation): TxHistoryItem {
             val action =
                     when (tx.type) {
-                        TransactionType.ISSUANCE -> Action.DEPOSIT
-                        TransactionType.WITHDRAWAL -> Action.WITHDRAWAL
-                        TransactionType.INVESTMENT -> Action.INVESTMENT
-                        TransactionType.OFFER_MATCH ->
-                            if (tx.state == TransactionState.PENDING) {
+                        OperationType.ISSUANCE -> Action.DEPOSIT
+                        OperationType.WITHDRAWAL -> Action.WITHDRAWAL
+                        OperationType.INVESTMENT -> Action.INVESTMENT
+                        OperationType.OFFER_MATCH ->
+                            if (tx.state == OperationState.PENDING) {
                                 if (tx.isReceived)
                                     Action.BUY
                                 else
@@ -46,7 +46,7 @@ class TxHistoryItem(
                                 else
                                     Action.SOLD
                             }
-                        TransactionType.PAYMENT ->
+                        OperationType.PAYMENT ->
                             if (tx.isReceived)
                                 Action.RECEIVED
                             else
@@ -64,19 +64,19 @@ class TxHistoryItem(
             var asset = tx.asset
             var isReceived = tx.isReceived
 
-            if (tx is PaymentTransaction) {
+            if (tx is PaymentOperation) {
                 counterparty =
                         if (tx.isReceived)
                             tx.counterpartyNickname ?: tx.sourceAccount
                         else
                             tx.counterpartyNickname ?: tx.destAccount
-            } else if (tx is MatchTransaction
+            } else if (tx is OfferMatchOperation
                     && !(action == TxHistoryItem.Action.INVESTMENT && tx.isReceived)) {
                 counterparty = tx.matchData.quoteAsset
-            } else if (tx is WithdrawalTransaction) {
+            } else if (tx is WithdrawalOperation) {
                 counterparty = tx.destAddress
-            }else if(tx is InvestmentTransaction){
-                if (tx.state == TransactionState.PENDING) {
+            }else if(tx is InvestmentOperation){
+                if (tx.state == OperationState.PENDING) {
                     isReceived = false
                 }
 

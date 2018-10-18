@@ -18,7 +18,7 @@ import org.tokend.template.R
 import org.tokend.template.base.logic.SignUpManager
 import org.tokend.template.base.logic.WalletPasswordManager
 import org.tokend.template.base.logic.persistance.FingerprintAuthManager
-import org.tokend.template.base.tfa.PasswordTfaOtpGenerator
+import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.template.base.view.util.AnimationUtil
 import org.tokend.template.base.view.util.EditTextHelper
 import org.tokend.template.base.view.util.LoadingIndicatorManager

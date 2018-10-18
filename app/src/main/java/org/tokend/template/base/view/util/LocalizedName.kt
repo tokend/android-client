@@ -1,18 +1,18 @@
 package org.tokend.template.base.view.util
 
 import android.content.Context
-import org.tokend.sdk.api.base.model.transactions.TransactionState
+import org.tokend.sdk.api.base.model.operations.OperationState
 import org.tokend.template.R
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
 
 class LocalizedName(private val context: Context) {
-    fun forTransactionState(state: TransactionState): String {
+    fun forTransactionState(state: OperationState): String {
         return when (state) {
-            TransactionState.PENDING -> context.getString(R.string.tx_state_pending)
-            TransactionState.SUCCESS -> context.getString(R.string.tx_state_success)
-            TransactionState.REJECTED -> context.getString(R.string.tx_state_rejected)
-            TransactionState.CANCELED -> context.getString(R.string.tx_state_cancelled)
-            TransactionState.FAILED -> context.getString(R.string.tx_state_failed)
+            OperationState.PENDING -> context.getString(R.string.tx_state_pending)
+            OperationState.SUCCESS -> context.getString(R.string.tx_state_success)
+            OperationState.REJECTED -> context.getString(R.string.tx_state_rejected)
+            OperationState.CANCELED -> context.getString(R.string.tx_state_cancelled)
+            OperationState.FAILED -> context.getString(R.string.tx_state_failed)
         }
     }
 

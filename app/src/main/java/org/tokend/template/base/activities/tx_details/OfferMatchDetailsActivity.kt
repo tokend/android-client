@@ -9,9 +9,9 @@ import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.sdk.api.trades.model.Offer
-import org.tokend.sdk.api.base.model.transactions.MatchTransaction
-import org.tokend.sdk.api.base.model.transactions.TransactionState
-import org.tokend.sdk.api.base.model.transactions.TransactionType
+import org.tokend.sdk.api.base.model.operations.OfferMatchOperation
+import org.tokend.sdk.api.base.model.operations.OperationState
+import org.tokend.sdk.api.base.model.operations.OperationType
 import org.tokend.template.R
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.InfoCard
@@ -21,10 +21,10 @@ import org.tokend.template.util.ToastManager
 import kotlin.reflect.KClass
 
 open class OfferMatchDetailsActivity(
-        clazz: KClass<out MatchTransaction> = MatchTransaction::class
-) : TxDetailsActivity<MatchTransaction>(clazz) {
+        clazz: KClass<out OfferMatchOperation> = OfferMatchOperation::class
+) : TxDetailsActivity<OfferMatchOperation>(clazz) {
     protected var isPending = false
-    protected lateinit var tx: MatchTransaction
+    protected lateinit var tx: OfferMatchOperation
     protected var isPrimaryMarket = false
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
@@ -33,10 +33,10 @@ open class OfferMatchDetailsActivity(
     }
 
     // region Details
-    override fun displayDetails(item: MatchTransaction) {
+    override fun displayDetails(item: OfferMatchOperation) {
         tx = item
-        isPending = item.state == TransactionState.PENDING
-        isPrimaryMarket = item.type == TransactionType.INVESTMENT
+        isPending = item.state == OperationState.PENDING
+        isPrimaryMarket = item.type == OperationType.INVESTMENT
 
         if (isPending) {
             setTitle(R.string.pending_offer_details_title)
@@ -50,7 +50,7 @@ open class OfferMatchDetailsActivity(
         displayDate(item, cards_layout)
     }
 
-    protected open fun displayPaid(tx: MatchTransaction) {
+    protected open fun displayPaid(tx: OfferMatchOperation) {
         val paidAsset = if (tx.isReceived) tx.matchData.quoteAsset else tx.asset
         val receivedAsset = if (tx.isReceived) tx.asset else tx.matchData.quoteAsset
         val amount =
@@ -86,7 +86,7 @@ open class OfferMatchDetailsActivity(
         }
     }
 
-    protected open fun displayReceived(tx: MatchTransaction) {
+    protected open fun displayReceived(tx: OfferMatchOperation) {
         val receivedAsset = if (tx.isReceived) tx.asset else tx.matchData.quoteAsset
         val paidAsset = if (tx.isReceived) tx.matchData.quoteAsset else tx.asset
         val amount =

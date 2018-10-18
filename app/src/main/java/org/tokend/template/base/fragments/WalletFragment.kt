@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_wallet.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.base.model.transactions.*
+import org.tokend.sdk.api.base.model.operations.*
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.activities.tx_details.*
@@ -286,27 +286,27 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         update()
     }
 
-    private fun openTransactionDetails(tx: Transaction) {
+    private fun openTransactionDetails(tx: TransferOperation) {
         when (tx) {
-            is PaymentTransaction ->
+            is PaymentOperation ->
                 TxDetailsActivity
-                        .start<PaymentDetailsActivity, PaymentTransaction>(activity!!, tx)
-            is IssuanceTransaction ->
+                        .start<PaymentDetailsActivity, PaymentOperation>(activity!!, tx)
+            is IssuanceOperation ->
                 TxDetailsActivity
-                        .start<DepositDetailsActivity, IssuanceTransaction>(activity!!, tx)
-            is WithdrawalTransaction ->
+                        .start<DepositDetailsActivity, IssuanceOperation>(activity!!, tx)
+            is WithdrawalOperation ->
                 TxDetailsActivity
-                        .start<WithdrawalDetailsActivity, WithdrawalTransaction>(activity!!, tx)
-            is InvestmentTransaction ->
+                        .start<WithdrawalDetailsActivity, WithdrawalOperation>(activity!!, tx)
+            is InvestmentOperation ->
                 TxDetailsActivity
-                        .start<InvestmentDetailsActivity, InvestmentTransaction>(activity!!, tx)
-            is MatchTransaction ->
+                        .start<InvestmentDetailsActivity, InvestmentOperation>(activity!!, tx)
+            is OfferMatchOperation ->
                 TxDetailsActivity
-                        .start<OfferMatchDetailsActivity, MatchTransaction>(activity!!, tx)
+                        .start<OfferMatchDetailsActivity, OfferMatchOperation>(activity!!, tx)
             else ->
-                (tx as? BaseTransaction)?.let {
+                (tx as? BaseTransferOperation)?.let {
                     TxDetailsActivity
-                            .start<UnknownTxDetailsActivity, BaseTransaction>(activity!!, it)
+                            .start<UnknownTxDetailsActivity, BaseTransferOperation>(activity!!, it)
                 }
         }
     }

@@ -1,11 +1,11 @@
 package org.tokend.template.base.logic.repository.transactions
 
 import io.reactivex.Single
-import org.tokend.sdk.api.base.model.transactions.Transaction
+import org.tokend.sdk.api.base.model.operations.TransferOperation
 import org.tokend.template.base.logic.repository.base.RepositoryCache
 
-class TxCache : RepositoryCache<Transaction>() {
-    override fun isContentSame(first: Transaction, second: Transaction): Boolean {
+class TxCache : RepositoryCache<TransferOperation>() {
+    override fun isContentSame(first: TransferOperation, second: TransferOperation): Boolean {
         return first.id == second.id && first.pagingToken == second.pagingToken
                 && first.state == second.state
     }
@@ -14,13 +14,13 @@ class TxCache : RepositoryCache<Transaction>() {
         mItems.sortByDescending { it.date }
     }
 
-    override fun getAllFromDb(): Single<List<Transaction>> = Single.just(emptyList())
+    override fun getAllFromDb(): Single<List<TransferOperation>> = Single.just(emptyList())
 
-    override fun addToDb(items: List<Transaction>) {}
+    override fun addToDb(items: List<TransferOperation>) {}
 
-    override fun updateInDb(items: List<Transaction>) {}
+    override fun updateInDb(items: List<TransferOperation>) {}
 
-    override fun deleteFromDb(items: List<Transaction>) {}
+    override fun deleteFromDb(items: List<TransferOperation>) {}
 
     override fun clearDb() {}
 }

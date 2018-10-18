@@ -2,19 +2,19 @@ package org.tokend.template.base.activities.tx_details
 
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_details.*
-import org.tokend.sdk.api.base.model.transactions.PaymentTransaction
+import org.tokend.sdk.api.base.model.operations.PaymentOperation
 import org.tokend.template.R
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 import java.math.BigDecimal
 
-class PaymentDetailsActivity : TxDetailsActivity<PaymentTransaction>(PaymentTransaction::class) {
+class PaymentDetailsActivity : TxDetailsActivity<PaymentOperation>(PaymentOperation::class) {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details)
         setTitle(R.string.payment_details_title)
     }
 
-    override fun displayDetails(item: PaymentTransaction) {
+    override fun displayDetails(item: PaymentOperation) {
         displayStateIfNeeded(item, cards_layout)
         displayReceiverSender(item)
         displayAmount(item)
@@ -24,7 +24,7 @@ class PaymentDetailsActivity : TxDetailsActivity<PaymentTransaction>(PaymentTran
         displayDate(item, cards_layout)
     }
 
-    private fun displayReceiverSender(tx: PaymentTransaction) {
+    private fun displayReceiverSender(tx: PaymentOperation) {
         val receiverSenderCard = InfoCard(cards_layout)
                 .setHeading(if (tx.isSent) R.string.tx_recipient else R.string.tx_sender, null)
 
@@ -35,7 +35,7 @@ class PaymentDetailsActivity : TxDetailsActivity<PaymentTransaction>(PaymentTran
         receiverSenderCard.addRow(if (tx.isSent) tx.destAccount else tx.sourceAccount, null)
     }
 
-    private fun displayAmount(tx: PaymentTransaction) {
+    private fun displayAmount(tx: PaymentOperation) {
         if (tx.isSent) {
             val infoCard = InfoCard(cards_layout)
                     .setHeading(R.string.amount,
@@ -65,7 +65,7 @@ class PaymentDetailsActivity : TxDetailsActivity<PaymentTransaction>(PaymentTran
         }
     }
 
-    private fun displaySubject(item: PaymentTransaction) {
+    private fun displaySubject(item: PaymentOperation) {
         item.subject?.let { subject ->
             InfoCard(cards_layout)
                     .setHeading(R.string.payment_description, null)

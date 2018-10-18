@@ -2,18 +2,18 @@ package org.tokend.template.base.activities.tx_details
 
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_details.*
-import org.tokend.sdk.api.base.model.transactions.WithdrawalTransaction
+import org.tokend.sdk.api.base.model.operations.WithdrawalOperation
 import org.tokend.template.R
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 
-class WithdrawalDetailsActivity : TxDetailsActivity<WithdrawalTransaction>(WithdrawalTransaction::class) {
+class WithdrawalDetailsActivity : TxDetailsActivity<WithdrawalOperation>(WithdrawalOperation::class) {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details)
         setTitle(R.string.withdrawal_details_title)
     }
 
-    override fun displayDetails(item: WithdrawalTransaction) {
+    override fun displayDetails(item: WithdrawalOperation) {
         displayStateIfNeeded(item, cards_layout)
         displayDestination(item)
         displayPaid(item)
@@ -21,13 +21,13 @@ class WithdrawalDetailsActivity : TxDetailsActivity<WithdrawalTransaction>(Withd
         displayDate(item, cards_layout)
     }
 
-    private fun displayDestination(tx: WithdrawalTransaction) {
+    private fun displayDestination(tx: WithdrawalOperation) {
         InfoCard(cards_layout)
                 .setHeading(R.string.tx_withdrawal_destination, null)
                 .addRow(tx.destAddress ?: getString(R.string.unknown), null)
     }
 
-    private fun displayPaid(tx: WithdrawalTransaction) {
+    private fun displayPaid(tx: WithdrawalOperation) {
         val paid = tx.amount + tx.fee.total
 
         InfoCard(cards_layout)
@@ -47,7 +47,7 @@ class WithdrawalDetailsActivity : TxDetailsActivity<WithdrawalTransaction>(Withd
                         } ${tx.asset}")
     }
 
-    private fun displaySent(tx: WithdrawalTransaction) {
+    private fun displaySent(tx: WithdrawalOperation) {
         InfoCard(cards_layout)
                 .setHeading(R.string.sent,
                         "${AmountFormatter.formatAssetAmount(tx.destAmount)} " +

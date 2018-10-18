@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog
 import android.text.InputType
 import android.view.View
 import org.jetbrains.anko.onClick
+import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R

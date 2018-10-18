@@ -6,13 +6,10 @@ import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatImageView
 import android.view.View
-import android.view.ViewGroup
-import android.widget.RelativeLayout
 import android.widget.TextView
-import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
-import org.tokend.sdk.api.base.model.transactions.TransactionState
+import org.tokend.sdk.api.base.model.operations.OperationState
 import org.tokend.template.R
 import org.tokend.template.base.view.adapter.base.BaseViewHolder
 import org.tokend.template.base.view.util.AmountFormatter
@@ -138,13 +135,13 @@ class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) 
                 item.action == TxHistoryItem.Action.BUY
                         || item.action == TxHistoryItem.Action.SELL
                         || (item.action == TxHistoryItem.Action.INVESTMENT
-                        && item.state == TransactionState.PENDING)
+                        && item.state == OperationState.PENDING)
 
-        if (item.state != TransactionState.SUCCESS && !isPendingOffer) {
+        if (item.state != OperationState.SUCCESS && !isPendingOffer) {
             extraInfoTextView.visibility = View.VISIBLE
             extraInfoTextView.text = LocalizedName(view.context).forTransactionState(item.state)
 
-            if (item.state == TransactionState.REJECTED) {
+            if (item.state == OperationState.REJECTED) {
                 extraInfoTextView.textColor = errorColor
             } else {
                 extraInfoTextView.textColor = secondaryTextColor

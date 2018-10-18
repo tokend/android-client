@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.ViewGroup
 import com.google.gson.Gson
 import org.jetbrains.anko.intentFor
-import org.tokend.sdk.api.base.model.transactions.Transaction
-import org.tokend.sdk.api.base.model.transactions.TransactionState
+import org.tokend.sdk.api.base.model.operations.TransferOperation
+import org.tokend.sdk.api.base.model.operations.OperationState
 import org.tokend.template.R
 import org.tokend.template.base.activities.BaseActivity
 import org.tokend.template.base.view.InfoCard
@@ -14,7 +14,7 @@ import org.tokend.template.base.view.util.LocalizedName
 import org.tokend.template.util.DateFormatter
 import kotlin.reflect.KClass
 
-abstract class TxDetailsActivity<in T : Transaction>(
+abstract class TxDetailsActivity<in T : TransferOperation>(
         private val typeClass: KClass<out T>
 ) : BaseActivity() {
     companion object {
@@ -55,14 +55,14 @@ abstract class TxDetailsActivity<in T : Transaction>(
         }
     }
 
-    protected open fun displayDate(tx: Transaction, cardsLayout: ViewGroup) {
+    protected open fun displayDate(tx: TransferOperation, cardsLayout: ViewGroup) {
         InfoCard(cardsLayout)
                 .setHeading(R.string.date, null)
                 .addRow(DateFormatter(this).formatLong(tx.date), null)
     }
 
-    protected open fun displayStateIfNeeded(tx: Transaction, cardsLayout: ViewGroup) {
-        if (tx.state != TransactionState.SUCCESS) {
+    protected open fun displayStateIfNeeded(tx: TransferOperation, cardsLayout: ViewGroup) {
+        if (tx.state != OperationState.SUCCESS) {
             InfoCard(cardsLayout)
                     .setHeading(R.string.tx_state, null)
                     .addRow(LocalizedName(this).forTransactionState(tx.state), null)

@@ -3,8 +3,8 @@ package org.tokend.template.base.logic.repository.transactions
 import io.reactivex.Single
 import org.tokend.sdk.api.accounts.params.PaymentsParams
 import org.tokend.sdk.api.base.model.DataPage
-import org.tokend.sdk.api.base.model.transactions.PaymentTransaction
-import org.tokend.sdk.api.base.model.transactions.Transaction
+import org.tokend.sdk.api.base.model.operations.PaymentOperation
+import org.tokend.sdk.api.base.model.operations.TransferOperation
 import org.tokend.sdk.api.base.params.OperationsParams
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParams
@@ -19,13 +19,13 @@ class TxRepository(
         private val walletInfoProvider: WalletInfoProvider,
         private val asset: String,
         private val accountDetailsRepository: AccountDetailsRepository? = null
-) : PagedDataRepository<Transaction, PaymentsParams>() {
+) : PagedDataRepository<TransferOperation, PaymentsParams>() {
 
     override val itemsCache = TxCache()
 
-    override fun getItems(): Single<List<Transaction>> = Single.just(emptyList())
+    override fun getItems(): Single<List<TransferOperation>> = Single.just(emptyList())
 
-    override fun getPage(requestParams: PaymentsParams): Single<DataPage<Transaction>> {
+    override fun getPage(requestParams: PaymentsParams): Single<DataPage<TransferOperation>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
@@ -34,14 +34,14 @@ class TxRepository(
 
         return signedApi
                 .accounts
-                .getPaymentTransactions(
+                .getPayments(
                         accountId,
                         requestParams
                 )
                 .toSingle()
                 .doOnSuccess { transactionsPage ->
                     transactionsPage.items.forEach { transaction ->
-                        if (transaction is PaymentTransaction) {
+                        if (transaction is PaymentOperation) {
                             accountsToLoad.add(transaction.sourceAccount)
                             accountsToLoad.add(transaction.destAccount)
                         }
@@ -53,7 +53,7 @@ class TxRepository(
                             ?.onErrorReturnItem(emptyMap())
                             ?.map { detailsMap ->
                                 transactionsPage.items.forEach {
-                                    if (it is PaymentTransaction) {
+                                    if (it is PaymentOperation) {
                                         if (it.isSent) {
                                             it.counterpartyNickname =
                                                     detailsMap[it.destAccount]?.email

@@ -8,9 +8,9 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_offers.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.sdk.api.trades.model.Offer
-import org.tokend.sdk.api.base.model.transactions.InvestmentTransaction
-import org.tokend.sdk.api.base.model.transactions.MatchTransaction
-import org.tokend.sdk.api.base.model.transactions.Transaction
+import org.tokend.sdk.api.base.model.operations.InvestmentOperation
+import org.tokend.sdk.api.base.model.operations.OfferMatchOperation
+import org.tokend.sdk.api.base.model.operations.TransferOperation
 import org.tokend.template.R
 import org.tokend.template.base.activities.tx_details.OfferMatchDetailsActivity
 import org.tokend.template.base.activities.tx_details.TxDetailsActivity
@@ -125,9 +125,9 @@ class OffersActivity : BaseActivity() {
 
                         .map {
                             if (onlyPrimary)
-                                InvestmentTransaction.fromOffer(it)
+                                InvestmentOperation.fromOffer(it)
                             else
-                                MatchTransaction.fromOffer(it)
+                                OfferMatchOperation.fromOffer(it)
                         }
                         .map {
                             TxHistoryItem.fromTransaction(it)
@@ -135,14 +135,14 @@ class OffersActivity : BaseActivity() {
         )
     }
 
-    private fun openDetails(tx: Transaction?) {
+    private fun openDetails(tx: TransferOperation?) {
         when (tx) {
-            is InvestmentTransaction -> TxDetailsActivity
-                    .startForResult<InvestmentDetailsActivity, InvestmentTransaction>(
+            is InvestmentOperation -> TxDetailsActivity
+                    .startForResult<InvestmentDetailsActivity, InvestmentOperation>(
                             this, tx, CANCEL_OFFER_REQUEST
                     )
-            is MatchTransaction -> TxDetailsActivity
-                    .startForResult<OfferMatchDetailsActivity, MatchTransaction>(
+            is OfferMatchOperation -> TxDetailsActivity
+                    .startForResult<OfferMatchDetailsActivity, OfferMatchOperation>(
                             this, tx, CANCEL_OFFER_REQUEST)
         }
     }

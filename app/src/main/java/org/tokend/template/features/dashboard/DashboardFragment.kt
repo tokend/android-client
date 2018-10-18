@@ -19,7 +19,7 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.base.model.transactions.MatchTransaction
+import org.tokend.sdk.api.base.model.operations.OfferMatchOperation
 import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
 import org.tokend.template.base.fragments.ToolbarProvider
@@ -33,7 +33,6 @@ import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.PaymentFeeType
 
 class DashboardFragment : BaseFragment(), ToolbarProvider {
@@ -217,7 +216,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                         .subscribe {
                             offersAdapter.setData(it.map {
                                 TxHistoryItem.fromTransaction(
-                                        MatchTransaction.fromOffer(it)
+                                        OfferMatchOperation.fromOffer(it)
                                 )
                             })
                         },
