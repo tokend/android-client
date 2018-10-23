@@ -8,10 +8,10 @@ import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
-import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.api.base.model.operations.OfferMatchOperation
 import org.tokend.sdk.api.base.model.operations.OperationState
 import org.tokend.sdk.api.base.model.operations.OperationType
+import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.InfoCard
@@ -52,7 +52,6 @@ open class OfferMatchDetailsActivity(
 
     protected open fun displayPaid(tx: OfferMatchOperation) {
         val paidAsset = if (tx.isReceived) tx.matchData.quoteAsset else tx.asset
-        val receivedAsset = if (tx.isReceived) tx.asset else tx.matchData.quoteAsset
         val amount =
                 if (tx.isReceived) tx.matchData.quoteAmount else tx.amount
         val paidAmount =
@@ -69,8 +68,8 @@ open class OfferMatchDetailsActivity(
                     .setHeading(headingRes, "${AmountFormatter.formatAssetAmount(paidAmount)} " +
                             paidAsset)
                     .addRow(R.string.price,
-                            getString(R.string.template_price_one_for, receivedAsset,
-                                    AmountFormatter.formatAssetAmount(tx.matchData.price), paidAsset))
+                            getString(R.string.template_price_one_equals, tx.asset,
+                                    AmountFormatter.formatAssetAmount(tx.matchData.price), tx.matchData.quoteAsset))
         } else {
             InfoCard(cards_layout)
                     .setHeading(headingRes, "${AmountFormatter.formatAssetAmount(paidAmount)} " +
@@ -88,7 +87,6 @@ open class OfferMatchDetailsActivity(
 
     protected open fun displayReceived(tx: OfferMatchOperation) {
         val receivedAsset = if (tx.isReceived) tx.asset else tx.matchData.quoteAsset
-        val paidAsset = if (tx.isReceived) tx.matchData.quoteAsset else tx.asset
         val amount =
                 if (tx.isReceived) tx.amount else tx.matchData.quoteAmount
         val receivedAmount =
@@ -118,8 +116,8 @@ open class OfferMatchDetailsActivity(
                     .setHeading(headingRes, "${AmountFormatter.formatAssetAmount(receivedAmount, receivedAsset)
                     } $receivedAsset")
                     .addRow(R.string.price,
-                            getString(R.string.template_price_one_for, receivedAsset,
-                                    AmountFormatter.formatAssetAmount(tx.matchData.price), paidAsset))
+                            getString(R.string.template_price_one_equals, tx.asset,
+                                    AmountFormatter.formatAssetAmount(tx.matchData.price), tx.matchData.quoteAsset))
         }
     }
     // endregion

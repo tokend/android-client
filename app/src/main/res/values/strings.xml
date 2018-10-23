@@ -59,7 +59,6 @@
     <string name="unknown">Unknown</string>
     <string name="template_withdrawal_fee_warning">Received amount may be lower due to %1$s network fees</string>
     <string name="investment_details_title">Investment details</string>
-    <string name="template_price_one_for">1 %1$s for %2$s %3$s</string>
     <string name="offer_match_details_title">Offer match details</string>
     <string name="sign_out_confirmation">Are you sure want to sign out?</string>
     <string name="yes">Yes</string>

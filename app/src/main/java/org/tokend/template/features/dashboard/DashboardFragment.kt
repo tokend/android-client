@@ -33,7 +33,6 @@ import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.wallet.xdr.PaymentFeeType
 
 class DashboardFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -78,7 +77,6 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         subscribeToOffers()
 
         update()
-        PaymentFeeType.OUTGOING
     }
 
     // region Init

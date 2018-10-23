@@ -124,7 +124,7 @@ class OfferConfirmationActivity : BaseActivity() {
                                     payAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
                             } $payAsset")
         } else {
-            card.addRow(R.string.price, getString(R.string.template_price_one_for, offer.baseAsset,
+            card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAsset,
                     AmountFormatter.formatAssetAmount(offer.price), offer.quoteAsset))
         }
     }
@@ -152,7 +152,7 @@ class OfferConfirmationActivity : BaseActivity() {
                                     receiveAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
                             } $receiveAsset")
         } else {
-            card.addRow(R.string.price, getString(R.string.template_price_one_for, offer.baseAsset,
+            card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAsset,
                     AmountFormatter.formatAssetAmount(offer.price), offer.quoteAsset))
         }
     }
