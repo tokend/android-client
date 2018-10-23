@@ -47,6 +47,7 @@ import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.features.explore.AssetLogoFactory
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.features.trade.repository.offers.OffersRepository
@@ -319,7 +320,14 @@ class SaleActivity : BaseActivity() {
                     .resizeDimen(R.dimen.asset_list_item_logo_size, R.dimen.asset_list_item_logo_size)
                     .centerInside()
                     .into(asset_logo_image_view)
-        }
+        } ?: displayGeneratedLogo()
+    }
+
+    private fun displayGeneratedLogo() {
+        val logoSize = resources.getDimensionPixelSize(R.dimen.asset_list_item_logo_size)
+
+        asset_logo_image_view.setImageBitmap(AssetLogoFactory(this)
+                .getForCode(saleAsset.code, logoSize))
     }
 
     private fun displayYoutubePreview() {
