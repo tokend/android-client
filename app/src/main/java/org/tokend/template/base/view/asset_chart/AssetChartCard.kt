@@ -34,6 +34,7 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
 import java.util.*
+import kotlin.math.min
 
 /**
  * Created by Oleg Koretsky on 1/8/18.
@@ -229,8 +230,13 @@ class AssetChartCard : LinearLayout {
         }
 
         chartData.maxBy { it.y }?.let { entry ->
-            chart.axisLeft.limitLines.reversed().forEach { limitLine ->
-                maxY = Math.max(entry.y, limitLine.limit)
+            val limits = chart.axisLeft.limitLines
+            val minLimit = limits[0].limit
+            val maxLimit = limits[1].limit
+            maxY = when {
+                entry.y < minLimit -> minLimit
+                entry.y < maxLimit -> maxLimit
+                else -> entry.y
             }
         }
 
