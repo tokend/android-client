@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_recovery.*
 import kotlinx.android.synthetic.main.layout_network_field.*
@@ -226,6 +227,7 @@ class RecoveryActivity : BaseActivity() {
                             updateRecoveryAvailability()
                         }
                 )
+                .addTo(compositeDisposable)
     }
 
     private fun finishWithSuccess() {
