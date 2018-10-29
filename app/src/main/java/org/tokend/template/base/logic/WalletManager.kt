@@ -44,13 +44,10 @@ class WalletManager(
                          recoveryAccount: Account,
                          loginParams: LoginParams): Single<WalletData> {
             return {
-                val kdf = loginParams.kdfAttributes
-
                 KeyStorage.createWallet(
                         email,
                         password,
-                        kdf,
-                        loginParams.id,
+                        loginParams,
                         rootAccount,
                         recoveryAccount
                 ).walletData
