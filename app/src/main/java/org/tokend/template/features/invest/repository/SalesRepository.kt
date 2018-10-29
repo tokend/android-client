@@ -3,7 +3,7 @@ package org.tokend.template.features.invest.repository
 import io.reactivex.Single
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
-import org.tokend.sdk.api.base.params.PagingParams
+import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.sales.params.SalesParams
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.base.logic.repository.AccountDetailsRepository
@@ -62,11 +62,16 @@ class SalesRepository(
 
     override fun getNextPageRequestParams(): SalesParams {
         return SalesParams(
-                pagingParams = PagingParams(
-                        cursor = nextCursor,
-                        order = PagingOrder.DESC
+                pagingParams = PagingParamsV2(
+                        page = nextCursor,
+                        order = PagingOrder.DESC,
+                        limit = DEFAULT_LIMIT
                 ),
                 openOnly = true
         )
+    }
+
+    companion object {
+        private const val DEFAULT_LIMIT = 10
     }
 }

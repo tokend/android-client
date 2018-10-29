@@ -2,12 +2,12 @@ package org.tokend.template.features.deposit
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.tokend.sdk.api.transactions.model.TransactionFailedException
 import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.template.base.logic.repository.AccountRepository
 import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
-import org.tokend.template.base.logic.transactions.TransactionFailedException
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.wallet.xdr.Operation
 import org.tokend.wallet.xdr.op_extensions.BindExternalAccountOp

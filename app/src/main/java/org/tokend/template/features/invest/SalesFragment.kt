@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.layout_sales_search.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.dip
 import org.tokend.sdk.api.base.params.PagingOrder
-import org.tokend.sdk.api.base.params.PagingParams
+import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.sales.params.SalesParams
 import org.tokend.template.R
 import org.tokend.template.base.fragments.BaseFragment
@@ -142,6 +142,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
                 .subscribe {
                     updateFilter()
                 }
+                .addTo(compositeDisposable)
 
         searchItem?.setOnActionExpandListener(
                 object : MenuItem.OnActionExpandListener {
@@ -262,7 +263,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
                         .getPage(SalesParams(
                                 name = nameQuery,
                                 baseAsset = tokenQuery,
-                                pagingParams = PagingParams(
+                                pagingParams = PagingParamsV2(
                                         limit = 250,
                                         order = PagingOrder.DESC
                                 )

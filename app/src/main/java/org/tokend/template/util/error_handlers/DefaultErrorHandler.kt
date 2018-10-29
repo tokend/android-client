@@ -1,8 +1,8 @@
 package org.tokend.template.util.error_handlers
 
 import android.content.Context
+import org.tokend.sdk.api.transactions.model.TransactionFailedException
 import org.tokend.template.R
-import org.tokend.template.base.logic.transactions.TransactionFailedException
 import org.tokend.template.util.ToastManager
 import java.io.IOException
 import java.io.InterruptedIOException
