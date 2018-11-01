@@ -228,15 +228,12 @@ class AssetChartCard : LinearLayout {
             total = finalValue
         }
 
-        if (chart.axisLeft.limitLines.size == 2) {
-            chartData.maxBy { it.y }?.let { entry ->
-                val limits = chart.axisLeft.limitLines
-                val minLimit = limits[0].limit
-                val maxLimit = limits[1].limit
-                maxY = when {
-                    entry.y < minLimit -> minLimit
-                    entry.y < maxLimit -> maxLimit
-                    else -> entry.y
+        chartData.maxBy { it.y }?.let { entry ->
+            maxY = entry.y
+            chart.axisLeft.limitLines.forEach { line ->
+                if(entry.y < line.limit) {
+                    maxY = line.limit
+                    return@forEach
                 }
             }
         }
