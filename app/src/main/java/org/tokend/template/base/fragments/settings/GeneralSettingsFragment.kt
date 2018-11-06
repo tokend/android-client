@@ -64,6 +64,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
         initAccountCategory()
         initSecurityCategory()
+        initInfoCategory()
     }
 
     // region Account
@@ -217,6 +218,30 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
                         onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
+    }
+    // endregion
+
+    // region Info
+    private fun initInfoCategory() {
+        initTermsItem()
+        initOpenSourceLicensesItem()
+    }
+
+    private fun initTermsItem() {
+        val termsPreference = findPreference("terms")
+        termsPreference?.setOnPreferenceClickListener {
+            requireContext().browse(urlConfigProvider.getConfig().terms)
+        }
+    }
+
+    private fun initOpenSourceLicensesItem() {
+        val openSourceLicensesPreference = findPreference("open_source_licenses")
+        openSourceLicensesPreference?.setOnPreferenceClickListener {
+            OpenSourceLicensesDialog(requireContext(), R.style.AlertDialogStyle)
+                    .show()
+
+            true
+        }
     }
     // endregion
 }
