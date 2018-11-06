@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.support.annotation.StyleRes
 import android.support.v7.app.AlertDialog
+import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebView
 import org.tokend.template.R
@@ -19,6 +20,8 @@ class OpenSourceLicensesDialog(
 
     init {
         webView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
+        webView.overScrollMode = View.OVER_SCROLL_NEVER
+        webView.isVerticalFadingEdgeEnabled = true
 
         dialog =
                 (if (style != null)
@@ -38,12 +41,14 @@ class OpenSourceLicensesDialog(
     }
 
     fun show() {
-        dialog.show()
-        webView.post {
-            if (dialog.isShowing) {
-                webView.loadUrl("file:///android_asset/$REPORT_FILE")
+        dialog.setOnShowListener {
+            webView.post {
+                if (dialog.isShowing) {
+                    webView.loadUrl("file:///android_asset/$REPORT_FILE")
+                }
             }
         }
+        dialog.show()
     }
 
     companion object {
