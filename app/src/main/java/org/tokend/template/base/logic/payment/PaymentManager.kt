@@ -14,7 +14,7 @@ import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.FeeDataV2
 import org.tokend.wallet.xdr.Operation
 import org.tokend.wallet.xdr.PaymentFeeDataV2
-import org.tokend.wallet.xdr.op_extensions.SimplePaymentOpV2
+import org.tokend.wallet.xdr.PaymentOpV2
 
 class PaymentManager(
         private val repositoryProvider: RepositoryProvider,
@@ -47,11 +47,14 @@ class PaymentManager(
                                          sourceAccountId: String,
                                          request: PaymentRequest): Single<Transaction> {
         return Single.defer {
-            val operation = SimplePaymentOpV2(
-                    sourceBalanceId = request.senderBalanceId,
-                    destAccountId = request.recipientAccountId,
+            val operation = PaymentOpV2(
+                    sourceBalanceID = PublicKeyFactory.fromBalanceId(request.senderBalanceId),
+                    destination = PaymentOpV2.PaymentOpV2Destination.Account(
+                            PublicKeyFactory.fromAccountId(request.recipientAccountId)
+                    ),
                     amount = networkParams.amountToPrecised(request.amount),
                     subject = request.paymentSubject ?: "",
+                    reference = request.reference,
                     feeData = PaymentFeeDataV2(
                             sourceFee = FeeDataV2(
                                     fixedFee = networkParams.amountToPrecised(
@@ -75,7 +78,8 @@ class PaymentManager(
                             ),
                             sourcePaysForDest = request.senderPaysRecipientFee,
                             ext = PaymentFeeDataV2.PaymentFeeDataV2Ext.EmptyVersion()
-                    )
+                    ),
+                    ext = PaymentOpV2.PaymentOpV2Ext.EmptyVersion()
             )
 
             val transaction =

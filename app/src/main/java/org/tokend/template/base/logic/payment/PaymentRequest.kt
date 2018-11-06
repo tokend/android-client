@@ -1,8 +1,10 @@
 package org.tokend.template.base.logic.payment
 
 import org.tokend.sdk.api.fees.model.Fee
+import org.tokend.sdk.utils.extentions.encodeBase64String
 import java.io.Serializable
 import java.math.BigDecimal
+import java.security.SecureRandom
 
 data class PaymentRequest(
         val amount: BigDecimal,
@@ -12,7 +14,8 @@ data class PaymentRequest(
         val recipientNickname: String,
         val senderFee: Fee,
         val recipientFee: Fee,
-        val paymentSubject: String?
+        val paymentSubject: String?,
+        val reference: String = SecureRandom.getSeed(16).encodeBase64String()
 ) : Serializable {
     var senderPaysRecipientFee = false
 }
