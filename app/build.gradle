@@ -75,7 +75,7 @@ android {
     licenseReport {
         generateHtmlReport = true
         generateJsonReport = false
-        copyHtmlReportToAssets = false
+        copyHtmlReportToAssets = true
     }
 }
 
