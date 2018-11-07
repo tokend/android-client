@@ -1,11 +1,13 @@
 package org.tokend.template.base.logic.di.providers
 
+import android.content.Context
 import org.tokend.template.base.logic.repository.AccountDetailsRepository
 import org.tokend.template.base.logic.repository.AccountRepository
 import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.base.logic.repository.UserRepository
 import org.tokend.template.base.logic.repository.assets.AssetsRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
+import org.tokend.template.base.logic.repository.contacts.ContactsRepository
 import org.tokend.template.base.logic.repository.favorites.FavoritesRepository
 import org.tokend.template.base.logic.repository.pairs.AssetPairsRepository
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
@@ -16,7 +18,8 @@ import org.tokend.template.features.trade.repository.order_book.OrderBookReposit
 
 class RepositoryProviderImpl(
         private val apiProvider: ApiProvider,
-        private val walletInfoProvider: WalletInfoProvider
+        private val walletInfoProvider: WalletInfoProvider,
+        private val context: Context
 ) : RepositoryProvider {
     private val balancesRepository: BalancesRepository by lazy {
         BalancesRepository(apiProvider, walletInfoProvider)
@@ -50,6 +53,10 @@ class RepositoryProviderImpl(
     }
     private val salesRepository: SalesRepository by lazy {
         SalesRepository(apiProvider, accountDetails())
+    }
+
+    private val contactsRepository: ContactsRepository by lazy {
+        ContactsRepository(context)
     }
 
     override fun balances(): BalancesRepository {
@@ -112,5 +119,9 @@ class RepositoryProviderImpl(
 
     override fun sales(): SalesRepository {
         return salesRepository
+    }
+
+    override fun contacts(): ContactsRepository {
+        return contactsRepository
     }
 }

@@ -1,5 +1,6 @@
 package org.tokend.template.base.logic.di
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import org.tokend.template.base.logic.di.providers.*
@@ -10,7 +11,8 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun repositoriesProvider(apiProvider: ApiProvider,
-                            walletInfoProvider: WalletInfoProvider): RepositoryProvider {
-        return RepositoryProviderImpl(apiProvider, walletInfoProvider)
+                            walletInfoProvider: WalletInfoProvider,
+                             context: Context): RepositoryProvider {
+        return RepositoryProviderImpl(apiProvider, walletInfoProvider, context)
     }
 }

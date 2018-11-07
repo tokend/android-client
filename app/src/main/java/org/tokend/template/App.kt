@@ -26,6 +26,7 @@ import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
 import org.tokend.template.base.logic.di.*
+import org.tokend.template.base.logic.di.providers.AppModule
 import org.tokend.template.base.logic.model.UrlConfig
 import org.tokend.template.base.logic.persistance.UrlConfigPersistor
 import org.tokend.template.util.Navigator
@@ -174,6 +175,7 @@ class App : MultiDexApplication() {
                 BuildConfig.KYC_URL, BuildConfig.TERMS_URL)
 
         stateComponent = DaggerAppStateComponent.builder()
+                .appModule(AppModule(this))
                 .urlConfigProviderModule(UrlConfigProviderModule(
                         if (BuildConfig.IS_NETWORK_SPECIFIED_BY_USER)
                             UrlConfigPersistor(getNetworkPreferences()).loadConfig()
@@ -186,7 +188,6 @@ class App : MultiDexApplication() {
                         getCredentialsPreferences(),
                         getNetworkPreferences()
                 ))
-                .utilModule(UtilModule(this))
                 .build()
     }
 

@@ -3,6 +3,7 @@ package org.tokend.template.base.logic.repository.contacts
 import android.content.Context
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
+import io.reactivex.schedulers.Schedulers
 import org.tokend.template.base.logic.repository.base.RepositoryCache
 import org.tokend.template.base.logic.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.features.send.Contact
@@ -14,6 +15,6 @@ class ContactsRepository(val context: Context) : SimpleMultipleItemsRepository<C
 
     override fun getItems(): Single<List<Contact>> {
         return ContactsManager.getContacts(context)
-                .toSingle()
+                .subscribeOn(Schedulers.computation())
     }
 }

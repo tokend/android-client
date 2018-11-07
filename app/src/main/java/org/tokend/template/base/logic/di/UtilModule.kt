@@ -8,18 +8,16 @@ import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import javax.inject.Singleton
 
 @Module
-class UtilModule(
-        private val context: Context
-) {
+class UtilModule {
     @Provides
     @Singleton
-    fun errorHandlerFactory(): ErrorHandlerFactory{
+    fun errorHandlerFactory(context: Context): ErrorHandlerFactory{
         return ErrorHandlerFactory(context)
     }
 
     @Provides
     @Singleton
-    fun toastManager(): ToastManager {
+    fun toastManager(context: Context): ToastManager {
         return ToastManager(context)
     }
 }

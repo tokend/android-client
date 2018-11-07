@@ -6,6 +6,7 @@ import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.base.logic.repository.UserRepository
 import org.tokend.template.base.logic.repository.assets.AssetsRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
+import org.tokend.template.base.logic.repository.contacts.ContactsRepository
 import org.tokend.template.base.logic.repository.favorites.FavoritesRepository
 import org.tokend.template.base.logic.repository.pairs.AssetPairsRepository
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
@@ -28,4 +29,5 @@ interface RepositoryProvider {
     fun user(): UserRepository
     fun favorites(): FavoritesRepository
     fun sales(): SalesRepository
+    fun contacts(): ContactsRepository
 }

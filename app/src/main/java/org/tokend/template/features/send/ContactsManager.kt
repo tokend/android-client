@@ -2,6 +2,7 @@ package org.tokend.template.features.send
 
 import android.content.Context
 import android.provider.ContactsContract
+import io.reactivex.Single
 
 class ContactsManager {
 
@@ -17,13 +18,14 @@ class ContactsManager {
         private const val PHOTO = ContactsContract.CommonDataKinds.Photo.PHOTO_URI
 
         @JvmStatic
-        fun getContacts(context: Context): List<Contact> {
+        fun getContacts(context: Context): Single<List<Contact>> {
 
+            return Single.create {
                 val contacts = arrayListOf<Contact>()
                 val cr = context.contentResolver
                 val cursor = cr.query(CONTACTS_CONTENT_URI, null, null, null, null)
 
-                if(cursor != null && cursor.moveToFirst()) {
+                if (cursor != null && cursor.moveToFirst()) {
                     do {
                         val id = cursor.getString(cursor.getColumnIndex(ID))
                         val name = cursor.getString(cursor.getColumnIndex(NAME))
@@ -32,10 +34,10 @@ class ContactsManager {
                         val emailsCursor = cr.query(EMAILS_CONTENT_URI, null, "$EMAIL_CONTACT_ID = ?",
                                 arrayOf(id), null)
 
-                        if(emailsCursor != null && emailsCursor.moveToFirst()) {
+                        if (emailsCursor != null && emailsCursor.moveToFirst()) {
                             do {
                                 val email = emailsCursor.getString(emailsCursor.getColumnIndex(EMAIL))
-                                if(android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                                     emails.add(email)
                                 }
                             } while (emailsCursor.moveToNext())
@@ -44,14 +46,15 @@ class ContactsManager {
 
                         val photoUri = cursor.getString(cursor.getColumnIndex(PHOTO))
 
-                        if(emails.isNotEmpty()) {
+                        if (emails.isNotEmpty()) {
                             contacts.add(Contact(id, name, emails, photoUri))
                         }
 
                     } while (cursor.moveToNext())
                     cursor.close()
                 }
-            return contacts
+                it.onSuccess(contacts)
+            }
         }
     }
 }
