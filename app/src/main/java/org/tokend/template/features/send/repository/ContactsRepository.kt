@@ -1,8 +1,7 @@
-package org.tokend.template.base.logic.repository.contacts
+package org.tokend.template.features.send.repository
 
 import android.content.Context
 import io.reactivex.Single
-import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.template.base.logic.repository.base.RepositoryCache
 import org.tokend.template.base.logic.repository.base.SimpleMultipleItemsRepository

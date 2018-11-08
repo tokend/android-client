@@ -1,4 +1,4 @@
-package org.tokend.template.base.logic.repository.contacts
+package org.tokend.template.features.send.repository
 
 import io.reactivex.Single
 import org.tokend.template.base.logic.repository.base.RepositoryCache
