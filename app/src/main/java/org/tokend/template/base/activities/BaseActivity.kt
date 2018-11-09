@@ -15,7 +15,7 @@ import org.tokend.template.base.logic.AppTfaCallback
 import org.tokend.template.base.logic.di.providers.*
 import org.tokend.template.base.logic.persistance.CredentialsPersistor
 import org.tokend.template.base.logic.persistance.UrlConfigPersistor
-import org.tokend.template.base.tfa.TfaDialogFactory
+import org.tokend.template.base.tfa.view.TfaDialogFactory
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandlerFactory

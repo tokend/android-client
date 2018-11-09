@@ -17,7 +17,7 @@ import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
 import org.tokend.template.base.tfa.DisableTfaUseCase
 import org.tokend.template.base.tfa.EnableTfaUseCase
-import org.tokend.template.base.tfa.TotpFactorConfirmationDialog
+import org.tokend.template.base.tfa.view.TotpFactorConfirmationDialog
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers

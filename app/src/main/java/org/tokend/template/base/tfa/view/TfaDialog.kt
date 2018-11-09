@@ -1,4 +1,4 @@
-package org.tokend.template.base.tfa
+package org.tokend.template.base.tfa.view
 
 import android.content.Context
 import android.support.v7.app.AlertDialog

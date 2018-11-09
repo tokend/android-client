@@ -1,4 +1,4 @@
-package org.tokend.template.base.tfa
+package org.tokend.template.base.tfa.view
 
 import android.content.Context
 import org.tokend.sdk.tfa.TfaVerifier
