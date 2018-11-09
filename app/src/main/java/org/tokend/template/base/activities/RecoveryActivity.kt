@@ -17,7 +17,6 @@ import org.tokend.sdk.api.wallets.model.EmailNotVerifiedException
 import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
-import org.tokend.template.base.logic.SignUpManager
 import org.tokend.template.base.logic.UrlConfigManager
 import org.tokend.template.base.logic.WalletPasswordManager
 import org.tokend.template.base.view.util.EditTextHelper
@@ -203,11 +202,17 @@ class RecoveryActivity : BaseActivity() {
         val seed = seed_edit_text.text.getChars()
         val password = password_edit_text.text.getChars()
 
-        SignUpManager.getRandomAccount()
-                .flatMapCompletable { account ->
-                    WalletPasswordManager(repositoryProvider.systemInfo(), urlConfigProvider)
-                            .restore(email, seed, account, password)
-                }
+        val walletPasswordManager =
+                WalletPasswordManager(repositoryProvider.systemInfo(), urlConfigProvider)
+
+        RecoveryUseCase(
+                email,
+                seed,
+                password,
+                walletPasswordManager,
+                urlConfigProvider
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     isLoading = true
