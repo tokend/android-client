@@ -16,6 +16,10 @@ import org.tokend.template.base.view.util.AnimationUtil
 import org.tokend.template.util.ToastManager
 import org.tokend.template.util.error_handlers.ErrorHandler
 
+/**
+ * TFA verification dialog requesting user's password and
+ * forming OTP from it.
+ */
 class TfaPasswordDialog(context: Context,
                         errorHandler: ErrorHandler,
                         tfaVerifierInterface: TfaVerifier.Interface,

@@ -11,12 +11,22 @@ import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.R
 import org.tokend.template.util.ToastManager
 
+/**
+ * This dialog provides TOTP seed display
+ * and ability to copy it or open totp:// URI
+ * in order to add the seed to an authenticator app.
+ */
 class TotpFactorConfirmationDialog(
         private val context: Context,
         private val toastManager: ToastManager?,
         @StyleRes
         private val style: Int? = null
 ) {
+    /**
+     * Displays dialog.
+     * Result [Single] will emmit true if user confirmed adding
+     * the seed the authenticator, false otherwise.
+     */
     fun show(factor: TfaFactor): Single<Boolean> {
         val resultSubject = SingleSubject.create<Boolean>()
 

@@ -6,6 +6,9 @@ import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
 import org.tokend.template.util.error_handlers.ErrorHandler
 
+/**
+ * TFA dialog without specific code format.
+ */
 class TfaDefaultDialog(context: Context,
                        errorHandler: ErrorHandler,
                        tfaVerifierInterface: TfaVerifier.Interface)

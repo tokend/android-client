@@ -10,6 +10,11 @@ import org.tokend.template.util.error_handlers.ErrorHandler
 class TfaDialogFactory(private val context: Context,
                        private val errorHandler: ErrorHandler,
                        private val credentialsPersistor: CredentialsPersistor?) {
+    /**
+     * @return verification dialog for specified exception.
+     * If there is no special dialog for given TFA factor type
+     * then [TfaDefaultDialog] will be returned
+     */
     @JvmOverloads
     fun getForException(tfaException: NeedTfaException,
                         verifierInterface: TfaVerifier.Interface,

@@ -5,6 +5,9 @@ import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
 import org.tokend.template.util.error_handlers.ErrorHandler
 
+/**
+ * TFA verification dialog requesting code from the TOTP authenticator app.
+ */
 class TfaTotpDialog(context: Context,
                     errorHandler: ErrorHandler,
                     tfaVerifierInterface: TfaVerifier.Interface)

@@ -21,6 +21,9 @@ import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.util.error_handlers.ErrorHandler
 
+/**
+ * Abstract TFA verification dialog with code input.
+ */
 abstract class TfaDialog(protected val context: Context,
                          protected val errorHandler: ErrorHandler,
                          private val tfaVerifierInterface: TfaVerifier.Interface
