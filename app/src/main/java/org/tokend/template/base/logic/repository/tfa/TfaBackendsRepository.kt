@@ -84,7 +84,7 @@ class TfaBackendsRepository(
                     itemsCache.items.find { it.id == id }?.let { updatedBackend ->
                         updatedBackend.attributes.priority = newPriority
 
-                        itemsCache.transform(listOf(updatedBackend), { it.id == id })
+                        itemsCache.transform(listOf(updatedBackend)) { it.id == id }
                         broadcast()
                     }
                 }

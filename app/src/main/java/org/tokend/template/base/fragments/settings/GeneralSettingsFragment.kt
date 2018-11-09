@@ -1,27 +1,25 @@
 package org.tokend.template.base.fragments.settings
 
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.support.v7.preference.SwitchPreferenceCompat
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.LinearLayout
-import io.reactivex.Completable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.browse
-import org.jetbrains.anko.clipboardManager
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.R
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
+import org.tokend.template.base.tfa.EnableTfaUseCase
+import org.tokend.template.base.tfa.TotpFactorConfirmationDialog
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.ToastManager
 
 class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -169,53 +167,24 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     }
 
     private fun addAndEnableNewTfaBackend() {
-        (tfaBackend?.id?.let { oldTfaBackendId ->
-            tfaRepository.deleteBackend(oldTfaBackendId)
-        } ?: Completable.complete())
-                .andThen(tfaRepository.addBackend(TFA_BACKEND_TYPE))
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .subscribeBy(
-                        onSuccess = { tryToEnableTfaBackend(it) },
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
-                .addTo(compositeDisposable)
-    }
+        val confirmationDialog = TotpFactorConfirmationDialog(
+                requireContext(),
+                toastManager,
+                R.style.AlertDialogStyle
 
-    private fun tryToEnableTfaBackend(backend: TfaFactor) {
-        val secret = backend.attributes?.secret
-        val id = backend.id
-        val seed = backend.attributes?.seed
+        )
 
-        if (secret == null || id == null || seed == null) {
-            errorHandlerFactory.getDefault().handle(IllegalStateException())
-            return
-        }
-
-        val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogStyle)
-                .setTitle(R.string.tfa_add_dialog_title)
-                .setMessage(getString(R.string.template_tfa_add_dialog_message, secret))
-                .setPositiveButton(R.string.continue_action) { _, _ ->
-                    enableTfaBackend(id)
-                }
-                .setNegativeButton(R.string.open_action, null)
-                .setNeutralButton(R.string.copy_action, null)
-                .show()
-
-        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
-            context?.clipboardManager?.text = secret
-            ToastManager(requireContext()).short(R.string.tfa_key_copied)
-        }
-
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
-            activity?.browse(seed)
-        }
-    }
-
-    private fun enableTfaBackend(id: Long) {
-        tfaRepository.setBackendAsMain(id)
+        EnableTfaUseCase(
+                TFA_BACKEND_TYPE,
+                tfaRepository,
+                confirmationDialog::show
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
+                        onError = {
+                            errorHandlerFactory.getDefault().handle(it)
+                        }
                 )
                 .addTo(compositeDisposable)
     }
