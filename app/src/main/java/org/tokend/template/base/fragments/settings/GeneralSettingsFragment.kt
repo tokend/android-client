@@ -15,6 +15,7 @@ import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.R
 import org.tokend.template.base.fragments.ToolbarProvider
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
+import org.tokend.template.base.tfa.DisableTfaUseCase
 import org.tokend.template.base.tfa.EnableTfaUseCase
 import org.tokend.template.base.tfa.TotpFactorConfirmationDialog
 import org.tokend.template.base.view.util.LoadingIndicatorManager
@@ -34,7 +35,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private val tfaBackend: TfaFactor?
         get() = tfaRepository.itemsSubject.value.find { it.type == TFA_BACKEND_TYPE }
     private val isTfaEnabled: Boolean
-        get() = tfaBackend != null && tfaBackend?.attributes?.priority?.let { it > 0 } ?: false
+        get() = tfaBackend?.let { it.attributes.priority > 0 } ?: false
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress?.show() },
@@ -134,6 +135,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
                 .subscribe {
                     updateTfaPreference()
                 }
+                .addTo(compositeDisposable)
 
         tfaRepository.loadingSubject
                 .compose(ObservableTransformers.defaultSchedulers())
@@ -158,10 +160,16 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     }
 
     private fun disableTfa() {
-        tfaRepository.deleteBackend(tfaBackend!!.id!!)
+        DisableTfaUseCase(
+                TFA_BACKEND_TYPE,
+                tfaRepository
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
+                        onError = {
+                            errorHandlerFactory.getDefault().handle(it)
+                        }
                 )
                 .addTo(compositeDisposable)
     }
