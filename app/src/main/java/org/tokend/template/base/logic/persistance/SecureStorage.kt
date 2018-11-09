@@ -8,10 +8,9 @@ import android.support.annotation.RequiresApi
 import org.tokend.crypto.cipher.Aes256GCM
 import org.tokend.kdf.KeyDerivationFunction
 import org.tokend.kdf.ScryptKeyDerivation
-import org.tokend.sdk.keyserver.models.KeychainData
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.KdfAttributes
-import org.tokend.sdk.utils.extentions.toBytes
+import org.tokend.sdk.keyserver.models.KeychainData
 import org.tokend.template.extensions.toByteArray
 import java.security.KeyStore
 import java.security.SecureRandom
@@ -79,7 +78,7 @@ class SecureStorage(
         return try {
             val seed = SecureRandom.getSeed(16)
             keyBytes = getKeyDerivation()
-                    .derive(passwordBytes, seed, KDF_PARAMS.bits.toBytes())
+                    .derive(passwordBytes, seed, KDF_PARAMS.bytes)
             val encryptedData = Aes256GCM(seed).encrypt(data, keyBytes)
             keyBytes.fill(0)
             val keychainData = KeychainData.fromRaw(seed, encryptedData)
@@ -105,7 +104,7 @@ class SecureStorage(
             val keychainData = loadKeychainData(key)!!
             val seed = keychainData.iv
             keyBytes = getKeyDerivation()
-                    .derive(passwordBytes, seed, KDF_PARAMS.bits.toBytes())
+                    .derive(passwordBytes, seed, KDF_PARAMS.bytes)
             return Aes256GCM(seed).decrypt(keychainData.cipherText, keyBytes)
         } catch (e: Exception) {
             e.printStackTrace()
