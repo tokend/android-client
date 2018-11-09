@@ -19,10 +19,24 @@ import org.tokend.wallet.Transaction
 import retrofit2.HttpException
 import java.net.HttpURLConnection
 
+/**
+ * Holds wallet update logic.
+ *
+ * @param credentialsPersistor if set credentials will be updated on wallet update complete
+ */
 class WalletUpdateManager(
         private val systemInfoRepository: SystemInfoRepository,
         private val credentialsPersistor: CredentialsPersistor? = null
 ) {
+    /**
+     * Updates keychain data and account signers in order to
+     * change password (or recover it).
+     * Also updates data in [accountProvider] and [walletInfoProvider] on complete.
+     *
+     * @param apiProvider must be able to provide API and KeyStorage signed by active account signer
+     * @param accountProvider must provide active account signer, well be updated on complete
+     * @param walletInfoProvider must provide actual wallet info, will be updated on complete
+     */
     fun updateWalletWithNewPassword(apiProvider: ApiProvider,
                                     accountProvider: AccountProvider,
                                     walletInfoProvider: WalletInfoProvider,
