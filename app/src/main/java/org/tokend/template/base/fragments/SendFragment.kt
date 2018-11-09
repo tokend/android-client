@@ -4,7 +4,9 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.view.LayoutInflater
@@ -21,7 +23,9 @@ import kotlinx.android.synthetic.main.fragment_send.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import kotlinx.android.synthetic.main.layout_balance_card.*
+import kotlinx.android.synthetic.main.layout_contacts_sheet.*
 import kotlinx.android.synthetic.main.layout_progress.*
+import kotlinx.android.synthetic.main.layout_progress.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
@@ -34,12 +38,17 @@ import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.base.logic.repository.AccountDetailsRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
 import org.tokend.template.base.view.AmountEditTextWrapper
+import org.tokend.template.base.view.adapter.base.SimpleItemClickListener
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.isTransferable
 import org.tokend.template.extensions.setErrorAndFocus
+import org.tokend.template.features.send.Contact
+import org.tokend.template.features.send.ContactEmail
+import org.tokend.template.features.send.adapter.ContactsAdapter
+import org.tokend.template.features.send.repository.ContactsRepository
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.Permission
@@ -51,10 +60,17 @@ import java.math.BigDecimal
 class SendFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
     private val cameraPermission = Permission(Manifest.permission.CAMERA, 404)
+    private val contactsPermission = Permission(Manifest.permission.READ_CONTACTS, 606)
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress.show() },
             hideLoading = { progress.hide() }
     )
+    private val contactsLoadingIndicator = LoadingIndicatorManager(
+            showLoading = { contacts_progress.show() },
+            hideLoading = { contacts_progress.hide() }
+    )
+    private val contactsAdapter = ContactsAdapter()
+
     private lateinit var amountEditTextWrapper: AmountEditTextWrapper
 
     private var isLoading = false
@@ -80,6 +96,8 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
 
+    private val contactsRepository: ContactsRepository
+        get() = repositoryProvider.contacts()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -100,9 +118,12 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
         initAssetSelection()
         initSwipeRefresh()
+        initContacts()
 
         subscribeToBalances()
         balancesRepository.updateIfNotFresh()
+
+        subscribeToContacts()
 
         canConfirm = false
     }
@@ -165,6 +186,24 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 balancesRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe { swipe_refresh.isRefreshing = it }
+        ).also { it.addTo(compositeDisposable) }
+    }
+
+    private var contactsDisposable: CompositeDisposable? = null
+    private fun subscribeToContacts() {
+        contactsDisposable?.dispose()
+        contactsDisposable = CompositeDisposable(
+                contactsRepository.itemsSubject
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .subscribe {
+                            updateContactsData(it)
+                        },
+                contactsRepository.loadingSubject
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .subscribe {
+                            contactsLoadingIndicator.setLoading(it)
+                            contacts_empty_view.visibility = View.GONE
+                        }
         ).also { it.addTo(compositeDisposable) }
     }
 
@@ -380,11 +419,68 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         displayBalance()
     }
 
+    private fun updateContactsData(items: List<Contact>) {
+        contactsAdapter.addData(items)
+        if (items.isEmpty() && !contactsRepository.isNeverUpdated) {
+            contacts_empty_view.visibility = View.VISIBLE
+        } else {
+            contacts_empty_view.visibility = View.GONE
+        }
+    }
+
+    private fun initContacts() {
+        contacts_list.apply {
+            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+            adapter = contactsAdapter
+        }
+
+        contactsAdapter.onEmailClickListener = object : SimpleItemClickListener<Any> {
+            override fun invoke(view: View?, item: Any) {
+                item as ContactEmail
+                recipient_edit_text.setText(item.email)
+                BottomSheetBehavior.from(contacts_bottom_sheet)
+                        .state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
+
+        peek.onClick {
+            val bottomSheet = BottomSheetBehavior.from(contacts_bottom_sheet)
+
+            val state = when (bottomSheet.state) {
+                BottomSheetBehavior.STATE_COLLAPSED -> BottomSheetBehavior.STATE_EXPANDED
+                else -> BottomSheetBehavior.STATE_COLLAPSED
+            }
+
+            bottomSheet.state = state
+        }
+
+        BottomSheetBehavior.from(contacts_bottom_sheet).setBottomSheetCallback(
+                object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                        peek_image.rotation = 180 * slideOffset
+                    }
+
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                            contacts_sheet_elevation_view.visibility = View.GONE
+                            contactsPermission.check(this@SendFragment, {
+                                contactsRepository.updateIfNotFresh()
+                            }, {
+                                contacts_empty_view.visibility = View.VISIBLE
+                            })
+                        } else {
+                            contacts_sheet_elevation_view.visibility = View.VISIBLE
+                        }
+                    }
+                }
+        )
+    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
                                             grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
+        contactsPermission.handlePermissionResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

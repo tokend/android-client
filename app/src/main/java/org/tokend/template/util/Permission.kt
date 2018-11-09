@@ -13,6 +13,18 @@ class Permission(private val permission: String,
                  private val requestCode: Int) {
 
     private var grantedCallback: (() -> Unit)? = null
+    private var deniedCallback: (() -> Unit)? = null
+
+    fun check(activity: Activity, action: () -> Unit, deniedAction: () -> Unit) {
+        this.grantedCallback = action
+        this.deniedCallback = deniedAction
+        if (ContextCompat.checkSelfPermission(activity, permission) ==
+                PackageManager.PERMISSION_GRANTED) {
+            action()
+        } else {
+            ActivityCompat.requestPermissions(activity, arrayOf(permission), requestCode)
+        }
+    }
 
     fun check(activity: Activity, action: () -> Unit) {
         this.grantedCallback = action
@@ -21,6 +33,17 @@ class Permission(private val permission: String,
             action()
         } else {
             ActivityCompat.requestPermissions(activity, arrayOf(permission), requestCode)
+        }
+    }
+
+    fun check(fragment: Fragment, action: () -> Unit, deniedAction: () -> Unit) {
+        this.grantedCallback = action
+        this.deniedCallback = deniedAction
+        if (ContextCompat.checkSelfPermission(fragment.requireContext(), permission) ==
+                PackageManager.PERMISSION_GRANTED) {
+            action()
+        } else {
+            fragment.requestPermissions(arrayOf(permission), requestCode)
         }
     }
 
@@ -39,6 +62,8 @@ class Permission(private val permission: String,
         if (requestCode == this.requestCode) {
             if (isPermissionGranted(grantResults)) {
                 grantedCallback?.invoke()
+            } else {
+                deniedCallback?.invoke()
             }
         }
     }

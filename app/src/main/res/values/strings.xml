@@ -288,4 +288,6 @@
     <string name="sale_upcoming">Upcoming</string>
     <string name="open_source_licenses_title">Open source licenses</string>
     <string name="settings_information_group">Information</string>
+    <string name="contacts">Contacts</string>
+    <string name="no_contacts_message">No contacts available</string>
 </resources>

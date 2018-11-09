@@ -8,6 +8,7 @@ import org.tokend.template.R
 import org.tokend.template.base.view.adapter.base.BaseViewHolder
 import org.tokend.template.base.view.adapter.base.SimpleItemClickListener
 import org.tokend.template.features.send.Contact
+import org.tokend.template.features.send.ContactEmail
 
 class ContactsAdapter : RecyclerView.Adapter<BaseViewHolder<Any>>() {
 
@@ -22,7 +23,7 @@ class ContactsAdapter : RecyclerView.Adapter<BaseViewHolder<Any>>() {
             TYPE_CONTACT -> (holder as ContactViewHolder)
                     .bind(items[position] as Contact, onContactClickListener)
             else -> (holder as EmailViewHolder)
-                    .bind(items[position] as String, onEmailClickListener)
+                    .bind(items[position] as ContactEmail, onEmailClickListener)
         }
     }
 
@@ -36,8 +37,8 @@ class ContactsAdapter : RecyclerView.Adapter<BaseViewHolder<Any>>() {
 
     override fun getItemViewType(position: Int): Int {
         return when(items[position]) {
-            is String -> TYPE_EMAIL
-            else -> TYPE_CONTACT
+            is Contact -> TYPE_CONTACT
+            else -> TYPE_EMAIL
         }
     }
 
@@ -53,7 +54,7 @@ class ContactsAdapter : RecyclerView.Adapter<BaseViewHolder<Any>>() {
         notifyDataSetChanged()
     }
 
-    private var onContactClickListener = object : SimpleItemClickListener<Any> {
+    private val onContactClickListener = object : SimpleItemClickListener<Any> {
         override fun invoke(view: View?, item: Any) {
             item as Contact
             val emails = item.emails
