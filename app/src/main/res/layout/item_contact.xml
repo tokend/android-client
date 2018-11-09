@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:fontFamily="sans-serif"
-        android:textSize="@dimen/text_size_heading"
         app:layout_constraintBottom_toBottomOf="@+id/contact_icon_image_view"
         app:layout_constraintStart_toEndOf="@+id/contact_icon_image_view"
         app:layout_constraintTop_toTopOf="@+id/contact_icon_image_view"
