@@ -7,7 +7,7 @@ import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.base.logic.WalletManager
-import org.tokend.template.base.logic.WalletPasswordManager
+import org.tokend.template.base.logic.WalletUpdateManager
 import org.tokend.template.base.logic.di.providers.*
 import org.tokend.wallet.Account
 
@@ -15,7 +15,7 @@ class RecoveryUseCase(
         private val email: String,
         private val recoverySeed: CharArray,
         private val newPassword: CharArray,
-        private val walletPasswordManager: WalletPasswordManager,
+        private val walletUpdateManager: WalletUpdateManager,
         private val urlConfigProvider: UrlConfigProvider
 ) {
     private lateinit var recoveryAccount: Account
@@ -81,11 +81,10 @@ class RecoveryUseCase(
     }
 
     private fun updateWallet(): Single<Boolean> {
-        return walletPasswordManager.updateWalletWithNewPassword(
+        return walletUpdateManager.updateWalletWithNewPassword(
                 apiProvider,
                 accountProvider,
                 walletInfoProvider,
-                null,
                 newAccount,
                 newPassword
         )

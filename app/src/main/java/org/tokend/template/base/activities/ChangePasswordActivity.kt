@@ -16,7 +16,7 @@ import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
-import org.tokend.template.base.logic.WalletPasswordManager
+import org.tokend.template.base.logic.WalletUpdateManager
 import org.tokend.template.base.logic.persistance.FingerprintAuthManager
 import org.tokend.template.base.view.util.AnimationUtil
 import org.tokend.template.base.view.util.EditTextHelper
@@ -156,16 +156,15 @@ class ChangePasswordActivity : BaseActivity() {
     private fun changePassword() {
         val newPassword = new_password_edit_text.text.getChars()
 
-        val walletPasswordManager =
-                WalletPasswordManager(repositoryProvider.systemInfo(), urlConfigProvider)
+        val walletUpdateManager =
+                WalletUpdateManager(repositoryProvider.systemInfo(), credentialsPersistor)
 
         ChangePasswordUseCase(
                 newPassword,
-                walletPasswordManager,
+                walletUpdateManager,
                 apiProvider,
                 accountProvider,
-                walletInfoProvider,
-                credentialsPersistor
+                walletInfoProvider
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())

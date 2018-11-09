@@ -3,12 +3,13 @@ package org.tokend.template.base.logic
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletData
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.base.logic.di.providers.*
+import org.tokend.template.base.logic.di.providers.AccountProvider
+import org.tokend.template.base.logic.di.providers.ApiProvider
+import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.template.base.logic.persistance.CredentialsPersistor
 import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.extensions.toSingle
@@ -18,63 +19,15 @@ import org.tokend.wallet.Transaction
 import retrofit2.HttpException
 import java.net.HttpURLConnection
 
-class WalletPasswordManager(
+class WalletUpdateManager(
         private val systemInfoRepository: SystemInfoRepository,
-        private val urlConfigProvider: UrlConfigProvider
+        private val credentialsPersistor: CredentialsPersistor? = null
 ) {
-    fun restore(email: String, recoverySeed: CharArray,
-                newAccount: Account, newPassword: CharArray): Completable {
-        val data = object {
-            lateinit var accountProvider: AccountProvider
-            lateinit var apiProvider: ApiProvider
-        }
-
-        return createAccountFromSeed(recoverySeed)
-                // Create API provider for recovery account.
-                .map { account ->
-                    data.accountProvider = AccountProviderFactory().createAccountProvider(account)
-                    ApiProviderFactory()
-                            .createApiProvider(urlConfigProvider, data.accountProvider)
-                }
-                // Create WalletManager signed with recovery account.
-                .map { apiProvider ->
-                    data.apiProvider = apiProvider
-                    val signedKeyStorage = apiProvider.getSignedKeyStorage()
-                            ?: throw IllegalStateException("Cannot obtain signed KeyStorage")
-                    WalletManager(signedKeyStorage)
-                }
-                // Get info for wallet to recover.
-                .flatMap { walletManager ->
-                    walletManager.getWalletInfo(email, recoverySeed, true)
-                }
-                // Update wallet with new password.
-                .flatMapCompletable { wallet ->
-                    updateWalletWithNewPassword(
-                            data.apiProvider,
-                            data.accountProvider,
-                            WalletInfoProviderFactory().createWalletInfoProvider(wallet),
-                            null,
-                            newAccount,
-                            newPassword
-                    )
-                }
-    }
-
-    fun changePassword(apiProvider: ApiProvider, accountProvider: AccountProvider,
-                       walletInfoProvider: WalletInfoProvider,
-                       credentialsPersistor: CredentialsPersistor,
-                       newAccount: Account, newPassword: CharArray): Completable {
-        return updateWalletWithNewPassword(apiProvider, accountProvider,
-                walletInfoProvider, credentialsPersistor,
-                newAccount, newPassword)
-    }
-
     fun updateWalletWithNewPassword(apiProvider: ApiProvider,
-                                            accountProvider: AccountProvider,
-                                            walletInfoProvider: WalletInfoProvider,
-                                            credentialsPersistor: CredentialsPersistor?,
-                                            newAccount: Account,
-                                            newPassword: CharArray): Completable {
+                                    accountProvider: AccountProvider,
+                                    walletInfoProvider: WalletInfoProvider,
+                                    newAccount: Account,
+                                    newPassword: CharArray): Completable {
         val account = accountProvider.getAccount()
                 ?: return Completable.error(IllegalStateException("Cannot obtain current account"))
         val wallet = walletInfoProvider.getWalletInfo()
@@ -149,12 +102,6 @@ class WalletPasswordManager(
     }
 
     // region Creation
-    private fun createAccountFromSeed(seed: CharArray): Single<Account> {
-        return {
-            Account.fromSecretSeed(seed)
-        }.toSingle().subscribeOn(Schedulers.newThread())
-    }
-
     private fun createWalletForPasswordChange(networkParams: NetworkParams,
                                               currentWallet: WalletInfo,
                                               currentAccount: Account,

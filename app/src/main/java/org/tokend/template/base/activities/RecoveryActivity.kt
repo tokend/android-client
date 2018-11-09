@@ -18,7 +18,7 @@ import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.logic.UrlConfigManager
-import org.tokend.template.base.logic.WalletPasswordManager
+import org.tokend.template.base.logic.WalletUpdateManager
 import org.tokend.template.base.view.util.EditTextHelper
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
@@ -202,14 +202,13 @@ class RecoveryActivity : BaseActivity() {
         val seed = seed_edit_text.text.getChars()
         val password = password_edit_text.text.getChars()
 
-        val walletPasswordManager =
-                WalletPasswordManager(repositoryProvider.systemInfo(), urlConfigProvider)
+        val walletUpdateManager = WalletUpdateManager(repositoryProvider.systemInfo())
 
         RecoveryUseCase(
                 email,
                 seed,
                 password,
-                walletPasswordManager,
+                walletUpdateManager,
                 urlConfigProvider
         )
                 .perform()

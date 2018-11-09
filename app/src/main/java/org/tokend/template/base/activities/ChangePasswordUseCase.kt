@@ -3,20 +3,18 @@ package org.tokend.template.base.activities
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
-import org.tokend.template.base.logic.WalletPasswordManager
+import org.tokend.template.base.logic.WalletUpdateManager
 import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
-import org.tokend.template.base.logic.persistance.CredentialsPersistor
 import org.tokend.wallet.Account
 
 class ChangePasswordUseCase(
         private val newPassword: CharArray,
-        private val walletPasswordManager: WalletPasswordManager,
+        private val walletUpdateManager: WalletUpdateManager,
         private val apiProvider: ApiProvider,
         private val accountProvider: AccountProvider,
-        private val walletInfoProvider: WalletInfoProvider,
-        private val credentialsPersistor: CredentialsPersistor?
+        private val walletInfoProvider: WalletInfoProvider
 ) {
     private lateinit var newAccount: Account
 
@@ -38,11 +36,10 @@ class ChangePasswordUseCase(
     }
 
     private fun updateWallet(): Single<Boolean> {
-        return walletPasswordManager.updateWalletWithNewPassword(
+        return walletUpdateManager.updateWalletWithNewPassword(
                 apiProvider,
                 accountProvider,
                 walletInfoProvider,
-                credentialsPersistor,
                 newAccount,
                 newPassword
         )
