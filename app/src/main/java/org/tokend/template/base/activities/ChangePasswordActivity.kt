@@ -13,12 +13,11 @@ import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.sdk.tfa.NeedTfaException
+import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
-import org.tokend.template.base.logic.SignUpManager
 import org.tokend.template.base.logic.WalletPasswordManager
 import org.tokend.template.base.logic.persistance.FingerprintAuthManager
-import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.template.base.view.util.AnimationUtil
 import org.tokend.template.base.view.util.EditTextHelper
 import org.tokend.template.base.view.util.LoadingIndicatorManager
@@ -155,28 +154,27 @@ class ChangePasswordActivity : BaseActivity() {
     }
 
     private fun changePassword() {
-        val passwordChars = new_password_edit_text.text.getChars()
+        val newPassword = new_password_edit_text.text.getChars()
+
         val walletPasswordManager =
                 WalletPasswordManager(repositoryProvider.systemInfo(), urlConfigProvider)
 
-        SignUpManager.getRandomAccount()
-                .flatMapCompletable { account ->
-                    walletPasswordManager.changePassword(
-                            apiProvider,
-                            accountProvider,
-                            walletInfoProvider,
-                            credentialsPersistor,
-                            account,
-                            passwordChars
-                    )
-                }
+        ChangePasswordUseCase(
+                newPassword,
+                walletPasswordManager,
+                apiProvider,
+                accountProvider,
+                walletInfoProvider,
+                credentialsPersistor
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     isLoading = true
                 }
                 .doOnTerminate {
                     isLoading = false
-                    passwordChars.fill('0')
+                    newPassword.fill('0')
                 }
                 .subscribeBy(
                         onComplete = {

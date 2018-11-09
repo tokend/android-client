@@ -69,7 +69,7 @@ class WalletPasswordManager(
                 newAccount, newPassword)
     }
 
-    private fun updateWalletWithNewPassword(apiProvider: ApiProvider,
+    fun updateWalletWithNewPassword(apiProvider: ApiProvider,
                                             accountProvider: AccountProvider,
                                             walletInfoProvider: WalletInfoProvider,
                                             credentialsPersistor: CredentialsPersistor?,
