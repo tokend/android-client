@@ -89,7 +89,7 @@ class OffersRepository(
                     isLoading = false
                 }
                 .doOnComplete {
-                    invalidate()
+                    update()
                 }
     }
 

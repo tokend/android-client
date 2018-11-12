@@ -5,8 +5,6 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import io.reactivex.Completable
-import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.sdk.api.trades.model.Offer
@@ -178,49 +176,17 @@ class OfferConfirmationActivity : BaseActivity() {
 
         val cancellationOnly = offer.baseAmount.signum() == 0 && prevOffer != null
 
-        getBalances(offer.baseAsset, offer.quoteAsset)
-                .flatMapCompletable { (baseBalance, quoteBalance) ->
-                    offer.baseBalance = baseBalance
-                    offer.quoteBalance = quoteBalance
-                    prevOffer?.baseBalance = baseBalance
-                    prevOffer?.quoteBalance = quoteBalance
-
-                    if (cancellationOnly)
-                        repositoryProvider.offers(isPrimaryMarket)
-                                .cancel(accountProvider,
-                                        repositoryProvider.systemInfo(),
-                                        TxManager(apiProvider),
-                                        prevOffer!!)
-                    else
-                        repositoryProvider.offers(isPrimaryMarket)
-                                .create(
-                                        accountProvider,
-                                        repositoryProvider.systemInfo(),
-                                        TxManager(apiProvider),
-                                        offer,
-                                        prevOffer
-                                )
-                }
+        OfferConfirmationUseCase(
+                offer,
+                prevOffer,
+                repositoryProvider,
+                accountProvider,
+                TxManager(apiProvider)
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe { progress.show() }
                 .doOnTerminate { progress.dismiss() }
-                .doOnComplete {
-                    if (!isPrimaryMarket) {
-                        listOf(repositoryProvider.orderBook(
-                                offer.baseAsset,
-                                offer.quoteAsset,
-                                true
-                        ), repositoryProvider.orderBook(
-                                offer.baseAsset,
-                                offer.quoteAsset,
-                                false
-                        )).forEach { it.invalidate() }
-                    }
-                    if (isPrimaryMarket) {
-                        repositoryProvider.sales().invalidate()
-                    }
-                    repositoryProvider.balances().invalidate()
-                }
                 .subscribeBy(
                         onComplete = {
                             progress.dismiss()
@@ -238,49 +204,6 @@ class OfferConfirmationActivity : BaseActivity() {
                         },
                         onError = {
                             errorHandlerFactory.getDefault().handle(it)
-                        }
-                )
-    }
-
-    private fun getBalances(baseAsset: String, quoteAsset: String): Single<Pair<String, String>> {
-        val balancesRepository = repositoryProvider.balances()
-        val balances = balancesRepository.itemsSubject.value
-
-        val existingBase = balances.find { it.asset == baseAsset }
-        val existingQuote = balances.find { it.asset == quoteAsset }
-
-        val toCreate = mutableListOf<String>()
-        if (existingBase == null) {
-            toCreate.add(baseAsset)
-        }
-        if (existingQuote == null) {
-            toCreate.add(quoteAsset)
-        }
-
-        val createMissingBalances =
-                if (toCreate.isEmpty())
-                    Completable.complete()
-                else
-                    balancesRepository.create(accountProvider, repositoryProvider.systemInfo(),
-                            TxManager(apiProvider), *toCreate.toTypedArray())
-
-        return createMissingBalances
-                .andThen(
-                        Single.defer {
-                            val base = balancesRepository.itemsSubject.value
-                                    .find { it.asset == baseAsset }
-                                    ?.balanceId
-                                    ?: throw IllegalStateException(
-                                            "Unable to create balance for $baseAsset"
-                                    )
-                            val quote = balancesRepository.itemsSubject.value
-                                    .find { it.asset == quoteAsset }
-                                    ?.balanceId
-                                    ?: throw IllegalStateException(
-                                            "Unable to create balance for $quoteAsset"
-                                    )
-
-                            Single.just(base to quote)
                         }
                 )
     }

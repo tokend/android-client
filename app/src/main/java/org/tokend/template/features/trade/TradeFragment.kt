@@ -10,12 +10,10 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_trade.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
@@ -466,39 +464,32 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun openOfferDialog(offer: Offer) {
-        val dialog = CreateOfferDialog.withArgs(offer)
-        dialog.showDialog(this.childFragmentManager, "create_offer")
+        CreateOfferDialog.withArgs(offer)
+                .showDialog(this.childFragmentManager, "create_offer")
                 .subscribe {
                     goToOfferConfirmation(it)
                 }
+                .addTo(compositeDisposable)
     }
 
     private fun goToOfferConfirmation(offer: Offer) {
-        getCurrentAccountId()
-                .flatMap { accountId ->
-                    FeeManager(apiProvider).getOfferFee(accountId,
-                            offer.quoteAsset, offer.quoteAmount)
-                }
+        PrepareOfferUseCase(
+                offer,
+                walletInfoProvider,
+                FeeManager(apiProvider)
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe { progress.show() }
                 .doOnEvent { _, _ -> progress.hide() }
                 .subscribeBy(
-                        onSuccess = { offerFee ->
-                            offer.fee = offerFee.percent
-
+                        onSuccess = { completedOffer ->
                             Navigator.openOfferConfirmation(this,
-                                    CREATE_OFFER_REQUEST, offer)
+                                    CREATE_OFFER_REQUEST, completedOffer)
                         },
                         onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
-    }
-
-    private fun getCurrentAccountId(): Single<String> {
-        return walletInfoProvider.getWalletInfo()?.accountId.toMaybe()
-                .switchIfEmpty(Single.error(
-                        IllegalStateException("Cannot obtain current account ID")
-                ))
     }
 // endregion
 
@@ -506,7 +497,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                CREATE_OFFER_REQUEST, CANCEL_OFFER_REQUEST -> {
+                CANCEL_OFFER_REQUEST -> {
                     update()
                 }
             }
