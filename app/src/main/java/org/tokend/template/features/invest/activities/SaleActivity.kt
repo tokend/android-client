@@ -15,6 +15,7 @@ import com.google.gson.JsonSyntaxException
 import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.addTo
@@ -48,6 +49,7 @@ import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.toSingle
 import org.tokend.template.features.explore.AssetLogoFactory
+import org.tokend.template.features.invest.SwitchFavoriteUseCase
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.features.trade.PrepareOfferUseCase
@@ -97,7 +99,7 @@ class SaleActivity : BaseActivity() {
     private lateinit var sale: Sale
     private lateinit var saleAsset: org.tokend.template.extensions.Asset
 
-    private var isFollowed = false
+    private var isFavorited = false
         set(value) {
             field = value
             invalidateOptionsMenu()
@@ -167,6 +169,8 @@ class SaleActivity : BaseActivity() {
 
         initButtons()
         initFields()
+
+        subscribeToFavorites()
 
         canInvest = false
     }
@@ -293,8 +297,6 @@ class SaleActivity : BaseActivity() {
         title = sale.details.name
         sale_name_text_view.text = sale.details.name
         sale_description_text_view.text = sale.details.shortDescription
-
-        isFollowed = getFavoriteEntry() != null
 
         if (sale.details.youtubeVideo != null) {
             displayYoutubePreview()
@@ -603,12 +605,22 @@ class SaleActivity : BaseActivity() {
     }
     // endregion
 
-    // region Follow
+    // region Favorites
+    private fun subscribeToFavorites() {
+        favoritesRepository
+                .itemsSubject
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    isFavorited = getFavoriteEntry() != null
+                }
+                .addTo(compositeDisposable)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.sale, menu)
         menu?.findItem(R.id.follow)
                 ?.apply {
-                    if (isFollowed) {
+                    if (isFavorited) {
                         icon = ContextCompat
                                 .getDrawable(this@SaleActivity, R.drawable.ic_star)
                         title = getString(R.string.remove_from_favorites_action)
@@ -623,7 +635,7 @@ class SaleActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.follow -> switchFollowing()
+            R.id.follow -> switchFavorite()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -634,28 +646,20 @@ class SaleActivity : BaseActivity() {
         }
     }
 
-    private var followingDisposable: Disposable? = null
-    private fun switchFollowing() {
-        val performSwitch =
-                if (isFollowed) {
-                    getFavoriteEntry()
-                            ?.let {
-                                favoritesRepository.removeFromFavorites(it.id)
-                            }
-                } else {
-                    favoritesRepository.addToFavorites(SaleFavoriteEntry(sale.baseAsset))
-                }
-
-        performSwitch ?: return
-
-        followingDisposable?.dispose()
-        followingDisposable = performSwitch
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .subscribeBy(
-                        onComplete = { isFollowed = !isFollowed },
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
+    private var switchFavoriteDisposable: Disposable? = null
+    private fun switchFavorite() {
+        switchFavoriteDisposable?.dispose()
+        switchFavoriteDisposable =
+                SwitchFavoriteUseCase(
+                        SaleFavoriteEntry(sale.baseAsset),
+                        favoritesRepository
                 )
-                .addTo(compositeDisposable)
+                        .perform()
+                        .compose(ObservableTransformers.defaultSchedulersCompletable())
+                        .subscribeBy(
+                                onError = { errorHandlerFactory.getDefault().handle(it) }
+                        )
+                        .addTo(compositeDisposable)
     }
     // endregion
 
