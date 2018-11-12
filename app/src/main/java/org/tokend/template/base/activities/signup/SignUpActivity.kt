@@ -5,8 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
-import io.reactivex.Single
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sign_up.*
@@ -20,15 +18,15 @@ import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.base.activities.BaseActivity
-import org.tokend.template.base.logic.SignUpManager
+import org.tokend.template.base.activities.SignUpUseCase
 import org.tokend.template.base.logic.UrlConfigManager
 import org.tokend.template.base.view.util.EditTextHelper
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
+import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.util.*
-import org.tokend.wallet.Account
 
 class SignUpActivity : BaseActivity() {
     companion object {
@@ -176,32 +174,31 @@ class SignUpActivity : BaseActivity() {
 
     private fun signUp() {
         val email = email_edit_text.text.toString()
-        val passwordLength = password_edit_text.text.length
-        val password = CharArray(passwordLength)
-        password_edit_text.text.getChars(0, passwordLength, password, 0)
+        val password = password_edit_text.text.getChars()
 
-        var recoverySeed: String? = null
-        Single.zip(SignUpManager.getRandomAccount(), SignUpManager.getRandomAccount(),
-                BiFunction { key1: Account, key2: Account -> Pair(key1, key2) })
-                .flatMapCompletable { (rootAccount, recoveryAccount) ->
-                    recoverySeed = recoveryAccount.secretSeed?.joinToString("")
-                    SignUpManager(urlConfigProvider)
-                            .signUp(email, password, rootAccount, recoveryAccount)
-                }
-                .doOnComplete { password.fill('0') }
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
+        SignUpUseCase(
+                email,
+                password,
+                apiProvider.getKeyStorage()
+        )
+                .perform()
+                .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe {
                     isLoading = true
                 }
-                .doOnTerminate {
+                .doOnEvent { _, _ ->
                     isLoading = false
+                    password.fill('0')
                 }
                 .subscribeBy(
-                        onComplete = {
-                            recoverySeed.let {
-                                if (it != null) {
-                                    Navigator.openRecoverySeedSaving(this,
-                                            SAVE_SEED_REQUEST, it)
+                        onSuccess = { (_, _, recoveryAccount) ->
+                            recoveryAccount.secretSeed.also { recoverySeed ->
+                                if (recoverySeed != null) {
+                                    Navigator.openRecoverySeedSaving(
+                                            this,
+                                            SAVE_SEED_REQUEST,
+                                            recoverySeed.joinToString("")
+                                    )
                                 } else {
                                     onSuccessfulSignUp()
                                 }
