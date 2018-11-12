@@ -35,7 +35,6 @@ import org.tokend.template.features.explore.adapter.AssetListItemViewHolder
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 
 class AssetDetailsFragment : BaseFragment() {
@@ -187,9 +186,14 @@ class AssetDetailsFragment : BaseFragment() {
         progress.setMessage(getString(R.string.processing_progress))
         progress.setCancelable(false)
 
-        repositoryProvider.balances()
-                .create(accountProvider, repositoryProvider.systemInfo(),
-                        TxManager(apiProvider), asset.code)
+        CreateBalanceUseCase(
+                asset.code,
+                repositoryProvider.balances(),
+                repositoryProvider.systemInfo(),
+                accountProvider,
+                TxManager(apiProvider)
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     progress.show()

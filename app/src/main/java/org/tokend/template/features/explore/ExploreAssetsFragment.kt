@@ -41,7 +41,6 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SearchUtil
 import org.tokend.template.util.ToastManager
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 import java.util.concurrent.TimeUnit
 
 
@@ -259,9 +258,14 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         progress.setMessage(getString(R.string.processing_progress))
         progress.setCancelable(false)
 
-        repositoryProvider.balances()
-                .create(accountProvider, repositoryProvider.systemInfo(),
-                        TxManager(apiProvider), asset)
+        CreateBalanceUseCase(
+                asset,
+                repositoryProvider.balances(),
+                repositoryProvider.systemInfo(),
+                accountProvider,
+                TxManager(apiProvider)
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     progress.show()
