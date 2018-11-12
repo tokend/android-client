@@ -65,16 +65,7 @@ class SignInManager(
         val parallelActions = listOf<Completable>(
                 // Added actions will be performed simultaneously.
 
-                repositoryProvider.balances().updateDeferred()
-                        .onErrorResumeNext {
-                            if (it is HttpException
-                                    && it.code() == HttpURLConnection.HTTP_UNAUTHORIZED)
-                                Completable.error(
-                                        InvalidPersistedCredentialsException()
-                                )
-                            else
-                                Completable.error(it)
-                        },
+                repositoryProvider.balances().updateDeferred(),
                 repositoryProvider.tfaBackends().updateDeferred()
                         .onErrorResumeNext {
                             if (it is HttpException
