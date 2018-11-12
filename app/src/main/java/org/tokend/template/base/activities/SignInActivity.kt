@@ -26,7 +26,10 @@ import org.tokend.template.base.logic.persistance.FingerprintAuthManager
 import org.tokend.template.base.view.util.AnimationUtil
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.SimpleTextWatcher
-import org.tokend.template.extensions.*
+import org.tokend.template.extensions.getChars
+import org.tokend.template.extensions.hasError
+import org.tokend.template.extensions.onEditorAction
+import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.util.*
 import org.tokend.wallet.Account
 
@@ -258,10 +261,11 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun resendVerificationEmail(walletId: String) {
-        apiProvider.getApi()
-                .wallets
-                .requestVerification(walletId)
-                .toCompletable()
+        ResendVerificationEmailUseCase(
+                walletId,
+                apiProvider.getApi()
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(
                         onComplete = {
