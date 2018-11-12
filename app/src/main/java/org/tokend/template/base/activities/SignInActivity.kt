@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.view.View
-import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sign_in.*
@@ -198,36 +197,33 @@ class SignInActivity : BaseActivity() {
 
     private fun signIn() {
         val email = email_edit_text.text.toString()
+        val password = password_edit_text.text.getChars()
 
         val signInManager = SignInManager(
-                apiProvider.getKeyStorage(), walletInfoProvider, accountProvider,
+                apiProvider.getKeyStorage(),
+                walletInfoProvider,
+                accountProvider,
                 credentialsPersistor
         )
 
-        Single.just(true)
-                .flatMapCompletable {
-                    // Obtain password on every flow run.
-                    val password = password_edit_text.text.getChars()
-                    signInManager
-                            .signIn(email, password)
-                            // Clear password immediately after sign in.
-                            .doOnComplete { password.fill('0') }
-                }
-                .andThen(signInManager.doPostSignIn(repositoryProvider))
+        SignInUseCase(
+                email,
+                password,
+                signInManager,
+                repositoryProvider
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .retry { attempt, error ->
-                    error is SignInManager.InvalidPersistedCredentialsException && attempt == 1
-                }
                 .doOnSubscribe {
                     isLoading = true
                 }
-                .doOnError {
+                .doOnTerminate {
                     isLoading = false
+                    password_edit_text.text.getChars()
                 }
                 .subscribeBy(
                         onComplete = {
                             canSignIn = false
-                            isLoading = false
                             Navigator.toMainActivity(this)
                         },
                         onError = {
