@@ -162,24 +162,16 @@ open class OfferMatchDetailsActivity(
 
         val offer = getOfferToCancel()
 
-        repositoryProvider.offers(isPrimaryMarket)
-                .cancel(accountProvider,
-                        repositoryProvider.systemInfo(),
-                        TxManager(apiProvider),
-                        offer)
+        CancelOfferUseCase(
+                offer,
+                repositoryProvider,
+                accountProvider,
+                TxManager(apiProvider)
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe { progress.show() }
                 .doOnTerminate { progress.dismiss() }
-                .doOnComplete {
-                    if (!isPrimaryMarket) {
-                        repositoryProvider.orderBook(
-                                offer.baseAsset,
-                                offer.quoteAsset,
-                                offer.isBuy
-                        ).invalidate()
-                    }
-                    repositoryProvider.balances().invalidate()
-                }
                 .subscribeBy(
                         onComplete = {
                             progress.dismiss()
