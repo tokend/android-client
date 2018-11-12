@@ -50,6 +50,7 @@ import org.tokend.template.extensions.toSingle
 import org.tokend.template.features.explore.AssetLogoFactory
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.invest.view.SaleProgressWrapper
+import org.tokend.template.features.trade.PrepareOfferUseCase
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.Navigator
@@ -557,23 +558,20 @@ class SaleActivity : BaseActivity() {
                             )
                     )
                 else
-                    walletInfoProvider.getWalletInfo()?.accountId.toMaybe()
-                            .switchIfEmpty(Single.error<String>(IllegalStateException("No wallet info found")))
-                            .flatMap { accountId ->
-                                feeManager.getOfferFee(accountId, asset, amount)
-                            }
-                            .map { fee ->
-                                Offer(
-                                        baseAsset = sale.baseAsset,
-                                        baseAmount = receiveAmount,
-                                        quoteAsset = asset,
-                                        quoteAmount = amount,
-                                        price = price,
-                                        isBuy = true,
-                                        fee = fee.percent,
-                                        orderBookId = sale.id
-                                )
-                            }
+                    PrepareOfferUseCase(
+                            Offer(
+                                    baseAsset = sale.baseAsset,
+                                    baseAmount = receiveAmount,
+                                    quoteAsset = asset,
+                                    quoteAmount = amount,
+                                    price = price,
+                                    isBuy = true,
+                                    orderBookId = sale.id
+                            ),
+                            walletInfoProvider,
+                            feeManager
+                    )
+                            .perform()
 
         investDisposable =
                 getNewOffer
