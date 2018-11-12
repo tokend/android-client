@@ -67,7 +67,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         cards_layout.childrenSequence().forEach { view ->
             view.layoutParams.also { params ->
                 params as ViewGroup.MarginLayoutParams
-                params.bottomMargin = this.resources.getDimensionPixelSize(R.dimen.standard_margin)
+                params.bottomMargin = this.resources.getDimensionPixelSize(R.dimen.half_standard_margin)
                 view.layoutParams = params
             }
         }

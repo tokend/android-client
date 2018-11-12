@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:paddingTop="@dimen/standard_margin"
+            android:paddingTop="@dimen/half_standard_margin"
             android:paddingStart="@dimen/standard_margin"
             android:paddingEnd="@dimen/standard_margin"/>
     </ScrollView>
