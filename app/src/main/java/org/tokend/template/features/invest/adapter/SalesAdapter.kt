@@ -50,6 +50,7 @@ class SalesAdapter(
                 return new.state == old.state
                         && new.statistics == old.statistics
                         && new.details == old.details
+                        && new.currentCap == old.currentCap
             }
         }
     }
