@@ -10,11 +10,9 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_withdraw.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
@@ -241,11 +239,14 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         val asset = this.asset
         val address = address_edit_text.text.toString().trim()
 
-        walletInfoProvider.getWalletInfo()?.accountId.toMaybe()
-                .switchIfEmpty(Single.error(IllegalStateException("Cannot obtain current account ID")))
-                .flatMap { accountId ->
-                    FeeManager(apiProvider).getWithdrawalFee(accountId, asset, amount)
-                }
+        CreateWithdrawalRequestUseCase(
+                amount,
+                asset,
+                address,
+                walletInfoProvider,
+                FeeManager(apiProvider)
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe {
                     isLoading = true
@@ -254,14 +255,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                     isLoading = false
                 }
                 .subscribeBy(
-                        onSuccess = { fee ->
-                            val request = WithdrawalRequest(
-                                    asset = asset,
-                                    amount = amount,
-                                    destinationAddress = address,
-                                    fee = fee
-                            )
-
+                        onSuccess = { request ->
                             Navigator.openWithdrawalConfirmation(this,
                                     WITHDRAWAL_CONFIRMATION_REQUEST, request)
 
