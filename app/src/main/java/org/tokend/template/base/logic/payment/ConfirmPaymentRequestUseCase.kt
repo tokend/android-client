@@ -1,11 +1,10 @@
 package org.tokend.template.base.logic.payment
 
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import org.tokend.sdk.api.transactions.model.SubmitTransactionResponse
 import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.RepositoryProvider
-import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.PublicKeyFactory
@@ -16,36 +15,32 @@ import org.tokend.wallet.xdr.Operation
 import org.tokend.wallet.xdr.PaymentFeeDataV2
 import org.tokend.wallet.xdr.PaymentOpV2
 
-class PaymentManager(
-        private val repositoryProvider: RepositoryProvider,
-        private val walletInfoProvider: WalletInfoProvider,
+class ConfirmPaymentRequestUseCase(
+        private val request: PaymentRequest,
         private val accountProvider: AccountProvider,
+        private val repositoryProvider: RepositoryProvider,
         private val txManager: TxManager
 ) {
-    /**
-     * Submits given request as a transaction,
-     * updates payments-related repositories.
-     */
-    fun submit(request: PaymentRequest): Single<SubmitTransactionResponse> {
-        return repositoryProvider.systemInfo()
-                .getNetworkParams()
-                .flatMap { netParams ->
-                    val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                            ?: throw IllegalStateException("Cannot obtain current account ID")
-                    createPaymentTransaction(netParams, accountId, request)
+    private lateinit var networkParams: NetworkParams
+
+    fun perform(): Completable {
+        return getNetworkParams()
+                .doOnSuccess { networkParams ->
+                    this.networkParams = networkParams
                 }
                 .flatMap {
-                    txManager.submit(it)
+                    getTransaction()
+                }
+                .flatMap { transaction ->
+                    txManager.submit(transaction)
                 }
                 .doOnSuccess {
-                    repositoryProvider.balances().invalidate()
-                    repositoryProvider.transactions(request.asset).invalidate()
+                    updateRepositories()
                 }
+                .toCompletable()
     }
 
-    private fun createPaymentTransaction(networkParams: NetworkParams,
-                                         sourceAccountId: String,
-                                         request: PaymentRequest): Single<Transaction> {
+    private fun getTransaction(): Single<Transaction> {
         return Single.defer {
             val operation = PaymentOpV2(
                     sourceBalanceID = PublicKeyFactory.fromBalanceId(request.senderBalanceId),
@@ -83,7 +78,7 @@ class PaymentManager(
             )
 
             val transaction =
-                    TransactionBuilder(networkParams, PublicKeyFactory.fromAccountId(sourceAccountId))
+                    TransactionBuilder(networkParams, request.senderAccountId)
                             .addOperation(Operation.OperationBody.PaymentV2(operation))
                             .build()
 
@@ -96,5 +91,16 @@ class PaymentManager(
 
             Single.just(transaction)
         }.subscribeOn(Schedulers.newThread())
+    }
+
+    private fun getNetworkParams(): Single<NetworkParams> {
+        return repositoryProvider
+                .systemInfo()
+                .getNetworkParams()
+    }
+
+    private fun updateRepositories() {
+        repositoryProvider.balances().update()
+        repositoryProvider.transactions(request.asset).update()
     }
 }

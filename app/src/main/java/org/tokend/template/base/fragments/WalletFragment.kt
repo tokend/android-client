@@ -1,8 +1,6 @@
 package org.tokend.template.base.fragments
 
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -308,17 +306,6 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                     TxDetailsActivity
                             .start<UnknownTxDetailsActivity, BaseTransferOperation>(activity!!, it)
                 }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                SEND_REQUEST -> {
-                    update()
-                }
-            }
         }
     }
 

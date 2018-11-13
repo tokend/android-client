@@ -130,6 +130,7 @@ class CreatePaymentRequestUseCase(
                 PaymentRequest(
                         amount = amount,
                         asset = asset,
+                        senderAccountId = senderAccount,
                         senderBalanceId = senderBalance,
                         senderFee = senderFee,
                         recipientAccountId = recipientAccount,

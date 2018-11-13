@@ -10,14 +10,13 @@ import android.widget.CompoundButton
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
-import org.tokend.template.base.logic.payment.PaymentManager
+import org.tokend.template.base.logic.payment.ConfirmPaymentRequestUseCase
 import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 class PaymentConfirmationActivity : BaseActivity() {
     private lateinit var request: PaymentRequest
@@ -92,18 +91,22 @@ class PaymentConfirmationActivity : BaseActivity() {
         progress.setMessage(getString(R.string.processing_progress))
         progress.setCancelable(false)
 
-        PaymentManager(repositoryProvider, walletInfoProvider, accountProvider,
-                TxManager(apiProvider))
-                .submit(request)
-                .compose(ObservableTransformers.defaultSchedulersSingle())
+        ConfirmPaymentRequestUseCase(
+                request,
+                accountProvider,
+                repositoryProvider,
+                TxManager(apiProvider)
+        )
+                .perform()
+                .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     progress.show()
                 }
-                .doOnEvent { _, _ ->
+                .doOnTerminate {
                     progress.dismiss()
                 }
                 .subscribeBy(
-                        onSuccess = {
+                        onComplete = {
                             progress.dismiss()
                             ToastManager(this).long(R.string.payment_successfully_sent)
                             finishWithSuccess()

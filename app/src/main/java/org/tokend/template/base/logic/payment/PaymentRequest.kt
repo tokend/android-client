@@ -9,6 +9,7 @@ import java.security.SecureRandom
 data class PaymentRequest(
         val amount: BigDecimal,
         val asset: String,
+        val senderAccountId: String,
         val senderBalanceId: String,
         val recipientAccountId: String,
         val recipientNickname: String,
