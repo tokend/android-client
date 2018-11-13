@@ -12,11 +12,9 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_send.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
@@ -295,8 +293,6 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
-    private class SendToYourselfException : Exception()
-
     private fun confirm() {
         val amount = amountEditTextWrapper.scaledAmount
         val asset = this.asset
@@ -332,7 +328,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                                     recipient_edit_text.setErrorAndFocus(
                                             R.string.error_invalid_recipient
                                     )
-                                is SendToYourselfException ->
+                                is CreatePaymentRequestUseCase.SendToYourselfException ->
                                     recipient_edit_text.setErrorAndFocus(
                                             R.string.error_cannot_send_to_yourself
                                     )
@@ -344,37 +340,6 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 )
                 .addTo(compositeDisposable)
     }
-
-    // region Pre confirmation requests.
-    private fun getOurAccountId(): Single<String> {
-        return walletInfoProvider.getWalletInfo()?.accountId.toMaybe()
-                .switchIfEmpty(Single.error(
-                        IllegalStateException("Cannot obtain current account ID")
-                ))
-    }
-
-    private fun getRecipientAccountId(recipient: String): Single<String> {
-        return if (Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID,
-                        recipient.toCharArray()))
-            Single.just(recipient)
-        else
-            repositoryProvider.accountDetails().getAccountIdByEmail(recipient)
-    }
-
-    private fun getOurBalanceId(asset: String): Single<String> {
-        return balancesRepository
-                .updateIfNotFreshDeferred()
-                .andThen(
-                        balancesRepository.itemsSubject.value
-                                .find { it.asset == asset }
-                                ?.balanceId
-                                .toMaybe()
-                                .switchIfEmpty(Single.error(
-                                        IllegalStateException("No balance ID found for $asset")
-                                ))
-                )
-    }
-    // endreigon.
 
     private fun onAssetChanged() {
         updateBalance()

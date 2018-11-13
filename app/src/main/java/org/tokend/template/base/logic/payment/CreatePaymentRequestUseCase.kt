@@ -21,7 +21,7 @@ class CreatePaymentRequestUseCase(
         private val balancesRepository: BalancesRepository,
         private val accountDetailsRepository: AccountDetailsRepository?
 ) {
-    private class SendToYourselfException : Exception()
+    class SendToYourselfException : Exception()
 
     private lateinit var senderAccount: String
     private lateinit var senderBalance: String
