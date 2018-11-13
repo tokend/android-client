@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
@@ -25,15 +24,14 @@ import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import kotlinx.android.synthetic.main.layout_balance_card.*
 import kotlinx.android.synthetic.main.layout_contacts_sheet.*
 import kotlinx.android.synthetic.main.layout_progress.*
-import kotlinx.android.synthetic.main.layout_progress.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.fees.model.Fee
 import org.tokend.template.R
 import org.tokend.template.base.activities.PaymentConfirmationActivity
 import org.tokend.template.base.activities.WalletEventsListener
 import org.tokend.template.base.logic.FeeManager
+import org.tokend.template.base.logic.payment.CreatePaymentRequestUseCase
 import org.tokend.template.base.logic.payment.PaymentRequest
 import org.tokend.template.base.logic.repository.AccountDetailsRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
@@ -303,53 +301,19 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         val amount = amountEditTextWrapper.scaledAmount
         val asset = this.asset
         val subject = subject_edit_text.text.toString().trim().takeIf { it.isNotEmpty() }
-
         val recipient = recipient_edit_text.text.toString().trim()
 
-        val data = object {
-            lateinit var senderAccount: String
-            lateinit var senderBalance: String
-            lateinit var recipientAccount: String
-        }
-
-        Single.zip(
-                getOurAccountId(),
-                getRecipientAccountId(recipient),
-                BiFunction { t1: String, t2: String -> Pair(t1, t2) }
+        CreatePaymentRequestUseCase(
+                recipient,
+                amount,
+                asset,
+                subject,
+                walletInfoProvider,
+                FeeManager(apiProvider),
+                balancesRepository,
+                repositoryProvider.accountDetails()
         )
-                .flatMap { (currentAccount, recipientAccount) ->
-                    if (currentAccount == recipientAccount) {
-                        throw SendToYourselfException()
-                    }
-
-                    data.senderAccount = currentAccount
-                    data.recipientAccount = recipientAccount
-
-                    getOurBalanceId(asset)
-                }
-                .flatMap { currentBalance ->
-                    data.senderBalance = currentBalance
-
-                    Single.zip(
-                            FeeManager(apiProvider)
-                                    .getPaymentFee(data.senderAccount, asset, amount, true),
-                            FeeManager(apiProvider)
-                                    .getPaymentFee(data.recipientAccount, asset, amount, false),
-                            BiFunction { t1: Fee, t2: Fee -> Pair(t1, t2) }
-                    )
-                }
-                .map { (senderFee, recipientFee) ->
-                    PaymentRequest(
-                            amount = amount,
-                            asset = asset,
-                            recipientFee = recipientFee,
-                            senderFee = senderFee,
-                            senderBalanceId = data.senderBalance,
-                            recipientAccountId = data.recipientAccount,
-                            recipientNickname = recipient,
-                            paymentSubject = subject
-                    )
-                }
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe {
                     isLoading = true
