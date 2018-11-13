@@ -5,6 +5,7 @@ import java.io.Serializable
 import java.math.BigDecimal
 
 data class WithdrawalRequest(
+        val accountId: String,
         val amount: BigDecimal,
         val asset: String,
         val destinationAddress: String,

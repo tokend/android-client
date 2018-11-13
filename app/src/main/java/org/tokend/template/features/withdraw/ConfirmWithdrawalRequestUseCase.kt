@@ -1,11 +1,10 @@
 package org.tokend.template.features.withdraw
 
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import org.tokend.sdk.api.transactions.model.SubmitTransactionResponse
 import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.RepositoryProvider
-import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.wallet.NetworkParams
@@ -17,32 +16,38 @@ import org.tokend.wallet.xdr.CreateWithdrawalRequestOp
 import org.tokend.wallet.xdr.Fee
 import org.tokend.wallet.xdr.Operation
 
-class WithdrawalManager(
-        private val repositoryProvider: RepositoryProvider,
-        private val walletInfoProvider: WalletInfoProvider,
+class ConfirmWithdrawalRequestUseCase(
+        private val request: WithdrawalRequest,
         private val accountProvider: AccountProvider,
+        private val repositoryProvider: RepositoryProvider,
         private val txManager: TxManager
 ) {
-    fun submit(request: WithdrawalRequest): Single<SubmitTransactionResponse> {
-        return repositoryProvider.systemInfo()
-                .getNetworkParams()
-                .flatMap { netParams ->
-                    val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                            ?: throw IllegalStateException("Cannot obtain current account ID")
-                    createWithdrawalTransaction(netParams, accountId, request)
+    private lateinit var networkParams: NetworkParams
+
+    fun perform(): Completable {
+        return getNetworkParams()
+                .doOnSuccess { networkParams ->
+                    this.networkParams = networkParams
                 }
                 .flatMap {
-                    txManager.submit(it)
+                    getTransaction()
+                }
+                .flatMap { transaction ->
+                    txManager.submit(transaction)
                 }
                 .doOnSuccess {
-                    repositoryProvider.balances().invalidate()
-                    repositoryProvider.transactions(request.asset).invalidate()
+                    updateRepositories()
                 }
+                .toCompletable()
     }
 
-    private fun createWithdrawalTransaction(networkParams: NetworkParams,
-                                            sourceAccountId: String,
-                                            request: WithdrawalRequest): Single<Transaction> {
+    private fun getNetworkParams(): Single<NetworkParams> {
+        return repositoryProvider
+                .systemInfo()
+                .getNetworkParams()
+    }
+
+    private fun getTransaction(): Single<Transaction> {
         return Single.defer {
             val balanceId = repositoryProvider.balances().itemsSubject.value
                     .find { it.asset == request.asset }
@@ -80,18 +85,23 @@ class WithdrawalManager(
             )
 
             val transaction =
-                    TransactionBuilder(networkParams, PublicKeyFactory.fromAccountId(sourceAccountId))
+                    TransactionBuilder(networkParams, request.accountId)
                             .addOperation(Operation.OperationBody.CreateWithdrawalRequest(operation))
                             .build()
 
             val account = accountProvider.getAccount()
-            ?: return@defer Single.error<Transaction>(
-                    IllegalStateException("Cannot obtain current account")
-            )
+                    ?: return@defer Single.error<Transaction>(
+                            IllegalStateException("Cannot obtain current account")
+                    )
 
             transaction.addSignature(account)
 
             Single.just(transaction)
         }.subscribeOn(Schedulers.newThread())
+    }
+
+    private fun updateRepositories() {
+        repositoryProvider.balances().update()
+        repositoryProvider.transactions(request.asset).update()
     }
 }

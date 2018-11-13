@@ -16,7 +16,6 @@ import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ToastManager
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
 
 class WithdrawalConfirmationActivity : BaseActivity() {
     private lateinit var request: WithdrawalRequest
@@ -91,18 +90,22 @@ class WithdrawalConfirmationActivity : BaseActivity() {
         progress.setMessage(getString(R.string.processing_progress))
         progress.setCancelable(false)
 
-        WithdrawalManager(repositoryProvider, walletInfoProvider, accountProvider,
-                TxManager(apiProvider))
-                .submit(request)
-                .compose(ObservableTransformers.defaultSchedulersSingle())
+        ConfirmWithdrawalRequestUseCase(
+                request,
+                accountProvider,
+                repositoryProvider,
+                TxManager(apiProvider)
+        )
+                .perform()
+                .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     progress.show()
                 }
-                .doOnEvent { _, _ ->
+                .doOnTerminate {
                     progress.dismiss()
                 }
                 .subscribeBy(
-                        onSuccess = {
+                        onComplete = {
                             progress.dismiss()
                             ToastManager(this).long(R.string.withdrawal_request_created)
                             finishWithSuccess()

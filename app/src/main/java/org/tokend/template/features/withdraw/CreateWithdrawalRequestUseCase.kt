@@ -55,6 +55,7 @@ class CreateWithdrawalRequestUseCase(
     private fun getWithdrawalRequest(): Single<WithdrawalRequest> {
         return Single.just(
                 WithdrawalRequest(
+                        account,
                         amount,
                         asset,
                         destinationAddress,
