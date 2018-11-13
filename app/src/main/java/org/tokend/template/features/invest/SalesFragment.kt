@@ -1,7 +1,5 @@
 package org.tokend.template.features.invest
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -281,18 +279,6 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
                                 onError = { handleSalesError(it) }
                         )
                         .addTo(compositeDisposable)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                INVESTMENT_REQUEST,
-                CANCEL_OFFER_REQUEST -> {
-                    update(force = true)
-                }
-            }
-        }
     }
 
     override fun onBackPressed(): Boolean {

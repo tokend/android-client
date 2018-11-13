@@ -13,20 +13,16 @@ import android.widget.Button
 import android.widget.RelativeLayout
 import com.google.gson.JsonSyntaxException
 import com.squareup.picasso.Picasso
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.rxkotlin.toMaybe
 import kotlinx.android.synthetic.main.activity_sale.*
 import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.accounts.params.OffersParams
 import org.tokend.sdk.api.favorites.model.FavoriteEntry
 import org.tokend.sdk.api.favorites.model.SaleFavoriteEntry
 import org.tokend.sdk.api.trades.model.Offer
@@ -36,8 +32,6 @@ import org.tokend.template.R
 import org.tokend.template.base.activities.BaseActivity
 import org.tokend.template.base.logic.FeeManager
 import org.tokend.template.base.logic.repository.AccountRepository
-import org.tokend.template.base.logic.repository.assets.AssetsRepository
-import org.tokend.template.base.logic.repository.balances.BalancesRepository
 import org.tokend.template.base.logic.repository.favorites.FavoritesRepository
 import org.tokend.template.base.view.AmountEditTextWrapper
 import org.tokend.template.base.view.ContentLoadingProgressBar
@@ -47,13 +41,11 @@ import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
-import org.tokend.template.extensions.toSingle
 import org.tokend.template.features.explore.AssetLogoFactory
+import org.tokend.template.features.invest.InvestmentInfoManager
 import org.tokend.template.features.invest.SwitchFavoriteUseCase
-import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.features.trade.PrepareOfferUseCase
-import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -79,25 +71,14 @@ class SaleActivity : BaseActivity() {
     private val accountRepository: AccountRepository
         get() = repositoryProvider.account()
 
-    private val salesRepository: SalesRepository
-        get() = repositoryProvider.sales()
-
-    private val offersRepository: OffersRepository
-        get() = repositoryProvider.offers()
-
-    private val balancesRepository: BalancesRepository
-        get() = repositoryProvider.balances()
-
     private val favoritesRepository: FavoritesRepository
         get() = repositoryProvider.favorites()
-
-    private val assetsRepository: AssetsRepository
-        get() = repositoryProvider.assets()
 
     private lateinit var feeManager: FeeManager
 
     private lateinit var sale: Sale
     private lateinit var saleAsset: org.tokend.template.extensions.Asset
+    private lateinit var investmentInfoManager: InvestmentInfoManager
 
     private var isFavorited = false
         set(value) {
@@ -105,8 +86,8 @@ class SaleActivity : BaseActivity() {
             invalidateOptionsMenu()
         }
 
-    private var existingOffers: Map<String, Offer>? = null
-    private var maxFees: MutableMap<String, BigDecimal> = mutableMapOf()
+    private var existingOffers: Map<String, Offer> = emptyMap()
+    private var maxFees: Map<String, BigDecimal> = emptyMap()
     private var maxInvestAmount = BigDecimal.ZERO
 
     private var investAsset: String = ""
@@ -133,7 +114,7 @@ class SaleActivity : BaseActivity() {
         }
 
     private val existingInvestmentAmount: BigDecimal
-        get() = existingOffers?.get(investAsset)?.quoteAmount ?: BigDecimal.ZERO
+        get() = investmentInfoManager.getExistingInvestmentAmount(investAsset, existingOffers)
 
     private var canInvest: Boolean = false
         set(value) {
@@ -153,10 +134,14 @@ class SaleActivity : BaseActivity() {
 
         supportPostponeEnterTransition()
 
+        initButtons()
+        initFields()
+
         try {
             sale = GsonFactory().getBaseGson().fromJson(
                     intent.getNullableStringExtra(SALE_JSON_EXTRA),
                     Sale::class.java)
+            investmentInfoManager = InvestmentInfoManager(sale, repositoryProvider, walletInfoProvider)
 
             displaySaleInfo()
             update()
@@ -166,9 +151,6 @@ class SaleActivity : BaseActivity() {
         } finally {
             supportStartPostponedEnterTransition()
         }
-
-        initButtons()
-        initFields()
 
         subscribeToFavorites()
 
@@ -185,112 +167,92 @@ class SaleActivity : BaseActivity() {
         investAmountWrapper = AmountEditTextWrapper(amount_edit_text)
     }
 
-    private var saleDisposable: Disposable? = null
+    // region Update
+    /**
+     * Updates all sale-related data.
+     */
     private fun update() {
-        val getAssetDetails =
-                assetsRepository
-                        .getSingle(sale.baseAsset)
-                        .compose(ObservableTransformers.defaultSchedulersSingle())
-
-        val getOffers =
-                if (sale.isAvailable)
-                    offersRepository.getPage(
-                            OffersParams(
-                                    orderBookId = sale.id,
-                                    onlyPrimary = true,
-                                    baseAsset = null,
-                                    quoteAsset = null,
-                                    isBuy = true
-                            )
-                    )
-                            .map {
-                                it.items
-                            }
-                else
-                    Single.just(emptyList())
-
-        val getDetailedSale =
-                if (sale.isAvailable)
-                    salesRepository.getSingle(sale.id)
-                else
-                    Single.just(sale)
-
-        // Has to be created when requested.
-        val getMaxFees = {
-            if (sale.isAvailable) {
-                walletInfoProvider.getWalletInfo()?.accountId.toMaybe()
-                        .switchIfEmpty(Single.error<String>(IllegalStateException("No wallet info found")))
-                        .flatMap { accountId ->
-                            Observable.merge(
-                                    sale.quoteAssets.mapNotNull {
-                                        val availableBalance = getAvailableBalance(it.code)
-
-                                        return@mapNotNull if (availableBalance.signum() == 0)
-                                            null
-                                        else
-                                            feeManager.getOfferFee(accountId, it.code, availableBalance)
-                                                    .map {
-                                                        val percent = it.percent
-                                                        maxFees[it.asset] = percent
-                                                        percent
-                                                    }
-                                                    .onErrorResumeNext(Single.just(BigDecimal.ZERO))
-                                                    .toObservable()
-                                    }
-                            ).last(BigDecimal.ZERO)
-                        }
-            } else {
-                Single.just(BigDecimal.ZERO)
-            }
-        }
-
-        saleDisposable?.dispose()
-        saleDisposable =
-                balancesRepository.updateIfNotFreshDeferred()
-                        .andThen(
-                                Single.zip(
-                                        getAssetDetails,
-                                        getOffers,
-                                        getDetailedSale,
-                                        Function3 { asset: org.tokend.template.extensions.Asset,
-                                                    offers: List<Offer>, sale: Sale ->
-                                            Triple(offers, sale, asset)
-                                        }
+        repositoryProvider.balances()
+                .updateIfNotFreshDeferred()
+                .andThen(
+                        investmentInfoManager
+                                .getInvestmentInfo(
+                                        FeeManager(apiProvider)
                                 )
-                        )
-                        .flatMap { offersSalePair ->
-                            maxFees.clear()
-                            getMaxFees().map { offersSalePair }
-                        }
-                        .compose(ObservableTransformers.defaultSchedulersSingle())
-                        .doOnSubscribe {
-                            mainLoading.show()
-                            updateInvestAvailability()
-                        }
-                        .doOnEvent { _, _ ->
-                            mainLoading.hide()
-                            updateInvestAvailability()
-                        }
-                        .subscribeBy(
-                                onSuccess = { (offers, sale, asset) ->
-                                    this.sale = sale
-                                    this.saleAsset = asset
-                                    this.existingOffers = offers.associateBy { it.quoteAsset }
+                )
+                .compose(ObservableTransformers.defaultSchedulersSingle())
+                .doOnSubscribe {
+                    mainLoading.show()
+                    updateInvestAvailability()
+                }
+                .doOnEvent { _, _ ->
+                    mainLoading.hide()
+                    updateInvestAvailability()
+                }
+                .subscribeBy(
+                        onSuccess = { result ->
+                            this.sale = result.financialInfo.detailedSale
+                            this.saleAsset = result.assetDetails
+                            this.existingOffers = result.financialInfo.offersByAsset
+                            this.maxFees = result.financialInfo.maxFeeByAsset
 
-                                    displayChangeableSaleInfo()
-                                    displayAssetDetails()
-                                    initInvestIfNeeded()
-                                    displayExistingInvestmentAmount()
-                                    updateInvestLimit()
-                                    updateInvestHelperAndError()
-                                    updateInvestAvailability()
-                                },
-                                onError = {
-                                    errorHandlerFactory.getDefault().handle(it)
-                                }
-                        )
-                        .addTo(compositeDisposable)
+                            onInvestmentInfoUpdated()
+                        },
+                        onError = {
+                            it.printStackTrace()
+                            errorHandlerFactory.getDefault().handle(it)
+                        }
+                )
+                .addTo(compositeDisposable)
     }
+
+    /**
+     * Updates only data required for amount calculations and validation.
+     */
+    private fun updateFinancial() {
+        repositoryProvider.balances()
+                .updateIfNotFreshDeferred()
+                .andThen(
+                        investmentInfoManager
+                                .getFinancialInfo(
+                                        FeeManager(apiProvider)
+                                )
+                )
+                .compose(ObservableTransformers.defaultSchedulersSingle())
+                .doOnSubscribe {
+                    mainLoading.show()
+                    updateInvestAvailability()
+                }
+                .doOnEvent { _, _ ->
+                    mainLoading.hide()
+                    updateInvestAvailability()
+                }
+                .subscribeBy(
+                        onSuccess = { result ->
+                            this.sale = result.detailedSale
+                            this.existingOffers = result.offersByAsset
+                            this.maxFees = result.maxFeeByAsset
+
+                            onInvestmentInfoUpdated()
+                        },
+                        onError = {
+                            it.printStackTrace()
+                            errorHandlerFactory.getDefault().handle(it)
+                        }
+                )
+                .addTo(compositeDisposable)
+    }
+
+    private fun onInvestmentInfoUpdated() {
+        displayChangeableSaleInfo()
+        displayAssetDetails()
+        initInvestIfNeeded()
+        displayExistingInvestmentAmount()
+        updateInvestLimit()
+        updateInvestHelperAndError()
+        updateInvestAvailability()
+    }
+    // endregion
 
     // region Info display
     private fun displaySaleInfo() {
@@ -352,7 +314,10 @@ class SaleActivity : BaseActivity() {
         }
 
         video_preview_layout.onClick {
-            sale.details.getYoutubeVideoUrl(mobile = true)?.also { browse(it) }
+            sale.details.getYoutubeVideoUrl(mobile = true)
+                    ?.also { url ->
+                        browse(url)
+                    }
         }
     }
     // endregion
@@ -386,7 +351,7 @@ class SaleActivity : BaseActivity() {
 
         asset_spinner.setSimpleItems(sale.quoteAssets.map { it.code },
                 sale.quoteAssets.indexOfFirst {
-                    (existingOffers?.get(it.code)?.quoteAmount?.signum() ?: 0) > 0
+                    (existingOffers[it.code]?.quoteAmount?.signum() ?: 0) > 0
                 })
         asset_spinner.onItemSelected {
             investAsset = it.text
@@ -402,9 +367,8 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun updateInvestAvailability() {
-        canInvest = existingOffers != null
-                && (receiveAmount.signum() > 0
-                || existingOffers?.get(investAsset) != null)
+        canInvest = (receiveAmount.signum() > 0
+                || existingOffers[investAsset] != null)
                 && !amount_edit_text.hasError()
                 && !investLoading.isLoading
                 && !mainLoading.isLoading
@@ -413,7 +377,7 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun updateCancelInvestmentButton() {
-        if (existingOffers?.containsKey(investAsset) == true) {
+        if (existingOffers.containsKey(investAsset)) {
             cancel_investment_button.visibility = View.VISIBLE
         } else {
             cancel_investment_button.visibility = View.GONE
@@ -428,17 +392,12 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun updateInvestLimit() {
-        val investAssetDetails = sale.quoteAssets.find { it.code == investAsset }
-        val maxByHardCap = (investAssetDetails?.hardCap ?: BigDecimal.ZERO)
-                .subtract(investAssetDetails?.totalCurrentCap ?: BigDecimal.ZERO)
-                .add(existingInvestmentAmount)
-
-        val maxByBalance = getAvailableBalance(investAsset)
-                .minus(maxFees[investAsset] ?: BigDecimal.ZERO)
-
-        maxInvestAmount =
-                BigDecimalUtil.scaleAmount(maxByBalance.min(maxByHardCap),
-                        AmountFormatter.getDecimalDigitsCount(investAsset))
+        maxInvestAmount = investmentInfoManager.getMaxInvestmentAmount(
+                investAsset,
+                sale,
+                existingOffers,
+                maxFees
+        )
     }
 
     private fun updateInvestHelperAndError() {
@@ -468,14 +427,7 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun getAvailableBalance(asset: String): BigDecimal {
-        val offer = existingOffers?.get(asset)
-        val locked = (offer?.quoteAmount ?: BigDecimal.ZERO).add(offer?.fee ?: BigDecimal.ZERO)
-
-        val assetBalance = balancesRepository.itemsSubject.value
-                .find { it.asset == asset }
-                ?.balance ?: BigDecimal.ZERO
-
-        return locked + assetBalance
+        return investmentInfoManager.getAvailableBalance(asset, existingOffers)
     }
     // endregion
 
@@ -507,7 +459,8 @@ class SaleActivity : BaseActivity() {
     private var updateChartDisposable: Disposable? = null
     private fun updateChart() {
         updateChartDisposable?.dispose()
-        updateChartDisposable = apiProvider.getApi().assets.getChart(sale.baseAsset).toSingle()
+        updateChartDisposable = investmentInfoManager
+                .getChart(apiProvider.getApi())
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe {
                     asset_chart.isLoading = true
@@ -545,7 +498,7 @@ class SaleActivity : BaseActivity() {
         val receiveAmount = receiveAmount
         val price = currentPrice
         val orderBookId = sale.id
-        val orderId = if (cancel) existingOffers?.get(asset)?.id ?: return else 0L
+        val orderId = if (cancel) existingOffers[asset]?.id ?: return else 0L
 
         val getNewOffer =
                 if (cancel)
@@ -591,7 +544,7 @@ class SaleActivity : BaseActivity() {
                                     Navigator.openOfferConfirmation(this,
                                             INVESTMENT_REQUEST,
                                             offer = offer,
-                                            offerToCancel = existingOffers?.get(investAsset),
+                                            offerToCancel = existingOffers[investAsset],
                                             assetName = sale.baseAsset,
                                             displayToReceive =
                                             sale.type.value == SaleType.BASIC_SALE.value
@@ -702,7 +655,7 @@ class SaleActivity : BaseActivity() {
             when (requestCode) {
                 INVESTMENT_REQUEST -> {
                     setResult(Activity.RESULT_OK)
-                    update()
+                    updateFinancial()
                 }
             }
         }
