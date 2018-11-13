@@ -176,7 +176,7 @@ class OfferConfirmationActivity : BaseActivity() {
 
         val cancellationOnly = offer.baseAmount.signum() == 0 && prevOffer != null
 
-        OfferConfirmationUseCase(
+        ConfirmOfferUseCase(
                 offer,
                 prevOffer,
                 repositoryProvider,

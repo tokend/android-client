@@ -10,7 +10,7 @@ import org.tokend.template.base.logic.repository.balances.BalancesRepository
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 
-class OfferConfirmationUseCase(
+class ConfirmOfferUseCase(
         private val offer: Offer,
         private val offerToCancel: Offer?,
         private val repositoryProvider: RepositoryProvider,
