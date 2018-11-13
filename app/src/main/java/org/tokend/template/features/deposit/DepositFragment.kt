@@ -336,18 +336,17 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         progress.setMessage(getString(R.string.processing_progress))
         progress.setCancelable(false)
 
-        DepositManager(
+        BindExternalAccountUseCase(
+                asset,
+                type,
                 walletInfoProvider,
+                repositoryProvider.systemInfo(),
                 repositoryProvider.balances(),
-                accountRepository
+                accountRepository,
+                accountProvider,
+                TxManager(apiProvider)
         )
-                .bindExternalAccount(
-                        accountProvider,
-                        repositoryProvider.systemInfo(),
-                        TxManager(apiProvider),
-                        asset,
-                        type
-                )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     progress.show()
@@ -356,11 +355,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                     progress.dismiss()
                 }
                 .subscribeBy(
-                        onComplete = {
-                            update()
-                        },
                         onError = {
-                            if (it is DepositManager.NoAvailableExternalAccountsException) {
+                            if (it is BindExternalAccountUseCase.NoAvailableExternalAccountsException) {
                                 displayEmptyPoolError()
                             } else {
                                 errorHandlerFactory.getDefault().handle(it)
