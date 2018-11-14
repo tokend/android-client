@@ -12,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.layout_pending_offers_card.view.*
+import kotlinx.android.synthetic.main.layout_progress.view.*
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.base.model.operations.OfferMatchOperation
 import org.tokend.template.R
@@ -19,6 +20,7 @@ import org.tokend.template.base.logic.di.providers.RepositoryProvider
 import org.tokend.template.base.logic.repository.base.MultipleItemsRepository
 import org.tokend.template.base.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.base.view.adapter.history.TxHistoryItem
+import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.base.view.util.ViewProvider
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 import org.tokend.template.util.Navigator
@@ -28,6 +30,8 @@ class PendingOffersCard(private val context: Context?,
                         private val disposable: CompositeDisposable) : ViewProvider {
 
     private lateinit var view: View
+
+    private lateinit var loadingIndicator: LoadingIndicatorManager
 
     private val offersRepository: OffersRepository
         get() = repositoryProvider.offers()
@@ -45,6 +49,7 @@ class PendingOffersCard(private val context: Context?,
                 .inflate(R.layout.layout_pending_offers_card, rootView, false)
 
         initPendingOffers()
+        initLoadingManager()
         subscribeToOffers()
 
         return view
@@ -93,6 +98,13 @@ class PendingOffersCard(private val context: Context?,
         view.offers_list.isNestedScrollingEnabled = false
     }
 
+    private fun initLoadingManager() {
+        loadingIndicator = LoadingIndicatorManager(
+                showLoading = { view.progress.show() },
+                hideLoading = { view.progress.hide() }
+        )
+    }
+
     private var offersDisposable: CompositeDisposable? = null
     private fun subscribeToOffers() {
         offersDisposable?.dispose()
@@ -110,11 +122,9 @@ class PendingOffersCard(private val context: Context?,
                 offersRepository.loadingSubject
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { loading ->
+                            loadingIndicator.setLoading(loading)
                             if (loading) {
-                                view.offers_progress.show()
                                 view.offers_empty_view.text = context?.getString(R.string.loading_data)
-                            } else {
-                                view.offers_progress.hide()
                             }
                         }
         ).also { it.addTo(disposable) }

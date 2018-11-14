@@ -12,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.layout_asset_tabs_card.view.*
+import kotlinx.android.synthetic.main.layout_progress.view.*
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.base.logic.di.providers.RepositoryProvider
@@ -79,8 +80,8 @@ class AssetTabsCard(private val context: Context?,
 
     private fun initLoadingManager() {
         loadingIndicator = LoadingIndicatorManager(
-                showLoading = { view.activity_progress.show() },
-                hideLoading = { view.activity_progress.hide() }
+                showLoading = { view.progress.show() },
+                hideLoading = { view.progress.hide() }
         )
     }
 

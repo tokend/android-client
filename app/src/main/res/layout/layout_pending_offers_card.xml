@@ -20,13 +20,7 @@
             android:layout_margin="@dimen/standard_margin"
             android:text="@string/pending_offers_title" />
 
-        <org.tokend.template.base.view.ContentLoadingProgressBar
-            android:id="@+id/offers_progress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone" />
+        <include layout="@layout/layout_progress"/>
 
         <TextView
             android:id="@+id/offers_empty_view"

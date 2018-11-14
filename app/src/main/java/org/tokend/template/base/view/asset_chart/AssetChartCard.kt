@@ -78,7 +78,7 @@ class AssetChartCard : LinearLayout {
         valueHintTextView = find(R.id.issued_hint_text_view)
         growthTextView = find(R.id.growth_text_view)
         growthHintTextView = find(R.id.growth_hint_text_view)
-        progressBar = find(R.id.asset_chart_progress)
+        progressBar = find(R.id.progress)
 
         initChart()
     }

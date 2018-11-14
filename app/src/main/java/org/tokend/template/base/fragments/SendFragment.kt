@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import kotlinx.android.synthetic.main.layout_balance_card.*
 import kotlinx.android.synthetic.main.layout_contacts_sheet.*
 import kotlinx.android.synthetic.main.layout_progress.*
+import kotlinx.android.synthetic.main.layout_progress.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
@@ -57,13 +58,14 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
     private val cameraPermission = Permission(Manifest.permission.CAMERA, 404)
     private val contactsPermission = Permission(Manifest.permission.READ_CONTACTS, 606)
+
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress.show() },
             hideLoading = { progress.hide() }
     )
     private val contactsLoadingIndicator = LoadingIndicatorManager(
-            showLoading = { contacts_progress.show() },
-            hideLoading = { contacts_progress.hide() }
+            showLoading = { contacts_bottom_sheet.progress.show() },
+            hideLoading = { contacts_bottom_sheet.progress.hide() }
     )
     private val contactsAdapter = ContactsAdapter()
 
@@ -198,7 +200,6 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe {
                             contactsLoadingIndicator.setLoading(it)
-                            contacts_empty_view.visibility = View.GONE
                         }
         ).also { it.addTo(compositeDisposable) }
     }
@@ -350,11 +351,12 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private fun updateContactsData(items: List<Contact>) {
         contactsAdapter.addData(items)
-        if (items.isEmpty() && !contactsRepository.isNeverUpdated) {
-            contacts_empty_view.visibility = View.VISIBLE
-        } else {
-            contacts_empty_view.visibility = View.GONE
-        }
+        contacts_empty_view.visibility =
+                if (items.isEmpty() && !contactsRepository.isNeverUpdated) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
     }
 
     private fun initContacts() {

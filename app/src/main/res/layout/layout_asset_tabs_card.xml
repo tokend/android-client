@@ -21,13 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp" />
 
-        <org.tokend.template.base.view.ContentLoadingProgressBar
-            android:id="@+id/activity_progress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone" />
+        <include layout="@layout/layout_progress"/>
 
         <me.grantland.widget.AutofitTextView
             android:id="@+id/balance_text_view"
