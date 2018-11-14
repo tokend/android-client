@@ -1,7 +1,6 @@
 package org.tokend.template.features.withdraw
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -15,6 +14,7 @@ import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.ProgressDialogFactory
 import org.tokend.template.util.ToastManager
 
 class WithdrawalConfirmationActivity : BaseActivity() {
@@ -85,10 +85,7 @@ class WithdrawalConfirmationActivity : BaseActivity() {
     }
 
     private fun confirm() {
-        val progress = ProgressDialog(this)
-        progress.isIndeterminate = true
-        progress.setMessage(getString(R.string.processing_progress))
-        progress.setCancelable(false)
+        val progress = ProgressDialogFactory.getTunedDialog(this)
 
         ConfirmWithdrawalRequestUseCase(
                 request,

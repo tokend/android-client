@@ -1,7 +1,6 @@
 package org.tokend.template.features.trade
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -15,6 +14,7 @@ import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.ProgressDialogFactory
 import org.tokend.template.util.ToastManager
 import java.math.BigDecimal
 
@@ -169,10 +169,7 @@ class OfferConfirmationActivity : BaseActivity() {
     }
 
     private fun confirm() {
-        val progress = ProgressDialog(this)
-        progress.isIndeterminate = true
-        progress.setMessage(getString(R.string.processing_progress))
-        progress.setCancelable(false)
+        val progress = ProgressDialogFactory.getTunedDialog(this)
 
         val cancellationOnly = offer.baseAmount.signum() == 0 && prevOffer != null
 

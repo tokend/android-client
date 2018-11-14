@@ -1,7 +1,6 @@
 package org.tokend.template.base.activities.tx_details
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.Menu
@@ -17,6 +16,7 @@ import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.InfoCard
 import org.tokend.template.base.view.util.AmountFormatter
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.ProgressDialogFactory
 import org.tokend.template.util.ToastManager
 import kotlin.reflect.KClass
 
@@ -155,10 +155,7 @@ open class OfferMatchDetailsActivity(
     }
 
     private fun cancelOffer() {
-        val progress = ProgressDialog(this)
-        progress.isIndeterminate = true
-        progress.setMessage(getString(R.string.processing_progress))
-        progress.setCancelable(false)
+        val progress = ProgressDialogFactory.getTunedDialog(this)
 
         val offer = getOfferToCancel()
 

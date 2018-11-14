@@ -1,7 +1,6 @@
 package org.tokend.template.features.deposit
 
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -31,6 +30,7 @@ import org.tokend.template.extensions.Asset
 import org.tokend.template.util.DateFormatter
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.ProgressDialogFactory
 import java.util.*
 
 class DepositFragment : BaseFragment(), ToolbarProvider {
@@ -331,10 +331,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         val type = currentAsset?.details?.externalSystemType
                 ?: return
 
-        val progress = ProgressDialog(context)
-        progress.isIndeterminate = true
-        progress.setMessage(getString(R.string.processing_progress))
-        progress.setCancelable(false)
+        val progress = ProgressDialogFactory.getTunedDialog(context)
 
         BindExternalAccountUseCase(
                 asset,

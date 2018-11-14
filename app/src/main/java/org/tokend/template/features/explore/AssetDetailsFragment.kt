@@ -1,7 +1,6 @@
 package org.tokend.template.features.explore
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -34,6 +33,7 @@ import org.tokend.template.features.explore.adapter.AssetListItem
 import org.tokend.template.features.explore.adapter.AssetListItemViewHolder
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.ProgressDialogFactory
 import org.tokend.template.util.ToastManager
 
 
@@ -181,10 +181,7 @@ class AssetDetailsFragment : BaseFragment() {
     }
 
     private fun createBalance() {
-        val progress = ProgressDialog(this.requireContext())
-        progress.isIndeterminate = true
-        progress.setMessage(getString(R.string.processing_progress))
-        progress.setCancelable(false)
+        val progress = ProgressDialogFactory.getTunedDialog(context)
 
         CreateBalanceUseCase(
                 asset.code,

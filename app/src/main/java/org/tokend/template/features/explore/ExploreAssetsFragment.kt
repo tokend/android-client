@@ -37,10 +37,7 @@ import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.base.view.util.LoadingIndicatorManager
 import org.tokend.template.features.explore.adapter.AssetListItem
 import org.tokend.template.features.explore.adapter.AssetsAdapter
-import org.tokend.template.util.Navigator
-import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.SearchUtil
-import org.tokend.template.util.ToastManager
+import org.tokend.template.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -253,10 +250,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun createBalance(asset: String) {
-        val progress = ProgressDialog(context)
-        progress.isIndeterminate = true
-        progress.setMessage(getString(R.string.processing_progress))
-        progress.setCancelable(false)
+        val progress = ProgressDialogFactory.getTunedDialog(context)
 
         CreateBalanceUseCase(
                 asset,
