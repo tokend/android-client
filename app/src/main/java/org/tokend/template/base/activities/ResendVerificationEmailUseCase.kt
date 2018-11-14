@@ -4,6 +4,11 @@ import io.reactivex.Completable
 import org.tokend.sdk.api.TokenDApi
 import org.tokend.template.extensions.toCompletable
 
+/**
+ * Requests email verification letter resend
+ *
+ * @param walletId id of the related wallet
+ */
 class ResendVerificationEmailUseCase(
         private val walletId: String,
         private val api: TokenDApi

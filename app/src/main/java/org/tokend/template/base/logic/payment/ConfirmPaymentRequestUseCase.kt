@@ -15,6 +15,10 @@ import org.tokend.wallet.xdr.Operation
 import org.tokend.wallet.xdr.PaymentFeeDataV2
 import org.tokend.wallet.xdr.PaymentOpV2
 
+/**
+ * Sends payment identified by given payment request.
+ * Updates related repositories: balances, transactions
+ */
 class ConfirmPaymentRequestUseCase(
         private val request: PaymentRequest,
         private val accountProvider: AccountProvider,

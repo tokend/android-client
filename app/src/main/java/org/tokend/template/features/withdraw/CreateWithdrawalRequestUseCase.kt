@@ -8,6 +8,10 @@ import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import java.math.BigDecimal
 
+/**
+ * Creates withdrawal request with given params,
+ * loads fee
+ */
 class CreateWithdrawalRequestUseCase(
         private val amount: BigDecimal,
         private val asset: String,

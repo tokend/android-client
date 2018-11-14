@@ -5,6 +5,9 @@ import io.reactivex.Single
 import org.tokend.sdk.api.favorites.model.FavoriteEntry
 import org.tokend.template.base.logic.repository.favorites.FavoritesRepository
 
+/**
+ * Switches favorite state of given entry by [FavoriteEntry.type] and [FavoriteEntry.key]
+ */
 class SwitchFavoriteUseCase(
         private val favoriteEntry: FavoriteEntry,
         private val favoritesRepository: FavoritesRepository

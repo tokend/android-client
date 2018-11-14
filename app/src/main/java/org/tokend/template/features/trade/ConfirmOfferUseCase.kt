@@ -10,6 +10,11 @@ import org.tokend.template.base.logic.repository.balances.BalancesRepository
 import org.tokend.template.base.logic.transactions.TxManager
 import org.tokend.template.features.trade.repository.offers.OffersRepository
 
+/**
+ * Sends given offer.
+ *
+ * Updates related repositories: order book, balances, offers, sales
+ */
 class ConfirmOfferUseCase(
         private val offer: Offer,
         private val offerToCancel: Offer?,

@@ -7,6 +7,10 @@ import org.tokend.template.base.logic.di.providers.AccountProvider
 import org.tokend.template.base.logic.di.providers.RepositoryProvider
 import org.tokend.template.base.logic.transactions.TxManager
 
+/**
+ * Cancels given offer.
+ * Updates related repositories: order book, balances, offers
+ */
 class CancelOfferUseCase(
         private val offer: Offer,
         private val repositoryProvider: RepositoryProvider,

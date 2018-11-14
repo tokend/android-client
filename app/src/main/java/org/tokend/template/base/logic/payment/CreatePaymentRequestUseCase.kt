@@ -11,6 +11,11 @@ import org.tokend.template.base.logic.repository.balances.BalancesRepository
 import org.tokend.wallet.Base32Check
 import java.math.BigDecimal
 
+/**
+ * Creates payment request with given params:
+ * resolves recipient's account ID if needed,
+ * loads sender's and recipient's fees
+ */
 class CreatePaymentRequestUseCase(
         private val recipient: String,
         private val amount: BigDecimal,

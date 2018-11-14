@@ -9,6 +9,12 @@ import org.tokend.template.base.logic.di.providers.ApiProvider
 import org.tokend.template.base.logic.di.providers.WalletInfoProvider
 import org.tokend.wallet.Account
 
+/**
+ * Changes user's password:
+ * updates wallet keychain data and account signers.
+ * [accountProvider] and [walletInfoProvider] will be used to obtain
+ * actual wallet info and will be updated with the new info on complete
+ */
 class ChangePasswordUseCase(
         private val newPassword: CharArray,
         private val walletUpdateManager: WalletUpdateManager,

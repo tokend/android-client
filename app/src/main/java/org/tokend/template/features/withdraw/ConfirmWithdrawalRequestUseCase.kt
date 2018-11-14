@@ -16,6 +16,11 @@ import org.tokend.wallet.xdr.CreateWithdrawalRequestOp
 import org.tokend.wallet.xdr.Fee
 import org.tokend.wallet.xdr.Operation
 
+/**
+ * Sends withdrawal request.
+ *
+ * Updates related repositories: balances, transactions
+ */
 class ConfirmWithdrawalRequestUseCase(
         private val request: WithdrawalRequest,
         private val accountProvider: AccountProvider,

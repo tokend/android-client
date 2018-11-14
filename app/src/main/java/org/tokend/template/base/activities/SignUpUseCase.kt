@@ -8,6 +8,9 @@ import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.wallet.Account
 
+/**
+ * Creates wallet with given credentials and submits it
+ */
 class SignUpUseCase(
         private val email: String,
         private val password: CharArray,

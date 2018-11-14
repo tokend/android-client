@@ -7,6 +7,9 @@ import org.tokend.template.base.logic.repository.SystemInfoRepository
 import org.tokend.template.base.logic.repository.balances.BalancesRepository
 import org.tokend.template.base.logic.transactions.TxManager
 
+/**
+ * Creates balance of given asset
+ */
 class CreateBalanceUseCase(
         private val asset: String,
         private val balancesRepository: BalancesRepository,

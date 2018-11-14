@@ -18,6 +18,12 @@ import org.tokend.wallet.xdr.Operation
 import org.tokend.wallet.xdr.op_extensions.BindExternalAccountOp
 import org.tokend.wallet.xdr.op_extensions.CreateBalanceOp
 
+/**
+ * Binds external payment system account, i.e. Bitcoin or Ethereum address,
+ * to user's account in order to make deposits. Creates balance if needed
+ *
+ * Updates following repositories: account and balances if new balance was created
+ */
 class BindExternalAccountUseCase(
         private val asset: String,
         private val externalSystemType: Int,
@@ -28,6 +34,10 @@ class BindExternalAccountUseCase(
         private val accountProvider: AccountProvider,
         private val txManager: TxManager
 ) {
+    /**
+     * Thrown when there is no addresses in pool
+     * for requested external system type
+     */
     class NoAvailableExternalAccountsException : Exception()
 
     private lateinit var accountId: String

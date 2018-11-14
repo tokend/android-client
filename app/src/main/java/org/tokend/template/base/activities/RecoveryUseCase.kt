@@ -11,6 +11,11 @@ import org.tokend.template.base.logic.WalletUpdateManager
 import org.tokend.template.base.logic.di.providers.*
 import org.tokend.wallet.Account
 
+/**
+ * Recovers user's password
+ *
+ * @param urlConfigProvider required to create signed API instance
+ */
 class RecoveryUseCase(
         private val email: String,
         private val recoverySeed: CharArray,

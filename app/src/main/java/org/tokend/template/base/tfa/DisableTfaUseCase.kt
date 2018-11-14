@@ -5,6 +5,9 @@ import io.reactivex.Single
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
 
+/**
+ * Disables current active 2FA factor of given type
+ */
 class DisableTfaUseCase(
         private val factorType: TfaFactor.Type,
         private val factorsRepository: TfaBackendsRepository

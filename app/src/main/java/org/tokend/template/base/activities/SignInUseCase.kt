@@ -6,6 +6,11 @@ import io.reactivex.schedulers.Schedulers
 import org.tokend.template.base.logic.SignInManager
 import org.tokend.template.base.logic.di.providers.RepositoryProvider
 
+/**
+ * Performs sign in with given credentials
+ *
+ * @param repositoryProvider if set then [SignInManager.doPostSignIn] will be performed
+ */
 class SignInUseCase(
         private val email: String,
         private val password: CharArray,

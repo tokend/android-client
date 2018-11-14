@@ -7,6 +7,12 @@ import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
 import java.util.concurrent.CancellationException
 
+/**
+ * Adds and enables 2FA factor of given type.
+ * In order to enable 2FA factor user will be asked for OTP from it
+ *
+ * @param newFactorConfirmation will be called when the new factor is added but not yet enabled
+ */
 class EnableTfaUseCase(
         private val factorType: TfaFactor.Type,
         private val factorsRepository: TfaBackendsRepository,
