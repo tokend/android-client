@@ -45,9 +45,9 @@ class CancelOfferUseCase(
                     offer.baseAsset,
                     offer.quoteAsset,
                     offer.isBuy
-            ).update()
+            ).updateIfEverUpdated()
         }
-        repositoryProvider.balances().update()
+        repositoryProvider.balances().updateIfEverUpdated()
 
         return Single.just(true)
     }

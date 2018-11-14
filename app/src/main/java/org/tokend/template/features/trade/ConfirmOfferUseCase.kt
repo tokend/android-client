@@ -137,9 +137,9 @@ class ConfirmOfferUseCase(
                     offer.baseAsset,
                     offer.quoteAsset,
                     false
-            )).forEach { it.update() }
+            )).forEach { it.updateIfEverUpdated() }
         }
-        repositoryProvider.balances().update()
+        repositoryProvider.balances().updateIfEverUpdated()
 
         return Single.just(true)
     }

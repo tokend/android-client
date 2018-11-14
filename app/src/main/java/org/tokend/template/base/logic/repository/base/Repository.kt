@@ -86,4 +86,15 @@ abstract class Repository {
     open fun updateIfNotFreshDeferred(): Completable {
         return Completable.defer { updateIfNotFresh() }
     }
+
+    /**
+     * Instantly starts data it it was ever updated
+     * i.e. if someone was ever interested in this repo's data.
+     */
+    open fun updateIfEverUpdated(): Completable {
+        return if (!isNeverUpdated)
+            update()
+        else
+            Completable.complete()
+    }
 }

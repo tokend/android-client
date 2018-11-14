@@ -144,9 +144,9 @@ class BindExternalAccountUseCase(
 
     private fun updateRepositories() {
         if (isBalanceCreationRequired) {
-            balancesRepository.update()
+            balancesRepository.updateIfEverUpdated()
         }
 
-        accountRepository.update()
+        accountRepository.updateIfEverUpdated()
     }
 }
