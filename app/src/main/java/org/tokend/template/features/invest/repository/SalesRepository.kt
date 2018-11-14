@@ -15,6 +15,10 @@ class SalesRepository(
         private val apiProvider: ApiProvider,
         private val accountDetailsRepository: AccountDetailsRepository? = null
 ) : PagedDataRepository<Sale, SalesParams>() {
+
+    private var name: String? = null
+    private var baseAsset: String? = null
+
     override fun getItems(): Single<List<Sale>> = Single.just(emptyList())
 
     override val itemsCache = SalesCache()
@@ -61,7 +65,10 @@ class SalesRepository(
     }
 
     override fun getNextPageRequestParams(): SalesParams {
+
         return SalesParams(
+                name = name,
+                baseAsset = baseAsset,
                 pagingParams = PagingParamsV2(
                         page = nextCursor,
                         order = PagingOrder.DESC,
@@ -69,6 +76,12 @@ class SalesRepository(
                 ),
                 openOnly = true
         )
+    }
+
+    fun forQuery(name: String? = null, baseAsset: String? = null): SalesRepository {
+        this.name = name
+        this.baseAsset = baseAsset
+        return this
     }
 
     companion object {

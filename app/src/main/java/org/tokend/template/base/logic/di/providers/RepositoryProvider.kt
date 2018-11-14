@@ -29,5 +29,6 @@ interface RepositoryProvider {
     fun user(): UserRepository
     fun favorites(): FavoritesRepository
     fun sales(): SalesRepository
+    fun filteredSales(): SalesRepository
     fun contacts(): ContactsRepository
 }

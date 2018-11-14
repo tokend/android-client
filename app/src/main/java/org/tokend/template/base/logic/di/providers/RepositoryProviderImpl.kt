@@ -55,6 +55,10 @@ class RepositoryProviderImpl(
         SalesRepository(apiProvider, accountDetails())
     }
 
+    private val filteredSalesRepository: SalesRepository by lazy {
+        SalesRepository(apiProvider, accountDetails)
+    }
+
     private val contactsRepository: ContactsRepository by lazy {
         ContactsRepository(context)
     }
@@ -119,6 +123,10 @@ class RepositoryProviderImpl(
 
     override fun sales(): SalesRepository {
         return salesRepository
+    }
+
+    override fun filteredSales(): SalesRepository {
+        return filteredSalesRepository
     }
 
     override fun contacts(): ContactsRepository {
