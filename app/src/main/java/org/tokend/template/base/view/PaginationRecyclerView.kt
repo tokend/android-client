@@ -83,6 +83,7 @@ open class PaginationRecyclerView : RecyclerView {
      * , must return [true] if event was handled for current scroll state and [false] otherwise.
      */
     fun listenBottomReach(countProvider: (() -> Int)? = null, listener: () -> Boolean) {
+        resetPagination()
         this.countProvider = countProvider
         this.onBottomReachedListener = listener
     }
