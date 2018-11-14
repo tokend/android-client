@@ -13,7 +13,7 @@ import org.tokend.template.features.trade.repository.offers.OffersRepository
 /**
  * Sends given offer.
  *
- * Updates related repositories: order book, balances, offers, sales
+ * Updates related repositories: order book, balances, offers
  */
 class ConfirmOfferUseCase(
         private val offer: Offer,
@@ -138,9 +138,6 @@ class ConfirmOfferUseCase(
                     offer.quoteAsset,
                     false
             )).forEach { it.update() }
-        }
-        if (isPrimaryMarket) {
-            repositoryProvider.sales().update()
         }
         repositoryProvider.balances().update()
 
