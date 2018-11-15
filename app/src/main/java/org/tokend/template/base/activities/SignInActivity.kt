@@ -65,7 +65,7 @@ class SignInActivity : BaseActivity() {
                 ColorDrawable(ContextCompat.getColor(this, R.color.white)))
         setTitle(R.string.sign_in)
 
-        fingerprintAuthManager = FingerprintAuthManager(this, credentialsPersistor)
+        fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
         urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistor)
         urlConfigManager.onConfigUpdated {
             initNetworkField()

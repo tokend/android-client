@@ -59,7 +59,7 @@ class ChangePasswordActivity : BaseActivity() {
         initFields()
         initButtons()
 
-        fingerprintAuthManager = FingerprintAuthManager(this, credentialsPersistor)
+        fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
 
         canChange = false
     }

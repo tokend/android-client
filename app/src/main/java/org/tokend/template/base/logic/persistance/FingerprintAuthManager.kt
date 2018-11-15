@@ -2,19 +2,20 @@ package org.tokend.template.base.logic.persistance
 
 import android.content.Context
 import android.os.Build
-import io.reactivex.rxkotlin.toSingle
 import org.jetbrains.anko.defaultSharedPreferences
-import org.tokend.template.util.ObservableTransformers
 
 /**
  * Manages fingerprint auth request to obtain saved credentials.
  */
 class FingerprintAuthManager(
-        private val context: Context,
+        private val applicationContext: Context,
         private val credentialsPersistor: CredentialsPersistor
 ) {
-    private val fingerprintUtil = FingerprintUtil(context)
+    private val fingerprintUtil = FingerprintUtil(applicationContext)
     private var isAuthCanceled = false
+
+    private var successCallback: ((String, CharArray) -> Unit)? = null
+    private var errorCallback: ((String) -> Unit)? = null
 
     /**
      * @param onAuthStart will be called when auth is available and started
@@ -31,46 +32,48 @@ class FingerprintAuthManager(
             return
         }
 
-        val preferences = context.defaultSharedPreferences
+        val preferences = applicationContext.defaultSharedPreferences
         if(!preferences.getBoolean("fingerprint", true)) {
             return
         }
 
         fingerprintUtil.cancelAuth()
 
+        successCallback = onSuccess
+        errorCallback = onError
         isAuthCanceled = false
 
         val savedEmail = credentialsPersistor.getSavedEmail()
                 ?: return
-        {
-            credentialsPersistor.hasSavedPassword()
-                    && fingerprintUtil.isFingerprintAvailable
-        }
-                .toSingle()
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .subscribe { fingerprintAuthAvailable ->
-                    if (fingerprintAuthAvailable && !isAuthCanceled) {
-                        onAuthStart()
 
-                        val handleErrorMessage: (String?) -> Unit = {
-                            it?.also(onError)
-                        }
+        val fingerprintAuthAvailable = credentialsPersistor.hasSavedPassword()
+                && fingerprintUtil.isFingerprintAvailable
 
-                        fingerprintUtil.requestAuth(
-                                onSuccess = {
-                                    val password = credentialsPersistor.getSavedPassword()
-                                            ?: CharArray(0)
-                                    onSuccess(savedEmail, password)
-                                },
-                                onError = handleErrorMessage,
-                                onHelp = handleErrorMessage
-                        )
-                    }
+        if (fingerprintAuthAvailable && !isAuthCanceled) {
+            onAuthStart()
+
+            val handleErrorMessage: (String?) -> Unit = { errorMessage ->
+                if (errorMessage != null) {
+                    errorCallback?.invoke(errorMessage)
                 }
+            }
+
+            fingerprintUtil.requestAuth(
+                    onSuccess = {
+                        val password = credentialsPersistor.getSavedPassword()
+                                ?: CharArray(0)
+                        successCallback?.invoke(savedEmail, password)
+                    },
+                    onError = handleErrorMessage,
+                    onHelp = handleErrorMessage
+            )
+        }
     }
 
     fun cancelAuth() {
         fingerprintUtil.cancelAuth()
         isAuthCanceled = true
+        successCallback = null
+        errorCallback = null
     }
 }
