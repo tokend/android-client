@@ -3,13 +3,14 @@ package org.tokend.template.base.logic.persistance
 import android.content.Context
 import android.os.Build
 import io.reactivex.rxkotlin.toSingle
+import org.jetbrains.anko.defaultSharedPreferences
 import org.tokend.template.util.ObservableTransformers
 
 /**
  * Manages fingerprint auth request to obtain saved credentials.
  */
 class FingerprintAuthManager(
-        context: Context,
+        private val context: Context,
         private val credentialsPersistor: CredentialsPersistor
 ) {
     private val fingerprintUtil = FingerprintUtil(context)
@@ -24,7 +25,14 @@ class FingerprintAuthManager(
     fun requestAuthIfAvailable(onAuthStart: () -> Unit,
                                onSuccess: (String, CharArray) -> Unit,
                                onError: (String) -> Unit) {
+
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return
+        }
+
+        val preferences = context.defaultSharedPreferences
+        if(!preferences.getBoolean("fingerprint", true)) {
             return
         }
 

@@ -25,6 +25,14 @@
         android:title="@string/settings_security_group">
 
         <android.support.v7.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_fingerprint"
+            android:key="fingerprint"
+            android:layout="@layout/preference_layout"
+            android:persistent="true"
+            android:defaultValue="true"
+            android:title="Use fingerprint" />
+
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_security"
             android:key="tfa"
             android:layout="@layout/preference_layout"
