@@ -290,4 +290,5 @@
     <string name="settings_information_group">Information</string>
     <string name="contacts">Contacts</string>
     <string name="no_contacts_message">No contacts available</string>
+    <string name="use_fingerprint">Use fingerprint</string>
 </resources>

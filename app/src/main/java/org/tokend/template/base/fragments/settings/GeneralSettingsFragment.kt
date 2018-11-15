@@ -1,6 +1,8 @@
 package org.tokend.template.base.fragments.settings
 
+import android.os.Build
 import android.os.Bundle
+import android.support.v4.hardware.fingerprint.FingerprintManagerCompat
 import android.support.v7.preference.SwitchPreferenceCompat
 import android.support.v7.widget.Toolbar
 import android.view.View
@@ -14,6 +16,8 @@ import org.jetbrains.anko.browse
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.R
 import org.tokend.template.base.fragments.ToolbarProvider
+import org.tokend.template.base.logic.persistance.FingerprintAuthManager
+import org.tokend.template.base.logic.persistance.FingerprintUtil
 import org.tokend.template.base.logic.repository.tfa.TfaBackendsRepository
 import org.tokend.template.base.tfa.DisableTfaUseCase
 import org.tokend.template.base.tfa.EnableTfaUseCase
@@ -28,6 +32,8 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     override fun getScreenKey(): String? = null
 
     private val TFA_BACKEND_TYPE = TfaFactor.Type.TOTP
+
+    private var fingerprintPreference: SwitchPreferenceCompat? = null
 
     private val tfaRepository: TfaBackendsRepository
         get() = repositoryProvider.tfaBackends()
@@ -100,8 +106,14 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     // region Security
     private fun initSecurityCategory() {
+        initFingerprintItem()
         initTfaItem()
         initChangePasswordItem()
+    }
+
+    private fun initFingerprintItem() {
+        fingerprintPreference = findPreference("fingerprint") as? SwitchPreferenceCompat
+        fingerprintPreference?.isVisible = FingerprintUtil(requireContext()).isFingerprintAvailable
     }
 
     private fun initTfaItem() {

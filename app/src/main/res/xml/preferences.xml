@@ -30,7 +30,7 @@
             android:layout="@layout/preference_layout"
             android:persistent="true"
             android:defaultValue="true"
-            android:title="Use fingerprint" />
+            android:title="@string/use_fingerprint" />
 
         <android.support.v7.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_security"
