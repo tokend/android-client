@@ -35,9 +35,6 @@ import java.math.MathContext
 import java.math.RoundingMode
 import java.util.*
 
-/**
- * Created by Oleg Koretsky on 1/8/18.
- */
 class AssetChartCard : LinearLayout {
     companion object {
         private const val X_LABELS_COUNT = 5
@@ -335,16 +332,7 @@ class AssetChartCard : LinearLayout {
         growthHintTextView.text = context.getString(R.string.since_last_time_hint, chartScale.unitName)
     }
 
-    private fun MutableList<Entry>.minY(): Float {
-        if (chartData.isEmpty()) {
-            return 0f
-        }
-        return this.fold(chartData[0].y, { min, item ->
-            if (item.y < min) item.y else min
-        })
-    }
-
-    val location = IntArray(2)
+    private val location = IntArray(2)
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         chart.getLocationInWindow(location)
@@ -407,8 +395,10 @@ class AssetChartCard : LinearLayout {
         val dash = dip(4).toFloat()
         chart.axisLeft.removeAllLimitLines()
         limitLines
+                .asSequence()
                 .filter { it.first != null }
                 .sortedBy { it.first }
+                .toList()
                 .forEach {
                     val value = it.first
                     if (value != null) {

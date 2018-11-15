@@ -134,6 +134,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 .subscribe {
                     filter = it.trim().toString().takeIf { it.isNotEmpty() }
                 }
+                .addTo(compositeDisposable)
 
         searchItem?.setOnMenuItemClickListener {
             TransitionManager.beginDelayedTransition(toolbar, Fade().setDuration(
@@ -196,6 +197,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         val storageUrl = urlConfigProvider.getConfig().storage
         val balances = balancesRepository.itemsSubject.value
         val items = assetsRepository.itemsSubject.value
+                .asSequence()
                 .map { asset ->
                     AssetListItem(
                             asset,
@@ -208,6 +210,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                             .takeIf { it != 0 }
                             ?: o1.code.compareTo(o2.code)
                 })
+                .toList()
                 .let { items ->
                     filter?.let {
                         items.filter { item ->

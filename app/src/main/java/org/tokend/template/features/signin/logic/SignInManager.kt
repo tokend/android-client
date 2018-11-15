@@ -66,7 +66,7 @@ class SignInManager(
                 // Added actions will be performed simultaneously.
 
                 repositoryProvider.balances().updateDeferred(),
-                repositoryProvider.tfaBackends().updateDeferred()
+                repositoryProvider.tfaFactors().updateDeferred()
                         .onErrorResumeNext {
                             if (it is HttpException
                                     && it.code() == HttpURLConnection.HTTP_NOT_FOUND)

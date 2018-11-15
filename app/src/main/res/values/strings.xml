@@ -48,7 +48,6 @@
     <string name="paid">Paid</string>
     <string name="received">Received</string>
     <string name="sent">Sent</string>
-    <string name="invested">Invested</string>
     <string name="price">Price</string>
     <string name="amount_sent">Amount sent</string>
     <string name="payment_description">Description</string>
@@ -112,7 +111,6 @@
     <string name="offer_canceled">Offer has been canceled</string>
     <string name="email_verified">Email has been verified</string>
     <string name="touch_sensor">Touch the sensor</string>
-    <string name="password_request_hint">Enter your password</string>
 
     <string name="asset_summary_title">Token summary</string>
     <string name="asset_available">Available</string>
@@ -149,14 +147,12 @@
     <string name="tx_fee">Fee</string>
     <string name="tx_fixed_fee">Fixed fee</string>
     <string name="tx_percent_fee">Percent fee</string>
-    <string name="tx_type">Type</string>
     <string name="tx_cause">Cause</string>
     <string name="tx_reference">Reference</string>
     <string name="tx_withdrawal_destination">Destination address</string>
     <string name="template_tx_for">For %1$s</string>
     <string name="template_tx_in">In %1$s</string>
     <string name="pay_recipient_fee_action">Pay recipient\'s fee</string>
-    <string name="tx_sender_fee">Sender\'s fee</string>
     <string name="tx_recipient_fee">Recipient\'s fee</string>
 
 
@@ -175,7 +171,6 @@
     <string name="error_email_already_taken">Email is already taken</string>
     <string name="error_try_again">An error occurred. Try again later</string>
     <string name="error_connection_try_again">Connection error. Try again later</string>
-    <string name="error_not_found_try_again">Not found. Try again later</string>
     <string name="error_invalid_password">Invalid password</string>
     <string name="error_email_not_verified">Email is not verified</string>
     <string name="error_seed_mismatch">Seed doesn\'t match confirmation</string>
@@ -221,7 +216,6 @@
     <string name="withdrawal_confirmation_title">Withdrawal confirmation</string>
 
     <!-- Deposit -->
-    <string name="currency">Currency</string>
     <string name="create_balance_confirmation">Are you sure that you want to create %1s balance?</string>
     <string name="personal_address">Personal address</string>
     <string name="to_make_deposit_send_asset">To make a deposit send %1$s to this address</string>
@@ -246,7 +240,6 @@
     <string name="deployed_hint">deployed</string>
     <string name="asset_price_for_one_part">for 1 %1$s</string>
     <string name="peek_show_text">Price chart</string>
-    <string name="peek_hide_text">Hide chart</string>
 
     <string name="template_sale_invested">%1$s invested</string>
     <string name="template_sale_days_to_go">%1$d %2$s to go</string>

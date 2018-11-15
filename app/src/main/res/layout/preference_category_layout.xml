@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -14,5 +15,6 @@
         android:layout_marginTop="@dimen/standard_margin"
         android:fontFamily="sans-serif-medium"
         android:textAppearance="@style/Preference_TextAppearanceMaterialBody2"
-        android:textColor="@color/accent" />
+        android:textColor="@color/accent"
+        tools:ignore="PrivateResource" />
 </LinearLayout>

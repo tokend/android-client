@@ -10,9 +10,6 @@ class DecimalDigitsInputFilter(digitsBeforeZero: Int?, digitsAfterZero: Int?) : 
     private val mDigitsAfterZero: Int
     private var mPattern: Pattern
 
-    private val DIGITS_BEFORE_ZERO_DEFAULT = 100
-    private val DIGITS_AFTER_ZERO_DEFAULT = 100
-
     init {
         this.mDigitsBeforeZero = digitsBeforeZero ?: DIGITS_BEFORE_ZERO_DEFAULT
         this.mDigitsAfterZero = digitsAfterZero ?: DIGITS_AFTER_ZERO_DEFAULT
@@ -29,9 +26,14 @@ class DecimalDigitsInputFilter(digitsBeforeZero: Int?, digitsAfterZero: Int?) : 
         if (matcher.matches())
             return null
 
-        if (TextUtils.isEmpty(source))
-            return dest.subSequence(dstart, dend)
+        return if (TextUtils.isEmpty(source))
+            dest.subSequence(dstart, dend)
         else
-            return ""
+            ""
+    }
+
+    private companion object {
+        private const val DIGITS_BEFORE_ZERO_DEFAULT = 100
+        private const val DIGITS_AFTER_ZERO_DEFAULT = 100
     }
 }

@@ -15,18 +15,18 @@ import kotlinx.android.synthetic.main.layout_asset_tabs_card.view.*
 import kotlinx.android.synthetic.main.layout_progress.view.*
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.base.MultipleItemsRepository
 import org.tokend.template.data.repository.transactions.TxRepository
-import org.tokend.template.view.adapter.history.TxHistoryAdapter
-import org.tokend.template.view.adapter.history.TxHistoryItem
-import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.ViewProvider
+import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
+import org.tokend.template.view.adapter.history.TxHistoryAdapter
+import org.tokend.template.view.adapter.history.TxHistoryItem
+import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.ViewProvider
+import org.tokend.template.view.util.formatter.AmountFormatter
 
 class AssetTabsCard(private val context: Context?,
                     private val repositoryProvider: RepositoryProvider,
@@ -63,7 +63,6 @@ class AssetTabsCard(private val context: Context?,
 
         initLoadingManager()
         initAssetTabs()
-        initBalance()
         initRecentActivity()
 
         subscribeToBalances()
@@ -89,10 +88,6 @@ class AssetTabsCard(private val context: Context?,
         view.asset_tabs.onItemSelected {
             asset = it.text
         }
-    }
-
-    private fun initBalance() {
-        view.converted_balance_text_view.text = "0 USD"
     }
 
     private fun getEmptyViewObserver(emptyView: TextView,

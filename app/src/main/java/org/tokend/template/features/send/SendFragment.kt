@@ -228,6 +228,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayTransferableAssets() {
         val transferableAssets = balancesRepository.itemsSubject.value
+                .asSequence()
                 .mapNotNull {
                     it.assetDetails
                 }
@@ -237,6 +238,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 .map {
                     it.code
                 }
+                .toList()
 
         if (transferableAssets.isEmpty()) {
             error_empty_view.showEmpty(R.string.error_no_transferable_assets)

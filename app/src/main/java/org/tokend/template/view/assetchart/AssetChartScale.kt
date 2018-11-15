@@ -4,9 +4,6 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * Created by Oleg Koretsky on 1/8/18.
- */
 enum class AssetChartScale {
     DAY,
     WEEK,

@@ -1,5 +1,6 @@
 package org.tokend.template.features.settings.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -26,8 +27,8 @@ public class PreferenceDividerDecoration extends RecyclerView.ItemDecoration {
     private boolean mDrawBetweenCategories = true;
     private int mPaddingLeft;
 
-    private Drawable mDivider;
-    private int mDividerHeight;
+    private final Drawable mDivider;
+    private final int mDividerHeight;
 
     public PreferenceDividerDecoration(Drawable divider, int dividerHeight) {
         mDivider = divider;
@@ -93,6 +94,7 @@ public class PreferenceDividerDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
+    @SuppressLint("RestrictedApi")
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         int left = parent.getPaddingLeft() + mPaddingLeft;
         int right = parent.getWidth() - parent.getPaddingRight();

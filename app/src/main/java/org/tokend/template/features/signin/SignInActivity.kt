@@ -183,13 +183,15 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun tryToSignIn() {
-        if (email_edit_text.text.isBlank()) {
-            email_edit_text.setErrorAndFocus(R.string.error_cannot_be_empty)
-        } else if (password_edit_text.text.isEmpty()) {
-            password_edit_text.setErrorAndFocus(R.string.error_cannot_be_empty)
-        } else if (canSignIn) {
-            SoftInputUtil.hideSoftInput(this)
-            signIn()
+        when {
+            email_edit_text.text.isBlank() ->
+                email_edit_text.setErrorAndFocus(R.string.error_cannot_be_empty)
+            password_edit_text.text.isEmpty() ->
+                password_edit_text.setErrorAndFocus(R.string.error_cannot_be_empty)
+            canSignIn -> {
+                SoftInputUtil.hideSoftInput(this)
+                signIn()
+            }
         }
     }
 

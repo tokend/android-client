@@ -15,11 +15,11 @@ import org.jetbrains.anko.uiThread
 import org.tokend.sdk.tfa.InvalidOtpException
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
-import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.util.errorhandler.ErrorHandler
+import org.tokend.template.view.util.LoadingIndicatorManager
 
 /**
  * Abstract TFA verification dialog with code input.

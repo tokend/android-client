@@ -264,8 +264,10 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         pairs.clear()
         pairs.addAll(
                 newPairs
+                        .asSequence()
                         .filter { it.isTradeable() }
                         .sortedBy { it.base }
+                        .toList()
         )
 
         displayPairs()

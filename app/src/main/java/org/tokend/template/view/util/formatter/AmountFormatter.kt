@@ -46,14 +46,15 @@ object AmountFormatter {
     private data class Abbreviation(val amount: BigDecimal, val letter: String)
 
     private fun calculateAmountAbbreviation(amount: BigDecimal): Abbreviation {
-        return if (amount >= BigDecimal(1000000000)) {
-            Abbreviation(amount.divide(BigDecimal(1000000000), MathContext.DECIMAL128), "G")
-        } else if (amount >= BigDecimal(1000000)) {
-            Abbreviation(amount.divide(BigDecimal(1000000), MathContext.DECIMAL128), "M")
-        } else if (amount >= BigDecimal(1000)) {
-            Abbreviation(amount.divide(BigDecimal(1000), MathContext.DECIMAL128), "K")
-        } else {
-            Abbreviation(amount, "")
+        return when {
+            amount >= BigDecimal(1000000000) ->
+                Abbreviation(amount.divide(BigDecimal(1000000000), MathContext.DECIMAL128), "G")
+            amount >= BigDecimal(1000000) ->
+                Abbreviation(amount.divide(BigDecimal(1000000), MathContext.DECIMAL128), "M")
+            amount >= BigDecimal(1000) ->
+                Abbreviation(amount.divide(BigDecimal(1000), MathContext.DECIMAL128), "K")
+            else ->
+                Abbreviation(amount, "")
         }
     }
 

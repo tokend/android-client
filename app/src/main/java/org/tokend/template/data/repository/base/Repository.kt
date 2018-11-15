@@ -9,7 +9,7 @@ import io.reactivex.subjects.PublishSubject
  */
 abstract class Repository {
     /**
-     * Emits repository errrors.
+     * Emits repository errors.
      */
     val errorsSubject: PublishSubject<Throwable> =
             PublishSubject.create<Throwable>()

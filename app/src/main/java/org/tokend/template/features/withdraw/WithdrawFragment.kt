@@ -182,6 +182,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayWithdrawableAssets() {
         val withdrawableAssets = balancesRepository.itemsSubject.value
+                .asSequence()
                 .mapNotNull {
                     it.assetDetails
                 }
@@ -191,6 +192,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                 .map {
                     it.code
                 }
+                .toList()
 
         if (withdrawableAssets.isEmpty()) {
             error_empty_view.showEmpty(R.string.error_no_withdrawable_assets)

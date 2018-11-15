@@ -24,8 +24,6 @@ class TxDateTextSwitcher : TextSwitcher {
 
     constructor(context: Context) : super(context)
 
-    private val HEADER_HIDE_TIMEOUT = 2000
-
     private var slideInFromBottom: Animation? = null
     private var slideOutToTop: Animation? = null
     private var slideInFromTop: Animation? = null
@@ -197,5 +195,9 @@ class TxDateTextSwitcher : TextSwitcher {
         alpha = 1f
         animate().alpha(0f).start()
         isVisible = false
+    }
+
+    private companion object {
+        private const val HEADER_HIDE_TIMEOUT = 2000
     }
 }

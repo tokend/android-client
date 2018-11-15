@@ -24,7 +24,7 @@ class InfoCard(parent: ViewGroup) {
         view = context.layoutInflater.inflate(R.layout.layout_info_card, parent, false)
         parent.addView(view)
 
-        contentLayout = view.find<LinearLayout>(R.id.card_content_layout)
+        contentLayout = view.find(R.id.card_content_layout)
     }
 
     fun setHeading(title: String?, value: String?): InfoCard {

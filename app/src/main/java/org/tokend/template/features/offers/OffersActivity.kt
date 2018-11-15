@@ -123,7 +123,7 @@ class OffersActivity : BaseActivity() {
     private fun displayOffers(items: List<Offer>) {
         txAdapter.setData(
                 items
-
+                        .asSequence()
                         .map {
                             if (onlyPrimary)
                                 InvestmentOperation.fromOffer(it)
@@ -133,6 +133,7 @@ class OffersActivity : BaseActivity() {
                         .map {
                             TxHistoryItem.fromTransaction(it)
                         }
+                        .toList()
         )
     }
 

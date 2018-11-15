@@ -23,11 +23,11 @@ class FileDownloader(
             PermissionManager(Manifest.permission.WRITE_EXTERNAL_STORAGE, 403)
 
     fun download(activity: Activity, file: RemoteFile) {
-        storagePermission.check(activity, { downloadFile(context, file) })
+        storagePermission.check(activity) { downloadFile(context, file) }
     }
 
     fun download(fragment: Fragment, file: RemoteFile) {
-        storagePermission.check(fragment, { downloadFile(context, file) })
+        storagePermission.check(fragment) { downloadFile(context, file) }
     }
 
     fun handlePermissionResult(requestCode: Int, permissions: Array<out String>,

@@ -41,8 +41,8 @@
                 android:id="@+id/fingerprint_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginTop="@dimen/half_standard_padding"
                 android:padding="@dimen/half_standard_margin"
                 android:visibility="gone"
@@ -66,8 +66,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:paddingEnd="@dimen/double_margin"
                 android:paddingStart="@dimen/double_margin"
+                android:paddingEnd="@dimen/double_margin"
                 android:text="@string/sign_in"
                 android:theme="@style/PrimaryButton.Overlay" />
 
@@ -79,6 +79,7 @@
                 android:layout_alignBaseline="@+id/sign_in_button"
                 android:layout_alignBottom="@+id/sign_in_button"
                 android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/sign_in_button"
                 android:text="@string/forgot_password" />
 
             <Button

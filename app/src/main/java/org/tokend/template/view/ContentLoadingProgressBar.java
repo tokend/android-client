@@ -24,7 +24,7 @@ public class ContentLoadingProgressBar extends ProgressBar {
 
     private boolean mIsAttachedToWindow = false;
     private boolean mIsShown;
-    long mStartTime = -1L;
+    private long mStartTime = -1L;
 
     private final Runnable mDelayedHide = new Runnable() {
 

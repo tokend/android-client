@@ -81,7 +81,7 @@ class RepositoryProviderImpl(
         return systemInfoRepository
     }
 
-    override fun tfaBackends(): TfaFactorsRepository {
+    override fun tfaFactors(): TfaFactorsRepository {
         return tfaFactorsRepository
     }
 

@@ -20,7 +20,7 @@ interface RepositoryProvider {
     fun transactions(asset: String): TxRepository
     fun accountDetails(): AccountDetailsRepository
     fun systemInfo(): SystemInfoRepository
-    fun tfaBackends(): TfaFactorsRepository
+    fun tfaFactors(): TfaFactorsRepository
     fun assets(): AssetsRepository
     fun assetPairs(): AssetPairsRepository
     fun orderBook(baseAsset: String, quoteAsset: String, isBuy: Boolean): OrderBookRepository

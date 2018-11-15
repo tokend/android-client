@@ -17,7 +17,7 @@ import org.tokend.template.R
 class AssetLogoFactory(private val context: Context) {
     /**
      * Returns [Bitmap] logo for given asset code by first letter.
-     * If first letter cannot be displayed it will be replaced with emoj.
+     * If first letter cannot be displayed it will be replaced with emoji.
      */
     fun getForCode(assetCode: String,
                    size: Int,

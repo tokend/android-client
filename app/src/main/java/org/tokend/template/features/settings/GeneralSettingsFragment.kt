@@ -34,7 +34,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private var fingerprintPreference: SwitchPreferenceCompat? = null
 
     private val tfaRepository: TfaFactorsRepository
-        get() = repositoryProvider.tfaBackends()
+        get() = repositoryProvider.tfaFactors()
     private var tfaPreference: SwitchPreferenceCompat? = null
     private val tfaBackend: TfaFactor?
         get() = tfaRepository.itemsSubject.value.find { it.type == TFA_BACKEND_TYPE }

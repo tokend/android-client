@@ -50,6 +50,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@id/sale_remain_time_text_view"
-            android:text="10 investors" />
+            tools:text="10 investors" />
     </RelativeLayout>
 </LinearLayout>
