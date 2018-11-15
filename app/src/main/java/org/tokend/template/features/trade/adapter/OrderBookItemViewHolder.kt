@@ -9,8 +9,8 @@ import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
 import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
-import org.tokend.template.base.view.adapter.base.BaseViewHolder
-import org.tokend.template.base.view.util.AmountFormatter
+import org.tokend.template.view.adapter.base.BaseViewHolder
+import org.tokend.template.view.util.formatter.AmountFormatter
 
 class OrderBookItemViewHolder(view: View) : BaseViewHolder<Offer>(view) {
     private val priceTextView = view.find<TextView>(R.id.price_text_view)

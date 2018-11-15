@@ -19,7 +19,7 @@
 
             <include layout="@layout/include_error_empty_view" />
 
-            <org.tokend.template.base.view.PaginationRecyclerView
+            <org.tokend.template.view.PaginationRecyclerView
                 android:id="@+id/sales_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

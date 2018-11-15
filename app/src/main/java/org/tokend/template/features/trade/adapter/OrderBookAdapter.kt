@@ -7,8 +7,8 @@ import org.jetbrains.anko.find
 import org.jetbrains.anko.layoutInflater
 import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
-import org.tokend.template.base.view.adapter.base.BaseViewHolder
-import org.tokend.template.base.view.adapter.base.PaginationRecyclerAdapter
+import org.tokend.template.view.adapter.base.BaseViewHolder
+import org.tokend.template.view.adapter.base.PaginationRecyclerAdapter
 
 class OrderBookAdapter(val isBuy: Boolean) : PaginationRecyclerAdapter<Offer, BaseViewHolder<Offer>>() {
     class FooterViewHolder(v: View) : BaseViewHolder<Offer>(v) {

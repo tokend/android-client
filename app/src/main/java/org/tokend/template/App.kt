@@ -25,10 +25,10 @@ import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
-import org.tokend.template.base.logic.di.*
-import org.tokend.template.base.logic.di.providers.AppModule
-import org.tokend.template.base.logic.model.UrlConfig
-import org.tokend.template.base.logic.persistance.UrlConfigPersistor
+import org.tokend.template.di.*
+import org.tokend.template.di.providers.AppModule
+import org.tokend.template.data.model.UrlConfig
+import org.tokend.template.logic.persistance.UrlConfigPersistor
 import org.tokend.template.util.Navigator
 import java.io.IOException
 import java.net.SocketException

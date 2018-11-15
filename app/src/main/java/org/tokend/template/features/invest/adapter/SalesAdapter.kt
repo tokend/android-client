@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.tokend.template.R
-import org.tokend.template.base.view.adapter.base.BaseViewHolder
-import org.tokend.template.base.view.adapter.base.PaginationRecyclerAdapter
+import org.tokend.template.view.adapter.base.BaseViewHolder
+import org.tokend.template.view.adapter.base.PaginationRecyclerAdapter
 import org.tokend.template.extensions.Sale
 
 class SalesAdapter(

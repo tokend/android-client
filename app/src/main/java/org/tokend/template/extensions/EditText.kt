@@ -3,7 +3,7 @@ package org.tokend.template.extensions
 import android.support.annotation.StringRes
 import android.text.Editable
 import android.widget.EditText
-import org.tokend.template.util.SoftInputUtil
+import org.tokend.template.view.util.input.SoftInputUtil
 
 fun EditText.hasError(): Boolean {
     return error != null

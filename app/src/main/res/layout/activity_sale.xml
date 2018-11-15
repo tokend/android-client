@@ -243,7 +243,7 @@
                 android:visibility="gone"
                 app:contentPadding="0dp">
 
-                <org.tokend.template.base.view.asset_chart.AssetChartCard
+                <org.tokend.template.view.assetchart.AssetChartCard
                     android:id="@+id/asset_chart"
                     android:layout_width="match_parent"
                     android:layout_height="384dp" />

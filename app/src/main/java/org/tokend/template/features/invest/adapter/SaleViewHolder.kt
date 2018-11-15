@@ -4,7 +4,7 @@ import android.view.View
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.list_item_sale.view.*
 import org.tokend.template.R
-import org.tokend.template.base.view.adapter.base.BaseViewHolder
+import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.extensions.Sale
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 

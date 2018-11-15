@@ -15,7 +15,7 @@
 
         <include layout="@layout/toolbar" />
 
-        <org.tokend.template.base.view.picker.PickerTabLayout
+        <org.tokend.template.view.picker.PickerTabLayout
             android:id="@+id/asset_tab_layout"
             style="@style/TabPicker.Inverse"
             android:layout_width="match_parent"

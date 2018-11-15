@@ -3,7 +3,7 @@ package org.tokend.template.features.invest.activities
 import org.tokend.sdk.api.base.model.operations.InvestmentOperation
 import org.tokend.sdk.api.base.model.operations.OfferMatchOperation
 import org.tokend.template.R
-import org.tokend.template.base.activities.tx_details.OfferMatchDetailsActivity
+import org.tokend.template.features.wallet.txdetails.OfferMatchDetailsActivity
 
 class InvestmentDetailsActivity : OfferMatchDetailsActivity(
         InvestmentOperation::class

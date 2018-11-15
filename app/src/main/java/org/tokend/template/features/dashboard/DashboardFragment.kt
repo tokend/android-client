@@ -13,8 +13,8 @@ import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.childrenSequence
 import org.tokend.template.R
-import org.tokend.template.base.fragments.BaseFragment
-import org.tokend.template.base.fragments.ToolbarProvider
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
 
 class DashboardFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()

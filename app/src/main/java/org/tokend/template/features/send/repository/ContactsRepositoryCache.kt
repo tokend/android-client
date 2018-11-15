@@ -1,8 +1,8 @@
 package org.tokend.template.features.send.repository
 
 import io.reactivex.Single
-import org.tokend.template.base.logic.repository.base.RepositoryCache
-import org.tokend.template.features.send.Contact
+import org.tokend.template.data.repository.base.RepositoryCache
+import org.tokend.template.features.send.model.Contact
 
 class ContactsRepositoryCache : RepositoryCache<Contact>() {
     override fun isContentSame(first: Contact, second: Contact): Boolean {

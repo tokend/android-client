@@ -23,27 +23,28 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.base.activities.WalletEventsListener
-import org.tokend.template.base.fragments.BaseFragment
-import org.tokend.template.base.fragments.ToolbarProvider
-import org.tokend.template.base.logic.FeeManager
-import org.tokend.template.base.logic.repository.balances.BalancesRepository
-import org.tokend.template.base.view.AmountEditTextWrapper
-import org.tokend.template.base.view.util.AmountFormatter
-import org.tokend.template.base.view.util.LoadingIndicatorManager
-import org.tokend.template.base.view.util.SimpleTextWatcher
+import org.tokend.template.logic.wallet.WalletEventsListener
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.FeeManager
+import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.view.util.input.AmountEditTextWrapper
+import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.isWithdrawable
+import org.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.Permission
+import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
 import java.math.BigDecimal
 
 class WithdrawFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
-    private val cameraPermission = Permission(Manifest.permission.CAMERA, 404)
+    private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress.show() },
             hideLoading = { progress.hide() }

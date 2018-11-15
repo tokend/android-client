@@ -1,7 +1,7 @@
 package org.tokend.template.features.invest.repository
 
 import io.reactivex.Single
-import org.tokend.template.base.logic.repository.base.RepositoryCache
+import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.extensions.Sale
 
 class SalesCache : RepositoryCache<Sale>() {

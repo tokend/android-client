@@ -6,7 +6,7 @@ import android.view.View
 import kotlinx.android.synthetic.main.layout_sale_progress.view.*
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
-import org.tokend.template.base.view.util.AmountFormatter
+import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.highlight
 import java.util.*

@@ -44,7 +44,7 @@
             app:srcCompat="@drawable/chevron_up" />
     </RelativeLayout>
 
-    <org.tokend.template.base.view.asset_chart.AssetChartCard
+    <org.tokend.template.view.assetchart.AssetChartCard
         android:id="@+id/pair_chart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

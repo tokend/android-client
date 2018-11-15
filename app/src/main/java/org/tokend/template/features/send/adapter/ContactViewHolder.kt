@@ -8,17 +8,12 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_contact.view.*
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.base.view.adapter.base.BaseViewHolder
-import org.tokend.template.base.view.adapter.base.SimpleItemClickListener
-import org.tokend.template.features.explore.AssetLogoFactory
-import org.tokend.template.features.send.Contact
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
+import org.tokend.template.view.adapter.base.BaseViewHolder
+import org.tokend.template.view.adapter.base.SimpleItemClickListener
+import org.tokend.template.features.assets.AssetLogoFactory
+import org.tokend.template.features.send.model.Contact
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.Bitmap
-
 
 
 class ContactViewHolder(itemView: View) : BaseViewHolder<Any>(itemView) {

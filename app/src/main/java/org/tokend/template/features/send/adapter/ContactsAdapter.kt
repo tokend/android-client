@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
-import org.tokend.template.base.view.adapter.base.BaseViewHolder
-import org.tokend.template.base.view.adapter.base.SimpleItemClickListener
-import org.tokend.template.features.send.Contact
-import org.tokend.template.features.send.ContactEmail
+import org.tokend.template.view.adapter.base.BaseViewHolder
+import org.tokend.template.view.adapter.base.SimpleItemClickListener
+import org.tokend.template.features.send.model.Contact
+import org.tokend.template.features.send.model.ContactEmail
 
 class ContactsAdapter : RecyclerView.Adapter<BaseViewHolder<Any>>() {
 

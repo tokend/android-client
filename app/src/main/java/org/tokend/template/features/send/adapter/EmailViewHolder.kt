@@ -2,8 +2,8 @@ package org.tokend.template.features.send.adapter
 
 import android.view.View
 import kotlinx.android.synthetic.main.item_email.view.*
-import org.tokend.template.base.view.adapter.base.BaseViewHolder
-import org.tokend.template.features.send.ContactEmail
+import org.tokend.template.view.adapter.base.BaseViewHolder
+import org.tokend.template.features.send.model.ContactEmail
 
 class EmailViewHolder(itemView: View) : BaseViewHolder<Any>(itemView) {
 

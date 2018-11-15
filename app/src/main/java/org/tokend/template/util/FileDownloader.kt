@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment
 import android.webkit.MimeTypeMap
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.template.R
+import org.tokend.template.view.ToastManager
 
 /**
  * Manages [RemoteFile] downloading.
@@ -19,7 +20,7 @@ class FileDownloader(
         private val storageUrl: String
 ) {
     private val storagePermission =
-            Permission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 403)
+            PermissionManager(Manifest.permission.WRITE_EXTERNAL_STORAGE, 403)
 
     fun download(activity: Activity, file: RemoteFile) {
         storagePermission.check(activity, { downloadFile(context, file) })

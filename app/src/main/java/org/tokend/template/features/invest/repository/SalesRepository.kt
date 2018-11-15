@@ -5,9 +5,9 @@ import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.sales.params.SalesParams
-import org.tokend.template.base.logic.di.providers.ApiProvider
-import org.tokend.template.base.logic.repository.AccountDetailsRepository
-import org.tokend.template.base.logic.repository.base.pagination.PagedDataRepository
+import org.tokend.template.di.providers.ApiProvider
+import org.tokend.template.data.repository.AccountDetailsRepository
+import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.toSingle
 

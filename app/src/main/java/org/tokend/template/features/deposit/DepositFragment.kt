@@ -19,18 +19,18 @@ import org.jetbrains.anko.onClick
 import org.jetbrains.anko.runOnUiThread
 import org.tokend.sdk.api.accounts.model.Account
 import org.tokend.template.R
-import org.tokend.template.base.fragments.BaseFragment
-import org.tokend.template.base.fragments.ToolbarProvider
-import org.tokend.template.base.logic.repository.AccountRepository
-import org.tokend.template.base.logic.repository.assets.AssetsRepository
-import org.tokend.template.base.logic.transactions.TxManager
-import org.tokend.template.base.view.picker.PickerItem
-import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.data.repository.AccountRepository
+import org.tokend.template.data.repository.assets.AssetsRepository
+import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.view.picker.PickerItem
+import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.Asset
-import org.tokend.template.util.DateFormatter
+import org.tokend.template.view.util.formatter.DateFormatter
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.ProgressDialogFactory
+import org.tokend.template.view.util.ProgressDialogFactory
 import java.util.*
 
 class DepositFragment : BaseFragment(), ToolbarProvider {

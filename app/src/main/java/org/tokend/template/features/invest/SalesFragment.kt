@@ -23,14 +23,15 @@ import kotlinx.android.synthetic.main.layout_sales_search.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.dip
 import org.tokend.template.R
-import org.tokend.template.base.fragments.BaseFragment
-import org.tokend.template.base.fragments.ToolbarProvider
-import org.tokend.template.base.view.util.AnimationUtil
-import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.view.util.AnimationUtil
+import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.features.invest.adapter.SalesAdapter
+import org.tokend.template.features.invest.logic.SalesSubscriptionManager
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.util.Navigator
-import org.tokend.template.util.SoftInputUtil
+import org.tokend.template.view.util.input.SoftInputUtil
 import java.util.concurrent.TimeUnit
 
 class SalesFragment : BaseFragment(), ToolbarProvider {

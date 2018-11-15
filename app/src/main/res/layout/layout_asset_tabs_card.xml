@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <org.tokend.template.base.view.picker.PickerTabLayout
+        <org.tokend.template.view.picker.PickerTabLayout
             android:id="@+id/asset_tabs"
             style="@style/TabPicker"
             android:layout_width="match_parent"
