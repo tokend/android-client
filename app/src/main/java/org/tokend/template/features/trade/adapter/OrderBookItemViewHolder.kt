@@ -29,7 +29,7 @@ class OrderBookItemViewHolder(view: View) : BaseViewHolder<Offer>(view) {
         priceTextView.text = AmountFormatter.formatAssetAmount(item.price, item.quoteAsset,
                 minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
         if (isBuy) {
-            priceTextView!!.textColor =
+            priceTextView.textColor =
                     ContextCompat.getColor(view.context, R.color.received)
         } else {
             priceTextView.textColor =

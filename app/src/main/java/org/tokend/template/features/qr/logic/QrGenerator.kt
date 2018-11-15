@@ -1,6 +1,5 @@
 package org.tokend.template.features.qr.logic
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import com.google.zxing.BarcodeFormat
@@ -11,7 +10,7 @@ import com.google.zxing.qrcode.encoder.Encoder
 import io.reactivex.Observable
 import java.util.*
 
-class QrGenerator(context: Context) {
+class QrGenerator() {
     private val QR_CODE_WRITER = QRCodeWriter()
 
     private val ERROR_CORRECTION_LV = ErrorCorrectionLevel.H

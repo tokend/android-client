@@ -23,19 +23,19 @@ import kotlinx.android.synthetic.main.list_item_asset.view.*
 import org.jetbrains.anko.find
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.logic.transactions.TxManager
-import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.Asset
 import org.tokend.template.features.assets.adapter.AssetListItem
 import org.tokend.template.features.assets.adapter.AssetListItemViewHolder
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.InfoCard
 import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.util.formatter.AmountFormatter
 
 
 class AssetDetailsFragment : BaseFragment() {
@@ -124,12 +124,12 @@ class AssetDetailsFragment : BaseFragment() {
     }
 
     private fun displayTermsIfNeeded() {
-        val terms = asset.details?.terms.takeIf { !it?.name.isNullOrEmpty() }
+        val terms = asset.details.terms.takeIf { !it.name.isNullOrEmpty() }
                 ?: return
 
         val fileCardView =
                 layoutInflater.inflate(R.layout.list_item_remote_file,
-                        null, false)
+                        cards_layout, false)
 
         val fileLayout = fileCardView?.find<View>(R.id.file_content_layout) ?: return
         (fileCardView as? CardView)?.removeView(fileLayout)

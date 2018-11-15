@@ -10,7 +10,7 @@ class AssetDetailsActivity : BaseActivity() {
 
     private lateinit var asset: Asset
 
-    override fun onCreateAllowed(savedITxHnstanceState: Bundle?) {
+    override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_asset_details)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 

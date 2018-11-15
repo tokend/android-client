@@ -1,9 +1,7 @@
 package org.tokend.template.data.repository.tfa
 
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.rxkotlin.toMaybe
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
@@ -110,15 +108,5 @@ class TfaFactorsRepository(
                 .doOnSubscribe { isLoading = true }
                 .doOnDispose { isLoading = false }
                 .doOnTerminate { isLoading = false }
-    }
-
-    fun getBackendByType(type: TfaFactor.Type): Maybe<TfaFactor> {
-        val signedApi = apiProvider.getSignedApi()
-                ?: return Maybe.error(IllegalStateException("No signed API instance found"))
-        val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex
-                ?: return Maybe.error(IllegalStateException("No wallet info found"))
-
-        return updateIfNotFreshDeferred()
-                .andThen(itemsCache.items.find { it.type == type }.toMaybe())
     }
 }

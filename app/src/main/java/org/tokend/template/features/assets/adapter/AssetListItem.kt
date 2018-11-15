@@ -15,9 +15,9 @@ class AssetListItem(
             storageUrl: String
     ) : this(
             code = asset.code,
-            name = asset.details?.name,
-            logoUrl = asset.details?.logo.let { logo ->
-                logo?.getUrl(storageUrl)?.takeIf { logo.isImage }
+            name = asset.details.name,
+            logoUrl = asset.details.logo.let { logo ->
+                logo.getUrl(storageUrl)?.takeIf { logo.isImage }
             },
             balanceExists = balanceExists,
             source = asset

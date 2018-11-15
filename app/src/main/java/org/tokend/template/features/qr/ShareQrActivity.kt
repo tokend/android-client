@@ -17,10 +17,10 @@ import kotlinx.android.synthetic.main.activity_share_qr.*
 import org.jetbrains.anko.doAsync
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.extensions.getStringExtra
 import org.tokend.template.features.qr.logic.QrGenerator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.AnimationUtil
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -97,7 +97,7 @@ class ShareQrActivity : BaseActivity() {
     }
 
     private fun displayQrCode(text: String) {
-        QrGenerator(this).bitmap(text, getMaxQrSize())
+        QrGenerator().bitmap(text, getMaxQrSize())
                 .delay(300, TimeUnit.MILLISECONDS)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .doOnSubscribe {
