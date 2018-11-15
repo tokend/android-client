@@ -4,7 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.api.tfa.model.TfaFactor
-import org.tokend.template.data.repository.tfa.TfaBackendsRepository
+import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import java.util.concurrent.CancellationException
 
 /**
@@ -15,7 +15,7 @@ import java.util.concurrent.CancellationException
  */
 class EnableTfaUseCase(
         private val factorType: TfaFactor.Type,
-        private val factorsRepository: TfaBackendsRepository,
+        private val factorsRepository: TfaFactorsRepository,
         private val newFactorConfirmation: (TfaFactor) -> Single<Boolean>
 ) {
     private lateinit var newFactor: TfaFactor

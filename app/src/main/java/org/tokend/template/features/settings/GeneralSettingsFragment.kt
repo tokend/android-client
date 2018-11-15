@@ -15,7 +15,7 @@ import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.R
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.persistance.FingerprintUtil
-import org.tokend.template.data.repository.tfa.TfaBackendsRepository
+import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
 import org.tokend.template.features.tfa.logic.EnableTfaUseCase
 import org.tokend.template.features.tfa.view.TotpFactorConfirmationDialog
@@ -33,7 +33,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     private var fingerprintPreference: SwitchPreferenceCompat? = null
 
-    private val tfaRepository: TfaBackendsRepository
+    private val tfaRepository: TfaFactorsRepository
         get() = repositoryProvider.tfaBackends()
     private var tfaPreference: SwitchPreferenceCompat? = null
     private val tfaBackend: TfaFactor?

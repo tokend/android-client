@@ -3,14 +3,14 @@ package org.tokend.template.features.tfa.logic
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.tokend.sdk.api.tfa.model.TfaFactor
-import org.tokend.template.data.repository.tfa.TfaBackendsRepository
+import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 
 /**
  * Disables current active 2FA factor of given type
  */
 class DisableTfaUseCase(
         private val factorType: TfaFactor.Type,
-        private val factorsRepository: TfaBackendsRepository
+        private val factorsRepository: TfaFactorsRepository
 ) {
     fun perform(): Completable {
         return updateRepository()

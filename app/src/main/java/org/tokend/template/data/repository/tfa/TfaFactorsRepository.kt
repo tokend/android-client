@@ -5,17 +5,17 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import org.tokend.sdk.api.tfa.model.TfaFactor
+import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.extensions.toCompletable
 import org.tokend.template.extensions.toSingle
 
-class TfaBackendsRepository(
+class TfaFactorsRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider
 ) : SimpleMultipleItemsRepository<TfaFactor>() {
-    override val itemsCache = TfaBackendsCache()
+    override val itemsCache = TfaFactorsCache()
 
     override fun getItems(): Single<List<TfaFactor>> {
         val signedApi = apiProvider.getSignedApi()
@@ -61,7 +61,7 @@ class TfaBackendsRepository(
                 .andThen(
                         Single.just(
                                 itemsCache.items.maxBy {
-                                    it.attributes?.priority ?: 0
+                                    it.attributes.priority
                                 }
                                         ?.attributes?.priority
                                         ?: 0

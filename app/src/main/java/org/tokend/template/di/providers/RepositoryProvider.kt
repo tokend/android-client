@@ -9,7 +9,7 @@ import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.features.send.repository.ContactsRepository
 import org.tokend.template.data.repository.favorites.FavoritesRepository
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
-import org.tokend.template.data.repository.tfa.TfaBackendsRepository
+import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.data.repository.transactions.TxRepository
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.data.repository.offers.OffersRepository
@@ -20,7 +20,7 @@ interface RepositoryProvider {
     fun transactions(asset: String): TxRepository
     fun accountDetails(): AccountDetailsRepository
     fun systemInfo(): SystemInfoRepository
-    fun tfaBackends(): TfaBackendsRepository
+    fun tfaBackends(): TfaFactorsRepository
     fun assets(): AssetsRepository
     fun assetPairs(): AssetPairsRepository
     fun orderBook(baseAsset: String, quoteAsset: String, isBuy: Boolean): OrderBookRepository

@@ -10,7 +10,7 @@ import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.features.send.repository.ContactsRepository
 import org.tokend.template.data.repository.favorites.FavoritesRepository
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
-import org.tokend.template.data.repository.tfa.TfaBackendsRepository
+import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.data.repository.transactions.TxRepository
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.data.repository.offers.OffersRepository
@@ -31,8 +31,8 @@ class RepositoryProviderImpl(
     private val systemInfoRepository: SystemInfoRepository by lazy {
         SystemInfoRepository(apiProvider)
     }
-    private val tfaBackendsRepository: TfaBackendsRepository by lazy {
-        TfaBackendsRepository(apiProvider, walletInfoProvider)
+    private val tfaFactorsRepository: TfaFactorsRepository by lazy {
+        TfaFactorsRepository(apiProvider, walletInfoProvider)
     }
     private val assetsRepository: AssetsRepository by lazy {
         AssetsRepository(apiProvider)
@@ -81,8 +81,8 @@ class RepositoryProviderImpl(
         return systemInfoRepository
     }
 
-    override fun tfaBackends(): TfaBackendsRepository {
-        return tfaBackendsRepository
+    override fun tfaBackends(): TfaFactorsRepository {
+        return tfaFactorsRepository
     }
 
     override fun assets(): AssetsRepository {
