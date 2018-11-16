@@ -10,7 +10,7 @@ import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.SimpleItemClickListener
-import org.tokend.template.features.assets.AssetLogoFactory
+import org.tokend.template.features.assets.LogoFactory
 import org.tokend.template.features.send.model.Contact
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.graphics.drawable.BitmapDrawable
@@ -55,8 +55,13 @@ class ContactViewHolder(itemView: View) : BaseViewHolder<Any>(itemView) {
                         override fun onError() { }
                     })
         } else {
-            image.setImageBitmap(AssetLogoFactory(view.context)
-                    .getForCode(item.name, logoSize))
+            image.setImageBitmap(
+                    LogoFactory(view.context).getWithAutoBackground(
+                            item.name,
+                            logoSize,
+                            item.id
+                    )
+            )
         }
 
         name.text = item.name
