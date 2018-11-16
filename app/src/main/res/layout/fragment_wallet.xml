@@ -13,7 +13,8 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <org.tokend.template.view.TouchInterceptingLinearLayout
+            android:id="@+id/touch_capture_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -45,15 +46,15 @@
 
             </RelativeLayout>
 
-        </LinearLayout>
+        </org.tokend.template.view.TouchInterceptingLinearLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/send_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/standard_margin"
         android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/standard_margin"
         android:visibility="gone"
         app:layout_anchor="@id/swipe_refresh"
         app:layout_anchorGravity="bottom|right|end"

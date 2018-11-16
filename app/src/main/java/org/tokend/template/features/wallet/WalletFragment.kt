@@ -3,6 +3,7 @@ package org.tokend.template.features.wallet
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -33,8 +34,10 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.view.adapter.history.TxHistoryItem
+import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.formatter.AmountFormatter
+import java.lang.ref.WeakReference
 
 class WalletFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -76,6 +79,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         initHistory()
         initSwipeRefresh()
         initSend()
+        initHorizontalSwipesIfNeeded()
 
         arguments?.getString(ASSET_EXTRA)?.let { requiredAsset ->
             asset = requiredAsset
@@ -143,6 +147,31 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
         swipe_refresh.setOnRefreshListener { update(force = true) }
+    }
+
+    private fun initHorizontalSwipesIfNeeded() {
+        if (!needAssetTabs) {
+            return
+        }
+
+        val weakTabs = WeakReference(asset_tabs)
+
+        val gestureDetector = GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
+                onSwipeToLeft = {
+                    weakTabs.get()?.apply { selectedItemIndex++ }
+                },
+                onSwipeToRight = {
+                    weakTabs.get()?.apply { selectedItemIndex-- }
+                }
+        ))
+
+        touch_capture_layout.setTouchEventInterceptor(gestureDetector::onTouchEvent)
+        swipe_refresh.setOnTouchListener { _, event ->
+            if (error_empty_view.visibility == View.VISIBLE)
+                gestureDetector.onTouchEvent(event)
+
+            false
+        }
     }
     // endregion
 
