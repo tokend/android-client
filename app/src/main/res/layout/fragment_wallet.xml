@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <org.tokend.template.view.TouchInterceptingLinearLayout
+        <org.tokend.template.view.touchintercepting.TouchInterceptingLinearLayout
             android:id="@+id/touch_capture_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -46,7 +46,7 @@
 
             </RelativeLayout>
 
-        </org.tokend.template.view.TouchInterceptingLinearLayout>
+        </org.tokend.template.view.touchintercepting.TouchInterceptingLinearLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton

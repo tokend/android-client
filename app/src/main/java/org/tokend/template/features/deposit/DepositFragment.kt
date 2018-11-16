@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -19,18 +20,20 @@ import org.jetbrains.anko.onClick
 import org.jetbrains.anko.runOnUiThread
 import org.tokend.sdk.api.accounts.model.Account
 import org.tokend.template.R
-import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
-import org.tokend.template.logic.transactions.TxManager
-import org.tokend.template.view.picker.PickerItem
-import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.Asset
-import org.tokend.template.view.util.formatter.DateFormatter
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.picker.PickerItem
+import org.tokend.template.view.util.HorizontalSwipesGestureDetector
+import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.util.formatter.DateFormatter
+import java.lang.ref.WeakReference
 import java.util.*
 
 class DepositFragment : BaseFragment(), ToolbarProvider {
@@ -69,8 +72,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     override fun onInitAllowed() {
         initToolbar()
         initSwipeRefresh()
-
         initButtons()
+        initHorizontalSwipes()
 
         subscribeToAccount()
         subscribeToAssets()
@@ -183,6 +186,24 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 },
                 depositableAssets.indexOfFirst { it.code == currentAsset?.code }
         )
+    }
+
+    private fun initHorizontalSwipes() {
+        val weakTabs = WeakReference(asset_tab_layout)
+
+        val gestureDetector = GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
+                onSwipeToLeft = {
+                    weakTabs.get()?.apply { selectedItemIndex++ }
+                },
+                onSwipeToRight = {
+                    weakTabs.get()?.apply { selectedItemIndex-- }
+                }
+        ))
+
+        swipe_refresh.setTouchEventInterceptor { motionEvent ->
+            gestureDetector.onTouchEvent(motionEvent)
+            false
+        }
     }
 
     // region Timer
