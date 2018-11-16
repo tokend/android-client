@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
@@ -40,6 +41,8 @@ import org.tokend.template.data.repository.orderbook.OrderBookRepository
 import org.tokend.template.features.offers.CreateOfferDialog
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.HorizontalSwipesGestureDetector
+import java.lang.ref.WeakReference
 import java.math.BigDecimal
 
 
@@ -83,6 +86,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         initPairSelection()
         initSwipeRefresh()
         initChart()
+        initHorizontalSwipes()
 
         subscribeToPairs()
         subscribeToBalances()
@@ -194,6 +198,24 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 }
                 else -> false
             }
+        }
+    }
+
+    private fun initHorizontalSwipes() {
+        val weakTabs = WeakReference(pairs_tabs)
+
+        val gestureDetector = GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
+                onSwipeToLeft = {
+                    weakTabs.get()?.apply { selectedItemIndex++ }
+                },
+                onSwipeToRight = {
+                    weakTabs.get()?.apply { selectedItemIndex-- }
+                }
+        ))
+
+        swipe_refresh.setTouchEventInterceptor { motionEvent ->
+            gestureDetector.onTouchEvent(motionEvent)
+            false
         }
     }
 
