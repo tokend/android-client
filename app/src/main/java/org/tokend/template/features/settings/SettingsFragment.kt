@@ -8,6 +8,7 @@ import android.view.View
 import io.reactivex.disposables.CompositeDisposable
 import org.tokend.template.App
 import org.tokend.template.R
+import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.di.providers.WalletInfoProvider
@@ -28,6 +29,8 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
     lateinit var errorHandlerFactory: ErrorHandlerFactory
     @Inject
     lateinit var toastManager: ToastManager
+    @Inject
+    lateinit var accountProvider: AccountProvider
 
     protected val compositeDisposable = CompositeDisposable()
 

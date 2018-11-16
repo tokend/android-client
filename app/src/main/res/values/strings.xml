@@ -284,4 +284,6 @@
     <string name="contacts">Contacts</string>
     <string name="no_contacts_message">No contacts available</string>
     <string name="use_fingerprint">Use fingerprint</string>
+    <string name="secret_seed">Secret seed</string>
+    <string name="secret_seed_description">Secret seed is private information that proves you own your account</string>
 </resources>

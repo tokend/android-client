@@ -18,6 +18,13 @@
             android:summary="@string/verification_summary"
             android:title="@string/verification_title" />
 
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_account_key"
+            android:key="secret_seed"
+            android:layout="@layout/preference_layout"
+            android:summary="@string/secret_seed_description"
+            android:title="@string/secret_seed" />
+
     </android.support.v7.preference.PreferenceCategory>
 
     <android.support.v7.preference.PreferenceCategory
