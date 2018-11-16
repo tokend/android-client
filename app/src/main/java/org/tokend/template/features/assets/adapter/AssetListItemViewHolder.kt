@@ -12,6 +12,7 @@ import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.SimpleItemClickListener
 import org.tokend.template.features.assets.LogoFactory
+import org.tokend.template.util.CircleTransform
 
 class AssetListItemViewHolder(view: View) : BaseViewHolder<AssetListItem>(view) {
     private val logoImageView: AppCompatImageView = view.find(R.id.asset_logo_image_view)
@@ -39,6 +40,7 @@ class AssetListItemViewHolder(view: View) : BaseViewHolder<AssetListItem>(view) 
                     .placeholder(R.color.white)
                     .resize(logoSize, logoSize)
                     .centerInside()
+                    .transform(CircleTransform())
                     .into(logoImageView)
         } else {
             logoImageView.setImageBitmap(

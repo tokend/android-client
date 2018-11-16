@@ -3,7 +3,6 @@ package org.tokend.template.features.send.adapter
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.view.View
-import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_contact.view.*
 import org.jetbrains.anko.onClick
@@ -12,8 +11,7 @@ import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.SimpleItemClickListener
 import org.tokend.template.features.assets.LogoFactory
 import org.tokend.template.features.send.model.Contact
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
-import android.graphics.drawable.BitmapDrawable
+import org.tokend.template.util.CircleTransform
 
 
 class ContactViewHolder(itemView: View) : BaseViewHolder<Any>(itemView) {
@@ -44,16 +42,8 @@ class ContactViewHolder(itemView: View) : BaseViewHolder<Any>(itemView) {
                     .placeholder(R.color.white)
                     .resize(logoSize, logoSize)
                     .centerInside()
-                    .into(image, object : Callback {
-                        override fun onSuccess() {
-                            val imageBitmap = (image.drawable as BitmapDrawable).bitmap
-                            val imageDrawable = RoundedBitmapDrawableFactory.create(view.resources, imageBitmap)
-                            imageDrawable.isCircular = true
-                            imageDrawable.cornerRadius = Math.min(imageBitmap.width, imageBitmap.height) / 2.0f
-                            image.setImageDrawable(imageDrawable)
-                        }
-                        override fun onError() { }
-                    })
+                    .transform(CircleTransform())
+                    .into(image)
         } else {
             image.setImageBitmap(
                     LogoFactory(view.context).getWithAutoBackground(

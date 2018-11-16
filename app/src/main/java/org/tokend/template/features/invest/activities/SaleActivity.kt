@@ -46,6 +46,7 @@ import org.tokend.template.features.invest.logic.InvestmentInfoManager
 import org.tokend.template.features.invest.logic.SwitchFavoriteUseCase
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
+import org.tokend.template.util.CircleTransform
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -284,6 +285,7 @@ class SaleActivity : BaseActivity() {
                     .load(it)
                     .resizeDimen(R.dimen.asset_list_item_logo_size, R.dimen.asset_list_item_logo_size)
                     .centerInside()
+                    .transform(CircleTransform())
                     .into(asset_logo_image_view)
         } ?: displayGeneratedLogo()
     }
