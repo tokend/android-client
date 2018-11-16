@@ -24,7 +24,12 @@ class PickerTabLayout : TabLayout, Picker {
     override var selectedItemIndex: Int
         get() = selectedTabPosition
         set(value) {
-            (getTabAt(value) ?: getTabAt(0))?.select()
+            val index = when {
+                value < 0 -> 0
+                value >= items.size -> items.size - 1
+                else -> value
+            }
+            (getTabAt(index) ?: getTabAt(0))?.select()
         }
     override var selectedItem: PickerItem?
         get() = items.getOrNull(selectedItemIndex)
