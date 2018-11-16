@@ -41,7 +41,7 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
-import org.tokend.template.features.assets.AssetLogoFactory
+import org.tokend.template.features.assets.LogoFactory
 import org.tokend.template.features.invest.logic.InvestmentInfoManager
 import org.tokend.template.features.invest.logic.SwitchFavoriteUseCase
 import org.tokend.template.features.invest.view.SaleProgressWrapper
@@ -291,8 +291,12 @@ class SaleActivity : BaseActivity() {
     private fun displayGeneratedLogo() {
         val logoSize = resources.getDimensionPixelSize(R.dimen.asset_list_item_logo_size)
 
-        asset_logo_image_view.setImageBitmap(AssetLogoFactory(this)
-                .getForCode(saleAsset.code, logoSize))
+        asset_logo_image_view.setImageBitmap(
+                LogoFactory(this).getWithAutoBackground(
+                        saleAsset.code,
+                        logoSize
+                )
+        )
     }
 
     private fun displayYoutubePreview() {

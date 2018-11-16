@@ -11,7 +11,7 @@ import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.SimpleItemClickListener
-import org.tokend.template.features.assets.AssetLogoFactory
+import org.tokend.template.features.assets.LogoFactory
 
 class AssetListItemViewHolder(view: View) : BaseViewHolder<AssetListItem>(view) {
     private val logoImageView: AppCompatImageView = view.find(R.id.asset_logo_image_view)
@@ -41,8 +41,12 @@ class AssetListItemViewHolder(view: View) : BaseViewHolder<AssetListItem>(view) 
                     .centerInside()
                     .into(logoImageView)
         } else {
-            logoImageView.setImageBitmap(AssetLogoFactory(view.context)
-                    .getForCode(item.code, logoSize))
+            logoImageView.setImageBitmap(
+                    LogoFactory(view.context).getWithAutoBackground(
+                            item.code,
+                            logoSize
+                    )
+            )
         }
 
         codeTextView.text = item.code
