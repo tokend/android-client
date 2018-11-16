@@ -117,11 +117,9 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
                     positiveButton(android.R.string.ok) {
                         dismiss()
                     }
-                }.show().also { builder ->
-                    builder.dialog?.findViewById<TextView>(android.R.id.message)?.let { textView ->
+                }.show().dialog?.findViewById<TextView>(android.R.id.message)?.let { textView ->
                         textView.isSelectable = true
                         textView.typeface = Typeface.MONOSPACE
-                    }
                 }
                 true
             }
