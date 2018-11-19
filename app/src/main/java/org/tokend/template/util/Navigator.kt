@@ -12,6 +12,7 @@ import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
+import org.tokend.sdk.api.base.model.operations.*
 import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
@@ -26,6 +27,7 @@ import org.tokend.template.extensions.Asset
 import org.tokend.template.extensions.Sale
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.assets.AssetDetailsActivity
+import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
 import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
 import org.tokend.template.features.recovery.RecoveryActivity
@@ -33,6 +35,7 @@ import org.tokend.template.features.send.PaymentConfirmationActivity
 import org.tokend.template.features.signin.SignInActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
+import org.tokend.template.features.wallet.txdetails.*
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 
@@ -207,5 +210,30 @@ object Navigator {
         activity.startActivity(activity.intentFor<SaleDetailsActivity>(
                 SaleDetailsActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
         ))
+    }
+
+    fun openTransactionDetails(activity: Activity, tx: TransferOperation) {
+        when (tx) {
+            is PaymentOperation ->
+                TxDetailsActivity
+                        .start<PaymentDetailsActivity, PaymentOperation>(activity, tx)
+            is IssuanceOperation ->
+                TxDetailsActivity
+                        .start<DepositDetailsActivity, IssuanceOperation>(activity, tx)
+            is WithdrawalOperation ->
+                TxDetailsActivity
+                        .start<WithdrawalDetailsActivity, WithdrawalOperation>(activity, tx)
+            is InvestmentOperation ->
+                TxDetailsActivity
+                        .start<InvestmentDetailsActivity, InvestmentOperation>(activity, tx)
+            is OfferMatchOperation ->
+                TxDetailsActivity
+                        .start<OfferMatchDetailsActivity, OfferMatchOperation>(activity, tx)
+            else ->
+                (tx as? BaseTransferOperation)?.let {
+                    TxDetailsActivity
+                            .start<UnknownTxDetailsActivity, BaseTransferOperation>(activity, it)
+                }
+        }
     }
 }

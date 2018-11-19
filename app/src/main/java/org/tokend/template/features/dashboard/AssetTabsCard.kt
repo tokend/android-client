@@ -1,6 +1,6 @@
 package org.tokend.template.features.dashboard
 
-import android.content.Context
+import android.app.Activity
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -28,7 +28,7 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ViewProvider
 import org.tokend.template.view.util.formatter.AmountFormatter
 
-class AssetTabsCard(private val context: Context?,
+class AssetTabsCard(private val activity: Activity,
                     private val repositoryProvider: RepositoryProvider,
                     private val errorHandlerFactory: ErrorHandlerFactory,
                     private val disposable: CompositeDisposable) : ViewProvider {
@@ -58,7 +58,7 @@ class AssetTabsCard(private val context: Context?,
     }
 
     override fun getView(rootView: ViewGroup): View {
-        view = LayoutInflater.from(context)
+        view = LayoutInflater.from(activity)
                 .inflate(R.layout.layout_asset_tabs_card, rootView, false)
 
         initLoadingManager()
@@ -102,7 +102,7 @@ class AssetTabsCard(private val context: Context?,
                     contentView.visibility = View.VISIBLE
                 } else {
                     if (repository().isNeverUpdated) {
-                        emptyView.text = context?.getString(R.string.loading_data)
+                        emptyView.text = activity.getString(R.string.loading_data)
                     } else {
                         emptyView.text = emptyText
                     }
@@ -114,15 +114,19 @@ class AssetTabsCard(private val context: Context?,
     }
 
     private fun initRecentActivity() {
+        activityAdapter.onItemClick { _, item ->
+            item.source?.let { Navigator.openTransactionDetails(activity, it) }
+        }
+
         activityAdapter.registerAdapterDataObserver(
                 getEmptyViewObserver(view.empty_view,
-                        context?.getString(R.string.no_transaction_history),
+                        activity.getString(R.string.no_transaction_history),
                         view.activity_layout) {
                     txRepository
                 }
         )
 
-        view.activity_list.layoutManager = LinearLayoutManager(context)
+        view.activity_list.layoutManager = LinearLayoutManager(activity)
         view.activity_list.adapter = activityAdapter
         view.activity_list.isNestedScrollingEnabled = false
     }
@@ -192,7 +196,7 @@ class AssetTabsCard(private val context: Context?,
                 .subscribe { loading ->
                     if (loading) {
                         loadingIndicator.show("transactions")
-                        view.empty_view.text = context?.getString(R.string.loading_data)
+                        view.empty_view.text = activity.getString(R.string.loading_data)
                     } else {
                         loadingIndicator.hide("transactions")
                     }

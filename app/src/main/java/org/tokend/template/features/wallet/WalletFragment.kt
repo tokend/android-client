@@ -19,15 +19,12 @@ import kotlinx.android.synthetic.main.fragment_wallet.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.base.model.operations.*
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.transactions.TxRepository
 import org.tokend.template.extensions.BalanceDetails
 import org.tokend.template.extensions.isTransferable
-import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
-import org.tokend.template.features.wallet.txdetails.*
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.Navigator
@@ -126,7 +123,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     private fun initHistory() {
         txAdapter.onItemClick { _, item ->
-            item.source?.let { openTransactionDetails(it) }
+            item.source?.let { Navigator.openTransactionDetails(this.activity!!, it) }
         }
 
         error_empty_view.setPadding(0, 0, 0,
@@ -308,31 +305,6 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         history_list.scrollToPosition(0)
         displaySendIfNeeded()
         update()
-    }
-
-    private fun openTransactionDetails(tx: TransferOperation) {
-        when (tx) {
-            is PaymentOperation ->
-                TxDetailsActivity
-                        .start<PaymentDetailsActivity, PaymentOperation>(activity!!, tx)
-            is IssuanceOperation ->
-                TxDetailsActivity
-                        .start<DepositDetailsActivity, IssuanceOperation>(activity!!, tx)
-            is WithdrawalOperation ->
-                TxDetailsActivity
-                        .start<WithdrawalDetailsActivity, WithdrawalOperation>(activity!!, tx)
-            is InvestmentOperation ->
-                TxDetailsActivity
-                        .start<InvestmentDetailsActivity, InvestmentOperation>(activity!!, tx)
-            is OfferMatchOperation ->
-                TxDetailsActivity
-                        .start<OfferMatchDetailsActivity, OfferMatchOperation>(activity!!, tx)
-            else ->
-                (tx as? BaseTransferOperation)?.let {
-                    TxDetailsActivity
-                            .start<UnknownTxDetailsActivity, BaseTransferOperation>(activity!!, it)
-                }
-        }
     }
 
     companion object {

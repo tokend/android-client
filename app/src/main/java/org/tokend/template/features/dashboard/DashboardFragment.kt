@@ -49,7 +49,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
 
     private fun initAssetTabsCard(): AssetTabsCard {
         return  AssetTabsCard(
-                context,
+                activity!!,
                 repositoryProvider,
                 errorHandlerFactory,
                 compositeDisposable
