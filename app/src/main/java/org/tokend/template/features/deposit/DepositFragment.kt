@@ -16,7 +16,9 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_deposit.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.clipboardManager
 import org.jetbrains.anko.onClick
+import org.jetbrains.anko.onLongClick
 import org.jetbrains.anko.runOnUiThread
 import org.tokend.sdk.api.accounts.model.Account
 import org.tokend.template.R
@@ -268,6 +270,13 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private fun displayExistingAddress(address: String, expirationDate: Date?) {
         deposit_address_layout.visibility = View.VISIBLE
         no_address_layout.visibility = View.GONE
+
+        address_text_view.onLongClick {
+            requireContext().clipboardManager.text = address
+            toastManager.short(R.string.deposit_address_copied)
+
+            true
+        }
 
         address_text_view.text = address
         to_make_deposit_text_view.text = getString(R.string.to_make_deposit_send_asset,
