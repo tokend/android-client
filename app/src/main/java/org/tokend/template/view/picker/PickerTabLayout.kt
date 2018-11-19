@@ -52,9 +52,11 @@ class PickerTabLayout : TabLayout, Picker {
     }
 
     override fun setItems(items: List<PickerItem>, selectedIndex: Int) {
+        val x = scrollX
         val toSelect = items.getOrNull(selectedIndex)
         this.items = items
         initTabs(toSelect)
+        scrollX = x
     }
 
     override fun onItemSelected(listener: ((PickerItem) -> Unit)?) {
