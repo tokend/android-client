@@ -106,22 +106,22 @@ class CreateOfferDialog : DialogFragment() {
 
     private fun btnClicks() = CompositeDisposable(
             cancel_btn.clicks()
-                    .subscribe({
+                    .subscribe {
                         dialogResultSubject.onComplete()
                         dismiss()
-                    }),
+                    },
 
             buy_btn.clicks()
-                    .subscribe({
+                    .subscribe {
                         dialogResultSubject.onSuccess(createOffer(true))
                         dismiss()
-                    }),
+                    },
 
             sell_btn.clicks()
-                    .subscribe({
+                    .subscribe {
                         dialogResultSubject.onSuccess(createOffer(false))
                         dismiss()
-                    })
+                    }
     )
 
     private fun createOffer(isBuy: Boolean): Offer {

@@ -75,7 +75,7 @@
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/sell_btn"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        style="@style/PrimaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/standard_margin"
@@ -89,7 +89,7 @@
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/buy_btn"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        style="@style/PrimaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/half_standard_margin"
