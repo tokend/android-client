@@ -155,10 +155,12 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             shareData()
         }
 
-        listOf(get_address_btn, renew_btn).forEach {
-            it.onClick {
-                bindExternalAccount()
-            }
+        get_address_btn.onClick {
+            bindExternalAccount()
+        }
+
+        renew_btn.onClick {
+            bindExternalAccount(isRenewal = true)
         }
     }
 
@@ -355,7 +357,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
     // endregion
 
-    private fun bindExternalAccount() {
+    private fun bindExternalAccount(isRenewal: Boolean = false) {
         val asset = currentAsset?.code
                 ?: return
         val type = currentAsset?.details?.externalSystemType
@@ -382,6 +384,11 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                     progress.dismiss()
                 }
                 .subscribeBy(
+                        onComplete = {
+                            if (isRenewal) {
+                                toastManager.long(getString(R.string.deposit_address_renewed))
+                            }
+                        },
                         onError = {
                             if (it is BindExternalAccountUseCase.NoAvailableExternalAccountsException) {
                                 displayEmptyPoolError()
