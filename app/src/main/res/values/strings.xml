@@ -204,9 +204,9 @@
     <string name="error_invalid_otp_code">Invalid code</string>
     <string name="enter_your_password">Enter your password</string>
     <string name="tfa_add_dialog_title">Set up 2FA</string>
-    <string name="template_tfa_add_dialog_message">To enable Two-factor authentication
-        open Google Authenticator or similar app with the button below or
-        copy and manually enter this key:\n\n%1$s</string>
+    <string name="template_tfa_add_dialog_message">Open Google Authenticator (or similar app)
+        with the button below
+        \nor import this key manually:\n\n%1$s</string>
     <string name="tfa_key_copied">Key has been copied to the clipboard</string>
 
 
