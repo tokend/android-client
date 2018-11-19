@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -74,6 +75,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     private val buyAdapter = OrderBookAdapter(true)
     private val sellAdapter = OrderBookAdapter(false)
+
+    private var isBottomSheetExpanded = false
+    private lateinit var bottomSheet: BottomSheetBehavior<LinearLayout>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -147,36 +151,39 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
                 applyTouchHook(root_layout)
 
-                peek.onClick {
-                    val bottomSheet = BottomSheetBehavior.from(bottom_sheet)
-
-                    val state = when (bottomSheet.state) {
-                        BottomSheetBehavior.STATE_COLLAPSED -> BottomSheetBehavior.STATE_EXPANDED
-                        else -> BottomSheetBehavior.STATE_COLLAPSED
-                    }
-
-                    bottomSheet.state = state
-                }
-
-                BottomSheetBehavior.from(bottom_sheet).setBottomSheetCallback(
-                        object : BottomSheetBehavior.BottomSheetCallback() {
-                            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                                peek_image.rotation = 180 * slideOffset
-                            }
-
-                            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                                    chart_sheet_elevation_view.visibility = View.GONE
-                                } else {
-                                    chart_sheet_elevation_view.visibility = View.VISIBLE
-                                }
-                            }
-                        }
-                )
+                initBottomSheet()
             }
         }
     }
 
+    private fun initBottomSheet() {
+        bottomSheet = BottomSheetBehavior.from(bottom_sheet)
+
+        peek.onClick {
+            bottomSheet.state = when (bottomSheet.state) {
+                BottomSheetBehavior.STATE_COLLAPSED -> BottomSheetBehavior.STATE_EXPANDED
+                else -> BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
+
+        bottomSheet.setBottomSheetCallback(
+                object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                        peek_image.rotation = 180 * slideOffset
+                    }
+
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                            chart_sheet_elevation_view.visibility = View.GONE
+                            isBottomSheetExpanded = true
+                        } else {
+                            chart_sheet_elevation_view.visibility = View.VISIBLE
+                            isBottomSheetExpanded = false
+                        }
+                    }
+                }
+        )
+    }
 
     private fun initMenu() {
         toolbar.menu.clear()
@@ -527,6 +534,16 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                     update()
                 }
             }
+        }
+    }
+
+    override fun onBackPressed(): Boolean {
+        return if(isBottomSheetExpanded) {
+            bottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+            false
+        } else {
+            bottomSheet.setBottomSheetCallback(null)
+            super.onBackPressed()
         }
     }
 

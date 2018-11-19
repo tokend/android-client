@@ -12,6 +12,7 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -68,9 +69,13 @@ class SendFragment : BaseFragment(), ToolbarProvider {
             showLoading = { contacts_bottom_sheet.progress.show() },
             hideLoading = { contacts_bottom_sheet.progress.hide() }
     )
+
     private val contactsAdapter = ContactsAdapter()
 
     private lateinit var amountEditTextWrapper: AmountEditTextWrapper
+
+    private var isBottomSheetExpanded = false
+    private lateinit var bottomSheet: BottomSheetBehavior<LinearLayout>
 
     private var isLoading = false
         set(value) {
@@ -117,6 +122,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
         initAssetSelection()
         initSwipeRefresh()
+        initBottomSheet()
         initContacts()
 
         subscribeToBalances()
@@ -362,33 +368,17 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 }
     }
 
-    private fun initContacts() {
-        contacts_list.apply {
-            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-            adapter = contactsAdapter
-        }
-
-        contactsAdapter.onEmailClickListener = object : SimpleItemClickListener<Any> {
-            override fun invoke(view: View?, item: Any) {
-                item as ContactEmail
-                recipient_edit_text.setText(item.email)
-                BottomSheetBehavior.from(contacts_bottom_sheet)
-                        .state = BottomSheetBehavior.STATE_COLLAPSED
-            }
-        }
+    private fun initBottomSheet() {
+        bottomSheet = BottomSheetBehavior.from(contacts_bottom_sheet)
 
         peek.onClick {
-            val bottomSheet = BottomSheetBehavior.from(contacts_bottom_sheet)
-
-            val state = when (bottomSheet.state) {
+            bottomSheet.state = when (bottomSheet.state) {
                 BottomSheetBehavior.STATE_COLLAPSED -> BottomSheetBehavior.STATE_EXPANDED
                 else -> BottomSheetBehavior.STATE_COLLAPSED
             }
-
-            bottomSheet.state = state
         }
 
-        BottomSheetBehavior.from(contacts_bottom_sheet).setBottomSheetCallback(
+        bottomSheet.setBottomSheetCallback(
                 object : BottomSheetBehavior.BottomSheetCallback() {
                     override fun onSlide(bottomSheet: View, slideOffset: Float) {
                         peek_image.rotation = 180 * slideOffset
@@ -402,12 +392,29 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                             }, {
                                 contacts_empty_view.visibility = View.VISIBLE
                             })
+                            isBottomSheetExpanded = true
                         } else {
                             contacts_sheet_elevation_view.visibility = View.VISIBLE
+                            isBottomSheetExpanded = false
                         }
                     }
                 }
         )
+    }
+
+    private fun initContacts() {
+        contacts_list.apply {
+            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+            adapter = contactsAdapter
+        }
+
+        contactsAdapter.onEmailClickListener = object : SimpleItemClickListener<Any> {
+            override fun invoke(view: View?, item: Any) {
+                item as ContactEmail
+                recipient_edit_text.setText(item.email)
+                bottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
@@ -440,6 +447,17 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                     }
                 }
             }
+        }
+    }
+
+    override fun onBackPressed(): Boolean {
+        return if(isBottomSheetExpanded) {
+            bottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+            false
+        }
+        else {
+            bottomSheet.setBottomSheetCallback(null)
+            super.onBackPressed()
         }
     }
 
