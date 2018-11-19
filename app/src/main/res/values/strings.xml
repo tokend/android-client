@@ -286,4 +286,6 @@
     <string name="use_fingerprint">Use fingerprint</string>
     <string name="secret_seed">Secret seed</string>
     <string name="secret_seed_description">Secret seed is private information that proves you own your account</string>
+    <string name="template_amount_asset">Amount (%1$s)</string>
+    <string name="template_offer_creation_price">Price (%1$s for 1 %2$s)</string>
 </resources>

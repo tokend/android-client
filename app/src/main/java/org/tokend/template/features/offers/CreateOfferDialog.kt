@@ -14,9 +14,9 @@ import kotlinx.android.synthetic.main.fragment_dialog_crate_order.*
 import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
-import org.tokend.template.view.util.input.AmountEditTextWrapper
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.extensions.inputChanges
+import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.view.util.input.AmountEditTextWrapper
 import java.math.BigDecimal
 
 class CreateOfferDialog : DialogFragment() {
@@ -73,12 +73,24 @@ class CreateOfferDialog : DialogFragment() {
 
         price_edit_text.setText(BigDecimalUtil.toPlainString(currentOffer.price))
 
+        getString(R.string.template_offer_creation_price,
+                currentOffer.quoteAsset, currentOffer.baseAsset)
+                .also {
+                    price_edit_text.floatingLabelText = it
+                    price_edit_text.hint = it
+                }
+
         if (currentOffer.baseAmount.signum() > 0) {
             amount_edit_text.setText(BigDecimalUtil.toPlainString(currentOffer.baseAmount))
         } else {
             amount_edit_text.setText("")
         }
 
+        getString(R.string.template_amount_asset, currentOffer.baseAsset)
+                .also {
+                    amount_edit_text.floatingLabelText = it
+                    amount_edit_text.hint = it
+                }
         amount_edit_text.requestFocus()
     }
 
