@@ -143,7 +143,7 @@ open class OfferMatchDetailsActivity(
                 .setPositiveButton(R.string.yes) { _, _ ->
                     cancelOffer()
                 }
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.no, null)
                 .show()
     }
 

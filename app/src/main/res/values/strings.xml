@@ -35,6 +35,7 @@
     <string name="i_understand">I understand</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="no">No</string>
     <string name="email_not_verified_explanation">
         It seems that your email is not verified yet.
         Please check your spam folder or request a new letter
