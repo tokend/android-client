@@ -62,6 +62,13 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         setResult(Activity.RESULT_OK)
     }
 
+    override fun onBackPressed() {
+        if(screenId == SendFragment.ID) {
+            val fragment = supportFragmentManager.fragments.first() as SendFragment
+            if(fragment.onBackPressed()) super.onBackPressed()
+        } else super.onBackPressed()
+    }
+
     companion object {
         const val SCREEN_ID = "screenId"
         const val ASSET_EXTRA = "asset"
