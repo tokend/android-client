@@ -18,6 +18,7 @@ import org.tokend.template.R
 import org.tokend.template.extensions.inputChanges
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.input.AmountEditTextWrapper
+import org.tokend.template.view.util.input.SoftInputUtil
 import java.math.BigDecimal
 
 class CreateOfferDialog : DialogFragment() {
@@ -130,7 +131,7 @@ class CreateOfferDialog : DialogFragment() {
     private fun createOffer(isBuy: Boolean): Offer {
         val price = priceEditTextWrapper.rawAmount
 
-        val amount = when(isSwitched) {
+        val amount = when (isSwitched) {
             false -> amountEditTextWrapper.rawAmount
             else -> amountEditTextWrapper.rawAmount / price
         }
@@ -158,12 +159,14 @@ class CreateOfferDialog : DialogFragment() {
 
             buy_btn.clicks()
                     .subscribe {
+                        SoftInputUtil.hideSoftInput(amount_edit_text, requireContext())
                         dialogResultSubject.onSuccess(createOffer(!isSwitched))
                         dismiss()
                     },
 
             sell_btn.clicks()
                     .subscribe {
+                        SoftInputUtil.hideSoftInput(amount_edit_text, requireContext())
                         dialogResultSubject.onSuccess(createOffer(isSwitched))
                         dismiss()
                     }
@@ -183,14 +186,14 @@ class CreateOfferDialog : DialogFragment() {
 
     private fun onValuesUpdated(price: BigDecimal, amount: BigDecimal) {
 
-        val total = when(isSwitched) {
+        val total = when (isSwitched) {
             false -> price * amount
             else -> amount / price
         }.apply {
             BigDecimalUtil.scaleAmount(this, AmountFormatter.ASSET_DECIMAL_DIGITS)
         }
 
-        val finalAsset = when(isSwitched) {
+        val finalAsset = when (isSwitched) {
             false -> currentOffer.quoteAsset
             else -> currentOffer.baseAsset
         }

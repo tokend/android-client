@@ -14,10 +14,12 @@ object SoftInputUtil {
     }
 
     fun hideSoftInput(activity: Activity) {
-        val view = activity.currentFocus
-        if (view != null) {
-            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
-        }
+        hideSoftInput(activity.currentFocus, activity)
+    }
+
+    fun hideSoftInput(view: View?, context: Context) {
+        view ?: return
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
