@@ -257,6 +257,7 @@
     <string name="remove_from_favorites_action">Remove from favorites</string>
     <string name="sale_investing">Investing</string>
     <string name="invest_action">Invest</string>
+    <string name="update_investment_action">Update</string>
     <string name="cancel_investment_action">Cancel investment</string>
     <string name="sale_more_info">More info</string>
     <string name="investment_confirmation_title">Investment confirmation</string>

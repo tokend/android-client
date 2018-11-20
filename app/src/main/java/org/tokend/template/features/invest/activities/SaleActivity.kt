@@ -30,14 +30,8 @@ import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.logic.FeeManager
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.favorites.FavoritesRepository
-import org.tokend.template.view.util.input.AmountEditTextWrapper
-import org.tokend.template.view.ContentLoadingProgressBar
-import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.AnimationUtil
-import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
@@ -46,10 +40,16 @@ import org.tokend.template.features.invest.logic.InvestmentInfoManager
 import org.tokend.template.features.invest.logic.SwitchFavoriteUseCase
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
+import org.tokend.template.logic.FeeManager
 import org.tokend.template.util.CircleTransform
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.ContentLoadingProgressBar
+import org.tokend.template.view.util.AnimationUtil
+import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.wallet.xdr.AccountType
 import org.tokend.wallet.xdr.AssetPolicy
 import org.tokend.wallet.xdr.SaleType
@@ -379,7 +379,16 @@ class SaleActivity : BaseActivity() {
                 && !investLoading.isLoading
                 && !mainLoading.isLoading
 
+        updateInvestButton()
         updateCancelInvestmentButton()
+    }
+
+    private fun updateInvestButton() {
+        if (existingOffers.containsKey(investAsset)) {
+            invest_button.setText(R.string.update_investment_action)
+        } else {
+            invest_button.setText(R.string.invest_action)
+        }
     }
 
     private fun updateCancelInvestmentButton() {
