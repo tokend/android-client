@@ -11,6 +11,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.MaybeSubject
 import kotlinx.android.synthetic.main.fragment_dialog_crate_order.*
+import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
@@ -36,11 +37,17 @@ class CreateOfferDialog : DialogFragment() {
         }
     }
 
+    private var asset: String = ""
+        set(value) {
+            field = value
+            isSwitched = value == currentOffer.quoteAsset
+            updateTotal()
+        }
+
+    private var isSwitched = false
     private val dialogResultSubject = MaybeSubject.create<Offer>()
     private lateinit var disposable: CompositeDisposable
-
     private lateinit var currentOffer: Offer
-
     private lateinit var amountEditTextWrapper: AmountEditTextWrapper
     private lateinit var priceEditTextWrapper: AmountEditTextWrapper
 
@@ -71,8 +78,18 @@ class CreateOfferDialog : DialogFragment() {
             currentOffer = args.getSerializable(EXTRA_ORDER) as Offer
         } ?: return
 
-        price_edit_text.setText(BigDecimalUtil.toPlainString(currentOffer.price))
+        asset = currentOffer.baseAsset
+        initTextFields()
+        initAssetSpinner()
+    }
 
+    private fun initTextFields() {
+        getString(R.string.amount).also {
+            amount_edit_text.floatingLabelText = it
+            amount_edit_text.hint = it
+        }
+
+        price_edit_text.setText(BigDecimalUtil.toPlainString(currentOffer.price))
         getString(R.string.template_offer_creation_price,
                 currentOffer.quoteAsset, currentOffer.baseAsset)
                 .also {
@@ -85,13 +102,19 @@ class CreateOfferDialog : DialogFragment() {
         } else {
             amount_edit_text.setText("")
         }
-
-        getString(R.string.template_amount_asset, currentOffer.baseAsset)
-                .also {
-                    amount_edit_text.floatingLabelText = it
-                    amount_edit_text.hint = it
-                }
         amount_edit_text.requestFocus()
+    }
+
+    private fun initAssetSpinner() {
+        asset_spinner
+                .setSimpleItems(
+                        listOf(currentOffer.baseAsset,
+                                currentOffer.quoteAsset),
+                        currentOffer.baseAsset)
+
+        asset_spinner.onItemSelected {
+            asset = it.text
+        }
     }
 
     override fun onStop() {
@@ -104,29 +127,14 @@ class CreateOfferDialog : DialogFragment() {
         return dialogResultSubject
     }
 
-    private fun btnClicks() = CompositeDisposable(
-            cancel_btn.clicks()
-                    .subscribe {
-                        dialogResultSubject.onComplete()
-                        dismiss()
-                    },
-
-            buy_btn.clicks()
-                    .subscribe {
-                        dialogResultSubject.onSuccess(createOffer(true))
-                        dismiss()
-                    },
-
-            sell_btn.clicks()
-                    .subscribe {
-                        dialogResultSubject.onSuccess(createOffer(false))
-                        dismiss()
-                    }
-    )
-
     private fun createOffer(isBuy: Boolean): Offer {
-        val price = priceEditTextWrapper.scaledAmount
-        val amount = amountEditTextWrapper.scaledAmount
+        val price = priceEditTextWrapper.rawAmount
+
+        val amount = when(isSwitched) {
+            false -> amountEditTextWrapper.rawAmount
+            else -> amountEditTextWrapper.rawAmount / price
+        }
+
         val total = BigDecimalUtil.scaleAmount(price * amount,
                 AmountFormatter.ASSET_DECIMAL_DIGITS
         )
@@ -141,6 +149,26 @@ class CreateOfferDialog : DialogFragment() {
         )
     }
 
+    private fun btnClicks() = CompositeDisposable(
+            cancel_btn.clicks()
+                    .subscribe {
+                        dialogResultSubject.onComplete()
+                        dismiss()
+                    },
+
+            buy_btn.clicks()
+                    .subscribe {
+                        dialogResultSubject.onSuccess(createOffer(!isSwitched))
+                        dismiss()
+                    },
+
+            sell_btn.clicks()
+                    .subscribe {
+                        dialogResultSubject.onSuccess(createOffer(isSwitched))
+                        dismiss()
+                    }
+    )
+
     private fun textFields() =
             Observable.combineLatest(
                     price_edit_text.inputChanges(),
@@ -154,12 +182,21 @@ class CreateOfferDialog : DialogFragment() {
                     .subscribe()
 
     private fun onValuesUpdated(price: BigDecimal, amount: BigDecimal) {
-        val total = BigDecimalUtil.scaleAmount(price * amount,
-                AmountFormatter.ASSET_DECIMAL_DIGITS
-        )
+
+        val total = when(isSwitched) {
+            false -> price * amount
+            else -> amount / price
+        }.apply {
+            BigDecimalUtil.scaleAmount(this, AmountFormatter.ASSET_DECIMAL_DIGITS)
+        }
+
+        val finalAsset = when(isSwitched) {
+            false -> currentOffer.quoteAsset
+            else -> currentOffer.baseAsset
+        }
 
         total_amount_text_view.text =
-                "${AmountFormatter.formatAssetAmount(total)} ${currentOffer.quoteAsset}"
+                "${AmountFormatter.formatAssetAmount(total)} $finalAsset"
 
         if (total.signum() == 0) {
             buy_btn.isEnabled = false
@@ -168,5 +205,12 @@ class CreateOfferDialog : DialogFragment() {
             buy_btn.isEnabled = true
             sell_btn.isEnabled = true
         }
+    }
+
+    private fun updateTotal() {
+        onValuesUpdated(
+                priceEditTextWrapper.rawAmount,
+                amountEditTextWrapper.rawAmount
+        )
     }
 }
