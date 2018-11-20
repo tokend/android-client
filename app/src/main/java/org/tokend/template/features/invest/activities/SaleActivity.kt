@@ -615,8 +615,17 @@ class SaleActivity : BaseActivity() {
                 )
                         .perform()
                         .compose(ObservableTransformers.defaultSchedulersCompletable())
+                        .doOnSubscribe { mainLoading.show("favorite") }
                         .subscribeBy(
-                                onError = { errorHandlerFactory.getDefault().handle(it) }
+                                onError = {
+                                    errorHandlerFactory.getDefault().handle(it)
+                                    mainLoading.hide("favorite")
+                                    updateInvestAvailability()
+                                },
+                                onComplete = {
+                                    mainLoading.hide("favorite")
+                                    updateInvestAvailability()
+                                }
                         )
                         .addTo(compositeDisposable)
     }
