@@ -2,6 +2,7 @@ package org.tokend.template.features.dashboard
 
 import android.app.Activity
 import android.support.v4.app.Fragment
+import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.layout_asset_tabs_card.view.*
 import kotlinx.android.synthetic.main.layout_progress.view.*
 import org.jetbrains.anko.onClick
+import org.jetbrains.anko.onTouch
 import org.tokend.template.R
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.base.MultipleItemsRepository
@@ -24,9 +26,11 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.view.adapter.history.TxHistoryItem
+import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ViewProvider
 import org.tokend.template.view.util.formatter.AmountFormatter
+import java.lang.ref.WeakReference
 
 class AssetTabsCard(private val activity: Activity,
                     private val repositoryProvider: RepositoryProvider,
@@ -64,6 +68,7 @@ class AssetTabsCard(private val activity: Activity,
         initLoadingManager()
         initAssetTabs()
         initRecentActivity()
+        initHorizontalSwipes()
 
         subscribeToBalances()
         balancesRepository.updateIfNotFresh()
@@ -87,6 +92,27 @@ class AssetTabsCard(private val activity: Activity,
     private fun initAssetTabs() {
         view.asset_tabs.onItemSelected {
             asset = it.text
+        }
+    }
+
+    private fun initHorizontalSwipes() {
+        val weakTabs = WeakReference(view.asset_tabs)
+
+        val gestureDetector = GestureDetectorCompat(view.context, HorizontalSwipesGestureDetector(
+                onSwipeToLeft = {
+                    weakTabs.get()?.apply { selectedItemIndex++ }
+                },
+                onSwipeToRight = {
+                    weakTabs.get()?.apply { selectedItemIndex-- }
+                }
+        ))
+
+        val weakReceiverLayout = WeakReference(view.content_layout)
+        view.touch_capture_layout.onTouch { _, it ->
+            if (!gestureDetector.onTouchEvent(it)) {
+                weakReceiverLayout.get()?.dispatchTouchEvent(it)
+            }
+            true
         }
     }
 
@@ -161,21 +187,21 @@ class AssetTabsCard(private val activity: Activity,
         balancesDisposable?.dispose()
         balancesDisposable = CompositeDisposable(
                 balancesRepository.itemsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    displayAssetTabs(it.map { it.asset })
-                    displayBalance()
-                },
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .subscribe {
+                            displayAssetTabs(it.map { it.asset })
+                            displayBalance()
+                        },
                 balancesRepository.loadingSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    loadingIndicator.setLoading(it, "balances")
-                },
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .subscribe {
+                            loadingIndicator.setLoading(it, "balances")
+                        },
                 balancesRepository.errorsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    errorHandlerFactory.getDefault().handle(it)
-                }
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .subscribe {
+                            errorHandlerFactory.getDefault().handle(it)
+                        }
         ).also { it.addTo(disposable) }
     }
 
@@ -184,23 +210,23 @@ class AssetTabsCard(private val activity: Activity,
         transactionsDisposable?.dispose()
         transactionsDisposable = CompositeDisposable(
                 txRepository.itemsSubject
-                .map { it.subList(0, Math.min(it.size, TRANSACTIONS_TO_DISPLAY)) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    activityAdapter.setData(it.map {
-                        TxHistoryItem.fromTransaction(it)
-                    })
-                },
-            txRepository.loadingSubject
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { loading ->
-                    if (loading) {
-                        loadingIndicator.show("transactions")
-                        view.empty_view.text = activity.getString(R.string.loading_data)
-                    } else {
-                        loadingIndicator.hide("transactions")
-                    }
-                }
+                        .map { it.subList(0, Math.min(it.size, TRANSACTIONS_TO_DISPLAY)) }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            activityAdapter.setData(it.map {
+                                TxHistoryItem.fromTransaction(it)
+                            })
+                        },
+                txRepository.loadingSubject
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { loading ->
+                            if (loading) {
+                                loadingIndicator.show("transactions")
+                                view.empty_view.text = activity.getString(R.string.loading_data)
+                            } else {
+                                loadingIndicator.hide("transactions")
+                            }
+                        }
         ).also { it.addTo(disposable) }
     }
 
