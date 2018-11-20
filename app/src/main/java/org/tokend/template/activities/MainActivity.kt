@@ -18,6 +18,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
+import org.jetbrains.anko.onClick
 import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
@@ -35,6 +36,7 @@ import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.logic.wallet.WalletEventsListener
 import org.tokend.template.fragments.FragmentFactory
+import org.tokend.template.util.Navigator
 
 class MainActivity : BaseActivity(), WalletEventsListener {
     companion object {
@@ -67,8 +69,19 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                         .withEmail(email))
                 .build()
 
-        profileHeader.view.find<View>(R.id.material_drawer_account_header_background)
-                .backgroundColor = ContextCompat.getColor(this, R.color.primary)
+        profileHeader.view.find<View>(R.id.material_drawer_account_header_background).apply {
+            backgroundColor = ContextCompat.getColor(this@MainActivity, R.color.primary)
+            onClick {
+                val accountId = walletInfoProvider.getWalletInfo()?.accountId
+                        ?: getString(R.string.error_try_again)
+                    Navigator.openQrShare(this@MainActivity,
+                            data = accountId,
+                            title = getString(R.string.account_id_title),
+                            shareLabel = getString(R.string.share_account_id)
+                    )
+                navigationDrawer?.closeDrawer()
+            }
+        }
 
         val dashboardItem = PrimaryDrawerItem()
                 .withName(R.string.dashboard_title)
