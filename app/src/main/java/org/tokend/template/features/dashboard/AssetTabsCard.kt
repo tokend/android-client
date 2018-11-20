@@ -31,10 +31,13 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ViewProvider
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.lang.ref.WeakReference
+import java.util.*
+import kotlin.Comparator
 
 class AssetTabsCard(private val activity: Activity,
                     private val repositoryProvider: RepositoryProvider,
                     private val errorHandlerFactory: ErrorHandlerFactory,
+                    private val assetComparator: Comparator<String>,
                     private val disposable: CompositeDisposable) : ViewProvider {
 
     private lateinit var view: View
@@ -164,6 +167,7 @@ class AssetTabsCard(private val activity: Activity,
     }
 
     private fun displayAssetTabs(assets: List<String>) {
+        Collections.sort(assets, assetComparator)
         view.asset_tabs.setSimpleItems(assets)
     }
 

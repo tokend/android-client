@@ -29,6 +29,8 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
     lateinit var errorHandlerFactory: ErrorHandlerFactory
     @Inject
     lateinit var toastManager: ToastManager
+    @Inject
+    lateinit var assetComparator: Comparator<String>
 
     override fun onBackPressed() = true
 

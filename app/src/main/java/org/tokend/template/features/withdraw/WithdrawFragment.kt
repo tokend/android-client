@@ -193,6 +193,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                 .map {
                     it.code
                 }
+                .sortedWith(assetComparator)
                 .toList()
 
         if (withdrawableAssets.isEmpty()) {

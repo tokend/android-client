@@ -52,6 +52,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                 activity!!,
                 repositoryProvider,
                 errorHandlerFactory,
+                assetComparator,
                 compositeDisposable
         )
     }

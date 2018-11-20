@@ -42,6 +42,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var errorHandlerFactory: ErrorHandlerFactory
     @Inject
     lateinit var toastManager: ToastManager
+    @Inject
+    lateinit var assetComparator: Comparator<String>
 
     protected open val allowUnauthorized = false
 

@@ -244,6 +244,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 .map {
                     it.code
                 }
+                .sortedWith(assetComparator)
                 .toList()
 
         if (transferableAssets.isEmpty()) {
