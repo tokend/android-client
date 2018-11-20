@@ -556,7 +556,7 @@ class SaleActivity : BaseActivity() {
                         }
                         .subscribeBy(
                                 onSuccess = { offer ->
-                                    Navigator.openOfferConfirmation(this,
+                                    Navigator.openInvestmentConfirmation(this,
                                             INVESTMENT_REQUEST,
                                             offer = offer,
                                             offerToCancel = existingOffers[investAsset],

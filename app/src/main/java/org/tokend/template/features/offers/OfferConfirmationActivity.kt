@@ -9,93 +9,73 @@ import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.logic.transactions.TxManager
-import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.features.offers.logic.ConfirmOfferUseCase
+import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
-class OfferConfirmationActivity : BaseActivity() {
-    private lateinit var offer: Offer
-    private var prevOffer: Offer? = null
-    private var assetName: String? = null
+open class OfferConfirmationActivity : BaseActivity() {
+    protected lateinit var offer: Offer
+    protected var prevOffer: Offer? = null
 
-    private val payAsset: String
+    protected val payAsset: String
         get() =
             if (offer.isBuy)
                 offer.quoteAsset
             else
                 offer.baseAsset
-    private val toPayAmount: BigDecimal
+    protected val toPayAmount: BigDecimal
         get() =
             if (offer.isBuy)
                 offer.quoteAmount + (offer.fee ?: BigDecimal.ZERO)
             else
                 offer.baseAmount
 
-    private val receiveAsset: String
+    protected val receiveAsset: String
         get() =
             if (!offer.isBuy)
                 offer.quoteAsset
             else
                 offer.baseAsset
-    private val toReceiveAmount: BigDecimal
+    protected val toReceiveAmount: BigDecimal
         get() =
             (if (!offer.isBuy)
                 offer.quoteAmount - (offer.fee ?: BigDecimal.ZERO)
             else
                 offer.baseAmount).takeIf { it.signum() > 0 } ?: BigDecimal.ZERO
 
-    private val isPrimaryMarket: Boolean
-        get() = offer.orderBookId != 0L
-
-    private val displayToReceive: Boolean
-        get() = intent.getBooleanExtra(DISPLAY_TO_RECEIVE, true)
+    protected val cancellationOnly: Boolean
+        get() = offer.baseAmount.signum() == 0 && prevOffer != null
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        offer =
-                (intent.getSerializableExtra(OFFER_EXTRA) as? Offer)
-                ?: return
-        prevOffer = intent.getSerializableExtra(OFFER_TO_CANCEL_EXTRA) as? Offer
-        assetName = intent.getNullableStringExtra(ASSET_NAME_EXTRA)
-
-        if (isPrimaryMarket) {
-            setTitle(R.string.investment_confirmation_title)
-        }
+        initData()
 
         displayDetails()
     }
 
+    protected open fun initData() {
+        offer =
+                (intent.getSerializableExtra(OFFER_EXTRA) as? Offer)
+                ?: return
+        prevOffer = intent.getSerializableExtra(OFFER_TO_CANCEL_EXTRA) as? Offer
+    }
+
     // region Display
-    private fun displayDetails() {
+    protected open fun displayDetails() {
         cards_layout.removeAllViews()
 
-        if (assetName != null) {
-            displayToken()
-        }
-
         displayToPay()
-
-        if (displayToReceive) {
-            displayToReceive()
-        }
+        displayToReceive()
     }
 
-    private fun displayToken() {
-        InfoCard(cards_layout)
-                .setHeading(R.string.sale_token, null)
-                .addRow(assetName, offer.baseAsset)
-    }
-
-    private fun displayToPay() {
+    protected open fun displayToPay() {
         val payBaseAmount =
                 if (offer.isBuy)
                     offer.quoteAmount
@@ -108,13 +88,7 @@ class OfferConfirmationActivity : BaseActivity() {
                         } $payAsset")
 
         if (offer.isBuy) {
-            val amountRes =
-                    if (isPrimaryMarket)
-                        R.string.investment_amount
-                    else
-                        R.string.amount
-
-            card.addRow(amountRes,
+            card.addRow(R.string.amount,
                     "+${AmountFormatter.formatAssetAmount(payBaseAmount,
                             payAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
                     } $payAsset")
@@ -128,7 +102,7 @@ class OfferConfirmationActivity : BaseActivity() {
         }
     }
 
-    private fun displayToReceive() {
+    protected open fun displayToReceive() {
         val receiveBaseAmount =
                 if (!offer.isBuy)
                     offer.quoteAmount
@@ -172,8 +146,6 @@ class OfferConfirmationActivity : BaseActivity() {
     private fun confirm() {
         val progress = ProgressDialogFactory.getTunedDialog(this)
 
-        val cancellationOnly = offer.baseAmount.signum() == 0 && prevOffer != null
-
         ConfirmOfferUseCase(
                 offer,
                 prevOffer,
@@ -188,22 +160,17 @@ class OfferConfirmationActivity : BaseActivity() {
                 .subscribeBy(
                         onComplete = {
                             progress.dismiss()
-                            if (isPrimaryMarket) {
-                                if (cancellationOnly) {
-                                    ToastManager(this).short(R.string.investment_canceled)
-                                } else {
-                                    ToastManager(this).short(R.string.successfully_invested)
-
-                                }
-                            } else {
-                                ToastManager(this).short(R.string.offer_created)
-                            }
+                            toastManager.short(getSuccessMessage())
                             finishWithSuccess()
                         },
                         onError = {
                             errorHandlerFactory.getDefault().handle(it)
                         }
                 )
+    }
+
+    protected open fun getSuccessMessage(): String {
+        return getString(R.string.offer_created)
     }
 
     private fun finishWithSuccess() {
@@ -214,7 +181,5 @@ class OfferConfirmationActivity : BaseActivity() {
     companion object {
         const val OFFER_EXTRA = "offer"
         const val OFFER_TO_CANCEL_EXTRA = "offer_to_cancel"
-        const val DISPLAY_TO_RECEIVE = "display_to_receive"
-        const val ASSET_NAME_EXTRA = "asset_name"
     }
 }

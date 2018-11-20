@@ -127,6 +127,11 @@
             android:label="@string/offer_confirmation_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
+            android:name=".features.invest.activities.InvestmentConfirmationActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/investment_confirmation_title"
+            android:theme="@style/AppTheme.CardsBackground" />
+        <activity
             android:name=".features.offers.OffersActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/pending_offers_title"

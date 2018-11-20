@@ -261,9 +261,12 @@
     <string name="cancel_investment_action">Cancel investment</string>
     <string name="sale_more_info">More info</string>
     <string name="investment_confirmation_title">Investment confirmation</string>
+    <string name="investment_cancellation_title">Investment cancellation</string>
+    <string name="investment_updating_title">Investment update</string>
     <string name="sale_token">Token</string>
     <string name="successfully_invested">Successfully invested</string>
     <string name="investment_canceled">Investment has been canceled</string>
+    <string name="investment_updated">Investment has been updated</string>
     <string name="investment_amount">Investment</string>
     <string name="pending_investment_details_title">Pending investment details</string>
     <string name="cancel_investment_confirmation">Are you sure want to cancel this investment?</string>
