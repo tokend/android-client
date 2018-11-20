@@ -20,6 +20,7 @@ import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.template.view.util.input.SoftInputUtil
 import java.math.BigDecimal
+import java.math.MathContext
 
 class CreateOfferDialog : DialogFragment() {
 
@@ -133,7 +134,7 @@ class CreateOfferDialog : DialogFragment() {
 
         val amount = when (isSwitched) {
             false -> amountEditTextWrapper.rawAmount
-            else -> amountEditTextWrapper.rawAmount / price
+            else -> amountEditTextWrapper.rawAmount.divide(price, MathContext.DECIMAL128)
         }
 
         val total = BigDecimalUtil.scaleAmount(price * amount,
@@ -188,9 +189,7 @@ class CreateOfferDialog : DialogFragment() {
 
         val total = when (isSwitched) {
             false -> price * amount
-            else -> amount / price
-        }.apply {
-            BigDecimalUtil.scaleAmount(this, AmountFormatter.ASSET_DECIMAL_DIGITS)
+            else -> amount.divide(price, MathContext.DECIMAL128)
         }
 
         val finalAsset = when (isSwitched) {
