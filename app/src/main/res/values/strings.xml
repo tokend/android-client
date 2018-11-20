@@ -248,7 +248,7 @@
     <string name="template_sale_max_investment">Max investment is %1$s %2$s</string>
     <string name="template_sale_name_token">%1$s (%2$s)</string>
     <string name="sales_search_name_hint">Name</string>
-    <string name="sales_search_token_hint">Token code</string>
+    <string name="sales_search_token_hint">Token code (exact match)</string>
     <string name="explore_sales_title">Explore funds</string>
     <string name="no_sales_found">No funds found</string>
     <string name="pending_investments_title">Pending investments</string>
