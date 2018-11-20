@@ -10,6 +10,8 @@ abstract class SimpleMultipleItemsRepository<T> : MultipleItemsRepository<T>() {
 
     private var updateDisposable: Disposable? = null
     override fun update(): Completable {
+        invalidate()
+
         return synchronized(this) {
             val resultSubject = updateResultSubject.let {
                 if (it == null) {
