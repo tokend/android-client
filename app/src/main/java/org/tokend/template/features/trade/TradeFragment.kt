@@ -20,29 +20,29 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_trade.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_asset_chart_sheet.*
-import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.assets.model.AssetPair
 import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
+import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.data.repository.orderbook.OrderBookRepository
+import org.tokend.template.data.repository.pairs.AssetPairsRepository
+import org.tokend.template.extensions.isTradeable
+import org.tokend.template.extensions.toSingle
+import org.tokend.template.features.offers.CreateOfferDialog
+import org.tokend.template.features.offers.logic.PrepareOfferUseCase
+import org.tokend.template.features.trade.adapter.OrderBookAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.FeeManager
-import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.data.repository.pairs.AssetPairsRepository
-import org.tokend.template.view.picker.PickerItem
-import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.extensions.isTradeable
-import org.tokend.template.extensions.toSingle
-import org.tokend.template.features.trade.adapter.OrderBookAdapter
-import org.tokend.template.features.offers.logic.PrepareOfferUseCase
-import org.tokend.template.data.repository.orderbook.OrderBookRepository
-import org.tokend.template.features.offers.CreateOfferDialog
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.picker.PickerItem
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
+import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.util.formatter.AmountFormatter
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
 
@@ -506,6 +506,8 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun goToOfferConfirmation(offer: Offer) {
+        val progress = ProgressDialogFactory.getTunedDialog(requireContext())
+
         PrepareOfferUseCase(
                 offer,
                 walletInfoProvider,
