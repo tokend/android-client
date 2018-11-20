@@ -295,4 +295,14 @@
     <string name="template_offer_creation_price">Price (%1$s for 1 %2$s)</string>
     <string name="deposit_address_copied">Address has been copied to the clipboard</string>
     <string name="deposit_address_renewed">Address has been renewed</string>
+
+    <string name="investment_help_title">Investment help</string>
+    <string name="investment_help_content">
+        • You can make investments in this fund using proposed assets\n\n
+        • You can have one investment per asset\n\n
+        • While the fund is active you can change amount of your investments or cancel them\n\n
+        • If you cancel your investment paid amount and fee will be returned\n\n
+        • If the fund has reached it\'s soft cap by it\'s end date you will receive
+        tokens according to your investments, otherwise your investments will be returned
+    </string>
 </resources>

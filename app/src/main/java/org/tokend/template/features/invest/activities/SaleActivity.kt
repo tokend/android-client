@@ -36,6 +36,7 @@ import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.assets.LogoFactory
+import org.tokend.template.features.invest.InvestmentHelpDialog
 import org.tokend.template.features.invest.logic.InvestmentInfoManager
 import org.tokend.template.features.invest.logic.SwitchFavoriteUseCase
 import org.tokend.template.features.invest.view.SaleProgressWrapper
@@ -369,6 +370,11 @@ class SaleActivity : BaseActivity() {
 
         cancel_investment_button.onClick {
             tryToInvest(cancel = true)
+        }
+
+        val helpDialog = InvestmentHelpDialog(this, R.style.AlertDialogStyle)
+        invest_card_title_text_view.onClick {
+            helpDialog.show()
         }
     }
 
