@@ -7,6 +7,7 @@ import org.tokend.sdk.signing.AccountRequestSigner
 import org.tokend.sdk.tfa.TfaCallback
 import org.tokend.sdk.utils.CookieJarProvider
 import org.tokend.sdk.utils.HashCodes
+import org.tokend.template.BuildConfig
 
 class ApiProviderImpl(
         private val urlConfigProvider: UrlConfigProvider,
@@ -23,6 +24,9 @@ class ApiProviderImpl(
             }
         }
     }
+
+    private val withLogs: Boolean
+        get() = BuildConfig.WITH_LOGS
 
     private var apiByHash: Pair<Int, TokenDApi>? = null
     private var ketStorageByHash: Pair<Int, KeyStorage>? = null
@@ -42,7 +46,8 @@ class ApiProviderImpl(
                         url,
                         null,
                         tfaCallback,
-                        cookieJarProvider
+                        cookieJarProvider,
+                        withLogs = withLogs
                 )
 
         apiByHash = Pair(hash, api)
@@ -79,7 +84,8 @@ class ApiProviderImpl(
                                 url,
                                 AccountRequestSigner(account),
                                 tfaCallback,
-                                cookieJarProvider
+                                cookieJarProvider,
+                                withLogs = withLogs
                         )
 
         signedApiByHash = Pair(hash, signedApi)

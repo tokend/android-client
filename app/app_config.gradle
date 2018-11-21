@@ -35,6 +35,9 @@ ext {
     // used on settings screen
     kyc_url = '"https://demo.tokend.org/verification/make"'
 
+    //Allow to log request and response information.
+    logs_enabled = "true"
+
     // --------------------------
 
     // ----- Appearance -----
@@ -136,6 +139,7 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'String', 'WEB_CLIENT_URL', "${web_client_url}"
     b.buildConfigField 'String', 'TERMS_URL', "${terms_url}"
     b.buildConfigField 'String', 'KYC_URL', "${kyc_url}"
+    b.buildConfigField 'Boolean', 'WITH_LOGS', "${logs_enabled}"
 
     b.buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"
     b.buildConfigField 'Boolean', 'IS_SEND_ALLOWED', "${allow_send}"
