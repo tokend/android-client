@@ -59,7 +59,7 @@ class ContactsManager {
                     } while (contactsCursor.moveToNext())
                     contactsCursor.close()
                 }
-                contacts.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
+                contacts.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name, true) })
                 it.onSuccess(contacts)
             }
         }
