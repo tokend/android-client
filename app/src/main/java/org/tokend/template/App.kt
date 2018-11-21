@@ -28,6 +28,8 @@ import io.reactivex.subjects.BehaviorSubject
 import org.tokend.template.di.*
 import org.tokend.template.di.providers.AppModule
 import org.tokend.template.data.model.UrlConfig
+import org.tokend.template.di.providers.SessionModule
+import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.UrlConfigPersistor
 import org.tokend.template.util.Navigator
 import java.io.IOException
@@ -51,6 +53,9 @@ class App : MultiDexApplication() {
     private var isInForeground = false
     private val goToBackgroundTimer = Timer()
     private var goToBackgroundTask: TimerTask? = null
+    private var lastInForeground: Long = System.currentTimeMillis()
+    private val session = Session()
+    private val logoutTime = BuildConfig.AUTO_LOGOUT
 
     private lateinit var cookiePersistor: CookiePersistor
     private lateinit var cookieCache: CookieCache
@@ -189,6 +194,7 @@ class App : MultiDexApplication() {
                         getCredentialsPreferences(),
                         getNetworkPreferences()
                 ))
+                .sessionModule(SessionModule(session))
                 .build()
     }
 
@@ -259,12 +265,18 @@ class App : MultiDexApplication() {
 
     private fun onAppGoesToBackground() {
         Log.d(LOG_TAG, "onAppGoesToBackground()")
+        lastInForeground = System.currentTimeMillis()
         backgroundStateSubject.onNext(true)
     }
 
     private fun onAppComesToForeground() {
+        val now = System.currentTimeMillis()
         Log.d(LOG_TAG, "onAppComesToForeground()")
         backgroundStateSubject.onNext(false)
+        session.isExpired =
+                logoutTime != 0L &&
+                now - lastInForeground > logoutTime
+        lastInForeground = 0
     }
     // endregion
 }

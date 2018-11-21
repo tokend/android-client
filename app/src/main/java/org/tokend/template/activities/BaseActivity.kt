@@ -16,6 +16,7 @@ import org.tokend.template.di.providers.*
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.template.logic.persistance.UrlConfigPersistor
 import org.tokend.template.features.tfa.view.TfaDialogFactory
+import org.tokend.template.logic.Session
 import org.tokend.template.util.Navigator
 import org.tokend.template.view.ToastManager
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
@@ -44,6 +45,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var toastManager: ToastManager
     @Inject
     lateinit var assetComparator: Comparator<String>
+    @Inject
+    lateinit var session: Session
 
     protected open val allowUnauthorized = false
 
@@ -89,6 +92,18 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
         super.onDestroy()
         appTfaCallback.unregisterHandler(this)
         compositeDisposable.dispose()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (session.isExpired) {
+            session.isExpired = false
+
+            if (!allowUnauthorized) {
+                Navigator.toSignIn(this, true)
+            }
+        }
     }
 
     override fun onTfaRequired(exception: NeedTfaException,

@@ -93,6 +93,11 @@ ext {
     // screenshots
     secure_content = 'false'
 
+    // Auto logout timer in milliseconds.
+    // App will logout after being in background during this time.
+    // 0 means option is disabled
+    auto_logout = 0
+
     // ----------------------
 
     // --- Functionality ---
@@ -142,6 +147,7 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'WITH_LOGS', "${logs_enabled}"
 
     b.buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"
+    b.buildConfigField 'long', 'AUTO_LOGOUT', "${auto_logout}"
     b.buildConfigField 'Boolean', 'IS_SEND_ALLOWED', "${allow_send}"
     b.buildConfigField 'Boolean', 'IS_TRADE_ALLOWED', "${allow_trade}"
     b.buildConfigField 'Boolean', 'IS_DEPOSIT_ALLOWED', "${allow_deposit}"

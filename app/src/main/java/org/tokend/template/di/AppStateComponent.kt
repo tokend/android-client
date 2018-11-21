@@ -5,6 +5,7 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.features.settings.SettingsFragment
 import org.tokend.template.di.providers.AppModule
+import org.tokend.template.di.providers.SessionModule
 import javax.inject.Singleton
 
 @Singleton
@@ -17,7 +18,8 @@ import javax.inject.Singleton
     PersistenceModule::class,
     UrlConfigProviderModule::class,
     UtilModule::class,
-    AppModule::class
+    AppModule::class,
+    SessionModule::class
 ])
 interface AppStateComponent {
     fun inject(baseActivity: BaseActivity)
