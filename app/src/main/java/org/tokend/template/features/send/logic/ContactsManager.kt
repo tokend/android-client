@@ -5,6 +5,7 @@ import android.provider.ContactsContract
 import io.reactivex.Single
 import org.tokend.template.features.send.model.Contact
 import org.tokend.template.features.send.model.ContactEmail
+import kotlin.Comparator
 
 class ContactsManager {
 
@@ -58,6 +59,7 @@ class ContactsManager {
                     } while (contactsCursor.moveToNext())
                     contactsCursor.close()
                 }
+                contacts.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
                 it.onSuccess(contacts)
             }
         }
