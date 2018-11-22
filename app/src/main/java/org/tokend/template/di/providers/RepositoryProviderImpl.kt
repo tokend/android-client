@@ -1,10 +1,7 @@
 package org.tokend.template.di.providers
 
 import android.content.Context
-import org.tokend.template.data.repository.AccountDetailsRepository
-import org.tokend.template.data.repository.AccountRepository
-import org.tokend.template.data.repository.SystemInfoRepository
-import org.tokend.template.data.repository.UserRepository
+import org.tokend.template.data.repository.*
 import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.features.send.repository.ContactsRepository
@@ -61,6 +58,10 @@ class RepositoryProviderImpl(
 
     private val contactsRepository: ContactsRepository by lazy {
         ContactsRepository(context)
+    }
+
+    private val limitsRepository: LimitsRepository by lazy {
+        LimitsRepository(apiProvider, walletInfoProvider)
     }
 
     override fun balances(): BalancesRepository {
@@ -131,5 +132,9 @@ class RepositoryProviderImpl(
 
     override fun contacts(): ContactsRepository {
         return contactsRepository
+    }
+
+    override fun limits(): LimitsRepository {
+        return limitsRepository
     }
 }
