@@ -105,6 +105,8 @@ ext {
     // Allow send - Controls sending functionality availability.
     // It doesn't affect the display of payment transactions in the history.
     allow_send = 'true'
+    //Allow limits - Controls limits functionality availability.
+    allow_limits = 'true'
     // Allow trade - Controls trading functionality availability.
     // It doesn't affect the display of offer match transactions in the history.
     allow_trade = 'true'
@@ -149,6 +151,7 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"
     b.buildConfigField 'long', 'AUTO_LOGOUT', "${auto_logout}"
     b.buildConfigField 'Boolean', 'IS_SEND_ALLOWED', "${allow_send}"
+    b.buildConfigField 'Boolean', 'IS_LIMITS_ALLOWED', "${allow_limits}"
     b.buildConfigField 'Boolean', 'IS_TRADE_ALLOWED', "${allow_trade}"
     b.buildConfigField 'Boolean', 'IS_DEPOSIT_ALLOWED', "${allow_deposit}"
     b.buildConfigField 'Boolean', 'IS_WITHDRAW_ALLOWED', "${allow_withdraw}"

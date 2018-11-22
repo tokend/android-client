@@ -13,6 +13,7 @@ import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.invest.SalesFragment
 import org.tokend.template.features.invest.saledetails.fragments.SaleGeneralInfoFragment
 import org.tokend.template.features.invest.saledetails.fragments.SaleOverviewFragment
+import org.tokend.template.features.limits.LimitsFragment
 import org.tokend.template.features.trade.TradeFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 
@@ -48,6 +49,10 @@ class FragmentFactory {
 
     fun getSendFragment(asset: String? = null): Fragment {
         return SendFragment.newInstance(asset)
+    }
+
+    fun getLimitsFragment(): Fragment {
+        return LimitsFragment.newInstance()
     }
 
     fun getExploreFragment(): Fragment {

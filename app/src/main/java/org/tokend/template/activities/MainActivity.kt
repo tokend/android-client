@@ -31,6 +31,7 @@ import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.invest.SalesFragment
+import org.tokend.template.features.limits.LimitsFragment
 import org.tokend.template.features.trade.TradeFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
@@ -111,6 +112,14 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withSelectedIconColorRes(R.color.icons)
                 .withIconTintingEnabled(true)
 
+        val limitsItem = PrimaryDrawerItem()
+                .withName(R.string.limits)
+                .withIdentifier(LimitsFragment.ID)
+                .withIcon(R.drawable.ic_insert_chart)
+                .withIconColorRes(R.color.icons)
+                .withSelectedIconColorRes(R.color.icons)
+                .withIconTintingEnabled(true)
+
         val investItem = PrimaryDrawerItem()
                 .withName(R.string.explore_sales_title)
                 .withIdentifier(SalesFragment.ID)
@@ -167,6 +176,10 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                             addDrawerItems(sendItem)
                         }
 
+                        if(BuildConfig.IS_LIMITS_ALLOWED) {
+                            addDrawerItems(limitsItem)
+                        }
+
                         if (BuildConfig.IS_INVEST_ALLOWED) {
                             addDrawerItems(investItem)
                         }
@@ -215,6 +228,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     WalletFragment.ID -> factory.getWalletFragment()
                     WithdrawFragment.ID -> factory.getWithdrawFragment()
                     SendFragment.ID -> factory.getSendFragment()
+                    LimitsFragment.ID -> factory.getLimitsFragment()
                     ExploreAssetsFragment.ID -> factory.getExploreFragment()
                     SettingsFragment.ID -> factory.getSettingsFragment()
                     TradeFragment.ID -> factory.getTradeFragment()
