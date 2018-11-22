@@ -307,4 +307,13 @@
         tokens according to your investments, otherwise your investments will be returned
     </string>
     <string name="limits">Limits</string>
+    <string name="payment">Payment</string>
+    <string name="deposit">Deposit</string>
+    <string name="template_limit">%1$s / %2$s</string>
+    <string-array name="limit_types">
+        <item>Daily limit (left/total)</item>
+        <item>Weekly limit (left/total)</item>
+        <item>Monthly  limit (left/total)</item>
+        <item>Annual  limit (left/total)</item>
+    </string-array>
 </resources>
