@@ -2,13 +2,12 @@ package org.tokend.template.view.util
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Rect
-import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
 import android.widget.TextView
-import org.jetbrains.anko.textColor
-import org.tokend.template.R
+import org.tokend.sdk.utils.BigDecimalUtil
+import org.tokend.template.view.util.formatter.AmountFormatter
+import java.math.BigDecimal
 
 class LimitTextView : TextView {
     constructor(context: Context, attributeSet: AttributeSet?) :
@@ -20,21 +19,58 @@ class LimitTextView : TextView {
     constructor(context: Context) : super(context)
 
     private val bounds = Rect()
-    private val regex = Regex("/")
+    private var left: String = ""
+    private var total: String = ""
+
+    var unformatted: String = ""
 
     override fun onDraw(canvas: Canvas?) {
         val textPaint = this.paint
+        textPaint.color = textColors.defaultColor
 
-        val separated = text.split(regex)
-        val text = separated.first()
+        textPaint.getTextBounds(left, 0, left.length, bounds)
 
-        textPaint.getTextBounds(text, 0, text.length, bounds)
+        val width = textPaint.measureText(left)
+        val x = this.width/2 - width
+        val y = textPaint.textSize
 
-        val width = textPaint.measureText(text)
-        val height = bounds.height()
-        val paddingStart = (this.width - width) / 2
-        val paddingTop = (this.height - height) / 2
+        canvas?.drawText("$left $total", x, y, textPaint)
+    }
 
-        canvas?.drawText(this.text.toString(), paddingStart, this.height.toFloat(), textPaint)
+    fun setValues(used: BigDecimal, total: BigDecimal, asset: String) {
+
+        val zeroForAsset = BigDecimalUtil
+                .scaleAmount(BigDecimal.ZERO, AmountFormatter.getDecimalDigitsCount(asset))
+
+        unformatted = when (total) {
+            zeroForAsset -> "$DASH_SYMBOL $SLASH_SYMBOL $DASH_SYMBOL"
+            else -> "${total - used} $SLASH_SYMBOL $total"
+        }
+
+        when(total == zeroForAsset || total == MAX) {
+            true -> {
+                this.left = "$DASH_SYMBOL $SLASH_SYMBOL"
+                this.total = DASH_SYMBOL
+            }
+            else -> {
+                val leftFormat =
+                        AmountFormatter.formatAssetAmount(total - used, asset, abbreviation = true)
+                val totalFormat =
+                        AmountFormatter.formatAssetAmount(total, asset, abbreviation = true)
+
+                this.left = "$leftFormat $SLASH_SYMBOL"
+                this.total = totalFormat
+            }
+        }
+        val text = "$left ${this.total}"
+        this.text = text
+        invalidate()
+    }
+
+    companion object {
+        private const val SLASH_SYMBOL = "/"
+        private const val DASH_SYMBOL = "—"
+
+        private val MAX = BigDecimal("9223372036854.775807")
     }
 }

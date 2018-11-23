@@ -309,7 +309,7 @@
     <string name="limits">Limits</string>
     <string name="payment">Payment</string>
     <string name="deposit">Deposit</string>
-    <string name="template_limit">%1$s / %2$s</string>
+    <string name="no_limits_message">No limits</string>
     <string-array name="limit_types">
         <item>Daily limit (left/total)</item>
         <item>Weekly limit (left/total)</item>

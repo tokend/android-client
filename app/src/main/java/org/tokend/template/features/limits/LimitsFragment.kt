@@ -2,6 +2,7 @@ package org.tokend.template.features.limits
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +12,14 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_limits.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import org.jetbrains.anko.childrenSequence
 import org.tokend.template.R
 import org.tokend.template.data.repository.LimitsRepository
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
+import java.lang.ref.WeakReference
 
 class LimitsFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -31,10 +33,13 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
         get() = repositoryProvider.limits()
 
     private val assets: Set<String>
-        get() = limitsRepository.itemSubject.value.entriesMap.keys
+        get() = limitsRepository.itemSubject.value.entriesByAssetMap.keys
 
-    private val limitTypes: Array<String>
-     get() = resources.getStringArray(R.array.limit_types)
+    private var asset: String = ""
+        set(value) {
+            field = value
+            onAssetChanged()
+        }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -47,46 +52,21 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
 
         initSwipeRefresh()
         initTabs()
+        initEmptyErrorView()
+        initHorizontalSwipes()
         subscribeLimits()
         update()
     }
 
     private fun initTabs() {
-        asset_tabs.onItemSelected { asset ->
-            updateCards(asset.text)
+        asset_tabs.onItemSelected { item ->
+            asset = item.text
         }
     }
 
-    private fun updateCards(asset: String) {
-        limit_cards_holder.removeAllViews()
-
-        limitsRepository.itemSubject.value.getAssetEntry(asset)?.let { entry ->
-            LimitCard(requireContext(),
-                    limitTypes[0],
-                    entry.limit.daily,
-                    entry.statistics.daily)
-                    .addTo(limit_cards_holder)
-
-            LimitCard(requireContext(),
-                    limitTypes[1],
-                    entry.limit.weekly,
-                    entry.statistics.weekly)
-                    .addTo(limit_cards_holder)
-
-            LimitCard(requireContext(),
-                    limitTypes[2],
-                    entry.limit.monthly,
-                    entry.statistics.monthly)
-                    .addTo(limit_cards_holder)
-
-            LimitCard(requireContext(),
-                    limitTypes[3],
-                    entry.limit.annual,
-                    entry.statistics.annual)
-                    .addTo(limit_cards_holder)
-
-            addSpacesBetweenViews()
-        }
+    private fun initEmptyErrorView() {
+        error_empty_view.setPadding(0,
+                requireContext().resources.getDimensionPixelSize(R.dimen.standard_padding),0 ,0)
     }
 
     private fun initSwipeRefresh() {
@@ -94,17 +74,50 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
         swipe_refresh.setOnRefreshListener { update(force = true) }
     }
 
-    private fun onLimitsUpdated() {
-        asset_tabs.setSimpleItems(assets)
+    private fun initHorizontalSwipes() {
+
+        val weakTabs = WeakReference(asset_tabs)
+
+        val gestureDetector = GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
+                onSwipeToLeft = {
+                    weakTabs.get()?.apply { selectedItemIndex++ }
+                },
+                onSwipeToRight = {
+                    weakTabs.get()?.apply { selectedItemIndex-- }
+                }
+        ))
+
+        touch_capture_layout.setTouchEventInterceptor(gestureDetector::onTouchEvent)
+        swipe_refresh.setOnTouchListener { _, event ->
+            if (error_empty_view.visibility == View.VISIBLE)
+                gestureDetector.onTouchEvent(event)
+
+            false
+        }
     }
 
-    private fun addSpacesBetweenViews() {
-        limit_cards_holder.childrenSequence().forEach { view ->
-            view.layoutParams.also { params ->
-                params as ViewGroup.MarginLayoutParams
-                params.bottomMargin = this.resources.getDimensionPixelSize(R.dimen.half_standard_margin)
-                view.layoutParams = params
-            }
+    private fun onAssetChanged() {
+        updateCards(asset)
+    }
+
+    private fun updateCards(asset: String) {
+        limit_cards_holder.removeAllViews()
+
+        limitsRepository.itemSubject.value.getAssetEntries(asset)?.let { entries ->
+
+            LimitCardsProvider(requireContext(), asset, entries)
+                    .addTo(limit_cards_holder)
+
+        }
+    }
+
+    private fun onLimitsUpdated() {
+        if(assets.isNotEmpty()) {
+            error_empty_view.hide()
+            asset_tabs.setSimpleItems(assets)
+            updateCards(asset)
+        } else {
+            error_empty_view.showEmpty(getString(R.string.no_limits_message))
         }
     }
 
@@ -120,7 +133,7 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
                 limitsRepository.errorsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe { error ->
-                            if (assets.isEmpty()) {
+                            if (limitsRepository.isNeverUpdated) {
                                 error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
                                     update(true)
                                 }

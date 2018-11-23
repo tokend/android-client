@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,11 +6,8 @@
     style="@style/InfoCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/standard_margin"
-    android:layout_marginEnd="@dimen/standard_margin"
-    android:transitionName="@string/transition_asset_card"
-    app:contentPadding="0dp"
-    tools:ignore="UnusedAttribute">
+    app:cardUseCompatPadding="false"
+    app:contentPadding="0dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,26 +15,25 @@
 
         <TextView
             android:id="@+id/limit_type"
+            style="@style/HeadingText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Daily limit (left/total)"
-            style="@style/HeadingText"/>
+            tools:text="Daily limit (left/total)" />
 
         <TextView
             android:id="@+id/payment_text"
+            style="@style/SecondaryText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/standard_margin"
-            android:layout_marginTop="@dimen/standard_margin"
+            android:layout_marginTop="24dp"
             android:text="@string/payment"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/limit_type" />
+            app:layout_constraintTop_toBottomOf="@id/limit_type" />
 
         <TextView
             android:id="@+id/deposit_text"
@@ -48,32 +43,31 @@
             android:layout_marginBottom="@dimen/standard_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             android:text="@string/deposit"
-            app:layout_constraintStart_toStartOf="@+id/payment_text"
-            app:layout_constraintTop_toBottomOf="@+id/payment_text" />
+            style="@style/SecondaryText"
+            app:layout_constraintStart_toStartOf="@id/payment_text"
+            app:layout_constraintTop_toBottomOf="@id/payment_text" />
 
-        <TextView
+        <org.tokend.template.view.util.LimitTextView
             android:id="@+id/payment_limit"
+            style="@style/SecondaryText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/standard_margin"
-            android:layout_marginEnd="@dimen/standard_margin"
-            tools:text="— / 65454654"
-            style="@style/SecondaryText"
-            app:layout_constraintTop_toTopOf="@id/payment_text"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/payment_text"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="@id/payment_text" />
 
-        <TextView
+        <org.tokend.template.view.util.LimitTextView
             android:id="@+id/deposit_limit"
+            style="@style/SecondaryText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/standard_margin"
-            android:layout_marginEnd="@dimen/standard_margin"
-            tools:text="—/—"
-            style="@style/SecondaryText"
-            app:layout_constraintTop_toTopOf="@id/deposit_text"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/payment_text"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="@id/deposit_text" />
 
 
     </android.support.constraint.ConstraintLayout>
