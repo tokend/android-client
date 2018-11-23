@@ -2,11 +2,14 @@ package org.tokend.template.features.limits
 
 import android.content.Context
 import android.support.v4.content.res.ResourcesCompat
+import android.support.v7.app.AlertDialog
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.layout_card_limit.view.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.layoutInflater
+import org.jetbrains.anko.onClick
+import org.jetbrains.anko.textColor
 import org.tokend.template.R
 import org.tokend.template.view.util.ViewProvider
 import java.math.BigDecimal
@@ -45,28 +48,28 @@ class LimitCard(private val context: Context,
     private fun setLimit() {
         val zero = BigDecimal.ZERO
 
-        view.payment_limit.setValues(paymentUsed?:zero, paymentTotal?:zero, asset)
-        view.deposit_limit.setValues(depositUsed?:zero, depositTotal?:zero, asset)
+        view.payment_limit.setValues(paymentUsed ?: zero, paymentTotal ?: zero, asset)
+        view.deposit_limit.setValues(depositUsed ?: zero, depositTotal ?: zero, asset)
         view.limit_type.text = type
     }
 
     private fun showDialog() {
-        AlertDialogBuilder(context).apply {
-            title(type)
+        AlertDialog.Builder(context, R.style.AlertDialogStyle)
+                .setTitle(type)
+                .setMessage(
+                        "${context.getString(R.string.payment)} \n" +
+                                view.payment_limit.unformatted + "\n\n" +
 
-            val msg = "${context.getString(R.string.payment)} \n" +
-                    view.payment_limit.unformatted + "\n\n" +
-
-                    "${context.getString(R.string.deposit)} \n" +
-                    view.deposit_limit.unformatted + "\n"
-
-            message(msg)
-            positiveButton(android.R.string.ok) {
-                dismiss()
-            }
-        }.show().dialog?.findViewById<TextView>(android.R.id.message)?.let { textView ->
-            textView.textColor =
-                    ResourcesCompat.getColor(context.resources, R.color.secondary_text, null)
-        }
+                                "${context.getString(R.string.deposit)} \n" +
+                                view.deposit_limit.unformatted + "\n"
+                )
+                .setPositiveButton(R.string.ok, null)
+                .show()
+                .apply {
+                    findViewById<TextView>(android.R.id.message)?.let { textView ->
+                        textView.textColor = ResourcesCompat.getColor(context.resources,
+                                R.color.secondary_text, null)
+                    }
+                }
     }
 }
