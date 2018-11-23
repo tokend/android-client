@@ -311,9 +311,9 @@
     <string name="deposit">Deposit</string>
     <string name="no_limits_message">No limits</string>
     <string-array name="limit_types">
-        <item>Daily limit (left/total)</item>
-        <item>Weekly limit (left/total)</item>
-        <item>Monthly  limit (left/total)</item>
-        <item>Annual  limit (left/total)</item>
+        <item>Daily (left/total)</item>
+        <item>Weekly (left/total)</item>
+        <item>Monthly (left/total)</item>
+        <item>Annual (left/total)</item>
     </string-array>
 </resources>
