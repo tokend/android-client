@@ -1,17 +1,14 @@
 package org.tokend.template.features.limits
 
 import android.content.Context
-import android.graphics.Typeface
 import android.support.v4.content.res.ResourcesCompat
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.layout_card_limit.view.*
 import org.jetbrains.anko.*
-import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.view.util.ViewProvider
-import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
 class LimitCard(private val context: Context,
