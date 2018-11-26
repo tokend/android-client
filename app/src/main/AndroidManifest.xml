@@ -55,6 +55,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".features.signin.AuthenticatorSignInActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".features.signup.SignUpActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/sign_up"

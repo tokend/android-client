@@ -1,6 +1,7 @@
 package org.tokend.template.features.signin
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -21,20 +22,23 @@ import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.features.signin.logic.ResendVerificationEmailUseCase
-import org.tokend.template.features.signin.logic.SignInUseCase
-import org.tokend.template.features.signin.logic.SignInManager
-import org.tokend.template.logic.UrlConfigManager
-import org.tokend.template.logic.persistance.FingerprintAuthManager
-import org.tokend.template.view.util.AnimationUtil
-import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
-import org.tokend.template.util.*
+import org.tokend.template.features.signin.logic.ResendVerificationEmailUseCase
+import org.tokend.template.features.signin.logic.SignInManager
+import org.tokend.template.features.signin.logic.SignInUseCase
+import org.tokend.template.logic.UrlConfigManager
+import org.tokend.template.logic.persistance.FingerprintAuthManager
+import org.tokend.template.util.Navigator
+import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.PermissionManager
+import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.AnimationUtil
+import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
 import org.tokend.wallet.Account
 
@@ -145,6 +149,10 @@ class SignInActivity : BaseActivity() {
 
         fingerprint_indicator.onClick {
             ToastManager(this).short(R.string.touch_sensor)
+        }
+
+        sign_in_with_authenticator_button.onClick {
+            Navigator.openAuthenticatorSignIn(this, SIGN_IN_WITH_AUTHENTICATOR_REQUEST)
         }
     }
     // endregion
@@ -307,5 +315,16 @@ class SignInActivity : BaseActivity() {
         QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
             urlConfigManager.setFromJson(it)
         }
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                SIGN_IN_WITH_AUTHENTICATOR_REQUEST -> finish()
+            }
+        }
+    }
+
+    companion object {
+        private val SIGN_IN_WITH_AUTHENTICATOR_REQUEST =
+                "sign_in_with_authenticator".hashCode() and 0xffff
     }
 }

@@ -33,6 +33,7 @@ import org.tokend.template.features.recovery.RecoveryActivity
 import org.tokend.template.features.send.PaymentConfirmationActivity
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
+import org.tokend.template.features.signin.AuthenticatorSignInActivity
 import org.tokend.template.features.signin.SignInActivity
 import org.tokend.template.features.signup.RecoverySeedActivity
 import org.tokend.template.features.signup.SignUpActivity
@@ -236,5 +237,12 @@ object Navigator {
                             .start<UnknownTxDetailsActivity, BaseTransferOperation>(activity, it)
                 }
         }
+    }
+
+    fun openAuthenticatorSignIn(activity: Activity, requestCode: Int) {
+        activity.startActivityForResult(
+                activity.intentFor<AuthenticatorSignInActivity>(),
+                requestCode
+        )
     }
 }

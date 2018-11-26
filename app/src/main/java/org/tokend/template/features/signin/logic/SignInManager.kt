@@ -4,11 +4,14 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
+import org.tokend.sdk.api.authenticator.AuthResultsApi
+import org.tokend.sdk.api.authenticator.model.AuthResult
 import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.extensions.toSingle
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.wallet.Account
 import retrofit2.HttpException
@@ -20,6 +23,7 @@ class SignInManager(
         private val accountProvider: AccountProvider,
         private val credentialsPersistor: CredentialsPersistor) {
     class InvalidPersistedCredentialsException : Exception()
+    class AuthResultNotFoundException : Exception()
 
     // region Sign in
     /**
@@ -41,6 +45,27 @@ class SignInManager(
                 .toCompletable()
     }
 
+    /**
+     * Requests authorization result for given [Account],
+     * sets up WalletInfoProvider and AccountProvider,
+     * clears CredentialsPersistor.
+     */
+    fun signIn(account: Account, authResultsApi: AuthResultsApi): Completable {
+        return getAuthResult(account.accountId, authResultsApi)
+                .map { authResult ->
+                    authResult.walletId
+                }
+                .flatMap { walletId ->
+                    getWalletInfo(walletId)
+                }
+                .doOnSuccess { walletInfo ->
+                    walletInfoProvider.setWalletInfo(walletInfo)
+                    accountProvider.setAccount(account)
+                    credentialsPersistor.clear(false)
+                }
+                .toCompletable()
+    }
+
     private fun getWalletInfo(email: String, password: CharArray): Single<WalletInfo> {
         return {
             credentialsPersistor
@@ -48,6 +73,31 @@ class SignInManager(
                     ?.loadCredentials(password)
                     ?: keyStorage.getWalletInfo(email, password)
         }.toSingle()
+    }
+
+    private fun getAuthResult(publicKey: String,
+                              authResultsApi: AuthResultsApi): Single<AuthResult> {
+        return authResultsApi
+                .getAuthResult(publicKey)
+                .toSingle()
+                .onErrorResumeNext {
+                    if (it is HttpException
+                            && it.code() == HttpURLConnection.HTTP_NOT_FOUND)
+                        Single.error(AuthResultNotFoundException())
+                    else
+                        Single.error(it)
+                }
+    }
+
+    private fun getWalletInfo(walletIdHex: String): Single<WalletInfo> {
+        return {
+            val walletData = keyStorage.getWalletData(walletIdHex)
+            val email = walletData.attributes!!.email
+            val loginParams = keyStorage.getLoginParams(email)
+
+            WalletInfo(walletData.attributes!!.accountId, email, walletIdHex,
+                    CharArray(0), loginParams)
+        }.toSingle().subscribeOn(Schedulers.newThread())
     }
 
     private fun getAccount(seed: CharArray): Single<Account> {
