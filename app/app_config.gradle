@@ -116,6 +116,8 @@ ext {
     // Allow withdraw - Controls withdrawal functionality availability.
     // It doesn't affect the display of withdrawal transactions in the history.
     allow_withdraw = 'true'
+    // Allow fees - Controls fees functionality availability.
+    allow_fees = 'true'
     // Allow explore - Controls explore tokens functionality availability.
     allow_explore = 'true'
     // Allow invest - Controls investment functionality availability.
@@ -157,6 +159,7 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'IS_WITHDRAW_ALLOWED', "${allow_withdraw}"
     b.buildConfigField 'Boolean', 'IS_EXPLORE_ALLOWED', "${allow_explore}"
     b.buildConfigField 'Boolean', 'IS_INVEST_ALLOWED', "${allow_invest}"
+    b.buildConfigField 'Boolean', 'IS_FEES_ALLOWED', "${allow_fees}"
     b.buildConfigField 'Boolean', 'IS_NETWORK_SPECIFIED_BY_USER', "${network_specified_by_user}"
     b.buildConfigField 'Boolean', 'ENABLE_ANALYTICS', "${enable_analytics}"
 

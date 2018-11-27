@@ -30,6 +30,7 @@ import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.assets.ExploreAssetsFragment
+import org.tokend.template.features.fees.FeesFragment
 import org.tokend.template.features.invest.SalesFragment
 import org.tokend.template.features.limits.LimitsFragment
 import org.tokend.template.features.trade.TradeFragment
@@ -135,6 +136,11 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withIdentifier(TradeFragment.ID)
                 .withIcon(R.drawable.ic_trade)
 
+        val feesItem = PrimaryDrawerItem()
+                .withName(getString(R.string.my_fees))
+                .withIdentifier(FeesFragment.ID)
+                .withIcon(R.drawable.ic_flash)
+
         val settingsItem = PrimaryDrawerItem()
                 .withName(R.string.settings_title)
                 .withIdentifier(SettingsFragment.ID)
@@ -159,8 +165,10 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     if (BuildConfig.IS_DEPOSIT_ALLOWED
                             || BuildConfig.IS_WITHDRAW_ALLOWED
                             || BuildConfig.IS_SEND_ALLOWED
+                            || BuildConfig.IS_LIMITS_ALLOWED
                             || BuildConfig.IS_EXPLORE_ALLOWED
                             || BuildConfig.IS_TRADE_ALLOWED
+                            || BuildConfig.IS_FEES_ALLOWED
                             || BuildConfig.IS_INVEST_ALLOWED) {
                         addDrawerItems(DividerDrawerItem())
 
@@ -191,7 +199,11 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                         if (BuildConfig.IS_TRADE_ALLOWED) {
                             addDrawerItems(tradeItem)
                         }
-                    }
+
+                        if (BuildConfig.IS_FEES_ALLOWED) {
+                            addDrawerItems(feesItem)
+                        }
+                     }
                 }
                 .addDrawerItems(
                         DividerDrawerItem(),
@@ -234,6 +246,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     TradeFragment.ID -> factory.getTradeFragment()
                     DepositFragment.ID -> factory.getDepositFragment()
                     SalesFragment.ID -> factory.getSalesFragment()
+                    FeesFragment.ID -> factory.getFeesFragment()
                     else -> return
                 }
 

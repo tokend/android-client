@@ -29,4 +29,5 @@ interface RepositoryProvider {
     fun filteredSales(): SalesRepository
     fun contacts(): ContactsRepository
     fun limits(): LimitsRepository
+    fun fees(): FeesRepository
 }

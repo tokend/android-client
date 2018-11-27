@@ -64,6 +64,10 @@ class RepositoryProviderImpl(
         LimitsRepository(apiProvider, walletInfoProvider)
     }
 
+    private val feesRepository: FeesRepository by lazy {
+        FeesRepository(apiProvider)
+    }
+
     override fun balances(): BalancesRepository {
         return balancesRepository
     }
@@ -136,5 +140,9 @@ class RepositoryProviderImpl(
 
     override fun limits(): LimitsRepository {
         return limitsRepository
+    }
+
+    override fun fees(): FeesRepository {
+        return feesRepository
     }
 }

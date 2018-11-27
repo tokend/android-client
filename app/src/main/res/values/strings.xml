@@ -311,6 +311,25 @@
     <string name="payment">Payment</string>
     <string name="deposit">Deposit</string>
     <string name="no_limits_message">No limits</string>
+
+    <string name="my_fees">My Fees</string>
+    <string name="no_fees">No fees available</string>
+    <string name="payment_fee">Payment</string>
+    <string name="offer_fee">Offer</string>
+    <string name="withdrawal_fee">Withdrawal</string>
+    <string name="issuance_fee">Issuance</string>
+    <string name="invest_fee">Invest</string>
+    <string name="capital_deployment_fee">Capital deployment</string>
+    <string name="operation_fee">Operation</string>
+    <string name="payout_fee">Payout</string>
+    <string name="incoming_outgoing_fee"><![CDATA[Incoming & Outgoing]]></string>
+    <string name="outgoing_fee">Outgoing</string>
+    <string name="incoming_fee">Incoming</string>
+    <string name="fixed_fee">Fixed</string>
+    <string name="percent_fee">Percent</string>
+    <string name="lower_bound_fee">Lower bound</string>
+    <string name="upper_bound_fee">Upper bound</string>
+
     <string-array name="limit_types">
         <item>Daily (left/total)</item>
         <item>Weekly (left/total)</item>
