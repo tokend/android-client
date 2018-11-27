@@ -6,25 +6,13 @@
     android:background="@color/colorBackground"
     android:orientation="vertical">
 
-
-    <android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/balance_appbar"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:translationZ="@dimen/appbar_elevation"
-        tools:targetApi="lollipop">
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="@style/ToolbarStyle"
-            app:popupTheme="@style/ToolbarStyle"
-            app:titleTextColor="@color/white" />
+        <include layout="@layout/toolbar" />
 
         <org.tokend.template.view.picker.PickerTabLayout
             android:id="@+id/asset_tabs"
