@@ -25,10 +25,12 @@ import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
-import org.tokend.template.di.*
-import org.tokend.template.di.providers.AppModule
 import org.tokend.template.data.model.UrlConfig
+import org.tokend.template.di.*
+import org.tokend.template.di.providers.AccountProviderFactory
+import org.tokend.template.di.providers.AppModule
 import org.tokend.template.di.providers.SessionModule
+import org.tokend.template.di.providers.WalletInfoProviderFactory
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.UrlConfigPersistor
 import org.tokend.template.util.Navigator
@@ -54,11 +56,11 @@ class App : MultiDexApplication() {
     private val goToBackgroundTimer = Timer()
     private var goToBackgroundTask: TimerTask? = null
     private var lastInForeground: Long = System.currentTimeMillis()
-    private val session = Session()
     private val logoutTime = BuildConfig.AUTO_LOGOUT
 
     private lateinit var cookiePersistor: CookiePersistor
     private lateinit var cookieCache: CookieCache
+    private lateinit var session: Session
 
     lateinit var stateComponent: AppStateComponent
 
@@ -102,6 +104,7 @@ class App : MultiDexApplication() {
             override fun onActivityDestroyed(a: Activity) {}
         })
 
+        initSession()
         initCookies()
         initStateComponent()
         initPicasso()
@@ -159,6 +162,13 @@ class App : MultiDexApplication() {
     }
 
     // region State
+    private fun initSession() {
+        session = Session(
+                WalletInfoProviderFactory().createWalletInfoProvider(),
+                AccountProviderFactory().createAccountProvider()
+        )
+    }
+
     private fun initCookies() {
         cookiePersistor = SharedPrefsCookiePersistor(this)
         cookieCache = SetCookieCache()
@@ -199,6 +209,7 @@ class App : MultiDexApplication() {
     }
 
     private fun clearState() {
+        session.reset()
         initStateComponent()
     }
 

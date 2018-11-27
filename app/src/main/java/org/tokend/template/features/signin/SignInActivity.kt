@@ -221,9 +221,8 @@ class SignInActivity : BaseActivity() {
                 email,
                 password,
                 apiProvider.getKeyStorage(),
+                session,
                 credentialsPersistor,
-                walletInfoProvider,
-                accountProvider,
                 PostSignInManager(repositoryProvider)
         )
                 .perform()

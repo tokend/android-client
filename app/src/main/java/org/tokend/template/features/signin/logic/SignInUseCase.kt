@@ -6,8 +6,7 @@ import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.di.providers.AccountProvider
-import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.wallet.Account
 
@@ -23,9 +22,8 @@ class SignInUseCase(
         private val email: String,
         private val password: CharArray,
         private val keyStorage: KeyStorage,
+        private val session: Session,
         private val credentialsPersistor: CredentialsPersistor,
-        private val walletInfoProvider: WalletInfoProvider,
-        private val accountProvider: AccountProvider,
         private val postSignInManager: PostSignInManager?
 ) {
     private lateinit var walletInfo: WalletInfo
@@ -74,9 +72,9 @@ class SignInUseCase(
     }
 
     private fun updateProviders(): Single<Boolean> {
-        walletInfoProvider.setWalletInfo(walletInfo)
+        session.setWalletInfo(walletInfo)
         credentialsPersistor.saveCredentials(walletInfo, password)
-        accountProvider.setAccount(account)
+        session.setAccount(account)
 
         return Single.just(true)
     }

@@ -28,15 +28,16 @@
     </android.support.v7.preference.PreferenceCategory>
 
     <android.support.v7.preference.PreferenceCategory
+        android:key="security"
         android:layout="@layout/preference_category_layout_divider"
         android:title="@string/settings_security_group">
 
         <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
             android:icon="@drawable/ic_fingerprint"
             android:key="fingerprint"
             android:layout="@layout/preference_layout"
             android:persistent="true"
-            android:defaultValue="true"
             android:title="@string/use_fingerprint" />
 
         <android.support.v7.preference.SwitchPreferenceCompat

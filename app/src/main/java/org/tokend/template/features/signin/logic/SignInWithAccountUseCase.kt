@@ -8,9 +8,8 @@ import org.tokend.sdk.api.authenticator.AuthResultsApi
 import org.tokend.sdk.api.authenticator.model.AuthResult
 import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.di.providers.AccountProvider
-import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.wallet.Account
 import retrofit2.HttpException
@@ -28,8 +27,7 @@ class SignInWithAccountUseCase(
         private val account: Account,
         private val keyStorage: KeyStorage,
         private val authResultsApi: AuthResultsApi,
-        private val walletInfoProvider: WalletInfoProvider,
-        private val accountProvider: AccountProvider,
+        private val session: Session,
         private val credentialsPersistor: CredentialsPersistor,
         private val postSignInManager: PostSignInManager?
 ) {
@@ -102,9 +100,10 @@ class SignInWithAccountUseCase(
     }
 
     private fun updateProviders(): Single<Boolean> {
-        walletInfoProvider.setWalletInfo(walletInfo)
+        session.setWalletInfo(walletInfo)
         credentialsPersistor.clear(false)
-        accountProvider.setAccount(account)
+        session.setAccount(account)
+        session.isAuthenticatorUsed = true
 
         return Single.just(true)
     }

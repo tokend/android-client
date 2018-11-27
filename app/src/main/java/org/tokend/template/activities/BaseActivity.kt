@@ -11,15 +11,15 @@ import org.tokend.sdk.tfa.TfaCallback
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.App
 import org.tokend.template.BuildConfig
-import org.tokend.template.logic.AppTfaCallback
 import org.tokend.template.di.providers.*
+import org.tokend.template.features.tfa.view.TfaDialogFactory
+import org.tokend.template.logic.AppTfaCallback
+import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.template.logic.persistance.UrlConfigPersistor
-import org.tokend.template.features.tfa.view.TfaDialogFactory
-import org.tokend.template.logic.Session
 import org.tokend.template.util.Navigator
-import org.tokend.template.view.ToastManager
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
+import org.tokend.template.view.ToastManager
 import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity(), TfaCallback {
@@ -98,7 +98,7 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
         super.onResume()
 
         if (session.isExpired) {
-            session.isExpired = false
+            session.reset()
 
             if (!allowUnauthorized) {
                 Navigator.toSignIn(this, true)

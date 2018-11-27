@@ -12,19 +12,21 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.AlertDialogBuilder
+import org.jetbrains.anko.browse
+import org.jetbrains.anko.isSelectable
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.R
-import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.logic.persistance.FingerprintUtil
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
+import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
 import org.tokend.template.features.tfa.logic.EnableTfaUseCase
 import org.tokend.template.features.tfa.view.TotpFactorConfirmationDialog
-import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.persistance.FingerprintUtil
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.LoadingIndicatorManager
 import java.nio.CharBuffer
 
 class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
@@ -118,8 +120,8 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
                         dismiss()
                     }
                 }.show().dialog?.findViewById<TextView>(android.R.id.message)?.let { textView ->
-                        textView.isSelectable = true
-                        textView.typeface = Typeface.MONOSPACE
+                    textView.isSelectable = true
+                    textView.typeface = Typeface.MONOSPACE
                 }
                 true
             }
@@ -129,9 +131,13 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     // region Security
     private fun initSecurityCategory() {
-        initFingerprintItem()
-        initTfaItem()
-        initChangePasswordItem()
+        if (session.isAuthenticatorUsed) {
+            preferenceScreen.removePreference(findPreference("security"))
+        } else {
+            initFingerprintItem()
+            initTfaItem()
+            initChangePasswordItem()
+        }
     }
 
     private fun initFingerprintItem() {

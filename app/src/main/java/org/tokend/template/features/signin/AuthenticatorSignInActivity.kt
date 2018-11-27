@@ -188,8 +188,7 @@ class AuthenticatorSignInActivity : BaseActivity() {
                 account,
                 apiProvider.getKeyStorage(),
                 apiProvider.getApi().authResults,
-                walletInfoProvider,
-                accountProvider,
+                session,
                 credentialsPersistor,
                 PostSignInManager(repositoryProvider)
         )
