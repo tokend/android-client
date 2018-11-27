@@ -281,7 +281,7 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun displayAssetDetails() {
-        saleAsset.details.logo.getUrl(urlConfigProvider.getConfig().storage)?.let {
+        saleAsset.details.logo?.getUrl(urlConfigProvider.getConfig().storage)?.let {
             Picasso.with(this)
                     .load(it)
                     .resizeDimen(R.dimen.asset_list_item_logo_size, R.dimen.asset_list_item_logo_size)

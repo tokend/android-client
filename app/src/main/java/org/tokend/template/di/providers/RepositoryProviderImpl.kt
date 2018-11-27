@@ -65,7 +65,7 @@ class RepositoryProviderImpl(
     }
 
     private val feesRepository: FeesRepository by lazy {
-        FeesRepository(apiProvider)
+        FeesRepository(apiProvider, walletInfoProvider)
     }
 
     override fun balances(): BalancesRepository {

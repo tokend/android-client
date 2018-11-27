@@ -5,9 +5,11 @@ import io.reactivex.Single
 import org.tokend.sdk.api.fees.model.Fees
 import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
+import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.toSingle
 
-class FeesRepository(private val apiProvider: ApiProvider) : SimpleSingleItemRepository<Fees>() {
+class FeesRepository(private val apiProvider: ApiProvider,
+                     private val walletInfoProvider: WalletInfoProvider) : SimpleSingleItemRepository<Fees>() {
     override fun getItem(): Observable<Fees> {
         return getFeesResponse().toObservable()
     }
@@ -18,7 +20,7 @@ class FeesRepository(private val apiProvider: ApiProvider) : SimpleSingleItemRep
 
         return signedApi
                 .fees
-                .getExistingFees()
+                .getExistingFees(walletInfoProvider.getWalletInfo()?.accountId)
                 .toSingle()
     }
 }

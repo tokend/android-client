@@ -150,8 +150,8 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun onAssetChanged() {
-        feesRepository.itemSubject.value.feesAssetMap[asset].also {
-            feeAdapter.setData(it?.map { FeeItem.fromFee(it) })
+        feesRepository.itemSubject.value.feesAssetMap[asset]?.let {
+            feeAdapter.setData(it.map { FeeItem.fromFee(it) })
         }
     }
 

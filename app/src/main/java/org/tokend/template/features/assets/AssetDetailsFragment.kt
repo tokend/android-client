@@ -124,7 +124,7 @@ class AssetDetailsFragment : BaseFragment() {
     }
 
     private fun displayTermsIfNeeded() {
-        val terms = asset.details.terms.takeIf { !it.name.isNullOrEmpty() }
+        val terms = asset.details.terms?.takeIf { !it.name.isNullOrEmpty() }
                 ?: return
 
         val fileCardView =
