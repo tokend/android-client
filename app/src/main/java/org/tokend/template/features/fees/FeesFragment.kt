@@ -125,9 +125,6 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe { isLoading ->
                             loadingIndicator.setLoading(isLoading, "fees")
-                            if(isLoading) {
-                                error_empty_view.hide()
-                            }
                         },
                 feesRepository.errorsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
@@ -145,8 +142,10 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
 
     private fun onFeesUpdated() {
         asset_tabs.setSimpleItems(assets)
-        if(assets.isEmpty()) {
+        if (assets.isEmpty()) {
             error_empty_view.showEmpty(getString(R.string.no_fees))
+        } else {
+            error_empty_view.hide()
         }
     }
 
@@ -157,7 +156,7 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun update(force: Boolean = false) {
-        if(!force) {
+        if (!force) {
             feesRepository.updateIfNotFresh()
         } else {
             feesRepository.update()
