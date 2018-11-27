@@ -18,7 +18,7 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.qr.logic.QrGenerator
 import org.tokend.template.features.signin.logic.AuthResultPoller
-import org.tokend.template.features.signin.logic.SignInManager
+import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInWithAccountUseCase
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -90,7 +90,7 @@ class AuthenticatorSignInActivity : BaseActivity() {
     }
 
     private fun displayAccountQr() {
-        displayQrCode(getAuthUri(account).toString())
+        displayQrCode(getAuthUri(account))
     }
     // endregion
 
@@ -186,14 +186,12 @@ class AuthenticatorSignInActivity : BaseActivity() {
     private fun signInWithAccount(account: Account) {
         SignInWithAccountUseCase(
                 account,
-                SignInManager(
-                        apiProvider.getKeyStorage(),
-                        walletInfoProvider,
-                        accountProvider,
-                        credentialsPersistor
-                ),
+                apiProvider.getKeyStorage(),
                 apiProvider.getApi().authResults,
-                repositoryProvider
+                walletInfoProvider,
+                accountProvider,
+                credentialsPersistor,
+                PostSignInManager(repositoryProvider)
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
@@ -208,7 +206,8 @@ class AuthenticatorSignInActivity : BaseActivity() {
                         onError = {
                             errorHandlerFactory.getDefault().handle(it)
 
-                            if (it is SignInManager.AuthResultNotFoundException) {
+                            if (it is SignInWithAccountUseCase.AuthResultNotFoundException
+                                    || it is SignInWithAccountUseCase.AuthResultUnsuccessfulException) {
                                 finish()
                             } else {
                                 showAuthContent()

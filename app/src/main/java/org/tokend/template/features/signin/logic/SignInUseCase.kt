@@ -2,44 +2,94 @@ package org.tokend.template.features.signin.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import org.tokend.template.di.providers.RepositoryProvider
+import org.tokend.sdk.keyserver.KeyStorage
+import org.tokend.sdk.keyserver.models.WalletInfo
+import org.tokend.template.di.providers.AccountProvider
+import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.logic.persistance.CredentialsPersistor
+import org.tokend.wallet.Account
 
 /**
- * Performs sign in with given credentials
+ * Performs sign in with given credentials:
+ * performs keypair loading and decryption,
+ * sets up WalletInfoProvider and AccountProvider, updates CredentialsPersistor.
+ * If CredentialsPersistor contains saved credentials no network calls will be performed.
  *
- * @param repositoryProvider if set then [SignInManager.doPostSignIn] will be performed
+ * @param postSignInManager if set then [PostSignInManager.doPostSignIn] will be performed
  */
 class SignInUseCase(
         private val email: String,
         private val password: CharArray,
-        private val signInManager: SignInManager,
-        private val repositoryProvider: RepositoryProvider?
+        private val keyStorage: KeyStorage,
+        private val credentialsPersistor: CredentialsPersistor,
+        private val walletInfoProvider: WalletInfoProvider,
+        private val accountProvider: AccountProvider,
+        private val postSignInManager: PostSignInManager?
 ) {
+    private lateinit var walletInfo: WalletInfo
+    private lateinit var account: Account
+
     fun perform(): Completable {
         val scheduler = Schedulers.newThread()
 
-        return performSignIn()
+        return getWalletInfo(email, password)
+                .doOnSuccess { walletInfo ->
+                    this.walletInfo = walletInfo
+                }
                 .observeOn(scheduler)
+                .flatMap {
+                    getAccountFromWalletInfo()
+                }
+                .doOnSuccess { account ->
+                    this.account = account
+                }
+                .flatMap {
+                    updateProviders()
+                }
                 .flatMap {
                     performPostSignIn()
                 }
                 .observeOn(scheduler)
                 .retry { attempt, error ->
-                    error is SignInManager.InvalidPersistedCredentialsException && attempt == 1
+                    error is PostSignInManager.AuthMismatchException && attempt == 1
                 }
                 .toCompletable()
     }
 
-    private fun performSignIn(): Single<Boolean> {
-        return signInManager.signIn(email, password)
-                .toSingleDefault(true)
+    private fun getWalletInfo(email: String, password: CharArray): Single<WalletInfo> {
+        return {
+            credentialsPersistor
+                    .takeIf { it.getSavedEmail() == email }
+                    ?.loadCredentials(password)
+                    ?: keyStorage.getWalletInfo(email, password)
+        }.toSingle()
+    }
+
+    private fun getAccountFromWalletInfo(): Single<Account> {
+        return {
+            Account.fromSecretSeed(walletInfo.secretSeed)
+        }.toSingle().subscribeOn(Schedulers.newThread())
+    }
+
+    private fun updateProviders(): Single<Boolean> {
+        walletInfoProvider.setWalletInfo(walletInfo)
+        credentialsPersistor.saveCredentials(walletInfo, password)
+        accountProvider.setAccount(account)
+
+        return Single.just(true)
     }
 
     private fun performPostSignIn(): Single<Boolean> {
-        return if (repositoryProvider != null)
-            signInManager
-                    .doPostSignIn(repositoryProvider)
+        return if (postSignInManager != null)
+            postSignInManager
+                    .doPostSignIn()
+                    .doOnError {
+                        if (it is PostSignInManager.AuthMismatchException) {
+                            credentialsPersistor.clear(keepEmail = true)
+                        }
+                    }
                     .toSingleDefault(true)
         else
             Single.just(false)

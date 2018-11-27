@@ -26,8 +26,8 @@ import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
+import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.ResendVerificationEmailUseCase
-import org.tokend.template.features.signin.logic.SignInManager
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.logic.UrlConfigManager
 import org.tokend.template.logic.persistance.FingerprintAuthManager
@@ -217,18 +217,14 @@ class SignInActivity : BaseActivity() {
         val email = email_edit_text.text.toString()
         val password = password_edit_text.text.getChars()
 
-        val signInManager = SignInManager(
-                apiProvider.getKeyStorage(),
-                walletInfoProvider,
-                accountProvider,
-                credentialsPersistor
-        )
-
         SignInUseCase(
                 email,
                 password,
-                signInManager,
-                repositoryProvider
+                apiProvider.getKeyStorage(),
+                credentialsPersistor,
+                walletInfoProvider,
+                accountProvider,
+                PostSignInManager(repositoryProvider)
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
