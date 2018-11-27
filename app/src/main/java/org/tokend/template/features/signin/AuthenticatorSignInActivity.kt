@@ -3,6 +3,7 @@ package org.tokend.template.features.signin
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import io.reactivex.disposables.Disposable
@@ -93,6 +94,7 @@ class AuthenticatorSignInActivity : BaseActivity() {
     }
     // endregion
 
+    // region View switch
     private fun showLoading() {
         progress_layout.visibility = View.VISIBLE
         auth_content_layout.visibility = View.GONE
@@ -102,6 +104,11 @@ class AuthenticatorSignInActivity : BaseActivity() {
         progress_layout.visibility = View.GONE
         auth_content_layout.visibility = View.VISIBLE
     }
+
+    private fun isAuthContentShown(): Boolean {
+        return auth_content_layout.visibility == View.VISIBLE
+    }
+    // endregion
 
     private fun getAuthUri(account: Account): String {
         return AuthRequest(
@@ -223,6 +230,16 @@ class AuthenticatorSignInActivity : BaseActivity() {
     private fun onAuthenticatorSuccess() {
         needAuthResultSubscription = false
         signInWithAccount(account)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+
+        qr_code_image_view.postDelayed({
+            if (isAuthContentShown()) {
+                displayAccountQr()
+            }
+        }, 300)
     }
 
     companion object {
