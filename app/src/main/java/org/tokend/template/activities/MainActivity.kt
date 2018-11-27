@@ -22,22 +22,22 @@ import org.jetbrains.anko.onClick
 import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
-import org.tokend.template.features.send.SendFragment
-import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.features.wallet.WalletFragment
-import org.tokend.template.features.settings.SettingsFragment
-import org.tokend.template.features.send.model.PaymentRequest
+import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
-import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.fees.FeesFragment
 import org.tokend.template.features.invest.SalesFragment
 import org.tokend.template.features.limits.LimitsFragment
+import org.tokend.template.features.send.SendFragment
+import org.tokend.template.features.send.model.PaymentRequest
+import org.tokend.template.features.settings.SettingsFragment
 import org.tokend.template.features.trade.TradeFragment
+import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
-import org.tokend.template.logic.wallet.WalletEventsListener
 import org.tokend.template.fragments.FragmentFactory
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.wallet.WalletEventsListener
 import org.tokend.template.util.Navigator
 
 class MainActivity : BaseActivity(), WalletEventsListener {
@@ -76,11 +76,11 @@ class MainActivity : BaseActivity(), WalletEventsListener {
             onClick {
                 val accountId = walletInfoProvider.getWalletInfo()?.accountId
                         ?: getString(R.string.error_try_again)
-                    Navigator.openQrShare(this@MainActivity,
-                            data = accountId,
-                            title = getString(R.string.account_id_title),
-                            shareLabel = getString(R.string.share_account_id)
-                    )
+                Navigator.openQrShare(this@MainActivity,
+                        data = accountId,
+                        title = getString(R.string.account_id_title),
+                        shareLabel = getString(R.string.share_account_id)
+                )
                 navigationDrawer?.closeDrawer()
             }
         }
@@ -137,7 +137,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withIcon(R.drawable.ic_trade)
 
         val feesItem = PrimaryDrawerItem()
-                .withName(getString(R.string.my_fees))
+                .withName(getString(R.string.fees_title))
                 .withIdentifier(FeesFragment.ID)
                 .withIcon(R.drawable.ic_flash)
 
@@ -165,10 +165,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     if (BuildConfig.IS_DEPOSIT_ALLOWED
                             || BuildConfig.IS_WITHDRAW_ALLOWED
                             || BuildConfig.IS_SEND_ALLOWED
-                            || BuildConfig.IS_LIMITS_ALLOWED
                             || BuildConfig.IS_EXPLORE_ALLOWED
                             || BuildConfig.IS_TRADE_ALLOWED
-                            || BuildConfig.IS_FEES_ALLOWED
                             || BuildConfig.IS_INVEST_ALLOWED) {
                         addDrawerItems(DividerDrawerItem())
 
@@ -184,10 +182,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                             addDrawerItems(sendItem)
                         }
 
-                        if(BuildConfig.IS_LIMITS_ALLOWED) {
-                            addDrawerItems(limitsItem)
-                        }
-
                         if (BuildConfig.IS_INVEST_ALLOWED) {
                             addDrawerItems(investItem)
                         }
@@ -199,11 +193,23 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                         if (BuildConfig.IS_TRADE_ALLOWED) {
                             addDrawerItems(tradeItem)
                         }
+                    }
+                }
+                .apply {
+                    if (BuildConfig.IS_FEES_ALLOWED
+                            || BuildConfig.IS_LIMITS_ALLOWED) {
+                        addDrawerItems(DividerDrawerItem())
+
+
+                        if (BuildConfig.IS_LIMITS_ALLOWED) {
+                            addDrawerItems(limitsItem)
+                        }
+
 
                         if (BuildConfig.IS_FEES_ALLOWED) {
                             addDrawerItems(feesItem)
                         }
-                     }
+                    }
                 }
                 .addDrawerItems(
                         DividerDrawerItem(),

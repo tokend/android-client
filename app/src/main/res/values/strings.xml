@@ -312,7 +312,7 @@
     <string name="deposit">Deposit</string>
     <string name="no_limits_message">No limits</string>
 
-    <string name="my_fees">My Fees</string>
+    <string name="fees_title">Fees</string>
     <string name="no_fees">No fees available</string>
     <string name="payment_fee">Payment</string>
     <string name="offer_fee">Offer</string>

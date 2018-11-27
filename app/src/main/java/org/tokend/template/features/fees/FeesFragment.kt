@@ -53,7 +53,7 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
 
     override fun onInitAllowed() {
         toolbarSubject.onNext(toolbar)
-        toolbar.title = getString(R.string.my_fees)
+        toolbar.title = getString(R.string.fees_title)
 
         initViews()
         subscribeToFees()
