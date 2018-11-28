@@ -2,7 +2,7 @@ package org.tokend.template.data.repository.base
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.tokend.template.util.ObservableTransformers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Represents in-memory cache of given type with persistence.
@@ -30,8 +30,7 @@ abstract class RepositoryCache<T> {
                     else
                         Single.just(listOf())
 
-            return Completable.fromSingle(initSingle)
-                    .compose(ObservableTransformers.defaultSchedulersCompletable())
+            return Completable.fromSingle(initSingle).observeOn(Schedulers.io())
         }
     }
 
