@@ -42,6 +42,11 @@ data class UrlConfig(
     }
 
     private fun String.addProtocolIfNeeded(): String {
-        return "https://" + this.replace("^.*//".toRegex(), "")
+        return if (!contains("^.+//".toRegex()))
+            "https://" + this
+        else if (startsWith("//"))
+            "https:" + this
+        else
+            this
     }
 }
