@@ -13,7 +13,7 @@ import org.tokend.wallet.Account
 /**
  * Performs sign in with given credentials:
  * performs keypair loading and decryption,
- * sets up WalletInfoProvider and AccountProvider, updates CredentialsPersistor.
+ * sets up WalletInfoProvider and AccountProvider, updates CredentialsPersistor if it is set.
  * If CredentialsPersistor contains saved credentials no network calls will be performed.
  *
  * @param postSignInManager if set then [PostSignInManager.doPostSignIn] will be performed
@@ -23,7 +23,7 @@ class SignInUseCase(
         private val password: CharArray,
         private val keyStorage: KeyStorage,
         private val session: Session,
-        private val credentialsPersistor: CredentialsPersistor,
+        private val credentialsPersistor: CredentialsPersistor?,
         private val postSignInManager: PostSignInManager?
 ) {
     private lateinit var walletInfo: WalletInfo
@@ -59,7 +59,7 @@ class SignInUseCase(
     private fun getWalletInfo(email: String, password: CharArray): Single<WalletInfo> {
         return {
             credentialsPersistor
-                    .takeIf { it.getSavedEmail() == email }
+                    ?.takeIf { it.getSavedEmail() == email }
                     ?.loadCredentials(password)
                     ?: keyStorage.getWalletInfo(email, password)
         }.toSingle()
@@ -73,7 +73,7 @@ class SignInUseCase(
 
     private fun updateProviders(): Single<Boolean> {
         session.setWalletInfo(walletInfo)
-        credentialsPersistor.saveCredentials(walletInfo, password)
+        credentialsPersistor?.saveCredentials(walletInfo, password)
         session.setAccount(account)
 
         return Single.just(true)
@@ -85,7 +85,7 @@ class SignInUseCase(
                     .doPostSignIn()
                     .doOnError {
                         if (it is PostSignInManager.AuthMismatchException) {
-                            credentialsPersistor.clear(keepEmail = true)
+                            credentialsPersistor?.clear(keepEmail = true)
                         }
                     }
                     .toSingleDefault(true)
