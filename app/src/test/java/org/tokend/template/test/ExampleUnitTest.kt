@@ -1,4 +1,4 @@
-package org.tokend.template
+package org.tokend.template.test
 
 import org.junit.Test
 
