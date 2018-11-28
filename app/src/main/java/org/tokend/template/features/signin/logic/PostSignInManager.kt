@@ -40,6 +40,7 @@ class PostSignInManager(
                             if (error is HttpException
                                     && error.code() == HttpURLConnection.HTTP_NOT_FOUND) {
                                 createUnverifiedUser(repositoryProvider)
+                                        .andThen(repositoryProvider.account().updateDeferred())
                             } else if (error is HttpException
                                     && error.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                                 Completable.error(AuthMismatchException())
