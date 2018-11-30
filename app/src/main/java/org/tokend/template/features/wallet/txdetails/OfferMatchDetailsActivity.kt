@@ -12,13 +12,14 @@ import org.tokend.sdk.api.base.model.operations.OperationState
 import org.tokend.sdk.api.base.model.operations.OperationType
 import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
-import org.tokend.template.logic.transactions.TxManager
-import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
+import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.InfoCard
 import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.util.formatter.AmountFormatter
+import java.math.BigDecimal
 import kotlin.reflect.KClass
 
 open class OfferMatchDetailsActivity(
@@ -190,7 +191,9 @@ open class OfferMatchDetailsActivity(
                 baseAsset = tx.asset,
                 quoteAsset = tx.matchData.quoteAsset,
                 quoteBalance = balances.find { it.asset == tx.matchData.quoteAsset }?.balanceId,
-                baseBalance = balances.find { it.asset == tx.asset }?.balanceId
+                baseBalance = balances.find { it.asset == tx.asset }?.balanceId,
+                baseAmount = BigDecimal.ZERO,
+                price = BigDecimal.ZERO
         )
     }
     // endregion

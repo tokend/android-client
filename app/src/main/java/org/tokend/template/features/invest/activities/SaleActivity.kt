@@ -527,6 +527,7 @@ class SaleActivity : BaseActivity() {
                             Offer(
                                     baseAsset = sale.baseAsset,
                                     quoteAsset = asset,
+                                    baseAmount = BigDecimal.ZERO,
                                     price = price,
                                     isBuy = true,
                                     orderBookId = orderBookId,

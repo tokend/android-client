@@ -491,7 +491,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 Offer(
                         baseAsset = currentPair.base,
                         quoteAsset = currentPair.quote,
-                        price = currentPair.price
+                        baseAmount = BigDecimal.ZERO,
+                        price = currentPair.price,
+                        isBuy = false
                 )
         )
     }
@@ -540,7 +542,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     }
 
     override fun onBackPressed(): Boolean {
-        return if(isBottomSheetExpanded) {
+        return if (isBottomSheetExpanded) {
             bottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
             false
         } else {
