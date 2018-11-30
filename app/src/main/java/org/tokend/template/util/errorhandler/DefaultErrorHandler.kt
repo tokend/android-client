@@ -2,10 +2,13 @@ package org.tokend.template.util.errorhandler
 
 import android.content.Context
 import org.tokend.sdk.api.transactions.model.TransactionFailedException
+import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.view.ToastManager
+import retrofit2.HttpException
 import java.io.IOException
 import java.io.InterruptedIOException
+import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
 import java.util.concurrent.CancellationException
 
@@ -33,14 +36,16 @@ open class DefaultErrorHandler(
      * @return Localized error message for given [Throwable]
      */
     override fun getErrorMessage(error: Throwable): String? {
-        return when (error) {
-            is SocketTimeoutException ->
+        return when {
+            error is SocketTimeoutException ->
                 context.getString(R.string.error_connection_try_again)
-            is CancellationException, is InterruptedIOException ->
+            error is CancellationException || error is InterruptedIOException ->
                 null
-            is IOException ->
+            isErrorUnauthorized(error) ->
+                context.getString(R.string.error_unauthorized)
+            error is IOException ->
                 context.getString(R.string.error_connection_try_again)
-            is TransactionFailedException ->
+            error is TransactionFailedException ->
                 getTransactionFailedMessage(error)
             else -> {
                 context.getString(R.string.error_try_again)
@@ -80,5 +85,9 @@ open class DefaultErrorHandler(
             else ->
                 context.getString(R.string.error_tx_general)
         }
+    }
+
+    private fun isErrorUnauthorized(error: Throwable): Boolean {
+        return error is HttpException && error.code() == HttpURLConnection.HTTP_UNAUTHORIZED
     }
 }

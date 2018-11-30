@@ -341,4 +341,6 @@
     <string name="open_authenticator_action">Open authenticator</string>
     <string name="show_auth_qr_action">Show QR code</string>
     <string name="use_authenticator">Use authenticator</string>
+
+    <string name="error_unauthorized">The session has been expired</string>
 </resources>
