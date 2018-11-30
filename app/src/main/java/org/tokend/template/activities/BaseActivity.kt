@@ -101,7 +101,7 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
             session.reset()
 
             if (!allowUnauthorized) {
-                Navigator.toSignIn(this, true)
+                (application as App).signOut(this, soft = true)
             }
         }
     }

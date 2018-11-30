@@ -48,8 +48,7 @@ class App : MultiDexApplication() {
          * Emits value when app goes to the background or comes to the foreground.
          * [true] means that the app is currently in the background.
          */
-        val backgroundStateSubject: BehaviorSubject<Boolean>
-                = BehaviorSubject.createDefault(false)
+        val backgroundStateSubject: BehaviorSubject<Boolean> = BehaviorSubject.createDefault(false)
     }
 
     private var isInForeground = false
@@ -218,11 +217,16 @@ class App : MultiDexApplication() {
         cookieCache.clear()
     }
 
+    /**
+     * @param soft if set to [true] user data will not be cleared.
+     */
     @SuppressLint("ApplySharedPref")
-    fun signOut(activity: Activity?) {
-        getCredentialsPreferences().edit().clear().commit()
-        clearCookies()
-        clearState()
+    fun signOut(activity: Activity?, soft: Boolean = false) {
+        if (!soft) {
+            getCredentialsPreferences().edit().clear().commit()
+            clearCookies()
+            clearState()
+        }
 
         Navigator.toSignIn(this)
 
