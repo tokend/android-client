@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.subjects.CompletableSubject
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingParamsHolder
 import org.tokend.template.data.repository.base.MultipleItemsRepository
@@ -25,7 +26,8 @@ abstract class PagedDataRepository<T, R> : MultipleItemsRepository<T>()
     protected abstract fun getNextPageRequestParams(): R
 
     protected var loadingDisposable: Disposable? = null
-    protected open fun loadMore(force: Boolean): Boolean {
+    protected open fun loadMore(force: Boolean,
+                                resultSubject: CompletableSubject?): Boolean {
         synchronized(this) {
             if ((noMoreItems || isLoading) && !force) {
                 return false
@@ -42,10 +44,16 @@ abstract class PagedDataRepository<T, R> : MultipleItemsRepository<T>()
                                 isLoading = false
                                 nextCursor = it.nextCursor
                                 noMoreItems = it.isLast
+
+                                updateResultSubject = null
+                                resultSubject?.onComplete()
                             },
                             onError = {
                                 isLoading = false
                                 errorsSubject.onNext(it)
+
+                                updateResultSubject = null
+                                resultSubject?.onError(it)
                             }
                     )
         }
@@ -71,20 +79,32 @@ abstract class PagedDataRepository<T, R> : MultipleItemsRepository<T>()
     }
 
     open fun loadMore(): Boolean {
-        return loadMore(force = false)
+        return loadMore(force = false, resultSubject = null)
     }
 
+    private var updateResultSubject: CompletableSubject? = null
+
     override fun update(): Completable {
-        synchronized(this) {
+        return synchronized(this) {
             itemsCache.clear()
             nextCursor = null
             noMoreItems = false
 
             isLoading = false
 
-            loadMore(force = true)
-        }
+            val resultSubject = updateResultSubject.let {
+                if (it == null) {
+                    val new = CompletableSubject.create()
+                    updateResultSubject = new
+                    new
+                } else {
+                    it
+                }
+            }
 
-        return Completable.complete()
+            loadMore(force = true, resultSubject = resultSubject)
+
+            return@synchronized resultSubject
+        }
     }
 }
