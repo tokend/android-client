@@ -83,7 +83,8 @@ class OffersTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
-        getSomeMoney(baseAsset, repositoryProvider, TxManager(apiProvider))
+        Util.getSomeMoney(baseAsset, emissionAmount,
+                repositoryProvider, TxManager(apiProvider))
 
         submitOffer(session, apiProvider, repositoryProvider)
 
@@ -118,7 +119,8 @@ class OffersTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
-        getSomeMoney(baseAsset, repositoryProvider, TxManager(apiProvider))
+        Util.getSomeMoney(baseAsset, emissionAmount,
+                repositoryProvider, TxManager(apiProvider))
 
         submitOffer(session, apiProvider, repositoryProvider)
 
@@ -161,7 +163,8 @@ class OffersTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
-        val initialBalance = getSomeMoney(baseAsset, repositoryProvider, TxManager(apiProvider))
+        val initialBalance = Util.getSomeMoney(baseAsset, emissionAmount,
+                repositoryProvider, TxManager(apiProvider))
 
         submitOffer(session, apiProvider, repositoryProvider)
 
@@ -193,43 +196,6 @@ class OffersTest {
                 .find { it.asset == baseAsset }!!.balance
 
         Assert.assertEquals(0, initialBalance.compareTo(currentBalance))
-    }
-
-    private fun getSomeMoney(asset: String,
-                             repositoryProvider: RepositoryProvider,
-                             txManager: TxManager): BigDecimal {
-        val netParams = repositoryProvider.systemInfo().getNetworkParams().blockingGet()
-
-        val balanceId = repositoryProvider.balances()
-                .itemsSubject.value
-                .find { it.asset == asset }!!
-                .balanceId
-
-        val issuance = IssuanceRequest(
-                asset,
-                netParams.amountToPrecised(emissionAmount),
-                PublicKeyFactory.fromBalanceId(balanceId),
-                "{}",
-                Fee(0, 0, Fee.FeeExt.EmptyVersion()),
-                IssuanceRequest.IssuanceRequestExt.EmptyVersion()
-        )
-
-        val op = CreateIssuanceRequestOp(
-                issuance,
-                "${System.currentTimeMillis()}",
-                CreateIssuanceRequestOp.CreateIssuanceRequestOpExt.EmptyVersion()
-        )
-
-        val sourceAccount = Account.fromSecretSeed(Config.ADMIN_SEED)
-
-        val tx = TransactionBuilder(netParams, sourceAccount.accountId)
-                .addOperation(Operation.OperationBody.CreateIssuanceRequest(op))
-                .build()
-        tx.addSignature(sourceAccount)
-
-        txManager.submit(tx).blockingGet()
-
-        return emissionAmount
     }
 
     private fun submitOffer(session: Session, apiProvider: ApiProvider,
