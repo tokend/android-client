@@ -35,6 +35,9 @@ import java.math.MathContext
 import java.math.RoundingMode
 import java.util.*
 
+/**
+ * Interactive chart of the asset price
+ */
 class AssetChartCard : LinearLayout {
     companion object {
         private const val X_LABELS_COUNT = 5
@@ -228,7 +231,7 @@ class AssetChartCard : LinearLayout {
         chartData.maxBy { it.y }?.let { entry ->
             maxY = entry.y
             chart.axisLeft.limitLines.forEach { line ->
-                if(entry.y < line.limit) {
+                if (entry.y < line.limit) {
                     maxY = line.limit
                     return@forEach
                 }
@@ -341,6 +344,10 @@ class AssetChartCard : LinearLayout {
     // endregion
 
     // region Interaction
+    /**
+     * Needs to be called if the chart is nested inside a view intercepting touch events
+     * i.e. scrollable view.
+     */
     @SuppressLint("ClickableViewAccessibility")
     fun applyTouchHook(parent: View) {
         parent.setOnTouchListener { _, event ->
@@ -353,6 +360,9 @@ class AssetChartCard : LinearLayout {
         }
     }
 
+    /**
+     * Progress bar visibility
+     */
     var isLoading: Boolean = false
         set(value) {
             field = value
@@ -363,33 +373,59 @@ class AssetChartCard : LinearLayout {
             }
         }
 
+    /**
+     * Label of the main value
+     */
     var asset: String = ""
         set(value) {
             field = value
             displayTotalValue()
         }
+
+    /**
+     * Main total value
+     */
     var total: BigDecimal = BigDecimal.ZERO
         set(value) {
             field = value
             displayTotalValue()
         }
+
+    /**
+     * Main value hint
+     */
     var valueHint: String = ""
         set(value) {
             field = value
             displayTotalValue()
         }
+
+    /**
+     * Chart data
+     */
     var data: AssetChartData? = null
         set(value) {
             field = value
             updateChart()
         }
+
+    /**
+     * Limit by Y axis
+     */
     var maxY: Float? = null
+
+    /**
+     * Text size of the main value in pixels
+     */
     var valueTextSizePx: Float = context.resources.getDimension(R.dimen.text_size_heading_large)
         set(value) {
             field = value
             valueTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, value)
         }
 
+    /**
+     * Sets named horizontal lines that will be displayed over the chart
+     */
     fun setLimitLines(limitLines: List<Pair<Float?, String>>) {
         val secondaryColor = ContextCompat.getColor(context, R.color.secondary_text)
         val dash = dip(4).toFloat()
