@@ -207,7 +207,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                             txAdapter.setData(it.map {
                                 TxHistoryItem.fromTransaction(it)
                             })
-                            history_list.resetPagination()
+                            history_list.resetBottomReachHandled()
                         }
                         .addTo(compositeDisposable)
 

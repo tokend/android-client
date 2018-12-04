@@ -76,19 +76,24 @@ open class PaginationRecyclerView : RecyclerView {
 
     /**
      * Sets a listener for 'bottom reach' event.
+     *
      * @param countProvider provides real items count for calculation,
      * e.g. if there are loading footers ignore them.
      * Total items count will be used if not provided
-     * @param listener receives events
-     * , must return [true] if event was handled for current scroll state and [false] otherwise.
+     * @param listener receives events,
+     * must return true if event was handled for current scroll state and false otherwise.
      */
     fun listenBottomReach(countProvider: (() -> Int)? = null, listener: () -> Boolean) {
-        resetPagination()
+        resetBottomReachHandled()
         this.countProvider = countProvider
         this.onBottomReachedListener = listener
     }
 
-    fun resetPagination() {
+    /**
+     * Resets handling flag of 'bottom reach' event.
+     * It's recommended to call this method on data source change
+     */
+    fun resetBottomReachHandled() {
         bottomReachHandled = false
     }
 }
