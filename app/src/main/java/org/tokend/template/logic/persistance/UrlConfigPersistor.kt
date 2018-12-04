@@ -4,6 +4,9 @@ import android.content.SharedPreferences
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.data.model.UrlConfig
 
+/**
+ * Implements [UrlConfig] storage based on [SharedPreferences]
+ */
 class UrlConfigPersistor(
         private val preferences: SharedPreferences
 ) {
@@ -17,6 +20,9 @@ class UrlConfigPersistor(
                 .apply()
     }
 
+    /**
+     * @return saved [UrlConfig] or null if it is absent
+     */
     fun loadConfig(): UrlConfig? {
         return preferences
                 .getString(CONFIG_KEY, null)

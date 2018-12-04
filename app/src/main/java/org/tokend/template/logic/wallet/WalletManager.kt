@@ -10,6 +10,9 @@ import org.tokend.sdk.keyserver.models.WalletData
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.wallet.Account
 
+/**
+ * Manages wallet-related actions
+ */
 class WalletManager(
         private val keyStorage: KeyStorage
 ) {
@@ -19,12 +22,6 @@ class WalletManager(
         return {
             keyStorage.getWalletInfo(email, password, isRecovery)
         }.toSingle()
-    }
-
-    fun saveWallet(walletData: WalletData): Completable {
-        return {
-            keyStorage.saveWallet(walletData)
-        }.toSingle().toCompletable()
     }
 
     fun updateWallet(walletId: String, walletData: WalletData): Completable {

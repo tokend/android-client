@@ -20,7 +20,7 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 
 /**
- * Represents secure storage based on SharedPreferences.
+ * Represents secure storage based on [SharedPreferences].
  */
 class SecureStorage(
         private val preferences: SharedPreferences

@@ -8,6 +8,9 @@ import android.support.v4.hardware.fingerprint.FingerprintManagerCompat
 import android.support.v4.os.CancellationSignal
 import org.tokend.template.R
 
+/**
+ * Simplifies interaction with Android fingerprint api
+ */
 class FingerprintUtil(private val context: Context) {
     private val fingerprintManager: FingerprintManagerCompat =
             FingerprintManagerCompat.from(context)
@@ -41,6 +44,11 @@ class FingerprintUtil(private val context: Context) {
                 authCancellationSignal, callback, null)
     }
 
+    /**
+     * Requests fingerprint auth
+     *
+     * @see cancelAuth
+     */
     fun requestAuth(onSuccess: () -> Unit,
                     onError: (String?) -> Unit,
                     onHelp: (String?) -> Unit) {
@@ -48,7 +56,7 @@ class FingerprintUtil(private val context: Context) {
             override fun onAuthenticationError(errMsgId: Int, errString: CharSequence?) {
                 super.onAuthenticationError(errMsgId, errString)
                 if (errMsgId != FingerprintManager.FINGERPRINT_ERROR_CANCELED) {
-                    val message = when(errMsgId){
+                    val message = when (errMsgId) {
                         FingerprintManager.FINGERPRINT_ERROR_LOCKOUT -> context.getString(R.string.error_fingerprint_locked)
                         else -> errString?.toString()
                     }
@@ -63,7 +71,8 @@ class FingerprintUtil(private val context: Context) {
 
             override fun onAuthenticationHelp(helpMsgId: Int, helpString: CharSequence?) {
                 super.onAuthenticationHelp(helpMsgId, helpString)
-                if(helpMsgId < 1000) {
+                // Help messages with > 1000 code seems to be vendor-specific
+                if (helpMsgId < 1000) {
                     onHelp(helpString?.toString())
                 }
             }
@@ -77,6 +86,9 @@ class FingerprintUtil(private val context: Context) {
         requestAuth(callback)
     }
 
+    /**
+     * Cancels current auth request
+     */
     fun cancelAuth() {
         authCancellationSignal?.cancel()
     }

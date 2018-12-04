@@ -40,11 +40,17 @@ class CredentialsPersistor(
         preferences.edit().putString(EMAIL_KEY, email).apply()
     }
 
+    /**
+     * @return saved email address, null if it is absent
+     */
     fun getSavedEmail(): String? {
         return preferences.getString(EMAIL_KEY, "")
                 .takeIf { it.isNotEmpty() }
     }
 
+    /**
+     * @return true if there is a securely saved password
+     */
     @RequiresApi(Build.VERSION_CODES.M)
     fun hasSavedPassword(): Boolean {
         val password = getSavedPassword()
@@ -53,6 +59,9 @@ class CredentialsPersistor(
         return hasPassword
     }
 
+    /**
+     * @return password from the secure storage, null if there is no saved password
+     */
     @RequiresApi(Build.VERSION_CODES.M)
     fun getSavedPassword(): CharArray? {
         val passwordBytes = secureStorage.load(PASSWORD_KEY)
@@ -62,6 +71,9 @@ class CredentialsPersistor(
         return password
     }
 
+    /**
+     * @return saved credentials, null if there is no saved credentials or password is incorrect
+     */
     fun loadCredentials(password: CharArray): WalletInfo? {
         try {
             val walletInfoBytes = secureStorage.loadWithPassword(WALLET_INFO_KEY, password)
@@ -85,6 +97,11 @@ class CredentialsPersistor(
         }
     }
 
+    /**
+     * Clears all saved data
+     *
+     * @param keepEmail if set to true email will not be cleared
+     */
     fun clear(keepEmail: Boolean) {
         secureStorage.clear(SEED_KEY)
         secureStorage.clear(WALLET_INFO_KEY)

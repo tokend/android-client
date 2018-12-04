@@ -11,6 +11,9 @@ import org.tokend.wallet.*
 import org.tokend.wallet.xdr.Operation
 import java.util.concurrent.TimeUnit
 
+/**
+ * Manages transactions sending
+ */
 class TxManager(
         private val apiProvider: ApiProvider,
         private val confirmationProvider: ConfirmationProvider<Transaction>? = null
@@ -33,6 +36,9 @@ class TxManager(
     }
 
     companion object {
+        /**
+         * @return transaction with given [operations] for [sourceAccountId] signed by [signer]
+         */
         fun createSignedTransaction(networkParams: NetworkParams,
                                     sourceAccountId: String,
                                     signer: Account,
