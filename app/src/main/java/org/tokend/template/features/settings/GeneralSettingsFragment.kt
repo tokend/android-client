@@ -2,6 +2,7 @@ package org.tokend.template.features.settings
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.preference.SwitchPreferenceCompat
 import android.support.v7.widget.Toolbar
 import android.view.View
@@ -12,7 +13,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.AlertDialogBuilder
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.isSelectable
 import org.tokend.sdk.api.tfa.model.TfaFactor
@@ -108,26 +108,27 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     }
 
     private fun initSecretSeedItem() {
-        findPreference("secret_seed")?.let {
-            it.setOnPreferenceClickListener {
+        val seedPreference = findPreference("secret_seed") ?: return
 
-                AlertDialogBuilder(requireContext()).apply {
-                    val msg = accountProvider.getAccount()?.secretSeed
-                            ?: getString(R.string.error_try_again).toCharArray()
-                    message(CharBuffer.wrap(msg))
-                    title(R.string.secret_seed)
-                    positiveButton(android.R.string.ok) {
-                        dismiss()
-                    }
-                }.show().dialog?.findViewById<TextView>(android.R.id.message)?.let { textView ->
-                    textView.isSelectable = true
-                    textView.typeface = Typeface.MONOSPACE
-                }
-                true
+        seedPreference.setOnPreferenceClickListener {
+            val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogStyle)
+                    .setMessage(
+                            CharBuffer.wrap(accountProvider.getAccount()?.secretSeed
+                                    ?: getString(R.string.error_try_again).toCharArray())
+                    )
+                    .setTitle(R.string.secret_seed)
+                    .setPositiveButton(R.string.ok, null)
+                    .show()
+
+            dialog.findViewById<TextView>(android.R.id.message)?.let { textView ->
+                textView.isSelectable = true
+                textView.typeface = Typeface.MONOSPACE
             }
+
+            true
         }
     }
-    // endregion
+// endregion
 
     // region Security
     private fun initSecurityCategory() {
@@ -167,7 +168,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
             true
         }
     }
-    // endregion
+// endregion
 
     // region TFA
     private fun subscribeToTfaBackends() {
@@ -237,7 +238,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
                 )
                 .addTo(compositeDisposable)
     }
-    // endregion
+// endregion
 
     // region Info
     private fun initInfoCategory() {
@@ -261,5 +262,5 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
             true
         }
     }
-    // endregion
+// endregion
 }
