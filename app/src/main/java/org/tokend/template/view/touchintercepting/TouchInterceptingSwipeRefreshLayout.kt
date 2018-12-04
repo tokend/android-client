@@ -5,6 +5,11 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.util.AttributeSet
 import android.view.MotionEvent
 
+/**
+ * [SwipeRefreshLayout] with ability to set interceptor for [onInterceptTouchEvent]
+ *
+ * @see setTouchEventInterceptor
+ */
 class TouchInterceptingSwipeRefreshLayout : SwipeRefreshLayout {
     constructor(context: Context, attributeSet: AttributeSet?) :
             super(context, attributeSet)
