@@ -7,6 +7,9 @@ import org.tokend.template.features.fees.adapter.FeeItem
 import org.tokend.template.view.adapter.history.TxHistoryItem
 import org.tokend.wallet.xdr.FeeType
 
+/**
+ * Holds localized name getters for enums
+ */
 class LocalizedName(private val context: Context) {
     fun forTransactionState(state: OperationState): String {
         return when (state) {
@@ -19,7 +22,7 @@ class LocalizedName(private val context: Context) {
     }
 
     fun forTransactionAction(action: TxHistoryItem.Action): String {
-        return when(action) {
+        return when (action) {
             TxHistoryItem.Action.DEPOSIT -> context.getString(R.string.tx_action_deposit)
             TxHistoryItem.Action.WITHDRAWAL -> context.getString(R.string.tx_action_withdrawal)
             TxHistoryItem.Action.INVESTMENT -> context.getString(R.string.tx_action_investment)
@@ -34,7 +37,7 @@ class LocalizedName(private val context: Context) {
     }
 
     fun forFeeType(type: FeeType): String {
-        return when(type) {
+        return when (type) {
             FeeType.PAYMENT_FEE -> context.getString(R.string.payment_fee)
             FeeType.OFFER_FEE -> context.getString(R.string.offer_fee)
             FeeType.WITHDRAWAL_FEE -> context.getString(R.string.withdrawal_fee)
@@ -47,7 +50,7 @@ class LocalizedName(private val context: Context) {
     }
 
     fun forFeeSubtype(subtype: FeeItem.Subtype): String {
-        return when(subtype) {
+        return when (subtype) {
             FeeItem.Subtype.INCOMING_OUTGOING -> context.getString(R.string.incoming_outgoing_fee)
             FeeItem.Subtype.OUTGOING -> context.getString(R.string.outgoing_fee)
             FeeItem.Subtype.INCOMING -> context.getString(R.string.incoming_fee)

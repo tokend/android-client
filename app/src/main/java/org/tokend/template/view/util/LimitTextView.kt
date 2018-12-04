@@ -9,6 +9,9 @@ import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
+/**
+ * Displays limits or statistics values centered by slash
+ */
 class LimitTextView : TextView {
     constructor(context: Context, attributeSet: AttributeSet?) :
             super(context, attributeSet)

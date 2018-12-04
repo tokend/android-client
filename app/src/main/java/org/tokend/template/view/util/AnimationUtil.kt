@@ -9,7 +9,13 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 
+/**
+ * Contains utilities for view animation
+ */
 object AnimationUtil {
+    /**
+     * Animates view height from 0 to the actual one
+     */
     fun expandView(view: View?) {
         view ?: return
 
@@ -35,6 +41,9 @@ object AnimationUtil {
         animator.start()
     }
 
+    /**
+     * Animates view height from the actual one to 0
+     */
     fun collapseView(view: View?, onEnd: (() -> Unit)? = null) {
         view ?: return
 
@@ -55,6 +64,9 @@ object AnimationUtil {
         animator.start()
     }
 
+    /**
+     * Animates view opacity from 0 to 1
+     */
     fun fadeInView(view: View?) {
         view ?: return
 
@@ -84,6 +96,9 @@ object AnimationUtil {
         return animator
     }
 
+    /**
+     * Animates view rotation around it's center
+     */
     fun rotateView(view: View?, from: Float, to: Float) {
         view ?: return
 
