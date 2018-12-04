@@ -5,14 +5,17 @@ import android.text.Spanned
 import android.text.TextUtils
 import java.util.regex.Pattern
 
-class DecimalDigitsInputFilter(digitsBeforeZero: Int?, digitsAfterZero: Int?) : InputFilter {
+/**
+ * Limits numeric edit text input by count of digits before and after coma
+ */
+class DecimalDigitsInputFilter(digitsBeforeComa: Int?, digitsAfterComa: Int?) : InputFilter {
     private val mDigitsBeforeZero: Int
     private val mDigitsAfterZero: Int
     private var mPattern: Pattern
 
     init {
-        this.mDigitsBeforeZero = digitsBeforeZero ?: DIGITS_BEFORE_ZERO_DEFAULT
-        this.mDigitsAfterZero = digitsAfterZero ?: DIGITS_AFTER_ZERO_DEFAULT
+        this.mDigitsBeforeZero = digitsBeforeComa ?: DIGITS_BEFORE_COMA_DEFAULT
+        this.mDigitsAfterZero = digitsAfterComa ?: DIGITS_AFTER_COMA_DEFAULT
         mPattern = Pattern.compile("-?[0-9]{0," + mDigitsBeforeZero + "}+((\\.[0-9]{0," + mDigitsAfterZero
                 + "})?)||(\\.)?")
     }
@@ -33,7 +36,7 @@ class DecimalDigitsInputFilter(digitsBeforeZero: Int?, digitsAfterZero: Int?) : 
     }
 
     private companion object {
-        private const val DIGITS_BEFORE_ZERO_DEFAULT = 100
-        private const val DIGITS_AFTER_ZERO_DEFAULT = 100
+        private const val DIGITS_BEFORE_COMA_DEFAULT = 100
+        private const val DIGITS_AFTER_COMA_DEFAULT = 100
     }
 }

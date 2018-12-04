@@ -160,14 +160,14 @@ class CreateOfferDialog : DialogFragment() {
 
             buy_btn.clicks()
                     .subscribe {
-                        SoftInputUtil.hideSoftInput(amount_edit_text, requireContext())
+                        SoftInputUtil.hideSoftInput(amount_edit_text)
                         dialogResultSubject.onSuccess(createOffer(!isSwitched))
                         dismiss()
                     },
 
             sell_btn.clicks()
                     .subscribe {
-                        SoftInputUtil.hideSoftInput(amount_edit_text, requireContext())
+                        SoftInputUtil.hideSoftInput(amount_edit_text)
                         dialogResultSubject.onSuccess(createOffer(isSwitched))
                         dismiss()
                     }

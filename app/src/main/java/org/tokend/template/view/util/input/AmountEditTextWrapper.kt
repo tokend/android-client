@@ -9,6 +9,9 @@ import java.math.RoundingMode
 
 typealias AmountChangeListener = (scaled: BigDecimal, raw: BigDecimal) -> Unit
 
+/**
+ * Wraps [EditText] to simplify amount input
+ */
 class AmountEditTextWrapper(private val editText: EditText) {
     private var amountListener: AmountChangeListener? = null
     private var textWatcher = object : SimpleTextWatcher() {
@@ -17,23 +20,42 @@ class AmountEditTextWrapper(private val editText: EditText) {
         }
     }
 
+    /**
+     * Sets amount change listener
+     */
     fun onAmountChanged(listener: AmountChangeListener) {
         this.amountListener = listener
     }
 
+    /**
+     * Limit for decimal digits before coma
+     */
     var maxPlacesBeforeComa = 8
         set(value) {
             field = value
             trimInputAndUpdateAmount()
         }
+
+    /**
+     * Limit for decimal digits after coma
+     */
     var maxPlacesAfterComa = AmountFormatter.ASSET_DECIMAL_DIGITS
         set(value) {
             field = value
             trimInputAndUpdateAmount()
         }
 
+    /**
+     * Unscaled raw parsed amount
+     */
     var rawAmount: BigDecimal = BigDecimal.ZERO
         private set
+
+    /**
+     * Scaled parsed amount
+     *
+     * @see maxPlacesAfterComa
+     */
     val scaledAmount: BigDecimal
         get() = BigDecimalUtil.scaleAmount(rawAmount, maxPlacesAfterComa)
 

@@ -7,6 +7,9 @@ import org.tokend.template.util.validator.EmailValidator
 import org.tokend.template.util.validator.PasswordValidator
 
 object EditTextHelper {
+    /**
+     * Sets edit text validation based on [EmailValidator]
+     */
     fun initEmailEditText(editText: MaterialEditText) {
         editText.textChangedListener {
             afterTextChanged { s ->
@@ -19,6 +22,9 @@ object EditTextHelper {
         }
     }
 
+    /**
+     * Sets edit text validation based on [PasswordValidator]
+     */
     fun initPasswordEditText(editText: MaterialEditText) {
         editText.textChangedListener {
             afterTextChanged { s ->

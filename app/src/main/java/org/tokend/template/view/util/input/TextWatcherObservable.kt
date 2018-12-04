@@ -8,7 +8,14 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.MainThreadDisposable
 
-class TextWatcherObservable(private val editText: EditText, private val inputFilter: InputFilter? = null) : Observable<String>() {
+/**
+ * Emits text change events of given [EditText]
+ *
+ * @param editText [EditText] to observe
+ * @param inputFilter [InputFilter] to set on [editText]
+ */
+class TextWatcherObservable(private val editText: EditText,
+                            private val inputFilter: InputFilter? = null) : Observable<String>() {
 
     override fun subscribeActual(observer: Observer<in String>) {
         val listener = Listener(editText, observer)
