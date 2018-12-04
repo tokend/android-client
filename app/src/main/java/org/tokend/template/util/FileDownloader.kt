@@ -22,14 +22,28 @@ class FileDownloader(
     private val storagePermission =
             PermissionManager(Manifest.permission.WRITE_EXTERNAL_STORAGE, 403)
 
+    /**
+     * Downloads given file to the downloads folder with permission ask.
+     * Make sure to call [handlePermissionResult]
+     * inside [Activity.onRequestPermissionsResult] for correct work
+     */
     fun download(activity: Activity, file: RemoteFile) {
         storagePermission.check(activity) { downloadFile(context, file) }
     }
 
+    /**
+     * Downloads given file to the downloads folder with permission ask
+     * Make sure to call [handlePermissionResult]
+     * inside [Fragment.onRequestPermissionsResult] for correct work
+     */
     fun download(fragment: Fragment, file: RemoteFile) {
         storagePermission.check(fragment) { downloadFile(context, file) }
     }
 
+    /**
+     * Handles write permission grant result.
+     * If permission has been granted the downloading will be performed
+     */
     fun handlePermissionResult(requestCode: Int, permissions: Array<out String>,
                                grantResults: IntArray) {
         storagePermission.handlePermissionResult(requestCode, permissions, grantResults)

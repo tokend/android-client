@@ -3,7 +3,9 @@ package org.tokend.template.util
 import android.graphics.*
 import com.squareup.picasso.Transformation
 
-
+/**
+ * Bitmap transformation making it circled
+ */
 class CircleTransform : Transformation {
 
     override fun transform(source: Bitmap): Bitmap {

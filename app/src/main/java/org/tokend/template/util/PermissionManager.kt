@@ -15,6 +15,12 @@ class PermissionManager(private val permission: String,
     private var grantedCallback: (() -> Unit)? = null
     private var deniedCallback: (() -> Unit)? = null
 
+    /**
+     * Checks for the permission, requests it if needed
+     *
+     * @param action action to invoke if permission is granted
+     * @param deniedAction action to invoke if permission is denied
+     */
     fun check(activity: Activity, action: () -> Unit, deniedAction: () -> Unit) {
         this.grantedCallback = action
         this.deniedCallback = deniedAction
@@ -26,6 +32,11 @@ class PermissionManager(private val permission: String,
         }
     }
 
+    /**
+     * Checks for the permission, requests it if needed
+     *
+     * @param action action to invoke if permission is granted
+     */
     fun check(activity: Activity, action: () -> Unit) {
         this.grantedCallback = action
         if (ContextCompat.checkSelfPermission(activity, permission) ==
@@ -36,6 +47,12 @@ class PermissionManager(private val permission: String,
         }
     }
 
+    /**
+     * Checks for the permission, requests it if needed
+     *
+     * @param action action to invoke if permission is granted
+     * @param deniedAction action to invoke if permission is denied
+     */
     fun check(fragment: Fragment, action: () -> Unit, deniedAction: () -> Unit) {
         this.grantedCallback = action
         this.deniedCallback = deniedAction
@@ -47,6 +64,11 @@ class PermissionManager(private val permission: String,
         }
     }
 
+    /**
+     * Checks for the permission, requests it if needed
+     *
+     * @param action action to invoke if permission is granted
+     */
     fun check(fragment: Fragment, action: () -> Unit) {
         this.grantedCallback = action
         if (ContextCompat.checkSelfPermission(fragment.requireContext(), permission) ==
@@ -57,6 +79,10 @@ class PermissionManager(private val permission: String,
         }
     }
 
+    /**
+     * Handles permission grant result,
+     * invokes corresponding action passed to the [check] method
+     */
     fun handlePermissionResult(requestCode: Int, permissions: Array<out String>,
                                grantResults: IntArray) {
         if (requestCode == this.requestCode) {

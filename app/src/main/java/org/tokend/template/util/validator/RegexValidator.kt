@@ -1,5 +1,8 @@
 package org.tokend.template.util.validator
 
+/**
+ * [CharSequenceValidator] which validates text by regular expression
+ */
 open class RegexValidator(pattern: String) : CharSequenceValidator {
     private val regex = Regex(pattern)
 
