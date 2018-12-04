@@ -79,6 +79,12 @@ class TxDateTextSwitcher : TextSwitcher {
         }
     }
 
+    /**
+     * Subscribes to scroll events of given [RecyclerView]
+     *
+     * @param recyclerView [RecyclerView] to observe
+     * @param adapter data adapter
+     */
     fun init(recyclerView: RecyclerView, adapter: TxHistoryAdapter) {
         prevHeaderId = java.lang.Long.MAX_VALUE
         prevScrollState = 0
@@ -91,7 +97,7 @@ class TxDateTextSwitcher : TextSwitcher {
         this.txAdapter = adapter
     }
 
-    fun updateFirstVisibleTx(tx: TxHistoryItem) {
+    private fun updateFirstVisibleTx(tx: TxHistoryItem) {
         val currentDateId = getTxDateId(tx)
         if (currentDateId != prevHeaderId) {
             updateDateString(getTxDateString(tx), currentDateId.compareTo(prevHeaderId))
@@ -148,7 +154,7 @@ class TxDateTextSwitcher : TextSwitcher {
         outAnimation = slideOutToBottom
     }
 
-    fun updateScrollState(scrollState: Int) {
+    private fun updateScrollState(scrollState: Int) {
         if (scrollState != prevScrollState) {
             when (scrollState) {
                 RecyclerView.SCROLL_STATE_IDLE -> {
