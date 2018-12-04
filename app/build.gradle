@@ -27,7 +27,7 @@ android {
                         ? keystoreProperties['FabricApiKey']
                         : ""
         ]
-
+        multiDexKeepFile file('multidex-keep.txt')
     }
 
     buildTypes {
@@ -70,6 +70,7 @@ android {
 
     dexOptions {
         javaMaxHeapSize "4g"
+        preDexLibraries = false
     }
 
     licenseReport {
