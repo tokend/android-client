@@ -4,14 +4,20 @@ import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 
-abstract class BaseRecyclerAdapter<T, V> : RecyclerView.Adapter<V>() where V : BaseViewHolder<T> {
+/**
+ * Base abstract [RecyclerView.Adapter] with single item type,
+ * item model of type [ItemType], view holder of type [ViewHolderType],
+ * click listener and optional [DiffUtil.Callback].
+ */
+abstract class BaseRecyclerAdapter<ItemType, ViewHolderType>
+    : RecyclerView.Adapter<ViewHolderType>() where ViewHolderType : BaseViewHolder<ItemType> {
     companion object {
         protected const val VIEW_TYPE_ITEM = 0
     }
 
-    protected val items = mutableListOf<T>()
+    protected val items = mutableListOf<ItemType>()
 
-    override fun onBindViewHolder(holder: V, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolderType, position: Int) {
         val viewType = getItemViewType(position)
         when (viewType) {
             VIEW_TYPE_ITEM -> bindItemViewHolder(holder, position)
@@ -22,13 +28,13 @@ abstract class BaseRecyclerAdapter<T, V> : RecyclerView.Adapter<V>() where V : B
         return items.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): V {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderType {
         return createItemViewHolder(parent)
     }
 
-    protected abstract fun createItemViewHolder(parent: ViewGroup): V
+    protected abstract fun createItemViewHolder(parent: ViewGroup): ViewHolderType
 
-    protected open fun bindItemViewHolder(holder: V, position: Int) {
+    protected open fun bindItemViewHolder(holder: ViewHolderType, position: Int) {
         holder.bind(items[position], onItemClickListener)
     }
 
@@ -36,7 +42,12 @@ abstract class BaseRecyclerAdapter<T, V> : RecyclerView.Adapter<V>() where V : B
         return VIEW_TYPE_ITEM
     }
 
-    open fun setData(data: Collection<T>?) {
+    /**
+     * Updates data of the adapter.
+     * If [getDiffCallback] is implemented the update will be performed with [DiffUtil],
+     * otherwise current data will be simple overwritten
+     */
+    open fun setData(data: Collection<ItemType>?) {
         val newItems = data?.toList() ?: listOf()
         val diffCallback = getDiffCallback(newItems)
 
@@ -55,29 +66,44 @@ abstract class BaseRecyclerAdapter<T, V> : RecyclerView.Adapter<V>() where V : B
         }
     }
 
-    open fun addData(data: Collection<T>?) {
+    /**
+     * Appends given data to the current one
+     */
+    open fun addData(data: Collection<ItemType>?) {
         if (data != null) {
             items.addAll(data)
         }
         notifyDataSetChanged()
     }
 
+    /**
+     * @returns true if adapter has data, false otherwise
+     */
     open val hasData: Boolean
         get() = items.isNotEmpty()
 
-    protected var onItemClickListener: SimpleItemClickListener<T>? = null
+    protected var onItemClickListener: SimpleItemClickListener<ItemType>? = null
 
-    open fun onItemClick(listener: SimpleItemClickListener<T>) {
+    /**
+     * Sets item click listener for the adapter
+     */
+    open fun onItemClick(listener: SimpleItemClickListener<ItemType>) {
         this.onItemClickListener = listener
     }
 
-    open fun getItemAt(position: Int): T? {
+    /**
+     * @return item on given position if it's exists, null otherwise
+     */
+    open fun getItemAt(position: Int): ItemType? {
         return if (getItemViewType(position) == VIEW_TYPE_ITEM)
             items.getOrNull(position)
         else null
     }
 
-    protected open fun getDiffCallback(newItems: List<T>): DiffUtil.Callback? {
+    /**
+     * @return optional [DiffUtil.Callback] to be used in [setData]
+     */
+    protected open fun getDiffCallback(newItems: List<ItemType>): DiffUtil.Callback? {
         return null
     }
 }
