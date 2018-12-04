@@ -3,6 +3,7 @@ package org.tokend.template.activities
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
 import android.view.WindowManager
 import io.reactivex.disposables.CompositeDisposable
@@ -17,7 +18,6 @@ import org.tokend.template.logic.AppTfaCallback
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.template.logic.persistance.UrlConfigPersistor
-import org.tokend.template.util.Navigator
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.view.ToastManager
 import javax.inject.Inject
@@ -48,8 +48,15 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     @Inject
     lateinit var session: Session
 
+    /**
+     * If set to true the activity will be operational
+     * even without account in [accountProvider] or with expired [session]
+     */
     protected open val allowUnauthorized = false
 
+    /**
+     * Disposable holder which will be disposed on fragment destroy
+     */
     protected val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +76,7 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
         if (accountProvider.getAccount() != null || allowUnauthorized) {
             onCreateAllowed(savedInstanceState)
         } else {
-            Navigator.toSignIn(this)
+            (application as App).signOut(this, soft = true)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -81,6 +88,9 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
         }
     }
 
+    /**
+     * You must implement your activity initialization here
+     */
     abstract fun onCreateAllowed(savedInstanceState: Bundle?)
 
     override fun onStart() {

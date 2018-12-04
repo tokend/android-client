@@ -34,6 +34,9 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
 
     override fun onBackPressed() = true
 
+    /**
+     * Disposable holder which will be disposed on fragment destroy
+     */
     protected lateinit var compositeDisposable: CompositeDisposable
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,5 +57,8 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
         compositeDisposable.dispose()
     }
 
+    /**
+     * You must implement your fragment initialization here
+     */
     abstract fun onInitAllowed()
 }
