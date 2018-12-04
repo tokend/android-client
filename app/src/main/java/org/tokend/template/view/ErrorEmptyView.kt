@@ -43,14 +43,23 @@ class ErrorEmptyView : LinearLayout {
         actionButton = findViewById(R.id.action_button)
     }
 
+    /**
+     * Hides the view.
+     */
     fun hide() {
         visibility = View.GONE
     }
 
+    /**
+     * Shows empty state with given message.
+     */
     fun showEmpty(@StringRes messageId: Int) {
         showEmpty(context.getString(messageId))
     }
 
+    /**
+     * Shows empty state with given message.
+     */
     fun showEmpty(message: String) {
         visibility = View.VISIBLE
 
@@ -58,12 +67,27 @@ class ErrorEmptyView : LinearLayout {
         actionButton.visibility = View.GONE
     }
 
+    /**
+     * Shows error state
+     *
+     * @param throwable occurred error
+     * @param errorHandler error handler to get error message from
+     * @param actionButtonClick click listener for Retry button.
+     * If not set the button will be invisible
+     */
     fun showError(throwable: Throwable, errorHandler: ErrorHandler,
                   actionButtonClick: (() -> Unit)? = null) {
         showError(errorHandler.getErrorMessage(throwable),
                 actionButtonClick)
     }
 
+    /**
+     * Shows error state
+     *
+     * @param error message to display
+     * @param actionButtonClick click listener for Retry button.
+     * If not set the button will be invisible
+     */
     fun showError(error: String?, actionButtonClick: (() -> Unit)? = null) {
         error ?: return
 
@@ -79,6 +103,12 @@ class ErrorEmptyView : LinearLayout {
         }
     }
 
+    /**
+     * Subscribes to [RecyclerView.Adapter] data changes in order to display empty state
+     *
+     * @param adapter adapter to observe
+     * @param messageId empty state message id
+     */
     fun observeAdapter(adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
                        @StringRes messageId: Int) {
         adapter.registerAdapterDataObserver(getEmptyObserver(adapter) {
@@ -86,11 +116,25 @@ class ErrorEmptyView : LinearLayout {
         })
     }
 
+    /**
+     * Subscribes to [RecyclerView.Adapter] data changes in order to display empty state
+     *
+     * @param adapter adapter to observe
+     * @param messageProvider provider of the empty state message
+     */
     fun observeAdapter(adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
                        messageProvider: () -> String) {
         adapter.registerAdapterDataObserver(getEmptyObserver(adapter, messageProvider))
     }
 
+    /**
+     * Sets denial provider for empty view with adapter observation
+     *
+     * @param denial if returns true then empty state will not be displayed
+     * even if observed adapter has no data
+     *
+     * @see observeAdapter
+     */
     fun setEmptyViewDenial(denial: () -> Boolean) {
         this.emptyViewDenial = denial
     }
