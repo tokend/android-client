@@ -1,6 +1,9 @@
 package org.tokend.template.view.picker
 
-class PickerItem(
-        val text: String,
-        val tag: Any? = null
+/**
+ * Item for the [Picker]
+ */
+open class PickerItem(
+        open val text: String,
+        open val tag: Any? = null
 )
