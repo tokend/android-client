@@ -12,7 +12,9 @@ import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
 
 /**
- * Builder for information card with heading and lot of rows.
+ * Information card with heading and lot of rows.
+ *
+ * @param parent [ViewGroup] to add the card into
  */
 class InfoCard(parent: ViewGroup) {
     private val view: View
@@ -27,6 +29,9 @@ class InfoCard(parent: ViewGroup) {
         contentLayout = view.find(R.id.card_content_layout)
     }
 
+    /**
+     * Adds or changes heading content of the card.
+     */
     fun setHeading(title: String?, value: String?): InfoCard {
         if (mainRow == null) {
             mainRow =
@@ -42,10 +47,16 @@ class InfoCard(parent: ViewGroup) {
         return this
     }
 
+    /**
+     * Adds or changes heading content of the card.
+     */
     fun setHeading(@StringRes title: Int, value: String?): InfoCard {
         return setHeading(context.getString(title), value)
     }
 
+    /**
+     * Adds a single row to the card.
+     */
     fun addRow(title: String?, value: String?): InfoCard {
         val rowView =
                 context.layoutInflater.inflate(R.layout.layout_info_card_row, contentLayout, false)
@@ -68,10 +79,16 @@ class InfoCard(parent: ViewGroup) {
         return addView(rowView)
     }
 
+    /**
+     * Adds a single row to the card.
+     */
     fun addRow(@StringRes title: Int, value: String?): InfoCard {
         return addRow(context.getString(title), value)
     }
 
+    /**
+     * Adds multiple rows to the card
+     */
     fun addRows(vararg rows: Pair<String, String>): InfoCard {
         rows.forEach {
             addRow(it.first, it.second)
@@ -80,6 +97,9 @@ class InfoCard(parent: ViewGroup) {
         return this
     }
 
+    /**
+     * Adds a row with a switcher instead of the value
+     */
     fun addSwitcherRow(title: String, switchListener: CompoundButton.OnCheckedChangeListener?): InfoCard {
         val rowView =
                 context.layoutInflater.inflate(R.layout.layout_info_card_switch_row, contentLayout,
@@ -96,10 +116,16 @@ class InfoCard(parent: ViewGroup) {
         return addView(rowView)
     }
 
+    /**
+     * Adds a row with a switcher instead of the value
+     */
     fun addSwitcherRow(@StringRes title: Int, switchListener: CompoundButton.OnCheckedChangeListener?): InfoCard {
         return addSwitcherRow(context.getString(title), switchListener)
     }
 
+    /**
+     * Adds given view to the card
+     */
     fun addView(view: View?): InfoCard {
         if (view != null) {
             contentLayout.addView(view)
