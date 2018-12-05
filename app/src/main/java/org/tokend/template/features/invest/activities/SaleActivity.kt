@@ -333,7 +333,7 @@ class SaleActivity : BaseActivity() {
     private fun initInvestIfNeeded() {
         if (sale.isAvailable) {
             if (saleAsset.policy and AssetPolicy.REQUIRES_KYC.value == AssetPolicy.REQUIRES_KYC.value &&
-                    accountRepository.itemSubject.value.typeI == AccountType.NOT_VERIFIED.value) {
+                    accountRepository.item?.typeI == AccountType.NOT_VERIFIED.value) {
                 displayKycRequired()
             } else {
                 initInvest()
@@ -616,7 +616,7 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun getFavoriteEntry(): FavoriteEntry? {
-        return favoritesRepository.itemsSubject.value.find {
+        return favoritesRepository.itemsList.find {
             it.type == SaleFavoriteEntry.TYPE && it.key == sale.baseAsset
         }
     }

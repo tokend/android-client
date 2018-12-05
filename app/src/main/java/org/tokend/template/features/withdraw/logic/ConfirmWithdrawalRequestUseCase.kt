@@ -5,8 +5,8 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
-import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
+import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.Transaction
@@ -43,7 +43,7 @@ class ConfirmWithdrawalRequestUseCase(
                 .doOnSuccess {
                     updateRepositories()
                 }
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun getNetworkParams(): Single<NetworkParams> {
@@ -54,7 +54,7 @@ class ConfirmWithdrawalRequestUseCase(
 
     private fun getTransaction(): Single<Transaction> {
         return Single.defer {
-            val balanceId = repositoryProvider.balances().itemsSubject.value
+            val balanceId = repositoryProvider.balances().itemsList
                     .find { it.asset == request.asset }
                     ?.balanceId
                     ?: return@defer Single.error<Transaction>(

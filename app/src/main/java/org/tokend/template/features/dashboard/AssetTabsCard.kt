@@ -126,7 +126,7 @@ class AssetTabsCard(private val activity: Activity,
     ): RecyclerView.AdapterDataObserver {
         return object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
-                if (repository().itemsSubject.value.isNotEmpty()) {
+                if (repository().itemsList.isNotEmpty()) {
                     emptyView.visibility = View.GONE
                     contentView.visibility = View.VISIBLE
                 } else {
@@ -172,7 +172,7 @@ class AssetTabsCard(private val activity: Activity,
     }
 
     private fun displayBalance() {
-        balancesRepository.itemsSubject.value
+        balancesRepository.itemsList
                 .find { it.asset == asset }
                 ?.let { balanceItem ->
                     val balance = balanceItem.balance

@@ -2,11 +2,11 @@ package org.tokend.template.features.changepassword
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.rxkotlin.toSingle
-import org.tokend.template.logic.wallet.WalletUpdateManager
+import org.tokend.rx.extensions.randomSingle
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.logic.wallet.WalletUpdateManager
 import org.tokend.wallet.Account
 
 /**
@@ -32,13 +32,11 @@ class ChangePasswordUseCase(
                 .flatMap {
                     updateWallet()
                 }
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun generateNewAccount(): Single<Account> {
-        return {
-            Account.random()
-        }.toSingle()
+        return Account.randomSingle()
     }
 
     private fun updateWallet(): Single<Boolean> {

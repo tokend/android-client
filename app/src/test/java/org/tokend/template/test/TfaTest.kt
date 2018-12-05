@@ -75,7 +75,7 @@ class TfaTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(repositoryProvider.tfaFactors().itemsSubject.value.any {
+        Assert.assertTrue(repositoryProvider.tfaFactors().itemsList.any {
             it.id == addedFactorId && it.attributes.priority > 0
         })
     }
@@ -139,7 +139,7 @@ class TfaTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertFalse(repositoryProvider.tfaFactors().itemsSubject.value.any {
+        Assert.assertFalse(repositoryProvider.tfaFactors().itemsList.any {
             it.type == TfaFactor.Type.TOTP && it.attributes.priority > 0
         })
     }

@@ -31,8 +31,7 @@ class BindExternalAccountTest {
         )
 
         val asset = repositoryProvider.balances()
-                .itemsSubject
-                .value
+                .itemsList
                 .find {
                     it.assetDetails!!.isBackedByExternalSystem
                 }
@@ -58,8 +57,8 @@ class BindExternalAccountTest {
 
         repositoryProvider.account().updateDeferred().blockingAwait()
 
-        val externalAccounts = repositoryProvider.account().itemSubject.value.externalAccounts
-        val externalAccount = externalAccounts.find {
+        val externalAccounts = repositoryProvider.account().item?.externalAccounts
+        val externalAccount = externalAccounts?.find {
             it.type.value == asset.details.externalSystemType
         }
 

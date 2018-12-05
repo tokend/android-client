@@ -56,7 +56,7 @@ object Util {
         val netParams = repositoryProvider.systemInfo().getNetworkParams().blockingGet()
 
         val balanceId = repositoryProvider.balances()
-                .itemsSubject.value
+                .itemsList
                 .find { it.asset == asset }!!
                 .balanceId
 

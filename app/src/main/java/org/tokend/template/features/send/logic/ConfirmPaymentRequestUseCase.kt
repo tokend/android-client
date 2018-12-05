@@ -42,7 +42,7 @@ class ConfirmPaymentRequestUseCase(
                 .doOnSuccess {
                     updateRepositories()
                 }
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun getTransaction(): Single<Transaction> {

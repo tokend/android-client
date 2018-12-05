@@ -22,7 +22,7 @@ class SwitchFavoriteUseCase(
                     else
                         addToFavorites()
                 }
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun updateData(): Single<Boolean> {
@@ -33,8 +33,7 @@ class SwitchFavoriteUseCase(
 
     private fun getExistingEntry(): FavoriteEntry? {
         return favoritesRepository
-                .itemsSubject
-                .value
+                .itemsList
                 .find {
                     it.type == favoriteEntry.type
                             && it.key == favoriteEntry.key

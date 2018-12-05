@@ -40,7 +40,7 @@ class EnableTfaUseCase(
                 .flatMap {
                     enableNewFactor()
                 }
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun updateRepository(): Single<Boolean> {
@@ -51,8 +51,7 @@ class EnableTfaUseCase(
 
     private fun deleteOldFactorIfNeeded(): Single<Boolean> {
         val oldFactor = factorsRepository
-                .itemsSubject
-                .value
+                .itemsList
                 .find {
                     it.type == factorType
                 }

@@ -253,7 +253,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayBalance() {
-        balancesRepository.itemsSubject.value
+        balancesRepository.itemsList
                 .find { it.asset == asset }
                 ?.let { balanceItem ->
                     val balance = balanceItem.balance
@@ -268,7 +268,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displaySendIfNeeded() {
-        (balancesRepository.itemsSubject.value
+        (balancesRepository.itemsList
                 .find { it.asset == asset }
                 ?.assetDetails
                 ?.isTransferable() == true)

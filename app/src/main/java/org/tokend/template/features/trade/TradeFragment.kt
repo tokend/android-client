@@ -250,7 +250,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayBalance() {
-        val balances = balancesRepository.itemsSubject.value
+        val balances = balancesRepository.itemsList
 
         val firstBalance = balances.find { it.asset == currentPair.base }?.balance
         val secondBalance = balances.find { it.asset == currentPair.quote }?.balance

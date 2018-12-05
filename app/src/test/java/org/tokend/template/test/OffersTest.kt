@@ -97,7 +97,7 @@ class OffersTest {
 
         offersRepository.updateIfNotFreshDeferred().blockingAwait()
 
-        Assert.assertTrue(offersRepository.itemsSubject.value.isNotEmpty())
+        Assert.assertTrue(offersRepository.itemsList.isNotEmpty())
     }
 
     @Test
@@ -130,7 +130,7 @@ class OffersTest {
 
         offersRepository.updateIfNotFreshDeferred().blockingAwait()
 
-        val offerToCancel = offersRepository.itemsSubject.value.first()
+        val offerToCancel = offersRepository.itemsList.first()
 
         submitOffer(session, apiProvider, repositoryProvider, offerToCancel)
 
@@ -138,8 +138,8 @@ class OffersTest {
 
         offersRepository.updateIfNotFreshDeferred().blockingAwait()
 
-        Assert.assertTrue(offersRepository.itemsSubject.value.isNotEmpty())
-        Assert.assertFalse(offersRepository.itemsSubject.value.any {
+        Assert.assertTrue(offersRepository.itemsList.isNotEmpty())
+        Assert.assertFalse(offersRepository.itemsList.any {
             it.id == offerToCancel.id
         })
     }
@@ -174,7 +174,7 @@ class OffersTest {
 
         offersRepository.updateIfNotFreshDeferred().blockingAwait()
 
-        val offerToCancel = offersRepository.itemsSubject.value.first()
+        val offerToCancel = offersRepository.itemsList.first()
 
         val useCase = CancelOfferUseCase(
                 offerToCancel,
@@ -185,14 +185,14 @@ class OffersTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(offersRepository.itemsSubject.value.isEmpty())
+        Assert.assertTrue(offersRepository.itemsList.isEmpty())
         Assert.assertFalse(repositoryProvider.balances().isFresh)
 
         Thread.sleep(500)
 
         repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
 
-        val currentBalance = repositoryProvider.balances().itemsSubject.value
+        val currentBalance = repositoryProvider.balances().itemsList
                 .find { it.asset == baseAsset }!!.balance
 
         Assert.assertEquals(0, initialBalance.compareTo(currentBalance))

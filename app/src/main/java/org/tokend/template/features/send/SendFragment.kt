@@ -28,32 +28,32 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.logic.wallet.WalletEventsListener
-import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.logic.FeeManager
-import org.tokend.template.features.send.logic.CreatePaymentRequestUseCase
-import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.view.util.input.AmountEditTextWrapper
-import org.tokend.template.view.adapter.base.SimpleItemClickListener
-import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.isTransferable
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.send.adapter.ContactsAdapter
+import org.tokend.template.features.send.logic.CreatePaymentRequestUseCase
 import org.tokend.template.features.send.model.Contact
 import org.tokend.template.features.send.model.ContactEmail
+import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.send.repository.ContactsRepository
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.FeeManager
+import org.tokend.template.logic.wallet.WalletEventsListener
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
-import org.tokend.wallet.Base32Check
 import org.tokend.template.util.validator.EmailValidator
+import org.tokend.template.view.adapter.base.SimpleItemClickListener
+import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.view.util.input.AmountEditTextWrapper
+import org.tokend.template.view.util.input.SimpleTextWatcher
+import org.tokend.wallet.Base32Check
 import java.math.BigDecimal
 
 class SendFragment : BaseFragment(), ToolbarProvider {
@@ -220,7 +220,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun updateBalance() {
-        assetBalance = balancesRepository.itemsSubject.value
+        assetBalance = balancesRepository.itemsList
                 .find { it.asset == asset }
                 ?.balance ?: BigDecimal.ZERO
     }
@@ -233,7 +233,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayTransferableAssets() {
-        val transferableAssets = balancesRepository.itemsSubject.value
+        val transferableAssets = balancesRepository.itemsList
                 .asSequence()
                 .mapNotNull {
                     it.assetDetails
@@ -452,11 +452,10 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     }
 
     override fun onBackPressed(): Boolean {
-        return if(isBottomSheetExpanded) {
+        return if (isBottomSheetExpanded) {
             bottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
             false
-        }
-        else {
+        } else {
             bottomSheet.setBottomSheetCallback(null)
             super.onBackPressed()
         }

@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
+import org.tokend.rx.extensions.fromSecretSeedSingle
 import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.logic.Session
@@ -53,7 +54,7 @@ class SignInUseCase(
                 .retry { attempt, error ->
                     error is PostSignInManager.AuthMismatchException && attempt == 1
                 }
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun getWalletInfo(email: String, password: CharArray): Single<WalletInfo> {
@@ -66,9 +67,7 @@ class SignInUseCase(
     }
 
     private fun getAccountFromWalletInfo(): Single<Account> {
-        return {
-            Account.fromSecretSeed(walletInfo.secretSeed)
-        }.toSingle().subscribeOn(Schedulers.newThread())
+        return Account.fromSecretSeedSingle(walletInfo.secretSeed)
     }
 
     private fun updateProviders(): Single<Boolean> {

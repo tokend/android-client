@@ -85,7 +85,7 @@ class OffersRepository(
                 .flatMap { transition ->
                     txManager.submit(transition)
                 }
-                .toCompletable()
+                .ignoreElement()
                 .doOnSubscribe {
                     isLoading = true
                 }
@@ -175,7 +175,7 @@ class OffersRepository(
                 .flatMap { transition ->
                     txManager.submit(transition)
                 }
-                .toCompletable()
+                .ignoreElement()
                 .doOnSubscribe {
                     isLoading = true
                 }

@@ -68,7 +68,7 @@ class PendingOffersCard(private val context: Context?,
     ): RecyclerView.AdapterDataObserver {
         return object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
-                if (repository().itemsSubject.value.isNotEmpty()) {
+                if (repository().itemsList.isNotEmpty()) {
                     emptyView.visibility = View.GONE
                     contentView.visibility = View.VISIBLE
                 } else {

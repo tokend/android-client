@@ -50,7 +50,7 @@ class AssetDetailsFragment : BaseFragment() {
     }
 
     private val balanceExists: Boolean
-        get() = repositoryProvider.balances().itemsSubject.value
+        get() = repositoryProvider.balances().itemsList
                 .find { it.asset == asset.code } != null
 
     private lateinit var fileDownloader: FileDownloader

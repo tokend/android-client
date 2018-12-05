@@ -4,15 +4,18 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
+import org.tokend.rx.extensions.createWalletSingle
+import org.tokend.rx.extensions.updateWalletCompletable
 import org.tokend.sdk.keyserver.KeyStorage
+import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.sdk.keyserver.models.WalletData
 import org.tokend.sdk.keyserver.models.WalletInfo
+import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.logic.persistance.CredentialsPersistor
-import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.wallet.Account
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.Transaction
@@ -50,7 +53,6 @@ class WalletUpdateManager(
                 ?: return Completable.error(IllegalStateException("Cannot obtain signed KeyStorage"))
         val signedApi = apiProvider.getSignedApi()
                 ?: return Completable.error(IllegalStateException("Cannot obtain signed API"))
-        val walletManager = WalletManager(signedKeyStorage)
 
         val data = object {
             lateinit var newSalt: String
@@ -92,7 +94,7 @@ class WalletUpdateManager(
                 .flatMapCompletable { newWallet ->
                     data.newSalt = newWallet.attributes?.salt ?: ""
                     data.newWalletId = newWallet.id ?: ""
-                    walletManager.updateWallet(wallet.walletIdHex, newWallet)
+                    signedKeyStorage.updateWalletCompletable(wallet.walletIdHex, newWallet)
                 }
                 // Update current credentials.
                 .doOnComplete {
@@ -126,7 +128,7 @@ class WalletUpdateManager(
         loginParams.kdfAttributes.salt = KeyStorage.generateKdfSalt()
 
         return Single.zip(
-                WalletManager.createWallet(
+                KeyStorage.createWalletSingle(
                         email = currentWallet.email,
                         password = newPassword,
                         rootAccount = newAccount,
@@ -137,7 +139,7 @@ class WalletUpdateManager(
                 createSignersUpdateTransaction(networkParams, currentWallet,
                         currentAccount, currentSigners, newAccount),
 
-                BiFunction { t1: WalletData, t2: Transaction -> Pair(t1, t2) }
+                BiFunction { t1: WalletCreateResult, t2: Transaction -> Pair(t1.walletData, t2) }
         )
                 .map { (wallet, transaction) ->
                     wallet.addTransactionRelation(transaction)

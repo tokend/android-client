@@ -9,13 +9,13 @@ import org.tokend.sdk.api.accounts.params.OffersParams
 import org.tokend.sdk.api.assets.model.AssetChartData
 import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.utils.BigDecimalUtil
-import org.tokend.template.logic.FeeManager
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.extensions.Asset
 import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.logic.FeeManager
+import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
 class InvestmentInfoManager(
@@ -128,7 +128,7 @@ class InvestmentInfoManager(
 
         val assetBalance = repositoryProvider
                 .balances()
-                .itemsSubject.value
+                .itemsList
                 .find { it.asset == asset }
                 ?.balance ?: BigDecimal.ZERO
 

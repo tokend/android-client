@@ -182,7 +182,7 @@ open class OfferMatchDetailsActivity(
     }
 
     protected open fun getOfferToCancel(): Offer {
-        val balances = repositoryProvider.balances().itemsSubject.value
+        val balances = repositoryProvider.balances().itemsList
 
         return Offer(
                 id = tx.id.toLongOrNull() ?: 0L,

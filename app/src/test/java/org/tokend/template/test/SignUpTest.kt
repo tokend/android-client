@@ -1,19 +1,14 @@
 package org.tokend.template.test
 
-import org.junit.*
-import org.tokend.template.BuildConfig
-import org.tokend.template.data.model.UrlConfig
+import org.junit.Assert
+import org.junit.Test
 import org.tokend.template.di.providers.ApiProviderFactory
-import org.tokend.template.di.providers.UrlConfigProviderImpl
 import org.tokend.template.features.signup.logic.SignUpUseCase
 
 class SignUpTest {
     @Test
     fun signUp() {
-        val defaultUrlConfig = UrlConfig(BuildConfig.API_URL, "", "", "")
-        val urlConfigProvider = UrlConfigProviderImpl().apply {
-            setConfig(defaultUrlConfig)
-        }
+        val urlConfigProvider = Util.getUrlConfigProvider()
 
         val email = "${System.currentTimeMillis()}@mail.com"
         val password = "qwe123".toCharArray()

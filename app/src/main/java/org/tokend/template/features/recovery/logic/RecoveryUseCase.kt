@@ -3,12 +3,13 @@ package org.tokend.template.features.recovery.logic
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import io.reactivex.rxkotlin.toSingle
-import io.reactivex.schedulers.Schedulers
+import org.tokend.rx.extensions.fromSecretSeedSingle
+import org.tokend.rx.extensions.getWalletInfoSingle
+import org.tokend.rx.extensions.randomSingle
+import org.tokend.sdk.keyserver.KeyStorage
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.logic.wallet.WalletManager
-import org.tokend.template.logic.wallet.WalletUpdateManager
 import org.tokend.template.di.providers.*
+import org.tokend.template.logic.wallet.WalletUpdateManager
 import org.tokend.wallet.Account
 
 /**
@@ -29,7 +30,7 @@ class RecoveryUseCase(
 
     private lateinit var accountProvider: AccountProvider
     private lateinit var apiProvider: ApiProvider
-    private lateinit var walletManager: WalletManager
+    private lateinit var signedKeyStorage: KeyStorage
     private lateinit var walletInfoProvider: WalletInfoProvider
 
     fun perform(): Completable {
@@ -42,8 +43,7 @@ class RecoveryUseCase(
                             AccountProviderFactory().createAccountProvider(recoveryAccount)
                     this.apiProvider =
                             ApiProviderFactory().createApiProvider(urlConfigProvider, accountProvider)
-                    this.walletManager =
-                            WalletManager(apiProvider.getSignedKeyStorage()!!)
+                    this.signedKeyStorage = apiProvider.getSignedKeyStorage()!!
                 }
                 .flatMap {
                     getRecoveryWallet()
@@ -57,7 +57,7 @@ class RecoveryUseCase(
                 .flatMap {
                     updateWallet()
                 }
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun getAccounts(): Single<Pair<Account, Account>> {
@@ -69,20 +69,15 @@ class RecoveryUseCase(
     }
 
     private fun createAccountFromSeed(): Single<Account> {
-        return {
-            Account.fromSecretSeed(recoverySeed)
-        }.toSingle().subscribeOn(Schedulers.newThread())
+        return Account.fromSecretSeedSingle(recoverySeed)
     }
 
     private fun generateNewAccount(): Single<Account> {
-        return {
-            Account.random()
-        }.toSingle().subscribeOn(Schedulers.newThread())
+        return Account.randomSingle()
     }
 
     private fun getRecoveryWallet(): Single<WalletInfo> {
-        return walletManager
-                .getWalletInfo(email, recoverySeed, true)
+        return signedKeyStorage.getWalletInfoSingle(email, recoverySeed, true)
     }
 
     private fun updateWallet(): Single<Boolean> {

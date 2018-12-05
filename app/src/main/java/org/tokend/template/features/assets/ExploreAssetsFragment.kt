@@ -195,8 +195,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayAssets() {
         val storageUrl = urlConfigProvider.getConfig().storage
-        val balances = balancesRepository.itemsSubject.value
-        val items = assetsRepository.itemsSubject.value
+        val balances = balancesRepository.itemsList
+        val items = assetsRepository.itemsList
                 .asSequence()
                 .map { asset ->
                     AssetListItem(

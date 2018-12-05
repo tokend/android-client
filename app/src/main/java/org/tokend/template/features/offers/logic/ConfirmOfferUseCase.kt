@@ -3,12 +3,12 @@ package org.tokend.template.features.offers.logic
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.tokend.sdk.api.trades.model.Offer
-import org.tokend.template.di.providers.AccountProvider
-import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.data.repository.offers.OffersRepository
+import org.tokend.template.di.providers.AccountProvider
+import org.tokend.template.di.providers.RepositoryProvider
+import org.tokend.template.logic.transactions.TxManager
 
 /**
  * Sends given offer.
@@ -52,7 +52,7 @@ class ConfirmOfferUseCase(
                 .flatMap {
                     updateRepositories()
                 }
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun updateBalances(): Single<Boolean> {
@@ -62,7 +62,7 @@ class ConfirmOfferUseCase(
     }
 
     private fun getBalances(): Single<Pair<String, String>> {
-        val balances = balancesRepository.itemsSubject.value
+        val balances = balancesRepository.itemsList
 
         val baseAsset = offer.baseAsset
         val quoteAsset = offer.quoteAsset
@@ -88,13 +88,13 @@ class ConfirmOfferUseCase(
         return createMissingBalances
                 .andThen(
                         Single.defer {
-                            val base = balancesRepository.itemsSubject.value
+                            val base = balancesRepository.itemsList
                                     .find { it.asset == baseAsset }
                                     ?.balanceId
                                     ?: throw IllegalStateException(
                                             "Unable to create balance for $baseAsset"
                                     )
-                            val quote = balancesRepository.itemsSubject.value
+                            val quote = balancesRepository.itemsList
                                     .find { it.asset == quoteAsset }
                                     ?.balanceId
                                     ?: throw IllegalStateException(

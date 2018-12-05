@@ -42,7 +42,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         get() = repositoryProvider.tfaFactors()
     private var tfaPreference: SwitchPreferenceCompat? = null
     private val tfaBackend: TfaFactor?
-        get() = tfaRepository.itemsSubject.value.find { it.type == TFA_BACKEND_TYPE }
+        get() = tfaRepository.itemsList.find { it.type == TFA_BACKEND_TYPE }
     private val isTfaEnabled: Boolean
         get() = tfaBackend?.let { it.attributes.priority > 0 } ?: false
 

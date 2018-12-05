@@ -169,7 +169,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun updateBalance() {
-        assetBalance = balancesRepository.itemsSubject.value
+        assetBalance = balancesRepository.itemsList
                 .find { it.asset == asset }
                 ?.balance ?: BigDecimal.ZERO
     }
@@ -182,7 +182,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayWithdrawableAssets() {
-        val withdrawableAssets = balancesRepository.itemsSubject.value
+        val withdrawableAssets = balancesRepository.itemsList
                 .asSequence()
                 .mapNotNull {
                     it.assetDetails

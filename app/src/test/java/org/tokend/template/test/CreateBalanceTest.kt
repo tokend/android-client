@@ -51,7 +51,7 @@ class CreateBalanceTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(repositoryProvider.balances().itemsSubject.value
+        Assert.assertTrue(repositoryProvider.balances().itemsList
                 .any {
                     it.asset == assetCode
                 }

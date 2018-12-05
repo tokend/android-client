@@ -77,7 +77,7 @@ class BindExternalAccountUseCase(
                 .doOnSuccess {
                     updateRepositories()
                 }
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun updateData(): Single<Boolean> {
@@ -101,8 +101,7 @@ class BindExternalAccountUseCase(
 
     private fun getIsBalanceCreationRequired(): Single<Boolean> {
         return balancesRepository
-                .itemsSubject
-                .value
+                .itemsList
                 .find { it.asset == asset }
                 .let { it == null }
                 .toSingle()

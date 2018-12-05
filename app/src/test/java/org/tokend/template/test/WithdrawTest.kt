@@ -105,7 +105,7 @@ class WithdrawTest {
 
         val txRepository = repositoryProvider.transactions(asset)
         txRepository.updateIfNotFreshDeferred().blockingAwait()
-        val transactions = txRepository.itemsSubject.value
+        val transactions = txRepository.itemsList
 
         Assert.assertTrue(transactions.isNotEmpty())
         Assert.assertTrue(transactions.first() is WithdrawalOperation)

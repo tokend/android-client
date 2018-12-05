@@ -7,8 +7,15 @@ import io.reactivex.subjects.BehaviorSubject
  * Repository that holds a single [T] item.
  */
 abstract class SingleItemRepository<T> : Repository() {
-    protected var item: T? = null
+    /**
+     * Repository item
+     */
+    var item: T? = null
+        protected set
 
+    /**
+     * BehaviourSubject which emits repository item on changes
+     */
     val itemSubject: BehaviorSubject<T> = BehaviorSubject.create()
 
     protected open fun broadcast() {

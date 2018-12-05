@@ -24,7 +24,7 @@ class CancelOfferUseCase(
                 .flatMap {
                     updateRepositories()
                 }
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun cancelOffer(): Single<Boolean> {

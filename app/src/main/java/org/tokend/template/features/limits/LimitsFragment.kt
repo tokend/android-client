@@ -34,7 +34,7 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
         get() = repositoryProvider.limits()
 
     private val assets: Set<String>
-        get() = limitsRepository.itemSubject.value.entriesByAssetMap.keys
+        get() = limitsRepository.item?.entriesByAssetMap?.keys ?: emptySet()
 
     private var asset: String = ""
         set(value) {
@@ -67,7 +67,7 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
 
     private fun initEmptyErrorView() {
         error_empty_view.setPadding(0,
-                requireContext().resources.getDimensionPixelSize(R.dimen.standard_padding),0 ,0)
+                requireContext().resources.getDimensionPixelSize(R.dimen.standard_padding), 0, 0)
     }
 
     private fun initSwipeRefresh() {
@@ -104,16 +104,14 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
     private fun updateCards(asset: String) {
         limit_cards_holder.removeAllViews()
 
-        limitsRepository.itemSubject.value.getAssetEntries(asset)?.let { entries ->
-
+        limitsRepository.item?.getAssetEntries(asset)?.let { entries ->
             LimitCardsProvider(requireContext(), asset, entries)
                     .addTo(limit_cards_holder)
-
         }
     }
 
     private fun onLimitsUpdated() {
-        if(assets.isNotEmpty()) {
+        if (assets.isNotEmpty()) {
             error_empty_view.hide()
             asset_tabs.setSimpleItems(assets)
             updateCards(asset)

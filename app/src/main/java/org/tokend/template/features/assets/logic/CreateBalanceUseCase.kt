@@ -20,7 +20,7 @@ class CreateBalanceUseCase(
     fun perform(): Completable {
         // Well, quite simple (¬_¬).
         return createBalance()
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun createBalance(): Single<Boolean> {

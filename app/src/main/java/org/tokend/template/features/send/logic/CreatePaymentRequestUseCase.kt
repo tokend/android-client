@@ -4,11 +4,11 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toMaybe
 import org.tokend.sdk.api.fees.model.Fee
-import org.tokend.template.logic.FeeManager
-import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.send.model.PaymentRequest
+import org.tokend.template.logic.FeeManager
 import org.tokend.wallet.Base32Check
 import java.math.BigDecimal
 
@@ -100,8 +100,7 @@ class CreatePaymentRequestUseCase(
                 .toSingleDefault(true)
                 .flatMapMaybe {
                     balancesRepository
-                            .itemsSubject
-                            .value
+                            .itemsList
                             .find { it.asset == asset }
                             ?.balanceId
                             .toMaybe()

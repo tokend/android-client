@@ -63,7 +63,7 @@ class SignInWithAccountUseCase(
                     performPostSignIn()
                 }
                 .observeOn(scheduler)
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun getAuthResult(): Single<AuthResult> {

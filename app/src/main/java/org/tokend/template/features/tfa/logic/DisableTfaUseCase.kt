@@ -17,7 +17,7 @@ class DisableTfaUseCase(
                 .flatMap {
                     deleteFactorIfActive()
                 }
-                .toCompletable()
+                .ignoreElement()
     }
 
     private fun updateRepository(): Single<Boolean> {
@@ -28,8 +28,7 @@ class DisableTfaUseCase(
 
     private fun deleteFactorIfActive(): Single<Boolean> {
         val currentFactor = factorsRepository
-                .itemsSubject
-                .value
+                .itemsList
                 .find { it.type == factorType }
 
         return if (currentFactor != null && currentFactor.attributes.priority > 0)

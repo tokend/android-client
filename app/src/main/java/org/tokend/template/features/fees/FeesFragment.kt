@@ -37,7 +37,7 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
         get() = repositoryProvider.fees()
 
     private val assets: Set<String>
-        get() = feesRepository.itemSubject.value.feesAssetMap.keys
+        get() = feesRepository.item?.feesAssetMap?.keys ?: emptySet()
 
     private var asset: String = ""
         set(value) {
@@ -150,8 +150,8 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun onAssetChanged() {
-        feesRepository.itemSubject.value.feesAssetMap[asset]?.let {
-            feeAdapter.setData(it.map { FeeItem.fromFee(it) })
+        feesRepository.item?.feesAssetMap?.get(asset)?.let { fees ->
+            feeAdapter.setData(fees.map { FeeItem.fromFee(it) })
         }
     }
 

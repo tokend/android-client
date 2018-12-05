@@ -38,10 +38,10 @@ class SwitchingFavoriteStateTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(favoritesRepository.itemsSubject.value.isNotEmpty())
+        Assert.assertTrue(favoritesRepository.itemsList.isNotEmpty())
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(favoritesRepository.itemsSubject.value.isEmpty())
+        Assert.assertTrue(favoritesRepository.itemsList.isEmpty())
     }
 }

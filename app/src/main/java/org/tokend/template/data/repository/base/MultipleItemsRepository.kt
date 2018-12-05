@@ -9,8 +9,18 @@ import io.reactivex.subjects.BehaviorSubject
 abstract class MultipleItemsRepository<T> : Repository() {
     protected abstract val itemsCache: RepositoryCache<T>
 
+    /**
+     * BehaviourSubject which emits repository items on changes,
+     * initialized with empty list
+     */
     val itemsSubject: BehaviorSubject<List<T>> =
             BehaviorSubject.createDefault<List<T>>(listOf())
+
+    /**
+     * Repository items
+     */
+    val itemsList: List<T>
+        get() = itemsSubject.value ?: itemsCache.items
 
     protected open fun broadcast() {
         itemsSubject.onNext(itemsCache.items)
