@@ -5,6 +5,9 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 
+/**
+ * Highlights first occurrence of given substring with given color
+ */
 fun SpannableString.highlight(toHighlight: String, @ColorInt color: Int) {
     val start = indexOf(toHighlight)
     val end = start + toHighlight.length

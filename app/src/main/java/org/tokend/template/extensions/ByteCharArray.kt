@@ -4,6 +4,9 @@ import java.nio.ByteBuffer
 import java.nio.CharBuffer
 import java.nio.charset.Charset
 
+/**
+ * Converts given array to the byte array using [Charset.defaultCharset]
+ */
 fun CharArray.toByteArray(): ByteArray {
     val charBuffer = CharBuffer.wrap(this)
     val byteBuffer = Charset.defaultCharset().encode(charBuffer)
@@ -13,6 +16,9 @@ fun CharArray.toByteArray(): ByteArray {
     return bytes
 }
 
+/**
+ * Converts given array to the char array using [Charset.defaultCharset]
+ */
 fun ByteArray.toCharArray(): CharArray {
     val byteBuffer = ByteBuffer.wrap(this)
     val charBuffer = Charset.defaultCharset().decode(byteBuffer)
