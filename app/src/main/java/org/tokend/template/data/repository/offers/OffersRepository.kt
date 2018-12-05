@@ -11,13 +11,13 @@ import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParams
 import org.tokend.sdk.api.trades.model.Offer
+import org.tokend.template.data.repository.SystemInfoRepository
+import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.data.repository.SystemInfoRepository
-import org.tokend.template.data.repository.base.pagination.PagedDataRepository
-import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.Account
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.PublicKeyFactory
@@ -63,6 +63,10 @@ class OffersRepository(
     }
 
     // region Create.
+    /**
+     * Submits given offer,
+     * triggers repository update on complete
+     */
     fun create(accountProvider: AccountProvider,
                systemInfoRepository: SystemInfoRepository,
                txManager: TxManager,
@@ -151,6 +155,10 @@ class OffersRepository(
     // endregion
 
     // region Cancel
+    /**
+     * Cancels given offer,
+     * locally removes it from repository on complete
+     */
     fun cancel(accountProvider: AccountProvider,
                systemInfoRepository: SystemInfoRepository,
                txManager: TxManager,

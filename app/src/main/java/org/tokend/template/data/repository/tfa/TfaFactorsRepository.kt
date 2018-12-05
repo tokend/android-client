@@ -27,6 +27,10 @@ class TfaFactorsRepository(
                 .toSingle()
     }
 
+    /**
+     * Adds given factor as disabled,
+     * locally adds it to repository on complete
+     */
     fun addBackend(type: TfaFactor.Type): Single<TfaFactor> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
@@ -46,6 +50,10 @@ class TfaFactorsRepository(
                 .doOnEvent { _, _ -> isLoading = false }
     }
 
+    /**
+     * Updates priority of factor with given id to the maximum one,
+     * locally updates factor in repository on complete
+     */
     fun setBackendAsMain(id: Long): Completable {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Completable.error(IllegalStateException("No signed API instance found"))
@@ -91,6 +99,10 @@ class TfaFactorsRepository(
                 .doOnTerminate { isLoading = false }
     }
 
+    /**
+     * Deletes factor with given id,
+     * locally deletes it from repository on complete
+     */
     fun deleteBackend(id: Long): Completable {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Completable.error(IllegalStateException("No signed API instance found"))

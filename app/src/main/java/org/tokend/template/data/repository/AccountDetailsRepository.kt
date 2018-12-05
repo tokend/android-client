@@ -53,6 +53,10 @@ class AccountDetailsRepository(
                 }
     }
 
+    /**
+     * Loads account ID for given email.
+     * Result will be cached.
+     */
     fun getAccountIdByEmail(email: String): Single<String> {
         val existing = accountIdByEmail[email]
         if (existing != null) {

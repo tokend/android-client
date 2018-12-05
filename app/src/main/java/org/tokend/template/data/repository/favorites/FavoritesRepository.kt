@@ -27,6 +27,10 @@ class FavoritesRepository(
                 .toSingle()
     }
 
+    /**
+     * Adds given entry to favorites,
+     * update repository on complete
+     */
     fun addToFavorites(entry: FavoriteEntry): Completable {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Completable.error(IllegalStateException("No signed API instance found"))
@@ -46,6 +50,10 @@ class FavoritesRepository(
                 .andThen(updateDeferred())
     }
 
+    /**
+     * Removes given entry from favorites,
+     * locally removes it from repository on complete
+     */
     fun removeFromFavorites(entryId: Long): Completable {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Completable.error(IllegalStateException("No signed API instance found"))

@@ -24,6 +24,9 @@ class UserRepository(private val apiProvider: ApiProvider,
                 .toObservable()
     }
 
+    /**
+     * Creates default user which also triggers account creation
+     */
     fun createUnverified(): Completable {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Completable.error(IllegalStateException("No signed API instance found"))

@@ -2,8 +2,8 @@ package org.tokend.template.data.repository.assets
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
+import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.extensions.Asset
 import org.tokend.template.extensions.toSingle
 
@@ -19,6 +19,9 @@ class AssetsRepository(
                 .toSingle()
     }
 
+    /**
+     * @return single asset info
+     */
     fun getSingle(code: String): Single<Asset> {
         return itemsCache.items
                 .find { it.code == code }
