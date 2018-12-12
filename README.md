@@ -43,5 +43,13 @@ In order to change the application branding you have to update following resourc
 * `ic_launcher_background` and `ic_launcher_foreground` in `drawable-v24` – parts of the adaptive icon displayed on Android 7.0 and higher
 * `app_name` field in `strings.xml` – displayed application name
 
+## Testing
+There are integration tests for use cases in `src/test/java/org/tokend/template/test`.
+You can specify the environment to run tests on inside `Config.kt` file. 
+
+It is recommended to use local [TokenD Developer edition](https://github.com/tokend/developer-edition)
+for tests. To prepare it for tests run [init scripts](https://github.com/tokend/developer-edition#bootstraping-your-environment)
+after the first start.
+
 ## Credits
 ⛏ <a href="https://distributedlab.com/" target="_blank">Distributed Lab</a>, 2018
