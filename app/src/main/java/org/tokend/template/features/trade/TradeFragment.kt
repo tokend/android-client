@@ -5,42 +5,45 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.reactivex.Single
+import android.widget.LinearLayout
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_trade.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_asset_chart_sheet.*
-import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.models.AssetPair
-import org.tokend.sdk.api.models.Offer
+import org.tokend.sdk.api.assets.model.AssetPair
+import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
-import org.tokend.template.base.fragments.BaseFragment
-import org.tokend.template.base.fragments.ToolbarProvider
-import org.tokend.template.base.logic.FeeManager
-import org.tokend.template.base.logic.repository.balances.BalancesRepository
-import org.tokend.template.base.logic.repository.pairs.AssetPairsRepository
-import org.tokend.template.base.view.picker.PickerItem
-import org.tokend.template.base.view.util.AmountFormatter
-import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.data.repository.orderbook.OrderBookRepository
+import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.extensions.isTradeable
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.features.offers.CreateOfferDialog
+import org.tokend.template.features.offers.logic.PrepareOfferUseCase
 import org.tokend.template.features.trade.adapter.OrderBookAdapter
-import org.tokend.template.features.trade.repository.order_book.OrderBookRepository
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.FeeManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import org.tokend.template.view.picker.PickerItem
+import org.tokend.template.view.util.HorizontalSwipesGestureDetector
+import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.util.formatter.AmountFormatter
+import java.lang.ref.WeakReference
 import java.math.BigDecimal
 
 
@@ -73,6 +76,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     private val buyAdapter = OrderBookAdapter(true)
     private val sellAdapter = OrderBookAdapter(false)
 
+    private var isBottomSheetExpanded = false
+    private lateinit var bottomSheet: BottomSheetBehavior<LinearLayout>
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_trade, container, false)
@@ -84,6 +90,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         initPairSelection()
         initSwipeRefresh()
         initChart()
+        initHorizontalSwipes()
 
         subscribeToPairs()
         subscribeToBalances()
@@ -144,36 +151,39 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
                 applyTouchHook(root_layout)
 
-                peek.onClick {
-                    val bottomSheet = BottomSheetBehavior.from(bottom_sheet)
-
-                    val state = when (bottomSheet.state) {
-                        BottomSheetBehavior.STATE_COLLAPSED -> BottomSheetBehavior.STATE_EXPANDED
-                        else -> BottomSheetBehavior.STATE_COLLAPSED
-                    }
-
-                    bottomSheet.state = state
-                }
-
-                BottomSheetBehavior.from(bottom_sheet).setBottomSheetCallback(
-                        object : BottomSheetBehavior.BottomSheetCallback() {
-                            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                                peek_image.rotation = 180 * slideOffset
-                            }
-
-                            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                                    chart_sheet_elevation_view.visibility = View.GONE
-                                } else {
-                                    chart_sheet_elevation_view.visibility = View.VISIBLE
-                                }
-                            }
-                        }
-                )
+                initBottomSheet()
             }
         }
     }
 
+    private fun initBottomSheet() {
+        bottomSheet = BottomSheetBehavior.from(bottom_sheet)
+
+        peek.onClick {
+            bottomSheet.state = when (bottomSheet.state) {
+                BottomSheetBehavior.STATE_COLLAPSED -> BottomSheetBehavior.STATE_EXPANDED
+                else -> BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
+
+        bottomSheet.setBottomSheetCallback(
+                object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                        peek_image.rotation = 180 * slideOffset
+                    }
+
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                            chart_sheet_elevation_view.visibility = View.GONE
+                            isBottomSheetExpanded = true
+                        } else {
+                            chart_sheet_elevation_view.visibility = View.VISIBLE
+                            isBottomSheetExpanded = false
+                        }
+                    }
+                }
+        )
+    }
 
     private fun initMenu() {
         toolbar.menu.clear()
@@ -195,6 +205,24 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 }
                 else -> false
             }
+        }
+    }
+
+    private fun initHorizontalSwipes() {
+        val weakTabs = WeakReference(pairs_tabs)
+
+        val gestureDetector = GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
+                onSwipeToLeft = {
+                    weakTabs.get()?.apply { selectedItemIndex++ }
+                },
+                onSwipeToRight = {
+                    weakTabs.get()?.apply { selectedItemIndex-- }
+                }
+        ))
+
+        swipe_refresh.setTouchEventInterceptor { motionEvent ->
+            gestureDetector.onTouchEvent(motionEvent)
+            false
         }
     }
 
@@ -222,7 +250,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayBalance() {
-        val balances = balancesRepository.itemsSubject.value
+        val balances = balancesRepository.itemsList
 
         val firstBalance = balances.find { it.asset == currentPair.base }?.balance
         val secondBalance = balances.find { it.asset == currentPair.quote }?.balance
@@ -265,8 +293,10 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         pairs.clear()
         pairs.addAll(
                 newPairs
+                        .asSequence()
                         .filter { it.isTradeable() }
                         .sortedBy { it.base }
+                        .toList()
         )
 
         displayPairs()
@@ -352,7 +382,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     private fun updateChart() {
         chartDisposable?.dispose()
-        chartDisposable = apiProvider.getApi().getAssetChart("${currentPair.base}-${currentPair.quote}")
+        chartDisposable = apiProvider.getApi()
+                .assets
+                .getChart(currentPair.base, currentPair.quote)
                 .toSingle()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe {
@@ -459,45 +491,42 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 Offer(
                         baseAsset = currentPair.base,
                         quoteAsset = currentPair.quote,
-                        price = currentPair.price
+                        baseAmount = BigDecimal.ZERO,
+                        price = currentPair.price,
+                        isBuy = false
                 )
         )
     }
 
     private fun openOfferDialog(offer: Offer) {
-        val dialog = CreateOfferDialog.withArgs(offer)
-        dialog.showDialog(this.childFragmentManager, "create_offer")
+        CreateOfferDialog.withArgs(offer)
+                .showDialog(this.childFragmentManager, "create_offer")
                 .subscribe {
                     goToOfferConfirmation(it)
                 }
+                .addTo(compositeDisposable)
     }
 
     private fun goToOfferConfirmation(offer: Offer) {
-        getCurrentAccountId()
-                .flatMap { accountId ->
-                    FeeManager(apiProvider).getOfferFee(accountId,
-                            offer.quoteAsset, offer.quoteAmount)
-                }
+        val progress = ProgressDialogFactory.getTunedDialog(requireContext())
+
+        PrepareOfferUseCase(
+                offer,
+                walletInfoProvider,
+                FeeManager(apiProvider)
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe { progress.show() }
                 .doOnEvent { _, _ -> progress.hide() }
                 .subscribeBy(
-                        onSuccess = { offerFee ->
-                            offer.fee = offerFee.percent
-
+                        onSuccess = { completedOffer ->
                             Navigator.openOfferConfirmation(this,
-                                    CREATE_OFFER_REQUEST, offer)
+                                    CREATE_OFFER_REQUEST, completedOffer)
                         },
                         onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
-    }
-
-    private fun getCurrentAccountId(): Single<String> {
-        return walletInfoProvider.getWalletInfo()?.accountId.toMaybe()
-                .switchIfEmpty(Single.error(
-                        IllegalStateException("Cannot obtain current account ID")
-                ))
     }
 // endregion
 
@@ -505,10 +534,20 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                CREATE_OFFER_REQUEST, CANCEL_OFFER_REQUEST -> {
+                CANCEL_OFFER_REQUEST -> {
                     update()
                 }
             }
+        }
+    }
+
+    override fun onBackPressed(): Boolean {
+        return if (isBottomSheetExpanded) {
+            bottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+            false
+        } else {
+            bottomSheet.setBottomSheetCallback(null)
+            super.onBackPressed()
         }
     }
 

@@ -4,10 +4,10 @@ ext {
     // Application ID - unique identifier of the app in Google Play and on user's device
     application_id = 'org.tokend.template'
     // Version Name - human-readable app version
-    version_name = '1.1'
+    version_name = '1.2'
     // Version Code - code number for version,
     // must be incremented after each release
-    version_code = 3
+    version_code = 4
 
     // --------------------------
 
@@ -34,6 +34,9 @@ ext {
     // KYC URL - Link to the user verification page of your project,
     // used on settings screen
     kyc_url = '"https://demo.tokend.org/verification/make"'
+
+    //Allow to log request and response information.
+    logs_enabled = "true"
 
     // --------------------------
 
@@ -90,6 +93,11 @@ ext {
     // screenshots
     secure_content = 'false'
 
+    // Auto logout timer in milliseconds.
+    // App will logout after being in background during this time.
+    // 0 means option is disabled
+    auto_logout = 0
+
     // ----------------------
 
     // --- Functionality ---
@@ -97,6 +105,8 @@ ext {
     // Allow send - Controls sending functionality availability.
     // It doesn't affect the display of payment transactions in the history.
     allow_send = 'true'
+    //Allow limits - Controls limits functionality availability.
+    allow_limits = 'true'
     // Allow trade - Controls trading functionality availability.
     // It doesn't affect the display of offer match transactions in the history.
     allow_trade = 'true'
@@ -106,14 +116,18 @@ ext {
     // Allow withdraw - Controls withdrawal functionality availability.
     // It doesn't affect the display of withdrawal transactions in the history.
     allow_withdraw = 'true'
+    // Allow fees - Controls fees functionality availability.
+    allow_fees = 'true'
     // Allow explore - Controls explore tokens functionality availability.
     allow_explore = 'true'
     // Allow invest - Controls investment functionality availability.
     allow_invest = 'true'
     // Network specified by user - When set to 'true' user have to specify network to work with.
     network_specified_by_user = 'true'
-    //Allows to see an analytics for your app.
+    // Allows to see an analytics for your app.
     enable_analytics = 'false'
+    // Allows TokenD Authenticator usage
+    allow_authenticator_auth = 'true'
     // ----------------------
 }
 
@@ -136,16 +150,21 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'String', 'WEB_CLIENT_URL', "${web_client_url}"
     b.buildConfigField 'String', 'TERMS_URL', "${terms_url}"
     b.buildConfigField 'String', 'KYC_URL', "${kyc_url}"
+    b.buildConfigField 'Boolean', 'WITH_LOGS', "${logs_enabled}"
 
     b.buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"
+    b.buildConfigField 'long', 'AUTO_LOGOUT', "${auto_logout}"
     b.buildConfigField 'Boolean', 'IS_SEND_ALLOWED', "${allow_send}"
+    b.buildConfigField 'Boolean', 'IS_LIMITS_ALLOWED', "${allow_limits}"
     b.buildConfigField 'Boolean', 'IS_TRADE_ALLOWED', "${allow_trade}"
     b.buildConfigField 'Boolean', 'IS_DEPOSIT_ALLOWED', "${allow_deposit}"
     b.buildConfigField 'Boolean', 'IS_WITHDRAW_ALLOWED', "${allow_withdraw}"
     b.buildConfigField 'Boolean', 'IS_EXPLORE_ALLOWED', "${allow_explore}"
     b.buildConfigField 'Boolean', 'IS_INVEST_ALLOWED', "${allow_invest}"
+    b.buildConfigField 'Boolean', 'IS_FEES_ALLOWED', "${allow_fees}"
     b.buildConfigField 'Boolean', 'IS_NETWORK_SPECIFIED_BY_USER', "${network_specified_by_user}"
     b.buildConfigField 'Boolean', 'ENABLE_ANALYTICS', "${enable_analytics}"
+    b.buildConfigField 'Boolean', 'ENABLE_AUTHENTICATOR_AUTH', "${allow_authenticator_auth}"
 
 
     b.resValue "string", "app_host", "${app_host}"

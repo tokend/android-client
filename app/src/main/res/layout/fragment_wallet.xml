@@ -13,7 +13,8 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <org.tokend.template.view.touchintercepting.TouchInterceptingLinearLayout
+            android:id="@+id/touch_capture_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -26,13 +27,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <org.tokend.template.base.view.PaginationRecyclerView
+                <org.tokend.template.view.PaginationRecyclerView
                     android:id="@+id/history_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-                <org.tokend.template.base.view.TxDateTextSwitcher
+                <org.tokend.template.view.TxDateTextSwitcher
                     android:id="@+id/date_text_switcher"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -45,15 +46,15 @@
 
             </RelativeLayout>
 
-        </LinearLayout>
+        </org.tokend.template.view.touchintercepting.TouchInterceptingLinearLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/send_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/standard_margin"
         android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/standard_margin"
         android:visibility="gone"
         app:layout_anchor="@id/swipe_refresh"
         app:layout_anchorGravity="bottom|right|end"

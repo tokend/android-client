@@ -16,11 +16,13 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:clipToPadding="false"
     android:focusable="true"
+    android:baselineAligned="false"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
@@ -48,7 +50,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:paddingBottom="16dp"
@@ -61,7 +63,8 @@
             android:ellipsize="marquee"
             android:singleLine="true"
             android:textAppearance="@style/Preference_TextAppearanceMaterialSubhead"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:ignore="PrivateResource" />
 
         <TextView
             android:id="@android:id/summary"

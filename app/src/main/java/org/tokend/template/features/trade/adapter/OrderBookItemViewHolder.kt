@@ -3,17 +3,14 @@ package org.tokend.template.features.trade.adapter
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
-import org.tokend.sdk.api.models.Offer
+import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
-import org.tokend.template.base.view.adapter.base.BaseViewHolder
-import org.tokend.template.base.view.util.AmountFormatter
+import org.tokend.template.view.adapter.base.BaseViewHolder
+import org.tokend.template.view.util.formatter.AmountFormatter
 
 class OrderBookItemViewHolder(view: View) : BaseViewHolder<Offer>(view) {
     private val priceTextView = view.find<TextView>(R.id.price_text_view)
@@ -32,7 +29,7 @@ class OrderBookItemViewHolder(view: View) : BaseViewHolder<Offer>(view) {
         priceTextView.text = AmountFormatter.formatAssetAmount(item.price, item.quoteAsset,
                 minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
         if (isBuy) {
-            priceTextView!!.textColor =
+            priceTextView.textColor =
                     ContextCompat.getColor(view.context, R.color.received)
         } else {
             priceTextView.textColor =

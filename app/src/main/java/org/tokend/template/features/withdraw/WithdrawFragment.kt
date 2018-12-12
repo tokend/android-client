@@ -10,11 +10,9 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_withdraw.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
@@ -25,27 +23,29 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.base.activities.WalletEventsListener
-import org.tokend.template.base.fragments.BaseFragment
-import org.tokend.template.base.fragments.ToolbarProvider
-import org.tokend.template.base.logic.FeeManager
-import org.tokend.template.base.logic.repository.balances.BalancesRepository
-import org.tokend.template.base.view.AmountEditTextWrapper
-import org.tokend.template.base.view.util.AmountFormatter
-import org.tokend.template.base.view.util.LoadingIndicatorManager
-import org.tokend.template.base.view.util.SimpleTextWatcher
+import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.isWithdrawable
+import org.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
+import org.tokend.template.features.withdraw.logic.WithdrawalAddressUtil
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.FeeManager
+import org.tokend.template.logic.wallet.WalletEventsListener
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.Permission
+import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
+import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.view.util.input.AmountEditTextWrapper
+import org.tokend.template.view.util.input.SimpleTextWatcher
 import java.math.BigDecimal
 
 class WithdrawFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
-    private val cameraPermission = Permission(Manifest.permission.CAMERA, 404)
+    private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress.show() },
             hideLoading = { progress.hide() }
@@ -169,7 +169,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun updateBalance() {
-        assetBalance = balancesRepository.itemsSubject.value
+        assetBalance = balancesRepository.itemsList
                 .find { it.asset == asset }
                 ?.balance ?: BigDecimal.ZERO
     }
@@ -182,7 +182,8 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayWithdrawableAssets() {
-        val withdrawableAssets = balancesRepository.itemsSubject.value
+        val withdrawableAssets = balancesRepository.itemsList
+                .asSequence()
                 .mapNotNull {
                     it.assetDetails
                 }
@@ -192,6 +193,8 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                 .map {
                     it.code
                 }
+                .sortedWith(assetComparator)
+                .toList()
 
         if (withdrawableAssets.isEmpty()) {
             error_empty_view.showEmpty(R.string.error_no_withdrawable_assets)
@@ -239,13 +242,23 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     private fun confirm() {
         val amount = amountEditTextWrapper.scaledAmount
         val asset = this.asset
-        val address = address_edit_text.text.toString().trim()
+        val address =
+                address_edit_text.text
+                        .toString()
+                        .trim()
+                        .let {
+                            WithdrawalAddressUtil().extractAddressFromInvoice(it)
+                                    ?: it
+                        }
 
-        walletInfoProvider.getWalletInfo()?.accountId.toMaybe()
-                .switchIfEmpty(Single.error(IllegalStateException("Cannot obtain current account ID")))
-                .flatMap { accountId ->
-                    FeeManager(apiProvider).getWithdrawalFee(accountId, asset, amount)
-                }
+        CreateWithdrawalRequestUseCase(
+                amount,
+                asset,
+                address,
+                walletInfoProvider,
+                FeeManager(apiProvider)
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe {
                     isLoading = true
@@ -254,14 +267,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                     isLoading = false
                 }
                 .subscribeBy(
-                        onSuccess = { fee ->
-                            val request = WithdrawalRequest(
-                                    asset = asset,
-                                    amount = amount,
-                                    destinationAddress = address,
-                                    fee = fee
-                            )
-
+                        onSuccess = { request ->
                             Navigator.openWithdrawalConfirmation(this,
                                     WITHDRAWAL_CONFIRMATION_REQUEST, request)
 

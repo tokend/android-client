@@ -15,7 +15,7 @@
 
         <include layout="@layout/toolbar" />
 
-        <org.tokend.template.base.view.picker.PickerTabLayout
+        <org.tokend.template.view.picker.PickerTabLayout
             android:id="@+id/asset_tab_layout"
             style="@style/TabPicker.Inverse"
             android:layout_width="match_parent"
@@ -25,7 +25,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -52,13 +52,12 @@
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
                         app:cardUseCompatPadding="false"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/include3">
+                        app:layout_constraintStart_toStartOf="parent">
 
                         <android.support.constraint.ConstraintLayout
                             android:layout_width="match_parent"
@@ -69,9 +68,9 @@
                                 style="@style/HeadingText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/standard_margin"
                                 android:layout_marginStart="@dimen/standard_margin"
                                 android:layout_marginTop="@dimen/standard_margin"
+                                android:layout_marginEnd="@dimen/standard_margin"
                                 android:text="@string/personal_address"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -90,8 +89,8 @@
                                     style="@style/SecondaryText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/double_margin"
                                     android:layout_marginTop="@dimen/double_margin"
+                                    android:layout_marginBottom="@dimen/double_margin"
                                     android:gravity="center" />
 
                                 <Button
@@ -100,10 +99,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="end"
-                                    android:layout_marginBottom="16dp"
                                     android:layout_marginEnd="16dp"
-                                    android:paddingEnd="32dp"
+                                    android:layout_marginBottom="16dp"
                                     android:paddingStart="32dp"
+                                    android:paddingEnd="32dp"
                                     android:text="@string/get_personal_address_action" />
 
                             </LinearLayout>
@@ -120,8 +119,8 @@
                                     android:id="@+id/address_text_view"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="16dp"
                                     android:layout_marginStart="16dp"
+                                    android:layout_marginEnd="16dp"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent"
@@ -144,11 +143,11 @@
                                     style="@style/PrimaryButton"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="16dp"
-                                    android:layout_marginEnd="16dp"
                                     android:layout_marginTop="@dimen/standard_padding"
-                                    android:paddingEnd="32dp"
+                                    android:layout_marginEnd="16dp"
+                                    android:layout_marginBottom="16dp"
                                     android:paddingStart="32dp"
+                                    android:paddingEnd="32dp"
                                     android:text="@string/share_label"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
@@ -173,9 +172,9 @@
                         style="@style/InfoCard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
                         app:cardUseCompatPadding="false">
 
                         <LinearLayout
@@ -203,8 +202,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="end"
                                 android:layout_marginTop="@dimen/standard_padding"
-                                android:paddingEnd="32dp"
                                 android:paddingStart="32dp"
+                                android:paddingEnd="32dp"
                                 android:text="@string/renew_personal_address_action" />
                         </LinearLayout>
 
@@ -213,5 +212,5 @@
                 </LinearLayout>
             </android.support.v4.widget.NestedScrollView>
         </LinearLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
 </LinearLayout>

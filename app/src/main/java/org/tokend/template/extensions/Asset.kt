@@ -1,7 +1,7 @@
 package org.tokend.template.extensions
 
-import org.tokend.sdk.api.models.AssetPair
-import org.tokend.sdk.api.models.SimpleAsset
+import org.tokend.sdk.api.assets.model.AssetPair
+import org.tokend.sdk.api.assets.model.SimpleAsset
 import org.tokend.wallet.xdr.AssetPairPolicy
 import org.tokend.wallet.xdr.AssetPolicy
 

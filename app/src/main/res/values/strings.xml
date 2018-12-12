@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">TokenD</string>
+    <string name="authenticator_app_name">TokenD Android client</string>
 
     <string name="sign_up">Sign up</string>
     <string name="sign_in">Sign in</string>
@@ -35,6 +36,7 @@
     <string name="i_understand">I understand</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="no">No</string>
     <string name="email_not_verified_explanation">
         It seems that your email is not verified yet.
         Please check your spam folder or request a new letter
@@ -48,7 +50,6 @@
     <string name="paid">Paid</string>
     <string name="received">Received</string>
     <string name="sent">Sent</string>
-    <string name="invested">Invested</string>
     <string name="price">Price</string>
     <string name="amount_sent">Amount sent</string>
     <string name="payment_description">Description</string>
@@ -59,7 +60,6 @@
     <string name="unknown">Unknown</string>
     <string name="template_withdrawal_fee_warning">Received amount may be lower due to %1$s network fees</string>
     <string name="investment_details_title">Investment details</string>
-    <string name="template_price_one_for">1 %1$s for %2$s %3$s</string>
     <string name="offer_match_details_title">Offer match details</string>
     <string name="sign_out_confirmation">Are you sure want to sign out?</string>
     <string name="yes">Yes</string>
@@ -113,7 +113,6 @@
     <string name="offer_canceled">Offer has been canceled</string>
     <string name="email_verified">Email has been verified</string>
     <string name="touch_sensor">Touch the sensor</string>
-    <string name="password_request_hint">Enter your password</string>
 
     <string name="asset_summary_title">Token summary</string>
     <string name="asset_available">Available</string>
@@ -150,14 +149,12 @@
     <string name="tx_fee">Fee</string>
     <string name="tx_fixed_fee">Fixed fee</string>
     <string name="tx_percent_fee">Percent fee</string>
-    <string name="tx_type">Type</string>
     <string name="tx_cause">Cause</string>
     <string name="tx_reference">Reference</string>
     <string name="tx_withdrawal_destination">Destination address</string>
     <string name="template_tx_for">For %1$s</string>
     <string name="template_tx_in">In %1$s</string>
     <string name="pay_recipient_fee_action">Pay recipient\'s fee</string>
-    <string name="tx_sender_fee">Sender\'s fee</string>
     <string name="tx_recipient_fee">Recipient\'s fee</string>
 
 
@@ -176,7 +173,6 @@
     <string name="error_email_already_taken">Email is already taken</string>
     <string name="error_try_again">An error occurred. Try again later</string>
     <string name="error_connection_try_again">Connection error. Try again later</string>
-    <string name="error_not_found_try_again">Not found. Try again later</string>
     <string name="error_invalid_password">Invalid password</string>
     <string name="error_email_not_verified">Email is not verified</string>
     <string name="error_seed_mismatch">Seed doesn\'t match confirmation</string>
@@ -209,9 +205,9 @@
     <string name="error_invalid_otp_code">Invalid code</string>
     <string name="enter_your_password">Enter your password</string>
     <string name="tfa_add_dialog_title">Set up 2FA</string>
-    <string name="template_tfa_add_dialog_message">To enable Two-factor authentication
-        open Google Authenticator or similar app with the button below or
-        copy and manually enter this key:\n\n%1$s</string>
+    <string name="template_tfa_add_dialog_message">Open Google Authenticator (or similar app)
+        with the button below
+        \nor import this key manually:\n\n%1$s</string>
     <string name="tfa_key_copied">Key has been copied to the clipboard</string>
 
 
@@ -222,7 +218,6 @@
     <string name="withdrawal_confirmation_title">Withdrawal confirmation</string>
 
     <!-- Deposit -->
-    <string name="currency">Currency</string>
     <string name="create_balance_confirmation">Are you sure that you want to create %1s balance?</string>
     <string name="personal_address">Personal address</string>
     <string name="to_make_deposit_send_asset">To make a deposit send %1$s to this address</string>
@@ -247,7 +242,6 @@
     <string name="deployed_hint">deployed</string>
     <string name="asset_price_for_one_part">for 1 %1$s</string>
     <string name="peek_show_text">Price chart</string>
-    <string name="peek_hide_text">Hide chart</string>
 
     <string name="template_sale_invested">%1$s invested</string>
     <string name="template_sale_days_to_go">%1$d %2$s to go</string>
@@ -255,7 +249,7 @@
     <string name="template_sale_max_investment">Max investment is %1$s %2$s</string>
     <string name="template_sale_name_token">%1$s (%2$s)</string>
     <string name="sales_search_name_hint">Name</string>
-    <string name="sales_search_token_hint">Token code</string>
+    <string name="sales_search_token_hint">Token code (exact match)</string>
     <string name="explore_sales_title">Explore funds</string>
     <string name="no_sales_found">No funds found</string>
     <string name="pending_investments_title">Pending investments</string>
@@ -264,12 +258,16 @@
     <string name="remove_from_favorites_action">Remove from favorites</string>
     <string name="sale_investing">Investing</string>
     <string name="invest_action">Invest</string>
+    <string name="update_investment_action">Update</string>
     <string name="cancel_investment_action">Cancel investment</string>
     <string name="sale_more_info">More info</string>
     <string name="investment_confirmation_title">Investment confirmation</string>
+    <string name="investment_cancellation_title">Investment cancellation</string>
+    <string name="investment_updating_title">Investment update</string>
     <string name="sale_token">Token</string>
     <string name="successfully_invested">Successfully invested</string>
     <string name="investment_canceled">Investment has been canceled</string>
+    <string name="investment_updated">Investment has been updated</string>
     <string name="investment_amount">Investment</string>
     <string name="pending_investment_details_title">Pending investment details</string>
     <string name="cancel_investment_confirmation">Are you sure want to cancel this investment?</string>
@@ -287,5 +285,62 @@
     <string name="go_to_verification">Go to Verification</string>
 
     <string name="sale_upcoming">Upcoming</string>
+    <string name="open_source_licenses_title">Open source licenses</string>
+    <string name="settings_information_group">Information</string>
+    <string name="contacts">Contacts</string>
+    <string name="no_contacts_message">No contacts available</string>
+    <string name="use_fingerprint">Use fingerprint</string>
+    <string name="secret_seed">Secret seed</string>
+    <string name="secret_seed_description">Secret seed is private information that proves you own your account</string>
+    <string name="template_amount_asset">Amount (%1$s)</string>
+    <string name="template_offer_creation_price">Price (%1$s for 1 %2$s)</string>
+    <string name="deposit_address_copied">Address has been copied to the clipboard</string>
+    <string name="deposit_address_renewed">Address has been renewed</string>
+    <string name="error_kyc_required_to_own_asset">Only verified accounts can own this asset</string>
 
+    <string name="investment_help_title">Investment help</string>
+    <string name="investment_help_content">
+        • You can make investments in this fund using proposed assets\n\n
+        • You can have one investment per asset\n\n
+        • While the fund is active you can change amount of your investments or cancel them\n\n
+        • If you cancel your investment paid amount and fee will be returned\n\n
+        • If the fund has reached it\'s soft cap by it\'s end date you will receive
+        tokens according to your investments, otherwise your investments will be returned
+    </string>
+    <string name="limits">Limits</string>
+    <string name="payment">Payment</string>
+    <string name="deposit">Deposit</string>
+    <string name="no_limits_message">No limits</string>
+
+    <string name="fees_title">Fees</string>
+    <string name="no_fees">No fees available</string>
+    <string name="payment_fee">Payment</string>
+    <string name="offer_fee">Offer</string>
+    <string name="withdrawal_fee">Withdrawal</string>
+    <string name="issuance_fee">Issuance</string>
+    <string name="invest_fee">Invest</string>
+    <string name="capital_deployment_fee">Capital deployment</string>
+    <string name="operation_fee">Operation</string>
+    <string name="payout_fee">Payout</string>
+    <string name="incoming_outgoing_fee"><![CDATA[Incoming & Outgoing]]></string>
+    <string name="outgoing_fee">Outgoing</string>
+    <string name="incoming_fee">Incoming</string>
+    <string name="fixed_fee">Fixed</string>
+    <string name="percent_fee">Percent</string>
+    <string name="lower_bound_fee">Lower bound</string>
+    <string name="upper_bound_fee">Upper bound</string>
+
+    <string-array name="limit_types">
+        <item>Daily (left/total)</item>
+        <item>Weekly (left/total)</item>
+        <item>Monthly (left/total)</item>
+        <item>Annual (left/total)</item>
+    </string-array>
+
+    <string name="authenticator_hint">Use TokenD Authenticator to set up and access yor account</string>
+    <string name="open_authenticator_action">Open authenticator</string>
+    <string name="show_auth_qr_action">Show QR code</string>
+    <string name="use_authenticator">Use authenticator</string>
+
+    <string name="error_unauthorized">The session has been expired</string>
 </resources>

@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -44,7 +45,7 @@
             android:stateNotNeeded="true"
             tools:replace="android:screenOrientation" />
         <activity
-            android:name=".base.activities.SignInActivity"
+            android:name=".features.signin.SignInActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -54,55 +55,59 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".base.activities.signup.SignUpActivity"
+            android:name=".features.signin.AuthenticatorSignInActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".features.signup.SignUpActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/sign_up"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".base.activities.RecoveryActivity"
+            android:name=".features.recovery.RecoveryActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/recover_account"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".base.activities.qr.ShareQrActivity"
+            android:name="org.tokend.template.features.qr.ShareQrActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".base.activities.MainActivity"
+            android:name="org.tokend.template.activities.MainActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop" />
         <activity
-            android:name=".base.activities.signup.RecoverySeedActivity"
+            android:name=".features.signup.RecoverySeedActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/save_recovery_seed"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".base.activities.tx_details.PaymentDetailsActivity"
+            android:name="org.tokend.template.features.wallet.txdetails.PaymentDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/payment_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".base.activities.tx_details.UnknownTxDetailsActivity"
+            android:name="org.tokend.template.features.wallet.txdetails.UnknownTxDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/transaction_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".base.activities.tx_details.DepositDetailsActivity"
+            android:name="org.tokend.template.features.wallet.txdetails.DepositDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/deposit_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".base.activities.tx_details.WithdrawalDetailsActivity"
+            android:name="org.tokend.template.features.wallet.txdetails.WithdrawalDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/withdrawal_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".base.activities.tx_details.OfferMatchDetailsActivity"
+            android:name="org.tokend.template.features.wallet.txdetails.OfferMatchDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/offer_match_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".base.activities.ChangePasswordActivity"
+            android:name=".features.changepassword.ChangePasswordActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/change_password_title"
             android:theme="@style/AppTheme" />
@@ -112,26 +117,31 @@
             android:label="@string/withdrawal_confirmation_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".features.explore.AssetDetailsActivity"
+            android:name=".features.assets.AssetDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".base.activities.PaymentConfirmationActivity"
+            android:name=".features.send.PaymentConfirmationActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/payment_confirmation_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".features.trade.OfferConfirmationActivity"
+            android:name=".features.offers.OfferConfirmationActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/offer_confirmation_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".base.activities.OffersActivity"
+            android:name=".features.invest.activities.InvestmentConfirmationActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/investment_confirmation_title"
+            android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".features.offers.OffersActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/pending_offers_title"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".base.activities.ProcessLinkActivity"
+            android:name=".features.links.ProcessLinkActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/SplashTheme"
             android:windowSoftInputMode="adjustResize">
@@ -151,7 +161,7 @@
             <!--</intent-filter>-->
         </activity>
         <activity
-            android:name=".base.activities.SingleFragmentActivity"
+            android:name="org.tokend.template.activities.SingleFragmentActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -164,7 +174,7 @@
             android:label="@string/investment_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".features.invest.sale_details.SaleDetailsActivity"
+            android:name=".features.invest.saledetails.SaleDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/sale_details_title"
             android:theme="@style/AppTheme.NoActionBar.CardsBackground" />

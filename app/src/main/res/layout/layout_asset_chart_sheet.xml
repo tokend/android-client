@@ -21,17 +21,8 @@
         android:layout_height="54sp"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:paddingEnd="@dimen/standard_margin"
-        android:paddingStart="@dimen/standard_margin">
-
-        <TextView
-            android:id="@+id/peek_text"
-            style="@style/HeadingText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:text="@string/peek_show_text" />
+        android:paddingStart="@dimen/standard_margin"
+        android:paddingEnd="@dimen/standard_margin">
 
         <ImageView
             android:id="@+id/peek_image"
@@ -42,9 +33,19 @@
             android:fillAfter="true"
             android:fillEnabled="true"
             app:srcCompat="@drawable/chevron_up" />
+
+        <TextView
+            android:id="@+id/peek_text"
+            style="@style/HeadingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/peek_image"
+            android:text="@string/peek_show_text" />
     </RelativeLayout>
 
-    <org.tokend.template.base.view.asset_chart.AssetChartCard
+    <org.tokend.template.view.assetchart.AssetChartCard
         android:id="@+id/pair_chart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

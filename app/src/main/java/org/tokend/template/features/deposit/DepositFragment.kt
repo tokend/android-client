@@ -1,10 +1,10 @@
 package org.tokend.template.features.deposit
 
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -16,22 +16,26 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_deposit.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.clipboardManager
 import org.jetbrains.anko.onClick
+import org.jetbrains.anko.onLongClick
 import org.jetbrains.anko.runOnUiThread
-import org.tokend.sdk.api.responses.AccountResponse
+import org.tokend.sdk.api.accounts.model.Account
 import org.tokend.template.R
-import org.tokend.template.base.fragments.BaseFragment
-import org.tokend.template.base.fragments.ToolbarProvider
-import org.tokend.template.base.logic.repository.AccountRepository
-import org.tokend.template.base.logic.repository.assets.AssetsRepository
-import org.tokend.template.base.logic.transactions.TxManager
-import org.tokend.template.base.view.picker.PickerItem
-import org.tokend.template.base.view.util.LoadingIndicatorManager
+import org.tokend.template.data.repository.AccountRepository
+import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.extensions.Asset
-import org.tokend.template.util.DateFormatter
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import org.tokend.template.view.picker.PickerItem
+import org.tokend.template.view.util.HorizontalSwipesGestureDetector
+import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.util.formatter.DateFormatter
+import java.lang.ref.WeakReference
 import java.util.*
 
 class DepositFragment : BaseFragment(), ToolbarProvider {
@@ -52,7 +56,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             field = value
             onAssetChanged()
         }
-    private val externalAccount: AccountResponse.ExternalAccount?
+    private val externalAccount: Account.ExternalAccount?
         get() = accountRepository.itemSubject.value
                 ?.externalAccounts
                 ?.find { it.type.value == currentAsset?.details?.externalSystemType }
@@ -70,8 +74,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     override fun onInitAllowed() {
         initToolbar()
         initSwipeRefresh()
-
         initButtons()
+        initHorizontalSwipes()
 
         subscribeToAccount()
         subscribeToAssets()
@@ -151,10 +155,12 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             shareData()
         }
 
-        listOf(get_address_btn, renew_btn).forEach {
-            it.onClick {
-                bindExternalAccount()
-            }
+        get_address_btn.onClick {
+            bindExternalAccount()
+        }
+
+        renew_btn.onClick {
+            bindExternalAccount(isRenewal = true)
         }
     }
 
@@ -184,6 +190,24 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 },
                 depositableAssets.indexOfFirst { it.code == currentAsset?.code }
         )
+    }
+
+    private fun initHorizontalSwipes() {
+        val weakTabs = WeakReference(asset_tab_layout)
+
+        val gestureDetector = GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
+                onSwipeToLeft = {
+                    weakTabs.get()?.apply { selectedItemIndex++ }
+                },
+                onSwipeToRight = {
+                    weakTabs.get()?.apply { selectedItemIndex-- }
+                }
+        ))
+
+        swipe_refresh.setTouchEventInterceptor { motionEvent ->
+            gestureDetector.onTouchEvent(motionEvent)
+            false
+        }
     }
 
     // region Timer
@@ -248,6 +272,13 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private fun displayExistingAddress(address: String, expirationDate: Date?) {
         deposit_address_layout.visibility = View.VISIBLE
         no_address_layout.visibility = View.GONE
+
+        address_text_view.onLongClick {
+            requireContext().clipboardManager.text = address
+            toastManager.short(R.string.deposit_address_copied)
+
+            true
+        }
 
         address_text_view.text = address
         to_make_deposit_text_view.text = getString(R.string.to_make_deposit_send_asset,
@@ -326,29 +357,25 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
     // endregion
 
-    private fun bindExternalAccount() {
+    private fun bindExternalAccount(isRenewal: Boolean = false) {
         val asset = currentAsset?.code
                 ?: return
         val type = currentAsset?.details?.externalSystemType
                 ?: return
 
-        val progress = ProgressDialog(context)
-        progress.isIndeterminate = true
-        progress.setMessage(getString(R.string.processing_progress))
-        progress.setCancelable(false)
+        val progress = ProgressDialogFactory.getTunedDialog(context)
 
-        DepositManager(
+        BindExternalAccountUseCase(
+                asset,
+                type,
                 walletInfoProvider,
+                repositoryProvider.systemInfo(),
                 repositoryProvider.balances(),
-                accountRepository
+                accountRepository,
+                accountProvider,
+                TxManager(apiProvider)
         )
-                .bindExternalAccount(
-                        accountProvider,
-                        repositoryProvider.systemInfo(),
-                        TxManager(apiProvider),
-                        asset,
-                        type
-                )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     progress.show()
@@ -358,10 +385,12 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 }
                 .subscribeBy(
                         onComplete = {
-                            update()
+                            if (isRenewal) {
+                                toastManager.long(getString(R.string.deposit_address_renewed))
+                            }
                         },
                         onError = {
-                            if (it is DepositManager.NoAvailableExternalAccountsException) {
+                            if (it is BindExternalAccountUseCase.NoAvailableExternalAccountsException) {
                                 displayEmptyPoolError()
                             } else {
                                 errorHandlerFactory.getDefault().handle(it)

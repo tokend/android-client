@@ -12,22 +12,33 @@ import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
-import org.tokend.sdk.api.models.Offer
+import org.tokend.sdk.api.base.model.operations.*
+import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
-import org.tokend.template.base.activities.*
-import org.tokend.template.base.activities.qr.ShareQrActivity
-import org.tokend.template.base.activities.signup.RecoverySeedActivity
-import org.tokend.template.base.activities.signup.SignUpActivity
-import org.tokend.template.base.fragments.SendFragment
-import org.tokend.template.base.fragments.WalletFragment
-import org.tokend.template.base.logic.payment.PaymentRequest
+import org.tokend.template.activities.MainActivity
+import org.tokend.template.activities.SingleFragmentActivity
 import org.tokend.template.extensions.Asset
 import org.tokend.template.extensions.Sale
-import org.tokend.template.features.explore.AssetDetailsActivity
+import org.tokend.template.features.assets.AssetDetailsActivity
+import org.tokend.template.features.changepassword.ChangePasswordActivity
+import org.tokend.template.features.invest.activities.InvestmentConfirmationActivity
+import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
 import org.tokend.template.features.invest.activities.SaleActivity
-import org.tokend.template.features.invest.sale_details.SaleDetailsActivity
-import org.tokend.template.features.trade.OfferConfirmationActivity
+import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
+import org.tokend.template.features.offers.OfferConfirmationActivity
+import org.tokend.template.features.offers.OffersActivity
+import org.tokend.template.features.qr.ShareQrActivity
+import org.tokend.template.features.recovery.RecoveryActivity
+import org.tokend.template.features.send.PaymentConfirmationActivity
+import org.tokend.template.features.send.SendFragment
+import org.tokend.template.features.send.model.PaymentRequest
+import org.tokend.template.features.signin.AuthenticatorSignInActivity
+import org.tokend.template.features.signin.SignInActivity
+import org.tokend.template.features.signup.RecoverySeedActivity
+import org.tokend.template.features.signup.SignUpActivity
+import org.tokend.template.features.wallet.WalletFragment
+import org.tokend.template.features.wallet.txdetails.*
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 
@@ -172,16 +183,15 @@ object Navigator {
         ), requestCode)
     }
 
-    fun openOfferConfirmation(activity: Activity, requestCode: Int,
-                              offer: Offer, offerToCancel: Offer? = null,
-                              displayToReceive: Boolean = true,
-                              assetName: String? = null) {
-
-        activity.startActivityForResult(activity.intentFor<OfferConfirmationActivity>(
+    fun openInvestmentConfirmation(activity: Activity, requestCode: Int,
+                                   offer: Offer, offerToCancel: Offer? = null,
+                                   displayToReceive: Boolean = true,
+                                   assetName: String? = null) {
+        activity.startActivityForResult(activity.intentFor<InvestmentConfirmationActivity>(
                 OfferConfirmationActivity.OFFER_EXTRA to offer,
                 OfferConfirmationActivity.OFFER_TO_CANCEL_EXTRA to offerToCancel,
-                OfferConfirmationActivity.DISPLAY_TO_RECEIVE to displayToReceive,
-                OfferConfirmationActivity.ASSET_NAME_EXTRA to assetName
+                InvestmentConfirmationActivity.DISPLAY_TO_RECEIVE to displayToReceive,
+                InvestmentConfirmationActivity.ASSET_NAME_EXTRA to assetName
         ), requestCode)
     }
 
@@ -202,5 +212,37 @@ object Navigator {
         activity.startActivity(activity.intentFor<SaleDetailsActivity>(
                 SaleDetailsActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
         ))
+    }
+
+    fun openTransactionDetails(activity: Activity, tx: TransferOperation) {
+        when (tx) {
+            is PaymentOperation ->
+                TxDetailsActivity
+                        .start<PaymentDetailsActivity, PaymentOperation>(activity, tx)
+            is IssuanceOperation ->
+                TxDetailsActivity
+                        .start<DepositDetailsActivity, IssuanceOperation>(activity, tx)
+            is WithdrawalOperation ->
+                TxDetailsActivity
+                        .start<WithdrawalDetailsActivity, WithdrawalOperation>(activity, tx)
+            is InvestmentOperation ->
+                TxDetailsActivity
+                        .start<InvestmentDetailsActivity, InvestmentOperation>(activity, tx)
+            is OfferMatchOperation ->
+                TxDetailsActivity
+                        .start<OfferMatchDetailsActivity, OfferMatchOperation>(activity, tx)
+            else ->
+                (tx as? BaseTransferOperation)?.let {
+                    TxDetailsActivity
+                            .start<UnknownTxDetailsActivity, BaseTransferOperation>(activity, it)
+                }
+        }
+    }
+
+    fun openAuthenticatorSignIn(activity: Activity, requestCode: Int) {
+        activity.startActivityForResult(
+                activity.intentFor<AuthenticatorSignInActivity>(),
+                requestCode
+        )
     }
 }

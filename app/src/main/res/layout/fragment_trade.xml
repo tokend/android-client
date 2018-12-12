@@ -15,7 +15,7 @@
 
         <include layout="@layout/toolbar" />
 
-        <org.tokend.template.base.view.picker.PickerTabLayout
+        <org.tokend.template.view.picker.PickerTabLayout
             android:id="@+id/pairs_tabs"
             style="@style/TabPicker.Inverse"
             android:layout_width="match_parent"
@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.widget.SwipeRefreshLayout
+        <org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -216,7 +216,7 @@
                                 android:layout_height="match_parent"
                                 android:orientation="horizontal">
 
-                                <org.tokend.template.base.view.PaginationRecyclerView
+                                <org.tokend.template.view.PaginationRecyclerView
                                     android:id="@+id/buy_offers_recycler_view"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
@@ -227,7 +227,7 @@
                                     android:paddingStart="@dimen/half_standard_margin"
                                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-                                <org.tokend.template.base.view.PaginationRecyclerView
+                                <org.tokend.template.view.PaginationRecyclerView
                                     android:id="@+id/sell_offers_recycler_view"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
@@ -278,7 +278,7 @@
                 </android.support.design.widget.CoordinatorLayout>
             </LinearLayout>
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+        </org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
 
         <include layout="@layout/layout_asset_chart_sheet" />
 

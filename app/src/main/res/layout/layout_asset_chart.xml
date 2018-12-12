@@ -36,14 +36,10 @@
         app:tabGravity="fill"
         app:tabMode="fixed" />
 
-    <org.tokend.template.base.view.ContentLoadingProgressBar
-        android:id="@+id/asset_chart_progress"
-        style="?android:attr/progressBarStyleHorizontal"
+    <include layout="@layout/layout_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/half_standard_margin"
-        android:indeterminate="true"
-        android:visibility="gone" />
+        android:layout_marginTop="@dimen/half_standard_margin"/>
 
     <TextView
         android:id="@+id/growth_text_view"

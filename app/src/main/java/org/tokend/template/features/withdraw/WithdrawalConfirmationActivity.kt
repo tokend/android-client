@@ -1,7 +1,6 @@
 package org.tokend.template.features.withdraw
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -9,14 +8,15 @@ import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
-import org.tokend.template.base.activities.BaseActivity
-import org.tokend.template.base.logic.transactions.TxManager
-import org.tokend.template.base.view.InfoCard
-import org.tokend.template.base.view.util.AmountFormatter
+import org.tokend.template.activities.BaseActivity
+import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.view.InfoCard
+import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.ToastManager
-import org.tokend.template.util.error_handlers.ErrorHandlerFactory
+import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.ToastManager
 
 class WithdrawalConfirmationActivity : BaseActivity() {
     private lateinit var request: WithdrawalRequest
@@ -86,23 +86,24 @@ class WithdrawalConfirmationActivity : BaseActivity() {
     }
 
     private fun confirm() {
-        val progress = ProgressDialog(this)
-        progress.isIndeterminate = true
-        progress.setMessage(getString(R.string.processing_progress))
-        progress.setCancelable(false)
+        val progress = ProgressDialogFactory.getTunedDialog(this)
 
-        WithdrawalManager(repositoryProvider, walletInfoProvider, accountProvider,
-                TxManager(apiProvider))
-                .submit(request)
-                .compose(ObservableTransformers.defaultSchedulersSingle())
+        ConfirmWithdrawalRequestUseCase(
+                request,
+                accountProvider,
+                repositoryProvider,
+                TxManager(apiProvider)
+        )
+                .perform()
+                .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     progress.show()
                 }
-                .doOnEvent { _, _ ->
+                .doOnTerminate {
                     progress.dismiss()
                 }
                 .subscribeBy(
-                        onSuccess = {
+                        onComplete = {
                             progress.dismiss()
                             ToastManager(this).long(R.string.withdrawal_request_created)
                             finishWithSuccess()

@@ -56,3 +56,6 @@
 -keepclassmembers class  *  {
    void $$clinit();
 }
+
+# MultiDex
+-keep class android.support.multidex.**
