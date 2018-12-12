@@ -124,8 +124,10 @@ ext {
     allow_invest = 'true'
     // Network specified by user - When set to 'true' user have to specify network to work with.
     network_specified_by_user = 'true'
-    //Allows to see an analytics for your app.
+    // Allows to see an analytics for your app.
     enable_analytics = 'false'
+    // Allows TokenD Authenticator usage
+    allow_authenticator_auth = 'true'
     // ----------------------
 }
 
@@ -162,6 +164,7 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'IS_FEES_ALLOWED', "${allow_fees}"
     b.buildConfigField 'Boolean', 'IS_NETWORK_SPECIFIED_BY_USER', "${network_specified_by_user}"
     b.buildConfigField 'Boolean', 'ENABLE_ANALYTICS', "${enable_analytics}"
+    b.buildConfigField 'Boolean', 'ENABLE_AUTHENTICATOR_AUTH', "${allow_authenticator_auth}"
 
 
     b.resValue "string", "app_host", "${app_host}"

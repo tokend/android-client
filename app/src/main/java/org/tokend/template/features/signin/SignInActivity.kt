@@ -151,8 +151,12 @@ class SignInActivity : BaseActivity() {
             ToastManager(this).short(R.string.touch_sensor)
         }
 
-        sign_in_with_authenticator_button.onClick {
-            Navigator.openAuthenticatorSignIn(this, SIGN_IN_WITH_AUTHENTICATOR_REQUEST)
+        if (BuildConfig.ENABLE_AUTHENTICATOR_AUTH) {
+            sign_in_with_authenticator_button.onClick {
+                Navigator.openAuthenticatorSignIn(this, SIGN_IN_WITH_AUTHENTICATOR_REQUEST)
+            }
+        } else {
+            sign_in_with_authenticator_button.visibility = View.GONE
         }
     }
     // endregion
