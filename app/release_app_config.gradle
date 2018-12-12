@@ -2,6 +2,6 @@
 // for "release" builds.
 ext {
     enable_analytics = 'true'
-    enable_authenticator_auth = 'false'
+    allow_authenticator_auth = 'false'
     logs_enabled = 'false'
 }
