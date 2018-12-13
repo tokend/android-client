@@ -263,7 +263,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
     private var fragmentToolbarDisposable: Disposable? = null
     private fun displayFragment(fragment: Fragment) {
-
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.stay_visible, R.anim.activity_fade_out)
                 .replace(R.id.fragment_container_layout, fragment)
@@ -274,8 +273,15 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         if (fragment is ToolbarProvider) {
             fragmentToolbarDisposable = fragment.toolbarSubject
                     .subscribe { fragmentToolbar ->
-                        navigationDrawer?.setToolbar(this, fragmentToolbar,
-                                true)
+                        fragmentToolbar.apply {
+                            setNavigationIcon(R.drawable.ic_menu)
+                            setNavigationContentDescription(
+                                    com.mikepenz.materialdrawer.R.string.material_drawer_open
+                            )
+                            setNavigationOnClickListener {
+                                navigationDrawer?.openDrawer()
+                            }
+                        }
                     }
                     .addTo(compositeDisposable)
         }
