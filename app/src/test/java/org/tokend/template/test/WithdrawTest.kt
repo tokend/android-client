@@ -148,4 +148,72 @@ class WithdrawTest {
 
         txManager.submit(tx).blockingGet()
     }
+
+    @Test
+    fun withdrawWithFee() {
+        val urlConfigProvider = Util.getUrlConfigProvider()
+        val session = Session(
+                WalletInfoProviderFactory().createWalletInfoProvider(),
+                AccountProviderFactory().createAccountProvider()
+        )
+
+        val email = "${System.currentTimeMillis()}@mail.com"
+        val password = "qwe123".toCharArray()
+
+        val apiProvider =
+                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+
+        val (_, rootAccount, _) = Util.getVerifiedWallet(
+                email, password, apiProvider, session, repositoryProvider
+        )
+
+        val initialBalance = Util.getSomeMoney(asset, amount * BigDecimal("2"),
+                repositoryProvider, TxManager(apiProvider))
+
+        val assetDetails = repositoryProvider.assets().getSingle(asset).blockingGet()
+        makeAssetWithdrawable(assetDetails, repositoryProvider, TxManager(apiProvider))
+
+        val txManager = TxManager(apiProvider)
+
+        val feeType = FeeType.WITHDRAWAL_FEE
+
+        val result = Util.addFeeForAccount(
+                rootAccount,
+                repositoryProvider,
+                txManager,
+                feeType,
+                asset = asset
+        )
+
+        Assert.assertTrue(result)
+
+        val request = CreateWithdrawalRequestUseCase(
+                amount,
+                asset,
+                destAddress,
+                session,
+                FeeManager(apiProvider)
+        ).perform().blockingGet()
+
+        Assert.assertTrue(request.fee.total > BigDecimal.ZERO)
+
+        ConfirmWithdrawalRequestUseCase(
+                request,
+                session,
+                repositoryProvider,
+                TxManager(apiProvider)
+        ).perform().blockingAwait()
+
+        Thread.sleep(500)
+
+        repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
+
+        val currentBalance = repositoryProvider.balances().itemsList
+                .find { it.asset == asset }!!.balance
+
+        val expected = initialBalance - amount - request.fee.total
+
+        Assert.assertEquals(expected, currentBalance)
+    }
 }

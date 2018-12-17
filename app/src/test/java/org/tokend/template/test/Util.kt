@@ -13,11 +13,10 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.Account
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.TransactionBuilder
-import org.tokend.wallet.xdr.CreateIssuanceRequestOp
-import org.tokend.wallet.xdr.Fee
-import org.tokend.wallet.xdr.IssuanceRequest
-import org.tokend.wallet.xdr.Operation
+import org.tokend.wallet.xdr.*
 import java.math.BigDecimal
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 
 object Util {
     fun getUrlConfigProvider(url: String = Config.API): UrlConfigProvider {
@@ -87,4 +86,44 @@ object Util {
         return amount
     }
 
+    fun addFeeForAccount(
+            rootAccount: Account,
+            repositoryProvider: RepositoryProvider,
+            txManager: TxManager,
+            feeType: FeeType,
+            feeSubType: Int = 0,
+            asset: String
+    ): Boolean {
+        val sourceAccount = Account.fromSecretSeed(Config.ADMIN_SEED)
+
+        val netParams = repositoryProvider.systemInfo().getNetworkParams().blockingGet()
+
+        val fixedFee = netParams.amountToPrecised(BigDecimal("0.050000"))
+        val percentFee = netParams.amountToPrecised(BigDecimal("0.001000"))
+        val upperBound = netParams.amountToPrecised(BigDecimal.TEN)
+        val lowerBound = netParams.amountToPrecised(BigDecimal.ONE)
+
+        val sourceString = "type:${feeType.value}asset:${asset}subtype:${feeSubType}accountID:${rootAccount.accountId}"
+        val sha = MessageDigest.getInstance("SHA-256").digest(sourceString.toByteArray(StandardCharsets.UTF_8))
+
+        val hash = Hash(sha)
+
+        val feeEntry = FeeEntry(feeType, asset,
+                fixedFee, percentFee, rootAccount.xdrPublicKey, null, feeSubType.toLong(),
+                lowerBound, upperBound, hash, FeeEntry.FeeEntryExt.EmptyVersion())
+
+        val feeOp = SetFeesOp(feeEntry, false, SetFeesOp.SetFeesOpExt.EmptyVersion())
+
+        val op = Operation.OperationBody.SetFees(feeOp)
+
+        val tx = TransactionBuilder(netParams, sourceAccount.accountId)
+                .addOperation(op)
+                .build()
+
+        tx.addSignature(sourceAccount)
+
+        val response = txManager.submit(tx).blockingGet()
+
+        return response.isSuccess
+    }
 }
