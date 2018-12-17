@@ -7,9 +7,10 @@ import android.support.transition.Fade
 import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -28,19 +29,22 @@ import kotlinx.android.synthetic.main.fragment_explore.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
-import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.logic.transactions.TxManager
-import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.features.assets.adapter.AssetListItem
 import org.tokend.template.features.assets.adapter.AssetsAdapter
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
-import org.tokend.template.util.*
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.util.Navigator
+import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.SearchUtil
 import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 
 class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
@@ -93,7 +97,14 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initAssetsList() {
-        assets_recycler_view.layoutManager = LinearLayoutManager(context)
+        val displayMetrics = DisplayMetrics()
+        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        val screenWidth = displayMetrics.widthPixels * 1f
+        val columns = (screenWidth /
+                requireContext().resources.getDimensionPixelSize(R.dimen.max_content_width)).roundToInt()
+        assets_recycler_view.layoutManager = GridLayoutManager(context, columns)
+
         assets_recycler_view.adapter = assetsAdapter
 
         error_empty_view.observeAdapter(assetsAdapter, R.string.no_assets_found)

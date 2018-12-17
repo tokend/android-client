@@ -48,4 +48,6 @@
     <dimen name="spinner_arrow_align_margin">9dp</dimen>
 
     <dimen name="asset_list_item_logo_size">56dp</dimen>
+
+    <dimen name="max_content_width">640dp</dimen>
 </resources>
