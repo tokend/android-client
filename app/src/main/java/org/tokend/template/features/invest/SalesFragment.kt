@@ -4,9 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.support.v7.widget.Toolbar
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -23,16 +24,17 @@ import kotlinx.android.synthetic.main.layout_sales_search.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.dip
 import org.tokend.template.R
-import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.view.util.AnimationUtil
-import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.features.invest.adapter.SalesAdapter
 import org.tokend.template.features.invest.logic.SalesSubscriptionManager
 import org.tokend.template.features.invest.repository.SalesRepository
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.Navigator
+import org.tokend.template.view.util.AnimationUtil
+import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SoftInputUtil
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 class SalesFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -83,6 +85,14 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initSalesList() {
+        val displayMetrics = DisplayMetrics()
+        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        val screenWidth = displayMetrics.widthPixels * 1f
+        val columns = (screenWidth /
+                requireContext().resources.getDimensionPixelSize(R.dimen.max_content_width)).roundToInt()
+
+
         salesAdapter = SalesAdapter(urlConfigProvider.getConfig().storage)
         error_empty_view.observeAdapter(salesAdapter, R.string.no_sales_found)
 
@@ -91,7 +101,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         }
 
         sales_list.apply {
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = GridLayoutManager(requireContext(), columns)
             adapter = salesAdapter
 
             setItemViewCacheSize(20)

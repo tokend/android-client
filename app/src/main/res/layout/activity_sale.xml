@@ -11,13 +11,13 @@
 
     <ScrollView
         android:id="@+id/scroll_view"
-        style="@style/LimitedMatchParentWidth"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false">
 
         <LinearLayout
             android:id="@+id/cards_layout"
-            android:layout_width="match_parent"
+            style="@style/LimitedMatchParentWidth"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:orientation="vertical"

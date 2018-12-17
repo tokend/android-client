@@ -9,7 +9,7 @@
     <include layout="@layout/include_error_empty_view" />
 
     <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
+        style="@style/LimitedMatchParentWidth"
         android:layout_height="match_parent">
 
         <TextView
