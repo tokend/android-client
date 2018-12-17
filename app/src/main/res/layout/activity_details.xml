@@ -5,13 +5,13 @@
 
     <LinearLayout
         android:id="@+id/cards_layout"
-        android:layout_width="match_parent"
+        style="@style/LimitedMatchParentWidth"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/standard_margin"
-        android:paddingEnd="@dimen/standard_margin"
         android:paddingStart="@dimen/standard_margin"
-        android:paddingTop="@dimen/half_standard_margin" />
+        android:paddingTop="@dimen/half_standard_margin"
+        android:paddingEnd="@dimen/standard_margin"
+        android:paddingBottom="@dimen/standard_margin" />
 
 </ScrollView>

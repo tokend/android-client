@@ -141,4 +141,9 @@
         <item name="android:layout_height">4dp</item>
         <item name="android:progressDrawable">@drawable/sale_progress</item>
     </style>
+
+    <style name="LimitedMatchParentWidth">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
 </resources>

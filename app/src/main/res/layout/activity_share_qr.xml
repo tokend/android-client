@@ -7,7 +7,7 @@
     android:background="@color/white">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        style="@style/LimitedMatchParentWidth"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
