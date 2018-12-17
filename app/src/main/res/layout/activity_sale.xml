@@ -206,6 +206,7 @@
 
                     <ImageView
                         android:id="@+id/sale_unavailable_icon"
+                        android:scaleType="fitXY"
                         android:layout_width="@dimen/quadra_margin"
                         android:layout_height="@dimen/quadra_margin"
                         app:srcCompat="@drawable/ic_time" />

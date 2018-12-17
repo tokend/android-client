@@ -10,7 +10,8 @@
         android:layout_height="@dimen/tx_list_item_icon_size"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/standard_margin" />
+        android:layout_marginStart="@dimen/standard_margin"
+        android:scaleType="fitXY" />
 
     <LinearLayout
         android:id="@+id/tx_amount_layout"
@@ -26,11 +27,11 @@
             android:id="@+id/tx_amount_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
             android:textColor="@color/accent"
             android:textSize="16sp"
-            android:maxLines="1"
-            android:ellipsize="end"
             tools:text="100 BTC" />
 
         <TextView
@@ -39,10 +40,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/half_standard_margin"
+            android:ellipsize="end"
             android:gravity="end"
-            tools:text="Pending"
             android:maxLines="1"
-            android:ellipsize="end"/>
+            tools:text="Pending" />
     </LinearLayout>
 
     <LinearLayout
@@ -50,20 +51,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/standard_margin"
         android:layout_marginStart="@dimen/standard_margin"
-        android:layout_toEndOf="@id/tx_icon_image_view"
+        android:layout_marginEnd="@dimen/standard_margin"
         android:layout_toStartOf="@id/tx_amount_layout"
+        android:layout_toEndOf="@id/tx_icon_image_view"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tx_action_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="16sp"
-            android:maxLines="1"
             android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:textSize="16sp"
             tools:text="Sent" />
 
         <TextView
@@ -82,9 +83,9 @@
         android:id="@+id/divider_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_height"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
         android:layout_alignStart="@id/tx_info_layout"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:background="@color/material_drawer_divider" />
 
 </RelativeLayout>
