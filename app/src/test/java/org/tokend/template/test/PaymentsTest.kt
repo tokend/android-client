@@ -188,12 +188,13 @@ class PaymentsTest {
         val upperBound = netParams.amountToPrecised(upperBound)
         val lowerBound = netParams.amountToPrecised(lowerBound)
 
-        val magicString = "type:0asset:${asset}subtype:1"
-        val sha = MessageDigest.getInstance("SHA-256").digest(magicString.toByteArray(StandardCharsets.UTF_8))
-        val magicHash = Hash(sha)
+        val sourceString = "type:0asset:${asset}subtype:1accountID:${rootAccount.accountId}"
+        val sha = MessageDigest.getInstance("SHA-256").digest(sourceString.toByteArray(StandardCharsets.UTF_8))
+
+        val hash = Hash(sha)
 
         val feeEntry = FeeEntry(FeeType.PAYMENT_FEE, asset,
-                fixedFee, percentFee, rootAccount.xdrPublicKey, null, 1, lowerBound, upperBound, magicHash,
+                fixedFee, percentFee, rootAccount.xdrPublicKey, null, 1, lowerBound, upperBound, hash,
                 FeeEntry.FeeEntryExt.EmptyVersion())
 
         val feeOp = SetFeesOp(feeEntry, false, SetFeesOp.SetFeesOpExt.EmptyVersion())
