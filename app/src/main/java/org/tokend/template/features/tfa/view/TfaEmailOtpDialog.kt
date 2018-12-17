@@ -17,5 +17,5 @@ class TfaEmailOtpDialog(context: Context,
         return context.getString(R.string.email_otp_dialog_message)
     }
 
-    override fun getMaxCodeLength(): Int = 5
+    override fun getMaxCodeLength(): Int = 6
 }
