@@ -59,3 +59,6 @@
 
 # MultiDex
 -keep class android.support.multidex.**
+
+# Support library
+-keep class android.support.v7.widget.SearchView { *; }
