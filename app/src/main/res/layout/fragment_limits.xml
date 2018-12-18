@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,40 +23,45 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
-        style="@style/LimitedMatchParentWidth"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <org.tokend.template.view.touchintercepting.TouchInterceptingLinearLayout
-            android:id="@+id/touch_capture_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
+            style="@style/LimitedMatchParentWidth"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <include layout="@layout/layout_progress" />
-
-            <include layout="@layout/include_error_empty_view" />
-
-            <android.support.v4.widget.NestedScrollView
+            <org.tokend.template.view.touchintercepting.TouchInterceptingLinearLayout
+                android:id="@+id/touch_capture_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/limit_cards_holder"
+                <include layout="@layout/layout_progress" />
+
+                <include layout="@layout/include_error_empty_view" />
+
+                <android.support.v4.widget.NestedScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:paddingStart="@dimen/standard_margin"
-                    android:paddingTop="@dimen/half_standard_margin"
-                    android:paddingEnd="@dimen/standard_margin"
-                    android:paddingBottom="@dimen/half_standard_margin" />
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false">
 
-            </android.support.v4.widget.NestedScrollView>
+                    <LinearLayout
+                        android:id="@+id/limit_cards_holder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:orientation="vertical"
+                        android:paddingStart="@dimen/standard_margin"
+                        android:paddingTop="@dimen/half_standard_margin"
+                        android:paddingEnd="@dimen/standard_margin"
+                        android:paddingBottom="@dimen/half_standard_margin" />
 
-        </org.tokend.template.view.touchintercepting.TouchInterceptingLinearLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
-</android.support.design.widget.CoordinatorLayout>
+                </android.support.v4.widget.NestedScrollView>
+
+            </org.tokend.template.view.touchintercepting.TouchInterceptingLinearLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
