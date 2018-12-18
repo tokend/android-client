@@ -1,12 +1,16 @@
 package org.tokend.template.activities
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.ImageView
+import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.DrawerBuilder
@@ -16,6 +20,7 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
+import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
 import org.jetbrains.anko.onClick
@@ -46,8 +51,16 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     private var navigationDrawer: Drawer? = null
+    private var landscapeNavigationDrawer: Drawer? = null
     private var onBackPressedListener: OnBackPressedListener? = null
     private val factory = FragmentFactory()
+    private val tablet by lazy {
+        resources.getBoolean(R.bool.isTablet)
+    }
+    private val orientation: Int
+        get() = resources.configuration.orientation
+
+    private var toolbar: Toolbar? = null
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
@@ -60,6 +73,93 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     // region Init
     private fun initNavigation() {
         val email = walletInfoProvider.getWalletInfo()?.email
+        val items = HashMap<Long, PrimaryDrawerItem>()
+
+        PrimaryDrawerItem()
+                .withName(R.string.dashboard_title)
+                .withIdentifier(DashboardFragment.ID)
+                .withIcon(R.drawable.ic_dashboard)
+                .also { items[DashboardFragment.ID] = it }
+
+        PrimaryDrawerItem()
+                .withName(R.string.wallet_title)
+                .withIdentifier(WalletFragment.ID)
+                .withIcon(R.drawable.ic_balance)
+                .also { items[WalletFragment.ID] = it }
+
+        PrimaryDrawerItem()
+                .withName(R.string.deposit_title)
+                .withIdentifier(DepositFragment.ID)
+                .withIcon(R.drawable.ic_deposit)
+                .also { items[DepositFragment.ID] = it }
+
+        PrimaryDrawerItem()
+                .withName(R.string.withdraw_title)
+                .withIdentifier(WithdrawFragment.ID)
+                .withIcon(R.drawable.ic_withdraw)
+                .also { items[WithdrawFragment.ID] = it }
+
+        PrimaryDrawerItem()
+                .withName(R.string.send_title)
+                .withIdentifier(SendFragment.ID)
+                .withIcon(R.drawable.ic_send)
+                .withIconColorRes(R.color.icons)
+                .withSelectedIconColorRes(R.color.icons)
+                .withIconTintingEnabled(true)
+                .also { items[SendFragment.ID] = it }
+
+        PrimaryDrawerItem()
+                .withName(R.string.limits)
+                .withIdentifier(LimitsFragment.ID)
+                .withIcon(R.drawable.ic_insert_chart)
+                .withIconColorRes(R.color.icons)
+                .withSelectedIconColorRes(R.color.icons)
+                .withIconTintingEnabled(true)
+                .also { items[LimitsFragment.ID] = it }
+
+        PrimaryDrawerItem()
+                .withName(R.string.explore_sales_title)
+                .withIdentifier(SalesFragment.ID)
+                .withIcon(R.drawable.ic_invest)
+                .also { items[SalesFragment.ID] = it }
+
+        PrimaryDrawerItem()
+                .withName(R.string.explore_tokens_title)
+                .withIdentifier(ExploreAssetsFragment.ID)
+                .withIcon(R.drawable.ic_coins)
+                .also { items[ExploreAssetsFragment.ID] = it }
+
+        PrimaryDrawerItem()
+                .withName(R.string.trade_title)
+                .withIdentifier(TradeFragment.ID)
+                .withIcon(R.drawable.ic_trade)
+                .also { items[TradeFragment.ID] = it }
+
+        PrimaryDrawerItem()
+                .withName(getString(R.string.fees_title))
+                .withIdentifier(FeesFragment.ID)
+                .withIcon(R.drawable.ic_flash)
+                .also { items[FeesFragment.ID] = it }
+
+        PrimaryDrawerItem()
+                .withName(R.string.settings_title)
+                .withIdentifier(SettingsFragment.ID)
+                .withIcon(R.drawable.ic_settings)
+                .also { items[SettingsFragment.ID] = it }
+
+        PrimaryDrawerItem()
+                .withName(R.string.sign_out)
+                .withIdentifier(SIGN_OUT)
+                .withSelectable(false)
+                .withIcon(R.drawable.ic_sign_out)
+                .also { items[SIGN_OUT] = it }
+
+        navigationDrawer = initDrawerBuilder(items, getHeaderInstance(email)).build()
+        landscapeNavigationDrawer = initDrawerBuilder(items, getHeaderInstance(email)).buildView()
+        nav_tablet.addView(landscapeNavigationDrawer?.slider, 0)
+    }
+
+    private fun getHeaderInstance(email: String?): AccountHeader {
         val profileHeader = AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackgroundScaleType(ImageView.ScaleType.FIT_START)
@@ -84,82 +184,19 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 navigationDrawer?.closeDrawer()
             }
         }
+        return  profileHeader
+    }
 
-        val dashboardItem = PrimaryDrawerItem()
-                .withName(R.string.dashboard_title)
-                .withIdentifier(DashboardFragment.ID)
-                .withIcon(R.drawable.ic_dashboard)
-
-        val walletItem = PrimaryDrawerItem()
-                .withName(R.string.wallet_title)
-                .withIdentifier(WalletFragment.ID)
-                .withIcon(R.drawable.ic_balance)
-
-        val depositItem = PrimaryDrawerItem()
-                .withName(R.string.deposit_title)
-                .withIdentifier(DepositFragment.ID)
-                .withIcon(R.drawable.ic_deposit)
-
-        val withdrawItem = PrimaryDrawerItem()
-                .withName(R.string.withdraw_title)
-                .withIdentifier(WithdrawFragment.ID)
-                .withIcon(R.drawable.ic_withdraw)
-
-        val sendItem = PrimaryDrawerItem()
-                .withName(R.string.send_title)
-                .withIdentifier(SendFragment.ID)
-                .withIcon(R.drawable.ic_send)
-                .withIconColorRes(R.color.icons)
-                .withSelectedIconColorRes(R.color.icons)
-                .withIconTintingEnabled(true)
-
-        val limitsItem = PrimaryDrawerItem()
-                .withName(R.string.limits)
-                .withIdentifier(LimitsFragment.ID)
-                .withIcon(R.drawable.ic_insert_chart)
-                .withIconColorRes(R.color.icons)
-                .withSelectedIconColorRes(R.color.icons)
-                .withIconTintingEnabled(true)
-
-        val investItem = PrimaryDrawerItem()
-                .withName(R.string.explore_sales_title)
-                .withIdentifier(SalesFragment.ID)
-                .withIcon(R.drawable.ic_invest)
-
-        val exploreItem = PrimaryDrawerItem()
-                .withName(R.string.explore_tokens_title)
-                .withIdentifier(ExploreAssetsFragment.ID)
-                .withIcon(R.drawable.ic_coins)
-
-        val tradeItem = PrimaryDrawerItem()
-                .withName(R.string.trade_title)
-                .withIdentifier(TradeFragment.ID)
-                .withIcon(R.drawable.ic_trade)
-
-        val feesItem = PrimaryDrawerItem()
-                .withName(getString(R.string.fees_title))
-                .withIdentifier(FeesFragment.ID)
-                .withIcon(R.drawable.ic_flash)
-
-        val settingsItem = PrimaryDrawerItem()
-                .withName(R.string.settings_title)
-                .withIdentifier(SettingsFragment.ID)
-                .withIcon(R.drawable.ic_settings)
-
-        val signOutItem = PrimaryDrawerItem()
-                .withName(R.string.sign_out)
-                .withIdentifier(SIGN_OUT)
-                .withSelectable(false)
-                .withIcon(R.drawable.ic_sign_out)
-
-        navigationDrawer = DrawerBuilder()
+    private fun initDrawerBuilder(items: Map<Long, PrimaryDrawerItem>,
+                                  profileHeader: AccountHeader): DrawerBuilder {
+        return DrawerBuilder()
                 .withActivity(this)
                 .withAccountHeader(profileHeader)
                 .withHeaderDivider(false)
                 .withSliderBackgroundColorRes(R.color.material_drawer_background)
                 .addDrawerItems(
-                        dashboardItem,
-                        walletItem
+                        items[DashboardFragment.ID],
+                        items[WalletFragment.ID]
                 )
                 .apply {
                     if (BuildConfig.IS_DEPOSIT_ALLOWED
@@ -171,27 +208,27 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                         addDrawerItems(DividerDrawerItem())
 
                         if (BuildConfig.IS_DEPOSIT_ALLOWED) {
-                            addDrawerItems(depositItem)
+                            addDrawerItems(items[DepositFragment.ID])
                         }
 
                         if (BuildConfig.IS_WITHDRAW_ALLOWED) {
-                            addDrawerItems(withdrawItem)
+                            addDrawerItems(items[WithdrawFragment.ID])
                         }
 
                         if (BuildConfig.IS_SEND_ALLOWED) {
-                            addDrawerItems(sendItem)
+                            addDrawerItems(items[SendFragment.ID])
                         }
 
                         if (BuildConfig.IS_INVEST_ALLOWED) {
-                            addDrawerItems(investItem)
+                            addDrawerItems(items[SalesFragment.ID])
                         }
 
                         if (BuildConfig.IS_EXPLORE_ALLOWED) {
-                            addDrawerItems(exploreItem)
+                            addDrawerItems(items[ExploreAssetsFragment.ID])
                         }
 
                         if (BuildConfig.IS_TRADE_ALLOWED) {
-                            addDrawerItems(tradeItem)
+                            addDrawerItems(items[TradeFragment.ID])
                         }
                     }
                 }
@@ -202,24 +239,23 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
 
                         if (BuildConfig.IS_LIMITS_ALLOWED) {
-                            addDrawerItems(limitsItem)
+                            addDrawerItems(items[LimitsFragment.ID])
                         }
 
 
                         if (BuildConfig.IS_FEES_ALLOWED) {
-                            addDrawerItems(feesItem)
+                            addDrawerItems(items[FeesFragment.ID])
                         }
                     }
                 }
                 .addDrawerItems(
                         DividerDrawerItem(),
-                        settingsItem,
-                        signOutItem
+                        items[SettingsFragment.ID],
+                        items[SIGN_OUT]
                 )
                 .withOnDrawerItemClickListener { _, _, item ->
                     return@withOnDrawerItemClickListener onNavigationItemSelected(item)
                 }
-                .build()
     }
     // endregion
 
@@ -236,6 +272,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
     private fun navigateTo(screenIdentifier: Long, fragment: Fragment) {
         navigationDrawer?.setSelection(screenIdentifier, false)
+        landscapeNavigationDrawer?.setSelection(screenIdentifier, false)
         displayFragment(fragment)
     }
 
@@ -273,8 +310,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         if (fragment is ToolbarProvider) {
             fragmentToolbarDisposable = fragment.toolbarSubject
                     .subscribe { fragmentToolbar ->
+                        toolbar = fragmentToolbar
                         fragmentToolbar.apply {
-                            setNavigationIcon(R.drawable.ic_menu)
                             setNavigationContentDescription(
                                     com.mikepenz.materialdrawer.R.string.material_drawer_open
                             )
@@ -282,6 +319,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                                 navigationDrawer?.openDrawer()
                             }
                         }
+                        updateDrawerVisibility()
                     }
                     .addTo(compositeDisposable)
         }
@@ -297,6 +335,21 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .show()
     }
 
+    private fun updateDrawerVisibility() {
+        if (tablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            navigationDrawer?.drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            nav_tablet.visibility = View.VISIBLE
+            toolbar?.navigationIcon = null
+            side_shadow_view.visibility = View.VISIBLE
+
+        } else {
+            navigationDrawer?.drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            nav_tablet.visibility = View.GONE
+            toolbar?.setNavigationIcon(R.drawable.ic_menu)
+            side_shadow_view.visibility = View.GONE
+        }
+    }
+
     override fun onBackPressed() {
         if (navigationDrawer?.isDrawerOpen == true) {
             navigationDrawer?.closeDrawer()
@@ -308,6 +361,11 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     navigateTo(DashboardFragment.ID)
             }
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        updateDrawerVisibility()
     }
 
     override fun onPaymentRequestConfirmed(paymentRequest: PaymentRequest) {
