@@ -14,9 +14,8 @@ import org.tokend.wallet.Account
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.*
+import org.tokend.wallet.xdr.op_extensions.CreateFeeOp
 import java.math.BigDecimal
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
 
 object Util {
     fun getUrlConfigProvider(url: String = Config.API): UrlConfigProvider {
@@ -49,9 +48,9 @@ object Util {
     }
 
     fun getSomeMoney(asset: String,
-                             amount: BigDecimal,
-                             repositoryProvider: RepositoryProvider,
-                             txManager: TxManager): BigDecimal {
+                     amount: BigDecimal,
+                     repositoryProvider: RepositoryProvider,
+                     txManager: TxManager): BigDecimal {
         val netParams = repositoryProvider.systemInfo().getNetworkParams().blockingGet()
 
         val balanceId = repositoryProvider.balances()
@@ -103,16 +102,17 @@ object Util {
         val upperBound = netParams.amountToPrecised(BigDecimal.TEN)
         val lowerBound = netParams.amountToPrecised(BigDecimal.ONE)
 
-        val sourceString = "type:${feeType.value}asset:${asset}subtype:${feeSubType}accountID:${rootAccount.accountId}"
-        val sha = MessageDigest.getInstance("SHA-256").digest(sourceString.toByteArray(StandardCharsets.UTF_8))
-
-        val hash = Hash(sha)
-
-        val feeEntry = FeeEntry(feeType, asset,
-                fixedFee, percentFee, rootAccount.xdrPublicKey, null, feeSubType.toLong(),
-                lowerBound, upperBound, hash, FeeEntry.FeeEntryExt.EmptyVersion())
-
-        val feeOp = SetFeesOp(feeEntry, false, SetFeesOp.SetFeesOpExt.EmptyVersion())
+        val feeOp =
+                CreateFeeOp(
+                        feeType,
+                        asset,
+                        fixedFee,
+                        percentFee,
+                        upperBound,
+                        lowerBound,
+                        feeSubType.toLong(),
+                        accountId = rootAccount.accountId
+                )
 
         val op = Operation.OperationBody.SetFees(feeOp)
 
