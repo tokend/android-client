@@ -34,7 +34,6 @@ import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SoftInputUtil
 import java.util.concurrent.TimeUnit
-import kotlin.math.roundToInt
 
 class SalesFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -88,10 +87,10 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         val displayMetrics = DisplayMetrics()
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        val screenWidth = displayMetrics.widthPixels * 1f
-        val columns = (screenWidth /
-                requireContext().resources.getDimensionPixelSize(R.dimen.max_content_width)).roundToInt()
-
+        val screenWidth = displayMetrics.widthPixels.toDouble()
+        val columns = (screenWidth / resources.getDimensionPixelSize(R.dimen.max_content_width))
+                .let { Math.ceil(it) }
+                .toInt()
 
         salesAdapter = SalesAdapter(urlConfigProvider.getConfig().storage)
         error_empty_view.observeAdapter(salesAdapter, R.string.no_sales_found)

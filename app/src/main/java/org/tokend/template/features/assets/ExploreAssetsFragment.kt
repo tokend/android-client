@@ -100,9 +100,11 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         val displayMetrics = DisplayMetrics()
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        val screenWidth = displayMetrics.widthPixels * 1f
-        val columns = (screenWidth /
-                requireContext().resources.getDimensionPixelSize(R.dimen.max_content_width)).roundToInt()
+        val screenWidth = displayMetrics.widthPixels.toDouble()
+        val columns = (screenWidth / resources.getDimensionPixelSize(R.dimen.max_content_width))
+                .let { Math.ceil(it) }
+                .toInt()
+
         assets_recycler_view.layoutManager = GridLayoutManager(context, columns)
 
         assets_recycler_view.adapter = assetsAdapter
