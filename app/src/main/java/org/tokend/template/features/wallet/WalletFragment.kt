@@ -309,6 +309,11 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         update()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        history_list.clearOnScrollListeners()
+    }
+
     companion object {
         private const val ASSET_EXTRA = "asset"
         private const val NEED_TABS_EXTRA = "need_tabs"
