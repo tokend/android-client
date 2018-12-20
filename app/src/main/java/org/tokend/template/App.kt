@@ -107,9 +107,7 @@ class App : MultiDexApplication() {
             override fun onActivityDestroyed(a: Activity) {}
         })
 
-        initSession()
-        initCookies()
-        initStateComponent()
+        initState()
         initPicasso()
         initCrashlytics()
         initRxErrorHandler()
@@ -165,20 +163,6 @@ class App : MultiDexApplication() {
     }
 
     // region State
-    private fun initSession() {
-        sessionInfoStorage = SessionInfoStorage(defaultSharedPreferences)
-        session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider(),
-                sessionInfoStorage
-        )
-    }
-
-    private fun initCookies() {
-        cookiePersistor = SharedPrefsCookiePersistor(this)
-        cookieCache = SetCookieCache()
-    }
-
     private fun getCredentialsPreferences(): SharedPreferences {
         return getSharedPreferences("CredentialsPersistence",
                 Context.MODE_PRIVATE)
@@ -189,8 +173,16 @@ class App : MultiDexApplication() {
                 Context.MODE_PRIVATE)
     }
 
-    private fun initStateComponent() {
-        val cookieJar = PersistentCookieJar(cookieCache, cookiePersistor)
+    private fun initState() {
+        sessionInfoStorage = SessionInfoStorage(defaultSharedPreferences)
+        session = Session(
+                WalletInfoProviderFactory().createWalletInfoProvider(),
+                AccountProviderFactory().createAccountProvider(),
+                sessionInfoStorage
+        )
+
+        cookiePersistor = SharedPrefsCookiePersistor(this)
+        cookieCache = SetCookieCache()
 
         val defaultUrlConfig = UrlConfig(BuildConfig.API_URL, BuildConfig.STORAGE_URL,
                 BuildConfig.KYC_URL, BuildConfig.TERMS_URL)
@@ -204,7 +196,9 @@ class App : MultiDexApplication() {
                         else
                             defaultUrlConfig
                 ))
-                .apiProviderModule(ApiProviderModule(cookieJar))
+                .apiProviderModule(ApiProviderModule(
+                        PersistentCookieJar(cookieCache, cookiePersistor)
+                ))
                 .persistenceModule(PersistenceModule(
                         getCredentialsPreferences(),
                         getNetworkPreferences()
@@ -213,14 +207,11 @@ class App : MultiDexApplication() {
                 .build()
     }
 
-    private fun clearState() {
-        session.reset()
-        initStateComponent()
-    }
-
-    private fun clearCookies() {
+    private fun clearUserData() {
         cookiePersistor.clear()
         cookieCache.clear()
+        sessionInfoStorage.clear()
+        getCredentialsPreferences().edit().clear().apply()
     }
 
     /**
@@ -229,10 +220,10 @@ class App : MultiDexApplication() {
     @SuppressLint("ApplySharedPref")
     fun signOut(activity: Activity?, soft: Boolean = false) {
         if (!soft) {
-            getCredentialsPreferences().edit().clear().commit()
-            sessionInfoStorage.clear()
-            clearCookies()
-            clearState()
+            clearUserData()
+            initState()
+        } else {
+            session.reset()
         }
 
         Navigator.toSignIn(this)
