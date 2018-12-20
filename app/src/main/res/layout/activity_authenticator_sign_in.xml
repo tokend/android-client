@@ -35,11 +35,16 @@
                 android:layout_height="@dimen/double_margin" />
 
             <ProgressBar
-                android:id="@+id/progress"
+                style="@style/Base.Widget.AppCompat.ProgressBar"
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:indeterminateTint="@color/accent" />
+                android:layout_marginTop="@dimen/standard_margin"
+                android:text="@string/processing_progress" />
+
         </LinearLayout>
 
         <LinearLayout
