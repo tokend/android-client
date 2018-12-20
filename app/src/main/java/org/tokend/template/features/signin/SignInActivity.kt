@@ -28,6 +28,7 @@ import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.ResendVerificationEmailUseCase
+import org.tokend.template.features.signin.logic.SignInMethod
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.logic.UrlConfigManager
 import org.tokend.template.logic.persistance.FingerprintAuthManager
@@ -90,6 +91,11 @@ class SignInActivity : BaseActivity() {
 
         // Does nothing but EC engine warm up.
         doAsync { Account.random() }
+
+        if (session.lastSignInMethod == SignInMethod.AUTHENTICATOR
+                && BuildConfig.ENABLE_AUTHENTICATOR_AUTH) {
+            openAuthenticatorSignIn()
+        }
     }
 
     // region Init
@@ -153,7 +159,7 @@ class SignInActivity : BaseActivity() {
 
         if (BuildConfig.ENABLE_AUTHENTICATOR_AUTH) {
             sign_in_with_authenticator_button.onClick {
-                Navigator.openAuthenticatorSignIn(this, SIGN_IN_WITH_AUTHENTICATOR_REQUEST)
+                openAuthenticatorSignIn()
             }
         } else {
             sign_in_with_authenticator_button.visibility = View.GONE
@@ -183,6 +189,10 @@ class SignInActivity : BaseActivity() {
         cameraPermission.check(this) {
             QrScannerUtil.openScanner(this)
         }
+    }
+
+    private fun openAuthenticatorSignIn() {
+        Navigator.openAuthenticatorSignIn(this, SIGN_IN_WITH_AUTHENTICATOR_REQUEST)
     }
 
     private fun updateSignInAvailability() {

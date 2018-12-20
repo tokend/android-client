@@ -2,13 +2,16 @@ package org.tokend.template.logic
 
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.features.signin.logic.SignInMethod
+import org.tokend.template.logic.persistance.SessionInfoStorage
 
 /**
  * Holds session data
  */
 class Session(
         walletInfoProvider: WalletInfoProvider,
-        accountProvider: AccountProvider
+        accountProvider: AccountProvider,
+        private val sessionInfoStorage: SessionInfoStorage? = null
 ) : WalletInfoProvider by walletInfoProvider, AccountProvider by accountProvider {
 
     /**
@@ -17,16 +20,34 @@ class Session(
     var isExpired = false
 
     /**
+     * @returns [SignInMethod] used to start this session
+     */
+    var signInMethod: SignInMethod? = null
+        set(value) {
+            field = value
+            if (value != null) {
+                sessionInfoStorage?.saveLastSignInMethod(value)
+            }
+        }
+
+    /**
+     * @returns last used [SignInMethod]
+     */
+    val lastSignInMethod: SignInMethod?
+        get() = sessionInfoStorage?.loadLastSignInMethod()
+
+    /**
      * @returns true if session was started with TokenD Authenticator auth
      */
-    var isAuthenticatorUsed = false
+    val isAuthenticatorUsed
+        get() = signInMethod == SignInMethod.AUTHENTICATOR
 
     /**
      * Resets the session to the initial state, clears data
      */
     fun reset() {
         isExpired = false
-        isAuthenticatorUsed = false
+        signInMethod = null
 
         setWalletInfo(null)
         setAccount(null)

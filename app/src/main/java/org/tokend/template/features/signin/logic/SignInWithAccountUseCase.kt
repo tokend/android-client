@@ -103,7 +103,7 @@ class SignInWithAccountUseCase(
         session.setWalletInfo(walletInfo)
         credentialsPersistor.clear(false)
         session.setAccount(account)
-        session.isAuthenticatorUsed = true
+        session.signInMethod = SignInMethod.AUTHENTICATOR
 
         return Single.just(true)
     }

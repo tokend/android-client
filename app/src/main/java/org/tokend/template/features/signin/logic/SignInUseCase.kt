@@ -74,6 +74,7 @@ class SignInUseCase(
         session.setWalletInfo(walletInfo)
         credentialsPersistor?.saveCredentials(walletInfo, password)
         session.setAccount(account)
+        session.signInMethod = SignInMethod.CREDENTIALS
 
         return Single.just(true)
     }
