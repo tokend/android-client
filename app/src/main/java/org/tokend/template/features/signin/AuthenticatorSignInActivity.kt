@@ -3,6 +3,7 @@ package org.tokend.template.features.signin
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
@@ -137,6 +138,24 @@ class AuthenticatorSignInActivity : BaseActivity() {
         }
     }
 
+    private fun checkIsAppInstalled() {
+        val isAppInstalled = try {
+            packageManager.getApplicationInfo(AUTHENTICATOR_URI, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
+        updateButtonTitle(isAppInstalled)
+    }
+
+    private fun updateButtonTitle(isAppInstalled: Boolean) {
+        val buttonTitle = when (isAppInstalled) {
+            true -> getString(R.string.open_authenticator_action)
+            false -> getString(R.string.install_authenticator_action)
+        }
+        open_authenticator_button.text = buttonTitle
+    }
+
     // region Auth result polling
     private var authResultSubscriptionDisposable: Disposable? = null
 
@@ -174,6 +193,7 @@ class AuthenticatorSignInActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        checkIsAppInstalled()
         subscribeToAuthResultIfNeeded()
     }
 
@@ -241,6 +261,7 @@ class AuthenticatorSignInActivity : BaseActivity() {
     }
 
     companion object {
+        private const val AUTHENTICATOR_URI = "org.tokend.authenticator"
         private const val GOOGLE_PLAY_AUTHENTICATOR_URI =
                 "https://play.google.com/store/apps/details?id=org.tokend.authenticator"
         private val OPEN_AUTHENTICATOR_REQUEST = "open_authenticator".hashCode() and 0xffff
