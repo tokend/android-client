@@ -424,13 +424,13 @@ class SaleActivity : BaseActivity() {
     private fun updateInvestHelperAndError() {
         if (investAmountWrapper.scaledAmount > maxInvestAmount) {
             amount_edit_text.error = getString(R.string.template_sale_max_investment,
-                    amountFormatter.formatAssetAmount(maxInvestAmount),
+                    amountFormatter.formatAssetAmount(maxInvestAmount, investAsset),
                     investAsset)
         } else {
             amount_edit_text.error = null
             amount_edit_text.setHelperText(
                     getString(R.string.template_available,
-                            amountFormatter.formatAssetAmount(getAvailableBalance(investAsset)),
+                            amountFormatter.formatAssetAmount(getAvailableBalance(investAsset), investAsset),
                             investAsset)
             )
         }

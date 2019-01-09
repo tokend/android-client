@@ -89,16 +89,14 @@ open class OfferConfirmationActivity : BaseActivity() {
 
         if (offer.isBuy) {
             card.addRow(R.string.amount,
-                    "+${amountFormatter.formatAssetAmount(payBaseAmount,
-                            payAsset, minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
+                    "+${amountFormatter.formatAssetAmount(payBaseAmount, payAsset)
                     } $payAsset")
                     .addRow(R.string.tx_fee,
-                            "+${amountFormatter.formatAssetAmount(offer.fee,
-                                    payAsset, minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
+                            "+${amountFormatter.formatAssetAmount(offer.fee, payAsset)
                             } $payAsset")
         } else {
             card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAsset,
-                    amountFormatter.formatAssetAmount(offer.price), offer.quoteAsset))
+                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAsset), offer.quoteAsset))
         }
     }
 
@@ -117,16 +115,14 @@ open class OfferConfirmationActivity : BaseActivity() {
         if (!offer.isBuy) {
             card
                     .addRow(R.string.amount,
-                            "+${amountFormatter.formatAssetAmount(receiveBaseAmount,
-                                    receiveAsset, minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
+                            "+${amountFormatter.formatAssetAmount(receiveBaseAmount, receiveAsset)
                             } $receiveAsset")
                     .addRow(R.string.tx_fee,
-                            "-${amountFormatter.formatAssetAmount(offer.fee,
-                                    receiveAsset, minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
+                            "-${amountFormatter.formatAssetAmount(offer.fee, receiveAsset)
                             } $receiveAsset")
         } else {
             card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAsset,
-                    amountFormatter.formatAssetAmount(offer.price), offer.quoteAsset))
+                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAsset), offer.quoteAsset))
         }
     }
     // endregion

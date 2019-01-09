@@ -18,7 +18,7 @@ interface AmountFormatter {
      * @param abbreviation to use or not to use big amount abbreviation i.e. 1100 -> 1.1K
      */
     fun formatAssetAmount(amount: BigDecimal?,
-                          asset: String? = "",
+                          asset: String,
                           minDecimalDigits: Int = 0,
                           abbreviation: Boolean = false): String
 
@@ -28,7 +28,7 @@ interface AmountFormatter {
      * @see formatAssetAmount
      */
     fun formatAssetAmount(amount: String?,
-                          asset: String? = "",
+                          asset: String,
                           minDecimalDigits: Int = 0,
                           abbreviation: Boolean = false): String
 

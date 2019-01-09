@@ -87,7 +87,7 @@ class TxHistoryItemViewHolder(view: View, private val amountFormatter: AmountFor
     }
 
     private fun displayAmount(item: TxHistoryItem) {
-        amountTextView.text = amountFormatter.formatAssetAmount(item.amount,
+        amountTextView.text = amountFormatter.formatAssetAmount(item.amount, item.asset,
                 abbreviation = true) + " ${item.asset}"
         if (!item.isReceived) {
             amountTextView.text = "-" + amountTextView.text

@@ -67,14 +67,14 @@ open class OfferMatchDetailsActivity(
 
         if (tx.feeAsset != paidAsset) {
             InfoCard(cards_layout)
-                    .setHeading(headingRes, "${amountFormatter.formatAssetAmount(paidAmount)} " +
+                    .setHeading(headingRes, "${amountFormatter.formatAssetAmount(paidAmount, paidAsset)} " +
                             paidAsset)
                     .addRow(R.string.price,
                             getString(R.string.template_price_one_equals, tx.asset,
-                                    amountFormatter.formatAssetAmount(tx.matchData.price), tx.matchData.quoteAsset))
+                                    amountFormatter.formatAssetAmount(tx.matchData.price, tx.matchData.quoteAsset), tx.matchData.quoteAsset))
         } else {
             InfoCard(cards_layout)
-                    .setHeading(headingRes, "${amountFormatter.formatAssetAmount(paidAmount)} " +
+                    .setHeading(headingRes, "${amountFormatter.formatAssetAmount(paidAmount, paidAsset)} " +
                             paidAsset)
                     .addRow(R.string.amount,
                             "+${amountFormatter.formatAssetAmount(amount,
@@ -119,7 +119,7 @@ open class OfferMatchDetailsActivity(
                     } $receivedAsset")
                     .addRow(R.string.price,
                             getString(R.string.template_price_one_equals, tx.asset,
-                                    amountFormatter.formatAssetAmount(tx.matchData.price), tx.matchData.quoteAsset))
+                                    amountFormatter.formatAssetAmount(tx.matchData.price, tx.matchData.quoteAsset), tx.matchData.quoteAsset))
         }
     }
     // endregion

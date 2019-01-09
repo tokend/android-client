@@ -313,7 +313,7 @@ class AssetChartCard : LinearLayout {
                         )
                 )
         valueTextView.text =
-                "${amountFormatter.formatAssetAmount(amount)} $asset"
+                "${amountFormatter.formatAssetAmount(amount, asset)} $asset"
         valueHintTextView.text =
                 context.getString(R.string.chart_highlight_at_hint,
                         valueHint, DateFormatter(context).formatCompact(date))

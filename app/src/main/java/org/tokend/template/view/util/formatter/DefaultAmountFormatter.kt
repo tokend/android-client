@@ -11,7 +11,7 @@ import java.text.NumberFormat
 class DefaultAmountFormatter : AmountFormatter {
 
     override fun formatAssetAmount(amount: BigDecimal?,
-                                   asset: String?,
+                                   asset: String,
                                    minDecimalDigits: Int,
                                    abbreviation: Boolean): String {
 
@@ -26,7 +26,7 @@ class DefaultAmountFormatter : AmountFormatter {
     }
 
     override fun formatAssetAmount(amount: String?,
-                                   asset: String?,
+                                   asset: String,
                                    minDecimalDigits: Int,
                                    abbreviation: Boolean): String {
 

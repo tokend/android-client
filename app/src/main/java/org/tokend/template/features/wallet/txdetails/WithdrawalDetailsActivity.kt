@@ -32,25 +32,22 @@ class WithdrawalDetailsActivity : TxDetailsActivity<WithdrawalOperation>(Withdra
 
         InfoCard(cards_layout)
                 .setHeading(R.string.paid,
-                        "${amountFormatter.formatAssetAmount(paid)} ${tx.asset}")
+                        "${amountFormatter.formatAssetAmount(paid, tx.asset)} ${tx.asset}")
                 .addRow(R.string.amount_sent,
-                        "+${amountFormatter.formatAssetAmount(tx.amount,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
+                        "+${amountFormatter.formatAssetAmount(tx.amount, tx.asset)
                         } ${tx.asset}")
                 .addRow(R.string.tx_fixed_fee,
-                        "+${amountFormatter.formatAssetAmount(tx.fee.fixed,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
+                        "+${amountFormatter.formatAssetAmount(tx.fee.fixed, tx.asset)
                         } ${tx.asset}")
                 .addRow(R.string.tx_percent_fee,
-                        "+${amountFormatter.formatAssetAmount(tx.fee.percent,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
+                        "+${amountFormatter.formatAssetAmount(tx.fee.percent, tx.asset)
                         } ${tx.asset}")
     }
 
     private fun displaySent(tx: WithdrawalOperation) {
         InfoCard(cards_layout)
                 .setHeading(R.string.sent,
-                        "${amountFormatter.formatAssetAmount(tx.destAmount)} " +
+                        "${amountFormatter.formatAssetAmount(tx.destAmount, tx.asset)} " +
                                 tx.asset)
                 .addRow(getString(R.string.template_withdrawal_fee_warning, tx.asset),
                         null)
