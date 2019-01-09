@@ -14,7 +14,6 @@ import org.tokend.template.features.send.logic.ConfirmPaymentRequestUseCase
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.ToastManager
@@ -60,12 +59,12 @@ class PaymentConfirmationActivity : BaseActivity() {
     private fun displayAmount() {
         InfoCard(cards_layout)
                 .setHeading(R.string.amount,
-                        "${AmountFormatter.formatAssetAmount(request.amount)} ${request.asset}")
+                        "${amountFormatter.formatAssetAmount(request.amount)} ${request.asset}")
                 .addRow(R.string.tx_fee,
-                        "${AmountFormatter.formatAssetAmount(request.senderFee.total)
+                        "${amountFormatter.formatAssetAmount(request.senderFee.total)
                         } ${request.senderFee.asset}")
                 .addRow(R.string.tx_recipient_fee,
-                        "${AmountFormatter.formatAssetAmount(request.recipientFee.total)
+                        "${amountFormatter.formatAssetAmount(request.recipientFee.total)
                         } ${request.recipientFee.asset}")
                 .addSwitcherRow(R.string.pay_recipient_fee_action,
                         CompoundButton.OnCheckedChangeListener { _, isChecked ->

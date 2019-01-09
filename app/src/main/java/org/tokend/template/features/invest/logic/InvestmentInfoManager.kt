@@ -21,7 +21,8 @@ import java.math.BigDecimal
 class InvestmentInfoManager(
         private val sale: Sale,
         private val repositoryProvider: RepositoryProvider,
-        private val walletInfoProvider: WalletInfoProvider
+        private val walletInfoProvider: WalletInfoProvider,
+        private val amountFormatter: AmountFormatter
 ) {
     class InvestmentInfo(
             val assetDetails: Asset,
@@ -149,7 +150,7 @@ class InvestmentInfoManager(
 
         return BigDecimalUtil.scaleAmount(
                 maxByBalance.min(maxByHardCap),
-                AmountFormatter.getDecimalDigitsCount(asset)
+                amountFormatter.getDecimalDigitsCount(asset)
         )
     }
 

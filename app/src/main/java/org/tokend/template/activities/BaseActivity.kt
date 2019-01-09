@@ -20,6 +20,7 @@ import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.template.logic.persistance.UrlConfigPersistor
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.formatter.AmountFormatter
 import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity(), TfaCallback {
@@ -47,6 +48,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var assetComparator: Comparator<String>
     @Inject
     lateinit var session: Session
+    @Inject
+    lateinit var amountFormatter: AmountFormatter
 
     /**
      * If set to true the activity will be operational

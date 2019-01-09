@@ -16,6 +16,7 @@ import org.tokend.template.features.settings.view.PreferenceDividerDecoration
 import org.tokend.template.logic.Session
 import org.tokend.template.view.ToastManager
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
+import org.tokend.template.view.util.formatter.AmountFormatter
 import javax.inject.Inject
 
 abstract class SettingsFragment : PreferenceFragmentCompat(),
@@ -34,6 +35,8 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
     lateinit var accountProvider: AccountProvider
     @Inject
     lateinit var session: Session
+    @Inject
+    lateinit var amountFormatter: AmountFormatter
 
     protected val compositeDisposable = CompositeDisposable()
 

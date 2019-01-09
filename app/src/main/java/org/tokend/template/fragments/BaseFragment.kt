@@ -10,6 +10,7 @@ import org.tokend.template.logic.AppTfaCallback
 import org.tokend.template.di.providers.*
 import org.tokend.template.view.ToastManager
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
+import org.tokend.template.view.util.formatter.AmountFormatter
 import javax.inject.Inject
 
 abstract class BaseFragment : Fragment(), OnBackPressedListener {
@@ -31,6 +32,8 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
     lateinit var toastManager: ToastManager
     @Inject
     lateinit var assetComparator: Comparator<String>
+    @Inject
+    lateinit var amountFormatter: AmountFormatter
 
     override fun onBackPressed() = true
 

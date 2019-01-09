@@ -11,12 +11,12 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.formatter.AmountFormatter
 
 class WithdrawalConfirmationActivity : BaseActivity() {
     private lateinit var request: WithdrawalRequest
@@ -49,25 +49,25 @@ class WithdrawalConfirmationActivity : BaseActivity() {
 
         InfoCard(cards_layout)
                 .setHeading(R.string.to_pay,
-                        "${AmountFormatter.formatAssetAmount(toPay)} ${request.asset}")
+                        "${amountFormatter.formatAssetAmount(toPay)} ${request.asset}")
                 .addRow(R.string.amount,
-                        "+${AmountFormatter.formatAssetAmount(request.amount,
-                                minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                        "+${amountFormatter.formatAssetAmount(request.amount,
+                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                         } ${request.asset}")
                 .addRow(R.string.tx_fixed_fee,
-                        "+${AmountFormatter.formatAssetAmount(request.fee.fixed,
-                                minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                        "+${amountFormatter.formatAssetAmount(request.fee.fixed,
+                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                         } ${request.asset}")
                 .addRow(R.string.tx_percent_fee,
-                        "+${AmountFormatter.formatAssetAmount(request.fee.percent,
-                                minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                        "+${amountFormatter.formatAssetAmount(request.fee.percent,
+                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                         } ${request.asset}")
     }
 
     private fun displayToReceive() {
         InfoCard(cards_layout)
                 .setHeading(R.string.to_receive,
-                        "${AmountFormatter.formatAssetAmount(request.amount)} " +
+                        "${amountFormatter.formatAssetAmount(request.amount)} " +
                                 request.asset)
                 .addRow(getString(R.string.template_withdrawal_fee_warning, request.asset),
                         null)

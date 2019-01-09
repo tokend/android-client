@@ -35,7 +35,7 @@ import org.tokend.template.view.InfoCard
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.view.util.formatter.DefaultAmountFormatter
 
 
 class AssetDetailsFragment : BaseFragment() {
@@ -118,9 +118,9 @@ class AssetDetailsFragment : BaseFragment() {
         InfoCard(cards_layout)
                 .setHeading(R.string.asset_summary_title, null)
                 .addRow(R.string.asset_available,
-                        AmountFormatter.formatAssetAmount(asset.available))
-                .addRow(R.string.asset_issued, AmountFormatter.formatAssetAmount(asset.issued))
-                .addRow(R.string.asset_maximum, AmountFormatter.formatAssetAmount(asset.maximum))
+                        amountFormatter.formatAssetAmount(asset.available))
+                .addRow(R.string.asset_issued, amountFormatter.formatAssetAmount(asset.issued))
+                .addRow(R.string.asset_maximum, amountFormatter.formatAssetAmount(asset.maximum))
     }
 
     private fun displayTermsIfNeeded() {

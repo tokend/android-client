@@ -53,7 +53,8 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                 repositoryProvider,
                 errorHandlerFactory,
                 assetComparator,
-                compositeDisposable
+                compositeDisposable,
+                amountFormatter
         )
     }
 
@@ -61,7 +62,8 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         return PendingOffersCard(
                 context,
                 repositoryProvider,
-                compositeDisposable)
+                compositeDisposable,
+                amountFormatter)
     }
 
     private fun addSpacesBetweenViews() {

@@ -12,7 +12,7 @@ import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.util.formatter.AmountFormatter
 
-class OrderBookItemViewHolder(view: View) : BaseViewHolder<Offer>(view) {
+class OrderBookItemViewHolder(view: View, private val amountFormatter: AmountFormatter) : BaseViewHolder<Offer>(view) {
     private val priceTextView = view.find<TextView>(R.id.price_text_view)
     private val volumeTextView = view.find<TextView>(R.id.volume_text_view)
 
@@ -25,9 +25,9 @@ class OrderBookItemViewHolder(view: View) : BaseViewHolder<Offer>(view) {
     override fun bind(item: Offer) {
         isBuy = item.isBuy
 
-        volumeTextView.text = AmountFormatter.formatAssetAmount(item.baseAmount, item.baseAsset)
-        priceTextView.text = AmountFormatter.formatAssetAmount(item.price, item.quoteAsset,
-                minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+        volumeTextView.text = amountFormatter.formatAssetAmount(item.baseAmount, item.baseAsset)
+        priceTextView.text = amountFormatter.formatAssetAmount(item.price, item.quoteAsset,
+                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
         if (isBuy) {
             priceTextView.textColor =
                     ContextCompat.getColor(view.context, R.color.received)

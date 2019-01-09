@@ -32,25 +32,25 @@ class WithdrawalDetailsActivity : TxDetailsActivity<WithdrawalOperation>(Withdra
 
         InfoCard(cards_layout)
                 .setHeading(R.string.paid,
-                        "${AmountFormatter.formatAssetAmount(paid)} ${tx.asset}")
+                        "${amountFormatter.formatAssetAmount(paid)} ${tx.asset}")
                 .addRow(R.string.amount_sent,
-                        "+${AmountFormatter.formatAssetAmount(tx.amount,
-                                minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                        "+${amountFormatter.formatAssetAmount(tx.amount,
+                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                         } ${tx.asset}")
                 .addRow(R.string.tx_fixed_fee,
-                        "+${AmountFormatter.formatAssetAmount(tx.fee.fixed,
-                                minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                        "+${amountFormatter.formatAssetAmount(tx.fee.fixed,
+                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                         } ${tx.asset}")
                 .addRow(R.string.tx_percent_fee,
-                        "+${AmountFormatter.formatAssetAmount(tx.fee.percent,
-                                minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                        "+${amountFormatter.formatAssetAmount(tx.fee.percent,
+                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                         } ${tx.asset}")
     }
 
     private fun displaySent(tx: WithdrawalOperation) {
         InfoCard(cards_layout)
                 .setHeading(R.string.sent,
-                        "${AmountFormatter.formatAssetAmount(tx.destAmount)} " +
+                        "${amountFormatter.formatAssetAmount(tx.destAmount)} " +
                                 tx.asset)
                 .addRow(getString(R.string.template_withdrawal_fee_warning, tx.asset),
                         null)

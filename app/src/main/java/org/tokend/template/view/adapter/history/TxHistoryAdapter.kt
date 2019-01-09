@@ -6,8 +6,11 @@ import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.PaginationRecyclerAdapter
+import org.tokend.template.view.util.formatter.AmountFormatter
 
 class TxHistoryAdapter(private val setSmallIcon: Boolean = false) : PaginationRecyclerAdapter<TxHistoryItem, BaseViewHolder<TxHistoryItem>>() {
+
+    lateinit var amountFormatter: AmountFormatter
 
     class FooterViewHolder(v: View) : BaseViewHolder<TxHistoryItem>(v) {
         override fun bind(item: TxHistoryItem) {}
@@ -16,7 +19,7 @@ class TxHistoryAdapter(private val setSmallIcon: Boolean = false) : PaginationRe
     override fun createItemViewHolder(parent: ViewGroup): BaseViewHolder<TxHistoryItem> {
         val view = parent.context
                 .layoutInflater.inflate(R.layout.list_item_tx, parent, false)
-        return TxHistoryItemViewHolder(view)
+        return TxHistoryItemViewHolder(view, amountFormatter)
     }
 
     override fun createFooterViewHolder(parent: ViewGroup): BaseViewHolder<TxHistoryItem> {

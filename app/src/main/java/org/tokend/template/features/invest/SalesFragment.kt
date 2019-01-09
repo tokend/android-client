@@ -92,7 +92,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
                 .let { Math.ceil(it) }
                 .toInt()
 
-        salesAdapter = SalesAdapter(urlConfigProvider.getConfig().storage)
+        salesAdapter = SalesAdapter(urlConfigProvider.getConfig().storage, amountFormatter)
         error_empty_view.observeAdapter(salesAdapter, R.string.no_sales_found)
 
         salesAdapter.onItemClick { _, sale ->

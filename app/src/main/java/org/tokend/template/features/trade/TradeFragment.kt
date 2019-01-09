@@ -42,7 +42,7 @@ import org.tokend.template.view.picker.PickerItem
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.view.util.formatter.DefaultAmountFormatter
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
 
@@ -105,6 +105,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initLists() {
+        buyAdapter.amountFormatter = amountFormatter
+        sellAdapter.amountFormatter = amountFormatter
+
         buy_offers_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = buyAdapter
@@ -256,8 +259,8 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         val secondBalance = balances.find { it.asset == currentPair.quote }?.balance
 
         balance_text_view.text = getString(R.string.template_balance_two_assets,
-                AmountFormatter.formatAssetAmount(firstBalance), currentPair.base,
-                AmountFormatter.formatAssetAmount(secondBalance), currentPair.quote)
+                amountFormatter.formatAssetAmount(firstBalance), currentPair.base,
+                amountFormatter.formatAssetAmount(secondBalance), currentPair.quote)
     }
 // endregion
 
@@ -349,7 +352,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayPrice() {
         price_text_view.text = getString(R.string.template_price_one_equals, currentPair.base,
-                AmountFormatter.formatAssetAmount(currentPair.price), currentPair.quote)
+                amountFormatter.formatAssetAmount(currentPair.price), currentPair.quote)
     }
 // endregion
 
@@ -499,7 +502,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun openOfferDialog(offer: Offer) {
-        CreateOfferDialog.withArgs(offer)
+        CreateOfferDialog.withArgs(offer, amountFormatter)
                 .showDialog(this.childFragmentManager, "create_offer")
                 .subscribe {
                     goToOfferConfirmation(it)

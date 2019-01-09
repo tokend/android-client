@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.widget.TextView
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.view.util.formatter.DefaultAmountFormatter
 import java.math.BigDecimal
 
 /**
@@ -40,10 +41,10 @@ class LimitTextView : TextView {
         canvas?.drawText("$left $total", x, y, textPaint)
     }
 
-    fun setValues(used: BigDecimal, total: BigDecimal, asset: String) {
+    fun setValues(used: BigDecimal, total: BigDecimal, asset: String, amountFormatter: AmountFormatter) {
 
         val zeroForAsset = BigDecimalUtil
-                .scaleAmount(BigDecimal.ZERO, AmountFormatter.getDecimalDigitsCount(asset))
+                .scaleAmount(BigDecimal.ZERO, amountFormatter.getDecimalDigitsCount(asset))
 
         unformatted = when (total) {
             zeroForAsset -> "$DASH_SYMBOL $SLASH_SYMBOL $DASH_SYMBOL"
@@ -57,9 +58,9 @@ class LimitTextView : TextView {
             }
             else -> {
                 val leftFormat =
-                        AmountFormatter.formatAssetAmount(total - used, asset, abbreviation = true)
+                        amountFormatter.formatAssetAmount(total - used, asset, abbreviation = true)
                 val totalFormat =
-                        AmountFormatter.formatAssetAmount(total, asset, abbreviation = true)
+                        amountFormatter.formatAssetAmount(total, asset, abbreviation = true)
 
                 this.left = "$leftFormat $SLASH_SYMBOL"
                 this.total = totalFormat

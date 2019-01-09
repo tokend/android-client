@@ -67,22 +67,22 @@ open class OfferMatchDetailsActivity(
 
         if (tx.feeAsset != paidAsset) {
             InfoCard(cards_layout)
-                    .setHeading(headingRes, "${AmountFormatter.formatAssetAmount(paidAmount)} " +
+                    .setHeading(headingRes, "${amountFormatter.formatAssetAmount(paidAmount)} " +
                             paidAsset)
                     .addRow(R.string.price,
                             getString(R.string.template_price_one_equals, tx.asset,
-                                    AmountFormatter.formatAssetAmount(tx.matchData.price), tx.matchData.quoteAsset))
+                                    amountFormatter.formatAssetAmount(tx.matchData.price), tx.matchData.quoteAsset))
         } else {
             InfoCard(cards_layout)
-                    .setHeading(headingRes, "${AmountFormatter.formatAssetAmount(paidAmount)} " +
+                    .setHeading(headingRes, "${amountFormatter.formatAssetAmount(paidAmount)} " +
                             paidAsset)
                     .addRow(R.string.amount,
-                            "+${AmountFormatter.formatAssetAmount(amount,
-                                    paidAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                            "+${amountFormatter.formatAssetAmount(amount,
+                                    paidAsset, minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                             } $paidAsset")
                     .addRow(R.string.tx_fee,
-                            "+${AmountFormatter.formatAssetAmount(tx.fee,
-                                    paidAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                            "+${amountFormatter.formatAssetAmount(tx.fee,
+                                    paidAsset, minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                             } $paidAsset")
         }
     }
@@ -103,23 +103,23 @@ open class OfferMatchDetailsActivity(
         if (tx.feeAsset == receivedAsset) {
             InfoCard(cards_layout)
                     .setHeading(headingRes,
-                            "${AmountFormatter.formatAssetAmount(receivedAmount, receivedAsset)
+                            "${amountFormatter.formatAssetAmount(receivedAmount, receivedAsset)
                             } $receivedAsset")
                     .addRow(R.string.amount,
-                            "+${AmountFormatter.formatAssetAmount(amount,
-                                    receivedAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                            "+${amountFormatter.formatAssetAmount(amount,
+                                    receivedAsset, minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                             } $receivedAsset")
                     .addRow(R.string.tx_fee,
-                            "-${AmountFormatter.formatAssetAmount(tx.fee,
-                                    receivedAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                            "-${amountFormatter.formatAssetAmount(tx.fee,
+                                    receivedAsset, minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                             } $receivedAsset")
         } else {
             InfoCard(cards_layout)
-                    .setHeading(headingRes, "${AmountFormatter.formatAssetAmount(receivedAmount, receivedAsset)
+                    .setHeading(headingRes, "${amountFormatter.formatAssetAmount(receivedAmount, receivedAsset)
                     } $receivedAsset")
                     .addRow(R.string.price,
                             getString(R.string.template_price_one_equals, tx.asset,
-                                    AmountFormatter.formatAssetAmount(tx.matchData.price), tx.matchData.quoteAsset))
+                                    amountFormatter.formatAssetAmount(tx.matchData.price), tx.matchData.quoteAsset))
         }
     }
     // endregion

@@ -25,8 +25,8 @@ class DepositDetailsActivity :
         InfoCard(cards_layout)
                 .setHeading(R.string.received, null)
                 .addRow(R.string.amount,"${
-                AmountFormatter.formatAssetAmount(tx.amount,
-                        minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                amountFormatter.formatAssetAmount(tx.amount,
+                        minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                 } ${tx.asset}")
                 .apply {
                     if (!tx.cause.isNullOrBlank()) {

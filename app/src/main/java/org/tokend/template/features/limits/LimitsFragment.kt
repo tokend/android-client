@@ -105,7 +105,7 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
         limit_cards_holder.removeAllViews()
 
         limitsRepository.item?.getAssetEntries(asset)?.let { entries ->
-            LimitCardsProvider(requireContext(), asset, entries)
+            LimitCardsProvider(requireContext(), asset, entries, amountFormatter)
                     .addTo(limit_cards_holder)
         }
     }

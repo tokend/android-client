@@ -9,7 +9,6 @@ import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.extensions.Sale
 import org.tokend.template.view.util.formatter.DateFormatter
 
@@ -41,13 +40,13 @@ class SaleGeneralInfoFragment : BaseFragment() {
                         DateFormatter(requireContext()).formatCompact(sale.endDate))
                 .addRow("Base asset for hard cap", sale.defaultQuoteAsset)
                 .addRow("Soft cap",
-                        "${AmountFormatter.formatAssetAmount(sale.softCap,
+                        "${amountFormatter.formatAssetAmount(sale.softCap,
                                 sale.defaultQuoteAsset)} ${sale.defaultQuoteAsset}")
                 .addRow("Hard cap",
-                        "${AmountFormatter.formatAssetAmount(sale.hardCap,
+                        "${amountFormatter.formatAssetAmount(sale.hardCap,
                                 sale.defaultQuoteAsset)} ${sale.defaultQuoteAsset}")
                 .addRow("${sale.baseAsset} to sell",
-                        AmountFormatter.formatAssetAmount(sale.baseHardCap, sale.baseAsset))
+                        amountFormatter.formatAssetAmount(sale.baseHardCap, sale.baseAsset))
     }
 
     companion object {

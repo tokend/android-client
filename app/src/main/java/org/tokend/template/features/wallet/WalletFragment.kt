@@ -33,7 +33,6 @@ import org.tokend.template.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.view.adapter.history.TxHistoryItem
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.formatter.AmountFormatter
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -123,6 +122,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             }
 
     private fun initHistory() {
+        txAdapter.amountFormatter = amountFormatter
         txAdapter.onItemClick { _, item ->
             item.source?.let { Navigator.openTransactionDetails(this.activity!!, it) }
         }
@@ -257,12 +257,12 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                 .find { it.asset == asset }
                 ?.let { balanceItem ->
                     val balance = balanceItem.balance
-                    collapsing_toolbar.title = AmountFormatter.formatAssetAmount(balance, asset) +
+                    collapsing_toolbar.title = amountFormatter.formatAssetAmount(balance, asset) +
                             " $asset"
                     val converted = balanceItem.convertedBalance
                     val conversionAsset = balanceItem.conversionAsset
                     converted_balance_text_view.text =
-                            AmountFormatter.formatAssetAmount(converted, conversionAsset) +
+                            amountFormatter.formatAssetAmount(converted, conversionAsset) +
                             " $conversionAsset"
                 }
     }

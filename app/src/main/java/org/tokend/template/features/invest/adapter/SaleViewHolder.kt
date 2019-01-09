@@ -7,9 +7,11 @@ import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.extensions.Sale
 import org.tokend.template.features.invest.view.SaleProgressWrapper
+import org.tokend.template.view.util.formatter.AmountFormatter
 
 class SaleViewHolder(view: View,
-                     private val storageUrl: String) : BaseViewHolder<Sale>(view) {
+                     private val storageUrl: String,
+                     private val amountFormatter: AmountFormatter) : BaseViewHolder<Sale>(view) {
     private val pictureImageView = view.sale_picture_image_view
     private val nameTextView = view.sale_name_text_view
     private val shortDescriptionTextView = view.sale_short_description_text_view
@@ -35,6 +37,6 @@ class SaleViewHolder(view: View,
             upcomingIndicator.visibility = View.GONE
         }
 
-        SaleProgressWrapper(view).displayProgress(item)
+        SaleProgressWrapper(view, amountFormatter).displayProgress(item)
     }
 }

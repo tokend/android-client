@@ -26,6 +26,7 @@ import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
 import org.tokend.sdk.api.assets.model.AssetChartData
 import org.tokend.sdk.utils.BigDecimalUtil
+import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.view.ContentLoadingProgressBar
 import org.tokend.template.view.util.formatter.AmountFormatter
@@ -34,6 +35,7 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Interactive chart of the asset price
@@ -50,6 +52,9 @@ class AssetChartCard : LinearLayout {
             super(context, attributeSet, style)
 
     constructor(context: Context) : super(context)
+
+    @Inject
+    lateinit var amountFormatter: AmountFormatter
 
     private var chartScale = AssetChartScale.DAY
         set(value) {
@@ -69,6 +74,7 @@ class AssetChartCard : LinearLayout {
     private val progressBar: ContentLoadingProgressBar
 
     init {
+        (context.applicationContext as App).stateComponent.inject(this)
         removeAllViews()
         LayoutInflater.from(context).inflate(R.layout.layout_asset_chart, this, true)
 
@@ -294,7 +300,7 @@ class AssetChartCard : LinearLayout {
 
     private fun displayTotalValue() {
         valueTextView.text =
-                "${AmountFormatter.formatAssetAmount(total, asset)} $asset"
+                "${amountFormatter.formatAssetAmount(total, asset)} $asset"
         valueHintTextView.text = valueHint
     }
 
@@ -302,12 +308,12 @@ class AssetChartCard : LinearLayout {
         val amount =
                 BigDecimalUtil.stripTrailingZeros(
                         BigDecimal(count.toDouble()).setScale(
-                                AmountFormatter.ASSET_DECIMAL_DIGITS,
+                                AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS,
                                 RoundingMode.HALF_UP
                         )
                 )
         valueTextView.text =
-                "${AmountFormatter.formatAssetAmount(amount)} $asset"
+                "${amountFormatter.formatAssetAmount(amount)} $asset"
         valueHintTextView.text =
                 context.getString(R.string.chart_highlight_at_hint,
                         valueHint, DateFormatter(context).formatCompact(date))
@@ -322,7 +328,7 @@ class AssetChartCard : LinearLayout {
                     else
                         ContextCompat.getColor(context, R.color.ok)
             var growthString =
-                    "$sign${AmountFormatter.formatAssetAmount(growth, asset)} $asset"
+                    "$sign${amountFormatter.formatAssetAmount(growth, asset)} $asset"
             if (percent != null) {
                 growthString += " ($sign${BigDecimalUtil.toPlainString(percent)}%)"
             }

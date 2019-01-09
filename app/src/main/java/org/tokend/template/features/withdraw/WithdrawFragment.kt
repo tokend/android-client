@@ -38,7 +38,6 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import java.math.BigDecimal
@@ -176,7 +175,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayBalance() {
         balance_text_view.text = getString(R.string.template_balance,
-                AmountFormatter.formatAssetAmount(assetBalance),
+                amountFormatter.formatAssetAmount(assetBalance),
                 asset
         )
     }

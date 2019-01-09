@@ -6,18 +6,20 @@ import android.view.View
 import kotlinx.android.synthetic.main.layout_sale_progress.view.*
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
-import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.view.util.formatter.DefaultAmountFormatter
 import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.highlight
+import org.tokend.template.view.util.formatter.AmountFormatter
 import java.util.*
 import kotlin.math.roundToInt
 
-class SaleProgressWrapper(private val rootView: View) {
+class SaleProgressWrapper(private val rootView: View,
+                          private val amountFormatter: AmountFormatter) {
     fun displayProgress(sale: Sale) {
         val context = rootView.context
         val highlightColor = ContextCompat.getColor(context, R.color.accent)
 
-        val investedAmountString = AmountFormatter.formatAssetAmount(sale.currentCap,
+        val investedAmountString = amountFormatter.formatAssetAmount(sale.currentCap,
                 sale.defaultQuoteAsset, abbreviation = true) + " ${sale.defaultQuoteAsset}"
         val investedString = context.getString(R.string.template_sale_invested, investedAmountString)
 

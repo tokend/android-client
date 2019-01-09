@@ -12,10 +12,10 @@ import org.jetbrains.anko.textColor
 import org.tokend.sdk.api.base.model.operations.OperationState
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.LocalizedName
+import org.tokend.template.view.util.formatter.AmountFormatter
 
-class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) {
+class TxHistoryItemViewHolder(view: View, private val amountFormatter: AmountFormatter) : BaseViewHolder<TxHistoryItem>(view) {
     private val iconImageView: AppCompatImageView = view.find(R.id.tx_icon_image_view)
     private val actionTextView: TextView = view.find(R.id.tx_action_text_view)
     private val counterpartyTextView: TextView = view.find(R.id.tx_counterparty_text_view)
@@ -87,7 +87,7 @@ class TxHistoryItemViewHolder(view: View) : BaseViewHolder<TxHistoryItem>(view) 
     }
 
     private fun displayAmount(item: TxHistoryItem) {
-        amountTextView.text = AmountFormatter.formatAssetAmount(item.amount,
+        amountTextView.text = amountFormatter.formatAssetAmount(item.amount,
                 abbreviation = true) + " ${item.asset}"
         if (!item.isReceived) {
             amountTextView.text = "-" + amountTextView.text

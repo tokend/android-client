@@ -49,7 +49,6 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.ContentLoadingProgressBar
 import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.wallet.xdr.AccountType
 import org.tokend.wallet.xdr.AssetPolicy
@@ -111,7 +110,7 @@ class SaleActivity : BaseActivity() {
             val quoteAmount = investAmountWrapper.scaledAmount
             return BigDecimalUtil.scaleAmount(
                     quoteAmount.divide(currentPrice, MathContext.DECIMAL128),
-                    AmountFormatter.getDecimalDigitsCount(sale.baseAsset)
+                    amountFormatter.getDecimalDigitsCount(sale.baseAsset)
             )
         }
 
@@ -143,7 +142,8 @@ class SaleActivity : BaseActivity() {
             sale = GsonFactory().getBaseGson().fromJson(
                     intent.getNullableStringExtra(SALE_JSON_EXTRA),
                     Sale::class.java)
-            investmentInfoManager = InvestmentInfoManager(sale, repositoryProvider, walletInfoProvider)
+            investmentInfoManager = InvestmentInfoManager(sale, repositoryProvider,
+                    walletInfoProvider, amountFormatter)
 
             displaySaleInfo()
             update()
@@ -277,7 +277,7 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun displayChangeableSaleInfo() {
-        SaleProgressWrapper(scroll_view).displayProgress(sale)
+        SaleProgressWrapper(scroll_view, amountFormatter).displayProgress(sale)
     }
 
     private fun displayAssetDetails() {
@@ -424,13 +424,13 @@ class SaleActivity : BaseActivity() {
     private fun updateInvestHelperAndError() {
         if (investAmountWrapper.scaledAmount > maxInvestAmount) {
             amount_edit_text.error = getString(R.string.template_sale_max_investment,
-                    AmountFormatter.formatAssetAmount(maxInvestAmount),
+                    amountFormatter.formatAssetAmount(maxInvestAmount),
                     investAsset)
         } else {
             amount_edit_text.error = null
             amount_edit_text.setHelperText(
                     getString(R.string.template_available,
-                            AmountFormatter.formatAssetAmount(getAvailableBalance(investAsset)),
+                            amountFormatter.formatAssetAmount(getAvailableBalance(investAsset)),
                             investAsset)
             )
         }
@@ -464,10 +464,10 @@ class SaleActivity : BaseActivity() {
 
             setLimitLines(listOf(
                     sale.softCap.toFloat() to
-                            "${AmountFormatter.formatAssetAmount(sale.softCap,
+                            "${amountFormatter.formatAssetAmount(sale.softCap,
                                     quoteAsset)} $quoteAsset",
                     sale.hardCap.toFloat() to
-                            "${AmountFormatter.formatAssetAmount(sale.hardCap,
+                            "${amountFormatter.formatAssetAmount(sale.hardCap,
                                     quoteAsset)} $quoteAsset"
             ))
 

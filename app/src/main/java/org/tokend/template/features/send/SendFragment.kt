@@ -50,7 +50,6 @@ import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.util.validator.EmailValidator
 import org.tokend.template.view.adapter.base.SimpleItemClickListener
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.wallet.Base32Check
@@ -227,7 +226,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayBalance() {
         balance_text_view.text = getString(R.string.template_balance,
-                AmountFormatter.formatAssetAmount(assetBalance),
+                amountFormatter.formatAssetAmount(assetBalance),
                 asset
         )
     }

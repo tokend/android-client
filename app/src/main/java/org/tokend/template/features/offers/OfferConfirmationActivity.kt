@@ -84,21 +84,21 @@ open class OfferConfirmationActivity : BaseActivity() {
 
         val card = InfoCard(cards_layout)
                 .setHeading(R.string.to_pay,
-                        "${AmountFormatter.formatAssetAmount(toPayAmount, payAsset)
+                        "${amountFormatter.formatAssetAmount(toPayAmount, payAsset)
                         } $payAsset")
 
         if (offer.isBuy) {
             card.addRow(R.string.amount,
-                    "+${AmountFormatter.formatAssetAmount(payBaseAmount,
-                            payAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                    "+${amountFormatter.formatAssetAmount(payBaseAmount,
+                            payAsset, minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                     } $payAsset")
                     .addRow(R.string.tx_fee,
-                            "+${AmountFormatter.formatAssetAmount(offer.fee,
-                                    payAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                            "+${amountFormatter.formatAssetAmount(offer.fee,
+                                    payAsset, minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                             } $payAsset")
         } else {
             card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAsset,
-                    AmountFormatter.formatAssetAmount(offer.price), offer.quoteAsset))
+                    amountFormatter.formatAssetAmount(offer.price), offer.quoteAsset))
         }
     }
 
@@ -111,22 +111,22 @@ open class OfferConfirmationActivity : BaseActivity() {
 
         val card = InfoCard(cards_layout)
                 .setHeading(R.string.to_receive,
-                        "${AmountFormatter.formatAssetAmount(toReceiveAmount, receiveAsset)
+                        "${amountFormatter.formatAssetAmount(toReceiveAmount, receiveAsset)
                         } $receiveAsset")
 
         if (!offer.isBuy) {
             card
                     .addRow(R.string.amount,
-                            "+${AmountFormatter.formatAssetAmount(receiveBaseAmount,
-                                    receiveAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                            "+${amountFormatter.formatAssetAmount(receiveBaseAmount,
+                                    receiveAsset, minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                             } $receiveAsset")
                     .addRow(R.string.tx_fee,
-                            "-${AmountFormatter.formatAssetAmount(offer.fee,
-                                    receiveAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                            "-${amountFormatter.formatAssetAmount(offer.fee,
+                                    receiveAsset, minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                             } $receiveAsset")
         } else {
             card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAsset,
-                    AmountFormatter.formatAssetAmount(offer.price), offer.quoteAsset))
+                    amountFormatter.formatAssetAmount(offer.price), offer.quoteAsset))
         }
     }
     // endregion

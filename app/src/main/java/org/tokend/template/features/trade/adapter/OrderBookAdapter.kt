@@ -9,8 +9,12 @@ import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.PaginationRecyclerAdapter
+import org.tokend.template.view.util.formatter.AmountFormatter
 
 class OrderBookAdapter(val isBuy: Boolean) : PaginationRecyclerAdapter<Offer, BaseViewHolder<Offer>>() {
+
+    lateinit var amountFormatter: AmountFormatter
+
     class FooterViewHolder(v: View) : BaseViewHolder<Offer>(v) {
         override fun bind(item: Offer) { }
         fun bind() {
@@ -31,7 +35,7 @@ class OrderBookAdapter(val isBuy: Boolean) : PaginationRecyclerAdapter<Offer, Ba
                     .layoutInflater.inflate(R.layout.list_item_order_book_sell, parent, false)
         }
 
-        return OrderBookItemViewHolder(view)
+        return OrderBookItemViewHolder(view, amountFormatter)
     }
 
     override fun createFooterViewHolder(parent: ViewGroup): BaseViewHolder<Offer> {

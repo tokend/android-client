@@ -24,10 +24,12 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ViewProvider
 import org.tokend.template.data.repository.offers.OffersRepository
 import org.tokend.template.util.Navigator
+import org.tokend.template.view.util.formatter.AmountFormatter
 
 class PendingOffersCard(private val context: Context?,
                         private val repositoryProvider: RepositoryProvider,
-                        private val disposable: CompositeDisposable) : ViewProvider {
+                        private val disposable: CompositeDisposable,
+                        private val amountFormatter: AmountFormatter) : ViewProvider {
 
     private lateinit var view: View
 
@@ -85,6 +87,7 @@ class PendingOffersCard(private val context: Context?,
     }
 
     private fun initPendingOffers() {
+        offersAdapter.amountFormatter = amountFormatter
         offersAdapter.registerAdapterDataObserver(
                 getEmptyViewObserver(view.offers_empty_view,
                         context?.getString(R.string.no_pending_offers),

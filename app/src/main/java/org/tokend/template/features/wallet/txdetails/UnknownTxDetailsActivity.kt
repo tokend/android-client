@@ -24,8 +24,8 @@ class UnknownTxDetailsActivity : TxDetailsActivity<BaseTransferOperation>(BaseTr
         InfoCard(cards_layout)
                 .setHeading(if (item.isSent) R.string.paid else R.string.received, null)
                 .addRow("${
-                AmountFormatter.formatAssetAmount(item.amount,
-                        minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
+                amountFormatter.formatAssetAmount(item.amount,
+                        minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
                 } ${item.asset}", null)
     }
 }

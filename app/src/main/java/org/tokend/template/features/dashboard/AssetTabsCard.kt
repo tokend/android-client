@@ -38,7 +38,8 @@ class AssetTabsCard(private val activity: Activity,
                     private val repositoryProvider: RepositoryProvider,
                     private val errorHandlerFactory: ErrorHandlerFactory,
                     private val assetComparator: Comparator<String>,
-                    private val disposable: CompositeDisposable) : ViewProvider {
+                    private val disposable: CompositeDisposable,
+                    private val amountFormatter: AmountFormatter) : ViewProvider {
 
     private lateinit var view: View
 
@@ -143,6 +144,8 @@ class AssetTabsCard(private val activity: Activity,
     }
 
     private fun initRecentActivity() {
+        activityAdapter.amountFormatter = amountFormatter
+
         activityAdapter.onItemClick { _, item ->
             item.source?.let { Navigator.openTransactionDetails(activity, it) }
         }
@@ -177,11 +180,11 @@ class AssetTabsCard(private val activity: Activity,
                 ?.let { balanceItem ->
                     val balance = balanceItem.balance
                     view.balance_text_view.text =
-                            AmountFormatter.formatAssetAmount(balance, asset) + " $asset"
+                            amountFormatter.formatAssetAmount(balance, asset) + " $asset"
                     val converted = balanceItem.convertedBalance
                     val conversionAsset = balanceItem.conversionAsset
                     view.converted_balance_text_view.text =
-                            AmountFormatter.formatAssetAmount(converted, conversionAsset) +
+                            amountFormatter.formatAssetAmount(converted, conversionAsset) +
                             " $conversionAsset"
                 }
     }

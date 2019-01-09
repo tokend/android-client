@@ -61,6 +61,7 @@ class OffersActivity : BaseActivity() {
     }
 
     private fun initHistory() {
+        txAdapter.amountFormatter = amountFormatter
         txAdapter.onItemClick { _, item ->
             openDetails(item.source)
         }

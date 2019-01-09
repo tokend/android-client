@@ -24,16 +24,19 @@ import java.math.MathContext
 
 class CreateOfferDialog : DialogFragment() {
 
+    lateinit var amountFormatter: AmountFormatter
+
     companion object {
         private const val EXTRA_ORDER = "extra_order"
 
-        fun withArgs(order: Offer): CreateOfferDialog {
+        fun withArgs(order: Offer, amountFormatter: AmountFormatter): CreateOfferDialog {
 
             val dialog = CreateOfferDialog()
 
             val args = Bundle()
             args.putSerializable(EXTRA_ORDER, order)
             dialog.arguments = args
+            dialog.amountFormatter = amountFormatter
 
             return dialog
         }
@@ -138,7 +141,7 @@ class CreateOfferDialog : DialogFragment() {
         }
 
         val total = BigDecimalUtil.scaleAmount(price * amount,
-                AmountFormatter.ASSET_DECIMAL_DIGITS
+                AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS
         )
 
         return Offer(
@@ -198,7 +201,7 @@ class CreateOfferDialog : DialogFragment() {
         }
 
         total_amount_text_view.text =
-                "${AmountFormatter.formatAssetAmount(total)} $finalAsset"
+                "${amountFormatter.formatAssetAmount(total)} $finalAsset"
 
         if (total.signum() == 0) {
             buy_btn.isEnabled = false
