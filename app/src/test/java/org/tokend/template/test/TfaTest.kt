@@ -58,7 +58,7 @@ class TfaTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session, tfaCallback)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -118,7 +118,7 @@ class TfaTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session, tfaCallback)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider

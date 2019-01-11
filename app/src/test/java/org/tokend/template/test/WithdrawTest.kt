@@ -6,6 +6,8 @@ import org.tokend.sdk.api.base.model.operations.WithdrawalOperation
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.di.providers.*
 import org.tokend.template.extensions.Asset
+import org.tokend.template.extensions.toSingle
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
 import org.tokend.template.logic.FeeManager
@@ -34,7 +36,7 @@ class WithdrawTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -70,7 +72,7 @@ class WithdrawTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -79,7 +81,7 @@ class WithdrawTest {
         Util.getSomeMoney(asset, amount * BigDecimal("2"),
                 repositoryProvider, TxManager(apiProvider))
 
-        val assetDetails = repositoryProvider.assets().getSingle(asset).blockingGet()
+        val assetDetails = apiProvider.getSignedApi()?.assets?.getByCode(asset)?.execute()?.get()!!
         makeAssetWithdrawable(assetDetails, repositoryProvider, TxManager(apiProvider))
 
         val request = CreateWithdrawalRequestUseCase(
@@ -162,7 +164,7 @@ class WithdrawTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         val (_, rootAccount, _) = Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -171,7 +173,7 @@ class WithdrawTest {
         val initialBalance = Util.getSomeMoney(asset, amount * BigDecimal("2"),
                 repositoryProvider, TxManager(apiProvider))
 
-        val assetDetails = repositoryProvider.assets().getSingle(asset).blockingGet()
+        val assetDetails = apiProvider.getSignedApi()?.assets?.getByCode(asset)?.execute()?.get()!!
         makeAssetWithdrawable(assetDetails, repositoryProvider, TxManager(apiProvider))
 
         val txManager = TxManager(apiProvider)

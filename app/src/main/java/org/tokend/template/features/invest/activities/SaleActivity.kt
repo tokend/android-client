@@ -35,6 +35,7 @@ import org.tokend.template.data.repository.favorites.FavoritesRepository
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.assets.LogoFactory
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.invest.InvestmentHelpDialog
 import org.tokend.template.features.invest.logic.InvestmentInfoManager
 import org.tokend.template.features.invest.logic.SwitchFavoriteUseCase
@@ -78,7 +79,7 @@ class SaleActivity : BaseActivity() {
     private lateinit var feeManager: FeeManager
 
     private lateinit var sale: SaleRecord
-    private lateinit var saleAsset: org.tokend.template.extensions.Asset
+    private lateinit var saleAsset: AssetRecord
     private lateinit var investmentInfoManager: InvestmentInfoManager
 
     private var isFavorited = false
@@ -281,7 +282,7 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun displayAssetDetails() {
-        saleAsset.details.logo?.getUrl(urlConfigProvider.getConfig().storage)?.let {
+        saleAsset.logoUrl?.let {
             Picasso.with(this)
                     .load(it)
                     .resizeDimen(R.dimen.asset_list_item_logo_size, R.dimen.asset_list_item_logo_size)

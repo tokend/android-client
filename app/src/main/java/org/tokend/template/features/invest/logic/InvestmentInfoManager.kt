@@ -11,8 +11,8 @@ import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.Asset
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.view.util.formatter.AmountFormatter
@@ -25,7 +25,7 @@ class InvestmentInfoManager(
         private val amountFormatter: AmountFormatter
 ) {
     class InvestmentInfo(
-            val assetDetails: Asset,
+            val assetDetails: AssetRecord,
             val financialInfo: InvestmentFinancialInfo
     )
 
@@ -35,7 +35,7 @@ class InvestmentInfoManager(
             val maxFeeByAsset: Map<String, BigDecimal>
     )
 
-    fun getAssetDetails(): Single<Asset> {
+    fun getAssetDetails(): Single<AssetRecord> {
         return repositoryProvider
                 .assets()
                 .getSingle(sale.baseAsset)
@@ -163,7 +163,7 @@ class InvestmentInfoManager(
         return Single.zip(
                 getAssetDetails(),
                 getFinancialInfo(feeManager),
-                BiFunction { assetDetails: Asset, financialInfo: InvestmentFinancialInfo ->
+                BiFunction { assetDetails: AssetRecord, financialInfo: InvestmentFinancialInfo ->
                     InvestmentInfo(
                             assetDetails,
                             financialInfo

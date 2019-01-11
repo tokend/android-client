@@ -1,9 +1,9 @@
 package org.tokend.template.fragments
 
 import android.support.v4.app.Fragment
-import org.tokend.template.extensions.Asset
 import org.tokend.template.features.assets.AssetDetailsFragment
 import org.tokend.template.features.assets.ExploreAssetsFragment
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.fees.FeesFragment
@@ -28,7 +28,7 @@ class FragmentFactory {
         return WalletFragment.newInstance(asset, needTabs)
     }
 
-    fun getAssetDetailsFragment(asset: Asset, balanceCreation: Boolean = true): Fragment {
+    fun getAssetDetailsFragment(asset: AssetRecord, balanceCreation: Boolean = true): Fragment {
         return AssetDetailsFragment.newInstance(asset, balanceCreation)
     }
 

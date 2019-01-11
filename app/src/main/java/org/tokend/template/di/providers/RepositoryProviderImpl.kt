@@ -37,7 +37,7 @@ class RepositoryProviderImpl(
         TfaFactorsRepository(apiProvider, walletInfoProvider)
     }
     private val assetsRepository: AssetsRepository by lazy {
-        AssetsRepository(apiProvider)
+        AssetsRepository(apiProvider, urlConfigProvider)
     }
     private val orderBookRepositories = mutableMapOf<String, OrderBookRepository>()
     private val assetPairsRepository: AssetPairsRepository by lazy {

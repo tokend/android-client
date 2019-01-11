@@ -39,7 +39,7 @@ class OffersTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -77,7 +77,7 @@ class OffersTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -113,7 +113,7 @@ class OffersTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session,urlConfigProvider)
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -157,7 +157,7 @@ class OffersTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider

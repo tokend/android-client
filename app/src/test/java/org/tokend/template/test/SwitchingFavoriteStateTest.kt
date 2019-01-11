@@ -24,7 +24,7 @@ class SwitchingFavoriteStateTest {
         val email = "${System.currentTimeMillis()}@mail.com"
         val password = "qwe123".toCharArray()
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
