@@ -18,8 +18,8 @@ import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
-import org.tokend.template.extensions.Asset
 import org.tokend.template.features.assets.AssetDetailsActivity
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.invest.activities.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
@@ -158,7 +158,7 @@ object Navigator {
     }
 
     fun openAssetDetails(fragment: Fragment, requestCode: Int,
-                         asset: Asset,
+                         asset: AssetRecord,
                          cardView: View? = null) {
         val transitionBundle = createTransitionBundle(fragment.activity!!,
                 cardView to fragment.activity!!.getString(R.string.transition_asset_card)

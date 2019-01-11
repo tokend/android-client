@@ -26,7 +26,7 @@ class SignInTest {
         System.out.println("Email is $email")
         System.out.println("Recovery seed is ${recoveryAccount.secretSeed!!.joinToString("")}")
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         val useCase = SignInUseCase(
                 email,
@@ -78,7 +78,7 @@ class SignInTest {
                 .create(walletData.attributes!!.accountId)
                 .execute()
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         val useCase = SignInUseCase(
                 email,

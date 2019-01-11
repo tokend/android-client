@@ -24,7 +24,7 @@ import org.tokend.sdk.api.accounts.model.Account
 import org.tokend.template.R
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
-import org.tokend.template.extensions.Asset
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.transactions.TxManager
@@ -51,7 +51,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
-    private var currentAsset: Asset? = null
+    private var currentAsset: AssetRecord? = null
         set(value) {
             field = value
             onAssetChanged()
@@ -59,7 +59,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private val externalAccount: Account.ExternalAccount?
         get() = accountRepository.itemSubject.value
                 ?.externalAccounts
-                ?.find { it.type.value == currentAsset?.details?.externalSystemType }
+                ?.find { it.type.value == currentAsset?.externalSystemType }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_deposit, container, false)
@@ -164,7 +164,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
-    private fun initAssets(assets: List<Asset>) {
+    private fun initAssets(assets: List<AssetRecord>) {
         val depositableAssets = assets.filter { it.isBackedByExternalSystem }
 
         if (depositableAssets.isEmpty()) {
@@ -181,7 +181,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         }
 
         asset_tab_layout.onItemSelected {
-            (it.tag as? Asset)?.let { currentAsset = it }
+            (it.tag as? AssetRecord)?.let { currentAsset = it }
         }
 
         asset_tab_layout.setItems(
@@ -360,7 +360,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private fun bindExternalAccount(isRenewal: Boolean = false) {
         val asset = currentAsset?.code
                 ?: return
-        val type = currentAsset?.details?.externalSystemType
+        val type = currentAsset?.externalSystemType
                 ?: return
 
         val progress = ProgressDialogFactory.getTunedDialog(context)

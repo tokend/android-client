@@ -28,7 +28,7 @@ class BindExternalAccountTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         val (walletData, rootAccount, _) = Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider

@@ -49,7 +49,7 @@ class PasswordChangeTest {
         System.out.println("Email is $email")
         System.out.println("Recovery seed is ${recoveryAccount.secretSeed!!.joinToString("")}")
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         SignInUseCase(
                 email,
