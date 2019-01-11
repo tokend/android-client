@@ -142,8 +142,13 @@
         <item name="android:progressDrawable">@drawable/sale_progress</item>
     </style>
 
-    <style name="LimitedMatchParentWidth">
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:layout_width">match_parent</item>
+    <style name="LimitedMatchParentWidthConstraint">
+        <item name="layout_constraintTop_toTopOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="layout_constraintLeft_toLeftOf">parent</item>
+        <item name="layout_constraintRight_toRightOf">parent</item>
+        <item name="layout_constraintWidth_max">@dimen/max_content_width</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
     </style>
 </resources>

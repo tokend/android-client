@@ -8,16 +8,18 @@
 
     <include layout="@layout/include_error_empty_view" />
 
-    <android.support.v4.widget.NestedScrollView
-        style="@style/LimitedMatchParentWidth"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/markdown_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/standard_margin" />
+        <android.support.v4.widget.NestedScrollView style="@style/LimitedMatchParentWidthConstraint">
 
-    </android.support.v4.widget.NestedScrollView>
+            <TextView
+                android:id="@+id/markdown_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/standard_margin" />
 
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.constraint.ConstraintLayout>
 </LinearLayout>

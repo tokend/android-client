@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
@@ -8,93 +8,96 @@
     android:animateLayoutChanges="true"
     tools:context=".features.signin.AuthenticatorSignInActivity">
 
-    <LinearLayout
-        style="@style/LimitedMatchParentWidth"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/double_margin"
-        android:gravity="center"
-        android:orientation="vertical">
+    <ScrollView style="@style/LimitedMatchParentWidthConstraint">
 
         <LinearLayout
-            android:id="@+id/progress_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/double_margin"
             android:gravity="center"
             android:orientation="vertical">
 
-            <android.support.v7.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/quadra_margin"
-                android:contentDescription="@string/app_name"
-                app:srcCompat="@mipmap/product_logo"
-                app:tint="@color/primary" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="@dimen/double_margin" />
-
-            <ProgressBar
-                style="@style/Base.Widget.AppCompat.ProgressBar"
-                android:layout_width="48dp"
-                android:layout_height="48dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_margin"
-                android:text="@string/processing_progress" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/auth_content_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/progress_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/authenticator_hint" />
+                android:orientation="vertical">
 
-            <FrameLayout
-                android:id="@+id/qr_code_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/standard_padding">
-
-                <ProgressBar
+                <android.support.v7.widget.AppCompatImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:indeterminateTint="@color/accent"
-                    tools:targetApi="lollipop" />
+                    android:layout_marginTop="@dimen/quadra_margin"
+                    android:contentDescription="@string/app_name"
+                    app:srcCompat="@mipmap/product_logo"
+                    app:tint="@color/primary" />
 
-                <ImageView
-                    android:id="@+id/qr_code_image_view"
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/double_margin" />
+
+                <ProgressBar
+                    style="@style/Base.Widget.AppCompat.ProgressBar"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_margin"
+                    android:text="@string/processing_progress" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/auth_content_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/show_qr_label" />
+                    android:gravity="center"
+                    android:text="@string/authenticator_hint" />
 
-            </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/qr_code_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/standard_padding">
 
-            <Button
-                android:id="@+id/open_authenticator_button"
-                style="@style/PrimaryButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/double_margin"
-                android:text="@string/open_authenticator_action" />
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:indeterminateTint="@color/accent"
+                        tools:targetApi="lollipop" />
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="@dimen/triple_margin" />
+                    <ImageView
+                        android:id="@+id/qr_code_image_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/show_qr_label" />
 
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/open_authenticator_button"
+                    style="@style/PrimaryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/double_margin"
+                    android:text="@string/open_authenticator_action" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/triple_margin" />
+
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
@@ -9,11 +10,12 @@
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        style="@style/LimitedMatchParentWidthConstraint"
+        app:layout_constraintTop_toBottomOf="@id/appbar"
+        app:layout_constraintTop_toTopOf="@null">
 
         <LinearLayout
-            style="@style/LimitedMatchParentWidth"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -25,11 +27,11 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:overScrollMode="never"
-                android:paddingBottom="@dimen/half_standard_margin"
-                android:paddingEnd="6dp"
                 android:paddingStart="6dp"
-                android:paddingTop="@dimen/half_standard_margin" />
+                android:paddingTop="@dimen/half_standard_margin"
+                android:paddingEnd="6dp"
+                android:paddingBottom="@dimen/half_standard_margin" />
 
         </LinearLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

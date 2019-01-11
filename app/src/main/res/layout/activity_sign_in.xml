@@ -1,118 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        style="@style/LimitedMatchParentWidth"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/standard_margin"
-        android:orientation="vertical">
+    <ScrollView style="@style/LimitedMatchParentWidthConstraint">
 
-        <include layout="@layout/layout_network_field" />
-
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/email_edit_text"
-            style="@style/EditText"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            app:met_floatingLabelText="@string/email" />
+            android:layout_margin="@dimen/standard_margin"
+            android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standard_padding">
+            <include layout="@layout/layout_network_field" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/password_edit_text"
+                android:id="@+id/email_edit_text"
                 style="@style/EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/password"
-                android:inputType="textPassword"
-                app:met_floatingLabelText="@string/password" />
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                app:met_floatingLabelText="@string/email" />
 
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/fingerprint_indicator"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="@dimen/half_standard_padding"
-                android:padding="@dimen/half_standard_margin"
-                android:visibility="gone"
-                app:srcCompat="@drawable/ic_fingerprint" />
+                android:layout_marginTop="@dimen/standard_padding">
 
-        </RelativeLayout>
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/password_edit_text"
+                    style="@style/EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    app:met_floatingLabelText="@string/password" />
 
-        <include
-            layout="@layout/layout_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/fingerprint_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/half_standard_padding"
+                    android:padding="@dimen/half_standard_margin"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_fingerprint" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standard_margin">
+            </RelativeLayout>
 
-            <Button
-                android:id="@+id/sign_in_button"
-                style="@style/PrimaryButton"
-                android:layout_width="wrap_content"
+            <include
+                layout="@layout/layout_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:paddingStart="@dimen/double_margin"
-                android:paddingEnd="@dimen/double_margin"
-                android:text="@string/sign_in"
-                android:theme="@style/PrimaryButton.Overlay" />
+                android:layout_marginTop="@dimen/standard_margin">
+
+                <Button
+                    android:id="@+id/sign_in_button"
+                    style="@style/PrimaryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingStart="@dimen/double_margin"
+                    android:paddingEnd="@dimen/double_margin"
+                    android:text="@string/sign_in"
+                    android:theme="@style/PrimaryButton.Overlay" />
+
+                <TextView
+                    android:id="@+id/recovery_button"
+                    style="@style/PrimaryActionTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/sign_in_button"
+                    android:layout_alignBottom="@+id/sign_in_button"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/sign_in_button"
+                    android:text="@string/forgot_password" />
+
+                <Button
+                    android:id="@+id/sign_up_button"
+                    style="@style/SecondaryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/sign_in_button"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/double_margin"
+                    android:text="@string/sign_up" />
+
+                <Button
+                    android:id="@+id/sign_in_with_authenticator_button"
+                    style="@style/SecondaryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/sign_up_button"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/use_authenticator" />
+
+            </RelativeLayout>
 
             <TextView
-                android:id="@+id/recovery_button"
-                style="@style/PrimaryActionTextView"
-                android:layout_width="wrap_content"
+                android:id="@+id/app_version_text_view"
+                style="@style/HintText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/sign_in_button"
-                android:layout_alignBottom="@+id/sign_in_button"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@id/sign_in_button"
-                android:text="@string/forgot_password" />
+                android:layout_marginTop="@dimen/standard_margin"
+                android:gravity="center"
+                android:paddingBottom="@dimen/standard_padding"
+                tools:text="0.1(1)" />
 
-            <Button
-                android:id="@+id/sign_up_button"
-                style="@style/SecondaryButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/sign_in_button"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/double_margin"
-                android:text="@string/sign_up" />
+        </LinearLayout>
 
-            <Button
-                android:id="@+id/sign_in_with_authenticator_button"
-                style="@style/SecondaryButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/sign_up_button"
-                android:layout_centerHorizontal="true"
-                android:text="@string/use_authenticator" />
+    </ScrollView>
 
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/app_version_text_view"
-            style="@style/HintText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standard_margin"
-            android:gravity="center"
-            android:paddingBottom="@dimen/standard_padding"
-            tools:text="0.1(1)" />
-
-    </LinearLayout>
-
-</ScrollView>
+</android.support.constraint.ConstraintLayout>

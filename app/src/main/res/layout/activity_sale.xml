@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,13 +11,14 @@
 
     <ScrollView
         android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false">
+        style="@style/LimitedMatchParentWidthConstraint"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/progress"
+        app:layout_constraintTop_toTopOf="@null">
 
         <LinearLayout
             android:id="@+id/cards_layout"
-            style="@style/LimitedMatchParentWidth"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:orientation="vertical"
@@ -206,9 +207,9 @@
 
                     <ImageView
                         android:id="@+id/sale_unavailable_icon"
-                        android:scaleType="fitXY"
                         android:layout_width="@dimen/quadra_margin"
                         android:layout_height="@dimen/quadra_margin"
+                        android:scaleType="fitXY"
                         app:srcCompat="@drawable/ic_time" />
 
                     <TextView
@@ -264,4 +265,4 @@
         <requestFocus />
     </View>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

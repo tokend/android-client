@@ -14,103 +14,107 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
-        style="@style/LimitedMatchParentWidth"
-        android:layout_height="match_parent">
-
-        <android.support.v4.widget.NestedScrollView
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/standard_padding">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:padding="@dimen/standard_margin">
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh"
+                style="@style/LimitedMatchParentWidthConstraint">
 
-                <include layout="@layout/layout_balance_card" />
-
-                <android.support.v7.widget.CardView
-                    style="@style/InfoCard"
+                <android.support.v4.widget.NestedScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_margin"
-                    app:cardUseCompatPadding="false">
+                    android:layout_height="match_parent"
+                    android:paddingBottom="@dimen/standard_padding">
 
-                    <android.support.constraint.ConstraintLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:orientation="vertical"
+                        android:padding="@dimen/standard_margin">
 
-                        <include layout="@layout/layout_amount_with_spinner" />
+                        <include layout="@layout/layout_balance_card" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/recipient_edit_text"
-                            style="@style/EditText"
+                        <android.support.v7.widget.CardView
+                            style="@style/InfoCard"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/standard_padding"
-                            android:hint="@string/recipient_label"
-                            android:inputType="text|textEmailAddress"
-                            android:paddingEnd="42dp"
-                            android:paddingRight="42dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/amount_spinner_layout" />
-
-                        <ImageView
-                            android:id="@+id/scan_qr_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/half_standard_padding"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:padding="@dimen/half_standard_margin"
-                            android:scaleType="center"
-                            app:layout_constraintEnd_toEndOf="@+id/recipient_edit_text"
-                            app:layout_constraintTop_toTopOf="@+id/recipient_edit_text"
-                            app:srcCompat="@drawable/ic_qr_code_scan" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/subject_edit_text"
-                            style="@style/EditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/standard_padding"
-                            android:hint="@string/payment_description_label"
-                            android:inputType="textMultiLine|textCapSentences"
-                            android:maxLines="3"
-                            android:scrollbars="vertical"
-                            app:layout_constraintTop_toBottomOf="@id/recipient_edit_text"
-                            app:met_floatingLabelText="@string/payment_description"
-                            app:met_maxCharacters="128" />
-
-                        <include
-                            layout="@layout/layout_progress"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintTop_toBottomOf="@id/subject_edit_text" />
-
-                        <Button
-                            android:id="@+id/go_to_confirmation_button"
-                            style="@style/PrimaryButton"
-                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/standard_margin"
-                            android:text="@string/go_to_confirmation_btn_label"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/progress" />
+                            app:cardUseCompatPadding="false">
 
-                    </android.support.constraint.ConstraintLayout>
-                </android.support.v7.widget.CardView>
-            </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+                            <android.support.constraint.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
 
-    <include layout="@layout/layout_contacts_sheet" />
+                                <include layout="@layout/layout_amount_with_spinner" />
+
+                                <com.rengwuxian.materialedittext.MaterialEditText
+                                    android:id="@+id/recipient_edit_text"
+                                    style="@style/EditText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/standard_padding"
+                                    android:hint="@string/recipient_label"
+                                    android:inputType="text|textEmailAddress"
+                                    android:paddingEnd="42dp"
+                                    android:paddingRight="42dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/amount_spinner_layout" />
+
+                                <ImageView
+                                    android:id="@+id/scan_qr_button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/half_standard_padding"
+                                    android:clickable="true"
+                                    android:focusable="true"
+                                    android:padding="@dimen/half_standard_margin"
+                                    android:scaleType="center"
+                                    app:layout_constraintEnd_toEndOf="@+id/recipient_edit_text"
+                                    app:layout_constraintTop_toTopOf="@+id/recipient_edit_text"
+                                    app:srcCompat="@drawable/ic_qr_code_scan" />
+
+                                <com.rengwuxian.materialedittext.MaterialEditText
+                                    android:id="@+id/subject_edit_text"
+                                    style="@style/EditText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/standard_padding"
+                                    android:hint="@string/payment_description_label"
+                                    android:inputType="textMultiLine|textCapSentences"
+                                    android:maxLines="3"
+                                    android:scrollbars="vertical"
+                                    app:layout_constraintTop_toBottomOf="@id/recipient_edit_text"
+                                    app:met_floatingLabelText="@string/payment_description"
+                                    app:met_maxCharacters="128" />
+
+                                <include
+                                    layout="@layout/layout_progress"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:layout_constraintTop_toBottomOf="@id/subject_edit_text" />
+
+                                <Button
+                                    android:id="@+id/go_to_confirmation_button"
+                                    style="@style/PrimaryButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/standard_margin"
+                                    android:text="@string/go_to_confirmation_btn_label"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/progress" />
+
+                            </android.support.constraint.ConstraintLayout>
+                        </android.support.v7.widget.CardView>
+                    </LinearLayout>
+                </android.support.v4.widget.NestedScrollView>
+            </android.support.v4.widget.SwipeRefreshLayout>
+        </android.support.constraint.ConstraintLayout>
+
+        <include layout="@layout/layout_contacts_sheet" />
 
     </android.support.design.widget.CoordinatorLayout>
 
