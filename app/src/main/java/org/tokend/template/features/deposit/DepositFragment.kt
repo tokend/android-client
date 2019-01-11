@@ -20,8 +20,8 @@ import org.jetbrains.anko.clipboardManager
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.onLongClick
 import org.jetbrains.anko.runOnUiThread
-import org.tokend.sdk.api.accounts.model.Account
 import org.tokend.template.R
+import org.tokend.template.data.model.AccountRecord
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.features.assets.model.AssetRecord
@@ -56,10 +56,11 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             field = value
             onAssetChanged()
         }
-    private val externalAccount: Account.ExternalAccount?
-        get() = accountRepository.itemSubject.value
-                ?.externalAccounts
-                ?.find { it.type.value == currentAsset?.externalSystemType }
+    private val externalAccount: AccountRecord.DepositAccount?
+        get() = accountRepository
+                .item
+                ?.depositAccounts
+                ?.find { it.type == currentAsset?.externalSystemType }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_deposit, container, false)
@@ -258,7 +259,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     // region Address display
     private fun displayAddress() {
-        externalAccount?.data.let { address ->
+        externalAccount?.address.let { address ->
             val expirationDate = externalAccount?.expirationDate
             val isExpired = expirationDate != null && expirationDate <= Date()
             if (address != null && !isExpired) {
@@ -348,11 +349,11 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         return externalAccount?.let { externalAccount ->
             externalAccount.expirationDate?.let { expirationDate ->
                 getString(R.string.template_deposit_address_with_expiration,
-                        currentAsset?.code, externalAccount.data,
+                        currentAsset?.code, externalAccount.address,
                         DateFormatter(requireActivity()).formatCompact(expirationDate)
                 )
             } ?: getString(R.string.template_deposit_address,
-                    currentAsset?.code, externalAccount.data)
+                    currentAsset?.code, externalAccount.address)
         }
     }
     // endregion

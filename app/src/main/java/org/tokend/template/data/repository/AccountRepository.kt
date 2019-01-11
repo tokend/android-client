@@ -2,21 +2,21 @@ package org.tokend.template.data.repository
 
 import io.reactivex.Observable
 import io.reactivex.Single
-import org.tokend.sdk.api.accounts.model.Account
+import org.tokend.template.data.model.AccountRecord
+import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.extensions.toSingle
 
 class AccountRepository(private val apiProvider: ApiProvider,
                         private val walletInfoProvider: WalletInfoProvider)
-    : SimpleSingleItemRepository<Account>() {
+    : SimpleSingleItemRepository<AccountRecord>() {
 
-    override fun getItem(): Observable<Account> {
+    override fun getItem(): Observable<AccountRecord> {
         return getAccountResponse().toObservable()
     }
 
-    private fun getAccountResponse(): Single<Account> {
+    private fun getAccountResponse(): Single<AccountRecord> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
         val signedApi = apiProvider.getSignedApi()
@@ -26,5 +26,8 @@ class AccountRepository(private val apiProvider: ApiProvider,
                 .accounts
                 .getById(accountId)
                 .toSingle()
+                .map {
+                    AccountRecord(it)
+                }
     }
 }

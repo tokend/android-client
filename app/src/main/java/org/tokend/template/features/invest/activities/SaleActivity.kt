@@ -334,7 +334,7 @@ class SaleActivity : BaseActivity() {
     private fun initInvestIfNeeded() {
         if (sale.isAvailable) {
             if (saleAsset.policy and AssetPolicy.REQUIRES_KYC.value == AssetPolicy.REQUIRES_KYC.value &&
-                    accountRepository.item?.typeI == AccountType.NOT_VERIFIED.value) {
+                    accountRepository.item?.type == AccountType.NOT_VERIFIED) {
                 displayKycRequired()
             } else {
                 initInvest()
