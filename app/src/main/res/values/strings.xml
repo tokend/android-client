@@ -344,4 +344,11 @@
     <string name="use_authenticator">Use authenticator</string>
 
     <string name="error_unauthorized">The session has been expired</string>
+
+    <string name="sale_info_start_time">Start time</string>
+    <string name="sale_info_close_time">Close time</string>
+    <string name="sale_info_hard_cap_base_asset">Base asset for hard cap</string>
+    <string name="sale_info_soft_cap">Soft cap</string>
+    <string name="sale_info_hard_cap">Hard cap</string>
+    <string name="sale_info_to_sell_template">%1$s to sell</string>
 </resources>

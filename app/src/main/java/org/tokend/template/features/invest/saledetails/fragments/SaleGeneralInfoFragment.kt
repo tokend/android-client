@@ -34,18 +34,18 @@ class SaleGeneralInfoFragment : BaseFragment() {
 
     private fun displaySaleInfo() {
         InfoCard(cards_layout)
-                .addRow("Start time",
+                .addRow(getString(R.string.sale_info_start_time),
                         DateFormatter(requireContext()).formatCompact(sale.startDate))
-                .addRow("Close time",
+                .addRow(getString(R.string.sale_info_close_time),
                         DateFormatter(requireContext()).formatCompact(sale.endDate))
-                .addRow("Base asset for hard cap", sale.defaultQuoteAsset)
-                .addRow("Soft cap",
+                .addRow(getString(R.string.sale_info_hard_cap_base_asset), sale.defaultQuoteAsset)
+                .addRow(getString(R.string.sale_info_soft_cap),
                         "${amountFormatter.formatAssetAmount(sale.softCap,
                                 sale.defaultQuoteAsset)} ${sale.defaultQuoteAsset}")
-                .addRow("Hard cap",
+                .addRow(getString(R.string.sale_info_hard_cap),
                         "${amountFormatter.formatAssetAmount(sale.hardCap,
                                 sale.defaultQuoteAsset)} ${sale.defaultQuoteAsset}")
-                .addRow("${sale.baseAsset} to sell",
+                .addRow(getString(R.string.sale_info_to_sell_template, sale.baseAsset),
                         amountFormatter.formatAssetAmount(sale.baseHardCap, sale.baseAsset))
     }
 
