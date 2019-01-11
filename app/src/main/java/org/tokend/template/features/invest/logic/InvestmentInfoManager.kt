@@ -12,14 +12,14 @@ import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.Asset
-import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
 class InvestmentInfoManager(
-        private val sale: Sale,
+        private val sale: SaleRecord,
         private val repositoryProvider: RepositoryProvider,
         private val walletInfoProvider: WalletInfoProvider,
         private val amountFormatter: AmountFormatter
@@ -31,7 +31,7 @@ class InvestmentInfoManager(
 
     class InvestmentFinancialInfo(
             val offersByAsset: Map<String, Offer>,
-            val detailedSale: Sale,
+            val detailedSale: SaleRecord,
             val maxFeeByAsset: Map<String, BigDecimal>
     )
 
@@ -63,13 +63,13 @@ class InvestmentInfoManager(
                 }
     }
 
-    fun getDetailedSale(): Single<Sale> {
+    fun getDetailedSale(): Single<SaleRecord> {
         return repositoryProvider
                 .sales()
                 .getSingle(sale.id)
     }
 
-    fun getDetailedSaleIfNeeded(): Single<Sale> {
+    fun getDetailedSaleIfNeeded(): Single<SaleRecord> {
         return if (sale.isAvailable)
             getDetailedSale()
         else Single.just(sale)
@@ -137,7 +137,7 @@ class InvestmentInfoManager(
     }
 
     fun getMaxInvestmentAmount(asset: String,
-                               detailedSale: Sale,
+                               detailedSale: SaleRecord,
                                offersByAsset: Map<String, Offer>,
                                maxFeeByAsset: Map<String, BigDecimal>): BigDecimal {
         val investAssetDetails = detailedSale.quoteAssets.find { it.code == asset }
@@ -176,7 +176,7 @@ class InvestmentInfoManager(
         return Single.zip(
                 getDetailedSaleIfNeeded(),
                 getOffersByAsset(),
-                BiFunction { detailedSale: Sale, offers: Map<String, Offer> ->
+                BiFunction { detailedSale: SaleRecord, offers: Map<String, Offer> ->
                     detailedSale to offers
                 }
         )

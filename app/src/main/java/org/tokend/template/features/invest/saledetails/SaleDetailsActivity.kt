@@ -7,12 +7,12 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.features.invest.activities.SaleActivity
+import org.tokend.template.features.invest.model.SaleRecord
 
 class SaleDetailsActivity : BaseActivity() {
-    private lateinit var sale: Sale
+    private lateinit var sale: SaleRecord
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_sale_details)
@@ -20,7 +20,7 @@ class SaleDetailsActivity : BaseActivity() {
         try {
             sale = GsonFactory().getBaseGson().fromJson(
                     intent.getNullableStringExtra(SaleActivity.SALE_JSON_EXTRA),
-                    Sale::class.java)
+                    SaleRecord::class.java)
         } catch (e: JsonSyntaxException) {
             finish()
             return

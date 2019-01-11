@@ -19,12 +19,12 @@ import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
 import org.tokend.template.extensions.Asset
-import org.tokend.template.extensions.Sale
 import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.invest.activities.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
 import org.tokend.template.features.invest.activities.SaleActivity
+import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
@@ -202,13 +202,13 @@ object Navigator {
         ), requestCode)
     }
 
-    fun openSale(fragment: Fragment, requestCode: Int, sale: Sale) {
+    fun openSale(fragment: Fragment, requestCode: Int, sale: SaleRecord) {
         fragment.startActivityForResult(fragment.requireContext().intentFor<SaleActivity>(
                 SaleActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
         ), requestCode)
     }
 
-    fun openSaleDetails(activity: Activity, sale: Sale) {
+    fun openSaleDetails(activity: Activity, sale: SaleRecord) {
         activity.startActivity(activity.intentFor<SaleDetailsActivity>(
                 SaleDetailsActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
         ))

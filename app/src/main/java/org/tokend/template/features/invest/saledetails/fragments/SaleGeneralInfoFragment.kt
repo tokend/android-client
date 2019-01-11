@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
+import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.view.InfoCard
-import org.tokend.template.extensions.Sale
 import org.tokend.template.view.util.formatter.DateFormatter
 
 class SaleGeneralInfoFragment : BaseFragment() {
@@ -18,13 +18,13 @@ class SaleGeneralInfoFragment : BaseFragment() {
         return inflater.inflate(R.layout.activity_details, container, false)
     }
 
-    private lateinit var sale: Sale
+    private lateinit var sale: SaleRecord
 
     override fun onInitAllowed() {
         try {
             sale = GsonFactory().getBaseGson().fromJson(
                     arguments?.getString(SALE_JSON_EXTRA),
-                    Sale::class.java)
+                    SaleRecord::class.java)
         } catch (e: Exception) {
             return
         }
@@ -52,7 +52,7 @@ class SaleGeneralInfoFragment : BaseFragment() {
     companion object {
         private const val SALE_JSON_EXTRA = "asset"
 
-        fun newInstance(sale: Sale): SaleGeneralInfoFragment {
+        fun newInstance(sale: SaleRecord): SaleGeneralInfoFragment {
             val fragment = SaleGeneralInfoFragment()
             fragment.arguments = Bundle().apply {
                 putString(SALE_JSON_EXTRA, GsonFactory().getBaseGson().toJson(sale))

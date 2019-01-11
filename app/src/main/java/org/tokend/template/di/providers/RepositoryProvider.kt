@@ -3,14 +3,14 @@ package org.tokend.template.di.providers
 import org.tokend.template.data.repository.*
 import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.features.send.repository.ContactsRepository
 import org.tokend.template.data.repository.favorites.FavoritesRepository
+import org.tokend.template.data.repository.offers.OffersRepository
+import org.tokend.template.data.repository.orderbook.OrderBookRepository
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.data.repository.transactions.TxRepository
 import org.tokend.template.features.invest.repository.SalesRepository
-import org.tokend.template.data.repository.offers.OffersRepository
-import org.tokend.template.data.repository.orderbook.OrderBookRepository
+import org.tokend.template.features.send.repository.ContactsRepository
 
 interface RepositoryProvider {
     fun balances(): BalancesRepository

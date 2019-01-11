@@ -11,8 +11,9 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun repositoriesProvider(apiProvider: ApiProvider,
-                            walletInfoProvider: WalletInfoProvider,
+                             walletInfoProvider: WalletInfoProvider,
+                             urlConfigProvider: UrlConfigProvider,
                              context: Context): RepositoryProvider {
-        return RepositoryProviderImpl(apiProvider, walletInfoProvider, context)
+        return RepositoryProviderImpl(apiProvider, walletInfoProvider, urlConfigProvider, context)
     }
 }

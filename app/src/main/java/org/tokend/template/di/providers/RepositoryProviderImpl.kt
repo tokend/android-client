@@ -20,6 +20,7 @@ import org.tokend.template.features.send.repository.ContactsRepository
 class RepositoryProviderImpl(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
+        private val urlConfigProvider: UrlConfigProvider,
         private val context: Context? = null
 ) : RepositoryProvider {
     private val balancesRepository: BalancesRepository by lazy {
@@ -53,11 +54,11 @@ class RepositoryProviderImpl(
         FavoritesRepository(apiProvider, walletInfoProvider)
     }
     private val salesRepository: SalesRepository by lazy {
-        SalesRepository(apiProvider, accountDetails())
+        SalesRepository(apiProvider, urlConfigProvider)
     }
 
     private val filteredSalesRepository: SalesRepository by lazy {
-        SalesRepository(apiProvider, accountDetails)
+        SalesRepository(apiProvider, urlConfigProvider)
     }
 
     private val contactsRepository: ContactsRepository by lazy {

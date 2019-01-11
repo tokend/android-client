@@ -5,63 +5,46 @@ import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.sales.params.SalesParams
-import org.tokend.template.di.providers.ApiProvider
-import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
-import org.tokend.template.extensions.Sale
+import org.tokend.template.di.providers.ApiProvider
+import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.features.invest.model.SaleRecord
 
 class SalesRepository(
         private val apiProvider: ApiProvider,
-        private val accountDetailsRepository: AccountDetailsRepository? = null
-) : PagedDataRepository<Sale, SalesParams>() {
+        private val urlConfigProvider: UrlConfigProvider
+) : PagedDataRepository<SaleRecord, SalesParams>() {
 
     private var name: String? = null
     private var baseAsset: String? = null
 
-    override fun getItems(): Single<List<Sale>> = Single.just(emptyList())
+    override fun getItems(): Single<List<SaleRecord>> = Single.just(emptyList())
 
     override val itemsCache = SalesCache()
 
-    override fun getPage(requestParams: SalesParams): Single<DataPage<Sale>> {
-        var salesPage: DataPage<Sale>? = null
-
+    override fun getPage(requestParams: SalesParams): Single<DataPage<SaleRecord>> {
         return apiProvider.getApi()
                 .sales
                 .getAll(requestParams)
                 .toSingle()
                 .map { page ->
-                    salesPage = page
-                    page.items.map { it.ownerAccount }
-                }
-                .flatMap { ownerAccounts ->
-                    accountDetailsRepository
-                            ?.getDetails(ownerAccounts)
-                            ?.onErrorReturnItem(emptyMap())
-                            ?: Single.just(emptyMap())
-                }
-                .map { owners ->
-                    salesPage!!.items.forEach {
-                        it.ownerDetails = owners[it.ownerAccount]
-                    }
-
-                    salesPage
+                    DataPage(
+                            page.nextCursor,
+                            page.items.map {
+                                SaleRecord(it, urlConfigProvider.getConfig())
+                            },
+                            page.isLast
+                    )
                 }
     }
 
-    fun getSingle(id: Long): Single<Sale> {
+    fun getSingle(id: Long): Single<SaleRecord> {
         return apiProvider.getApi()
                 .sales
                 .getById(id)
                 .toSingle()
-                .flatMap { sale ->
-                    val saleOwner = sale.ownerAccount
-                    accountDetailsRepository?.getDetails(listOf(saleOwner))
-                            ?.map {
-                                sale.ownerDetails = it[saleOwner]
-                                sale
-                            } ?: Single.just(sale)
-                }
+                .map { SaleRecord(it, urlConfigProvider.getConfig()) }
     }
 
     override fun getNextPageRequestParams(): SalesParams {

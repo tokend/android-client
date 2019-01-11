@@ -32,13 +32,13 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.favorites.FavoritesRepository
-import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.assets.LogoFactory
 import org.tokend.template.features.invest.InvestmentHelpDialog
 import org.tokend.template.features.invest.logic.InvestmentInfoManager
 import org.tokend.template.features.invest.logic.SwitchFavoriteUseCase
+import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
 import org.tokend.template.logic.FeeManager
@@ -77,7 +77,7 @@ class SaleActivity : BaseActivity() {
 
     private lateinit var feeManager: FeeManager
 
-    private lateinit var sale: Sale
+    private lateinit var sale: SaleRecord
     private lateinit var saleAsset: org.tokend.template.extensions.Asset
     private lateinit var investmentInfoManager: InvestmentInfoManager
 
@@ -141,7 +141,7 @@ class SaleActivity : BaseActivity() {
         try {
             sale = GsonFactory().getBaseGson().fromJson(
                     intent.getNullableStringExtra(SALE_JSON_EXTRA),
-                    Sale::class.java)
+                    SaleRecord::class.java)
             investmentInfoManager = InvestmentInfoManager(sale, repositoryProvider,
                     walletInfoProvider, amountFormatter)
 
@@ -258,11 +258,11 @@ class SaleActivity : BaseActivity() {
 
     // region Info display
     private fun displaySaleInfo() {
-        title = sale.details.name
-        sale_name_text_view.text = sale.details.name
-        sale_description_text_view.text = sale.details.shortDescription
+        title = sale.name
+        sale_name_text_view.text = sale.name
+        sale_description_text_view.text = sale.shortDescription
 
-        if (sale.details.youtubeVideo != null) {
+        if (sale.youtubeVideo != null) {
             displayYoutubePreview()
         }
 
@@ -312,7 +312,7 @@ class SaleActivity : BaseActivity() {
             video_preview_image_view.layoutParams = RelativeLayout.LayoutParams(width, height)
 
             Picasso.with(this)
-                    .load(sale.details.youtubeVideoPreviewImage)
+                    .load(sale.youtubeVideo?.previewUrl)
                     .placeholder(ColorDrawable(ContextCompat.getColor(this,
                             R.color.saleImagePlaceholder)))
                     .resize(width, height)
@@ -321,7 +321,7 @@ class SaleActivity : BaseActivity() {
         }
 
         video_preview_layout.onClick {
-            sale.details.getYoutubeVideoUrl(mobile = true)
+            sale.youtubeVideo?.url
                     ?.also { url ->
                         browse(url)
                     }

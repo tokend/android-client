@@ -6,16 +6,15 @@ import android.view.View
 import kotlinx.android.synthetic.main.layout_sale_progress.view.*
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
-import org.tokend.template.view.util.formatter.DefaultAmountFormatter
-import org.tokend.template.extensions.Sale
 import org.tokend.template.extensions.highlight
+import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.util.*
 import kotlin.math.roundToInt
 
 class SaleProgressWrapper(private val rootView: View,
                           private val amountFormatter: AmountFormatter) {
-    fun displayProgress(sale: Sale) {
+    fun displayProgress(sale: SaleRecord) {
         val context = rootView.context
         val highlightColor = ContextCompat.getColor(context, R.color.accent)
 
@@ -62,7 +61,7 @@ class SaleProgressWrapper(private val rootView: View,
             rootView.sale_remain_time_text_view.visibility = View.GONE
         }
 
-        val investorsCount = sale.statistics.investors
+        val investorsCount = sale.investorsCount
         val countString = "$investorsCount ${context.resources.getQuantityString(R.plurals.investor,
                 investorsCount)}"
         rootView.sale_investors_count_text_view.text = SpannableString(countString)
