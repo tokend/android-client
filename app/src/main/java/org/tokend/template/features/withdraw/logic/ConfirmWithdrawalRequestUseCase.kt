@@ -55,8 +55,8 @@ class ConfirmWithdrawalRequestUseCase(
     private fun getTransaction(): Single<Transaction> {
         return Single.defer {
             val balanceId = repositoryProvider.balances().itemsList
-                    .find { it.asset == request.asset }
-                    ?.balanceId
+                    .find { it.assetCode == request.asset }
+                    ?.id
                     ?: return@defer Single.error<Transaction>(
                             IllegalStateException("Cannot obtain balance ID for ${request.asset}")
                     )

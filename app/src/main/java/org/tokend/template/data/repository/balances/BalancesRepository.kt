@@ -3,12 +3,12 @@ package org.tokend.template.data.repository.balances
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.BalanceDetails
 import org.tokend.template.extensions.toSingle
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.*
@@ -18,10 +18,10 @@ import org.tokend.wallet.xdr.op_extensions.CreateBalanceOp
 class BalancesRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider
-) : SimpleMultipleItemsRepository<BalanceDetails>() {
+) : SimpleMultipleItemsRepository<BalanceRecord>() {
     override val itemsCache = BalancesCache()
 
-    override fun getItems(): Single<List<BalanceDetails>> {
+    override fun getItems(): Single<List<BalanceRecord>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
@@ -31,6 +31,11 @@ class BalancesRepository(
                 .accounts
                 .getBalancesDetails(accountId)
                 .toSingle()
+                .map { sourceList ->
+                    sourceList.map {
+                        BalanceRecord(it)
+                    }
+                }
     }
 
     /**

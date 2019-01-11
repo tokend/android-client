@@ -130,8 +130,8 @@ class InvestmentInfoManager(
         val assetBalance = repositoryProvider
                 .balances()
                 .itemsList
-                .find { it.asset == asset }
-                ?.balance ?: BigDecimal.ZERO
+                .find { it.assetCode == asset }
+                ?.available ?: BigDecimal.ZERO
 
         return locked + assetBalance
     }

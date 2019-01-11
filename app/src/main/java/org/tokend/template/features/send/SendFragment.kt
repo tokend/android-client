@@ -220,8 +220,8 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private fun updateBalance() {
         assetBalance = balancesRepository.itemsList
-                .find { it.asset == asset }
-                ?.balance ?: BigDecimal.ZERO
+                .find { it.assetCode == asset }
+                ?.available ?: BigDecimal.ZERO
     }
 
     private fun displayBalance() {
@@ -235,7 +235,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         val transferableAssets = balancesRepository.itemsList
                 .asSequence()
                 .mapNotNull {
-                    it.assetDetails
+                    it.asset
                 }
                 .filter {
                     it.isTransferable()

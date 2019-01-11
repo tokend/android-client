@@ -44,7 +44,6 @@ import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 import java.util.concurrent.TimeUnit
-import kotlin.math.roundToInt
 
 
 class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
@@ -214,7 +213,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 .map { asset ->
                     AssetListItem(
                             asset,
-                            balances.find { it.asset == asset.code } != null,
+                            balances.find { it.assetCode == asset.code } != null,
                             storageUrl
                     )
                 }

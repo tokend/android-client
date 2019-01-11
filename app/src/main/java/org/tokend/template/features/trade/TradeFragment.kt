@@ -42,7 +42,6 @@ import org.tokend.template.view.picker.PickerItem
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.template.view.util.formatter.DefaultAmountFormatter
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
 
@@ -255,8 +254,8 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     private fun displayBalance() {
         val balances = balancesRepository.itemsList
 
-        val firstBalance = balances.find { it.asset == currentPair.base }?.balance
-        val secondBalance = balances.find { it.asset == currentPair.quote }?.balance
+        val firstBalance = balances.find { it.assetCode == currentPair.base }?.available
+        val secondBalance = balances.find { it.assetCode == currentPair.quote }?.available
 
         balance_text_view.text = getString(R.string.template_balance_two_assets,
                 amountFormatter.formatAssetAmount(firstBalance, currentPair.base), currentPair.base,

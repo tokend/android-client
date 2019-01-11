@@ -6,11 +6,11 @@ import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import org.tokend.sdk.api.transactions.model.SubmitTransactionResponse
 import org.tokend.sdk.api.transactions.model.TransactionFailedException
-import org.tokend.template.di.providers.AccountProvider
-import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.di.providers.AccountProvider
+import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.Transaction
@@ -102,7 +102,7 @@ class BindExternalAccountUseCase(
     private fun getIsBalanceCreationRequired(): Single<Boolean> {
         return balancesRepository
                 .itemsList
-                .find { it.asset == asset }
+                .find { it.assetCode == asset }
                 .let { it == null }
                 .toSingle()
     }

@@ -101,8 +101,8 @@ class CreatePaymentRequestUseCase(
                 .flatMapMaybe {
                     balancesRepository
                             .itemsList
-                            .find { it.asset == asset }
-                            ?.balanceId
+                            .find { it.assetCode == asset }
+                            ?.id
                             .toMaybe()
                 }
                 .switchIfEmpty(Single.error(

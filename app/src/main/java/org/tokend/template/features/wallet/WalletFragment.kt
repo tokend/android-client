@@ -21,9 +21,9 @@ import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
+import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.transactions.TxRepository
-import org.tokend.template.extensions.BalanceDetails
 import org.tokend.template.extensions.isTransferable
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
@@ -254,13 +254,13 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayBalance() {
         balancesRepository.itemsList
-                .find { it.asset == asset }
-                ?.let { balanceItem ->
-                    val balance = balanceItem.balance
-                    collapsing_toolbar.title = amountFormatter.formatAssetAmount(balance, asset) +
+                .find { it.assetCode == asset }
+                ?.let { balance ->
+                    val available = balance.available
+                    collapsing_toolbar.title = amountFormatter.formatAssetAmount(available, asset) +
                             " $asset"
-                    val converted = balanceItem.convertedBalance
-                    val conversionAsset = balanceItem.conversionAsset
+                    val converted = balance.availableConverted
+                    val conversionAsset = balance.conversionAssetCode
                     converted_balance_text_view.text =
                             amountFormatter.formatAssetAmount(converted, conversionAsset) +
                             " $conversionAsset"
@@ -269,8 +269,8 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     private fun displaySendIfNeeded() {
         (balancesRepository.itemsList
-                .find { it.asset == asset }
-                ?.assetDetails
+                .find { it.assetCode == asset }
+                ?.asset
                 ?.isTransferable() == true)
                 .let { isTransferable ->
                     if (!isTransferable || !BuildConfig.IS_SEND_ALLOWED) {
@@ -294,8 +294,8 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
-    private fun onBalancesUpdated(balances: List<BalanceDetails>) {
-        displayAssetTabs(balances.map { it.asset })
+    private fun onBalancesUpdated(balances: List<BalanceRecord>) {
+        displayAssetTabs(balances.map { it.assetCode })
         displayBalance()
         displaySendIfNeeded()
     }

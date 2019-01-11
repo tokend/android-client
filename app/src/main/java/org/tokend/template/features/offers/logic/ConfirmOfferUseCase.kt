@@ -67,8 +67,8 @@ class ConfirmOfferUseCase(
         val baseAsset = offer.baseAsset
         val quoteAsset = offer.quoteAsset
 
-        val existingBase = balances.find { it.asset == baseAsset }
-        val existingQuote = balances.find { it.asset == quoteAsset }
+        val existingBase = balances.find { it.assetCode == baseAsset }
+        val existingQuote = balances.find { it.assetCode == quoteAsset }
 
         val toCreate = mutableListOf<String>()
         if (existingBase == null) {
@@ -89,14 +89,14 @@ class ConfirmOfferUseCase(
                 .andThen(
                         Single.defer {
                             val base = balancesRepository.itemsList
-                                    .find { it.asset == baseAsset }
-                                    ?.balanceId
+                                    .find { it.assetCode == baseAsset }
+                                    ?.id
                                     ?: throw IllegalStateException(
                                             "Unable to create balance for $baseAsset"
                                     )
                             val quote = balancesRepository.itemsList
-                                    .find { it.asset == quoteAsset }
-                                    ?.balanceId
+                                    .find { it.assetCode == quoteAsset }
+                                    ?.id
                                     ?: throw IllegalStateException(
                                             "Unable to create balance for $quoteAsset"
                                     )

@@ -32,7 +32,6 @@ import org.tokend.template.view.util.ViewProvider
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.lang.ref.WeakReference
 import java.util.*
-import kotlin.Comparator
 
 class AssetTabsCard(private val activity: Activity,
                     private val repositoryProvider: RepositoryProvider,
@@ -176,13 +175,13 @@ class AssetTabsCard(private val activity: Activity,
 
     private fun displayBalance() {
         balancesRepository.itemsList
-                .find { it.asset == asset }
-                ?.let { balanceItem ->
-                    val balance = balanceItem.balance
+                .find { it.assetCode == asset }
+                ?.let { balance ->
+                    val available = balance.available
                     view.balance_text_view.text =
-                            amountFormatter.formatAssetAmount(balance, asset) + " $asset"
-                    val converted = balanceItem.convertedBalance
-                    val conversionAsset = balanceItem.conversionAsset
+                            amountFormatter.formatAssetAmount(available, asset) + " $asset"
+                    val converted = balance.availableConverted
+                    val conversionAsset = balance.conversionAssetCode
                     view.converted_balance_text_view.text =
                             amountFormatter.formatAssetAmount(converted, conversionAsset) +
                             " $conversionAsset"
@@ -195,8 +194,8 @@ class AssetTabsCard(private val activity: Activity,
         balancesDisposable = CompositeDisposable(
                 balancesRepository.itemsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            displayAssetTabs(it.map { it.asset })
+                        .subscribe { balances ->
+                            displayAssetTabs(balances.map { it.assetCode })
                             displayBalance()
                         },
                 balancesRepository.loadingSubject

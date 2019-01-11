@@ -190,8 +190,8 @@ open class OfferMatchDetailsActivity(
                 isBuy = tx.matchData.isBuy,
                 baseAsset = tx.asset,
                 quoteAsset = tx.matchData.quoteAsset,
-                quoteBalance = balances.find { it.asset == tx.matchData.quoteAsset }?.balanceId,
-                baseBalance = balances.find { it.asset == tx.asset }?.balanceId,
+                quoteBalance = balances.find { it.assetCode == tx.matchData.quoteAsset }?.id,
+                baseBalance = balances.find { it.assetCode == tx.asset }?.id,
                 baseAmount = BigDecimal.ZERO,
                 price = BigDecimal.ZERO
         )
