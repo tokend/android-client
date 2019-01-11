@@ -113,7 +113,7 @@ class OffersTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session,urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -193,7 +193,7 @@ class OffersTest {
         repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
 
         val currentBalance = repositoryProvider.balances().itemsList
-                .find { it.asset == baseAsset }!!.balance
+                .find { it.assetCode == baseAsset }!!.available
 
         Assert.assertEquals(0, initialBalance.compareTo(currentBalance))
     }

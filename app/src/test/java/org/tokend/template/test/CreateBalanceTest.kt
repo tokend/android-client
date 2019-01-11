@@ -53,7 +53,7 @@ class CreateBalanceTest {
 
         Assert.assertTrue(repositoryProvider.balances().itemsList
                 .any {
-                    it.asset == assetCode
+                    it.assetCode == assetCode
                 }
         )
     }

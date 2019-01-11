@@ -99,7 +99,7 @@ class PaymentsTest {
         repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
 
         val currentBalance = repositoryProvider.balances().itemsList
-                .find { it.asset == asset }!!.balance
+                .find { it.assetCode == asset }!!.available
 
         Assert.assertNotEquals(0, initialBalance.compareTo(currentBalance))
     }
@@ -167,7 +167,7 @@ class PaymentsTest {
         repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
 
         val currentBalance = repositoryProvider.balances().itemsList
-                .find { it.asset == asset }!!.balance
+                .find { it.assetCode == asset }!!.available
 
         val expected = initialBalance - paymentAmount - request.senderFee.total
 

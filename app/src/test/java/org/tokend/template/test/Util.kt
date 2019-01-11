@@ -55,8 +55,8 @@ object Util {
 
         val balanceId = repositoryProvider.balances()
                 .itemsList
-                .find { it.asset == asset }!!
-                .balanceId
+                .find { it.assetCode == asset }!!
+                .id
 
         val issuance = IssuanceRequest(
                 asset,

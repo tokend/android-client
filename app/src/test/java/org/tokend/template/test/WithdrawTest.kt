@@ -212,7 +212,7 @@ class WithdrawTest {
         repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
 
         val currentBalance = repositoryProvider.balances().itemsList
-                .find { it.asset == asset }!!.balance
+                .find { it.assetCode == asset }!!.available
 
         val expected = initialBalance - amount - request.fee.total
 

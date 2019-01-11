@@ -37,9 +37,9 @@ class BindExternalAccountTest {
         val asset = repositoryProvider.balances()
                 .itemsList
                 .find {
-                    it.assetDetails!!.isBackedByExternalSystem
+                    it.asset!!.isBackedByExternalSystem
                 }
-                ?.assetDetails
+                ?.asset
 
         Assert.assertNotNull("Environment has no assets backed by external system", asset)
         asset!!
@@ -63,9 +63,9 @@ class BindExternalAccountTest {
 
         repositoryProvider.account().updateDeferred().blockingAwait()
 
-        val externalAccounts = repositoryProvider.account().item?.externalAccounts
+        val externalAccounts = repositoryProvider.account().item?.depositAccounts
         val externalAccount = externalAccounts?.find {
-            it.type.value == asset.details.externalSystemType
+            it.type == asset.details.externalSystemType
         }
 
         Assert.assertNotNull(externalAccount)
