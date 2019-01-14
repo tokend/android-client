@@ -5,6 +5,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
+import org.tokend.template.features.tfa.model.TfaFactorRecord
 import java.util.concurrent.CancellationException
 
 /**
@@ -16,9 +17,9 @@ import java.util.concurrent.CancellationException
 class EnableTfaUseCase(
         private val factorType: TfaFactor.Type,
         private val factorsRepository: TfaFactorsRepository,
-        private val newFactorConfirmation: (TfaFactor) -> Single<Boolean>
+        private val newFactorConfirmation: (TfaFactorRecord) -> Single<Boolean>
 ) {
-    private lateinit var newFactor: TfaFactor
+    private lateinit var newFactor: TfaFactorRecord
 
     fun perform(): Completable {
         val scheduler = Schedulers.newThread()
@@ -60,12 +61,12 @@ class EnableTfaUseCase(
             Single.just(false)
         else
             factorsRepository
-                    .deleteBackend(oldFactor.id)
+                    .deleteFactor(oldFactor.id)
                     .toSingleDefault(true)
     }
 
-    private fun addNewFactor(): Single<TfaFactor> {
-        return factorsRepository.addBackend(factorType)
+    private fun addNewFactor(): Single<TfaFactorRecord> {
+        return factorsRepository.addFactor(factorType)
     }
 
     private fun confirmNewFactor(): Single<Boolean> {
@@ -81,7 +82,7 @@ class EnableTfaUseCase(
 
     private fun enableNewFactor(): Single<Boolean> {
         return factorsRepository
-                .setBackendAsMain(newFactor.id)
+                .setFactorAsMain(newFactor.id)
                 .toSingleDefault(true)
     }
 }

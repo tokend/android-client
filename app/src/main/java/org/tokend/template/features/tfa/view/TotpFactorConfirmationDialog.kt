@@ -7,8 +7,8 @@ import io.reactivex.Single
 import io.reactivex.subjects.SingleSubject
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.clipboardManager
-import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.R
+import org.tokend.template.features.tfa.model.TotpTfaFactorRecord
 import org.tokend.template.view.ToastManager
 
 /**
@@ -27,12 +27,11 @@ class TotpFactorConfirmationDialog(
      * Result [Single] will emmit true if user confirmed adding
      * the seed the authenticator, false otherwise.
      */
-    fun show(factor: TfaFactor): Single<Boolean> {
+    fun show(factor: TotpTfaFactorRecord): Single<Boolean> {
         val resultSubject = SingleSubject.create<Boolean>()
 
-        val secret = factor.attributes.secret
-        val seed = factor.attributes.seed
-                ?: return Single.error(IllegalStateException("Factor seed is required"))
+        val secret = factor.secret
+        val seed = factor.seed
 
         val builder = if (style != null)
             AlertDialog.Builder(context, style)

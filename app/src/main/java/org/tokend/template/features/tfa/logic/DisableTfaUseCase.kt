@@ -31,9 +31,9 @@ class DisableTfaUseCase(
                 .itemsList
                 .find { it.type == factorType }
 
-        return if (currentFactor != null && currentFactor.attributes.priority > 0)
+        return if (currentFactor != null && currentFactor.priority > 0)
             factorsRepository
-                    .deleteBackend(currentFactor.id)
+                    .deleteFactor(currentFactor.id)
                     .toSingleDefault(true)
         else
             Single.just(false)

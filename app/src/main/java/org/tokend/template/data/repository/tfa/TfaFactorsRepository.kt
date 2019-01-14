@@ -8,14 +8,16 @@ import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.toCompletable
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.features.tfa.model.TfaFactorRecord
+import org.tokend.template.features.tfa.model.TfaFactorRecordFactory
 
 class TfaFactorsRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider
-) : SimpleMultipleItemsRepository<TfaFactor>() {
+) : SimpleMultipleItemsRepository<TfaFactorRecord>() {
     override val itemsCache = TfaFactorsCache()
 
-    override fun getItems(): Single<List<TfaFactor>> {
+    override fun getItems(): Single<List<TfaFactorRecord>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex
@@ -25,22 +27,30 @@ class TfaFactorsRepository(
                 .tfa
                 .getFactors(walletId)
                 .toSingle()
+                .map { factors ->
+                    factors.map {
+                        TfaFactorRecord(it)
+                    }
+                }
     }
 
     /**
      * Adds given factor as disabled,
      * locally adds it to repository on complete
      */
-    fun addBackend(type: TfaFactor.Type): Single<TfaFactor> {
+    fun addFactor(type: TfaFactor.Type): Single<TfaFactorRecord> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
+        val factory = TfaFactorRecordFactory()
+
         return signedApi
                 .tfa
                 .createFactor(walletId, type)
                 .toSingle()
+                .map(factory::fromFactorCreationResponse)
                 .doOnSuccess {
                     itemsCache.add(it)
                     broadcast()
@@ -54,7 +64,7 @@ class TfaFactorsRepository(
      * Updates priority of factor with given id to the maximum one,
      * locally updates factor in repository on complete
      */
-    fun setBackendAsMain(id: Long): Completable {
+    fun setFactorAsMain(id: Long): Completable {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Completable.error(IllegalStateException("No signed API instance found"))
         val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex
@@ -67,13 +77,13 @@ class TfaFactorsRepository(
                 .andThen(
                         Single.just(
                                 itemsCache.items.maxBy {
-                                    it.attributes.priority
+                                    it.priority
                                 }
-                                        ?.attributes?.priority
+                                        ?.priority
                                         ?: 0
                         )
                 )
-                // Set it for given backend.
+                // Set it for given factor.
                 .flatMapCompletable { maxPriority ->
                     newPriority = maxPriority + 1
                     signedApi
@@ -85,12 +95,12 @@ class TfaFactorsRepository(
                             )
                             .toCompletable()
                 }
-                // Update backend in local cache
+                // Update factor in local cache
                 .doOnComplete {
-                    itemsCache.items.find { it.id == id }?.let { updatedBackend ->
-                        updatedBackend.attributes.priority = newPriority
+                    itemsCache.items.find { it.id == id }?.let { updatedFactor ->
+                        updatedFactor.priority = newPriority
 
-                        itemsCache.transform(listOf(updatedBackend)) { it.id == id }
+                        itemsCache.transform(listOf(updatedFactor)) { it.id == id }
                         broadcast()
                     }
                 }
@@ -103,7 +113,7 @@ class TfaFactorsRepository(
      * Deletes factor with given id,
      * locally deletes it from repository on complete
      */
-    fun deleteBackend(id: Long): Completable {
+    fun deleteFactor(id: Long): Completable {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Completable.error(IllegalStateException("No signed API instance found"))
         val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex
