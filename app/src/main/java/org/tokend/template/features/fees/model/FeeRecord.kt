@@ -11,9 +11,7 @@ class FeeRecord(
         val fixed: BigDecimal,
         val percent: BigDecimal,
         val lowerBound: BigDecimal,
-        val upperBound: BigDecimal,
-        val exists: Boolean,
-        val account_id: String
+        val upperBound: BigDecimal
 ) {
     constructor(source: Fee) : this(
             feeType = source.feeType,
@@ -23,9 +21,7 @@ class FeeRecord(
             fixed = source.fixed,
             percent = source.percent,
             lowerBound = source.lowerBound,
-            upperBound = source.upperBound,
-            exists = source.exists,
-            account_id = source.account_id
+            upperBound = source.upperBound
     )
 
     val total: BigDecimal
