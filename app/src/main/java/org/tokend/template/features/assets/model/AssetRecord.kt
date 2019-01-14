@@ -3,6 +3,7 @@ package org.tokend.template.features.assets.model
 import org.tokend.sdk.api.assets.model.SimpleAsset
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.template.data.model.UrlConfig
+import org.tokend.template.util.PolicyChecker
 import java.io.Serializable
 import java.math.BigDecimal
 
@@ -17,7 +18,7 @@ class AssetRecord(
         val issued: BigDecimal?,
         val available: BigDecimal?,
         val maximum: BigDecimal
-) : Serializable {
+) : Serializable, PolicyChecker {
 
     constructor(source: SimpleAsset,
                 urlConfig: UrlConfig?
@@ -46,10 +47,6 @@ class AssetRecord(
 
     val isWithdrawable: Boolean
         get() = checkPolicy(policy, org.tokend.wallet.xdr.AssetPolicy.WITHDRAWABLE.value)
-
-    private fun checkPolicy(policy: Int, mask: Int): Boolean {
-        return policy and mask == mask
-    }
 
     override fun equals(other: Any?): Boolean {
         return other is AssetRecord

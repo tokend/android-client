@@ -2,12 +2,10 @@ package org.tokend.template.test
 
 import junit.framework.Assert
 import org.junit.Test
+import org.tokend.sdk.api.assets.model.SimpleAsset
 import org.tokend.sdk.api.base.model.operations.WithdrawalOperation
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.di.providers.*
-import org.tokend.template.extensions.Asset
-import org.tokend.template.extensions.toSingle
-import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
 import org.tokend.template.logic.FeeManager
@@ -119,7 +117,7 @@ class WithdrawTest {
         )
     }
 
-    private fun makeAssetWithdrawable(asset: Asset,
+    private fun makeAssetWithdrawable(asset: SimpleAsset,
                                       repositoryProvider: RepositoryProvider,
                                       txManager: TxManager) {
         val netParams = repositoryProvider.systemInfo().getNetworkParams().blockingGet()

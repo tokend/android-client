@@ -1,7 +1,7 @@
 package org.tokend.template.data.repository.pairs
 
 import io.reactivex.Single
-import org.tokend.sdk.api.assets.model.AssetPair
+import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.extensions.toSingle
@@ -10,14 +10,17 @@ import java.math.MathContext
 
 class AssetPairsRepository(
         private val apiProvider: ApiProvider
-) : SimpleMultipleItemsRepository<AssetPair>(), AmountConverter {
+) : SimpleMultipleItemsRepository<AssetPairRecord>(), AmountConverter {
     override val itemsCache = AssetPairsCache()
 
-    override fun getItems(): Single<List<AssetPair>> {
+    override fun getItems(): Single<List<AssetPairRecord>> {
         return apiProvider.getApi()
                 .assets
                 .getPairs()
                 .toSingle()
+                .map { pairsList ->
+                    pairsList.map { AssetPairRecord(it) }
+                }
     }
 
     override fun getRate(sourceAsset: String, destAsset: String): BigDecimal? {
