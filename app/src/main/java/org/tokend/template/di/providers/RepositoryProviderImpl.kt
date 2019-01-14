@@ -24,7 +24,7 @@ class RepositoryProviderImpl(
         private val context: Context? = null
 ) : RepositoryProvider {
     private val balancesRepository: BalancesRepository by lazy {
-        BalancesRepository(apiProvider, walletInfoProvider)
+        BalancesRepository(apiProvider, walletInfoProvider, urlConfigProvider)
     }
     private val transactionsRepositoriesByAsset = mutableMapOf<String, TxRepository>()
     private val accountDetails: AccountDetailsRepository by lazy {

@@ -25,7 +25,6 @@ import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
-import org.tokend.template.extensions.isWithdrawable
 import org.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.logic.WithdrawalAddressUtil
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
@@ -187,7 +186,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                     it.asset
                 }
                 .filter {
-                    it.isWithdrawable()
+                    it.isWithdrawable
                 }
                 .map {
                     it.code

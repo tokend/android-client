@@ -1,24 +1,23 @@
 package org.tokend.template.data.model
 
 import org.tokend.sdk.api.accounts.model.SimpleBalanceDetails
-import org.tokend.template.extensions.Asset
+import org.tokend.template.features.assets.model.AssetRecord
 import java.math.BigDecimal
 
-// TODO: Asset model
 class BalanceRecord(
         val id: String,
-        val asset: Asset,
+        val asset: AssetRecord,
         val available: BigDecimal,
         val availableConverted: BigDecimal,
         val conversionAssetCode: String,
         val locked: BigDecimal
 ) {
-    constructor(source: SimpleBalanceDetails) : this(
+    constructor(source: SimpleBalanceDetails, urlConfig: UrlConfig?) : this(
             id = source.balanceId,
             available = source.balance,
             locked = source.lockedBalance,
             availableConverted = source.convertedBalance,
-            asset = source.assetDetails!!,
+            asset = AssetRecord(source.assetDetails!!, urlConfig),
             conversionAssetCode = source.conversionAsset
     )
 

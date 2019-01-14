@@ -8,6 +8,7 @@ import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
+import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.toSingle
 import org.tokend.template.logic.transactions.TxManager
@@ -17,7 +18,8 @@ import org.tokend.wallet.xdr.op_extensions.CreateBalanceOp
 
 class BalancesRepository(
         private val apiProvider: ApiProvider,
-        private val walletInfoProvider: WalletInfoProvider
+        private val walletInfoProvider: WalletInfoProvider,
+        private val urlConfigProvider: UrlConfigProvider
 ) : SimpleMultipleItemsRepository<BalanceRecord>() {
     override val itemsCache = BalancesCache()
 
@@ -33,7 +35,7 @@ class BalancesRepository(
                 .toSingle()
                 .map { sourceList ->
                     sourceList.map {
-                        BalanceRecord(it)
+                        BalanceRecord(it, urlConfigProvider.getConfig())
                     }
                 }
     }

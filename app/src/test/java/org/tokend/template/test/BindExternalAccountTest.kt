@@ -3,14 +3,13 @@ package org.tokend.template.test
 import junit.framework.Assert
 import org.junit.Test
 import org.tokend.template.di.providers.*
-import org.tokend.template.extensions.Asset
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.deposit.BindExternalAccountUseCase
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.Account
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.CreateExternalSystemAccountIdPoolEntryActionInput
-import org.tokend.wallet.xdr.ManageExternalSystemAccountIdPoolEntryAction
 import org.tokend.wallet.xdr.ManageExternalSystemAccountIdPoolEntryOp
 import org.tokend.wallet.xdr.Operation
 
@@ -37,7 +36,7 @@ class BindExternalAccountTest {
         val asset = repositoryProvider.balances()
                 .itemsList
                 .find {
-                    it.asset!!.isBackedByExternalSystem
+                    it.asset.isBackedByExternalSystem
                 }
                 ?.asset
 
@@ -48,7 +47,7 @@ class BindExternalAccountTest {
 
         val useCase = BindExternalAccountUseCase(
                 asset.code,
-                asset.details.externalSystemType!!,
+                asset.externalSystemType!!,
                 session,
                 repositoryProvider.systemInfo(),
                 repositoryProvider.balances(),
@@ -65,23 +64,22 @@ class BindExternalAccountTest {
 
         val externalAccounts = repositoryProvider.account().item?.depositAccounts
         val externalAccount = externalAccounts?.find {
-            it.type == asset.details.externalSystemType
+            it.type == asset.externalSystemType
         }
 
         Assert.assertNotNull(externalAccount)
     }
 
-    private fun addNewExternalSystemAddress(asset: Asset,
+    private fun addNewExternalSystemAddress(asset: AssetRecord,
                                             repositoryProvider: RepositoryProvider,
                                             txManager: TxManager) {
         val netParams = repositoryProvider.systemInfo().getNetworkParams().blockingGet()
 
-        val action = ManageExternalSystemAccountIdPoolEntryAction.CREATE
         val op = ManageExternalSystemAccountIdPoolEntryOp(
                 ManageExternalSystemAccountIdPoolEntryOp
                         .ManageExternalSystemAccountIdPoolEntryOpActionInput.Create(
                         CreateExternalSystemAccountIdPoolEntryActionInput(
-                                asset.details.externalSystemType!!,
+                                asset.externalSystemType!!,
                                 "testaddr${System.currentTimeMillis()}",
                                 0,
                                 CreateExternalSystemAccountIdPoolEntryActionInput

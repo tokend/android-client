@@ -31,7 +31,6 @@ import org.tokend.template.R
 import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
-import org.tokend.template.extensions.isTransferable
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.send.adapter.ContactsAdapter
 import org.tokend.template.features.send.logic.CreatePaymentRequestUseCase
@@ -238,7 +237,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                     it.asset
                 }
                 .filter {
-                    it.isTransferable()
+                    it.isTransferable
                 }
                 .map {
                     it.code

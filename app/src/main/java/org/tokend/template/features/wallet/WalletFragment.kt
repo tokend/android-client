@@ -24,7 +24,6 @@ import org.tokend.template.R
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.transactions.TxRepository
-import org.tokend.template.extensions.isTransferable
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.Navigator
@@ -271,7 +270,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         (balancesRepository.itemsList
                 .find { it.assetCode == asset }
                 ?.asset
-                ?.isTransferable() == true)
+                ?.isTransferable == true)
                 .let { isTransferable ->
                     if (!isTransferable || !BuildConfig.IS_SEND_ALLOWED) {
                         send_fab.hide()

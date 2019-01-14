@@ -10,7 +10,7 @@ class AssetRecord(
         val code: String,
         val ownerAccount: String?,
         val policy: Int,
-        val name: String,
+        val name: String?,
         val logoUrl: String?,
         val terms: RemoteFile?,
         val externalSystemType: Int?,
