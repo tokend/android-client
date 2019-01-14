@@ -10,7 +10,7 @@ import org.tokend.sdk.api.accounts.params.OffersParams
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParams
-import org.tokend.sdk.api.trades.model.Offer
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.AccountProvider
@@ -24,13 +24,12 @@ import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.Transaction
 import org.tokend.wallet.xdr.ManageOfferOp
 import org.tokend.wallet.xdr.Operation
-import java.math.BigDecimal
 
 class OffersRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
         private val onlyPrimary: Boolean
-) : PagedDataRepository<Offer, OffersParams>() {
+) : PagedDataRepository<OfferRecord, OffersParams>() {
     override val itemsCache = OffersCache()
 
     override fun getNextPageRequestParams(): OffersParams {
@@ -47,9 +46,9 @@ class OffersRepository(
         )
     }
 
-    override fun getItems(): Single<List<Offer>> = Single.just(emptyList())
+    override fun getItems(): Single<List<OfferRecord>> = Single.just(emptyList())
 
-    override fun getPage(requestParams: OffersParams): Single<DataPage<Offer>> {
+    override fun getPage(requestParams: OffersParams): Single<DataPage<OfferRecord>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
@@ -60,6 +59,15 @@ class OffersRepository(
                 offersParams = requestParams
         )
                 .toSingle()
+                .map {
+                    DataPage(
+                            it.nextCursor,
+                            it.items.map { offer ->
+                                OfferRecord(offer)
+                            },
+                            it.isLast
+                    )
+                }
     }
 
     // region Create.
@@ -70,8 +78,8 @@ class OffersRepository(
     fun create(accountProvider: AccountProvider,
                systemInfoRepository: SystemInfoRepository,
                txManager: TxManager,
-               offer: Offer,
-               offerToCancel: Offer? = null): Completable {
+               offer: OfferRecord,
+               offerToCancel: OfferRecord? = null): Completable {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Completable.error(IllegalStateException("No wallet info found"))
         val account = accountProvider.getAccount()
@@ -100,23 +108,20 @@ class OffersRepository(
     private fun createOfferCreationTransaction(networkParams: NetworkParams,
                                                sourceAccountId: String,
                                                signer: Account,
-                                               offer: Offer,
-                                               offerToCancel: Offer?): Single<Transaction> {
+                                               offer: OfferRecord,
+                                               offerToCancel: OfferRecord?): Single<Transaction> {
         return offerToCancel
                 .toMaybe()
                 .toObservable()
                 .map<ManageOfferOp> {
                     ManageOfferOp(
                             baseBalance =
-                            PublicKeyFactory.fromBalanceId(it.baseBalance
-                                    ?: EMPTY_BALANCE_ID),
+                            PublicKeyFactory.fromBalanceId(it.baseBalanceId),
                             quoteBalance =
-                            PublicKeyFactory.fromBalanceId(it.quoteBalance
-                                    ?: EMPTY_BALANCE_ID),
+                            PublicKeyFactory.fromBalanceId(it.quoteBalanceId),
                             amount = 0,
                             price = networkParams.amountToPrecised(it.price),
-                            fee = networkParams.amountToPrecised(it.fee
-                                    ?: BigDecimal.ZERO),
+                            fee = networkParams.amountToPrecised(it.fee),
                             isBuy = it.isBuy,
                             orderBookID = it.orderBookId,
                             offerID = it.id,
@@ -127,15 +132,12 @@ class OffersRepository(
                         Observable.just(
                                 ManageOfferOp(
                                         baseBalance =
-                                        PublicKeyFactory.fromBalanceId(offer.baseBalance
-                                                ?: EMPTY_BALANCE_ID),
+                                        PublicKeyFactory.fromBalanceId(offer.baseBalanceId),
                                         quoteBalance =
-                                        PublicKeyFactory.fromBalanceId(offer.quoteBalance
-                                                ?: EMPTY_BALANCE_ID),
+                                        PublicKeyFactory.fromBalanceId(offer.quoteBalanceId),
                                         amount = networkParams.amountToPrecised(offer.baseAmount),
                                         price = networkParams.amountToPrecised(offer.price),
-                                        fee = networkParams.amountToPrecised(offer.fee
-                                                ?: BigDecimal.ZERO),
+                                        fee = networkParams.amountToPrecised(offer.fee),
                                         isBuy = offer.isBuy,
                                         orderBookID = offer.orderBookId,
                                         offerID = 0L,
@@ -162,7 +164,7 @@ class OffersRepository(
     fun cancel(accountProvider: AccountProvider,
                systemInfoRepository: SystemInfoRepository,
                txManager: TxManager,
-               offer: Offer): Completable {
+               offer: OfferRecord): Completable {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Completable.error(IllegalStateException("No wallet info found"))
         val account = accountProvider.getAccount()
@@ -193,17 +195,16 @@ class OffersRepository(
     private fun createOfferCancellationTransaction(networkParams: NetworkParams,
                                                    sourceAccountId: String,
                                                    signer: Account,
-                                                   offer: Offer): Single<Transaction> {
+                                                   offer: OfferRecord): Single<Transaction> {
         return {
             ManageOfferOp(
                     baseBalance =
-                    PublicKeyFactory.fromBalanceId(offer.baseBalance ?: EMPTY_BALANCE_ID),
+                    PublicKeyFactory.fromBalanceId(offer.baseBalanceId),
                     quoteBalance =
-                    PublicKeyFactory.fromBalanceId(offer.quoteBalance ?: EMPTY_BALANCE_ID),
+                    PublicKeyFactory.fromBalanceId(offer.quoteBalanceId),
                     amount = 0,
                     price = networkParams.amountToPrecised(offer.price),
-                    fee = networkParams.amountToPrecised(offer.fee
-                            ?: BigDecimal.ZERO),
+                    fee = networkParams.amountToPrecised(offer.fee),
                     isBuy = offer.isBuy,
                     orderBookID = offer.orderBookId,
                     offerID = offer.id,
@@ -218,9 +219,4 @@ class OffersRepository(
                 }
     }
     // endregion
-
-    companion object {
-        private const val EMPTY_BALANCE_ID =
-                "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZBO"
-    }
 }

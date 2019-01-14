@@ -1,32 +1,28 @@
 package org.tokend.template.features.trade.adapter
 
-import android.graphics.Paint
-import android.graphics.Typeface
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.TextView
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
-import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.util.formatter.AmountFormatter
 
-class OrderBookItemViewHolder(view: View, private val amountFormatter: AmountFormatter) : BaseViewHolder<Offer>(view) {
+class OrderBookItemViewHolder(view: View,
+                              private val amountFormatter: AmountFormatter
+) : BaseViewHolder<OfferRecord>(view) {
     private val priceTextView = view.find<TextView>(R.id.price_text_view)
     private val volumeTextView = view.find<TextView>(R.id.volume_text_view)
 
     private var isBuy = false
 
-    private val textSize: Float by lazy {
-        view.context.resources.getDimensionPixelSize(R.dimen.text_size_order_book).toFloat()
-    }
-
-    override fun bind(item: Offer) {
+    override fun bind(item: OfferRecord) {
         isBuy = item.isBuy
 
-        volumeTextView.text = amountFormatter.formatAssetAmount(item.baseAmount, item.baseAsset)
-        priceTextView.text = amountFormatter.formatAssetAmount(item.price, item.quoteAsset,
+        volumeTextView.text = amountFormatter.formatAssetAmount(item.baseAmount, item.baseAssetCode)
+        priceTextView.text = amountFormatter.formatAssetAmount(item.price, item.quoteAssetCode,
                 minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
         if (isBuy) {
             priceTextView.textColor =
@@ -34,17 +30,6 @@ class OrderBookItemViewHolder(view: View, private val amountFormatter: AmountFor
         } else {
             priceTextView.textColor =
                     ContextCompat.getColor(view.context, R.color.sent)
-        }
-    }
-
-    companion object {
-        fun measureText(text: String?, textSize: Float, typeface: Typeface): Float {
-            val paint = Paint()
-            paint.isAntiAlias = true
-            paint.textSize = textSize
-            paint.typeface = typeface
-
-            return paint.measureText(text)
         }
     }
 }

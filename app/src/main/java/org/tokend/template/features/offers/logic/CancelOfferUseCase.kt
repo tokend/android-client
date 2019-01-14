@@ -2,7 +2,7 @@ package org.tokend.template.features.offers.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.tokend.sdk.api.trades.model.Offer
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.logic.transactions.TxManager
@@ -12,7 +12,7 @@ import org.tokend.template.logic.transactions.TxManager
  * Updates related repositories: order book, balances, offers
  */
 class CancelOfferUseCase(
-        private val offer: Offer,
+        private val offer: OfferRecord,
         private val repositoryProvider: RepositoryProvider,
         private val accountProvider: AccountProvider,
         private val txManager: TxManager
@@ -42,8 +42,8 @@ class CancelOfferUseCase(
     private fun updateRepositories(): Single<Boolean> {
         if (!isPrimaryMarket) {
             repositoryProvider.orderBook(
-                    offer.baseAsset,
-                    offer.quoteAsset,
+                    offer.baseAssetCode,
+                    offer.quoteAssetCode,
                     offer.isBuy
             ).updateIfEverUpdated()
         }

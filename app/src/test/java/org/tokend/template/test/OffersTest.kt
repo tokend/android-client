@@ -2,7 +2,7 @@ package org.tokend.template.test
 
 import junit.framework.Assert
 import org.junit.Test
-import org.tokend.sdk.api.trades.model.Offer
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
 import org.tokend.template.features.offers.logic.ConfirmOfferUseCase
@@ -10,13 +10,6 @@ import org.tokend.template.features.offers.logic.PrepareOfferUseCase
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
-import org.tokend.wallet.Account
-import org.tokend.wallet.PublicKeyFactory
-import org.tokend.wallet.TransactionBuilder
-import org.tokend.wallet.xdr.CreateIssuanceRequestOp
-import org.tokend.wallet.xdr.Fee
-import org.tokend.wallet.xdr.IssuanceRequest
-import org.tokend.wallet.xdr.Operation
 import java.math.BigDecimal
 
 class OffersTest {
@@ -45,7 +38,7 @@ class OffersTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
-        val offer = Offer(
+        val offer = OfferRecord(
                 baseAsset,
                 quoteAsset,
                 isBuy = false,
@@ -200,8 +193,8 @@ class OffersTest {
 
     private fun submitOffer(session: Session, apiProvider: ApiProvider,
                             repositoryProvider: RepositoryProvider,
-                            offerToCancel: Offer? = null) {
-        val offer = Offer(
+                            offerToCancel: OfferRecord? = null) {
+        val offer = OfferRecord(
                 baseAsset,
                 quoteAsset,
                 isBuy = false,

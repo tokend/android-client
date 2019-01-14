@@ -23,8 +23,8 @@ import kotlinx.android.synthetic.main.layout_asset_chart_sheet.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.assets.model.AssetPair
-import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.orderbook.OrderBookRepository
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
@@ -128,7 +128,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     private fun initPairSelection() {
         pairs_tabs.onItemSelected {
-            (it.tag as? AssetPair)?.let { currentPair = it }
+            (it.tag as? AssetPair)?.let { pair ->
+                currentPair = pair
+            }
         }
     }
 
@@ -455,7 +457,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     }
 
 
-    private fun displayBuyItems(items: Collection<Offer>) {
+    private fun displayBuyItems(items: Collection<OfferRecord>) {
         buyAdapter.setData(items)
         if (items.isEmpty() && !buyRepository.isNeverUpdated) {
             bids_empty_view.visibility = View.VISIBLE
@@ -464,7 +466,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
-    private fun displaySellItems(items: Collection<Offer>) {
+    private fun displaySellItems(items: Collection<OfferRecord>) {
         sellAdapter.setData(items)
         if (items.isEmpty() && !sellRepository.isNeverUpdated) {
             asks_empty_view.visibility = View.VISIBLE
@@ -490,9 +492,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     // region Offer creation
     private fun createOffer() {
         openOfferDialog(
-                Offer(
-                        baseAsset = currentPair.base,
-                        quoteAsset = currentPair.quote,
+                OfferRecord(
+                        baseAssetCode = currentPair.base,
+                        quoteAssetCode = currentPair.quote,
                         baseAmount = BigDecimal.ZERO,
                         price = currentPair.price,
                         isBuy = false
@@ -500,7 +502,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         )
     }
 
-    private fun openOfferDialog(offer: Offer) {
+    private fun openOfferDialog(offer: OfferRecord) {
         CreateOfferDialog.withArgs(offer, amountFormatter)
                 .showDialog(this.childFragmentManager, "create_offer")
                 .subscribe {
@@ -509,7 +511,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 .addTo(compositeDisposable)
     }
 
-    private fun goToOfferConfirmation(offer: Offer) {
+    private fun goToOfferConfirmation(offer: OfferRecord) {
         val progress = ProgressDialogFactory.getTunedDialog(requireContext())
 
         PrepareOfferUseCase(

@@ -6,44 +6,43 @@ import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
-import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.features.offers.logic.ConfirmOfferUseCase
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
 open class OfferConfirmationActivity : BaseActivity() {
-    protected lateinit var offer: Offer
-    protected var prevOffer: Offer? = null
+    protected lateinit var offer: OfferRecord
+    protected var prevOffer: OfferRecord? = null
 
     protected val payAsset: String
         get() =
             if (offer.isBuy)
-                offer.quoteAsset
+                offer.quoteAssetCode
             else
-                offer.baseAsset
+                offer.baseAssetCode
     protected val toPayAmount: BigDecimal
         get() =
             if (offer.isBuy)
-                offer.quoteAmount + (offer.fee ?: BigDecimal.ZERO)
+                offer.quoteAmount + offer.fee
             else
                 offer.baseAmount
 
     protected val receiveAsset: String
         get() =
             if (!offer.isBuy)
-                offer.quoteAsset
+                offer.quoteAssetCode
             else
-                offer.baseAsset
+                offer.baseAssetCode
     protected val toReceiveAmount: BigDecimal
         get() =
             (if (!offer.isBuy)
-                offer.quoteAmount - (offer.fee ?: BigDecimal.ZERO)
+                offer.quoteAmount - offer.fee
             else
                 offer.baseAmount).takeIf { it.signum() > 0 } ?: BigDecimal.ZERO
 
@@ -62,9 +61,9 @@ open class OfferConfirmationActivity : BaseActivity() {
 
     protected open fun initData() {
         offer =
-                (intent.getSerializableExtra(OFFER_EXTRA) as? Offer)
+                (intent.getSerializableExtra(OFFER_EXTRA) as? OfferRecord)
                 ?: return
-        prevOffer = intent.getSerializableExtra(OFFER_TO_CANCEL_EXTRA) as? Offer
+        prevOffer = intent.getSerializableExtra(OFFER_TO_CANCEL_EXTRA) as? OfferRecord
     }
 
     // region Display
@@ -95,8 +94,8 @@ open class OfferConfirmationActivity : BaseActivity() {
                             "+${amountFormatter.formatAssetAmount(offer.fee, payAsset)
                             } $payAsset")
         } else {
-            card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAsset,
-                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAsset), offer.quoteAsset))
+            card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAssetCode,
+                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode), offer.quoteAssetCode))
         }
     }
 
@@ -121,8 +120,8 @@ open class OfferConfirmationActivity : BaseActivity() {
                             "-${amountFormatter.formatAssetAmount(offer.fee, receiveAsset)
                             } $receiveAsset")
         } else {
-            card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAsset,
-                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAsset), offer.quoteAsset))
+            card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAssetCode,
+                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode), offer.quoteAssetCode))
         }
     }
     // endregion

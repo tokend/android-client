@@ -13,11 +13,11 @@ import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
 import org.tokend.sdk.api.base.model.operations.*
-import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
@@ -177,14 +177,16 @@ object Navigator {
     }
 
     fun openOfferConfirmation(fragment: Fragment, requestCode: Int,
-                              offer: Offer) {
+                              offer: OfferRecord) {
         fragment.startActivityForResult(fragment.context?.intentFor<OfferConfirmationActivity>(
                 OfferConfirmationActivity.OFFER_EXTRA to offer
         ), requestCode)
     }
 
-    fun openInvestmentConfirmation(activity: Activity, requestCode: Int,
-                                   offer: Offer, offerToCancel: Offer? = null,
+    fun openInvestmentConfirmation(activity: Activity,
+                                   requestCode: Int,
+                                   offer: OfferRecord,
+                                   offerToCancel: OfferRecord? = null,
                                    displayToReceive: Boolean = true,
                                    assetName: String? = null) {
         activity.startActivityForResult(activity.intentFor<InvestmentConfirmationActivity>(

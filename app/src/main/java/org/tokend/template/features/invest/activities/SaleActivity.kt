@@ -23,12 +23,12 @@ import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.FavoriteRecord
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.favorites.FavoritesRepository
 import org.tokend.template.extensions.getNullableStringExtra
@@ -87,7 +87,7 @@ class SaleActivity : BaseActivity() {
             invalidateOptionsMenu()
         }
 
-    private var existingOffers: Map<String, Offer> = emptyMap()
+    private var existingOffers: Map<String, OfferRecord> = emptyMap()
     private var maxFees: Map<String, BigDecimal> = emptyMap()
     private var maxInvestAmount = BigDecimal.ZERO
 
@@ -524,9 +524,9 @@ class SaleActivity : BaseActivity() {
         val getNewOffer =
                 if (cancel)
                     Single.just(
-                            Offer(
-                                    baseAsset = sale.baseAsset,
-                                    quoteAsset = asset,
+                            OfferRecord(
+                                    baseAssetCode = sale.baseAsset,
+                                    quoteAssetCode = asset,
                                     baseAmount = BigDecimal.ZERO,
                                     price = price,
                                     isBuy = true,
@@ -536,10 +536,10 @@ class SaleActivity : BaseActivity() {
                     )
                 else
                     PrepareOfferUseCase(
-                            Offer(
-                                    baseAsset = sale.baseAsset,
+                            OfferRecord(
+                                    baseAssetCode = sale.baseAsset,
                                     baseAmount = receiveAmount,
-                                    quoteAsset = asset,
+                                    quoteAssetCode = asset,
                                     quoteAmount = amount,
                                     price = price,
                                     isBuy = true,

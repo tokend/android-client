@@ -7,20 +7,21 @@ import android.support.v7.widget.LinearLayoutManager
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_offers.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.api.base.model.operations.InvestmentOperation
 import org.tokend.sdk.api.base.model.operations.OfferMatchOperation
 import org.tokend.sdk.api.base.model.operations.TransferOperation
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.data.repository.offers.OffersRepository
+import org.tokend.template.extensions.fromOfferRecord
+import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
 import org.tokend.template.features.wallet.txdetails.OfferMatchDetailsActivity
 import org.tokend.template.features.wallet.txdetails.TxDetailsActivity
+import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.adapter.history.TxHistoryAdapter
 import org.tokend.template.view.adapter.history.TxHistoryItem
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
-import org.tokend.template.data.repository.offers.OffersRepository
-import org.tokend.template.util.ObservableTransformers
 
 class OffersActivity : BaseActivity() {
     private val onlyPrimary: Boolean
@@ -121,15 +122,15 @@ class OffersActivity : BaseActivity() {
                 .addTo(compositeDisposable)
     }
 
-    private fun displayOffers(items: List<Offer>) {
+    private fun displayOffers(items: List<OfferRecord>) {
         txAdapter.setData(
                 items
                         .asSequence()
                         .map {
                             if (onlyPrimary)
-                                InvestmentOperation.fromOffer(it)
+                                InvestmentOperation.fromOfferRecord(it)
                             else
-                                OfferMatchOperation.fromOffer(it)
+                                OfferMatchOperation.fromOfferRecord(it)
                         }
                         .map {
                             TxHistoryItem.fromTransaction(it)

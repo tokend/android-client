@@ -12,9 +12,9 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.MaybeSubject
 import kotlinx.android.synthetic.main.fragment_dialog_crate_order.*
 import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
-import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.extensions.inputChanges
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.input.AmountEditTextWrapper
@@ -29,7 +29,7 @@ class CreateOfferDialog : DialogFragment() {
     companion object {
         private const val EXTRA_ORDER = "extra_order"
 
-        fun withArgs(order: Offer, amountFormatter: AmountFormatter): CreateOfferDialog {
+        fun withArgs(order: OfferRecord, amountFormatter: AmountFormatter): CreateOfferDialog {
 
             val dialog = CreateOfferDialog()
 
@@ -45,14 +45,14 @@ class CreateOfferDialog : DialogFragment() {
     private var asset: String = ""
         set(value) {
             field = value
-            isSwitched = value == currentOffer.quoteAsset
+            isSwitched = value == currentOffer.quoteAssetCode
             updateTotal()
         }
 
     private var isSwitched = false
-    private val dialogResultSubject = MaybeSubject.create<Offer>()
+    private val dialogResultSubject = MaybeSubject.create<OfferRecord>()
     private lateinit var disposable: CompositeDisposable
-    private lateinit var currentOffer: Offer
+    private lateinit var currentOffer: OfferRecord
     private lateinit var amountEditTextWrapper: AmountEditTextWrapper
     private lateinit var priceEditTextWrapper: AmountEditTextWrapper
 
@@ -80,10 +80,10 @@ class CreateOfferDialog : DialogFragment() {
         )
 
         arguments?.let { args ->
-            currentOffer = args.getSerializable(EXTRA_ORDER) as Offer
+            currentOffer = args.getSerializable(EXTRA_ORDER) as OfferRecord
         } ?: return
 
-        asset = currentOffer.baseAsset
+        asset = currentOffer.baseAssetCode
         initTextFields()
         initAssetSpinner()
     }
@@ -96,7 +96,7 @@ class CreateOfferDialog : DialogFragment() {
 
         price_edit_text.setText(BigDecimalUtil.toPlainString(currentOffer.price))
         getString(R.string.template_offer_creation_price,
-                currentOffer.quoteAsset, currentOffer.baseAsset)
+                currentOffer.quoteAssetCode, currentOffer.baseAssetCode)
                 .also {
                     price_edit_text.floatingLabelText = it
                     price_edit_text.hint = it
@@ -113,9 +113,9 @@ class CreateOfferDialog : DialogFragment() {
     private fun initAssetSpinner() {
         asset_spinner
                 .setSimpleItems(
-                        listOf(currentOffer.baseAsset,
-                                currentOffer.quoteAsset),
-                        currentOffer.baseAsset)
+                        listOf(currentOffer.baseAssetCode,
+                                currentOffer.quoteAssetCode),
+                        currentOffer.baseAssetCode)
 
         asset_spinner.onItemSelected {
             asset = it.text
@@ -127,12 +127,12 @@ class CreateOfferDialog : DialogFragment() {
         disposable.dispose()
     }
 
-    fun showDialog(manager: FragmentManager?, tag: String?): Maybe<Offer> {
+    fun showDialog(manager: FragmentManager?, tag: String?): Maybe<OfferRecord> {
         super.show(manager, tag)
         return dialogResultSubject
     }
 
-    private fun createOffer(isBuy: Boolean): Offer {
+    private fun createOffer(isBuy: Boolean): OfferRecord {
         val price = priceEditTextWrapper.rawAmount
 
         val amount = when (isSwitched) {
@@ -144,9 +144,9 @@ class CreateOfferDialog : DialogFragment() {
                 AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS
         )
 
-        return Offer(
-                baseAsset = currentOffer.baseAsset,
-                quoteAsset = currentOffer.quoteAsset,
+        return OfferRecord(
+                baseAssetCode = currentOffer.baseAssetCode,
+                quoteAssetCode = currentOffer.quoteAssetCode,
                 baseAmount = amount,
                 price = price,
                 quoteAmount = total,
@@ -196,8 +196,8 @@ class CreateOfferDialog : DialogFragment() {
         }
 
         val finalAsset = when (isSwitched) {
-            false -> currentOffer.quoteAsset
-            else -> currentOffer.baseAsset
+            false -> currentOffer.quoteAssetCode
+            else -> currentOffer.baseAssetCode
         }
 
         total_amount_text_view.text =

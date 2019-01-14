@@ -5,13 +5,15 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
+import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.toSingle
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.sdk.api.base.model.operations.OfferMatchOperation
 import org.tokend.sdk.api.base.model.operations.OperationState
 import org.tokend.sdk.api.base.model.operations.OperationType
-import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
@@ -159,15 +161,16 @@ open class OfferMatchDetailsActivity(
     private fun cancelOffer() {
         val progress = ProgressDialogFactory.getTunedDialog(this)
 
-        val offer = getOfferToCancel()
-
-        CancelOfferUseCase(
-                offer,
-                repositoryProvider,
-                accountProvider,
-                TxManager(apiProvider)
-        )
-                .perform()
+        getOfferToCancel()
+                .flatMapCompletable { offer ->
+                    CancelOfferUseCase(
+                            offer,
+                            repositoryProvider,
+                            accountProvider,
+                            TxManager(apiProvider)
+                    )
+                            .perform()
+                }
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe { progress.show() }
                 .doOnTerminate { progress.dismiss() }
@@ -181,20 +184,25 @@ open class OfferMatchDetailsActivity(
                 )
     }
 
-    protected open fun getOfferToCancel(): Offer {
+    protected open fun getOfferToCancel(): Single<OfferRecord> {
         val balances = repositoryProvider.balances().itemsList
 
-        return Offer(
-                id = tx.id.toLongOrNull() ?: 0L,
-                orderBookId = tx.matchData.orderBookId ?: 0L,
-                isBuy = tx.matchData.isBuy,
-                baseAsset = tx.asset,
-                quoteAsset = tx.matchData.quoteAsset,
-                quoteBalance = balances.find { it.assetCode == tx.matchData.quoteAsset }?.id,
-                baseBalance = balances.find { it.assetCode == tx.asset }?.id,
-                baseAmount = BigDecimal.ZERO,
-                price = BigDecimal.ZERO
-        )
+        return {
+            OfferRecord(
+                    id = tx.id.toLongOrNull() ?: 0L,
+                    orderBookId = tx.matchData.orderBookId ?: 0L,
+                    isBuy = tx.matchData.isBuy,
+                    baseAssetCode = tx.asset,
+                    quoteAssetCode = tx.matchData.quoteAsset,
+                    quoteBalanceId =
+                    balances.find { it.assetCode == tx.matchData.quoteAsset }?.id
+                            ?: throw IllegalStateException("No balance found for ${tx.matchData.quoteAsset}"),
+                    baseBalanceId = balances.find { it.assetCode == tx.asset }?.id
+                            ?: throw IllegalStateException("No balance found for ${tx.asset}"),
+                    baseAmount = BigDecimal.ZERO,
+                    price = BigDecimal.ZERO
+            )
+        }.toSingle()
     }
     // endregion
 
