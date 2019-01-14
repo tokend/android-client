@@ -2,14 +2,14 @@ package org.tokend.template.features.invest.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.tokend.sdk.api.favorites.model.FavoriteEntry
+import org.tokend.template.data.model.FavoriteRecord
 import org.tokend.template.data.repository.favorites.FavoritesRepository
 
 /**
  * Switches favorite state of given entry by [FavoriteEntry.type] and [FavoriteEntry.key]
  */
 class SwitchFavoriteUseCase(
-        private val favoriteEntry: FavoriteEntry,
+        private val favoriteEntry: FavoriteRecord,
         private val favoritesRepository: FavoritesRepository
 ) {
     fun perform(): Completable {
@@ -31,7 +31,7 @@ class SwitchFavoriteUseCase(
                 .toSingleDefault(true)
     }
 
-    private fun getExistingEntry(): FavoriteEntry? {
+    private fun getExistingEntry(): FavoriteRecord? {
         return favoritesRepository
                 .itemsList
                 .find {
@@ -46,7 +46,7 @@ class SwitchFavoriteUseCase(
                 .toSingleDefault(true)
     }
 
-    private fun removeFromFavorites(existingEntry: FavoriteEntry): Single<Boolean> {
+    private fun removeFromFavorites(existingEntry: FavoriteRecord): Single<Boolean> {
         return favoritesRepository
                 .removeFromFavorites(existingEntry.id)
                 .toSingleDefault(true)
