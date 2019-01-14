@@ -74,7 +74,8 @@ class TxRepository(
         return PaymentsParams(
                 asset = asset,
                 operationsParams = OperationsParams(
-                        completedOnly = false
+                        completedOnly = false,
+                        skipCanceled = false
                 ),
                 pagingParams = PagingParams(
                         cursor = nextCursor,
