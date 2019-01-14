@@ -22,13 +22,12 @@ import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_asset_chart_sheet.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.assets.model.AssetPair
 import org.tokend.template.R
+import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.orderbook.OrderBookRepository
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
-import org.tokend.template.extensions.isTradeable
 import org.tokend.template.extensions.toSingle
 import org.tokend.template.features.offers.CreateOfferDialog
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
@@ -50,9 +49,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
 
-    private val pairs = mutableListOf<AssetPair>()
-    private var currentPair: AssetPair =
-            AssetPair("", "", BigDecimal.ONE, BigDecimal.ONE)
+    private val pairs = mutableListOf<AssetPairRecord>()
+    private var currentPair: AssetPairRecord =
+            AssetPairRecord("", "", BigDecimal.ONE, BigDecimal.ONE)
         set(value) {
             field = value
             onPairChanged()
@@ -128,7 +127,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     private fun initPairSelection() {
         pairs_tabs.onItemSelected {
-            (it.tag as? AssetPair)?.let { pair ->
+            (it.tag as? AssetPairRecord)?.let { pair ->
                 currentPair = pair
             }
         }
@@ -293,7 +292,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         ).also { it.addTo(compositeDisposable) }
     }
 
-    private fun onNewPairs(newPairs: List<AssetPair>) {
+    private fun onNewPairs(newPairs: List<AssetPairRecord>) {
         pairs.clear()
         pairs.addAll(
                 newPairs
