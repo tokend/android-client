@@ -1,6 +1,6 @@
 package org.tokend.template.features.withdraw.model
 
-import org.tokend.sdk.api.fees.model.Fee
+import org.tokend.template.features.fees.model.FeeRecord
 import java.io.Serializable
 import java.math.BigDecimal
 
@@ -9,5 +9,5 @@ data class WithdrawalRequest(
         val amount: BigDecimal,
         val asset: String,
         val destinationAddress: String,
-        val fee: Fee
+        val fee: FeeRecord
 ) : Serializable

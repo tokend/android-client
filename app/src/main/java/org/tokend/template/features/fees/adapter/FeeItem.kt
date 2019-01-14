@@ -1,8 +1,7 @@
 package org.tokend.template.features.fees.adapter
 
-import org.tokend.sdk.api.fees.model.Fee
+import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.formatter.DefaultAmountFormatter
 import org.tokend.wallet.xdr.FeeType
 
 class FeeItem(
@@ -20,7 +19,7 @@ class FeeItem(
     }
 
     companion object {
-        fun fromFee(fee: Fee, amountFormatter: AmountFormatter): FeeItem {
+        fun fromFee(fee: FeeRecord, amountFormatter: AmountFormatter): FeeItem {
             val type = FeeType.values().find { fee.feeType == it.value }!!
 
             val subtype = Subtype.values().find { fee.subtype == it.value }!!

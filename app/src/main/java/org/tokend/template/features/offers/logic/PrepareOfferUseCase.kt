@@ -2,10 +2,10 @@ package org.tokend.template.features.offers.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import org.tokend.sdk.api.fees.model.Fee
 import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.features.fees.model.FeeRecord
 
 /**
  * Performs pre-confirmation offer preparations: loads fee.
@@ -45,7 +45,7 @@ class PrepareOfferUseCase(
                 )
     }
 
-    private fun getFee(): Single<Fee> {
+    private fun getFee(): Single<FeeRecord> {
         return feeManager.getOfferFee(
                 accountId,
                 offer.quoteAsset,
