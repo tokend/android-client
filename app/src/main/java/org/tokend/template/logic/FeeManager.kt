@@ -1,10 +1,10 @@
 package org.tokend.template.logic
 
 import io.reactivex.Single
-import org.tokend.sdk.api.fees.model.Fee
 import org.tokend.sdk.api.fees.params.FeeParams
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.PaymentFeeType
 import java.math.BigDecimal
@@ -25,7 +25,7 @@ class FeeManager(
      * @param asset operation asset
      */
     fun getFee(type: Int, subtype: Int,
-               accountId: String, asset: String, amount: BigDecimal): Single<Fee> {
+               accountId: String, asset: String, amount: BigDecimal): Single<FeeRecord> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
@@ -38,6 +38,7 @@ class FeeManager(
                         subtype)
         )
                 .toSingle()
+                .map { FeeRecord(it) }
     }
 
     /**
@@ -49,7 +50,7 @@ class FeeManager(
      * @see getFee
      */
     fun getPaymentFee(accountId: String, asset: String, amount: BigDecimal,
-                      isOutgoing: Boolean): Single<Fee> {
+                      isOutgoing: Boolean): Single<FeeRecord> {
         val subtype =
                 if (isOutgoing)
                     PaymentFeeType.OUTGOING.value
@@ -63,7 +64,7 @@ class FeeManager(
      *
      * @see getFee
      */
-    fun getWithdrawalFee(accountId: String, asset: String, amount: BigDecimal): Single<Fee> {
+    fun getWithdrawalFee(accountId: String, asset: String, amount: BigDecimal): Single<FeeRecord> {
         return getFee(FeeType.WITHDRAWAL_FEE.value, 0, accountId, asset, amount)
     }
 
@@ -72,7 +73,7 @@ class FeeManager(
      *
      * @see getFee
      */
-    fun getOfferFee(accountId: String, asset: String, amount: BigDecimal): Single<Fee> {
+    fun getOfferFee(accountId: String, asset: String, amount: BigDecimal): Single<FeeRecord> {
         return getFee(FeeType.OFFER_FEE.value, 0, accountId, asset, amount)
     }
 }
