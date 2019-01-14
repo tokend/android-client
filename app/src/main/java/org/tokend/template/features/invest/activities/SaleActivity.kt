@@ -23,13 +23,12 @@ import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.favorites.model.FavoriteEntry
-import org.tokend.sdk.api.favorites.model.SaleFavoriteEntry
 import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.data.model.FavoriteRecord
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.favorites.FavoritesRepository
 import org.tokend.template.extensions.getNullableStringExtra
@@ -616,9 +615,9 @@ class SaleActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun getFavoriteEntry(): FavoriteEntry? {
+    private fun getFavoriteEntry(): FavoriteRecord? {
         return favoritesRepository.itemsList.find {
-            it.type == SaleFavoriteEntry.TYPE && it.key == sale.baseAsset
+            it.type == FavoriteRecord.TYPE_SALE && it.key == sale.baseAsset
         }
     }
 
@@ -627,7 +626,7 @@ class SaleActivity : BaseActivity() {
         switchFavoriteDisposable?.dispose()
         switchFavoriteDisposable =
                 SwitchFavoriteUseCase(
-                        SaleFavoriteEntry(sale.baseAsset),
+                        FavoriteRecord.sale(sale.baseAsset),
                         favoritesRepository
                 )
                         .perform()
