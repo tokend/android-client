@@ -8,8 +8,8 @@ import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.toCompletable
 import org.tokend.template.extensions.toSingle
+import org.tokend.template.features.tfa.model.TfaFactorCreationResult
 import org.tokend.template.features.tfa.model.TfaFactorRecord
-import org.tokend.template.features.tfa.model.TfaFactorRecordFactory
 
 class TfaFactorsRepository(
         private val apiProvider: ApiProvider,
@@ -38,21 +38,24 @@ class TfaFactorsRepository(
      * Adds given factor as disabled,
      * locally adds it to repository on complete
      */
-    fun addFactor(type: TfaFactor.Type): Single<TfaFactorRecord> {
+    fun addFactor(type: TfaFactor.Type): Single<TfaFactorCreationResult> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val walletId = walletInfoProvider.getWalletInfo()?.walletIdHex
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
-        val factory = TfaFactorRecordFactory()
-
         return signedApi
                 .tfa
                 .createFactor(walletId, type)
                 .toSingle()
-                .map(factory::fromFactorCreationResponse)
-                .doOnSuccess {
-                    itemsCache.add(it)
+                .map {
+                    TfaFactorCreationResult(
+                            TfaFactorRecord(it.newFactor),
+                            it.confirmationAttributes
+                    )
+                }
+                .doOnSuccess { (newFactor, _) ->
+                    itemsCache.add(newFactor)
                     broadcast()
                 }
                 .doOnSubscribe { isLoading = true }

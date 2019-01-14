@@ -67,8 +67,9 @@ class TfaTest {
         val useCase = EnableTfaUseCase(
                 TfaFactor.Type.TOTP,
                 repositoryProvider.tfaFactors()
-        ) { factor ->
-            authenticator = GoogleAuthenticator(factor.attributes.secret!!)
+        ) { (factor, attributes) ->
+            Assert.assertEquals(TfaFactor.Type.TOTP, factor.type)
+            authenticator = GoogleAuthenticator(attributes["secret"].toString())
             addedFactorId = factor.id
             Single.just(true)
         }
@@ -76,7 +77,7 @@ class TfaTest {
         useCase.perform().blockingAwait()
 
         Assert.assertTrue(repositoryProvider.tfaFactors().itemsList.any {
-            it.id == addedFactorId && it.attributes.priority > 0
+            it.id == addedFactorId && it.priority > 0
         })
     }
 
@@ -127,8 +128,8 @@ class TfaTest {
         EnableTfaUseCase(
                 TfaFactor.Type.TOTP,
                 repositoryProvider.tfaFactors()
-        ) { factor ->
-            authenticator = GoogleAuthenticator(factor.attributes.secret!!)
+        ) { (_, attributes) ->
+            authenticator = GoogleAuthenticator(attributes["secret"].toString())
             Single.just(true)
         }.perform().blockingAwait()
 
@@ -140,7 +141,7 @@ class TfaTest {
         useCase.perform().blockingAwait()
 
         Assert.assertFalse(repositoryProvider.tfaFactors().itemsList.any {
-            it.type == TfaFactor.Type.TOTP && it.attributes.priority > 0
+            it.type == TfaFactor.Type.TOTP && it.priority > 0
         })
     }
 }

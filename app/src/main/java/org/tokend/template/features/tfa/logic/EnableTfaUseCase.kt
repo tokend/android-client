@@ -5,7 +5,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
-import org.tokend.template.features.tfa.model.TfaFactorRecord
+import org.tokend.template.features.tfa.model.TfaFactorCreationResult
 import java.util.concurrent.CancellationException
 
 /**
@@ -17,9 +17,11 @@ import java.util.concurrent.CancellationException
 class EnableTfaUseCase(
         private val factorType: TfaFactor.Type,
         private val factorsRepository: TfaFactorsRepository,
-        private val newFactorConfirmation: (TfaFactorRecord) -> Single<Boolean>
+        private val newFactorConfirmation: (TfaFactorCreationResult) -> Single<Boolean>
 ) {
-    private lateinit var newFactor: TfaFactorRecord
+    private lateinit var creationResult: TfaFactorCreationResult
+    private val newFactorId: Long
+        get() = creationResult.newFactor.id
 
     fun perform(): Completable {
         val scheduler = Schedulers.newThread()
@@ -31,8 +33,8 @@ class EnableTfaUseCase(
                 .flatMap {
                     addNewFactor()
                 }
-                .doOnSuccess { newFactor ->
-                    this.newFactor = newFactor
+                .doOnSuccess { creationResult ->
+                    this.creationResult = creationResult
                 }
                 .flatMap {
                     confirmNewFactor()
@@ -65,12 +67,12 @@ class EnableTfaUseCase(
                     .toSingleDefault(true)
     }
 
-    private fun addNewFactor(): Single<TfaFactorRecord> {
+    private fun addNewFactor(): Single<TfaFactorCreationResult> {
         return factorsRepository.addFactor(factorType)
     }
 
     private fun confirmNewFactor(): Single<Boolean> {
-        return newFactorConfirmation.invoke(newFactor)
+        return newFactorConfirmation.invoke(creationResult)
                 .map { isConfirmed ->
                     if (!isConfirmed) {
                         throw CancellationException("Flow has been canceled on confirmation")
@@ -82,7 +84,7 @@ class EnableTfaUseCase(
 
     private fun enableNewFactor(): Single<Boolean> {
         return factorsRepository
-                .setFactorAsMain(newFactor.id)
+                .setFactorAsMain(newFactorId)
                 .toSingleDefault(true)
     }
 }

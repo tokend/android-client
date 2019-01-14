@@ -22,8 +22,8 @@ import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
 import org.tokend.template.features.tfa.logic.EnableTfaUseCase
+import org.tokend.template.features.tfa.model.TfaFactorCreationResult
 import org.tokend.template.features.tfa.model.TfaFactorRecord
-import org.tokend.template.features.tfa.model.TotpTfaFactorRecord
 import org.tokend.template.features.tfa.view.TotpFactorConfirmationDialog
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.persistance.FingerprintUtil
@@ -226,9 +226,10 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
                 R.style.AlertDialogStyle
         )
 
-        val confirmation = { factor: TfaFactorRecord ->
-            when (factor) {
-                is TotpTfaFactorRecord -> totpConfirmationDialog.show(factor)
+        val confirmation = { creationResult: TfaFactorCreationResult ->
+            when (creationResult.newFactor.type) {
+                TfaFactor.Type.TOTP ->
+                    totpConfirmationDialog.show(creationResult.confirmationAttributes)
                 else -> Single.just(true)
             }
         }

@@ -8,7 +8,6 @@ import io.reactivex.subjects.SingleSubject
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.clipboardManager
 import org.tokend.template.R
-import org.tokend.template.features.tfa.model.TotpTfaFactorRecord
 import org.tokend.template.view.ToastManager
 
 /**
@@ -27,11 +26,13 @@ class TotpFactorConfirmationDialog(
      * Result [Single] will emmit true if user confirmed adding
      * the seed the authenticator, false otherwise.
      */
-    fun show(factor: TotpTfaFactorRecord): Single<Boolean> {
+    fun show(attributes: Map<String, Any>): Single<Boolean> {
         val resultSubject = SingleSubject.create<Boolean>()
 
-        val secret = factor.secret
-        val seed = factor.seed
+        val secret = attributes["secret"] as? String
+                ?: return Single.error(IllegalArgumentException("TOTP secret is required"))
+        val seed = attributes["seed"] as? String
+                ?: return Single.error(IllegalArgumentException("TOTP seed is required"))
 
         val builder = if (style != null)
             AlertDialog.Builder(context, style)
