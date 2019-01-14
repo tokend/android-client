@@ -13,7 +13,6 @@ import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
 import org.tokend.sdk.api.base.model.operations.*
-import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
@@ -206,13 +205,13 @@ object Navigator {
 
     fun openSale(fragment: Fragment, requestCode: Int, sale: SaleRecord) {
         fragment.startActivityForResult(fragment.requireContext().intentFor<SaleActivity>(
-                SaleActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
+                SaleActivity.SALE_EXTRA to sale
         ), requestCode)
     }
 
     fun openSaleDetails(activity: Activity, sale: SaleRecord) {
         activity.startActivity(activity.intentFor<SaleDetailsActivity>(
-                SaleDetailsActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
+                SaleDetailsActivity.SALE_EXTRA to sale
         ))
     }
 

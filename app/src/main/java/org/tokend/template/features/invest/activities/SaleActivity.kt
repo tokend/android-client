@@ -11,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.RelativeLayout
-import com.google.gson.JsonSyntaxException
 import com.squareup.picasso.Picasso
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,7 +22,6 @@ import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
@@ -31,7 +29,6 @@ import org.tokend.template.data.model.FavoriteRecord
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.favorites.FavoritesRepository
-import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.assets.LogoFactory
 import org.tokend.template.features.assets.model.AssetRecord
@@ -110,7 +107,7 @@ class SaleActivity : BaseActivity() {
             val quoteAmount = investAmountWrapper.scaledAmount
             return BigDecimalUtil.scaleAmount(
                     quoteAmount.divide(currentPrice, MathContext.DECIMAL128),
-                    amountFormatter.getDecimalDigitsCount(sale.baseAsset)
+                    amountFormatter.getDecimalDigitsCount(sale.baseAssetCode)
             )
         }
 
@@ -139,15 +136,13 @@ class SaleActivity : BaseActivity() {
         initFields()
 
         try {
-            sale = GsonFactory().getBaseGson().fromJson(
-                    intent.getNullableStringExtra(SALE_JSON_EXTRA),
-                    SaleRecord::class.java)
+            sale = intent.getSerializableExtra(SALE_EXTRA) as SaleRecord
             investmentInfoManager = InvestmentInfoManager(sale, repositoryProvider,
                     walletInfoProvider, amountFormatter)
 
             displaySaleInfo()
             update()
-        } catch (e: JsonSyntaxException) {
+        } catch (e: Exception) {
             finish()
             return
         } finally {
@@ -525,7 +520,7 @@ class SaleActivity : BaseActivity() {
                 if (cancel)
                     Single.just(
                             OfferRecord(
-                                    baseAssetCode = sale.baseAsset,
+                                    baseAssetCode = sale.baseAssetCode,
                                     quoteAssetCode = asset,
                                     baseAmount = BigDecimal.ZERO,
                                     price = price,
@@ -537,7 +532,7 @@ class SaleActivity : BaseActivity() {
                 else
                     PrepareOfferUseCase(
                             OfferRecord(
-                                    baseAssetCode = sale.baseAsset,
+                                    baseAssetCode = sale.baseAssetCode,
                                     baseAmount = receiveAmount,
                                     quoteAssetCode = asset,
                                     quoteAmount = amount,
@@ -567,7 +562,7 @@ class SaleActivity : BaseActivity() {
                                             INVESTMENT_REQUEST,
                                             offer = offer,
                                             offerToCancel = existingOffers[investAsset],
-                                            assetName = sale.baseAsset,
+                                            assetName = sale.baseAssetCode,
                                             displayToReceive =
                                             sale.type.value == SaleType.BASIC_SALE.value
                                     )
@@ -617,7 +612,7 @@ class SaleActivity : BaseActivity() {
 
     private fun getFavoriteEntry(): FavoriteRecord? {
         return favoritesRepository.itemsList.find {
-            it.type == FavoriteRecord.TYPE_SALE && it.key == sale.baseAsset
+            it.type == FavoriteRecord.TYPE_SALE && it.key == sale.baseAssetCode
         }
     }
 
@@ -626,7 +621,7 @@ class SaleActivity : BaseActivity() {
         switchFavoriteDisposable?.dispose()
         switchFavoriteDisposable =
                 SwitchFavoriteUseCase(
-                        FavoriteRecord.sale(sale.baseAsset),
+                        FavoriteRecord.sale(sale.baseAssetCode),
                         favoritesRepository
                 )
                         .perform()
@@ -699,6 +694,6 @@ class SaleActivity : BaseActivity() {
 
     companion object {
         private val INVESTMENT_REQUEST = "invest".hashCode() and 0xffff
-        const val SALE_JSON_EXTRA = "sale_json"
+        const val SALE_EXTRA = "sale"
     }
 }

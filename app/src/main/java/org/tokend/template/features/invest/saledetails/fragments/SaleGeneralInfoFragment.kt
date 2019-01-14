@@ -45,8 +45,8 @@ class SaleGeneralInfoFragment : BaseFragment() {
                 .addRow(getString(R.string.sale_info_hard_cap),
                         "${amountFormatter.formatAssetAmount(sale.hardCap,
                                 sale.defaultQuoteAsset)} ${sale.defaultQuoteAsset}")
-                .addRow(getString(R.string.sale_info_to_sell_template, sale.baseAsset),
-                        amountFormatter.formatAssetAmount(sale.baseHardCap, sale.baseAsset))
+                .addRow(getString(R.string.sale_info_to_sell_template, sale.baseAssetCode),
+                        amountFormatter.formatAssetAmount(sale.baseHardCap, sale.baseAssetCode))
     }
 
     companion object {

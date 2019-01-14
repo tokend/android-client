@@ -3,13 +3,14 @@ package org.tokend.template.features.invest.model
 import org.tokend.sdk.api.sales.model.SimpleSale
 import org.tokend.template.data.model.UrlConfig
 import org.tokend.wallet.xdr.SaleType
+import java.io.Serializable
 import java.math.BigDecimal
 import java.util.*
 
 class SaleRecord(
         val id: Long,
         val name: String,
-        val baseAsset: String,
+        val baseAssetCode: String,
         val quoteAssets: List<QuoteAsset>,
         val defaultQuoteAsset: String,
         val shortDescription: String,
@@ -25,13 +26,13 @@ class SaleRecord(
         val currentCap: BigDecimal,
         val youtubeVideo: YoutubeVideo?,
         val investorsCount: Int
-) {
+) : Serializable {
     constructor(source: SimpleSale,
                 urlConfig: UrlConfig?
     ) : this(
             id = source.id,
             name = source.details.name,
-            baseAsset = source.baseAsset,
+            baseAssetCode = source.baseAsset,
             defaultQuoteAsset = source.defaultQuoteAsset,
             quoteAssets = source.quoteAssets.map {
                 QuoteAsset(
@@ -90,10 +91,10 @@ class SaleRecord(
             val price: BigDecimal,
             val hardCap: BigDecimal,
             val totalCurrentCap: BigDecimal
-    )
+    ) : Serializable
 
     class YoutubeVideo(
             val url: String,
             val previewUrl: String
-    )
+    ) : Serializable
 }

@@ -18,7 +18,7 @@ class SaleViewHolder(view: View,
 
     override fun bind(item: SaleRecord) {
         nameTextView.text = view.context.getString(R.string.template_sale_name_token,
-                item.name, item.baseAsset)
+                item.name, item.baseAssetCode)
         shortDescriptionTextView.text = item.shortDescription
 
         item.logoUrl.also {

@@ -38,7 +38,7 @@ class InvestmentInfoManager(
     fun getAssetDetails(): Single<AssetRecord> {
         return repositoryProvider
                 .assets()
-                .getSingle(sale.baseAsset)
+                .getSingle(sale.baseAssetCode)
     }
 
     fun getOffersByAsset(): Single<Map<String, OfferRecord>> {
@@ -198,7 +198,7 @@ class InvestmentInfoManager(
     fun getChart(api: TokenDApi): Single<AssetChartData> {
         return api
                 .assets
-                .getChart(sale.baseAsset)
+                .getChart(sale.baseAssetCode)
                 .toSingle()
     }
 }

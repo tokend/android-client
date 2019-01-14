@@ -1,14 +1,10 @@
 package org.tokend.template.features.invest.saledetails
 
 import android.os.Bundle
-import com.google.gson.JsonSyntaxException
 import kotlinx.android.synthetic.main.activity_sale_details.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.extensions.getNullableStringExtra
-import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.invest.model.SaleRecord
 
 class SaleDetailsActivity : BaseActivity() {
@@ -18,10 +14,8 @@ class SaleDetailsActivity : BaseActivity() {
         setContentView(R.layout.activity_sale_details)
 
         try {
-            sale = GsonFactory().getBaseGson().fromJson(
-                    intent.getNullableStringExtra(SaleActivity.SALE_JSON_EXTRA),
-                    SaleRecord::class.java)
-        } catch (e: JsonSyntaxException) {
+            sale = intent.getSerializableExtra(SALE_EXTRA) as SaleRecord
+        } catch (e: Exception) {
             finish()
             return
         }
@@ -44,6 +38,6 @@ class SaleDetailsActivity : BaseActivity() {
     }
 
     companion object {
-        const val SALE_JSON_EXTRA = "sale_json"
+        const val SALE_EXTRA = "sale"
     }
 }
