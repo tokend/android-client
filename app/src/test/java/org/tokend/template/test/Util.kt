@@ -1,5 +1,7 @@
 package org.tokend.template.test
 
+import org.tokend.sdk.api.assets.model.AssetDetails
+import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.template.data.model.UrlConfig
 import org.tokend.template.di.providers.ApiProvider
@@ -125,5 +127,54 @@ object Util {
         val response = txManager.submit(tx).blockingGet()
 
         return response.isSuccess
+    }
+
+    fun createAsset(
+            sourceAccount: Account,
+            apiProvider: ApiProvider,
+            txManager: TxManager,
+            session: Session,
+            externalSystemType: String? = null
+    ): String {
+        val code = "${System.currentTimeMillis() / 1000}"
+
+        val systemInfo =
+                apiProvider.getApi()
+                        .general
+                        .getSystemInfo()
+                        .execute()
+                        .get()
+        val netParams = systemInfo.toNetworkParams()
+
+        val assetDetailsJson = GsonFactory().getBaseGson().toJson(
+                AssetDetails("Asset name", null, null, externalSystemType)
+        )
+
+        val request = ManageAssetOp.ManageAssetOpRequest.CreateAssetCreationRequest(
+                AssetCreationRequest(
+                        code = code,
+                        preissuedAssetSigner = PublicKeyFactory.fromAccountId(
+                                systemInfo.masterExchangeAccountId
+                        ),
+                        maxIssuanceAmount = netParams.amountToPrecised(BigDecimal.TEN),
+                        policies = 0,
+                        initialPreissuedAmount = netParams.amountToPrecised(BigDecimal.TEN),
+                        details = assetDetailsJson,
+                        ext = AssetCreationRequest.AssetCreationRequestExt.EmptyVersion()
+                )
+        )
+
+        val manageOp = ManageAssetOp(0, request,
+                ManageAssetOp.ManageAssetOpExt.EmptyVersion())
+
+        val tx = TransactionBuilder(netParams, sourceAccount.accountId)
+                .addOperation(Operation.OperationBody.ManageAsset(manageOp))
+                .build()
+
+        tx.addSignature(sourceAccount)
+
+        txManager.submit(tx).blockingGet()
+
+        return code
     }
 }

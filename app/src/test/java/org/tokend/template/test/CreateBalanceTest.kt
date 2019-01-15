@@ -38,7 +38,7 @@ class CreateBalanceTest {
 
         val txManager = TxManager(apiProvider)
 
-        val assetCode = createAsset(Account.fromSecretSeed(Config.ADMIN_SEED), apiProvider,
+        val assetCode = Util.createAsset(Account.fromSecretSeed(Config.ADMIN_SEED), apiProvider,
                 txManager, session)
 
         val useCase = CreateBalanceUseCase(
@@ -56,53 +56,5 @@ class CreateBalanceTest {
                     it.assetCode == assetCode
                 }
         )
-    }
-
-    private fun createAsset(
-            sourceAccount: Account,
-            apiProvider: ApiProvider,
-            txManager: TxManager,
-            session: Session
-    ): String {
-        val code = "${System.currentTimeMillis() / 1000}"
-
-        val systemInfo =
-                apiProvider.getApi()
-                        .general
-                        .getSystemInfo()
-                        .execute()
-                        .get()
-        val netParams = systemInfo.toNetworkParams()
-
-        val assetDetailsJson = GsonFactory().getBaseGson().toJson(
-                AssetDetails("Asset name", null, null, null)
-        )
-
-        val request = ManageAssetOp.ManageAssetOpRequest.CreateAssetCreationRequest(
-                AssetCreationRequest(
-                        code = code,
-                        preissuedAssetSigner = PublicKeyFactory.fromAccountId(
-                                systemInfo.masterExchangeAccountId
-                        ),
-                        maxIssuanceAmount = netParams.amountToPrecised(BigDecimal.TEN),
-                        policies = 0,
-                        initialPreissuedAmount = netParams.amountToPrecised(BigDecimal.TEN),
-                        details = assetDetailsJson,
-                        ext = AssetCreationRequest.AssetCreationRequestExt.EmptyVersion()
-                )
-        )
-
-        val manageOp = ManageAssetOp(0, request,
-                ManageAssetOp.ManageAssetOpExt.EmptyVersion())
-
-        val tx = TransactionBuilder(netParams, sourceAccount.accountId)
-                .addOperation(Operation.OperationBody.ManageAsset(manageOp))
-                .build()
-
-        tx.addSignature(sourceAccount)
-
-        txManager.submit(tx).blockingGet()
-
-        return code
     }
 }

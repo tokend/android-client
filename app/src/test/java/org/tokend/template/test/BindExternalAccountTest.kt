@@ -3,6 +3,7 @@ package org.tokend.template.test
 import junit.framework.Assert
 import org.junit.Test
 import org.tokend.template.di.providers.*
+import org.tokend.template.features.assets.logic.CreateBalanceUseCase
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.deposit.BindExternalAccountUseCase
 import org.tokend.template.logic.Session
@@ -29,14 +30,27 @@ class BindExternalAccountTest {
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
 
+        val txManager = TxManager(apiProvider)
+
         val (walletData, rootAccount, _) = Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
         )
 
+        val assetCode = Util.createAsset(Account.fromSecretSeed(Config.ADMIN_SEED), apiProvider,
+                txManager, session, "0")
+
+        CreateBalanceUseCase(
+                assetCode,
+                repositoryProvider.balances(),
+                repositoryProvider.systemInfo(),
+                session,
+                txManager
+        ).perform().blockingAwait()
+
         val asset = repositoryProvider.balances()
                 .itemsList
                 .find {
-                    it.asset.isBackedByExternalSystem
+                    it.asset.code == assetCode
                 }
                 ?.asset
 
@@ -53,7 +67,7 @@ class BindExternalAccountTest {
                 repositoryProvider.balances(),
                 repositoryProvider.account(),
                 session,
-                TxManager(apiProvider)
+                txManager
         )
 
         useCase.perform().blockingAwait()
