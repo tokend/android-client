@@ -3,7 +3,6 @@ package org.tokend.template.features.changepassword
 import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
-import android.view.View
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_change_password.*
@@ -19,7 +18,6 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.logic.wallet.WalletUpdateManager
 import org.tokend.template.logic.persistance.FingerprintAuthManager
-import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -28,6 +26,7 @@ import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.FingerprintIndicatorManager
 import org.tokend.template.view.util.input.SoftInputUtil
 import org.tokend.template.view.ToastManager
 
@@ -44,6 +43,7 @@ class ChangePasswordActivity : BaseActivity() {
         }
 
     private lateinit var fingerprintAuthManager: FingerprintAuthManager
+    private lateinit var fingerprintIndicatorManager: FingerprintIndicatorManager
 
     private var canChange: Boolean = false
         set(value) {
@@ -61,6 +61,7 @@ class ChangePasswordActivity : BaseActivity() {
         initButtons()
 
         fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
+        fingerprintIndicatorManager = FingerprintIndicatorManager(applicationContext, fingerprint_indicator)
 
         canChange = false
     }
@@ -100,15 +101,18 @@ class ChangePasswordActivity : BaseActivity() {
 
     // region Fingerprint
     private fun requestFingerprintAuthIfAvailable() {
-        fingerprint_indicator.visibility = View.GONE
+        fingerprintIndicatorManager.hide()
         fingerprintAuthManager.requestAuthIfAvailable(
-                onAuthStart = { AnimationUtil.fadeInView(fingerprint_indicator) },
+                onAuthStart = { fingerprintIndicatorManager.show() },
                 onSuccess = { _, password ->
                     current_password_edit_text.setText(password, 0, password.size)
                     new_password_edit_text.requestFocus()
                     password.fill('0')
                 },
-                onError = { ToastManager(this).short(it) }
+                onError = {
+                    ToastManager(this).short(it)
+                    fingerprintIndicatorManager.error()
+                }
         )
     }
 

@@ -36,8 +36,8 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
+import org.tokend.template.view.FingerprintIndicatorManager
 import org.tokend.template.view.ToastManager
-import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
@@ -55,6 +55,7 @@ class SignInActivity : BaseActivity() {
 
     private lateinit var fingerprintAuthManager: FingerprintAuthManager
     private lateinit var urlConfigManager: UrlConfigManager
+    private lateinit var fingerprintIndicatorManager: FingerprintIndicatorManager
 
     private var isLoading: Boolean = false
         set(value) {
@@ -76,6 +77,7 @@ class SignInActivity : BaseActivity() {
         setTitle(R.string.sign_in)
 
         fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
+        fingerprintIndicatorManager = FingerprintIndicatorManager(applicationContext, fingerprint_indicator)
         urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistor)
         urlConfigManager.onConfigUpdated {
             initNetworkField()
@@ -153,10 +155,6 @@ class SignInActivity : BaseActivity() {
                     email_edit_text.text.toString())
         }
 
-        fingerprint_indicator.onClick {
-            ToastManager(this).short(R.string.touch_sensor)
-        }
-
         if (BuildConfig.ENABLE_AUTHENTICATOR_AUTH) {
             sign_in_with_authenticator_button.onClick {
                 openAuthenticatorSignIn()
@@ -169,14 +167,17 @@ class SignInActivity : BaseActivity() {
 
     // region Fingerprint
     private fun requestFingerprintAuthIfAvailable() {
-        fingerprint_indicator.visibility = View.GONE
+        fingerprintIndicatorManager.hide()
         fingerprintAuthManager.requestAuthIfAvailable(
-                onAuthStart = { AnimationUtil.fadeInView(fingerprint_indicator) },
+                onAuthStart = { fingerprintIndicatorManager.show() },
                 onSuccess = { email, password ->
                     tryToSignInWithCredentials(email, password)
                     password.fill('0')
                 },
-                onError = { ToastManager(this).short(it) }
+                onError = {
+                    ToastManager(this).short(it)
+                    fingerprintIndicatorManager.error()
+                }
         )
     }
 
