@@ -31,7 +31,7 @@ object Util {
                           apiProvider: ApiProvider,
                           session: Session,
                           repositoryProvider: RepositoryProvider?): WalletCreateResult {
-        val createResult = apiProvider.getKeyStorage().createAndSaveWallet(email, password)
+        val createResult = apiProvider.getKeyServer().createAndSaveWallet(email, password)
 
         System.out.println("Email is $email")
         System.out.println("Recovery seed is " +
@@ -40,7 +40,7 @@ object Util {
         SignInUseCase(
                 email,
                 password,
-                apiProvider.getKeyStorage(),
+                apiProvider.getKeyServer(),
                 session,
                 null,
                 repositoryProvider?.let { PostSignInManager(it) }

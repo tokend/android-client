@@ -6,7 +6,7 @@ import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.api.authenticator.AuthResultsApi
 import org.tokend.sdk.api.authenticator.model.AuthResult
-import org.tokend.sdk.keyserver.KeyStorage
+import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.extensions.toSingle
 import org.tokend.template.logic.Session
@@ -25,7 +25,7 @@ import java.net.HttpURLConnection
  */
 class SignInWithAccountUseCase(
         private val account: Account,
-        private val keyStorage: KeyStorage,
+        private val keyServer: KeyServer,
         private val authResultsApi: AuthResultsApi,
         private val session: Session,
         private val credentialsPersistor: CredentialsPersistor,
@@ -83,9 +83,9 @@ class SignInWithAccountUseCase(
         val walletIdHex = authResult.walletId
 
         return {
-            val walletData = keyStorage.getWalletData(walletIdHex)
+            val walletData = keyServer.getWalletData(walletIdHex)
             val email = walletData.attributes!!.email
-            val loginParams = keyStorage.getLoginParams(email)
+            val loginParams = keyServer.getLoginParams(email)
 
             WalletInfo(walletData.attributes!!.accountId, email, walletIdHex,
                     CharArray(0), loginParams)

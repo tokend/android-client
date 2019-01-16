@@ -6,7 +6,8 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import org.tokend.rx.extensions.createWalletSingle
 import org.tokend.rx.extensions.updateWalletCompletable
-import org.tokend.sdk.keyserver.KeyStorage
+import org.tokend.sdk.keyserver.KeyServer
+import org.tokend.sdk.keyserver.WalletKeyDerivation
 import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.sdk.keyserver.models.WalletData
 import org.tokend.sdk.keyserver.models.WalletInfo
@@ -36,7 +37,7 @@ class WalletUpdateManager(
      * change password (or recover it).
      * Also updates data in [accountProvider] and [walletInfoProvider] on complete.
      *
-     * @param apiProvider must be able to provide API and KeyStorage signed by active account signer
+     * @param apiProvider must be able to provide API and KeyServer signed by active account signer
      * @param accountProvider must provide active account signer, well be updated on complete
      * @param walletInfoProvider must provide actual wallet info, will be updated on complete
      */
@@ -49,8 +50,8 @@ class WalletUpdateManager(
                 ?: return Completable.error(IllegalStateException("Cannot obtain current account"))
         val wallet = walletInfoProvider.getWalletInfo()
                 ?: return Completable.error(IllegalStateException("Cannot obtain current wallet"))
-        val signedKeyStorage = apiProvider.getSignedKeyStorage()
-                ?: return Completable.error(IllegalStateException("Cannot obtain signed KeyStorage"))
+        val signedKeyServer = apiProvider.getSignedKeyServer()
+                ?: return Completable.error(IllegalStateException("Cannot obtain signed KeyServer"))
         val signedApi = apiProvider.getSignedApi()
                 ?: return Completable.error(IllegalStateException("Cannot obtain signed API"))
 
@@ -94,7 +95,7 @@ class WalletUpdateManager(
                 .flatMapCompletable { newWallet ->
                     data.newSalt = newWallet.attributes?.salt ?: ""
                     data.newWalletId = newWallet.id ?: ""
-                    signedKeyStorage.updateWalletCompletable(wallet.walletIdHex, newWallet)
+                    signedKeyServer.updateWalletCompletable(wallet.walletIdHex, newWallet)
                 }
                 // Update current credentials.
                 .doOnComplete {
@@ -125,10 +126,10 @@ class WalletUpdateManager(
                                               newPassword: CharArray,
                                               newAccount: Account): Single<WalletData> {
         val loginParams = currentWallet.loginParams
-        loginParams.kdfAttributes.salt = KeyStorage.generateKdfSalt()
+        loginParams.kdfAttributes.salt = WalletKeyDerivation.generateKdfSalt()
 
         return Single.zip(
-                KeyStorage.createWalletSingle(
+                KeyServer.createWalletSingle(
                         email = currentWallet.email,
                         password = newPassword,
                         rootAccount = newAccount,
@@ -153,7 +154,7 @@ class WalletUpdateManager(
                                                currentSigners: Collection<org.tokend.sdk.api.accounts.model.Account.Signer>,
                                                newAccount: Account): Single<Transaction> {
         return Single.defer {
-            val transaction = KeyStorage.createSignersUpdateTransaction(
+            val transaction = KeyServer.createSignersUpdateTransaction(
                     networkParams,
                     currentWallet.accountId,
                     currentAccount,

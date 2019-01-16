@@ -5,7 +5,7 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.rx.extensions.fromSecretSeedSingle
-import org.tokend.sdk.keyserver.KeyStorage
+import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.CredentialsPersistor
@@ -22,7 +22,7 @@ import org.tokend.wallet.Account
 class SignInUseCase(
         private val email: String,
         private val password: CharArray,
-        private val keyStorage: KeyStorage,
+        private val keyServer: KeyServer,
         private val session: Session,
         private val credentialsPersistor: CredentialsPersistor?,
         private val postSignInManager: PostSignInManager?
@@ -62,7 +62,7 @@ class SignInUseCase(
             credentialsPersistor
                     ?.takeIf { it.getSavedEmail() == email }
                     ?.loadCredentials(password)
-                    ?: keyStorage.getWalletInfo(email, password)
+                    ?: keyServer.getWalletInfo(email, password)
         }.toSingle()
     }
 

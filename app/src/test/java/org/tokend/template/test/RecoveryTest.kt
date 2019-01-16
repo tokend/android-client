@@ -20,7 +20,7 @@ class RecoveryTest {
         val newPassword = "qwerty".toCharArray()
 
         val (walletData, rootAccount, recoveryAccount)
-                = apiProvider.getKeyStorage().createAndSaveWallet(email, password)
+                = apiProvider.getKeyServer().createAndSaveWallet(email, password)
         accountProvider.setAccount(rootAccount)
 
         val recoverySeed = recoveryAccount.secretSeed!!
@@ -44,7 +44,7 @@ class RecoveryTest {
 
         useCase.perform().blockingAwait()
 
-        val newWalletInfo = apiProvider.getKeyStorage().getWalletInfo(email, newPassword)
+        val newWalletInfo = apiProvider.getKeyServer().getWalletInfo(email, newPassword)
 
         Assert.assertEquals(email, newWalletInfo.email)
     }
@@ -59,7 +59,7 @@ class RecoveryTest {
         val newPassword = "qwerty".toCharArray()
 
         val (_, _, recoveryAccount)
-                = apiProvider.getKeyStorage().createAndSaveWallet(email, password)
+                = apiProvider.getKeyServer().createAndSaveWallet(email, password)
 
         val recoverySeed = recoveryAccount.secretSeed!!
 
@@ -76,7 +76,7 @@ class RecoveryTest {
 
         useCase.perform().blockingAwait()
 
-        val newWalletInfo = apiProvider.getKeyStorage().getWalletInfo(email, newPassword)
+        val newWalletInfo = apiProvider.getKeyServer().getWalletInfo(email, newPassword)
 
         Assert.assertEquals(email, newWalletInfo.email)
     }

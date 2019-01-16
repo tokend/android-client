@@ -12,7 +12,7 @@ class SignUpTest {
 
         val email = "${System.currentTimeMillis()}@mail.com"
         val password = "qwe123".toCharArray()
-        val keyStorage = ApiProviderFactory().createApiProvider(urlConfigProvider).getKeyStorage()
+        val keyStorage = ApiProviderFactory().createApiProvider(urlConfigProvider).getKeyServer()
 
         val useCase = SignUpUseCase(email, password, keyStorage)
 

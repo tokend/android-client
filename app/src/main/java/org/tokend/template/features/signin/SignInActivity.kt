@@ -235,7 +235,7 @@ class SignInActivity : BaseActivity() {
         SignInUseCase(
                 email,
                 password,
-                apiProvider.getKeyStorage(),
+                apiProvider.getKeyServer(),
                 session,
                 credentialsPersistor,
                 PostSignInManager(repositoryProvider)

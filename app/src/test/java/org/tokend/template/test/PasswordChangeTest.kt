@@ -44,7 +44,7 @@ class PasswordChangeTest {
                 tfaCallback)
 
         val (originalWalletData, rootAccount, recoveryAccount)
-                = apiProvider.getKeyStorage().createAndSaveWallet(email, password)
+                = apiProvider.getKeyServer().createAndSaveWallet(email, password)
 
         System.out.println("Email is $email")
         System.out.println("Recovery seed is ${recoveryAccount.secretSeed!!.joinToString("")}")
@@ -54,7 +54,7 @@ class PasswordChangeTest {
         SignInUseCase(
                 email,
                 password,
-                apiProvider.getKeyStorage(),
+                apiProvider.getKeyServer(),
                 session,
                 null,
                 PostSignInManager(repositoryProvider)
@@ -94,7 +94,7 @@ class PasswordChangeTest {
         Assert.assertNotEquals(originalWalletData.id, session.getWalletInfo()!!.walletIdHex)
 
         // Check that we after all can sign in with new password.
-        Assert.assertNotNull(apiProvider.getKeyStorage()
+        Assert.assertNotNull(apiProvider.getKeyServer()
                 .getWalletInfo(email, newPassword))
     }
 }

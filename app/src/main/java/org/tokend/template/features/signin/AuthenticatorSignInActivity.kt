@@ -206,7 +206,7 @@ class AuthenticatorSignInActivity : BaseActivity() {
     private fun signInWithAccount(account: Account) {
         SignInWithAccountUseCase(
                 account,
-                apiProvider.getKeyStorage(),
+                apiProvider.getKeyServer(),
                 apiProvider.getApi().authResults,
                 session,
                 credentialsPersistor,

@@ -4,7 +4,7 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.tokend.rx.extensions.createAndSaveWalletSingle
 import org.tokend.rx.extensions.randomSingle
-import org.tokend.sdk.keyserver.KeyStorage
+import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.wallet.Account
 
@@ -14,7 +14,7 @@ import org.tokend.wallet.Account
 class SignUpUseCase(
         private val email: String,
         private val password: CharArray,
-        private val keyStorage: KeyStorage
+        private val keyServer: KeyServer
 ) {
     private lateinit var rootAccount: Account
     private lateinit var recoveryAccount: Account
@@ -43,7 +43,7 @@ class SignUpUseCase(
     }
 
     private fun createAndSaveWallet(): Single<WalletCreateResult> {
-        return keyStorage.createAndSaveWalletSingle(
+        return keyServer.createAndSaveWalletSingle(
                 email,
                 password,
                 rootAccount,
