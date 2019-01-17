@@ -2,6 +2,7 @@ package org.tokend.template.features.assets
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.transition.Fade
 import android.support.transition.TransitionManager
@@ -70,6 +71,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
             }
         }
 
+    private lateinit var layoutManager: GridLayoutManager
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_explore, container, false)
     }
@@ -96,15 +99,11 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initAssetsList() {
-        val displayMetrics = DisplayMetrics()
-        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val columns = calculateColumnCount()
 
-        val screenWidth = displayMetrics.widthPixels.toDouble()
-        val columns = (screenWidth / resources.getDimensionPixelSize(R.dimen.max_content_width))
-                .let { Math.ceil(it) }
-                .toInt()
+        layoutManager = GridLayoutManager(context, columns)
 
-        assets_recycler_view.layoutManager = GridLayoutManager(context, columns)
+        assets_recycler_view.layoutManager = layoutManager
 
         assets_recycler_view.adapter = assetsAdapter
 
@@ -118,6 +117,16 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 openAssetDetails(view, item)
             }
         }
+    }
+
+    private fun calculateColumnCount(): Int {
+        val displayMetrics = DisplayMetrics()
+        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        val screenWidth = displayMetrics.widthPixels.toDouble()
+        return (screenWidth / resources.getDimensionPixelSize(R.dimen.max_content_width))
+                .let { Math.ceil(it) }
+                .toInt()
     }
 
     private fun initMenu() {
@@ -337,6 +346,11 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         return searchItem?.isActionViewExpanded == false.also {
             searchItem?.collapseActionView()
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        layoutManager.spanCount = calculateColumnCount()
     }
 
     companion object {

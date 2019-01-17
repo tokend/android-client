@@ -2,6 +2,7 @@ package org.tokend.template.features.invest
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
@@ -57,6 +58,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         get() = nameQuery.isNotEmpty() || tokenQuery.isNotEmpty()
 
     private lateinit var salesSubscriptionManager: SalesSubscriptionManager
+    private lateinit var layoutManager: GridLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_sales, container, false)
@@ -84,13 +86,9 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initSalesList() {
-        val displayMetrics = DisplayMetrics()
-        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val columns = calculateColumnCount()
 
-        val screenWidth = displayMetrics.widthPixels.toDouble()
-        val columns = (screenWidth / resources.getDimensionPixelSize(R.dimen.max_content_width))
-                .let { Math.ceil(it) }
-                .toInt()
+        layoutManager = GridLayoutManager(context, columns)
 
         salesAdapter = SalesAdapter(urlConfigProvider.getConfig().storage, amountFormatter)
         error_empty_view.observeAdapter(salesAdapter, R.string.no_sales_found)
@@ -100,7 +98,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         }
 
         sales_list.apply {
-            layoutManager = GridLayoutManager(requireContext(), columns)
+            layoutManager = this@SalesFragment.layoutManager
             adapter = salesAdapter
 
             setItemViewCacheSize(20)
@@ -108,6 +106,16 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
             drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
             (sales_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         }
+    }
+
+    private fun calculateColumnCount(): Int {
+        val displayMetrics = DisplayMetrics()
+        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        val screenWidth = displayMetrics.widthPixels.toDouble()
+        return (screenWidth / resources.getDimensionPixelSize(R.dimen.max_content_width))
+                .let { Math.ceil(it) }
+                .toInt()
     }
 
     private fun initSubscriptionManager() {
@@ -240,6 +248,11 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
                 }
             }
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        layoutManager.spanCount = calculateColumnCount()
     }
 
     companion object {
