@@ -29,10 +29,7 @@ class ApiProviderImpl(
         get() = BuildConfig.WITH_LOGS
 
     private var apiByHash: Pair<Int, TokenDApi>? = null
-    private var ketServerByHash: Pair<Int, KeyServer>? = null
-
     private var signedApiByHash: Pair<Int, TokenDApi>? = null
-    private var signedKeyServerByHash: Pair<Int, KeyServer>? = null
 
     override fun getApi(): TokenDApi {
         val hash = url.hashCode()
@@ -56,18 +53,7 @@ class ApiProviderImpl(
     }
 
     override fun getKeyServer(): KeyServer {
-        val hash = url.hashCode()
-
-        val keyServer = ketServerByHash
-                ?.takeIf { (currentHash, _) ->
-                    currentHash == hash
-                }
-                ?.second
-                ?: KeyServer(getApi().wallets)
-
-        ketServerByHash = Pair(hash, keyServer)
-
-        return keyServer
+        return KeyServer(getApi().wallets)
     }
 
     override fun getSignedApi(): TokenDApi? {
@@ -94,19 +80,6 @@ class ApiProviderImpl(
     }
 
     override fun getSignedKeyServer(): KeyServer? {
-        val account = accountProvider.getAccount() ?: return null
-        val hash = HashCodes.ofMany(account, url)
-
-        val signedKeyServer =
-                signedKeyServerByHash
-                        ?.takeIf { (currentHash, _) ->
-                            currentHash == hash
-                        }
-                        ?.second
-                        ?: KeyServer(getSignedApi()?.wallets!!)
-
-        signedKeyServerByHash = Pair(hash, signedKeyServer)
-
-        return signedKeyServer
+        return getSignedApi()?.let { KeyServer(it.wallets) }
     }
 }
