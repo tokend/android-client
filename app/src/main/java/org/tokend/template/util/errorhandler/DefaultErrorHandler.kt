@@ -2,7 +2,6 @@ package org.tokend.template.util.errorhandler
 
 import android.content.Context
 import org.tokend.sdk.api.transactions.model.TransactionFailedException
-import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.view.ToastManager
 import retrofit2.HttpException

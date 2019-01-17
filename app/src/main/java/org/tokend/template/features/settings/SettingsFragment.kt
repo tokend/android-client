@@ -14,8 +14,8 @@ import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.settings.view.PreferenceDividerDecoration
 import org.tokend.template.logic.Session
-import org.tokend.template.view.ToastManager
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
+import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import javax.inject.Inject
 
@@ -84,14 +84,14 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
                         .drawBetweenCategories(false))
     }
 
-    protected fun updateSummary(key: String, value: String) {
+    private fun updateSummary(key: String, value: String) {
         val preference = findPreference(key)
         if (preference != null) {
             preference.summary = value
         }
     }
 
-    protected fun updateSummary(key: String) {
+    private fun updateSummary(key: String) {
         val preference = findPreference(key)
         if (preference != null && preference is ListPreference) {
             val entry = preference.entry

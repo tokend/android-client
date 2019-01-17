@@ -44,7 +44,6 @@ import org.tokend.template.view.util.ProgressDialogFactory
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
 
-
 class TradeFragment : BaseFragment(), ToolbarProvider {
 
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -334,7 +333,6 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         )
     }
 
-
     private fun onPairChanged() {
         pair_chart.asset = currentPair.quote
         pair_chart.total = currentPair.price
@@ -369,7 +367,6 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         }
 
     }
-
 
     private fun updateOrderBook(force: Boolean = false) {
         if (force) {
@@ -454,7 +451,6 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 // endregion
         ).also { it.addTo(compositeDisposable) }
     }
-
 
     private fun displayBuyItems(items: Collection<OfferRecord>) {
         buyAdapter.setData(items)

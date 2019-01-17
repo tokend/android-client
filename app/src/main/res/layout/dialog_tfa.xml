@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="@dimen/standard_padding"
-    android:paddingRight="@dimen/standard_padding"
-    android:paddingTop="@dimen/half_standard_margin">
+    android:paddingTop="@dimen/half_standard_margin"
+    android:paddingRight="@dimen/standard_padding">
 
     <TextView
         android:id="@+id/tfa_message_text_view"
@@ -25,14 +25,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:met_helperText=" "
-            app:met_helperTextAlwaysShown="true"  />
+            app:met_helperTextAlwaysShown="true" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/tfa_input_button_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="@dimen/half_standard_padding"
             android:padding="@dimen/half_standard_margin"
             android:visibility="gone" />

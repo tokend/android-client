@@ -16,19 +16,19 @@ import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.logic.wallet.WalletUpdateManager
-import org.tokend.template.logic.persistance.FingerprintAuthManager
-import org.tokend.template.view.util.input.EditTextHelper
-import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
+import org.tokend.template.logic.persistance.FingerprintAuthManager
+import org.tokend.template.logic.wallet.WalletUpdateManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.FingerprintIndicatorManager
-import org.tokend.template.view.util.input.SoftInputUtil
 import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.input.EditTextHelper
+import org.tokend.template.view.util.input.SimpleTextWatcher
+import org.tokend.template.view.util.input.SoftInputUtil
 
 class ChangePasswordActivity : BaseActivity() {
     private val loadingIndicator = LoadingIndicatorManager(

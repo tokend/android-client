@@ -2,8 +2,8 @@ package org.tokend.template.data.repository.pairs
 
 import io.reactivex.Single
 import org.tokend.template.data.model.AssetPairRecord
-import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
+import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.extensions.toSingle
 import java.math.BigDecimal
 import java.math.MathContext

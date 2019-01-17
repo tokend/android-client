@@ -75,7 +75,7 @@ class TxHistoryItem(
                 counterparty = tx.matchData.quoteAsset
             } else if (tx is WithdrawalOperation) {
                 counterparty = tx.destAddress
-            }else if(tx is InvestmentOperation){
+            } else if (tx is InvestmentOperation) {
                 if (tx.state == OperationState.PENDING) {
                     isReceived = false
                 }

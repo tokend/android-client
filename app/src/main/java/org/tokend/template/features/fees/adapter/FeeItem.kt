@@ -31,11 +31,11 @@ class FeeItem(
 
             val lowerBound =
                     "${amountFormatter.formatAssetAmount(fee.lowerBound, fee.requestAsset, 1)} " +
-                    fee.requestAsset
+                            fee.requestAsset
 
             val upperBound =
                     "${amountFormatter.formatAssetAmount(fee.upperBound, fee.requestAsset, 1)} " +
-                    fee.requestAsset
+                            fee.requestAsset
 
             return FeeItem(type, subtype, fixed, percent, lowerBound, upperBound)
         }

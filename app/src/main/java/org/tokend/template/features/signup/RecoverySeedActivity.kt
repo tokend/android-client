@@ -12,10 +12,10 @@ import org.jetbrains.anko.dip
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.input.SimpleTextWatcher
 
 class RecoverySeedActivity : AppCompatActivity() {
     companion object {

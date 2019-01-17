@@ -36,7 +36,6 @@ import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 
-
 class AssetDetailsFragment : BaseFragment() {
     private lateinit var asset: AssetRecord
 

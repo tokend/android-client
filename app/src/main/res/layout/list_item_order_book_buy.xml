@@ -5,18 +5,18 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/half_standard_margin"
+    android:paddingTop="@dimen/half_standard_margin"
     android:paddingEnd="@dimen/half_standard_margin"
-    android:paddingTop="@dimen/half_standard_margin">
+    android:paddingBottom="@dimen/half_standard_margin">
 
     <TextView
         android:id="@+id/volume_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:gravity="start"
         android:ellipsize="none"
         android:fadingEdgeLength="@dimen/quarter_standard_margin"
+        android:gravity="start"
         android:requiresFadingEdge="horizontal"
         android:singleLine="true"
         android:textColor="@color/primary_text"
@@ -27,10 +27,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:gravity="end"
         android:ellipsize="none"
         android:fadingEdgeLength="@dimen/quarter_standard_margin"
         android:fontFamily="sans-serif-medium"
+        android:gravity="end"
         android:requiresFadingEdge="horizontal"
         android:singleLine="true"
         android:textSize="@dimen/text_size_order_book" />

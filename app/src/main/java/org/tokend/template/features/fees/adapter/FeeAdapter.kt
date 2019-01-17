@@ -9,6 +9,6 @@ class FeeAdapter : BaseRecyclerAdapter<FeeItem, FeeViewHolder>() {
 
     override fun createItemViewHolder(parent: ViewGroup): FeeViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_fee, parent, false)
-        return  FeeViewHolder(view)
+        return FeeViewHolder(view)
     }
 }

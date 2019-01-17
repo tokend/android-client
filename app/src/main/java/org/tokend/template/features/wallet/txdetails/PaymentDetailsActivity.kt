@@ -5,7 +5,6 @@ import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.sdk.api.base.model.operations.PaymentOperation
 import org.tokend.template.R
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
 class PaymentDetailsActivity : TxDetailsActivity<PaymentOperation>(PaymentOperation::class) {

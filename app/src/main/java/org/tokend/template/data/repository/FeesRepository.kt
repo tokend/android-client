@@ -10,12 +10,13 @@ import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.template.features.fees.model.FeesRecords
 
 class FeesRepository(private val apiProvider: ApiProvider,
-                     private val walletInfoProvider: WalletInfoProvider) : SimpleSingleItemRepository<FeesRecords>() {
+                     private val walletInfoProvider: WalletInfoProvider
+) : SimpleSingleItemRepository<FeesRecords>() {
     override fun getItem(): Observable<FeesRecords> {
         return getFeesResponse().toObservable()
     }
 
-    private fun getFeesResponse() : Single<FeesRecords> {
+    private fun getFeesResponse(): Single<FeesRecords> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 

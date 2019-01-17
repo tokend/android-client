@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.ViewGroup
 import com.google.gson.Gson
 import org.jetbrains.anko.intentFor
-import org.tokend.sdk.api.base.model.operations.TransferOperation
 import org.tokend.sdk.api.base.model.operations.OperationState
+import org.tokend.sdk.api.base.model.operations.TransferOperation
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.view.InfoCard
@@ -46,12 +46,12 @@ abstract class TxDetailsActivity<in T : TransferOperation>(
     abstract fun displayDetails(item: T)
 
     private fun getItemFromIntent(): T? {
-        try {
+        return try {
             val jsonString = intent.getStringExtra(ITEM_JSON_EXTRA)
-            return Gson().fromJson<T>(jsonString, typeClass.java)
+            Gson().fromJson<T>(jsonString, typeClass.java)
         } catch (e: Exception) {
             e.printStackTrace()
-            return null
+            null
         }
     }
 

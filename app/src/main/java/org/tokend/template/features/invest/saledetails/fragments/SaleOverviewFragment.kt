@@ -11,10 +11,10 @@ import kotlinx.android.synthetic.main.fragment_sale_overview.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.tokend.template.R
-import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.features.invest.logic.BlobManager
+import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.LoadingIndicatorManager
 import ru.noties.markwon.Markwon
 
 class SaleOverviewFragment : BaseFragment() {

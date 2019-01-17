@@ -9,14 +9,13 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.logic.transactions.TxManager
-import org.tokend.template.view.InfoCard
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
+import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.InfoCard
 import org.tokend.template.view.ToastManager
-import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.view.util.ProgressDialogFactory
 
 class WithdrawalConfirmationActivity : BaseActivity() {
     private lateinit var request: WithdrawalRequest
@@ -110,7 +109,6 @@ class WithdrawalConfirmationActivity : BaseActivity() {
                         }
                 )
     }
-
 
     private fun finishWithSuccess() {
         setResult(Activity.RESULT_OK,

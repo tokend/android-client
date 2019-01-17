@@ -5,12 +5,9 @@ import android.provider.ContactsContract
 import io.reactivex.Single
 import org.tokend.template.features.send.model.Contact
 import org.tokend.template.features.send.model.ContactEmail
-import kotlin.Comparator
 
 class ContactsManager {
-
     companion object {
-
         private val CONTACTS_CONTENT_URI = ContactsContract.Contacts.CONTENT_URI
         private val EMAILS_CONTENT_URI = ContactsContract.CommonDataKinds.Email.CONTENT_URI
         private const val EMAIL_CONTACT_ID = ContactsContract.CommonDataKinds.Email.CONTACT_ID
@@ -42,11 +39,11 @@ class ContactsManager {
                 }
 
                 val contactsCursor = cr.query(CONTACTS_CONTENT_URI, null, null, null, null)
-                if(contactsCursor != null && contactsCursor.moveToFirst()) {
+                if (contactsCursor != null && contactsCursor.moveToFirst()) {
                     do {
                         val id = contactsCursor.getString(contactsCursor.getColumnIndex(CONTACT_ID))
 
-                        if(ids.contains(id)) {
+                        if (ids.contains(id)) {
                             val photoUri = contactsCursor.getString(contactsCursor.getColumnIndex(PHOTO))
                             val name = contactsCursor.getString(contactsCursor.getColumnIndex(NAME))
                             val emailsById = arrayListOf<ContactEmail>()

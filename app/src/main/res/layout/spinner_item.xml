@@ -5,6 +5,6 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:minHeight="34sp"
-    android:paddingEnd="@dimen/standard_margin"
     android:paddingStart="@dimen/standard_margin"
+    android:paddingEnd="@dimen/standard_margin"
     android:textAppearance="?android:attr/textAppearanceListItemSmall" />

@@ -5,7 +5,6 @@ import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.sdk.api.base.model.operations.WithdrawalOperation
 import org.tokend.template.R
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.AmountFormatter
 
 class WithdrawalDetailsActivity : TxDetailsActivity<WithdrawalOperation>(WithdrawalOperation::class) {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {

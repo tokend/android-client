@@ -184,7 +184,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 navigationDrawer?.closeDrawer()
             }
         }
-        return  profileHeader
+
+        return profileHeader
     }
 
     private fun initDrawerBuilder(items: Map<Long, PrimaryDrawerItem>,
@@ -237,11 +238,9 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                             || BuildConfig.IS_LIMITS_ALLOWED) {
                         addDrawerItems(DividerDrawerItem())
 
-
                         if (BuildConfig.IS_LIMITS_ALLOWED) {
                             addDrawerItems(items[LimitsFragment.ID])
                         }
-
 
                         if (BuildConfig.IS_FEES_ALLOWED) {
                             addDrawerItems(items[FeesFragment.ID])

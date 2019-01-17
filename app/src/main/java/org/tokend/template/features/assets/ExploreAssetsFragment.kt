@@ -46,7 +46,6 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 import java.util.concurrent.TimeUnit
 
-
 class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
 
@@ -175,7 +174,6 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         })
     }
 
-
     // endregion
 
     // region Assets
@@ -239,7 +237,6 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                         }
                     } ?: items
                 }
-
 
         assetsAdapter.setData(items)
     }

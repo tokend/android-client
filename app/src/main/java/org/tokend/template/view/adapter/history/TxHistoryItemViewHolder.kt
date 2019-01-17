@@ -58,16 +58,14 @@ class TxHistoryItemViewHolder(view: View, private val amountFormatter: AmountFor
     var iconIsSmall: Boolean = true
         set(value) {
             field = value
-                    if (field) {
-                        iconImageView.layoutParams.height = iconImageView.context.resources.getDimension(R.dimen.tx_list_item_icon_size_small).toInt()
-                        iconImageView.layoutParams.width = iconImageView.context.resources.getDimension(R.dimen.tx_list_item_icon_size_small).toInt()
-                    }
-
-                else {
-                        iconImageView.layoutParams.height = iconImageView.context.resources.getDimension(R.dimen.tx_list_item_icon_size).toInt()
-                        iconImageView.layoutParams.width = iconImageView.context.resources.getDimension(R.dimen.tx_list_item_icon_size).toInt()                    }
+            if (field) {
+                iconImageView.layoutParams.height = iconImageView.context.resources.getDimension(R.dimen.tx_list_item_icon_size_small).toInt()
+                iconImageView.layoutParams.width = iconImageView.context.resources.getDimension(R.dimen.tx_list_item_icon_size_small).toInt()
+            } else {
+                iconImageView.layoutParams.height = iconImageView.context.resources.getDimension(R.dimen.tx_list_item_icon_size).toInt()
+                iconImageView.layoutParams.width = iconImageView.context.resources.getDimension(R.dimen.tx_list_item_icon_size).toInt()
+            }
         }
-
 
     override fun bind(item: TxHistoryItem) {
         displayIcon(item)

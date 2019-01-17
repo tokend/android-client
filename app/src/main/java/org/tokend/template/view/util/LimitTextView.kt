@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.widget.TextView
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.formatter.DefaultAmountFormatter
 import java.math.BigDecimal
 
 /**
@@ -35,7 +34,7 @@ class LimitTextView : TextView {
         textPaint.getTextBounds(left, 0, left.length, bounds)
 
         val width = textPaint.measureText(left)
-        val x = this.width/2 - width
+        val x = this.width / 2 - width
         val y = textPaint.textSize
 
         canvas?.drawText("$left $total", x, y, textPaint)
@@ -51,7 +50,7 @@ class LimitTextView : TextView {
             else -> "${total - used} $SLASH_SYMBOL $total"
         }
 
-        when(total == zeroForAsset || total == MAX) {
+        when (total == zeroForAsset || total == MAX) {
             true -> {
                 this.left = "$DASH_SYMBOL $SLASH_SYMBOL"
                 this.total = DASH_SYMBOL

@@ -2,7 +2,7 @@ package org.tokend.template.di.providers
 
 import org.tokend.sdk.keyserver.models.WalletInfo
 
-class WalletInfoProviderImpl: WalletInfoProvider {
+class WalletInfoProviderImpl : WalletInfoProvider {
     private var walletInfo: WalletInfo? = null
 
     override fun setWalletInfo(walletInfo: WalletInfo?) {

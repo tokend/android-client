@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/InfoCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/standard_margin"
     android:layout_marginStart="@dimen/standard_margin"
+    android:layout_marginTop="@dimen/standard_margin"
     android:layout_marginEnd="@dimen/standard_margin"
     app:cardUseCompatPadding="false"
     app:contentPadding="0dp">
@@ -52,11 +51,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/standard_margin"
             android:layout_marginEnd="@dimen/standard_margin"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/lower_bound_text"
             app:layout_constraintTop_toTopOf="@id/fixed_text"
-            tools:text="0.01 BTC"
-            android:gravity="center"/>
+            tools:text="0.01 BTC" />
 
         <TextView
             android:id="@+id/percent_text"
@@ -72,11 +71,11 @@
             android:id="@+id/percent_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="@id/fixed_value"
             app:layout_constraintStart_toStartOf="@id/fixed_value"
             app:layout_constraintTop_toTopOf="@id/percent_text"
-            tools:text="2.0%"
-            android:gravity="center"/>
+            tools:text="2.0%" />
 
         <TextView
             android:id="@+id/lower_bound_text"
@@ -92,11 +91,11 @@
             android:id="@+id/lower_bound_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="1.0 BTC"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="@id/lower_bound_text"
+            app:layout_constraintEnd_toEndOf="@id/fixed_value"
             app:layout_constraintStart_toStartOf="@id/fixed_value"
-            app:layout_constraintEnd_toEndOf="@id/fixed_value"/>
+            app:layout_constraintTop_toTopOf="@id/lower_bound_text"
+            tools:text="1.0 BTC" />
 
         <TextView
             android:id="@+id/upper_bound_text"
@@ -114,12 +113,11 @@
             android:id="@+id/upper_bound_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="20.0 BTC"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="@id/upper_bound_text"
+            app:layout_constraintEnd_toEndOf="@id/fixed_value"
             app:layout_constraintStart_toStartOf="@id/fixed_value"
-            app:layout_constraintEnd_toEndOf="@id/fixed_value" />
-
+            app:layout_constraintTop_toTopOf="@id/upper_bound_text"
+            tools:text="20.0 BTC" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

@@ -6,10 +6,10 @@ import android.view.View
 import io.reactivex.disposables.CompositeDisposable
 import org.tokend.template.App
 import org.tokend.template.activities.OnBackPressedListener
-import org.tokend.template.logic.AppTfaCallback
 import org.tokend.template.di.providers.*
-import org.tokend.template.view.ToastManager
+import org.tokend.template.logic.AppTfaCallback
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
+import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import javax.inject.Inject
 

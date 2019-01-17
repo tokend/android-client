@@ -1,6 +1,5 @@
 package org.tokend.template.features.dashboard
 
-
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -48,7 +47,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initAssetTabsCard(): AssetTabsCard {
-        return  AssetTabsCard(
+        return AssetTabsCard(
                 activity!!,
                 repositoryProvider,
                 errorHandlerFactory,

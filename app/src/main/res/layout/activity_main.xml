@@ -25,9 +25,9 @@
             android:id="@+id/side_shadow_view"
             android:layout_width="@dimen/quarter_standard_margin"
             android:layout_height="match_parent"
-            android:background="@drawable/side_shadow"
             android:layout_alignParentStart="true"
-            android:visibility="gone"/>
+            android:background="@drawable/side_shadow"
+            android:visibility="gone" />
 
     </RelativeLayout>
 </LinearLayout>

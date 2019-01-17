@@ -8,10 +8,10 @@ import org.tokend.sdk.api.base.model.operations.TransferOperation
 import org.tokend.sdk.api.base.params.OperationsParams
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParams
-import org.tokend.template.di.providers.ApiProvider
-import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
+import org.tokend.template.di.providers.ApiProvider
+import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.toSingle
 
 class TxRepository(

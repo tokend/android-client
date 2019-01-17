@@ -1,6 +1,5 @@
 package org.tokend.template.view.picker
 
-
 import android.content.Context
 import android.support.design.widget.TabLayout
 import android.util.AttributeSet
@@ -31,6 +30,7 @@ class PickerTabLayout : TabLayout, Picker {
             }
             (getTabAt(index) ?: getTabAt(0))?.select()
         }
+
     override var selectedItem: PickerItem?
         get() = items.getOrNull(selectedItemIndex)
         set(value) {

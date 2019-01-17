@@ -4,7 +4,7 @@ import io.reactivex.Single
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.repository.base.RepositoryCache
 
-class AssetPairsCache: RepositoryCache<AssetPairRecord>() {
+class AssetPairsCache : RepositoryCache<AssetPairRecord>() {
     override fun isContentSame(first: AssetPairRecord, second: AssetPairRecord): Boolean {
         return first == second
     }

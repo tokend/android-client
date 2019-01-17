@@ -47,7 +47,6 @@
             android:persistent="false"
             android:title="@string/tfa_title" />
 
-
         <android.support.v7.preference.Preference
             android:icon="@drawable/ic_lock"
             android:key="change_password"

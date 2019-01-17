@@ -3,12 +3,12 @@ package org.tokend.template.features.invest.logic
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import org.tokend.template.view.ErrorEmptyView
-import org.tokend.template.view.PaginationRecyclerView
-import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.features.invest.adapter.SalesAdapter
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
+import org.tokend.template.view.ErrorEmptyView
+import org.tokend.template.view.PaginationRecyclerView
+import org.tokend.template.view.util.LoadingIndicatorManager
 
 class SalesSubscriptionManager(private val list: PaginationRecyclerView,
                                private val adapter: SalesAdapter,
@@ -34,30 +34,30 @@ class SalesSubscriptionManager(private val list: PaginationRecyclerView,
                             adapter.setData(it)
                         },
                 repository.loadingSubject
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnDispose {
-                    loadingIndicator.setLoading(false)
-                    adapter.hideLoadingFooter()
-                }
-                .subscribe { loading ->
-                    if (loading) {
-                        if (repository.isOnFirstPage) {
-                            loadingIndicator.setLoading(true)
-                        } else {
-                            adapter.showLoadingFooter()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnDispose {
+                            loadingIndicator.setLoading(false)
+                            adapter.hideLoadingFooter()
                         }
-                    } else {
-                        loadingIndicator.setLoading(false)
-                        adapter.hideLoadingFooter()
-                    }
-                },
+                        .subscribe { loading ->
+                            if (loading) {
+                                if (repository.isOnFirstPage) {
+                                    loadingIndicator.setLoading(true)
+                                } else {
+                                    adapter.showLoadingFooter()
+                                }
+                            } else {
+                                loadingIndicator.setLoading(false)
+                                adapter.hideLoadingFooter()
+                            }
+                        },
                 repository.errorsSubject
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { handleSalesError(it) }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { handleSalesError(it) }
 
         ).also { it.addTo(compositeDisposable) }
 
-        if(force) {
+        if (force) {
             repository.update()
         } else {
             repository.updateIfNotFresh()

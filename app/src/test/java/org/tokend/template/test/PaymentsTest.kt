@@ -2,13 +2,17 @@ package org.tokend.template.test
 
 import org.junit.Assert
 import org.junit.Test
-import org.tokend.template.di.providers.*
+import org.tokend.template.di.providers.AccountProviderFactory
+import org.tokend.template.di.providers.ApiProviderFactory
+import org.tokend.template.di.providers.RepositoryProviderImpl
+import org.tokend.template.di.providers.WalletInfoProviderFactory
 import org.tokend.template.features.send.logic.ConfirmPaymentRequestUseCase
 import org.tokend.template.features.send.logic.CreatePaymentRequestUseCase
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
-import org.tokend.wallet.xdr.*
+import org.tokend.wallet.xdr.FeeType
+import org.tokend.wallet.xdr.PaymentFeeType
 import java.math.BigDecimal
 
 class PaymentsTest {
@@ -142,7 +146,7 @@ class PaymentsTest {
 
         val initialBalance = Util.getSomeMoney(asset, emissionAmount, repositoryProvider, txManager)
 
-        val request  = CreatePaymentRequestUseCase(
+        val request = CreatePaymentRequestUseCase(
                 recipient,
                 paymentAmount,
                 asset,

@@ -1,6 +1,5 @@
 package org.tokend.template.features.wallet
 
-
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
@@ -139,7 +138,6 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             txRepository.loadMore() || txRepository.noMoreItems
         }
     }
-
 
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))

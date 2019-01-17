@@ -121,9 +121,9 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/half_standard_margin"
                                     android:orientation="horizontal"
-                                    android:paddingBottom="@dimen/standard_margin"
+                                    android:paddingStart="@dimen/half_standard_margin"
                                     android:paddingEnd="@dimen/half_standard_margin"
-                                    android:paddingStart="@dimen/half_standard_margin">
+                                    android:paddingBottom="@dimen/standard_margin">
 
                                     <TextView
                                         android:id="@+id/bid_heading"
@@ -149,9 +149,9 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
-                                    android:paddingBottom="@dimen/quarter_standard_margin"
+                                    android:paddingStart="@dimen/half_standard_margin"
                                     android:paddingEnd="@dimen/half_standard_margin"
-                                    android:paddingStart="@dimen/half_standard_margin">
+                                    android:paddingBottom="@dimen/quarter_standard_margin">
 
                                     <TextView
                                         android:id="@+id/buy_amount_hint"
@@ -199,7 +199,6 @@
                             </LinearLayout>
                         </android.support.v4.widget.NestedScrollView>
 
-
                         <FrameLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -223,8 +222,8 @@
                                     android:layout_weight="1"
                                     android:clipToPadding="false"
                                     android:overScrollMode="never"
-                                    android:paddingBottom="62dp"
                                     android:paddingStart="@dimen/half_standard_margin"
+                                    android:paddingBottom="62dp"
                                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
                                 <org.tokend.template.view.PaginationRecyclerView
@@ -234,8 +233,8 @@
                                     android:layout_weight="1"
                                     android:clipToPadding="false"
                                     android:overScrollMode="never"
-                                    android:paddingBottom="62dp"
                                     android:paddingEnd="@dimen/half_standard_margin"
+                                    android:paddingBottom="62dp"
                                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
                             </LinearLayout>
@@ -283,6 +282,5 @@
         <include layout="@layout/layout_asset_chart_sheet" />
 
     </android.support.design.widget.CoordinatorLayout>
-
 
 </LinearLayout>

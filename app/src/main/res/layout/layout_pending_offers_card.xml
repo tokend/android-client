@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/InfoCard"
     android:layout_width="match_parent"
@@ -20,15 +19,15 @@
             android:layout_margin="@dimen/standard_margin"
             android:text="@string/pending_offers_title" />
 
-        <include layout="@layout/layout_progress"/>
+        <include layout="@layout/layout_progress" />
 
         <TextView
             android:id="@+id/offers_empty_view"
             style="@style/SecondaryText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/double_margin"
             android:layout_marginTop="@dimen/double_margin"
+            android:layout_marginBottom="@dimen/double_margin"
             android:gravity="center"
             android:text="@string/loading_data"
             android:visibility="gone" />
@@ -67,9 +66,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginBottom="@dimen/half_standard_padding"
-                android:layout_marginEnd="@dimen/half_standard_padding"
                 android:layout_marginTop="@dimen/half_standard_margin"
+                android:layout_marginEnd="@dimen/half_standard_padding"
+                android:layout_marginBottom="@dimen/half_standard_padding"
                 android:text="@string/view_more" />
         </LinearLayout>
     </LinearLayout>

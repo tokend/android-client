@@ -13,10 +13,10 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.send.logic.ConfirmPaymentRequestUseCase
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.logic.transactions.TxManager
-import org.tokend.template.view.InfoCard
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.InfoCard
 import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.ProgressDialogFactory
 
 class PaymentConfirmationActivity : BaseActivity() {
     private lateinit var request: PaymentRequest

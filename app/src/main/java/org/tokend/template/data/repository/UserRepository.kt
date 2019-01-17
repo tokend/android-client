@@ -2,9 +2,9 @@ package org.tokend.template.data.repository
 
 import io.reactivex.Completable
 import io.reactivex.Observable
+import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.extensions.User
 import org.tokend.template.extensions.toCompletable
 import org.tokend.template.extensions.toSingle

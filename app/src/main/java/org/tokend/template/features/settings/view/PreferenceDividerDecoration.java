@@ -21,14 +21,13 @@ import android.view.View;
  */
 public class PreferenceDividerDecoration extends RecyclerView.ItemDecoration {
 
+    private final Drawable mDivider;
+    private final int mDividerHeight;
     private boolean mDrawTop = false;
     private boolean mDrawBottom = false;
     private boolean mDrawBetweenItems = true;
     private boolean mDrawBetweenCategories = true;
     private int mPaddingLeft;
-
-    private final Drawable mDivider;
-    private final int mDividerHeight;
 
     public PreferenceDividerDecoration(Drawable divider, int dividerHeight) {
         mDivider = divider;

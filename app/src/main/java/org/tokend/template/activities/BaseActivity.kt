@@ -3,7 +3,6 @@ package org.tokend.template.activities
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.MenuItem
 import android.view.WindowManager
 import io.reactivex.disposables.CompositeDisposable

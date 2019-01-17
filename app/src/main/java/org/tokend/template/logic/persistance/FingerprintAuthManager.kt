@@ -26,14 +26,12 @@ class FingerprintAuthManager(
     fun requestAuthIfAvailable(onAuthStart: () -> Unit,
                                onSuccess: (String, CharArray) -> Unit,
                                onError: (String?) -> Unit) {
-
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return
         }
 
         val preferences = applicationContext.defaultSharedPreferences
-        if(!preferences.getBoolean("fingerprint", true)) {
+        if (!preferences.getBoolean("fingerprint", true)) {
             return
         }
 
@@ -53,7 +51,7 @@ class FingerprintAuthManager(
             onAuthStart()
 
             val handleErrorMessage: (String?) -> Unit = { errorMessage ->
-                    errorCallback?.invoke(errorMessage)
+                errorCallback?.invoke(errorMessage)
             }
 
             fingerprintUtil.requestAuth(

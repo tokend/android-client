@@ -50,8 +50,10 @@ class LimitCard(private val context: Context,
     private fun setLimit() {
         val zero = BigDecimal.ZERO
 
-        view.payment_limit.setValues(paymentUsed ?: zero, paymentTotal ?: zero, asset, amountFormatter)
-        view.deposit_limit.setValues(depositUsed ?: zero, depositTotal ?: zero, asset, amountFormatter)
+        view.payment_limit.setValues(paymentUsed ?: zero, paymentTotal
+                ?: zero, asset, amountFormatter)
+        view.deposit_limit.setValues(depositUsed ?: zero, depositTotal
+                ?: zero, asset, amountFormatter)
         view.limit_type.text = type
     }
 

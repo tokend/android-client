@@ -36,14 +36,13 @@ class AssetRecord(
     )
 
     val isBackedByExternalSystem: Boolean
-        get() = externalSystemType!= null
+        get() = externalSystemType != null
 
     val isTransferable: Boolean
         get() = checkPolicy(policy, org.tokend.wallet.xdr.AssetPolicy.TRANSFERABLE.value)
 
     val isBase: Boolean
         get() = checkPolicy(policy, org.tokend.wallet.xdr.AssetPolicy.BASE_ASSET.value)
-
 
     val isWithdrawable: Boolean
         get() = checkPolicy(policy, org.tokend.wallet.xdr.AssetPolicy.WITHDRAWABLE.value)

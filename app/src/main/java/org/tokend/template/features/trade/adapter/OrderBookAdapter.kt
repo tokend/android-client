@@ -47,6 +47,4 @@ class OrderBookAdapter(val isBuy: Boolean) : PaginationRecyclerAdapter<OfferReco
     override fun bindFooterViewHolder(holder: BaseViewHolder<OfferRecord>) {
         (holder as? FooterViewHolder)?.bind()
     }
-
-
 }

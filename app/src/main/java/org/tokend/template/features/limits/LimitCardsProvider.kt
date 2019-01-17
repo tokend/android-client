@@ -10,14 +10,14 @@ import org.tokend.wallet.xdr.StatsOpType
 class LimitCardsProvider(context: Context,
                          asset: String,
                          entries: Collection<LimitEntry>,
-                         private val amountFormatter: AmountFormatter) {
+                         amountFormatter: AmountFormatter) {
 
     private val cards = arrayListOf<LimitCard>()
     private val limitTypes = context.resources.getStringArray(R.array.limit_types)
 
     init {
-        val paymentEntry = entries.find { it.limit.statsOpType == StatsOpType.PAYMENT_OUT}
-        val depositEntry = entries.find { it.limit.statsOpType == StatsOpType.WITHDRAW}
+        val paymentEntry = entries.find { it.limit.statsOpType == StatsOpType.PAYMENT_OUT }
+        val depositEntry = entries.find { it.limit.statsOpType == StatsOpType.WITHDRAW }
 
         LimitCard(context,
                 limitTypes[0],

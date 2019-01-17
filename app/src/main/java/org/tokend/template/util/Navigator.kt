@@ -167,7 +167,6 @@ object Navigator {
         ), requestCode, transitionBundle)
     }
 
-
     fun openPaymentConfirmation(fragment: Fragment, requestCode: Int,
                                 paymentRequest: PaymentRequest) {
         val confirmationIntent = Intent(fragment.context, PaymentConfirmationActivity::class.java)
