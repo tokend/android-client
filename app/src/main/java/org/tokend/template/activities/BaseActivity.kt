@@ -58,7 +58,7 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     protected open val allowUnauthorized = false
 
     /**
-     * Disposable holder which will be disposed on fragment destroy
+     * Disposable holder which will be disposed on activity destroy
      */
     protected val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
