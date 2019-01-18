@@ -94,7 +94,7 @@
                                 android:layout_alignEnd="@id/video_preview_image_view"
                                 android:layout_centerVertical="true"
                                 android:scaleType="fitCenter"
-                                app:srcCompat="@drawable/ic_youtube_transparent" />
+                                app:srcCompat="@drawable/ic_youtube_play" />
                         </RelativeLayout>
 
                         <Space
