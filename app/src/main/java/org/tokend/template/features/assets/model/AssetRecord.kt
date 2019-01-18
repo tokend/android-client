@@ -9,7 +9,6 @@ import java.math.BigDecimal
 
 class AssetRecord(
         val code: String,
-        val ownerAccount: String?,
         val policy: Int,
         val name: String?,
         val logoUrl: String?,
@@ -24,7 +23,6 @@ class AssetRecord(
                 urlConfig: UrlConfig?
     ) : this(
             code = source.code,
-            ownerAccount = source.ownerAccount,
             policy = source.policy,
             name = source.details.name,
             logoUrl = source.details.logo?.getUrl(urlConfig?.storage),
@@ -40,9 +38,6 @@ class AssetRecord(
 
     val isTransferable: Boolean
         get() = checkPolicy(policy, org.tokend.wallet.xdr.AssetPolicy.TRANSFERABLE.value)
-
-    val isBase: Boolean
-        get() = checkPolicy(policy, org.tokend.wallet.xdr.AssetPolicy.BASE_ASSET.value)
 
     val isWithdrawable: Boolean
         get() = checkPolicy(policy, org.tokend.wallet.xdr.AssetPolicy.WITHDRAWABLE.value)

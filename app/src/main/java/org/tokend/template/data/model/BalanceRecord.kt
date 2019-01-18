@@ -9,13 +9,11 @@ class BalanceRecord(
         val asset: AssetRecord,
         val available: BigDecimal,
         val availableConverted: BigDecimal,
-        val conversionAssetCode: String,
-        val locked: BigDecimal
+        val conversionAssetCode: String
 ) {
     constructor(source: SimpleBalanceDetails, urlConfig: UrlConfig?) : this(
             id = source.balanceId,
             available = source.balance,
-            locked = source.lockedBalance,
             availableConverted = source.convertedBalance,
             asset = AssetRecord(source.assetDetails!!, urlConfig),
             conversionAssetCode = source.conversionAsset
