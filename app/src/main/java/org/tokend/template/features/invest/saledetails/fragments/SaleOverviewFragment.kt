@@ -10,12 +10,16 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_sale_overview.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_progress.*
+import org.tokend.sdk.factory.HttpClientFactory
+import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.features.invest.logic.BlobManager
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import ru.noties.markwon.Markwon
+import ru.noties.markwon.SpannableConfiguration
+import ru.noties.markwon.il.AsyncDrawableLoader
 
 class SaleOverviewFragment : BaseFragment() {
     private val loadingIndicator = LoadingIndicatorManager(
@@ -24,6 +28,7 @@ class SaleOverviewFragment : BaseFragment() {
     )
 
     private lateinit var blobId: String
+    private lateinit var markdownConfiguration: SpannableConfiguration
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -31,6 +36,22 @@ class SaleOverviewFragment : BaseFragment() {
     }
 
     override fun onInitAllowed() {
+        markdownConfiguration = SpannableConfiguration
+                .builder(requireContext())
+                .asyncDrawableLoader(
+                        AsyncDrawableLoader
+                                .builder()
+                                .client(
+                                        HttpClientFactory()
+                                                .getBaseHttpClientBuilder(
+                                                        withLogs = BuildConfig.WITH_LOGS
+                                                )
+                                                .build()
+                                )
+                                .build()
+                )
+                .build()
+
         arguments?.getString(BLOB_ID_EXTRA).also {
             if (it == null) {
                 error_empty_view.showError(IllegalStateException(), errorHandlerFactory.getDefault())
@@ -49,7 +70,7 @@ class SaleOverviewFragment : BaseFragment() {
                         .getBlob(blobId)
                         .map { it.valueString }
                         .map { markdownString ->
-                            Markwon.markdown(requireContext(), markdownString)
+                            Markwon.markdown(markdownConfiguration, markdownString)
                         }
                         .compose(ObservableTransformers.defaultSchedulersSingle())
                         .doOnSubscribe {
