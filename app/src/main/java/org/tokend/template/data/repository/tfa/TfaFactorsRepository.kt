@@ -3,6 +3,7 @@ package org.tokend.template.data.repository.tfa
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.tokend.sdk.api.tfa.model.TfaFactor
+import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
@@ -13,9 +14,9 @@ import org.tokend.template.features.tfa.model.TfaFactorRecord
 
 class TfaFactorsRepository(
         private val apiProvider: ApiProvider,
-        private val walletInfoProvider: WalletInfoProvider
-) : SimpleMultipleItemsRepository<TfaFactorRecord>() {
-    override val itemsCache = TfaFactorsCache()
+        private val walletInfoProvider: WalletInfoProvider,
+        itemsCache: RepositoryCache<TfaFactorRecord>
+) : SimpleMultipleItemsRepository<TfaFactorRecord>(itemsCache) {
 
     override fun getItems(): Single<List<TfaFactorRecord>> {
         val signedApi = apiProvider.getSignedApi()

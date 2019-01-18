@@ -6,8 +6,7 @@ import io.reactivex.subjects.BehaviorSubject
 /**
  * Repository that holds a list of [T] items.
  */
-abstract class MultipleItemsRepository<T> : Repository() {
-    protected abstract val itemsCache: RepositoryCache<T>
+abstract class MultipleItemsRepository<T>( val itemsCache: RepositoryCache<T>) : Repository() {
 
     /**
      * BehaviourSubject which emits repository items on changes,

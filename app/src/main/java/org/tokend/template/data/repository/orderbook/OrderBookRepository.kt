@@ -6,6 +6,7 @@ import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParams
 import org.tokend.sdk.api.trades.params.OrderBookParams
 import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.extensions.toSingle
@@ -15,9 +16,9 @@ class OrderBookRepository
         private val apiProvider: ApiProvider,
         private val baseAsset: String,
         private val quoteAsset: String,
-        private val isBuy: Boolean
-) : PagedDataRepository<OfferRecord, OrderBookParams>() {
-    override val itemsCache = OrderBookCache(isBuy)
+        private val isBuy: Boolean,
+        itemsCache: RepositoryCache<OfferRecord>
+) : PagedDataRepository<OfferRecord, OrderBookParams>(itemsCache) {
 
     override fun getItems(): Single<List<OfferRecord>> = Single.just(emptyList())
 

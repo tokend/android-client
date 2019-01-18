@@ -12,6 +12,7 @@ import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParams
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.SystemInfoRepository
+import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
@@ -28,9 +29,9 @@ import org.tokend.wallet.xdr.Operation
 class OffersRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
-        private val onlyPrimary: Boolean
-) : PagedDataRepository<OfferRecord, OffersParams>() {
-    override val itemsCache = OffersCache()
+        private val onlyPrimary: Boolean,
+        itemsCache: RepositoryCache<OfferRecord>
+) : PagedDataRepository<OfferRecord, OffersParams>(itemsCache) {
 
     override fun getNextPageRequestParams(): OffersParams {
         return OffersParams(

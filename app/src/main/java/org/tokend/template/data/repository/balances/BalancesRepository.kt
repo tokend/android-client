@@ -5,6 +5,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.SystemInfoRepository
+import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
@@ -19,9 +20,9 @@ import org.tokend.wallet.xdr.op_extensions.CreateBalanceOp
 class BalancesRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
-        private val urlConfigProvider: UrlConfigProvider
-) : SimpleMultipleItemsRepository<BalanceRecord>() {
-    override val itemsCache = BalancesCache()
+        private val urlConfigProvider: UrlConfigProvider,
+        itemsCache: RepositoryCache<BalanceRecord>
+) : SimpleMultipleItemsRepository<BalanceRecord>(itemsCache) {
 
     override fun getItems(): Single<List<BalanceRecord>> {
         val signedApi = apiProvider.getSignedApi()

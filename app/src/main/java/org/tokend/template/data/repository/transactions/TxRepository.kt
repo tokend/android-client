@@ -9,6 +9,7 @@ import org.tokend.sdk.api.base.params.OperationsParams
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParams
 import org.tokend.template.data.repository.AccountDetailsRepository
+import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
@@ -18,10 +19,9 @@ class TxRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
         private val asset: String,
-        private val accountDetailsRepository: AccountDetailsRepository? = null
-) : PagedDataRepository<TransferOperation, PaymentsParams>() {
-
-    override val itemsCache = TxCache()
+        private val accountDetailsRepository: AccountDetailsRepository? = null,
+        itemsCache: RepositoryCache<TransferOperation>
+) : PagedDataRepository<TransferOperation, PaymentsParams>(itemsCache) {
 
     override fun getItems(): Single<List<TransferOperation>> = Single.just(emptyList())
 

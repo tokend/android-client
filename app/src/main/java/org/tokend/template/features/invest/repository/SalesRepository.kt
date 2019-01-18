@@ -13,15 +13,14 @@ import org.tokend.template.features.invest.model.SaleRecord
 
 class SalesRepository(
         private val apiProvider: ApiProvider,
-        private val urlConfigProvider: UrlConfigProvider
-) : PagedDataRepository<SaleRecord, SalesParams>() {
+        private val urlConfigProvider: UrlConfigProvider,
+        itemsCache: SalesCache
+) : PagedDataRepository<SaleRecord, SalesParams>(itemsCache) {
 
     private var name: String? = null
     private var baseAsset: String? = null
 
     override fun getItems(): Single<List<SaleRecord>> = Single.just(emptyList())
-
-    override val itemsCache = SalesCache()
 
     override fun getPage(requestParams: SalesParams): Single<DataPage<SaleRecord>> {
         return apiProvider.getApi()

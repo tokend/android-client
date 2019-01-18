@@ -2,6 +2,7 @@ package org.tokend.template.data.repository.assets
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
+import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
@@ -10,9 +11,9 @@ import org.tokend.template.features.assets.model.AssetRecord
 
 class AssetsRepository(
         private val apiProvider: ApiProvider,
-        private val urlConfigProvider: UrlConfigProvider
-) : SimpleMultipleItemsRepository<AssetRecord>() {
-    override val itemsCache = AssetsRepositoryCache()
+        private val urlConfigProvider: UrlConfigProvider,
+        itemsCache: RepositoryCache<AssetRecord>
+) : SimpleMultipleItemsRepository<AssetRecord>(itemsCache) {
 
     override fun getItems(): Single<List<AssetRecord>> {
         return apiProvider.getApi()

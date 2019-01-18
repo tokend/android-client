@@ -8,11 +8,13 @@ import io.reactivex.subjects.CompletableSubject
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingParamsHolder
 import org.tokend.template.data.repository.base.MultipleItemsRepository
+import org.tokend.template.data.repository.base.RepositoryCache
 
 /**
  * Repository for paged data of type [T] with request params of type [R].
  */
-abstract class PagedDataRepository<T, R> : MultipleItemsRepository<T>()
+abstract class PagedDataRepository<T, R>(itemsCache: RepositoryCache<T>)
+    : MultipleItemsRepository<T>(itemsCache)
         where R : PagingParamsHolder {
     protected var nextCursor: String? = null
 

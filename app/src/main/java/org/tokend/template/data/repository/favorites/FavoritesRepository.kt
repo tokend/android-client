@@ -5,6 +5,7 @@ import io.reactivex.Single
 import org.tokend.sdk.api.favorites.model.FavoriteEntry
 import org.tokend.template.data.model.FavoriteRecord
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
+import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.toCompletable
@@ -12,9 +13,9 @@ import org.tokend.template.extensions.toSingle
 
 class FavoritesRepository(
         private val apiProvider: ApiProvider,
-        private val walletInfoProvider: WalletInfoProvider
-) : SimpleMultipleItemsRepository<FavoriteRecord>() {
-    override val itemsCache = FavoritesCache()
+        private val walletInfoProvider: WalletInfoProvider,
+        itemsCache: RepositoryCache<FavoriteRecord>
+) : SimpleMultipleItemsRepository<FavoriteRecord>(itemsCache) {
 
     override fun getItems(): Single<List<FavoriteRecord>> {
         val signedApi = apiProvider.getSignedApi()
