@@ -69,6 +69,7 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initFeeList() {
+        error_empty_view.setEmptyDrawable(R.drawable.ic_flash)
         error_empty_view.setPadding(0, 0, 0,
                 resources.getDimensionPixelSize(R.dimen.quadra_margin))
 
@@ -143,8 +144,10 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
     private fun onFeesUpdated() {
         asset_tabs.setSimpleItems(assets)
         if (assets.isEmpty()) {
+            asset_tabs.visibility = View.GONE
             error_empty_view.showEmpty(getString(R.string.no_fees))
         } else {
+            asset_tabs.visibility = View.VISIBLE
             error_empty_view.hide()
         }
     }

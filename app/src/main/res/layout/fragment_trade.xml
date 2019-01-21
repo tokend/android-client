@@ -44,6 +44,7 @@
                     app:layout_collapseMode="pin" />
 
                 <android.support.design.widget.CoordinatorLayout
+                    android:id="@+id/order_book_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 

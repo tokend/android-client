@@ -91,6 +91,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         layoutManager = GridLayoutManager(context, columns)
 
         salesAdapter = SalesAdapter(urlConfigProvider.getConfig().storage, amountFormatter)
+        error_empty_view.setEmptyDrawable(R.drawable.ic_invest)
         error_empty_view.observeAdapter(salesAdapter, R.string.no_sales_found)
 
         salesAdapter.onItemClick { _, sale ->

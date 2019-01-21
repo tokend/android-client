@@ -246,6 +246,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 .toList()
 
         if (transferableAssets.isEmpty()) {
+            error_empty_view.setEmptyDrawable(R.drawable.ic_send)
             error_empty_view.showEmpty(R.string.error_no_transferable_assets)
             return
         }

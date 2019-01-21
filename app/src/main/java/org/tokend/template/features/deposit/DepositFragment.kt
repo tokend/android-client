@@ -77,6 +77,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         initSwipeRefresh()
         initButtons()
         initHorizontalSwipes()
+        initEmptyView()
 
         subscribeToAccount()
         subscribeToAssets()
@@ -169,15 +170,16 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         val depositableAssets = assets.filter { it.isBackedByExternalSystem }
 
         if (depositableAssets.isEmpty()) {
-            if (assetsRepository.isNeverUpdated) {
-                error_empty_view.showEmpty("")
-            } else {
-                asset_tab_layout.visibility = View.GONE
+            deposit_content_layout.visibility = View.GONE
+            asset_tab_layout.visibility = View.GONE
+
+            if (!assetsRepository.isNeverUpdated) {
                 error_empty_view.showEmpty(R.string.error_deposit_unavailable)
             }
             return
         } else {
             asset_tab_layout.visibility = View.VISIBLE
+            deposit_content_layout.visibility = View.VISIBLE
             error_empty_view.hide()
         }
 
@@ -209,6 +211,10 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             gestureDetector.onTouchEvent(motionEvent)
             false
         }
+    }
+
+    private fun initEmptyView() {
+        error_empty_view.setEmptyDrawable(R.drawable.ic_deposit)
     }
 
     // region Timer

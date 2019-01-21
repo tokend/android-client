@@ -125,6 +125,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             item.source?.let { Navigator.openTransactionDetails(this.activity!!, it) }
         }
 
+        error_empty_view.setEmptyDrawable(R.drawable.ic_balance)
         error_empty_view.setPadding(0, 0, 0,
                 resources.getDimensionPixelSize(R.dimen.quadra_margin))
         error_empty_view.observeAdapter(txAdapter, R.string.no_transaction_history)

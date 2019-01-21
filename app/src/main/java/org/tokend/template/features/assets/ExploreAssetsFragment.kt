@@ -106,6 +106,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
         assets_recycler_view.adapter = assetsAdapter
 
+        error_empty_view.setEmptyDrawable(R.drawable.ic_coins)
         error_empty_view.observeAdapter(assetsAdapter, R.string.no_assets_found)
         error_empty_view.setEmptyViewDenial { assetsRepository.isNeverUpdated || balancesRepository.isNeverUpdated }
 

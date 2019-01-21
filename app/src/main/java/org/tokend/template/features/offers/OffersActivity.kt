@@ -67,6 +67,7 @@ class OffersActivity : BaseActivity() {
             openDetails(item.source)
         }
 
+        error_empty_view.setEmptyDrawable(R.drawable.ic_pending)
         error_empty_view.observeAdapter(txAdapter) {
             if (onlyPrimary)
                 getString(R.string.no_pending_investments)

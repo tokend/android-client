@@ -311,17 +311,19 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         if (pairs.isEmpty()) {
             pairs_tabs.visibility = View.GONE
             bottom_sheet.visibility = View.GONE
-            error_empty_view.showEmpty(
-                    if (assetPairsRepository.isNeverUpdated)
-                        ""
-                    else
-                        getString(R.string.error_no_tradeable_pairs)
-            )
+            order_book_layout.visibility = View.GONE
+
+            error_empty_view.setEmptyDrawable(R.drawable.ic_trade)
+            if (!assetPairsRepository.isNeverUpdated) {
+                error_empty_view.showEmpty(getString(R.string.error_no_tradeable_pairs))
+            }
+
             return
         } else {
             error_empty_view.hide()
             bottom_sheet.visibility = View.VISIBLE
             pairs_tabs.visibility = View.VISIBLE
+            order_book_layout.visibility = View.VISIBLE
         }
 
         pairs_tabs.setItems(

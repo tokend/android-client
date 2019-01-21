@@ -195,6 +195,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                 .toList()
 
         if (withdrawableAssets.isEmpty()) {
+            error_empty_view.setEmptyDrawable(R.drawable.ic_withdraw)
             error_empty_view.showEmpty(R.string.error_no_withdrawable_assets)
             return
         }
