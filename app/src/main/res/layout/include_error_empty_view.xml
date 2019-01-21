@@ -4,4 +4,6 @@
     android:id="@+id/error_empty_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:error_drawable="@drawable/ic_error_outline_big" />
+    app:drawable_size="64dp"
+    app:drawable_tint_color="@color/secondary_text"
+    app:error_drawable="@drawable/ic_error_outline" />

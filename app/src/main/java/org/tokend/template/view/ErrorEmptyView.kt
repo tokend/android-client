@@ -1,22 +1,28 @@
 package org.tokend.template.view
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
+import android.support.annotation.ColorInt
+import android.support.annotation.Dimension
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
 import android.support.v4.content.res.ResourcesCompat
+import android.support.v4.widget.ImageViewCompat
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.util.errorhandler.ErrorHandler
+import kotlin.math.roundToInt
 
 /**
  * Used to display empty or error state.
@@ -33,6 +39,9 @@ class ErrorEmptyView @JvmOverloads constructor(
 
     private var emptyDrawable: Drawable? = null
     private var errorDrawable: Drawable? = null
+    private var drawableSize = ViewGroup.LayoutParams.WRAP_CONTENT
+    @ColorInt
+    private var drawableTint: Int? = null
 
     private var emptyViewDenial: () -> Boolean = { false }
 
@@ -53,6 +62,8 @@ class ErrorEmptyView @JvmOverloads constructor(
 
             val emptyRes = typedArray.getResourceId(R.styleable.ErrorEmptyView_empty_drawable, 0)
             val errorRes = typedArray.getResourceId(R.styleable.ErrorEmptyView_error_drawable, 0)
+            val drawableSize = typedArray.getDimension(R.styleable.ErrorEmptyView_drawable_size, 0f)
+            val drawableTint = typedArray.getColor(R.styleable.ErrorEmptyView_drawable_tint_color, Int.MIN_VALUE)
 
             if (emptyRes != 0) {
                 emptyDrawable = ResourcesCompat.getDrawable(resources, emptyRes, null)
@@ -60,6 +71,14 @@ class ErrorEmptyView @JvmOverloads constructor(
 
             if (errorRes != 0) {
                 errorDrawable = ResourcesCompat.getDrawable(resources, errorRes, null)
+            }
+
+            if (drawableSize != 0f) {
+                this.drawableSize = drawableSize.roundToInt()
+            }
+
+            if (drawableTint != Int.MIN_VALUE) {
+                this.drawableTint = drawableTint
             }
 
             typedArray.recycle()
@@ -96,10 +115,46 @@ class ErrorEmptyView @JvmOverloads constructor(
         return errorDrawable
     }
 
+    /**
+     * Sets drawable pixel size.
+     */
+    fun setDrawableSize(@Dimension(unit = Dimension.PX) size: Int?) {
+        drawableSize = size ?: ViewGroup.LayoutParams.WRAP_CONTENT
+    }
+
+    fun getDrawableSize(): Int {
+        return drawableSize
+    }
+
+    /**
+     * Sets drawable tint color.
+     */
+    fun setDrawableTintColor(@ColorInt color: Int?) {
+        drawableTint = color
+    }
+
+    @ColorInt
+    fun getDrawableTintColor(): Int? {
+        return drawableTint
+    }
+
     private fun setIcon(drawable: Drawable?) {
         if (drawable != null) {
             iconImageView.visibility = View.VISIBLE
+            iconImageView.layoutParams = iconImageView.layoutParams.apply {
+                width = drawableSize
+                height = drawableSize
+            }
+
             iconImageView.setImageDrawable(drawable)
+
+            drawableTint.also { tint ->
+                if (tint != null) {
+                    ImageViewCompat.setImageTintList(iconImageView, ColorStateList.valueOf(tint))
+                } else {
+                    ImageViewCompat.setImageTintList(iconImageView, null)
+                }
+            }
         } else {
             iconImageView.visibility = View.GONE
         }
