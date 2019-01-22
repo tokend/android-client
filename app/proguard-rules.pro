@@ -40,6 +40,7 @@
 }
 -keepnames class com.fasterxml.jackson.** { *; }
 -dontwarn com.fasterxml.jackson.databind.**
+-keep class * implements com.github.jasminb.jsonapi.ResourceIdHandler
 
 # JSON
 -keep class sun.misc.Unsafe { *; }
