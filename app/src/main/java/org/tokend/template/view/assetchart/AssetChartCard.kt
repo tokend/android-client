@@ -62,7 +62,7 @@ class AssetChartCard : LinearLayout {
             onScaleChanged()
         }
     private var passScrollToChart = false
-    private var chartXOffset: Float = 0f
+    private var chartWindowXOffset: Float = 0f
     private val chartData = Collections.synchronizedList(mutableListOf<Entry>())
 
     private val chartScaleTabs: TabLayout
@@ -345,7 +345,7 @@ class AssetChartCard : LinearLayout {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         chart.getLocationInWindow(location)
-        chartXOffset = location[0].toFloat()
+        chartWindowXOffset = location[0].toFloat()
     }
     // endregion
 
@@ -358,7 +358,11 @@ class AssetChartCard : LinearLayout {
     fun applyTouchHook(parent: View) {
         parent.setOnTouchListener { _, event ->
             if (passScrollToChart) {
-                event.offsetLocation(-chartXOffset, 0f)
+                val location = IntArray(2)
+                parent.getLocationInWindow(location)
+                val chartParentXOffset = chartWindowXOffset - location[0].toFloat()
+
+                event.offsetLocation(-chartParentXOffset, 0f)
                 chart.dispatchTouchEvent(event)
             }
 
@@ -457,5 +461,5 @@ class AssetChartCard : LinearLayout {
                 }
         chart.invalidate()
     }
-    // endregion
+// endregion
 }
