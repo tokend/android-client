@@ -3,6 +3,7 @@ package org.tokend.template.logic.persistance
 import android.content.SharedPreferences
 import android.os.Build
 import android.support.annotation.RequiresApi
+import io.reactivex.Maybe
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.extensions.toByteArray
@@ -94,6 +95,18 @@ class CredentialsPersistor(
         } catch (e: Exception) {
             e.printStackTrace()
             return null
+        }
+    }
+
+    /**
+     * @return saved credentials or empty [Maybe] if there is no saved credentials or
+     * password is incorrect
+     */
+    fun loadCredentialsMaybe(password: CharArray): Maybe<WalletInfo> {
+        return Maybe.defer {
+            loadCredentials(password)
+                    ?.let { Maybe.just(it) }
+                    ?: Maybe.empty()
         }
     }
 
