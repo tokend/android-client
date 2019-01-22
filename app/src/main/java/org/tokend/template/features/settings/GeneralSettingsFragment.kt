@@ -1,13 +1,10 @@
 package org.tokend.template.features.settings
 
-import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.support.v7.preference.SwitchPreferenceCompat
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -15,7 +12,6 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.browse
-import org.jetbrains.anko.isSelectable
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.R
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
@@ -29,8 +25,8 @@ import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.persistance.FingerprintUtil
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.SecretSeedDialog
 import org.tokend.template.view.util.LoadingIndicatorManager
-import java.nio.CharBuffer
 
 class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -114,19 +110,10 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         val seedPreference = findPreference("secret_seed") ?: return
 
         seedPreference.setOnPreferenceClickListener {
-            val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogStyle)
-                    .setMessage(
-                            CharBuffer.wrap(accountProvider.getAccount()?.secretSeed
-                                    ?: getString(R.string.error_try_again).toCharArray())
-                    )
-                    .setTitle(R.string.secret_seed)
-                    .setPositiveButton(R.string.ok, null)
-                    .show()
-
-            dialog.findViewById<TextView>(android.R.id.message)?.let { textView ->
-                textView.isSelectable = true
-                textView.typeface = Typeface.MONOSPACE
-            }
+            SecretSeedDialog(
+                    requireContext(),
+                    accountProvider
+            ).show()
 
             true
         }
