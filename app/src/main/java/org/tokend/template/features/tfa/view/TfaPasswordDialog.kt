@@ -23,7 +23,8 @@ class TfaPasswordDialog(context: Context,
                         tfaVerifierInterface: TfaVerifier.Interface,
                         credentialsPersistor: CredentialsPersistor?,
                         private val tfaException: NeedTfaException,
-                        private val email: String)
+                        private val email: String,
+                        private val toastManager: ToastManager?)
     : TfaDialog(context, errorHandler, tfaVerifierInterface) {
     private val fingerprintAuthManager = credentialsPersistor?.let {
         FingerprintAuthManager(context, it)
@@ -41,7 +42,8 @@ class TfaPasswordDialog(context: Context,
         }
 
         inputButtonImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_fingerprint))
-        fingerprintIndicatorManager = FingerprintIndicatorManager(context, inputButtonImageView)
+        fingerprintIndicatorManager =
+                FingerprintIndicatorManager(context, inputButtonImageView, toastManager)
     }
 
     override fun afterDialogShown() {
@@ -53,7 +55,7 @@ class TfaPasswordDialog(context: Context,
                     fingerprintIndicatorManager.show()
                 },
                 onError = {
-                    ToastManager(context).short(it)
+                    toastManager?.short(it)
                     fingerprintIndicatorManager.error()
                 },
                 onSuccess = { _, password ->

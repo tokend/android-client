@@ -24,7 +24,6 @@ import org.tokend.template.logic.persistance.FingerprintAuthManager
 import org.tokend.template.logic.wallet.WalletUpdateManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.FingerprintIndicatorManager
-import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -61,7 +60,8 @@ class ChangePasswordActivity : BaseActivity() {
         initButtons()
 
         fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
-        fingerprintIndicatorManager = FingerprintIndicatorManager(applicationContext, fingerprint_indicator)
+        fingerprintIndicatorManager =
+                FingerprintIndicatorManager(applicationContext, fingerprint_indicator, toastManager)
 
         canChange = false
     }
@@ -110,7 +110,7 @@ class ChangePasswordActivity : BaseActivity() {
                     password.fill('0')
                 },
                 onError = {
-                    ToastManager(this).short(it)
+                    toastManager.short(it)
                     fingerprintIndicatorManager.error()
                 }
         )
@@ -182,7 +182,7 @@ class ChangePasswordActivity : BaseActivity() {
                 }
                 .subscribeBy(
                         onComplete = {
-                            ToastManager(this).long(R.string.password_was_changed)
+                            toastManager.long(R.string.password_was_changed)
                             finishWithSuccess()
                         },
                         onError = { error ->

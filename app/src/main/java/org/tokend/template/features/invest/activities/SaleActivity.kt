@@ -128,7 +128,7 @@ class SaleActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         feeManager = FeeManager(apiProvider)
-        fileDownloader = FileDownloader(this, urlConfigProvider.getConfig().storage)
+        fileDownloader = FileDownloader(this, urlConfigProvider.getConfig().storage, toastManager)
 
         supportPostponeEnterTransition()
 

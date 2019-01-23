@@ -12,7 +12,6 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.toCompletable
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.ToastManager
 
 class ProcessLinkActivity : BaseActivity() {
     override val allowUnauthorized = true
@@ -62,7 +61,7 @@ class ProcessLinkActivity : BaseActivity() {
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(
                         onComplete = {
-                            ToastManager(this).short(R.string.email_verified)
+                            toastManager.short(R.string.email_verified)
                             Navigator.toSignIn(this)
                         },
                         onError = {

@@ -8,14 +8,15 @@ import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.view.util.AnimationUtil
 
-class FingerprintIndicatorManager(private val context: Context,
-                                  private val fingerprintIndicator: AppCompatImageView) {
+class FingerprintIndicatorManager(context: Context,
+                                  private val fingerprintIndicator: AppCompatImageView,
+                                  private val toastManager: ToastManager?) {
 
     private val animation = AnimationUtils.loadAnimation(context, R.anim.shake)
 
     init {
         fingerprintIndicator.onClick {
-            ToastManager(context).short(R.string.touch_sensor)
+            toastManager?.short(R.string.touch_sensor)
         }
     }
 

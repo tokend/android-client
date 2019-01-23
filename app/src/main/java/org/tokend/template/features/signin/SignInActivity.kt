@@ -37,7 +37,6 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.view.FingerprintIndicatorManager
-import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
@@ -77,7 +76,8 @@ class SignInActivity : BaseActivity() {
         setTitle(R.string.sign_in)
 
         fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
-        fingerprintIndicatorManager = FingerprintIndicatorManager(applicationContext, fingerprint_indicator)
+        fingerprintIndicatorManager =
+                FingerprintIndicatorManager(applicationContext, fingerprint_indicator, toastManager)
         urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistor)
         urlConfigManager.onConfigUpdated {
             initNetworkField()
@@ -175,7 +175,7 @@ class SignInActivity : BaseActivity() {
                     password.fill('0')
                 },
                 onError = {
-                    ToastManager(this).short(it)
+                    toastManager.short(it)
                     fingerprintIndicatorManager.error()
                 }
         )
@@ -304,7 +304,7 @@ class SignInActivity : BaseActivity() {
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(
                         onComplete = {
-                            ToastManager(this).long(R.string.check_your_email_to_verify_account)
+                            toastManager.long(R.string.check_your_email_to_verify_account)
                         },
                         onError = {
                             errorHandlerFactory.getDefault().handle(it)

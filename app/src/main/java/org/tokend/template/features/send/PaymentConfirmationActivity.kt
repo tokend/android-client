@@ -15,7 +15,6 @@ import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.ProgressDialogFactory
 
 class PaymentConfirmationActivity : BaseActivity() {
@@ -107,7 +106,7 @@ class PaymentConfirmationActivity : BaseActivity() {
                 .subscribeBy(
                         onComplete = {
                             progress.dismiss()
-                            ToastManager(this).long(R.string.payment_successfully_sent)
+                            toastManager.long(R.string.payment_successfully_sent)
                             finishWithSuccess()
                         },
                         onError = {

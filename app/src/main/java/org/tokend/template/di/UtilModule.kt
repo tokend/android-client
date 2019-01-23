@@ -14,8 +14,8 @@ import javax.inject.Singleton
 class UtilModule {
     @Provides
     @Singleton
-    fun errorHandlerFactory(context: Context): ErrorHandlerFactory {
-        return ErrorHandlerFactory(context)
+    fun errorHandlerFactory(context: Context, toastManager: ToastManager): ErrorHandlerFactory {
+        return ErrorHandlerFactory(context, toastManager)
     }
 
     @Provides

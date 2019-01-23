@@ -32,7 +32,6 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 
@@ -68,7 +67,11 @@ class AssetDetailsFragment : BaseFragment() {
                 return true
             }
         })
-        fileDownloader = FileDownloader(activity!!, urlConfigProvider.getConfig().storage)
+        fileDownloader = FileDownloader(
+                requireActivity(),
+                urlConfigProvider.getConfig().storage,
+                toastManager
+        )
         return view
     }
 
@@ -207,8 +210,7 @@ class AssetDetailsFragment : BaseFragment() {
     }
 
     private fun onBalanceCreated() {
-        ToastManager(requireContext()).short(getString(R.string.template_asset_balance_created,
-                asset.code))
+        toastManager.short(getString(R.string.template_asset_balance_created, asset.code))
 
         activity?.setResult(Activity.RESULT_OK)
         displayLogoAndName()

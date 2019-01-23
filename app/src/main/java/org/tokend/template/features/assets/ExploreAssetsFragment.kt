@@ -41,7 +41,6 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SearchUtil
-import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 import java.util.concurrent.TimeUnit
@@ -293,8 +292,9 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 }
                 .subscribeBy(
                         onComplete = {
-                            ToastManager(requireContext())
-                                    .short(getString(R.string.template_asset_balance_created, asset))
+                            toastManager.short(
+                                    getString(R.string.template_asset_balance_created, asset)
+                            )
                             displayAssets()
                         },
                         onError = {

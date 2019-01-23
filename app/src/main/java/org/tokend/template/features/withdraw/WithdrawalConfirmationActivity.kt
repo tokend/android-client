@@ -14,7 +14,6 @@ import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.ProgressDialogFactory
 
 class WithdrawalConfirmationActivity : BaseActivity() {
@@ -101,7 +100,7 @@ class WithdrawalConfirmationActivity : BaseActivity() {
                 .subscribeBy(
                         onComplete = {
                             progress.dismiss()
-                            ToastManager(this).long(R.string.withdrawal_request_created)
+                            toastManager.long(R.string.withdrawal_request_created)
                             finishWithSuccess()
                         },
                         onError = {

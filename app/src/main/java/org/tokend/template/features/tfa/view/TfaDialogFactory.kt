@@ -6,10 +6,12 @@ import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.template.util.errorhandler.ErrorHandler
+import org.tokend.template.view.ToastManager
 
 class TfaDialogFactory(private val context: Context,
                        private val errorHandler: ErrorHandler,
-                       private val credentialsPersistor: CredentialsPersistor?) {
+                       private val credentialsPersistor: CredentialsPersistor?,
+                       private val toastManager: ToastManager?) {
     /**
      * @return verification dialog for specified exception.
      * If there is no special dialog for given TFA factor type
@@ -23,7 +25,7 @@ class TfaDialogFactory(private val context: Context,
             TfaFactor.Type.PASSWORD -> {
                 if (email != null)
                     TfaPasswordDialog(context, errorHandler, verifierInterface,
-                            credentialsPersistor, tfaException, email)
+                            credentialsPersistor, tfaException, email, toastManager)
                 else
                     null
             }

@@ -27,7 +27,6 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
-import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -135,7 +134,7 @@ class SignUpActivity : BaseActivity() {
             if (urlConfigProvider.hasConfig()) {
                 browse(urlConfigProvider.getConfig().terms, true)
             } else {
-                ToastManager(this).short(R.string.error_network_not_specified)
+                toastManager.short(R.string.error_network_not_specified)
             }
         }
     }
@@ -244,7 +243,7 @@ class SignUpActivity : BaseActivity() {
     }
 
     private fun onSuccessfulSignUp() {
-        ToastManager(this).long(R.string.check_your_email_to_verify_account)
+        toastManager.long(R.string.check_your_email_to_verify_account)
         Navigator.toSignIn(this, false)
     }
 }

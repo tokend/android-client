@@ -18,7 +18,6 @@ import org.tokend.template.features.offers.logic.CancelOfferUseCase
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
@@ -177,7 +176,7 @@ open class OfferMatchDetailsActivity(
                 .subscribeBy(
                         onComplete = {
                             progress.dismiss()
-                            ToastManager(this).short(getOfferCanceledMessage())
+                            toastManager.short(getOfferCanceledMessage())
                             finishWithSuccess()
                         },
                         onError = { errorHandlerFactory.getDefault().handle(it) }

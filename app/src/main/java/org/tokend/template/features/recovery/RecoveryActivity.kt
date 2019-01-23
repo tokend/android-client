@@ -230,7 +230,7 @@ class RecoveryActivity : BaseActivity() {
                 }
                 .subscribeBy(
                         onComplete = {
-                            ToastManager(this).long(R.string.password_was_changed)
+                            toastManager.long(R.string.password_was_changed)
                             finishWithSuccess()
                         },
                         onError = {
