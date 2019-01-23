@@ -19,19 +19,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:baselineAligned="false"
-        android:clipToPadding="false"
-        android:focusable="true"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
-        android:paddingRight="?android:attr/listPreferredItemPaddingRight">
+    android:background="?android:attr/selectableItemBackground"
+    android:clipToPadding="false"
+    android:focusable="true"
+    android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+    android:paddingRight="?android:attr/listPreferredItemPaddingRight">
 
         <LinearLayout
             android:id="@+id/icon_frame"
@@ -94,5 +89,4 @@
             android:orientation="vertical"
             android:paddingLeft="16dp" />
 
-    </LinearLayout>
 </LinearLayout>
