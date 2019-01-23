@@ -244,9 +244,11 @@ class SignInActivity : BaseActivity() {
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     isLoading = true
+                    updateAdditionalButtonsState(false)
                 }
                 .doOnTerminate {
                     isLoading = false
+                    updateAdditionalButtonsState(true)
                     password_edit_text.text.getChars()
                 }
                 .subscribeBy(
@@ -272,6 +274,14 @@ class SignInActivity : BaseActivity() {
                 errorHandlerFactory.getDefault().handle(error)
         }
         updateSignInAvailability()
+    }
+
+    private fun updateAdditionalButtonsState(isEnabled: Boolean) {
+        scan_qr_button.isEnabled = isEnabled
+        sign_in_with_authenticator_button.isEnabled = isEnabled
+        sign_up_button.isEnabled = isEnabled
+        recovery_button.isEnabled = isEnabled
+
     }
 
     private fun displayEmailNotVerifiedDialog(walletId: String) {
