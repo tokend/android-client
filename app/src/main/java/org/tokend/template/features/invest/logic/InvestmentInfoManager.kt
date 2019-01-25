@@ -5,7 +5,6 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toMaybe
 import org.tokend.sdk.api.TokenDApi
-import org.tokend.sdk.api.accounts.params.OffersParams
 import org.tokend.sdk.api.assets.model.AssetChartData
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.data.model.OfferRecord
@@ -63,18 +62,7 @@ class InvestmentInfoManager(
     private fun getOffersByAsset(): Single<Map<String, OfferRecord>> {
         return repositoryProvider
                 .offers()
-                .getPage(
-                        OffersParams(
-                                orderBookId = sale.id,
-                                isBuy = true,
-                                onlyPrimary = true,
-                                baseAsset = null,
-                                quoteAsset = null
-                        )
-                )
-                .map {
-                    it.items
-                }
+                .getForSale(sale.id)
                 .map {
                     it.associateBy { offer ->
                         offer.quoteAssetCode

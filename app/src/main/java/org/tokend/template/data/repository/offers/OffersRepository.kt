@@ -31,10 +31,9 @@ class OffersRepository(
         private val walletInfoProvider: WalletInfoProvider,
         private val onlyPrimary: Boolean,
         itemsCache: RepositoryCache<OfferRecord>
-) : PagedDataRepository<OfferRecord, OffersParams>(itemsCache) {
-
-    override fun getNextPageRequestParams(): OffersParams {
-        return OffersParams(
+) : PagedDataRepository<OfferRecord>(itemsCache) {
+    override fun getPage(nextCursor: String?): Single<DataPage<OfferRecord>> {
+        val requestParams = OffersParams(
                 onlyPrimary = onlyPrimary,
                 orderBookId = if (onlyPrimary) null else 0L,
                 baseAsset = null,
@@ -45,11 +44,11 @@ class OffersRepository(
                         order = PagingOrder.DESC
                 )
         )
+
+        return getPage(requestParams)
     }
 
-    override fun getItems(): Single<List<OfferRecord>> = Single.just(emptyList())
-
-    override fun getPage(requestParams: OffersParams): Single<DataPage<OfferRecord>> {
+    private fun getPage(requestParams: OffersParams): Single<DataPage<OfferRecord>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
@@ -69,6 +68,18 @@ class OffersRepository(
                             it.isLast
                     )
                 }
+    }
+
+    fun getForSale(saleId: Long): Single<List<OfferRecord>> {
+        val requestParams =
+                OffersParams(
+                        orderBookId = saleId,
+                        isBuy = true,
+                        onlyPrimary = true
+                )
+
+        return getPage(requestParams)
+                .map { it.items }
     }
 
     // region Create.

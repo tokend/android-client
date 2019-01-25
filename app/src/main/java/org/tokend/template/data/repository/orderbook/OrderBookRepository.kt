@@ -18,13 +18,21 @@ class OrderBookRepository
         private val quoteAsset: String,
         private val isBuy: Boolean,
         itemsCache: RepositoryCache<OfferRecord>
-) : PagedDataRepository<OfferRecord, OrderBookParams>(itemsCache) {
-
-    override fun getItems(): Single<List<OfferRecord>> = Single.just(emptyList())
-
-    override fun getPage(requestParams: OrderBookParams): Single<DataPage<OfferRecord>> {
+) : PagedDataRepository<OfferRecord>(itemsCache) {
+    override fun getPage(nextCursor: String?): Single<DataPage<OfferRecord>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
+
+        val requestParams = OrderBookParams(
+                baseAsset = baseAsset,
+                quoteAsset = quoteAsset,
+                isBuy = isBuy,
+                pagingParams = PagingParams(
+                        order = PagingOrder.DESC,
+                        limit = 50,
+                        cursor = nextCursor
+                )
+        )
 
         return signedApi.trades
                 .getOrderBook(requestParams)
@@ -38,18 +46,5 @@ class OrderBookRepository
                             it.isLast
                     )
                 }
-    }
-
-    override fun getNextPageRequestParams(): OrderBookParams {
-        return OrderBookParams(
-                baseAsset = baseAsset,
-                quoteAsset = quoteAsset,
-                isBuy = isBuy,
-                pagingParams = PagingParams(
-                        order = PagingOrder.DESC,
-                        limit = 50,
-                        cursor = nextCursor
-                )
-        )
     }
 }

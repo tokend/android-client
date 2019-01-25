@@ -21,16 +21,24 @@ class TxRepository(
         private val asset: String,
         private val accountDetailsRepository: AccountDetailsRepository? = null,
         itemsCache: RepositoryCache<TransferOperation>
-) : PagedDataRepository<TransferOperation, PaymentsParams>(itemsCache) {
-
-    override fun getItems(): Single<List<TransferOperation>> = Single.just(emptyList())
-
-    override fun getPage(requestParams: PaymentsParams): Single<DataPage<TransferOperation>> {
+) : PagedDataRepository<TransferOperation>(itemsCache) {
+    override fun getPage(nextCursor: String?): Single<DataPage<TransferOperation>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
         val accountsToLoad = mutableListOf<String>()
+
+        val requestParams = PaymentsParams(
+                asset = asset,
+                operationsParams = OperationsParams(
+                        completedOnly = false
+                ),
+                pagingParams = PagingParams(
+                        cursor = nextCursor,
+                        order = PagingOrder.DESC
+                )
+        )
 
         return signedApi
                 .accounts
@@ -68,18 +76,5 @@ class TxRepository(
                             }
                             ?: Single.just(transactionsPage)
                 }
-    }
-
-    override fun getNextPageRequestParams(): PaymentsParams {
-        return PaymentsParams(
-                asset = asset,
-                operationsParams = OperationsParams(
-                        completedOnly = false
-                ),
-                pagingParams = PagingParams(
-                        cursor = nextCursor,
-                        order = PagingOrder.DESC
-                )
-        )
     }
 }

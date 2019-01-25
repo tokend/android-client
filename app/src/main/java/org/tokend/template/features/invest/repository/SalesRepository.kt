@@ -15,14 +15,23 @@ class SalesRepository(
         private val apiProvider: ApiProvider,
         private val urlConfigProvider: UrlConfigProvider,
         itemsCache: SalesCache
-) : PagedDataRepository<SaleRecord, SalesParams>(itemsCache) {
+) : PagedDataRepository<SaleRecord>(itemsCache) {
 
     private var name: String? = null
     private var baseAsset: String? = null
 
-    override fun getItems(): Single<List<SaleRecord>> = Single.just(emptyList())
+    override fun getPage(nextCursor: String?): Single<DataPage<SaleRecord>> {
+        val requestParams = SalesParams(
+                name = name,
+                baseAsset = baseAsset,
+                pagingParams = PagingParamsV2(
+                        page = nextCursor,
+                        order = PagingOrder.DESC,
+                        limit = DEFAULT_LIMIT
+                ),
+                openOnly = true
+        )
 
-    override fun getPage(requestParams: SalesParams): Single<DataPage<SaleRecord>> {
         return apiProvider.getApi()
                 .sales
                 .getAll(requestParams)
@@ -44,20 +53,6 @@ class SalesRepository(
                 .getById(id)
                 .toSingle()
                 .map { SaleRecord(it, urlConfigProvider.getConfig()) }
-    }
-
-    override fun getNextPageRequestParams(): SalesParams {
-
-        return SalesParams(
-                name = name,
-                baseAsset = baseAsset,
-                pagingParams = PagingParamsV2(
-                        page = nextCursor,
-                        order = PagingOrder.DESC,
-                        limit = DEFAULT_LIMIT
-                ),
-                openOnly = true
-        )
     }
 
     fun forQuery(name: String? = null, baseAsset: String? = null): SalesRepository {
