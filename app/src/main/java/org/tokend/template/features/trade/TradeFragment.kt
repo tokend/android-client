@@ -28,7 +28,7 @@ import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.orderbook.OrderBookRepository
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.template.features.offers.CreateOfferDialog
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
 import org.tokend.template.features.trade.adapter.OrderBookAdapter

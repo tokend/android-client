@@ -5,7 +5,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.api.transactions.model.SubmitTransactionResponse
 import org.tokend.template.di.providers.ApiProvider
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.template.util.confirmation.ConfirmationProvider
 import org.tokend.wallet.*
 import org.tokend.wallet.xdr.Operation

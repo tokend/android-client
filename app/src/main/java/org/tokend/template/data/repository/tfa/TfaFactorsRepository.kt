@@ -7,8 +7,8 @@ import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.toCompletable
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toCompletable
+import org.tokend.rx.extensions.toSingle
 import org.tokend.template.features.tfa.model.TfaFactorCreationResult
 import org.tokend.template.features.tfa.model.TfaFactorRecord
 

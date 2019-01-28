@@ -6,8 +6,8 @@ import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.User
-import org.tokend.template.extensions.toCompletable
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toCompletable
+import org.tokend.rx.extensions.toSingle
 
 class UserRepository(private val apiProvider: ApiProvider,
                      private val walletInfoProvider: WalletInfoProvider

@@ -4,7 +4,7 @@ import io.reactivex.Single
 import org.tokend.sdk.api.blobs.model.Blob
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 
 class BlobManager(
         private val apiProvider: ApiProvider,

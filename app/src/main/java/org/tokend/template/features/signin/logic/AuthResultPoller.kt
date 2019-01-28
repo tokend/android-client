@@ -5,7 +5,7 @@ import io.reactivex.functions.BiFunction
 import org.tokend.sdk.api.authenticator.AuthResultsApi
 import org.tokend.sdk.api.authenticator.model.AuthResult
 import org.tokend.sdk.api.base.model.DataEntity
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 import java.util.concurrent.TimeUnit
 
 class AuthResultPoller(

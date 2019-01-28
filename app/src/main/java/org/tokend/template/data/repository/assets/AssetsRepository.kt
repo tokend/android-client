@@ -6,7 +6,7 @@ import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.template.features.assets.model.AssetRecord
 
 class AssetsRepository(

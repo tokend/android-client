@@ -1,9 +1,9 @@
 package org.tokend.template.data.repository
 
 import io.reactivex.Single
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.accounts.model.AccountsDetailsResponse
 import org.tokend.template.di.providers.ApiProvider
-import org.tokend.template.extensions.toSingle
 import retrofit2.HttpException
 import java.net.HttpURLConnection
 

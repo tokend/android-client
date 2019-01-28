@@ -3,7 +3,7 @@ package org.tokend.template.logic
 import io.reactivex.Single
 import org.tokend.sdk.api.fees.params.FeeParams
 import org.tokend.template.di.providers.ApiProvider
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.PaymentFeeType

@@ -10,7 +10,7 @@ import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.logic.FeeManager

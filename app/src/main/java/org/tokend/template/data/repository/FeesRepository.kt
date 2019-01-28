@@ -5,7 +5,7 @@ import io.reactivex.Single
 import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.template.features.fees.model.FeesRecords
 

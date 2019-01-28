@@ -8,7 +8,7 @@ import org.tokend.sdk.api.authenticator.AuthResultsApi
 import org.tokend.sdk.api.authenticator.model.AuthResult
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.wallet.Account

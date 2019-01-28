@@ -11,7 +11,7 @@ import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.*
 import org.tokend.wallet.xdr.Operation

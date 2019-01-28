@@ -6,7 +6,7 @@ import org.tokend.sdk.api.accounts.model.limits.Limits
 import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 
 class LimitsRepository(private val apiProvider: ApiProvider,
                        private val walletInfoProvider: WalletInfoProvider

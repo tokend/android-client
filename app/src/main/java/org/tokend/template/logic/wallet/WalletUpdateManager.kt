@@ -15,7 +15,7 @@ import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.wallet.Account
 import org.tokend.wallet.NetworkParams
