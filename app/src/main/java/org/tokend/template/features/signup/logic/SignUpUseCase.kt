@@ -2,8 +2,8 @@ package org.tokend.template.features.signup.logic
 
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import org.tokend.rx.extensions.createAndSaveWalletSingle
 import org.tokend.rx.extensions.randomSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.wallet.Account
@@ -43,11 +43,11 @@ class SignUpUseCase(
     }
 
     private fun createAndSaveWallet(): Single<WalletCreateResult> {
-        return keyServer.createAndSaveWalletSingle(
+        return keyServer.createAndSaveWallet(
                 email,
                 password,
                 rootAccount,
                 recoveryAccount
-        )
+        ).toSingle()
     }
 }

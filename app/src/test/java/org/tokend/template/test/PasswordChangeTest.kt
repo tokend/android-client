@@ -45,6 +45,7 @@ class PasswordChangeTest {
 
         val (originalWalletData, rootAccount, recoveryAccount)
                 = apiProvider.getKeyServer().createAndSaveWallet(email, password)
+                .execute().get()
 
         System.out.println("Email is $email")
         System.out.println("Recovery seed is ${recoveryAccount.secretSeed!!.joinToString("")}")

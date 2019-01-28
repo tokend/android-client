@@ -2,13 +2,12 @@ package org.tokend.template.features.signin.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.authenticator.AuthResultsApi
 import org.tokend.sdk.api.authenticator.model.AuthResult
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.rx.extensions.toSingle
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.wallet.Account
@@ -82,14 +81,24 @@ class SignInWithAccountUseCase(
     private fun getWalletInfo(): Single<WalletInfo> {
         val walletIdHex = authResult.walletId
 
-        return {
-            val walletData = keyServer.getWalletData(walletIdHex)
-            val email = walletData.attributes!!.email
-            val loginParams = keyServer.getLoginParams(email)
-
-            WalletInfo(walletData.attributes!!.accountId, email, walletIdHex,
-                    CharArray(0), loginParams)
-        }.toSingle().subscribeOn(Schedulers.newThread())
+        return keyServer
+                .getWalletData(walletIdHex)
+                .toSingle()
+                .flatMap { walletData ->
+                    val email = walletData.attributes!!.email
+                    keyServer.getLoginParams(email)
+                            .toSingle()
+                            .map { Triple(email, it, walletData) }
+                }
+                .map { (email, loginParams, walletData) ->
+                    WalletInfo(
+                            walletData.attributes!!.accountId,
+                            email,
+                            walletIdHex,
+                            CharArray(0),
+                            loginParams
+                    )
+                }
     }
 
     private fun checkIfAuthResultSuccessful(): Single<Boolean> {

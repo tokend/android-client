@@ -5,7 +5,8 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import org.tokend.rx.extensions.createWalletSingle
-import org.tokend.rx.extensions.updateWalletCompletable
+import org.tokend.rx.extensions.toCompletable
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.WalletKeyDerivation
 import org.tokend.sdk.keyserver.models.WalletCreateResult
@@ -15,7 +16,6 @@ import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.rx.extensions.toSingle
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.wallet.Account
 import org.tokend.wallet.NetworkParams
@@ -95,7 +95,9 @@ class WalletUpdateManager(
                 .flatMapCompletable { newWallet ->
                     data.newSalt = newWallet.attributes?.salt ?: ""
                     data.newWalletId = newWallet.id ?: ""
-                    signedKeyServer.updateWalletCompletable(wallet.walletIdHex, newWallet)
+                    signedKeyServer
+                            .updateWallet(wallet.walletIdHex, newWallet)
+                            .toCompletable()
                 }
                 // Update current credentials.
                 .doOnComplete {

@@ -4,7 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.rx.extensions.fromSecretSeedSingle
-import org.tokend.rx.extensions.getWalletInfoSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.logic.Session
@@ -58,7 +58,7 @@ class SignInUseCase(
     }
 
     private fun getWalletInfo(email: String, password: CharArray): Single<WalletInfo> {
-        val networkRequest = keyServer.getWalletInfoSingle(email, password)
+        val networkRequest = keyServer.getWalletInfo(email, password).toSingle()
 
         return credentialsPersistor
                 ?.takeIf { it.getSavedEmail() == email }

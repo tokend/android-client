@@ -4,8 +4,8 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.tokend.rx.extensions.fromSecretSeedSingle
-import org.tokend.rx.extensions.getWalletInfoSingle
 import org.tokend.rx.extensions.randomSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.di.providers.*
@@ -77,7 +77,9 @@ class RecoveryUseCase(
     }
 
     private fun getRecoveryWallet(): Single<WalletInfo> {
-        return signedKeyServer.getWalletInfoSingle(email, recoverySeed, true)
+        return signedKeyServer
+                .getWalletInfo(email, recoverySeed, true)
+                .toSingle()
     }
 
     private fun updateWallet(): Single<Boolean> {

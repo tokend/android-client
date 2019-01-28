@@ -19,6 +19,7 @@ class SignUpTest {
         useCase.perform().blockingGet()
 
         val walletInfo = keyStorage.getWalletInfo(email, password, false)
+                .execute().get()
 
         Assert.assertEquals(email, walletInfo.email)
     }

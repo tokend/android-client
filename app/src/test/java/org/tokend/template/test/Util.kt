@@ -32,6 +32,7 @@ object Util {
                           session: Session,
                           repositoryProvider: RepositoryProvider?): WalletCreateResult {
         val createResult = apiProvider.getKeyServer().createAndSaveWallet(email, password)
+                .execute().get()
 
         System.out.println("Email is $email")
         System.out.println("Recovery seed is " +
