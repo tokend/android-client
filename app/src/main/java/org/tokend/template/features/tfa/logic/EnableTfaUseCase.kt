@@ -6,7 +6,7 @@ import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.features.tfa.model.TfaFactorCreationResult
-import java.util.concurrent.CancellationException
+import org.tokend.template.util.confirmation.ConfirmationProvider
 
 /**
  * Adds and enables 2FA factor of given type.
@@ -17,7 +17,7 @@ import java.util.concurrent.CancellationException
 class EnableTfaUseCase(
         private val factorType: TfaFactor.Type,
         private val factorsRepository: TfaFactorsRepository,
-        private val newFactorConfirmation: (TfaFactorCreationResult) -> Single<Boolean>
+        private val newFactorConfirmation: ConfirmationProvider<TfaFactorCreationResult>
 ) {
     private lateinit var creationResult: TfaFactorCreationResult
     private val newFactorId: Long
@@ -72,14 +72,9 @@ class EnableTfaUseCase(
     }
 
     private fun confirmNewFactor(): Single<Boolean> {
-        return newFactorConfirmation.invoke(creationResult)
-                .map { isConfirmed ->
-                    if (!isConfirmed) {
-                        throw CancellationException("Flow has been canceled on confirmation")
-                    }
-
-                    isConfirmed
-                }
+        return newFactorConfirmation
+                .requestConfirmation(creationResult)
+                .toSingleDefault(true)
     }
 
     private fun enableNewFactor(): Single<Boolean> {

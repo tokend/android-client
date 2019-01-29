@@ -1,10 +1,8 @@
-package org.tokend.template.features.tfa.view
+package org.tokend.template.features.tfa.view.confirmation
 
 import android.content.Context
 import android.support.annotation.StyleRes
 import android.support.v7.app.AlertDialog
-import io.reactivex.Single
-import io.reactivex.subjects.SingleSubject
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.clipboardManager
 import org.tokend.template.R
@@ -15,38 +13,33 @@ import org.tokend.template.view.ToastManager
  * and ability to copy it or open totp:// URI
  * in order to add the seed to an authenticator app.
  */
-class TotpFactorConfirmationDialog(
-        private val context: Context,
+class TfaTotpConfirmationDialog(
+        context: Context,
+        confirmationAttributes: Map<String, Any>,
         private val toastManager: ToastManager?,
         @StyleRes
-        private val style: Int? = null
-) {
-    /**
-     * Displays dialog.
-     * Result [Single] will emmit true if user confirmed adding
-     * the seed the authenticator, false otherwise.
-     */
-    fun show(attributes: Map<String, Any>): Single<Boolean> {
-        val resultSubject = SingleSubject.create<Boolean>()
+        style: Int? = null
+) : TfaConfirmationDialog(context, confirmationAttributes, style) {
+    override fun show(confirmationCallback: (Boolean) -> Unit) {
+        val secret = confirmationAttributes["secret"] as? String
+        if (secret == null) {
+            confirmationCallback(false)
+            return
+        }
 
-        val secret = attributes["secret"] as? String
-                ?: return Single.error(IllegalArgumentException("TOTP secret is required"))
-        val seed = attributes["seed"] as? String
-                ?: return Single.error(IllegalArgumentException("TOTP seed is required"))
+        val seed = confirmationAttributes["seed"] as? String
+        if (seed == null) {
+            confirmationCallback(false)
+            return
+        }
 
-        val builder = if (style != null)
-            AlertDialog.Builder(context, style)
-        else
-            AlertDialog.Builder(context)
-
-        val dialog = builder
-                .setTitle(R.string.tfa_add_dialog_title)
+        val dialog = getStyledDialogBuilder()
                 .setMessage(context.getString(R.string.template_tfa_add_dialog_message, secret))
                 .setOnCancelListener {
-                    resultSubject.onSuccess(false)
+                    confirmationCallback(false)
                 }
                 .setPositiveButton(R.string.continue_action) { _, _ ->
-                    resultSubject.onSuccess(true)
+                    confirmationCallback(true)
                 }
                 .setNegativeButton(R.string.open_action, null)
                 .setNeutralButton(R.string.copy_action, null)
@@ -60,8 +53,6 @@ class TotpFactorConfirmationDialog(
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
             openAuthenticatorOrGooglePlay(seed)
         }
-
-        return resultSubject
     }
 
     private fun openAuthenticatorOrGooglePlay(uri: String) {

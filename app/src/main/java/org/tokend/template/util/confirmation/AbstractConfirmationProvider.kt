@@ -11,12 +11,16 @@ abstract class AbstractConfirmationProvider<T> : ConfirmationProvider<T> {
         val subject = CompletableSubject.create()
 
         Handler(Looper.getMainLooper()).post {
-            onConfirmationRequested(payload) { isConfirmed ->
-                if (isConfirmed) {
-                    subject.onComplete()
-                } else {
-                    subject.onError(CancellationException("Confirmation canceled"))
+            try {
+                onConfirmationRequested(payload) { isConfirmed ->
+                    if (isConfirmed) {
+                        subject.onComplete()
+                    } else {
+                        subject.onError(CancellationException("Confirmation canceled"))
+                    }
                 }
+            } catch (e: Exception) {
+                subject.onError(e)
             }
         }
 

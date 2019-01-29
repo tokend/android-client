@@ -5,7 +5,6 @@ import android.support.v7.preference.SwitchPreferenceCompat
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.LinearLayout
-import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
@@ -18,9 +17,8 @@ import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
 import org.tokend.template.features.tfa.logic.EnableTfaUseCase
-import org.tokend.template.features.tfa.model.TfaFactorCreationResult
 import org.tokend.template.features.tfa.model.TfaFactorRecord
-import org.tokend.template.features.tfa.view.TotpFactorConfirmationDialog
+import org.tokend.template.features.tfa.view.confirmation.TfaConfirmationDialogFactory
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.persistance.FingerprintUtil
 import org.tokend.template.util.Navigator
@@ -207,24 +205,13 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     }
 
     private fun addAndEnableNewTfaFactor() {
-        val totpConfirmationDialog = TotpFactorConfirmationDialog(
-                requireContext(),
-                toastManager,
-                R.style.AlertDialogStyle
-        )
-
-        val confirmation = { creationResult: TfaFactorCreationResult ->
-            when (creationResult.newFactor.type) {
-                TfaFactor.Type.TOTP ->
-                    totpConfirmationDialog.show(creationResult.confirmationAttributes)
-                else -> Single.just(true)
-            }
-        }
+        val confirmationDialogFactory =
+                TfaConfirmationDialogFactory(requireContext(), toastManager)
 
         EnableTfaUseCase(
                 TFA_FACTOR_TYPE,
                 tfaRepository,
-                confirmation
+                confirmationDialogFactory
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
