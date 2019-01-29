@@ -11,8 +11,7 @@ class AssetListItem(
 ) {
     constructor(
             asset: AssetRecord,
-            balanceExists: Boolean,
-            storageUrl: String
+            balanceExists: Boolean
     ) : this(
             code = asset.code,
             name = asset.name,

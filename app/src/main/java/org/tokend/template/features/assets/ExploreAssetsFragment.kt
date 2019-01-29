@@ -151,8 +151,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 .skipInitialValue()
                 .debounce(400, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    filter = it.trim().toString().takeIf { it.isNotEmpty() }
+                .subscribe { query ->
+                    filter = query.trim().toString().takeIf { it.isNotEmpty() }
                 }
                 .addTo(compositeDisposable)
 
@@ -213,15 +213,13 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayAssets() {
-        val storageUrl = urlConfigProvider.getConfig().storage
         val balances = balancesRepository.itemsList
         val items = assetsRepository.itemsList
                 .asSequence()
                 .map { asset ->
                     AssetListItem(
                             asset,
-                            balances.find { it.assetCode == asset.code } != null,
-                            storageUrl
+                            balances.find { it.assetCode == asset.code } != null
                     )
                 }
                 .sortedWith(Comparator { o1, o2 ->
