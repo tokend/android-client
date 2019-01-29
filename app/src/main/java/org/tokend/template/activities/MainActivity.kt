@@ -300,6 +300,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     private var fragmentToolbarDisposable: Disposable? = null
     private fun displayFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
+                .disallowAddToBackStack()
                 .setCustomAnimations(R.anim.stay_visible, R.anim.activity_fade_out)
                 .replace(R.id.fragment_container_layout, fragment)
                 .commit()

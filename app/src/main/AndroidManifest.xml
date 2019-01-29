@@ -23,7 +23,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme.NoActionBar"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -74,7 +75,8 @@
         <activity
             android:name="org.tokend.template.activities.MainActivity"
             android:configChanges="orientation|screenSize"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar.NoBackground" />
         <activity
             android:name=".features.signup.RecoverySeedActivity"
             android:configChanges="orientation|screenSize"
@@ -163,7 +165,7 @@
         <activity
             android:name="org.tokend.template.activities.SingleFragmentActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.NoBackground" />
         <activity
             android:name=".features.invest.activities.SaleActivity"
             android:configChanges="orientation|screenSize"
