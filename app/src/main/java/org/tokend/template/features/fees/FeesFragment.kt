@@ -84,6 +84,7 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
         asset_tabs.onItemSelected {
             asset = it.text
         }
+        asset_tabs.visibility = View.GONE
     }
 
     private fun initHorizontalSwipes() {
