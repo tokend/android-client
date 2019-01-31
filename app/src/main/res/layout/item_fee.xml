@@ -47,11 +47,9 @@
 
         <TextView
             android:id="@+id/fixed_value"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            style="@style/FeeCardValue"
             android:layout_marginStart="@dimen/standard_margin"
             android:layout_marginEnd="@dimen/standard_margin"
-            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/lower_bound_text"
             app:layout_constraintTop_toTopOf="@id/fixed_text"
@@ -69,9 +67,7 @@
 
         <TextView
             android:id="@+id/percent_value"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            style="@style/FeeCardValue"
             app:layout_constraintEnd_toEndOf="@id/fixed_value"
             app:layout_constraintStart_toStartOf="@id/fixed_value"
             app:layout_constraintTop_toTopOf="@id/percent_text"
@@ -89,9 +85,7 @@
 
         <TextView
             android:id="@+id/lower_bound_value"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            style="@style/FeeCardValue"
             app:layout_constraintEnd_toEndOf="@id/fixed_value"
             app:layout_constraintStart_toStartOf="@id/fixed_value"
             app:layout_constraintTop_toTopOf="@id/lower_bound_text"
@@ -111,9 +105,7 @@
 
         <TextView
             android:id="@+id/upper_bound_value"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            style="@style/FeeCardValue"
             app:layout_constraintEnd_toEndOf="@id/fixed_value"
             app:layout_constraintStart_toStartOf="@id/fixed_value"
             app:layout_constraintTop_toTopOf="@id/upper_bound_text"
