@@ -31,7 +31,7 @@ class ApiProviderImpl(
     private var apiByHash: Pair<Int, TokenDApi>? = null
     private var signedApiByHash: Pair<Int, TokenDApi>? = null
 
-    override fun getApi(): TokenDApi {
+    override fun getApi(): TokenDApi = synchronized(this) {
         val hash = url.hashCode()
 
         val api = apiByHash
@@ -56,7 +56,7 @@ class ApiProviderImpl(
         return KeyServer(getApi().wallets)
     }
 
-    override fun getSignedApi(): TokenDApi? {
+    override fun getSignedApi(): TokenDApi? = synchronized(this) {
         val account = accountProvider.getAccount() ?: return null
         val hash = HashCodes.ofMany(account.accountId, url)
 
