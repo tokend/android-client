@@ -255,13 +255,11 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                 .find { it.assetCode == asset }
                 ?.let { balance ->
                     val available = balance.available
-                    collapsing_toolbar.title = amountFormatter.formatAssetAmount(available, asset) +
-                            " $asset"
+                    collapsing_toolbar.title = amountFormatter.formatAssetAmount(available, asset)
                     val converted = balance.availableConverted
                     val conversionAsset = balance.conversionAssetCode
                     converted_balance_text_view.text =
-                            amountFormatter.formatAssetAmount(converted, conversionAsset) +
-                            " $conversionAsset"
+                            amountFormatter.formatAssetAmount(converted, conversionAsset)
                 }
     }
 

@@ -13,25 +13,31 @@ class DefaultAmountFormatter : AmountFormatter {
     override fun formatAssetAmount(amount: BigDecimal?,
                                    asset: String,
                                    minDecimalDigits: Int,
-                                   abbreviation: Boolean): String {
+                                   abbreviation: Boolean,
+                                   withAssetCode: Boolean): String {
 
         val amount = amount ?: BigDecimal.ZERO
 
-        return if (abbreviation) {
+        val formattedAmount = if (abbreviation) {
             val (newAmount, letter) = calculateAmountAbbreviation(amount)
             formatAmount(newAmount, getDecimalDigitsCount(asset), minDecimalDigits) + letter
         } else {
             formatAmount(amount, getDecimalDigitsCount(asset), minDecimalDigits)
         }
+
+        return if(withAssetCode) {
+            "$formattedAmount $asset"
+        } else formattedAmount
     }
 
     override fun formatAssetAmount(amount: String?,
                                    asset: String,
                                    minDecimalDigits: Int,
-                                   abbreviation: Boolean): String {
+                                   abbreviation: Boolean,
+                                   withAssetCode: Boolean): String {
 
         val amount = if (amount.isNullOrBlank()) "0" else amount
-        return formatAssetAmount(BigDecimal(amount), asset, minDecimalDigits, abbreviation)
+        return formatAssetAmount(BigDecimal(amount), asset, minDecimalDigits, abbreviation, withAssetCode)
     }
 
     override fun formatAmount(amount: BigDecimal?,

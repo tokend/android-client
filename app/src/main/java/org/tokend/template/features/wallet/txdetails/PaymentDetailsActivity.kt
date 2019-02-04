@@ -38,15 +38,13 @@ class PaymentDetailsActivity : TxDetailsActivity<PaymentOperation>(PaymentOperat
         if (tx.isSent) {
             val infoCard = InfoCard(cards_layout)
                     .setHeading(R.string.amount,
-                            "${amountFormatter.formatAssetAmount(tx.amount, tx.asset)} ${tx.asset}")
+                            amountFormatter.formatAssetAmount(tx.amount, tx.asset))
                     .addRow(R.string.tx_fee,
-                            "${amountFormatter.formatAssetAmount(tx.senderFee.total, tx.senderFee.asset)
-                            } ${tx.senderFee.asset}")
+                            amountFormatter.formatAssetAmount(tx.senderFee.total, tx.senderFee.asset))
             if (tx.feePaidBySender) {
                 infoCard
                         .addRow(R.string.tx_recipient_fee,
-                                "${amountFormatter.formatAssetAmount(tx.recipientFee.total, tx.recipientFee.asset)
-                                } ${tx.recipientFee.asset}")
+                                amountFormatter.formatAssetAmount(tx.recipientFee.total, tx.recipientFee.asset))
             }
         } else {
             val fee =
@@ -57,10 +55,9 @@ class PaymentDetailsActivity : TxDetailsActivity<PaymentOperation>(PaymentOperat
 
             InfoCard(cards_layout)
                     .setHeading(R.string.amount,
-                            "${amountFormatter.formatAssetAmount(tx.amount, tx.asset)} ${tx.asset}")
+                            amountFormatter.formatAssetAmount(tx.amount, tx.asset))
                     .addRow(R.string.tx_fee,
-                            "${amountFormatter.formatAssetAmount(fee, tx.recipientFee.asset)
-                            } ${tx.recipientFee.asset}")
+                            amountFormatter.formatAssetAmount(fee, tx.recipientFee.asset))
         }
     }
 

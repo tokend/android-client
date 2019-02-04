@@ -68,8 +68,8 @@
     <string name="current_password">Current password</string>
     <string name="open_action">Open</string>
     <string name="copy_action">Copy</string>
-    <string name="template_balance">Balance: %1$s %2$s</string>
-    <string name="template_available">Available: %1$s %2$s</string>
+    <string name="template_balance">Balance: %1$s</string>
+    <string name="template_available">Available: %1$s</string>
     <string name="to_pay">To pay</string>
     <string name="to_receive">To receive</string>
     <string name="confirm_action">Confirm</string>
@@ -88,7 +88,7 @@
     <string name="payment_description_label">Description (optional)</string>
     <string name="payment_confirmation_title">Payment confirmation</string>
     <string name="payment_successfully_sent">Successfully sent</string>
-    <string name="template_balance_two_assets">Balance: %1$s\u00A0%2$s, %3$s\u00A0%4$s</string>
+    <string name="template_balance_two_assets">Balance: %1$s, %2$s</string>
     <string name="no_bids">No bids</string>
     <string name="no_asks">No asks</string>
     <string name="template_buy_bid_asset">Buy %1$s</string>
@@ -107,7 +107,7 @@
     <string name="pending_offer_details_title">Pending offer details</string>
     <string name="buy">Buy</string>
     <string name="sell">Sell</string>
-    <string name="template_price_one_equals">1 %1$s = %2$s %3$s</string>
+    <string name="template_price_one_equals">1 %1$s = %2$s</string>
     <string name="cancel_offer_action">Cancel offer</string>
     <string name="cancel_offer_confirmation">Are you sure want to cancel this offer?</string>
     <string name="offer_canceled">Offer has been canceled</string>
@@ -244,7 +244,7 @@
     <string name="template_sale_invested">%1$s invested</string>
     <string name="template_sale_days_to_go">%1$d %2$s to go</string>
     <string name="template_sale_starts_in">Starts in %1$d %2$s</string>
-    <string name="template_sale_max_investment">Max investment is %1$s %2$s</string>
+    <string name="template_sale_max_investment">Max investment is %1$s</string>
     <string name="template_sale_name_token">%1$s (%2$s)</string>
     <string name="sales_search_name_hint">Name</string>
     <string name="sales_search_token_hint">Token code (exact match)</string>

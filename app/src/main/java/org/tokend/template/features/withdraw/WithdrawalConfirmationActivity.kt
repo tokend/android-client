@@ -47,23 +47,18 @@ class WithdrawalConfirmationActivity : BaseActivity() {
 
         InfoCard(cards_layout)
                 .setHeading(R.string.to_pay,
-                        "${amountFormatter.formatAssetAmount(toPay, request.asset)} ${request.asset}")
+                        amountFormatter.formatAssetAmount(toPay, request.asset))
                 .addRow(R.string.amount,
-                        "+${amountFormatter.formatAssetAmount(request.amount, request.asset)
-                        } ${request.asset}")
+                        "+${amountFormatter.formatAssetAmount(request.amount, request.asset)}")
                 .addRow(R.string.tx_fixed_fee,
-                        "+${amountFormatter.formatAssetAmount(request.fee.fixed, request.asset)
-                        } ${request.asset}")
+                        "+${amountFormatter.formatAssetAmount(request.fee.fixed, request.asset)}")
                 .addRow(R.string.tx_percent_fee,
-                        "+${amountFormatter.formatAssetAmount(request.fee.percent, request.asset)
-                        } ${request.asset}")
+                        "+${amountFormatter.formatAssetAmount(request.fee.percent, request.asset)}")
     }
 
     private fun displayToReceive() {
         InfoCard(cards_layout)
-                .setHeading(R.string.to_receive,
-                        "${amountFormatter.formatAssetAmount(request.amount, request.asset)} " +
-                                request.asset)
+                .setHeading(R.string.to_receive, amountFormatter.formatAssetAmount(request.amount, request.asset))
                 .addRow(getString(R.string.template_withdrawal_fee_warning, request.asset),
                         null)
     }

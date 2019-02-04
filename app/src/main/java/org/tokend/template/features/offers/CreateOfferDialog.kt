@@ -200,8 +200,7 @@ class CreateOfferDialog : DialogFragment() {
             else -> currentOffer.baseAssetCode
         }
 
-        total_amount_text_view.text =
-                "${amountFormatter.formatAssetAmount(total, finalAsset)} $finalAsset"
+        total_amount_text_view.text = amountFormatter.formatAssetAmount(total, finalAsset)
 
         if (total.signum() == 0) {
             buy_btn.isEnabled = false

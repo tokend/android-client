@@ -21,9 +21,11 @@ class OrderBookItemViewHolder(view: View,
     override fun bind(item: OfferRecord) {
         isBuy = item.isBuy
 
-        volumeTextView.text = amountFormatter.formatAssetAmount(item.baseAmount, item.baseAssetCode)
+        volumeTextView.text = amountFormatter.formatAssetAmount(item.baseAmount, item.baseAssetCode,
+                withAssetCode = false)
         priceTextView.text = amountFormatter.formatAssetAmount(item.price, item.quoteAssetCode,
-                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
+                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS,
+                withAssetCode = false)
         if (isBuy) {
             priceTextView.textColor =
                     ContextCompat.getColor(view.context, R.color.received)

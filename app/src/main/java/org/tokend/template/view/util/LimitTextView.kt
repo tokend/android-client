@@ -57,9 +57,17 @@ class LimitTextView : TextView {
             }
             else -> {
                 val leftFormat =
-                        amountFormatter.formatAssetAmount(total - used, asset, abbreviation = true)
+                        amountFormatter.formatAssetAmount(
+                                total - used, asset,
+                                abbreviation = true,
+                                withAssetCode = false
+                        )
                 val totalFormat =
-                        amountFormatter.formatAssetAmount(total, asset, abbreviation = true)
+                        amountFormatter.formatAssetAmount(
+                                total, asset,
+                                abbreviation = true,
+                                withAssetCode = false
+                        )
 
                 this.left = "$leftFormat $SLASH_SYMBOL"
                 this.total = totalFormat

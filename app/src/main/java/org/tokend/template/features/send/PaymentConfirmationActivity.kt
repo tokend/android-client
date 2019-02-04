@@ -58,15 +58,13 @@ class PaymentConfirmationActivity : BaseActivity() {
     private fun displayAmount() {
         InfoCard(cards_layout)
                 .setHeading(R.string.amount,
-                        "${amountFormatter.formatAssetAmount(request.amount, request.asset)} ${request.asset}")
+                        amountFormatter.formatAssetAmount(request.amount, request.asset))
                 .addRow(R.string.tx_fee,
-                        "${amountFormatter.formatAssetAmount(request.senderFee.total,
-                                request.senderFee.asset)
-                        } ${request.senderFee.asset}")
+                        amountFormatter.formatAssetAmount(request.senderFee.total,
+                                request.senderFee.asset))
                 .addRow(R.string.tx_recipient_fee,
-                        "${amountFormatter.formatAssetAmount(request.recipientFee.total,
-                                request.recipientFee.asset)
-                        } ${request.recipientFee.asset}")
+                        amountFormatter.formatAssetAmount(request.recipientFee.total,
+                                request.recipientFee.asset))
                 .addSwitcherRow(R.string.pay_recipient_fee_action,
                         CompoundButton.OnCheckedChangeListener { _, isChecked ->
                             request.senderPaysRecipientFee = isChecked

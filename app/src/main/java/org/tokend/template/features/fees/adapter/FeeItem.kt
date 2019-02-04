@@ -24,18 +24,13 @@ class FeeItem(
 
             val subtype = Subtype.values().find { fee.subtype == it.value }!!
 
-            val fixed = "${amountFormatter.formatAssetAmount(fee.fixed, fee.asset, 1)} " +
-                    fee.asset
+            val fixed = amountFormatter.formatAssetAmount(fee.fixed, fee.asset, 1)
 
             val percent = "${amountFormatter.formatAmount(fee.percent, 2, 1)}%"
 
-            val lowerBound =
-                    "${amountFormatter.formatAssetAmount(fee.lowerBound, fee.requestAsset, 1)} " +
-                            fee.requestAsset
+            val lowerBound = amountFormatter.formatAssetAmount(fee.lowerBound, fee.requestAsset, 1)
 
-            val upperBound =
-                    "${amountFormatter.formatAssetAmount(fee.upperBound, fee.requestAsset, 1)} " +
-                            fee.requestAsset
+            val upperBound = amountFormatter.formatAssetAmount(fee.upperBound, fee.requestAsset, 1)
 
             return FeeItem(type, subtype, fixed, percent, lowerBound, upperBound)
         }
