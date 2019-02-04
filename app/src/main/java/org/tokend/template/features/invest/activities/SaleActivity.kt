@@ -419,14 +419,12 @@ class SaleActivity : BaseActivity() {
     private fun updateInvestHelperAndError() {
         if (investAmountWrapper.scaledAmount > maxInvestAmount) {
             amount_edit_text.error = getString(R.string.template_sale_max_investment,
-                    amountFormatter.formatAssetAmount(maxInvestAmount, investAsset),
-                    investAsset)
+                    amountFormatter.formatAssetAmount(maxInvestAmount, investAsset))
         } else {
             amount_edit_text.error = null
             amount_edit_text.setHelperText(
                     getString(R.string.template_available,
-                            amountFormatter.formatAssetAmount(getAvailableBalance(investAsset), investAsset),
-                            investAsset)
+                            amountFormatter.formatAssetAmount(getAvailableBalance(investAsset), investAsset))
             )
         }
     }
@@ -459,11 +457,9 @@ class SaleActivity : BaseActivity() {
 
             setLimitLines(listOf(
                     sale.softCap.toFloat() to
-                            "${amountFormatter.formatAssetAmount(sale.softCap,
-                                    quoteAsset)} $quoteAsset",
+                            amountFormatter.formatAssetAmount(sale.softCap, quoteAsset),
                     sale.hardCap.toFloat() to
-                            "${amountFormatter.formatAssetAmount(sale.hardCap,
-                                    quoteAsset)} $quoteAsset"
+                            amountFormatter.formatAssetAmount(sale.hardCap, quoteAsset)
             ))
 
             post {

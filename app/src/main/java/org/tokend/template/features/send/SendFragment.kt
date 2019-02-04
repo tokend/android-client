@@ -225,8 +225,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayBalance() {
         balance_text_view.text = getString(R.string.template_balance,
-                amountFormatter.formatAssetAmount(assetBalance, asset),
-                asset
+                amountFormatter.formatAssetAmount(assetBalance, asset)
         )
     }
 

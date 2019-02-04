@@ -300,7 +300,7 @@ class AssetChartCard : LinearLayout {
 
     private fun displayTotalValue() {
         valueTextView.text =
-                "${amountFormatter.formatAssetAmount(total, asset)} $asset"
+                amountFormatter.formatAssetAmount(total, asset)
         valueHintTextView.text = valueHint
     }
 
@@ -313,7 +313,7 @@ class AssetChartCard : LinearLayout {
                         )
                 )
         valueTextView.text =
-                "${amountFormatter.formatAssetAmount(amount, asset)} $asset"
+                amountFormatter.formatAssetAmount(amount, asset)
         valueHintTextView.text =
                 context.getString(R.string.chart_highlight_at_hint,
                         valueHint, DateFormatter(context).formatCompact(date))
@@ -328,7 +328,7 @@ class AssetChartCard : LinearLayout {
                     else
                         ContextCompat.getColor(context, R.color.ok)
             var growthString =
-                    "$sign${amountFormatter.formatAssetAmount(growth, asset)} $asset"
+                    "$sign${amountFormatter.formatAssetAmount(growth, asset)}"
             if (percent != null) {
                 growthString += " ($sign${BigDecimalUtil.toPlainString(percent)}%)"
             }

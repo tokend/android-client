@@ -40,13 +40,12 @@ class SaleGeneralInfoFragment : BaseFragment() {
                         DateFormatter(requireContext()).formatCompact(sale.endDate))
                 .addRow(getString(R.string.sale_info_hard_cap_base_asset), sale.defaultQuoteAsset)
                 .addRow(getString(R.string.sale_info_soft_cap),
-                        "${amountFormatter.formatAssetAmount(sale.softCap,
-                                sale.defaultQuoteAsset)} ${sale.defaultQuoteAsset}")
+                        amountFormatter.formatAssetAmount(sale.softCap, sale.defaultQuoteAsset))
                 .addRow(getString(R.string.sale_info_hard_cap),
-                        "${amountFormatter.formatAssetAmount(sale.hardCap,
-                                sale.defaultQuoteAsset)} ${sale.defaultQuoteAsset}")
+                        amountFormatter.formatAssetAmount(sale.hardCap, sale.defaultQuoteAsset))
                 .addRow(getString(R.string.sale_info_to_sell_template, sale.baseAssetCode),
-                        amountFormatter.formatAssetAmount(sale.baseHardCap, sale.baseAssetCode))
+                        amountFormatter.formatAssetAmount(sale.baseHardCap, sale.baseAssetCode,
+                                withAssetCode = false))
     }
 
     companion object {

@@ -16,11 +16,13 @@ interface AmountFormatter {
      * @param asset asset of the amount
      * @param minDecimalDigits minimal count of decimal digits to display
      * @param abbreviation to use or not to use big amount abbreviation i.e. 1100 -> 1.1K
+     * @param withAssetCode add or not asset code
      */
     fun formatAssetAmount(amount: BigDecimal?,
                           asset: String,
                           minDecimalDigits: Int = 0,
-                          abbreviation: Boolean = false): String
+                          abbreviation: Boolean = false,
+                          withAssetCode: Boolean = true): String
 
     /**
      * Formats amount of given asset
@@ -30,7 +32,8 @@ interface AmountFormatter {
     fun formatAssetAmount(amount: String?,
                           asset: String,
                           minDecimalDigits: Int = 0,
-                          abbreviation: Boolean = false): String
+                          abbreviation: Boolean = false,
+                          withAssetCode: Boolean = true): String
 
     /**
      * Formats given amount

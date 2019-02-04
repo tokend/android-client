@@ -179,12 +179,11 @@ class AssetTabsCard(private val activity: Activity,
                 ?.let { balance ->
                     val available = balance.available
                     view.balance_text_view.text =
-                            amountFormatter.formatAssetAmount(available, asset) + " $asset"
+                            amountFormatter.formatAssetAmount(available, asset)
                     val converted = balance.availableConverted
                     val conversionAsset = balance.conversionAssetCode
                     view.converted_balance_text_view.text =
-                            amountFormatter.formatAssetAmount(converted, conversionAsset) +
-                            " $conversionAsset"
+                            amountFormatter.formatAssetAmount(converted, conversionAsset)
                 }
     }
 

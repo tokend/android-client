@@ -119,9 +119,14 @@ class AssetDetailsFragment : BaseFragment() {
         InfoCard(cards_layout)
                 .setHeading(R.string.asset_summary_title, null)
                 .addRow(R.string.asset_available,
-                        amountFormatter.formatAssetAmount(asset.available, asset.code))
-                .addRow(R.string.asset_issued, amountFormatter.formatAssetAmount(asset.issued, asset.code))
-                .addRow(R.string.asset_maximum, amountFormatter.formatAssetAmount(asset.maximum, asset.code))
+                        amountFormatter.formatAssetAmount(asset.available, asset.code,
+                                withAssetCode = false))
+                .addRow(R.string.asset_issued,
+                        amountFormatter.formatAssetAmount(asset.issued, asset.code,
+                                withAssetCode = false))
+                .addRow(R.string.asset_maximum,
+                        amountFormatter.formatAssetAmount(asset.maximum, asset.code,
+                                withAssetCode = false))
     }
 
     private fun displayTermsIfNeeded() {

@@ -258,8 +258,8 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         val secondBalance = balances.find { it.assetCode == currentPair.quote }?.available
 
         balance_text_view.text = getString(R.string.template_balance_two_assets,
-                amountFormatter.formatAssetAmount(firstBalance, currentPair.base), currentPair.base,
-                amountFormatter.formatAssetAmount(secondBalance, currentPair.quote), currentPair.quote)
+                amountFormatter.formatAssetAmount(firstBalance, currentPair.base),
+                amountFormatter.formatAssetAmount(secondBalance, currentPair.quote))
     }
 // endregion
 
@@ -352,7 +352,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayPrice() {
         price_text_view.text = getString(R.string.template_price_one_equals, currentPair.base,
-                amountFormatter.formatAssetAmount(currentPair.price, currentPair.quote), currentPair.quote)
+                amountFormatter.formatAssetAmount(currentPair.price, currentPair.quote))
     }
 // endregion
 

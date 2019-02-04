@@ -19,7 +19,7 @@ class SaleProgressWrapper(private val rootView: View,
         val highlightColor = ContextCompat.getColor(context, R.color.accent)
 
         val investedAmountString = amountFormatter.formatAssetAmount(sale.currentCap,
-                sale.defaultQuoteAsset, abbreviation = true) + " ${sale.defaultQuoteAsset}"
+                sale.defaultQuoteAsset, abbreviation = true)
         val investedString = context.getString(R.string.template_sale_invested, investedAmountString)
 
         val investedSpannableString = SpannableString(investedString)

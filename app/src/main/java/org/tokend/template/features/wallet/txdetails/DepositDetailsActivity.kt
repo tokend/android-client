@@ -24,10 +24,9 @@ class DepositDetailsActivity :
     private fun displayAmountAndCause(tx: IssuanceOperation) {
         InfoCard(cards_layout)
                 .setHeading(R.string.received, null)
-                .addRow(R.string.amount, "${
+                .addRow(R.string.amount,
                 amountFormatter.formatAssetAmount(tx.amount, tx.asset,
-                        minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS)
-                } ${tx.asset}")
+                        minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
                 .apply {
                     if (!tx.cause.isNullOrBlank()) {
                         addRow(R.string.tx_cause, tx.cause)

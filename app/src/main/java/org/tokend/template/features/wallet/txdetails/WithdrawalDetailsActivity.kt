@@ -30,24 +30,18 @@ class WithdrawalDetailsActivity : TxDetailsActivity<WithdrawalOperation>(Withdra
         val paid = tx.amount + tx.fee.total
 
         InfoCard(cards_layout)
-                .setHeading(R.string.paid,
-                        "${amountFormatter.formatAssetAmount(paid, tx.asset)} ${tx.asset}")
+                .setHeading(R.string.paid, amountFormatter.formatAssetAmount(paid, tx.asset))
                 .addRow(R.string.amount_sent,
-                        "+${amountFormatter.formatAssetAmount(tx.amount, tx.asset)
-                        } ${tx.asset}")
+                        "+${amountFormatter.formatAssetAmount(tx.amount, tx.asset)}")
                 .addRow(R.string.tx_fixed_fee,
-                        "+${amountFormatter.formatAssetAmount(tx.fee.fixed, tx.asset)
-                        } ${tx.asset}")
+                        "+${amountFormatter.formatAssetAmount(tx.fee.fixed, tx.asset)}")
                 .addRow(R.string.tx_percent_fee,
-                        "+${amountFormatter.formatAssetAmount(tx.fee.percent, tx.asset)
-                        } ${tx.asset}")
+                        "+${amountFormatter.formatAssetAmount(tx.fee.percent, tx.asset)}")
     }
 
     private fun displaySent(tx: WithdrawalOperation) {
         InfoCard(cards_layout)
-                .setHeading(R.string.sent,
-                        "${amountFormatter.formatAssetAmount(tx.destAmount, tx.asset)} " +
-                                tx.asset)
+                .setHeading(R.string.sent, amountFormatter.formatAssetAmount(tx.destAmount, tx.asset))
                 .addRow(getString(R.string.template_withdrawal_fee_warning, tx.asset),
                         null)
     }

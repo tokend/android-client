@@ -83,19 +83,17 @@ open class OfferConfirmationActivity : BaseActivity() {
 
         val card = InfoCard(cards_layout)
                 .setHeading(R.string.to_pay,
-                        "${amountFormatter.formatAssetAmount(toPayAmount, payAsset)
-                        } $payAsset")
+                        amountFormatter.formatAssetAmount(toPayAmount, payAsset))
 
         if (offer.isBuy) {
             card.addRow(R.string.amount,
-                    "+${amountFormatter.formatAssetAmount(payBaseAmount, payAsset)
-                    } $payAsset")
+                    "+${amountFormatter.formatAssetAmount(payBaseAmount, payAsset)}")
                     .addRow(R.string.tx_fee,
-                            "+${amountFormatter.formatAssetAmount(offer.fee, payAsset)
-                            } $payAsset")
+                            "+${amountFormatter.formatAssetAmount(offer.fee, payAsset)}")
         } else {
             card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAssetCode,
-                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode), offer.quoteAssetCode))
+                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode))
+            )
         }
     }
 
@@ -108,20 +106,18 @@ open class OfferConfirmationActivity : BaseActivity() {
 
         val card = InfoCard(cards_layout)
                 .setHeading(R.string.to_receive,
-                        "${amountFormatter.formatAssetAmount(toReceiveAmount, receiveAsset)
-                        } $receiveAsset")
+                        amountFormatter.formatAssetAmount(toReceiveAmount, receiveAsset))
 
         if (!offer.isBuy) {
             card
                     .addRow(R.string.amount,
-                            "+${amountFormatter.formatAssetAmount(receiveBaseAmount, receiveAsset)
-                            } $receiveAsset")
+                            "+${amountFormatter.formatAssetAmount(receiveBaseAmount, receiveAsset)}")
                     .addRow(R.string.tx_fee,
-                            "-${amountFormatter.formatAssetAmount(offer.fee, receiveAsset)
-                            } $receiveAsset")
+                            "-${amountFormatter.formatAssetAmount(offer.fee, receiveAsset)}")
         } else {
             card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAssetCode,
-                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode), offer.quoteAssetCode))
+                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode))
+            )
         }
     }
     // endregion
