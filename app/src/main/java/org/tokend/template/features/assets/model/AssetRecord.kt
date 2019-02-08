@@ -1,7 +1,9 @@
 package org.tokend.template.features.assets.model
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.sdk.api.assets.model.SimpleAsset
 import org.tokend.sdk.api.base.model.RemoteFile
+import org.tokend.sdk.api.generated.resources.AssetResource
 import org.tokend.template.data.model.UrlConfig
 import org.tokend.template.util.PolicyChecker
 import java.io.Serializable
@@ -49,5 +51,24 @@ class AssetRecord(
 
     override fun hashCode(): Int {
         return code.hashCode()
+    }
+
+    companion object {
+        @JvmStatic
+        fun fromResource(source: AssetResource, urlConfig: UrlConfig?, mapper: ObjectMapper): AssetRecord {
+            val details = mapper.convertValue(source.details, AssetDetails::class.java)
+
+            return AssetRecord(
+                    code = source.id,
+                    policy = source.policies.value,
+                    name = details.name,
+                    logoUrl = details.logo?.getUrl(urlConfig?.storage),
+                    terms = details.terms,
+                    externalSystemType = details.externalSystemType,
+                    issued = source.issued,
+                    available = source.availableForIssuance,
+                    maximum = source.maxIssuanceAmount
+            )
+        }
     }
 }

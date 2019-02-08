@@ -1,6 +1,7 @@
 package org.tokend.template.di.providers
 
 import android.content.Context
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.template.data.repository.*
 import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.data.repository.assets.AssetsRepositoryCache
@@ -31,6 +32,7 @@ class RepositoryProviderImpl(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
         private val urlConfigProvider: UrlConfigProvider,
+        private val mapper: ObjectMapper,
         private val context: Context? = null
 ) : RepositoryProvider {
     private val balancesRepository: BalancesRepository by lazy {
@@ -47,7 +49,7 @@ class RepositoryProviderImpl(
         TfaFactorsRepository(apiProvider, walletInfoProvider, TfaFactorsCache())
     }
     private val assetsRepository: AssetsRepository by lazy {
-        AssetsRepository(apiProvider, urlConfigProvider, AssetsRepositoryCache())
+        AssetsRepository(apiProvider, urlConfigProvider, mapper, AssetsRepositoryCache())
     }
     private val orderBookRepositories = mutableMapOf<String, OrderBookRepository>()
     private val assetPairsRepository: AssetPairsRepository by lazy {
