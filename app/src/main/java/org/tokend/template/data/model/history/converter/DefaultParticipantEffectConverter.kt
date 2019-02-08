@@ -142,6 +142,8 @@ class DefaultParticipantEffectConverter(
                     WithdrawalDetails(operationDetails)
                 is OpManageOfferDetailsResource ->
                     OfferMatchDetails(operationDetails, effect as EffectMatchedResource)
+                is OpCreateAMLAlertRequestDetailsResource ->
+                    AmlAlertDetails(operationDetails)
                 else ->
                     BalanceChangeDetails()
             }
