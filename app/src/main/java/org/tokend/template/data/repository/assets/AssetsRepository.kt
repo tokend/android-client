@@ -1,5 +1,6 @@
 package org.tokend.template.data.repository.assets
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import org.tokend.template.data.repository.base.RepositoryCache
@@ -7,21 +8,36 @@ import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.rx.extensions.toSingle
+import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.v2.assets.params.AssetsPageParams
+import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.features.assets.model.AssetRecord
 
 class AssetsRepository(
         private val apiProvider: ApiProvider,
         private val urlConfigProvider: UrlConfigProvider,
+        private val mapper: ObjectMapper,
         itemsCache: RepositoryCache<AssetRecord>
 ) : SimpleMultipleItemsRepository<AssetRecord>(itemsCache) {
-
     override fun getItems(): Single<List<AssetRecord>> {
-        return apiProvider.getApi()
-                .assets
-                .get()
+
+        val loader = SimplePagedResourceLoader(
+                { nextCursor ->
+                    apiProvider.getApi().v2.assets.get(
+                            AssetsPageParams(
+                                    pagingParams = PagingParamsV2(page = nextCursor, limit = 15)
+                            )
+                    )
+                }
+        )
+
+        return loader
+                .loadAll()
                 .toSingle()
-                .map { simpleAssets ->
-                    simpleAssets.map { AssetRecord(it, urlConfigProvider.getConfig()) }
+                .map { assetResources ->
+                    assetResources.map {
+                        AssetRecord.fromResource(it, urlConfigProvider.getConfig(), mapper)
+                    }
                 }
     }
 
@@ -34,11 +50,12 @@ class AssetsRepository(
                 .toMaybe()
                 .switchIfEmpty(
                         apiProvider.getApi()
+                                .v2
                                 .assets
-                                .getByCode(code)
+                                .getById(code)
                                 .toSingle()
-                                .map { AssetRecord(it, urlConfigProvider.getConfig()) }
-                                .doOnSuccess { _ ->
+                                .map { AssetRecord.fromResource(it, urlConfigProvider.getConfig(), mapper) }
+                                .doOnSuccess {
                                     itemsCache.items.find { it.code == code }?.also {
                                         itemsCache.updateOrAdd(it)
                                     }
