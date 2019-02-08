@@ -80,11 +80,17 @@ class PaymentsTest {
 
         val email = "${System.currentTimeMillis()}@mail.com"
         val password = "qwe123".toCharArray()
-        val recipient = "alice@mail.com"
+        val recipientEmail = "${SecureRandom.getSeed(12).encodeHexString()}@mail.com"
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+
+        val (_, recipientAccount, _) = Util.getVerifiedWallet(
+                recipientEmail, password, apiProvider, session, null
+        )
+
+        val recipientAccountId = recipientAccount.accountId
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -98,7 +104,7 @@ class PaymentsTest {
                 repositoryProvider, session, txManager)
 
         val request = CreatePaymentRequestUseCase(
-                recipient,
+                recipientAccountId,
                 paymentAmount,
                 asset,
                 "Test payment",
@@ -135,11 +141,17 @@ class PaymentsTest {
 
         val email = "${System.currentTimeMillis()}@mail.com"
         val password = "qwe123".toCharArray()
-        val recipient = "alice@mail.com"
+        val recipientEmail = "${SecureRandom.getSeed(12).encodeHexString()}@mail.com"
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+
+        val (_, recipientAccount, _) = Util.getVerifiedWallet(
+                recipientEmail, password, apiProvider, session, null
+        )
+
+        val recipientAccountId = recipientAccount.accountId
 
         val (_, rootAccount, _) = Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -168,7 +180,7 @@ class PaymentsTest {
                 repositoryProvider, session, txManager)
 
         val request = CreatePaymentRequestUseCase(
-                recipient,
+                recipientAccountId,
                 paymentAmount,
                 asset,
                 "Test payment with fee",
