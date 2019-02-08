@@ -143,7 +143,7 @@ class DefaultParticipantEffectConverter(
                 is OpManageOfferDetailsResource ->
                     OfferMatchDetails(operationDetails, effect as EffectMatchedResource)
                 else ->
-                    null
+                    BalanceChangeDetails()
             }
         } catch (e: Exception) {
             logError("Unable to parse operation details ${operationDetails.id}: "
