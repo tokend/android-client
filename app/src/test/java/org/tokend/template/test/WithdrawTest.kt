@@ -77,7 +77,7 @@ class WithdrawTest {
         )
 
         Util.getSomeMoney(asset, amount * BigDecimal("2"),
-                repositoryProvider, TxManager(apiProvider))
+                repositoryProvider, session, TxManager(apiProvider))
 
         val assetDetails = apiProvider.getSignedApi()?.assets?.getByCode(asset)?.execute()?.get()!!
         makeAssetWithdrawable(assetDetails, repositoryProvider, TxManager(apiProvider))
@@ -124,12 +124,19 @@ class WithdrawTest {
 
         val req =
                 ManageAssetOp.ManageAssetOpRequest.CreateAssetUpdateRequest(
-                        AssetUpdateRequest(
-                                asset.code,
-                                GsonFactory().getBaseGson().toJson(asset.details),
-                                asset.policy or AssetPolicy.WITHDRAWABLE.value,
-                                AssetUpdateRequest.AssetUpdateRequestExt.EmptyVersion()
-                        )
+                        ManageAssetOp.ManageAssetOpRequest.ManageAssetOpCreateAssetUpdateRequest(
+                                AssetUpdateRequest(
+                                        asset.code,
+                                        GsonFactory().getBaseGson().toJson(asset.details),
+                                        asset.policy or AssetPolicy.WITHDRAWABLE.value,
+                                        0,
+                                        AssetUpdateRequest.AssetUpdateRequestExt.EmptyVersion()
+                                ),
+                                0,
+                                ManageAssetOp.ManageAssetOpRequest
+                                        .ManageAssetOpCreateAssetUpdateRequest
+                                        .ManageAssetOpCreateAssetUpdateRequestExt
+                                        .EmptyVersion())
                 )
 
         val op = ManageAssetOp(
@@ -169,7 +176,7 @@ class WithdrawTest {
         )
 
         val initialBalance = Util.getSomeMoney(asset, amount * BigDecimal("2"),
-                repositoryProvider, TxManager(apiProvider))
+                repositoryProvider, session, TxManager(apiProvider))
 
         val assetDetails = apiProvider.getSignedApi()?.assets?.getByCode(asset)?.execute()?.get()!!
         makeAssetWithdrawable(assetDetails, repositoryProvider, TxManager(apiProvider))

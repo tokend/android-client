@@ -1,13 +1,15 @@
 package org.tokend.template.test
 
 import org.tokend.sdk.api.assets.model.AssetDetails
+import org.tokend.sdk.api.base.params.PagingOrder
+import org.tokend.sdk.api.base.params.PagingParams
+import org.tokend.sdk.api.requests.params.AssetRequestsParams
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.WalletCreateResult
+import org.tokend.sdk.utils.extentions.decodeHex
 import org.tokend.template.data.model.UrlConfig
-import org.tokend.template.di.providers.ApiProvider
-import org.tokend.template.di.providers.RepositoryProvider
-import org.tokend.template.di.providers.UrlConfigProvider
-import org.tokend.template.di.providers.UrlConfigProviderFactory
+import org.tokend.template.di.providers.*
+import org.tokend.template.features.assets.logic.CreateBalanceUseCase
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.logic.Session
@@ -53,8 +55,22 @@ object Util {
     fun getSomeMoney(asset: String,
                      amount: BigDecimal,
                      repositoryProvider: RepositoryProvider,
+                     accountProvider: AccountProvider,
                      txManager: TxManager): BigDecimal {
         val netParams = repositoryProvider.systemInfo().getNetworkParams().blockingGet()
+
+        val hasBalance = repositoryProvider.balances()
+                .itemsList.find { it.assetCode == asset } != null
+
+        if (!hasBalance) {
+            CreateBalanceUseCase(
+                    asset,
+                    repositoryProvider.balances(),
+                    repositoryProvider.systemInfo(),
+                    accountProvider,
+                    txManager
+            ).perform().blockingAwait()
+        }
 
         val balanceId = repositoryProvider.balances()
                 .itemsList
@@ -73,6 +89,7 @@ object Util {
         val op = CreateIssuanceRequestOp(
                 issuance,
                 "${System.currentTimeMillis()}",
+                null,
                 CreateIssuanceRequestOp.CreateIssuanceRequestOpExt.EmptyVersion()
         )
 
@@ -134,7 +151,6 @@ object Util {
             sourceAccount: Account,
             apiProvider: ApiProvider,
             txManager: TxManager,
-            session: Session,
             externalSystemType: String? = null
     ): String {
         val code = "${System.currentTimeMillis() / 1000}"
@@ -152,16 +168,25 @@ object Util {
         )
 
         val request = ManageAssetOp.ManageAssetOpRequest.CreateAssetCreationRequest(
-                AssetCreationRequest(
-                        code = code,
-                        preissuedAssetSigner = PublicKeyFactory.fromAccountId(
-                                systemInfo.masterExchangeAccountId
+                ManageAssetOp.ManageAssetOpRequest.ManageAssetOpCreateAssetCreationRequest(
+                        AssetCreationRequest(
+                                code = code,
+                                preissuedAssetSigner = PublicKeyFactory.fromAccountId(
+                                        systemInfo.masterExchangeAccountId
+                                ),
+                                maxIssuanceAmount = netParams.amountToPrecised(BigDecimal.TEN),
+                                policies = 0,
+                                initialPreissuedAmount = netParams.amountToPrecised(BigDecimal.TEN),
+                                details = assetDetailsJson,
+                                ext = AssetCreationRequest.AssetCreationRequestExt.EmptyVersion(),
+                                sequenceNumber = 0,
+                                trailingDigitsCount = 6
                         ),
-                        maxIssuanceAmount = netParams.amountToPrecised(BigDecimal.TEN),
-                        policies = 0,
-                        initialPreissuedAmount = netParams.amountToPrecised(BigDecimal.TEN),
-                        details = assetDetailsJson,
-                        ext = AssetCreationRequest.AssetCreationRequestExt.EmptyVersion()
+                        null,
+                        ManageAssetOp.ManageAssetOpRequest
+                                .ManageAssetOpCreateAssetCreationRequest
+                                .ManageAssetOpCreateAssetCreationRequestExt
+                                .EmptyVersion()
                 )
         )
 
@@ -175,6 +200,45 @@ object Util {
         tx.addSignature(sourceAccount)
 
         txManager.submit(tx).blockingGet()
+
+        val requestToReview =
+                apiProvider
+                        .getApi()
+                        .requests
+                        .getAssets(
+                                AssetRequestsParams(
+                                        pagingParams = PagingParams(
+                                                order = PagingOrder.DESC,
+                                                limit = 1
+                                        ),
+                                        asset = code
+                                )
+                        )
+                        .execute()
+                        .get()
+                        .items
+                        .firstOrNull()
+
+        if (requestToReview != null) {
+            val reviewOp = ReviewRequestOp(
+                    requestID = requestToReview.id,
+                    requestHash = XdrByteArrayFixed32(requestToReview.hash.decodeHex()),
+                    action = ReviewRequestOpAction.APPROVE,
+                    reason = "",
+                    reviewDetails = ReviewDetails(0, requestToReview.pendingTasks,
+                            "", ReviewDetails.ReviewDetailsExt.EmptyVersion()),
+                    ext = ReviewRequestOp.ReviewRequestOpExt.EmptyVersion(),
+                    requestDetails = object : ReviewRequestOp.ReviewRequestOpRequestDetails(ReviewableRequestType.ASSET_CREATE) {}
+            )
+
+            val reviewTx = TransactionBuilder(netParams, sourceAccount.accountId)
+                    .addOperation(Operation.OperationBody.ReviewRequest(reviewOp))
+                    .build()
+
+            reviewTx.addSignature(sourceAccount)
+
+            txManager.submit(reviewTx).blockingGet()
+        }
 
         return code
     }

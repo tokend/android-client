@@ -34,7 +34,7 @@ class CreateBalanceTest {
         val txManager = TxManager(apiProvider)
 
         val assetCode = Util.createAsset(Account.fromSecretSeed(Config.ADMIN_SEED), apiProvider,
-                txManager, session)
+                txManager)
 
         val useCase = CreateBalanceUseCase(
                 assetCode,

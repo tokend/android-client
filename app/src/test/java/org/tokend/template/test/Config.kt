@@ -1,6 +1,8 @@
 package org.tokend.template.test
 
+import org.tokend.template.BuildConfig
+
 object Config {
-    const val API = "http://localhost:8000"
-    val ADMIN_SEED = "SAMJKTZVW5UOHCDK5INYJNORF2HRKYI72M5XSZCBYAHQHR34FFR4Z6G4".toCharArray()
+    const val API = BuildConfig.API_URL
+    val ADMIN_SEED = "SB5JLLYDUMFLBYH5NZV2CW6IDF7CP3NN2QMEDMRKUROBGU4CLROCIXAJ".toCharArray()
 }

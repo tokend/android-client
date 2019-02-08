@@ -11,7 +11,7 @@ import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.Transaction
 import org.tokend.wallet.TransactionBuilder
-import org.tokend.wallet.xdr.FeeDataV2
+import org.tokend.wallet.xdr.Fee
 import org.tokend.wallet.xdr.Operation
 import org.tokend.wallet.xdr.PaymentFeeDataV2
 import org.tokend.wallet.xdr.PaymentOpV2
@@ -56,25 +56,23 @@ class ConfirmPaymentRequestUseCase(
                     subject = request.paymentSubject ?: "",
                     reference = request.reference,
                     feeData = PaymentFeeDataV2(
-                            sourceFee = FeeDataV2(
-                                    fixedFee = networkParams.amountToPrecised(
+                            sourceFee = Fee(
+                                    fixed = networkParams.amountToPrecised(
                                             request.senderFee.fixed
                                     ),
-                                    maxPaymentFee = networkParams.amountToPrecised(
+                                    percent = networkParams.amountToPrecised(
                                             request.senderFee.total
                                     ),
-                                    feeAsset = request.senderFee.asset,
-                                    ext = FeeDataV2.FeeDataV2Ext.EmptyVersion()
+                                    ext = Fee.FeeExt.EmptyVersion()
                             ),
-                            destinationFee = FeeDataV2(
-                                    fixedFee = networkParams.amountToPrecised(
+                            destinationFee = Fee(
+                                    fixed = networkParams.amountToPrecised(
                                             request.recipientFee.fixed
                                     ),
-                                    maxPaymentFee = networkParams.amountToPrecised(
+                                    percent = networkParams.amountToPrecised(
                                             request.recipientFee.total
                                     ),
-                                    feeAsset = request.recipientFee.asset,
-                                    ext = FeeDataV2.FeeDataV2Ext.EmptyVersion()
+                                    ext = Fee.FeeExt.EmptyVersion()
                             ),
                             sourcePaysForDest = request.senderPaysRecipientFee,
                             ext = PaymentFeeDataV2.PaymentFeeDataV2Ext.EmptyVersion()

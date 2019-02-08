@@ -37,7 +37,7 @@ class BindExternalAccountTest {
         )
 
         val assetCode = Util.createAsset(Account.fromSecretSeed(Config.ADMIN_SEED), apiProvider,
-                txManager, session, "0")
+                txManager, "0")
 
         CreateBalanceUseCase(
                 assetCode,

@@ -77,7 +77,7 @@ class OffersTest {
         )
 
         Util.getSomeMoney(baseAsset, emissionAmount,
-                repositoryProvider, TxManager(apiProvider))
+                repositoryProvider, session, TxManager(apiProvider))
 
         submitOffer(session, apiProvider, repositoryProvider)
 
@@ -113,7 +113,7 @@ class OffersTest {
         )
 
         Util.getSomeMoney(baseAsset, emissionAmount,
-                repositoryProvider, TxManager(apiProvider))
+                repositoryProvider, session, TxManager(apiProvider))
 
         submitOffer(session, apiProvider, repositoryProvider)
 
@@ -157,7 +157,7 @@ class OffersTest {
         )
 
         val initialBalance = Util.getSomeMoney(baseAsset, emissionAmount,
-                repositoryProvider, TxManager(apiProvider))
+                repositoryProvider, session, TxManager(apiProvider))
 
         submitOffer(session, apiProvider, repositoryProvider)
 

@@ -46,6 +46,8 @@ class LocalizedName(private val context: Context) {
             FeeType.CAPITAL_DEPLOYMENT_FEE -> context.getString(R.string.capital_deployment_fee)
             FeeType.OPERATION_FEE -> context.getString(R.string.operation_fee)
             FeeType.PAYOUT_FEE -> context.getString(R.string.payout_fee)
+            FeeType.ATOMIC_SWAP_SALE_FEE -> context.getString(R.string.atomic_swap_sale_fee)
+            FeeType.ATOMIC_SWAP_PURCHASE_FEE -> context.getString(R.string.atomic_swap_purchase_fee)
         }
     }
 

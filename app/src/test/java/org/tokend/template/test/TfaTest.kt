@@ -1,7 +1,7 @@
 package org.tokend.template.test
 
 import com.marcelkliemannel.kotlinonetimepassword.GoogleAuthenticator
-import io.reactivex.Single
+import io.reactivex.Completable
 import junit.framework.Assert
 import org.junit.Test
 import org.tokend.sdk.api.tfa.model.TfaFactor
@@ -15,7 +15,9 @@ import org.tokend.template.di.providers.RepositoryProviderImpl
 import org.tokend.template.di.providers.WalletInfoProviderFactory
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
 import org.tokend.template.features.tfa.logic.EnableTfaUseCase
+import org.tokend.template.features.tfa.model.TfaFactorCreationResult
 import org.tokend.template.logic.Session
+import org.tokend.template.util.confirmation.ConfirmationProvider
 import java.util.*
 
 class TfaTest {
@@ -64,15 +66,19 @@ class TfaTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
+        val confirmation = object : ConfirmationProvider<TfaFactorCreationResult> {
+            override fun requestConfirmation(payload: TfaFactorCreationResult): Completable {
+                Assert.assertEquals(TfaFactor.Type.TOTP, payload.newFactor.type)
+                authenticator = GoogleAuthenticator(payload.confirmationAttributes["secret"].toString())
+                addedFactorId = payload.newFactor.id
+                return Completable.complete()
+            }
+        }
         val useCase = EnableTfaUseCase(
                 TfaFactor.Type.TOTP,
-                repositoryProvider.tfaFactors()
-        ) { (factor, attributes) ->
-            Assert.assertEquals(TfaFactor.Type.TOTP, factor.type)
-            authenticator = GoogleAuthenticator(attributes["secret"].toString())
-            addedFactorId = factor.id
-            Single.just(true)
-        }
+                repositoryProvider.tfaFactors(),
+                confirmation
+        )
 
         useCase.perform().blockingAwait()
 
@@ -125,13 +131,17 @@ class TfaTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
+        val confirmation =  object : ConfirmationProvider<TfaFactorCreationResult> {
+            override fun requestConfirmation(payload: TfaFactorCreationResult): Completable {
+                authenticator = GoogleAuthenticator(payload.confirmationAttributes["secret"].toString())
+                return Completable.complete()
+            }
+        }
         EnableTfaUseCase(
                 TfaFactor.Type.TOTP,
-                repositoryProvider.tfaFactors()
-        ) { (_, attributes) ->
-            authenticator = GoogleAuthenticator(attributes["secret"].toString())
-            Single.just(true)
-        }.perform().blockingAwait()
+                repositoryProvider.tfaFactors(),
+                confirmation
+        ).perform().blockingAwait()
 
         val useCase = DisableTfaUseCase(
                 TfaFactor.Type.TOTP,

@@ -1,5 +1,6 @@
 package org.tokend.template.features.invest.model
 
+import org.tokend.sdk.api.sales.model.SaleStates
 import org.tokend.sdk.api.sales.model.SimpleSale
 import org.tokend.template.data.model.UrlConfig
 import org.tokend.wallet.xdr.SaleType
@@ -73,10 +74,10 @@ class SaleRecord(
         get() = isClosed || isCanceled
 
     val isClosed: Boolean
-        get() = state == org.tokend.sdk.api.sales.model.Sale.STATE_CLOSED
+        get() = state == SaleStates.STATE_CLOSED
 
     val isCanceled: Boolean
-        get() = state == org.tokend.sdk.api.sales.model.Sale.STATE_CANCELED
+        get() = state == SaleStates.STATE_CANCELED
 
     override fun equals(other: Any?): Boolean {
         return other is SaleRecord && other.id == this.id

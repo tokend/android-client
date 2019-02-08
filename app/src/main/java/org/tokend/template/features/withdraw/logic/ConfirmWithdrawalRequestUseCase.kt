@@ -11,7 +11,6 @@ import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.Transaction
 import org.tokend.wallet.TransactionBuilder
-import org.tokend.wallet.xdr.AutoConversionWithdrawalDetails
 import org.tokend.wallet.xdr.CreateWithdrawalRequestOp
 import org.tokend.wallet.xdr.Fee
 import org.tokend.wallet.xdr.Operation
@@ -71,22 +70,13 @@ class ConfirmWithdrawalRequestUseCase(
                                     percent = networkParams.amountToPrecised(request.fee.percent),
                                     ext = Fee.FeeExt.EmptyVersion()
                             ),
-                            details = org.tokend.wallet.xdr.WithdrawalRequest
-                                    .WithdrawalRequestDetails.AutoConversion(
-                                    AutoConversionWithdrawalDetails(
-                                            destAsset = request.asset,
-                                            expectedAmount = precisedAmount,
-                                            ext = AutoConversionWithdrawalDetails
-                                                    .AutoConversionWithdrawalDetailsExt.EmptyVersion()
-                                    )
-                            ),
+                            universalAmount = 0,
                             externalDetails = "{\"address\":\"${request.destinationAddress}\"}",
-                            preConfirmationDetails = "",
-                            universalAmount = 0L,
                             ext = org.tokend.wallet.xdr.WithdrawalRequest
                                     .WithdrawalRequestExt.EmptyVersion()
                     ),
-                    ext = CreateWithdrawalRequestOp.CreateWithdrawalRequestOpExt.EmptyVersion()
+                    ext = CreateWithdrawalRequestOp.CreateWithdrawalRequestOpExt.EmptyVersion(),
+                    allTasks = null
             )
 
             val transaction =
