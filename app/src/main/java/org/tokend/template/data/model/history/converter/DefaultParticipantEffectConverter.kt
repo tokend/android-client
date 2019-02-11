@@ -139,6 +139,8 @@ class DefaultParticipantEffectConverter(
                     OfferMatchDetails(operationDetails, effect as EffectMatchedResource)
                 is OpCreateAMLAlertRequestDetailsResource ->
                     AmlAlertDetails(operationDetails)
+                is OpPayoutDetailsResource ->
+                    PayoutDetails(operationDetails)
                 else ->
                     BalanceChangeDetails()
             }
