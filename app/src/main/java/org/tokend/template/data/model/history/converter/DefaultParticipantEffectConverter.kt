@@ -36,11 +36,6 @@ class DefaultParticipantEffectConverter(
                 return@forEach
             }
 
-            if (!effect.hasAttributes()) {
-                logError("Effect ${effect.id} has no attributes")
-                return@forEach
-            }
-
             val action: BalanceChangeAction = when (effect) {
                 is EffectLockedResource ->
                     BalanceChangeAction.LOCKED

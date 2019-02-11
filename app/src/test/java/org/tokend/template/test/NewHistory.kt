@@ -2,6 +2,7 @@ package org.tokend.template.test
 
 import org.junit.Test
 import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
+import org.tokend.template.data.model.history.details.IssuanceDetails
 import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.di.providers.AccountProviderFactory
@@ -22,7 +23,7 @@ class NewHistory {
         )
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
 
-        val email = "ole21@mailinator.com"
+        val email = "1549876678839@mail.com"
         val password = "qwe123".toCharArray()
 
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
@@ -36,7 +37,7 @@ class NewHistory {
                 PostSignInManager(repositoryProvider)
         ).perform().blockingAwait()
 
-        val balanceId = "BATISH3VMOX5YY6435MH355KIK4EEJDNZRSKZ52SJHB2FGNIOSJZON7M"
+        val balanceId = "BCLO5Y6QOJG4WC4KMJWEP5W5HUNFUC7YCYPFMWXILAD25MK6Y374XDFD"
 
         val converter = DefaultParticipantEffectConverter(balanceId)
         val cache = BalanceChangesCache()
