@@ -200,6 +200,11 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/payment_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name="org.tokend.template.features.wallet.details.WithdrawalDetailsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/withdrawal_details_title"
+            android:theme="@style/AppTheme.CardsBackground" />
     </application>
 
 </manifest>

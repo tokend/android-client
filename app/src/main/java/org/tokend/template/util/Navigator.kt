@@ -18,10 +18,7 @@ import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.AmlAlertDetails
-import org.tokend.template.data.model.history.details.IssuanceDetails
-import org.tokend.template.data.model.history.details.OfferMatchDetails
-import org.tokend.template.data.model.history.details.PaymentDetails
+import org.tokend.template.data.model.history.details.*
 import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
@@ -261,6 +258,7 @@ object Navigator {
             is IssuanceDetails -> IssuanceDetailsActivity::class.java
             is OfferMatchDetails -> org.tokend.template.features.wallet.details.OfferMatchDetailsActivity::class.java
             is PaymentDetails -> org.tokend.template.features.wallet.details.PaymentDetailsActivity::class.java
+            is WithdrawalDetails -> org.tokend.template.features.wallet.details.WithdrawalDetailsActivity::class.java
             else -> return
         }
 
