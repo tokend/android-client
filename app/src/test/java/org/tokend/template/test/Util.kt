@@ -51,6 +51,16 @@ object Util {
                 repositoryProvider?.let { PostSignInManager(it) }
         ).perform().blockingAwait()
 
+        try {
+            apiProvider.getSignedApi()
+                    ?.users
+                    ?.create(createResult.rootAccount.accountId)
+                    ?.execute()
+                    ?.get()
+        } catch (e: Exception) {
+            System.err.println(e.localizedMessage)
+        }
+
         return createResult
     }
 
