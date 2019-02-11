@@ -17,6 +17,10 @@ import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
 import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.data.model.history.BalanceChange
+import org.tokend.template.data.model.history.details.AmlAlertDetails
+import org.tokend.template.data.model.history.details.IssuanceDetails
+import org.tokend.template.data.model.history.details.OfferMatchDetails
 import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
@@ -37,6 +41,9 @@ import org.tokend.template.features.signin.SignInActivity
 import org.tokend.template.features.signup.RecoverySeedActivity
 import org.tokend.template.features.signup.SignUpActivity
 import org.tokend.template.features.wallet.WalletFragment
+import org.tokend.template.features.wallet.details.AmlAlertDetailsActivity
+import org.tokend.template.features.wallet.details.BalanceChangeDetailsActivity
+import org.tokend.template.features.wallet.details.IssuanceDetailsActivity
 import org.tokend.template.features.wallet.txdetails.*
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
@@ -243,6 +250,22 @@ object Navigator {
         activity.startActivityForResult(
                 activity.intentFor<AuthenticatorSignInActivity>(),
                 requestCode
+        )
+    }
+
+    fun openBalanceChangeDetails(activity: Activity,
+                                 change: BalanceChange) {
+        val activityClass = when (change.details) {
+            is AmlAlertDetails -> AmlAlertDetailsActivity::class.java
+            is IssuanceDetails -> IssuanceDetailsActivity::class.java
+            is OfferMatchDetails -> OfferMatchDetailsActivity::class.java
+            else -> return
+        }
+
+        activity.startActivity(
+                Intent(activity, activityClass).apply {
+                    putExtra(BalanceChangeDetailsActivity.BALANCE_CHANGE_EXTRA, change)
+                }
         )
     }
 }

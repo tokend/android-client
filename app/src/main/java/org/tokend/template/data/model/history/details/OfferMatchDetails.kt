@@ -13,9 +13,9 @@ class OfferMatchDetails(
         val charged: ParticularBalanceChangeDetails,
         val funded: ParticularBalanceChangeDetails
 
-): BalanceChangeDetails() {
+) : BalanceChangeDetails() {
     constructor(op: OpManageOfferDetailsResource,
-                effect: EffectMatchedResource): this(
+                effect: EffectMatchedResource) : this(
             offerId = op.offerId,
             orderBookId = op.orderBookId,
             price = op.price,
@@ -24,6 +24,16 @@ class OfferMatchDetails(
             charged = ParticularBalanceChangeDetails(effect.charged),
             funded = ParticularBalanceChangeDetails(effect.funded)
     )
+
+    val chargedInQuote = charged.assetCode == quoteAssetCode
+
+    val fundedInQuote = funded.assetCode == quoteAssetCode
+
+    val baseAssetCode =
+            if (chargedInQuote)
+                funded.assetCode
+            else
+                charged.assetCode
 
     val isPrimaryMarket = orderBookId != 0L
 
