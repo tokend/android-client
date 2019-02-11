@@ -26,4 +26,18 @@ class OfferMatchDetails(
     )
 
     val isPrimaryMarket = orderBookId != 0L
+
+    /**
+     * @return true if given balance was funded by this match
+     */
+    fun isReceivedByBalance(balanceId: String): Boolean {
+        return funded.balanceId == balanceId
+    }
+
+    /**
+     * @return true if this match has funded in given asset
+     */
+    fun isReceivedByAsset(assetCode: String): Boolean {
+        return funded.assetCode == assetCode
+    }
 }
