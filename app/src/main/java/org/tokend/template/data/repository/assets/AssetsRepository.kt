@@ -25,7 +25,7 @@ class AssetsRepository(
                 { nextCursor ->
                     apiProvider.getApi().v2.assets.get(
                             AssetsPageParams(
-                                    pagingParams = PagingParamsV2(page = nextCursor, limit = 15)
+                                    pagingParams = PagingParamsV2(page = nextCursor)
                             )
                     )
                 }

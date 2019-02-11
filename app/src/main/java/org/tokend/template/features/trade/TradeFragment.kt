@@ -50,7 +50,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     private val pairs = mutableListOf<AssetPairRecord>()
     private var currentPair: AssetPairRecord =
-            AssetPairRecord("", "", BigDecimal.ONE, BigDecimal.ONE)
+            AssetPairRecord("", "", BigDecimal.ONE)
         set(value) {
             field = value
             onPairChanged()
