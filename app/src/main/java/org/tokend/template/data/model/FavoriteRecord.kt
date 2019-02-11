@@ -1,12 +1,13 @@
 package org.tokend.template.data.model
 
 import org.tokend.sdk.api.favorites.model.FavoriteEntry
+import java.io.Serializable
 
 open class FavoriteRecord(
         val type: String,
         val key: String,
         val id: Long
-) {
+): Serializable {
     constructor(source: FavoriteEntry) : this(
             type = source.type,
             key = source.key,
