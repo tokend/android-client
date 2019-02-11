@@ -2,14 +2,14 @@ package org.tokend.template.data.repository.pairs
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import org.tokend.template.data.model.AssetPairRecord
-import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.di.providers.ApiProvider
-import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.v2.assetpairs.params.AssetPairsPageParams
 import org.tokend.sdk.utils.SimplePagedResourceLoader
+import org.tokend.template.data.model.AssetPairRecord
+import org.tokend.template.data.repository.base.RepositoryCache
+import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
+import org.tokend.template.di.providers.ApiProvider
 import java.math.BigDecimal
 import java.math.MathContext
 
@@ -43,7 +43,7 @@ class AssetPairsRepository(
      */
     fun getSingle(code: String): Single<AssetPairRecord> {
         return itemsCache.items
-                .find { it.code == code }
+                .find { it.id == code }
                 .toMaybe()
                 .switchIfEmpty(
                         apiProvider.getApi()
@@ -53,9 +53,7 @@ class AssetPairsRepository(
                                 .toSingle()
                                 .map { AssetPairRecord.fromResource(it) }
                                 .doOnSuccess {
-                                    itemsCache.items.find { it.code == code }?.also {
-                                        itemsCache.updateOrAdd(it)
-                                    }
+                                    itemsCache.updateOrAdd(it)
                                 }
                 )
     }
