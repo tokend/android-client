@@ -21,6 +21,7 @@ import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.AmlAlertDetails
 import org.tokend.template.data.model.history.details.IssuanceDetails
 import org.tokend.template.data.model.history.details.OfferMatchDetails
+import org.tokend.template.data.model.history.details.PaymentDetails
 import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
@@ -258,7 +259,8 @@ object Navigator {
         val activityClass = when (change.details) {
             is AmlAlertDetails -> AmlAlertDetailsActivity::class.java
             is IssuanceDetails -> IssuanceDetailsActivity::class.java
-            is OfferMatchDetails -> OfferMatchDetailsActivity::class.java
+            is OfferMatchDetails -> org.tokend.template.features.wallet.details.OfferMatchDetailsActivity::class.java
+            is PaymentDetails -> org.tokend.template.features.wallet.details.PaymentDetailsActivity::class.java
             else -> return
         }
 

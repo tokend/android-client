@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/standard_padding"
-            android:text="@string/fixed_fee"
+            android:text="@string/fixed_fee_short"
             app:layout_constraintStart_toStartOf="@+id/fee_type"
             app:layout_constraintTop_toBottomOf="@+id/fee_subtype" />
 
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/half_standard_margin"
-            android:text="@string/percent_fee"
+            android:text="@string/percent_fee_short"
             app:layout_constraintStart_toStartOf="@id/fee_type"
             app:layout_constraintTop_toBottomOf="@id/fixed_text" />
 

@@ -119,6 +119,7 @@
     <string name="aml_alert_reason_unknown">Unknown</string>
     <string name="charged">Charged</string>
     <string name="funded">Funded</string>
+    <string name="fee_paid_by_sender_explanation">Recipient\'s fee has been paid by the sender</string>
 
     <string name="asset_summary_title">Token summary</string>
     <string name="asset_available">Available</string>
@@ -335,8 +336,10 @@
     <string name="incoming_outgoing_fee"><![CDATA[Incoming & Outgoing]]></string>
     <string name="outgoing_fee">Outgoing</string>
     <string name="incoming_fee">Incoming</string>
-    <string name="fixed_fee">Fixed</string>
-    <string name="percent_fee">Percent</string>
+    <string name="fixed_fee">Fixed fee</string>
+    <string name="percent_fee">Percent fee</string>
+    <string name="fixed_fee_short">Fixed</string>
+    <string name="percent_fee_short">Percent</string>
     <string name="lower_bound_fee">Lower bound</string>
     <string name="upper_bound_fee">Upper bound</string>
 
