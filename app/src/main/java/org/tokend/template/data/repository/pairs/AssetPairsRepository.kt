@@ -1,11 +1,15 @@
 package org.tokend.template.data.repository.pairs
 
 import io.reactivex.Single
+import io.reactivex.rxkotlin.toMaybe
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.rx.extensions.toSingle
+import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.v2.assetpairs.params.AssetPairsPageParams
+import org.tokend.sdk.utils.SimplePagedResourceLoader
 import java.math.BigDecimal
 import java.math.MathContext
 
@@ -15,13 +19,50 @@ class AssetPairsRepository(
 ) : SimpleMultipleItemsRepository<AssetPairRecord>(itemsCache), AmountConverter {
 
     override fun getItems(): Single<List<AssetPairRecord>> {
-        return apiProvider.getApi()
-                .assets
-                .getPairs()
+
+        val loader = SimplePagedResourceLoader(
+                { nextCursor ->
+                    apiProvider.getApi().v2.assetPairs.get(
+                            AssetPairsPageParams(
+                                    pagingParams = PagingParamsV2(page = nextCursor)
+                            )
+                    )
+                }
+        )
+
+        return loader
+                .loadAll()
                 .toSingle()
                 .map { pairsList ->
-                    pairsList.map { AssetPairRecord(it) }
+                    pairsList.map { AssetPairRecord.fromResource(it) }
                 }
+    }
+
+    /***
+     * @return single asset pair info
+     */
+    fun getSingle(code: String): Single<AssetPairRecord> {
+        return itemsCache.items
+                .find { it.code == code }
+                .toMaybe()
+                .switchIfEmpty(
+                        apiProvider.getApi()
+                                .v2
+                                .assetPairs
+                                .getById(code)
+                                .toSingle()
+                                .map { AssetPairRecord.fromResource(it) }
+                                .doOnSuccess {
+                                    itemsCache.items.find { it.code == code }?.also {
+                                        itemsCache.updateOrAdd(it)
+                                    }
+                                }
+                )
+    }
+
+    fun getSingle(base: String, quote: String): Single<AssetPairRecord> {
+        val code = "$base:$quote"
+        return getSingle(code)
     }
 
     override fun getRate(sourceAsset: String, destAsset: String): BigDecimal? {
