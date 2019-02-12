@@ -4,7 +4,7 @@ import org.tokend.sdk.api.generated.resources.EffectMatchedResource
 import org.tokend.sdk.api.generated.resources.OpManageOfferDetailsResource
 import java.math.BigDecimal
 
-class OfferMatchDetails(
+open class OfferMatchDetails(
         val offerId: Long,
         val orderBookId: Long,
         val price: BigDecimal,

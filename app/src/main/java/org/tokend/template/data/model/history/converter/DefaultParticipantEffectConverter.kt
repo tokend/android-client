@@ -137,6 +137,8 @@ class DefaultParticipantEffectConverter(
                     WithdrawalDetails(operationDetails)
                 is OpManageOfferDetailsResource ->
                     OfferMatchDetails(operationDetails, effect as EffectMatchedResource)
+                is OpCheckSaleStateDetailsResource ->
+                    InvestmentDetails(effect as EffectMatchedResource)
                 is OpCreateAMLAlertRequestDetailsResource ->
                     AmlAlertDetails(operationDetails)
                 is OpPayoutDetailsResource ->

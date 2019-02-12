@@ -7,10 +7,10 @@ import org.tokend.template.data.model.history.details.OfferMatchDetails
 import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.formatter.AmountFormatter
 
-class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
+open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
     override fun displayDetails(item: BalanceChange) {
         setContentView(R.layout.activity_details)
-        setTitle(R.string.offer_match_details_title)
+        setTitle(getTitleString())
 
         val details = item.details as? OfferMatchDetails
 
@@ -25,7 +25,11 @@ class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
         displayDate(item, cards_layout)
     }
 
-    private fun displayPrice(details: OfferMatchDetails) {
+    protected open fun getTitleString(): String {
+        return getString(R.string.offer_match_details_title)
+    }
+
+    protected open fun displayPrice(details: OfferMatchDetails) {
         val formattedPrice = amountFormatter
                 .formatAssetAmount(details.price, details.quoteAssetCode)
 
@@ -37,7 +41,7 @@ class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
                 .addRow(priceString, null)
     }
 
-    private fun displayCharged(details: OfferMatchDetails) {
+    protected open fun displayCharged(details: OfferMatchDetails) {
         val charged = details.charged
 
         val chargedTotal =
@@ -60,7 +64,7 @@ class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
                                 minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
     }
 
-    private fun displayFunded(details: OfferMatchDetails) {
+    protected open fun displayFunded(details: OfferMatchDetails) {
         val funded = details.funded
 
         val fundedTotal =

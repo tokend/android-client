@@ -39,10 +39,7 @@ import org.tokend.template.features.signin.SignInActivity
 import org.tokend.template.features.signup.RecoverySeedActivity
 import org.tokend.template.features.signup.SignUpActivity
 import org.tokend.template.features.wallet.WalletFragment
-import org.tokend.template.features.wallet.details.AmlAlertDetailsActivity
-import org.tokend.template.features.wallet.details.BalanceChangeDetailsActivity
-import org.tokend.template.features.wallet.details.IssuanceDetailsActivity
-import org.tokend.template.features.wallet.details.PayoutDetailsActivity
+import org.tokend.template.features.wallet.details.*
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 
@@ -231,9 +228,10 @@ object Navigator {
         val activityClass = when (change.details) {
             is AmlAlertDetails -> AmlAlertDetailsActivity::class.java
             is IssuanceDetails -> IssuanceDetailsActivity::class.java
-            is OfferMatchDetails -> org.tokend.template.features.wallet.details.OfferMatchDetailsActivity::class.java
-            is PaymentDetails -> org.tokend.template.features.wallet.details.PaymentDetailsActivity::class.java
-            is WithdrawalDetails -> org.tokend.template.features.wallet.details.WithdrawalDetailsActivity::class.java
+            is InvestmentDetails -> InvestmentDetailsActivity::class.java
+            is OfferMatchDetails -> OfferMatchDetailsActivity::class.java
+            is PaymentDetails -> PaymentDetailsActivity::class.java
+            is WithdrawalDetails -> WithdrawalDetailsActivity::class.java
             is PayoutDetails -> PayoutDetailsActivity::class.java
             else -> return
         }
