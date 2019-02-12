@@ -11,8 +11,8 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextSwitcher
 import org.tokend.template.R
-import org.tokend.template.view.adapter.history.TxHistoryAdapter
-import org.tokend.template.view.adapter.history.TxHistoryItem
+import org.tokend.template.util.DateProvider
+import org.tokend.template.view.adapter.base.BaseRecyclerAdapter
 import java.util.*
 
 /**
@@ -36,7 +36,7 @@ class TxDateTextSwitcher : TextSwitcher {
     private var lastTimeoutStartTime: Long = 0
 
     private var layoutManager: LinearLayoutManager? = null
-    private var txAdapter: TxHistoryAdapter? = null
+    private var txAdapter: BaseRecyclerAdapter<out DateProvider, *>? = null
 
     init {
         setFactory {
@@ -85,7 +85,7 @@ class TxDateTextSwitcher : TextSwitcher {
      * @param recyclerView [RecyclerView] to observe
      * @param adapter data adapter
      */
-    fun init(recyclerView: RecyclerView, adapter: TxHistoryAdapter) {
+    fun init(recyclerView: RecyclerView, adapter: BaseRecyclerAdapter<out DateProvider, *>) {
         prevHeaderId = java.lang.Long.MAX_VALUE
         prevScrollState = 0
         animateHide()
@@ -97,7 +97,7 @@ class TxDateTextSwitcher : TextSwitcher {
         this.txAdapter = adapter
     }
 
-    private fun updateFirstVisibleTx(tx: TxHistoryItem) {
+    private fun updateFirstVisibleTx(tx: DateProvider) {
         val currentDateId = getTxDateId(tx)
         if (currentDateId != prevHeaderId) {
             updateDateString(getTxDateString(tx), currentDateId.compareTo(prevHeaderId))
@@ -105,7 +105,7 @@ class TxDateTextSwitcher : TextSwitcher {
         }
     }
 
-    private fun getTxDateId(tx: TxHistoryItem): Long {
+    private fun getTxDateId(tx: DateProvider): Long {
         val calendar = Calendar.getInstance()
         calendar.time = tx.date
 
@@ -115,7 +115,7 @@ class TxDateTextSwitcher : TextSwitcher {
         return java.lang.Long.parseLong(sectionId)
     }
 
-    private fun getTxDateString(tx: TxHistoryItem): String {
+    private fun getTxDateString(tx: DateProvider): String {
         val nowCalendar = Calendar.getInstance()
         val txCalendar = Calendar.getInstance()
         txCalendar.time = tx.date
@@ -126,12 +126,12 @@ class TxDateTextSwitcher : TextSwitcher {
     }
 
     private fun updateDateString(headerName: String, direction: Int) {
-        post({
+        post {
             when (direction) {
                 -1 -> updateTextFromBottom(headerName)
                 1 -> updateTextFromTop(headerName)
             }
-        })
+        }
     }
 
     private fun updateTextFromBottom(headerName: String) {

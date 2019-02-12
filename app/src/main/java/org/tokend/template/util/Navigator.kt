@@ -12,21 +12,23 @@ import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
-import org.tokend.sdk.api.base.model.operations.*
 import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
 import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.data.model.history.BalanceChange
+import org.tokend.template.data.model.history.details.*
 import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.invest.activities.InvestmentConfirmationActivity
-import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
 import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
+import org.tokend.template.features.offers.view.details.PendingInvestmentDetailsActivity
+import org.tokend.template.features.offers.view.details.PendingOfferDetailsActivity
 import org.tokend.template.features.qr.ShareQrActivity
 import org.tokend.template.features.recovery.RecoveryActivity
 import org.tokend.template.features.send.PaymentConfirmationActivity
@@ -37,7 +39,10 @@ import org.tokend.template.features.signin.SignInActivity
 import org.tokend.template.features.signup.RecoverySeedActivity
 import org.tokend.template.features.signup.SignUpActivity
 import org.tokend.template.features.wallet.WalletFragment
-import org.tokend.template.features.wallet.txdetails.*
+import org.tokend.template.features.wallet.details.AmlAlertDetailsActivity
+import org.tokend.template.features.wallet.details.BalanceChangeDetailsActivity
+import org.tokend.template.features.wallet.details.IssuanceDetailsActivity
+import org.tokend.template.features.wallet.details.PayoutDetailsActivity
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 
@@ -214,34 +219,45 @@ object Navigator {
         ))
     }
 
-    fun openTransactionDetails(activity: Activity, tx: TransferOperation) {
-        when (tx) {
-            is PaymentOperation ->
-                TxDetailsActivity
-                        .start<PaymentDetailsActivity, PaymentOperation>(activity, tx)
-            is IssuanceOperation ->
-                TxDetailsActivity
-                        .start<DepositDetailsActivity, IssuanceOperation>(activity, tx)
-            is WithdrawalOperation ->
-                TxDetailsActivity
-                        .start<WithdrawalDetailsActivity, WithdrawalOperation>(activity, tx)
-            is InvestmentOperation ->
-                TxDetailsActivity
-                        .start<InvestmentDetailsActivity, InvestmentOperation>(activity, tx)
-            is OfferMatchOperation ->
-                TxDetailsActivity
-                        .start<OfferMatchDetailsActivity, OfferMatchOperation>(activity, tx)
-            else ->
-                (tx as? BaseTransferOperation)?.let {
-                    TxDetailsActivity
-                            .start<UnknownTxDetailsActivity, BaseTransferOperation>(activity, it)
-                }
-        }
-    }
-
     fun openAuthenticatorSignIn(activity: Activity, requestCode: Int) {
         activity.startActivityForResult(
                 activity.intentFor<AuthenticatorSignInActivity>(),
+                requestCode
+        )
+    }
+
+    fun openBalanceChangeDetails(activity: Activity,
+                                 change: BalanceChange) {
+        val activityClass = when (change.details) {
+            is AmlAlertDetails -> AmlAlertDetailsActivity::class.java
+            is IssuanceDetails -> IssuanceDetailsActivity::class.java
+            is OfferMatchDetails -> org.tokend.template.features.wallet.details.OfferMatchDetailsActivity::class.java
+            is PaymentDetails -> org.tokend.template.features.wallet.details.PaymentDetailsActivity::class.java
+            is WithdrawalDetails -> org.tokend.template.features.wallet.details.WithdrawalDetailsActivity::class.java
+            is PayoutDetails -> PayoutDetailsActivity::class.java
+            else -> return
+        }
+
+        activity.startActivity(
+                Intent(activity, activityClass).apply {
+                    putExtra(BalanceChangeDetailsActivity.BALANCE_CHANGE_EXTRA, change)
+                }
+        )
+    }
+
+    fun openPendingOfferDetails(activity: Activity,
+                                offer: OfferRecord,
+                                requestCode: Int) {
+        val activityClass =
+                if (offer.isInvestment)
+                    PendingInvestmentDetailsActivity::class.java
+                else
+                    PendingOfferDetailsActivity::class.java
+
+        activity.startActivityForResult(
+                Intent(activity, activityClass).apply {
+                    putExtra(PendingOfferDetailsActivity.OFFER_EXTRA, offer)
+                },
                 requestCode
         )
     }

@@ -43,21 +43,19 @@
     </string>
     <string name="resend_letter">Resend letter</string>
     <string name="paste">Paste</string>
-    <string name="no_transaction_history">No transaction history</string>
+    <string name="no_transaction_history">No history</string>
     <string name="date">Date</string>
-    <string name="tx_state">State</string>
     <string name="payment_details_title">Payment details</string>
+    <string name="aml_alert_details_title">AML alert details</string>
+    <string name="issuance_details_title">Issuance details</string>
     <string name="paid">Paid</string>
     <string name="received">Received</string>
     <string name="sent">Sent</string>
     <string name="price">Price</string>
-    <string name="amount_sent">Amount sent</string>
     <string name="payment_description">Description</string>
-    <string name="transaction_details_title">Transaction details</string>
-    <string name="deposit_details_title">Deposit details</string>
     <string name="withdrawal_details_title">Withdrawal details</string>
+    <string name="payout_details_title">Withdrawal details</string>
     <string name="amount">Amount</string>
-    <string name="unknown">Unknown</string>
     <string name="template_withdrawal_fee_warning">Received amount may be lower due to %1$s network fees</string>
     <string name="investment_details_title">Investment details</string>
     <string name="offer_match_details_title">Offer match details</string>
@@ -113,6 +111,15 @@
     <string name="offer_canceled">Offer has been canceled</string>
     <string name="email_verified">Email has been verified</string>
     <string name="touch_sensor">Touch the sensor</string>
+    <string name="aml_alert_reason">Reason</string>
+    <string name="aml_alert_reason_unknown">Unknown</string>
+    <string name="charged">Charged</string>
+    <string name="fee_paid_by_sender_explanation">Recipient\'s fee has been paid by the sender</string>
+    <string name="payout_conditions">Conditions</string>
+    <string name="payout_asset">Asset</string>
+    <string name="payout_min_holding_amount">Min holding amount</string>
+    <string name="payout_min_amount">Min payout amount</string>
+    <string name="payout_max_total_amount">Max total payout amount</string>
 
     <string name="asset_summary_title">Token summary</string>
     <string name="asset_available">Available</string>
@@ -129,26 +136,23 @@
     <string name="trade_title">Trade</string>
     <string name="settings_title">Settings</string>
 
-    <string name="tx_state_rejected">Rejected</string>
-    <string name="tx_state_pending">Pending</string>
-    <string name="tx_state_success">Success</string>
-    <string name="tx_state_cancelled">Cancelled</string>
-    <string name="tx_state_failed">Failed</string>
     <string name="template_tx_from">From %1$s</string>
     <string name="template_tx_to">To %1$s</string>
     <string name="tx_action_deposit">Deposit</string>
-    <string name="tx_action_withdrawal">Withdrawal</string>
+    <string name="tx_action_withdrawal">Withdrawn</string>
     <string name="tx_action_investment">Investment</string>
     <string name="tx_action_received">Received</string>
     <string name="tx_action_sent">Sent</string>
     <string name="tx_action_bought">Bought</string>
     <string name="tx_action_sold">Sold</string>
     <string name="tx_action_spent">Spent</string>
+    <string name="tx_action_locked">Locked</string>
+    <string name="tx_action_unlocked">Unlocked</string>
+    <string name="tx_action_charged">Charged</string>
+    <string name="tx_action_matched">Matched</string>
     <string name="tx_sender">Sender</string>
     <string name="tx_recipient">Recipient</string>
     <string name="tx_fee">Fee</string>
-    <string name="tx_fixed_fee">Fixed fee</string>
-    <string name="tx_percent_fee">Percent fee</string>
     <string name="tx_cause">Cause</string>
     <string name="tx_reference">Reference</string>
     <string name="tx_withdrawal_destination">Destination address</string>
@@ -266,7 +270,6 @@
     <string name="successfully_invested">Successfully invested</string>
     <string name="investment_canceled">Investment has been canceled</string>
     <string name="investment_updated">Investment has been updated</string>
-    <string name="investment_amount">Investment</string>
     <string name="pending_investment_details_title">Pending investment details</string>
     <string name="cancel_investment_confirmation">Are you sure want to cancel this investment?</string>
     <string name="sale_details_title">Fund details</string>
@@ -290,7 +293,6 @@
     <string name="use_fingerprint">Use fingerprint</string>
     <string name="secret_seed">Secret seed</string>
     <string name="secret_seed_description">Secret seed is private information that proves you own your account</string>
-    <string name="template_amount_asset">Amount (%1$s)</string>
     <string name="template_offer_creation_price">Price (%1$s for 1 %2$s)</string>
     <string name="deposit_address_copied">Address has been copied to the clipboard</string>
     <string name="deposit_address_renewed">Address has been renewed</string>
@@ -325,8 +327,10 @@
     <string name="incoming_outgoing_fee"><![CDATA[Incoming & Outgoing]]></string>
     <string name="outgoing_fee">Outgoing</string>
     <string name="incoming_fee">Incoming</string>
-    <string name="fixed_fee">Fixed</string>
-    <string name="percent_fee">Percent</string>
+    <string name="fixed_fee">Fixed fee</string>
+    <string name="percent_fee">Percent fee</string>
+    <string name="fixed_fee_short">Fixed</string>
+    <string name="percent_fee_short">Percent</string>
     <string name="lower_bound_fee">Lower bound</string>
     <string name="upper_bound_fee">Upper bound</string>
 
@@ -340,7 +344,6 @@
     <string name="authenticator_hint">Use TokenD Authenticator to set up and access your account</string>
     <string name="open_authenticator_action">Open authenticator</string>
     <string name="install_authenticator_action">Install authenticator</string>
-    <string name="show_auth_qr_action">Show QR code</string>
     <string name="use_authenticator">Use authenticator</string>
 
     <string name="error_unauthorized">The session has been expired</string>

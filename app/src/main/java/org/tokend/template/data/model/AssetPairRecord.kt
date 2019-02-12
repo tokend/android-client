@@ -1,8 +1,10 @@
 package org.tokend.template.data.model
 
+import org.tokend.sdk.api.assets.model.AssetPair
 import org.tokend.sdk.api.generated.resources.AssetPairResource
 import org.tokend.template.util.PolicyChecker
 import org.tokend.wallet.xdr.AssetPairPolicy
+import java.io.Serializable
 import java.math.BigDecimal
 
 class AssetPairRecord(
@@ -10,9 +12,15 @@ class AssetPairRecord(
         val quote: String,
         val price: BigDecimal,
         val policy: Int = 0
-) : PolicyChecker {
-
+) : Serializable, PolicyChecker {
     val id = "$base:$quote"
+
+    constructor(source: AssetPair) : this(
+            base = source.base,
+            quote = source.quote,
+            price = source.price,
+            policy = source.policy
+    )
 
     fun isTradeable(): Boolean {
         return checkPolicy(policy, AssetPairPolicy.TRADEABLE_SECONDARY_MARKET.value)

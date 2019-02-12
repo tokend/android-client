@@ -3,9 +3,11 @@ package org.tokend.template.test
 import org.tokend.sdk.api.assets.model.AssetDetails
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParams
+import org.tokend.sdk.api.requests.model.base.RequestState
 import org.tokend.sdk.api.requests.params.AssetRequestsParams
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.WalletCreateResult
+import org.tokend.sdk.utils.extentions.bitmask
 import org.tokend.sdk.utils.extentions.decodeHex
 import org.tokend.template.data.model.UrlConfig
 import org.tokend.template.di.providers.*
@@ -49,6 +51,16 @@ object Util {
                 repositoryProvider?.let { PostSignInManager(it) }
         ).perform().blockingAwait()
 
+        try {
+            apiProvider.getSignedApi()
+                    ?.users
+                    ?.create(createResult.rootAccount.accountId)
+                    ?.execute()
+                    ?.get()
+        } catch (e: Exception) {
+            System.err.println(e.localizedMessage)
+        }
+
         return createResult
     }
 
@@ -89,7 +101,7 @@ object Util {
         val op = CreateIssuanceRequestOp(
                 issuance,
                 "${System.currentTimeMillis()}",
-                null,
+                0,
                 CreateIssuanceRequestOp.CreateIssuanceRequestOpExt.EmptyVersion()
         )
 
@@ -163,9 +175,29 @@ object Util {
                         .get()
         val netParams = systemInfo.toNetworkParams()
 
+        val statsAssetExists =
+                apiProvider.getApi()
+                        .assets
+                        .get()
+                        .execute()
+                        .get()
+                        .any {
+                            (it.policy and AssetPolicy.STATS_QUOTE_ASSET.value) ==
+                                    AssetPolicy.STATS_QUOTE_ASSET.value
+                        }
+
         val assetDetailsJson = GsonFactory().getBaseGson().toJson(
                 AssetDetails("Asset name", null, null, externalSystemType)
         )
+
+        var policies = listOf(
+                AssetPolicy.TRANSFERABLE.value,
+                AssetPolicy.WITHDRAWABLE.value
+        ).map(Int::toLong).bitmask().toInt()
+
+        if (!statsAssetExists) {
+            policies = policies or AssetPolicy.STATS_QUOTE_ASSET.value
+        }
 
         val request = ManageAssetOp.ManageAssetOpRequest.CreateAssetCreationRequest(
                 ManageAssetOp.ManageAssetOpRequest.ManageAssetOpCreateAssetCreationRequest(
@@ -175,14 +207,14 @@ object Util {
                                         systemInfo.masterExchangeAccountId
                                 ),
                                 maxIssuanceAmount = netParams.amountToPrecised(BigDecimal.TEN),
-                                policies = 0,
+                                policies = policies,
                                 initialPreissuedAmount = netParams.amountToPrecised(BigDecimal.TEN),
                                 details = assetDetailsJson,
                                 ext = AssetCreationRequest.AssetCreationRequestExt.EmptyVersion(),
                                 sequenceNumber = 0,
                                 trailingDigitsCount = 6
                         ),
-                        null,
+                        0,
                         ManageAssetOp.ManageAssetOpRequest
                                 .ManageAssetOpCreateAssetCreationRequest
                                 .ManageAssetOpCreateAssetCreationRequestExt
@@ -219,7 +251,7 @@ object Util {
                         .items
                         .firstOrNull()
 
-        if (requestToReview != null) {
+        if (requestToReview != null && requestToReview.state == RequestState.PENDING) {
             val reviewOp = ReviewRequestOp(
                     requestID = requestToReview.id,
                     requestHash = XdrByteArrayFixed32(requestToReview.hash.decodeHex()),

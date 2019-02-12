@@ -78,6 +78,10 @@ android {
         generateJsonReport = false
         copyHtmlReportToAssets = true
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 ext {

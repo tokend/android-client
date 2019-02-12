@@ -2,13 +2,14 @@ package org.tokend.template.data.model
 
 import org.tokend.sdk.api.accounts.model.Account
 import org.tokend.wallet.xdr.AccountType
+import java.io.Serializable
 import java.util.*
 
 class AccountRecord(
         val id: String,
         val type: AccountType,
         val depositAccounts: List<DepositAccount>
-) {
+): Serializable {
     constructor(source: Account) : this(
             id = source.accountId,
             type = AccountType.values().find { it.value == source.typeI }!!,
@@ -26,5 +27,5 @@ class AccountRecord(
             val type: Int,
             val address: String,
             val expirationDate: Date?
-    )
+    ): Serializable
 }

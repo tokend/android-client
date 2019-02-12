@@ -2,9 +2,12 @@ package org.tokend.template.di.providers
 
 import android.content.Context
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
 import org.tokend.template.data.repository.*
 import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.data.repository.assets.AssetsRepositoryCache
+import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
+import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.balances.BalancesCache
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.favorites.FavoritesCache
@@ -87,6 +90,8 @@ class RepositoryProviderImpl(
         FeesRepository(apiProvider, walletInfoProvider)
     }
 
+    private val balanceChangesRepositoriesByBalanceId = mutableMapOf<String, BalanceChangesRepository>()
+
     override fun balances(): BalancesRepository {
         return balancesRepository
     }
@@ -163,5 +168,16 @@ class RepositoryProviderImpl(
 
     override fun fees(): FeesRepository {
         return feesRepository
+    }
+
+    override fun balanceChanges(balanceId: String): BalanceChangesRepository {
+        return balanceChangesRepositoriesByBalanceId.getOrPut(balanceId) {
+            BalanceChangesRepository(
+                    balanceId,
+                    apiProvider,
+                    DefaultParticipantEffectConverter(balanceId),
+                    BalanceChangesCache()
+            )
+        }
     }
 }

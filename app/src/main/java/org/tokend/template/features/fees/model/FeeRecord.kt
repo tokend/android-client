@@ -1,6 +1,7 @@
 package org.tokend.template.features.fees.model
 
 import org.tokend.sdk.api.fees.model.Fee
+import java.io.Serializable
 import java.math.BigDecimal
 
 class FeeRecord(
@@ -12,7 +13,7 @@ class FeeRecord(
         val percent: BigDecimal,
         val lowerBound: BigDecimal,
         val upperBound: BigDecimal
-) {
+): Serializable {
     constructor(source: Fee) : this(
             feeType = source.feeType,
             subtype = source.subtype,

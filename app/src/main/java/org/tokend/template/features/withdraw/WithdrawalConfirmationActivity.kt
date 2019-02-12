@@ -50,9 +50,9 @@ class WithdrawalConfirmationActivity : BaseActivity() {
                         amountFormatter.formatAssetAmount(toPay, request.asset))
                 .addRow(R.string.amount,
                         "+${amountFormatter.formatAssetAmount(request.amount, request.asset)}")
-                .addRow(R.string.tx_fixed_fee,
+                .addRow(R.string.fixed_fee,
                         "+${amountFormatter.formatAssetAmount(request.fee.fixed, request.asset)}")
-                .addRow(R.string.tx_percent_fee,
+                .addRow(R.string.percent_fee,
                         "+${amountFormatter.formatAssetAmount(request.fee.percent, request.asset)}")
     }
 
