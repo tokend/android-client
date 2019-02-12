@@ -16,9 +16,9 @@ class OfferMatchDetails(
 ) : BalanceChangeDetails() {
     constructor(op: OpManageOfferDetailsResource,
                 effect: EffectMatchedResource) : this(
-            offerId = op.offerId,
-            orderBookId = op.orderBookId,
-            price = op.price,
+            offerId = effect.offerId,
+            orderBookId = effect.orderBookId,
+            price = effect.price,
             isBuy = op.isBuy,
             quoteAssetCode = op.quoteAsset.id,
             charged = ParticularBalanceChangeDetails(effect.charged),
