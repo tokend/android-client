@@ -1,6 +1,5 @@
 package org.tokend.template.data.model
 
-import org.tokend.sdk.api.assets.model.AssetPair
 import org.tokend.sdk.api.generated.resources.AssetPairResource
 import org.tokend.template.util.PolicyChecker
 import org.tokend.wallet.xdr.AssetPairPolicy
@@ -14,13 +13,6 @@ class AssetPairRecord(
         val policy: Int = 0
 ) : Serializable, PolicyChecker {
     val id = "$base:$quote"
-
-    constructor(source: AssetPair) : this(
-            base = source.base,
-            quote = source.quote,
-            price = source.price,
-            policy = source.policy
-    )
 
     fun isTradeable(): Boolean {
         return checkPolicy(policy, AssetPairPolicy.TRADEABLE_SECONDARY_MARKET.value)
