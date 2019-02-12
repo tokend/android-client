@@ -5,6 +5,7 @@ import org.junit.Test
 import org.tokend.sdk.api.assets.model.SimpleAsset
 import org.tokend.sdk.api.base.model.operations.WithdrawalOperation
 import org.tokend.sdk.factory.GsonFactory
+import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
@@ -34,7 +35,8 @@ class WithdrawTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -70,7 +72,8 @@ class WithdrawTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -169,7 +172,8 @@ class WithdrawTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         val (_, rootAccount, _) = Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider

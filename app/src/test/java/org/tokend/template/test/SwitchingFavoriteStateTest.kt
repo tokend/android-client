@@ -2,6 +2,7 @@ package org.tokend.template.test
 
 import junit.framework.Assert
 import org.junit.Test
+import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.data.model.FavoriteRecord
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.ApiProviderFactory
@@ -24,7 +25,8 @@ class SwitchingFavoriteStateTest {
         val email = "${System.currentTimeMillis()}@mail.com"
         val password = "qwe123".toCharArray()
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider

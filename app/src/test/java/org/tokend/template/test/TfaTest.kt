@@ -5,6 +5,7 @@ import io.reactivex.Completable
 import junit.framework.Assert
 import org.junit.Test
 import org.tokend.sdk.api.tfa.model.TfaFactor
+import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.sdk.tfa.TfaCallback
@@ -60,7 +61,8 @@ class TfaTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session, tfaCallback)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -125,7 +127,8 @@ class TfaTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session, tfaCallback)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider

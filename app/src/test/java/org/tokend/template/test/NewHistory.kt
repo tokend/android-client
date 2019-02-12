@@ -1,6 +1,7 @@
 package org.tokend.template.test
 
 import org.junit.Test
+import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
 import org.tokend.template.data.model.history.details.IssuanceDetails
 import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
@@ -26,7 +27,8 @@ class NewHistory {
         val email = "1549876678839@mail.com"
         val password = "qwe123".toCharArray()
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         SignInUseCase(
                 email,

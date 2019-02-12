@@ -3,6 +3,7 @@ package org.tokend.template.test
 import org.junit.Assert
 import org.junit.Test
 import org.tokend.sdk.api.tfa.model.TfaFactor
+import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.sdk.tfa.TfaCallback
@@ -50,7 +51,8 @@ class PasswordChangeTest {
         System.out.println("Email is $email")
         System.out.println("Recovery seed is ${recoveryAccount.secretSeed!!.joinToString("")}")
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         SignInUseCase(
                 email,

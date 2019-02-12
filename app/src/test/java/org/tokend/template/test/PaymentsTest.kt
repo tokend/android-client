@@ -2,6 +2,7 @@ package org.tokend.template.test
 
 import org.junit.Assert
 import org.junit.Test
+import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.sdk.utils.extentions.encodeHexString
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.ApiProviderFactory
@@ -36,7 +37,8 @@ class PaymentsTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         val (_, recipientAccount, _) = Util.getVerifiedWallet(
                 recipientEmail, password, apiProvider, session, null
@@ -84,7 +86,8 @@ class PaymentsTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         val (_, recipientAccount, _) = Util.getVerifiedWallet(
                 recipientEmail, password, apiProvider, session, null
@@ -145,7 +148,8 @@ class PaymentsTest {
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         val (_, recipientAccount, _) = Util.getVerifiedWallet(
                 recipientEmail, password, apiProvider, session, null

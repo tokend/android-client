@@ -2,6 +2,7 @@ package org.tokend.template.test
 
 import org.junit.Assert
 import org.junit.Test
+import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInUseCase
@@ -27,7 +28,8 @@ class SignInTest {
         System.out.println("Email is $email")
         System.out.println("Recovery seed is ${recoveryAccount.secretSeed!!.joinToString("")}")
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         val useCase = SignInUseCase(
                 email,
@@ -80,7 +82,8 @@ class SignInTest {
                 .create(walletData.attributes!!.accountId)
                 .execute()
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         val useCase = SignInUseCase(
                 email,
