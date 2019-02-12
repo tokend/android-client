@@ -70,7 +70,7 @@ class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
                     funded.amount
 
         InfoCard(cards_layout)
-                .setHeading(R.string.charged,
+                .setHeading(R.string.received,
                         amountFormatter.formatAssetAmount(fundedTotal, funded.assetCode))
                 .addRow(R.string.amount,
                         "+" + amountFormatter.formatAssetAmount(funded.amount, funded.assetCode,
