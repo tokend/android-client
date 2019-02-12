@@ -11,6 +11,8 @@ import org.tokend.template.view.util.formatter.DateFormatter
 
 abstract class BalanceChangeDetailsActivity : BaseActivity() {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         val intentItem = intent.getSerializableExtra(BALANCE_CHANGE_EXTRA)
                 as? BalanceChange
 

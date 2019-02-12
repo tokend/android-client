@@ -53,7 +53,8 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                 errorHandlerFactory,
                 assetComparator,
                 compositeDisposable,
-                amountFormatter
+                amountFormatter,
+                walletInfoProvider.getWalletInfo()!!.accountId
         )
     }
 

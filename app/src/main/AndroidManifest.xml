@@ -84,26 +84,6 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="org.tokend.template.features.wallet.txdetails.PaymentDetailsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/payment_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
-        <activity
-            android:name="org.tokend.template.features.wallet.txdetails.UnknownTxDetailsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/transaction_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
-        <activity
-            android:name="org.tokend.template.features.wallet.txdetails.DepositDetailsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/deposit_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
-        <activity
-            android:name="org.tokend.template.features.wallet.txdetails.WithdrawalDetailsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/withdrawal_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
-        <activity
             android:name="org.tokend.template.features.wallet.txdetails.OfferMatchDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/offer_match_details_title"

@@ -2,6 +2,7 @@ package org.tokend.template.di.providers
 
 import org.tokend.template.data.repository.*
 import org.tokend.template.data.repository.assets.AssetsRepository
+import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.favorites.FavoritesRepository
 import org.tokend.template.data.repository.offers.OffersRepository
@@ -30,4 +31,5 @@ interface RepositoryProvider {
     fun contacts(): ContactsRepository
     fun limits(): LimitsRepository
     fun fees(): FeesRepository
+    fun balanceChanges(balanceId: String): BalanceChangesRepository
 }

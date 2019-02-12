@@ -12,7 +12,6 @@ import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
-import org.tokend.sdk.api.base.model.operations.*
 import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
@@ -23,7 +22,6 @@ import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.invest.activities.InvestmentConfirmationActivity
-import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
 import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
@@ -43,7 +41,6 @@ import org.tokend.template.features.wallet.details.AmlAlertDetailsActivity
 import org.tokend.template.features.wallet.details.BalanceChangeDetailsActivity
 import org.tokend.template.features.wallet.details.IssuanceDetailsActivity
 import org.tokend.template.features.wallet.details.PayoutDetailsActivity
-import org.tokend.template.features.wallet.txdetails.*
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 
@@ -218,31 +215,6 @@ object Navigator {
         activity.startActivity(activity.intentFor<SaleDetailsActivity>(
                 SaleDetailsActivity.SALE_EXTRA to sale
         ))
-    }
-
-    fun openTransactionDetails(activity: Activity, tx: TransferOperation) {
-        when (tx) {
-            is PaymentOperation ->
-                TxDetailsActivity
-                        .start<PaymentDetailsActivity, PaymentOperation>(activity, tx)
-            is IssuanceOperation ->
-                TxDetailsActivity
-                        .start<DepositDetailsActivity, IssuanceOperation>(activity, tx)
-            is WithdrawalOperation ->
-                TxDetailsActivity
-                        .start<WithdrawalDetailsActivity, WithdrawalOperation>(activity, tx)
-            is InvestmentOperation ->
-                TxDetailsActivity
-                        .start<InvestmentDetailsActivity, InvestmentOperation>(activity, tx)
-            is OfferMatchOperation ->
-                TxDetailsActivity
-                        .start<OfferMatchDetailsActivity, OfferMatchOperation>(activity, tx)
-            else ->
-                (tx as? BaseTransferOperation)?.let {
-                    TxDetailsActivity
-                            .start<UnknownTxDetailsActivity, BaseTransferOperation>(activity, it)
-                }
-        }
     }
 
     fun openAuthenticatorSignIn(activity: Activity, requestCode: Int) {

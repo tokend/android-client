@@ -1,6 +1,7 @@
 package org.tokend.template.view.adapter.history
 
 import org.tokend.sdk.api.base.model.operations.*
+import org.tokend.template.util.DateProvider
 import java.math.BigDecimal
 import java.util.*
 
@@ -10,10 +11,10 @@ class TxHistoryItem(
         val action: Action,
         val counterparty: String?,
         val state: OperationState,
-        val date: Date,
+        override val date: Date,
         val isReceived: Boolean,
         val source: TransferOperation? = null
-) {
+): DateProvider {
     enum class Action {
         DEPOSIT,
         WITHDRAWAL,

@@ -11,21 +11,22 @@ import android.view.ViewGroup
 import android.widget.TextView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.layout_asset_tabs_card.view.*
 import kotlinx.android.synthetic.main.layout_progress.view.*
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.onTouch
 import org.tokend.template.R
+import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.base.MultipleItemsRepository
-import org.tokend.template.data.repository.transactions.TxRepository
 import org.tokend.template.di.providers.RepositoryProvider
+import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
+import org.tokend.template.features.wallet.adapter.BalanceChangesAdapter
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
-import org.tokend.template.view.adapter.history.TxHistoryAdapter
-import org.tokend.template.view.adapter.history.TxHistoryItem
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ViewProvider
@@ -38,7 +39,8 @@ class AssetTabsCard(private val activity: Activity,
                     private val errorHandlerFactory: ErrorHandlerFactory,
                     private val assetComparator: Comparator<String>,
                     private val disposable: CompositeDisposable,
-                    private val amountFormatter: AmountFormatter) : ViewProvider {
+                    private val amountFormatter: AmountFormatter,
+                    private val accountId: String) : ViewProvider {
 
     private lateinit var view: View
 
@@ -50,13 +52,16 @@ class AssetTabsCard(private val activity: Activity,
             onAssetChanged()
         }
 
-    private val activityAdapter = TxHistoryAdapter(true)
+    private val balanceId: String
+        get() = balancesRepository.itemsList.find { it.assetCode == asset }?.id ?: ""
+
+    private lateinit var activityAdapter: BalanceChangesAdapter
 
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
 
-    private val txRepository: TxRepository
-        get() = repositoryProvider.transactions(asset)
+    private val historyRepository: BalanceChangesRepository
+        get() = repositoryProvider.balanceChanges(balanceId)
 
     override fun addTo(rootView: ViewGroup): AssetTabsCard {
         rootView.addView(getView(rootView))
@@ -143,17 +148,17 @@ class AssetTabsCard(private val activity: Activity,
     }
 
     private fun initRecentActivity() {
-        activityAdapter.amountFormatter = amountFormatter
+        activityAdapter = BalanceChangesAdapter(amountFormatter, true)
 
         activityAdapter.onItemClick { _, item ->
-            item.source?.let { Navigator.openTransactionDetails(activity, it) }
+            item.source?.let { Navigator.openBalanceChangeDetails(activity, it) }
         }
 
         activityAdapter.registerAdapterDataObserver(
                 getEmptyViewObserver(view.empty_view,
                         activity.getString(R.string.no_transaction_history),
                         view.activity_layout) {
-                    txRepository
+                    historyRepository
                 }
         )
 
@@ -165,7 +170,7 @@ class AssetTabsCard(private val activity: Activity,
     private fun onAssetChanged() {
         displayBalance()
         subscribeToTransactions()
-        txRepository.updateIfNotFresh()
+        historyRepository.updateIfNotFresh()
     }
 
     private fun displayAssetTabs(assets: List<String>) {
@@ -210,19 +215,19 @@ class AssetTabsCard(private val activity: Activity,
         ).also { it.addTo(disposable) }
     }
 
-    private var transactionsDisposable: CompositeDisposable? = null
+    private var transactionsDisposable: Disposable? = null
     private fun subscribeToTransactions() {
         transactionsDisposable?.dispose()
         transactionsDisposable = CompositeDisposable(
-                txRepository.itemsSubject
+                historyRepository.itemsSubject
                         .map { it.subList(0, Math.min(it.size, TRANSACTIONS_TO_DISPLAY)) }
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
-                            activityAdapter.setData(it.map {
-                                TxHistoryItem.fromTransaction(it)
+                            activityAdapter.setData(it.map { balanceChange ->
+                                BalanceChangeListItem(balanceChange, accountId)
                             })
                         },
-                txRepository.loadingSubject
+                historyRepository.loadingSubject
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { loading ->
                             if (loading) {
@@ -232,7 +237,7 @@ class AssetTabsCard(private val activity: Activity,
                                 loadingIndicator.hide("transactions")
                             }
                         }
-        ).also { it.addTo(disposable) }
+        ).addTo(disposable)
     }
 
     companion object {

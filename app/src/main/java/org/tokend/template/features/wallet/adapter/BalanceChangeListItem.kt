@@ -5,6 +5,7 @@ import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.data.model.history.details.OfferMatchDetails
 import org.tokend.template.data.model.history.details.PaymentDetails
 import org.tokend.template.data.model.history.details.WithdrawalDetails
+import org.tokend.template.util.DateProvider
 import java.math.BigDecimal
 import java.util.*
 
@@ -13,10 +14,10 @@ class BalanceChangeListItem(
         val amount: BigDecimal,
         val assetCode: String,
         val isReceived: Boolean,
-        val date: Date,
+        override val date: Date,
         val counterparty: String?,
         val source: BalanceChange? = null
-) {
+): DateProvider {
     constructor(balanceChange: BalanceChange,
                 accountId: String) : this(
             action = balanceChange.action,
