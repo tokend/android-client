@@ -1,6 +1,8 @@
 package org.tokend.template.data.model
 
+import org.tokend.sdk.api.generated.resources.OfferResource
 import org.tokend.sdk.api.trades.model.Offer
+import org.tokend.sdk.utils.ApiDateUtil
 import org.tokend.wallet.Base32Check
 import java.io.Serializable
 import java.math.BigDecimal
@@ -65,5 +67,24 @@ class OfferRecord(
 
     companion object {
         val EMPTY_BALANCE_ID = Base32Check.encodeBalanceId(byteArrayOf(32))
+
+        @JvmStatic
+        fun fromResource(source: OfferResource): OfferRecord {
+            val createdAt = ApiDateUtil.tryParseDate(source.createdAt)
+            return OfferRecord(
+                    id = source.id.toLong(),
+                    baseAmount = source.baseAmount,
+                    baseAssetCode = source.baseAsset.id,
+                    quoteAmount = source.quoteAmount,
+                    quoteAssetCode = source.quoteAsset.id,
+                    isBuy = source.isBuy,
+                    date = createdAt,
+                    fee = source.fee.calculatedPercent,
+                    orderBookId = source.orderBookId.toLong(),
+                    price = source.price,
+                    baseBalanceId = source.baseBalance.id,
+                    quoteBalanceId = source.quoteBalance.id
+            )
+        }
     }
 }

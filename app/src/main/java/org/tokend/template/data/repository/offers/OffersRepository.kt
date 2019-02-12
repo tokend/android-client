@@ -18,6 +18,9 @@ import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.rx.extensions.toSingle
+import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.v2.offers.params.OffersPageParamsV2
+import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.Account
 import org.tokend.wallet.NetworkParams
@@ -33,37 +36,30 @@ class OffersRepository(
         itemsCache: RepositoryCache<OfferRecord>
 ) : PagedDataRepository<OfferRecord>(itemsCache) {
     override fun getPage(nextCursor: String?): Single<DataPage<OfferRecord>> {
-        val requestParams = OffersParams(
-                onlyPrimary = onlyPrimary,
-                orderBookId = if (onlyPrimary) null else 0L,
-                baseAsset = null,
-                quoteAsset = null,
-                isBuy = if (onlyPrimary) true else null,
-                pagingParams = PagingParams(
-                        cursor = nextCursor,
-                        order = PagingOrder.DESC
-                )
-        )
-
-        return getPage(requestParams)
-    }
-
-    private fun getPage(requestParams: OffersParams): Single<DataPage<OfferRecord>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
-        return signedApi.accounts.getPendingOffers(
-                accountId = accountId,
-                offersParams = requestParams
+        val requestParams = OffersPageParamsV2(
+                ownerAccount = accountId,
+                orderBook = if (onlyPrimary) null else 0L,
+                baseAsset = null,
+                quoteAsset = null,
+                isBuy = if (onlyPrimary) true else null,
+                pagingParams = PagingParamsV2(
+                        page = nextCursor,
+                        order = PagingOrder.DESC
+                )
         )
+
+        return signedApi.v2.offers.get(requestParams)
                 .toSingle()
                 .map {
                     DataPage(
                             it.nextCursor,
-                            it.items.map { offer ->
-                                OfferRecord(offer)
+                            it.items.map { offerResource ->
+                                OfferRecord.fromResource(offerResource)
                             },
                             it.isLast
                     )
@@ -71,15 +67,26 @@ class OffersRepository(
     }
 
     fun getForSale(saleId: Long): Single<List<OfferRecord>> {
-        val requestParams =
-                OffersParams(
-                        orderBookId = saleId,
-                        isBuy = true,
-                        onlyPrimary = true
-                )
+        val signedApi = apiProvider.getSignedApi()
+                ?: return Single.error(IllegalStateException("No signed API instance found"))
+        val accountId = walletInfoProvider.getWalletInfo()?.accountId
+                ?: return Single.error(IllegalStateException("No wallet info found"))
 
-        return getPage(requestParams)
-                .map { it.items }
+        val loader = SimplePagedResourceLoader({ nextCursor ->
+            signedApi.v2.offers.get(
+                    OffersPageParamsV2(
+                            ownerAccount = accountId,
+                            orderBook = saleId,
+                            pagingParams = PagingParamsV2(page = nextCursor)
+                    )
+            )
+        })
+
+        return loader.loadAll()
+                .toSingle()
+                .map {
+                    it.map { OfferRecord.fromResource(it) }
+                }
     }
 
     // region Create.
