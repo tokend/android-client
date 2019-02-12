@@ -83,8 +83,8 @@ class BalanceChangeItemViewHolder(view: View,
 
     private fun displayIcon(item: BalanceChangeListItem) {
         val icon = when (item.action) {
-            BalanceChangeAction.LOCKED -> TODO()
-            BalanceChangeAction.UNLOCKED -> TODO()
+            BalanceChangeAction.LOCKED -> lockedIcon
+            BalanceChangeAction.UNLOCKED -> unlockedIcon
             BalanceChangeAction.MATCHED -> matchIcon
             else -> if (item.isReceived) incomingIcon else outgoingIcon
         }
