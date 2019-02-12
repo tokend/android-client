@@ -37,11 +37,11 @@ class HistoryItemViewImpl(val view: View,
         ContextCompat.getDrawable(view.context, R.drawable.ic_tx_unlocked)
     }
 
-    override val receivedColor: Int by lazy {
+    override val incomingColor: Int by lazy {
         ContextCompat.getColor(view.context, R.color.received)
     }
 
-    override val sentColor: Int by lazy {
+    override val outgoingColor: Int by lazy {
         ContextCompat.getColor(view.context, R.color.sent)
     }
 

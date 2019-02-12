@@ -22,8 +22,8 @@ interface HistoryItemView {
     val iconSize: Int
     val iconSizeSmall: Int
 
-    val receivedColor: Int
-    val sentColor: Int
+    val incomingColor: Int
+    val outgoingColor: Int
     val secondaryTextColor: Int
 
     var dividerIsVisible: Boolean

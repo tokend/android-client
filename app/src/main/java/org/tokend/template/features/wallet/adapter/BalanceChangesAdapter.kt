@@ -6,6 +6,7 @@ import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.PaginationRecyclerAdapter
+import org.tokend.template.view.history.HistoryItemView
 import org.tokend.template.view.util.formatter.AmountFormatter
 
 class BalanceChangesAdapter(private val amountFormatter: AmountFormatter,
@@ -32,7 +33,7 @@ class BalanceChangesAdapter(private val amountFormatter: AmountFormatter,
         super.bindItemViewHolder(holder, position)
         val isLastInSection =
                 position == itemCount - (if (needLoadingFooter) 2 else 1)
-        (holder as? BalanceChangeItemViewHolder)?.dividerIsVisible = !isLastInSection
+        (holder as? HistoryItemView)?.dividerIsVisible = !isLastInSection
     }
 
     override fun bindFooterViewHolder(holder: BaseViewHolder<BalanceChangeListItem>) {}

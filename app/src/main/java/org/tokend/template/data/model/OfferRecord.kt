@@ -37,6 +37,9 @@ class OfferRecord(
             pagingToken = source.pagingToken
     )
 
+    val isInvestment: Boolean
+        get() = orderBookId != 0L
+
     override fun equals(other: Any?): Boolean {
         return other is OfferRecord && other.id == this.id
     }

@@ -7,20 +7,14 @@ import android.support.v7.widget.LinearLayoutManager
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_offers.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import org.tokend.sdk.api.base.model.operations.InvestmentOperation
-import org.tokend.sdk.api.base.model.operations.OfferMatchOperation
-import org.tokend.sdk.api.base.model.operations.TransferOperation
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.offers.OffersRepository
-import org.tokend.template.extensions.fromOfferRecord
-import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
-import org.tokend.template.features.wallet.txdetails.OfferMatchDetailsActivity
-import org.tokend.template.features.wallet.txdetails.TxDetailsActivity
+import org.tokend.template.features.offers.view.PendingOfferListItem
+import org.tokend.template.features.offers.view.PendingOffersAdapter
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.adapter.history.TxHistoryAdapter
-import org.tokend.template.view.adapter.history.TxHistoryItem
 import org.tokend.template.view.util.LoadingIndicatorManager
 
 class OffersActivity : BaseActivity() {
@@ -35,7 +29,7 @@ class OffersActivity : BaseActivity() {
             hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
-    private val txAdapter = TxHistoryAdapter()
+    private lateinit var adapter: PendingOffersAdapter
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_offers)
@@ -62,13 +56,15 @@ class OffersActivity : BaseActivity() {
     }
 
     private fun initHistory() {
-        txAdapter.amountFormatter = amountFormatter
-        txAdapter.onItemClick { _, item ->
-            openDetails(item.source)
+        adapter = PendingOffersAdapter(amountFormatter, false)
+        adapter.onItemClick { _, item ->
+            item.source?.also {
+                Navigator.openPendingOfferDetails(this, it, CANCEL_OFFER_REQUEST)
+            }
         }
 
         error_empty_view.setEmptyDrawable(R.drawable.ic_pending)
-        error_empty_view.observeAdapter(txAdapter) {
+        error_empty_view.observeAdapter(adapter) {
             if (onlyPrimary)
                 getString(R.string.no_pending_investments)
             else
@@ -76,14 +72,14 @@ class OffersActivity : BaseActivity() {
         }
         error_empty_view.setEmptyViewDenial { offersRepository.isNeverUpdated }
 
-        history_list.adapter = txAdapter
+        history_list.adapter = adapter
         history_list.layoutManager = LinearLayoutManager(this)
 
-        history_list.listenBottomReach({ txAdapter.getDataItemCount() }) {
+        history_list.listenBottomReach({ adapter.getDataItemCount() }) {
             offersRepository.loadMore() || offersRepository.noMoreItems
         }
 
-        date_text_switcher.init(history_list, txAdapter)
+        date_text_switcher.init(history_list, adapter)
     }
     // endregion
 
@@ -100,11 +96,11 @@ class OffersActivity : BaseActivity() {
                         if (offersRepository.isOnFirstPage) {
                             loadingIndicator.show("offers")
                         } else {
-                            txAdapter.showLoadingFooter()
+                            adapter.showLoadingFooter()
                         }
                     } else {
                         loadingIndicator.hide("offers")
-                        txAdapter.hideLoadingFooter()
+                        adapter.hideLoadingFooter()
                     }
                 }
                 .addTo(compositeDisposable)
@@ -112,7 +108,7 @@ class OffersActivity : BaseActivity() {
         offersRepository.errorsSubject
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe { error ->
-                    if (!txAdapter.hasData) {
+                    if (!adapter.hasData) {
                         error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
                             update(true)
                         }
@@ -124,32 +120,12 @@ class OffersActivity : BaseActivity() {
     }
 
     private fun displayOffers(items: List<OfferRecord>) {
-        txAdapter.setData(
+        adapter.setData(
                 items
-                        .asSequence()
                         .map {
-                            if (onlyPrimary)
-                                InvestmentOperation.fromOfferRecord(it)
-                            else
-                                OfferMatchOperation.fromOfferRecord(it)
+                            PendingOfferListItem(it)
                         }
-                        .map {
-                            TxHistoryItem.fromTransaction(it)
-                        }
-                        .toList()
         )
-    }
-
-    private fun openDetails(tx: TransferOperation?) {
-        when (tx) {
-            is InvestmentOperation -> TxDetailsActivity
-                    .startForResult<InvestmentDetailsActivity, InvestmentOperation>(
-                            this, tx, CANCEL_OFFER_REQUEST
-                    )
-            is OfferMatchOperation -> TxDetailsActivity
-                    .startForResult<OfferMatchDetailsActivity, OfferMatchOperation>(
-                            this, tx, CANCEL_OFFER_REQUEST)
-        }
     }
 
     private fun update(force: Boolean = false) {

@@ -67,9 +67,9 @@ class BalanceChangeItemViewHolder(view: View,
                 if (item.action == BalanceChangeAction.LOCKED)
                     secondaryTextColor
                 else if (item.isReceived)
-                    receivedColor
+                    incomingColor
                 else
-                    sentColor
+                    outgoingColor
 
         amountTextView.setTextColor(color)
 

@@ -45,7 +45,6 @@
     <string name="paste">Paste</string>
     <string name="no_transaction_history">No history</string>
     <string name="date">Date</string>
-    <string name="tx_state">State</string>
     <string name="payment_details_title">Payment details</string>
     <string name="aml_alert_details_title">AML alert details</string>
     <string name="issuance_details_title">Issuance details</string>
@@ -137,11 +136,6 @@
     <string name="trade_title">Trade</string>
     <string name="settings_title">Settings</string>
 
-    <string name="tx_state_rejected">Rejected</string>
-    <string name="tx_state_pending">Pending</string>
-    <string name="tx_state_success">Success</string>
-    <string name="tx_state_cancelled">Cancelled</string>
-    <string name="tx_state_failed">Failed</string>
     <string name="template_tx_from">From %1$s</string>
     <string name="template_tx_to">To %1$s</string>
     <string name="tx_action_deposit">Deposit</string>
@@ -159,8 +153,6 @@
     <string name="tx_sender">Sender</string>
     <string name="tx_recipient">Recipient</string>
     <string name="tx_fee">Fee</string>
-    <string name="tx_fixed_fee">Fixed fee</string>
-    <string name="tx_percent_fee">Percent fee</string>
     <string name="tx_cause">Cause</string>
     <string name="tx_reference">Reference</string>
     <string name="tx_withdrawal_destination">Destination address</string>

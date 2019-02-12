@@ -27,6 +27,8 @@ import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
+import org.tokend.template.features.offers.view.details.PendingInvestmentDetailsActivity
+import org.tokend.template.features.offers.view.details.PendingOfferDetailsActivity
 import org.tokend.template.features.qr.ShareQrActivity
 import org.tokend.template.features.recovery.RecoveryActivity
 import org.tokend.template.features.send.PaymentConfirmationActivity
@@ -240,6 +242,23 @@ object Navigator {
                 Intent(activity, activityClass).apply {
                     putExtra(BalanceChangeDetailsActivity.BALANCE_CHANGE_EXTRA, change)
                 }
+        )
+    }
+
+    fun openPendingOfferDetails(activity: Activity,
+                                offer: OfferRecord,
+                                requestCode: Int) {
+        val activityClass =
+                if (offer.isInvestment)
+                    PendingInvestmentDetailsActivity::class.java
+                else
+                    PendingOfferDetailsActivity::class.java
+
+        activity.startActivityForResult(
+                Intent(activity, activityClass).apply {
+                    putExtra(PendingOfferDetailsActivity.OFFER_EXTRA, offer)
+                },
+                requestCode
         )
     }
 }
