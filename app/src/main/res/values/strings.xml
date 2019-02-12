@@ -58,6 +58,7 @@
     <string name="transaction_details_title">Transaction details</string>
     <string name="deposit_details_title">Deposit details</string>
     <string name="withdrawal_details_title">Withdrawal details</string>
+    <string name="payout_details_title">Withdrawal details</string>
     <string name="amount">Amount</string>
     <string name="unknown">Unknown</string>
     <string name="template_withdrawal_fee_warning">Received amount may be lower due to %1$s network fees</string>
@@ -120,6 +121,11 @@
     <string name="charged">Charged</string>
     <string name="funded">Funded</string>
     <string name="fee_paid_by_sender_explanation">Recipient\'s fee has been paid by the sender</string>
+    <string name="payout_conditions">Conditions</string>
+    <string name="payout_asset">Asset</string>
+    <string name="payout_min_holding_amount">Min holding amount</string>
+    <string name="payout_min_amount">Min payout amount</string>
+    <string name="payout_max_total_amount">Max total payout amount</string>
 
     <string name="asset_summary_title">Token summary</string>
     <string name="asset_available">Available</string>

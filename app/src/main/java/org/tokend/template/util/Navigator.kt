@@ -42,6 +42,7 @@ import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.wallet.details.AmlAlertDetailsActivity
 import org.tokend.template.features.wallet.details.BalanceChangeDetailsActivity
 import org.tokend.template.features.wallet.details.IssuanceDetailsActivity
+import org.tokend.template.features.wallet.details.PayoutDetailsActivity
 import org.tokend.template.features.wallet.txdetails.*
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
@@ -259,6 +260,7 @@ object Navigator {
             is OfferMatchDetails -> org.tokend.template.features.wallet.details.OfferMatchDetailsActivity::class.java
             is PaymentDetails -> org.tokend.template.features.wallet.details.PaymentDetailsActivity::class.java
             is WithdrawalDetails -> org.tokend.template.features.wallet.details.WithdrawalDetailsActivity::class.java
+            is PayoutDetails -> PayoutDetailsActivity::class.java
             else -> return
         }
 

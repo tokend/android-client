@@ -40,9 +40,9 @@ class PayoutDetails(
     )
 
     /**
-     * @return true if account with given ID is a receiver of the payout
+     * @return true if account with given ID is an issuer of the payout
      */
-    fun isReceived(accountId: String): Boolean {
-        return sourceAccountId != accountId
+    fun isIssuer(accountId: String): Boolean {
+        return sourceAccountId == accountId
     }
 }
