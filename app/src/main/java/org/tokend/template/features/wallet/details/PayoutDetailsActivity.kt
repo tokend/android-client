@@ -26,38 +26,38 @@ class PayoutDetailsActivity : BalanceChangeDetailsActivity() {
         }
 
         if (details.isIssuer(accountId)) {
-            displayConditions(details)
-            displayResults(details)
+            displayConditions(item, details)
+            displayResults(item, details)
         }
 
         displayReceived(item)
         displayDate(item, cards_layout)
     }
 
-    private fun displayConditions(details: PayoutDetails) {
+    private fun displayConditions(item: BalanceChange, details: PayoutDetails) {
         InfoCard(cards_layout)
                 .setHeading(R.string.payout_conditions, null)
                 .addRow(R.string.payout_asset, details.assetCode)
                 .addRow(R.string.payout_min_holding_amount,
                         amountFormatter.formatAssetAmount(details.minAssetHolderAmount, details.assetCode))
                 .addRow(R.string.payout_min_amount,
-                        amountFormatter.formatAssetAmount(details.minPayoutAmount, details.assetCode))
+                        amountFormatter.formatAssetAmount(details.minPayoutAmount, item.assetCode))
                 .addRow(R.string.payout_max_total_amount,
-                        amountFormatter.formatAssetAmount(details.maxPayoutAmount, details.assetCode))
+                        amountFormatter.formatAssetAmount(details.maxPayoutAmount, item.assetCode))
     }
 
-    private fun displayResults(details: PayoutDetails) {
+    private fun displayResults(item: BalanceChange, details: PayoutDetails) {
         val paidTotal = details.actualPayoutAmount + details.actualFee.total
 
         InfoCard(cards_layout)
                 .setHeading(R.string.paid,
-                        amountFormatter.formatAssetAmount(paidTotal, details.assetCode))
+                        amountFormatter.formatAssetAmount(paidTotal, item.assetCode))
                 .addRow(R.string.amount,
-                        "+" + amountFormatter.formatAssetAmount(details.actualPayoutAmount, details.assetCode))
+                        "+" + amountFormatter.formatAssetAmount(details.actualPayoutAmount, item.assetCode))
                 .addRow(R.string.fixed_fee,
-                        "+" + amountFormatter.formatAssetAmount(details.actualFee.fixed, details.assetCode))
+                        "+" + amountFormatter.formatAssetAmount(details.actualFee.fixed, item.assetCode))
                 .addRow(R.string.amount,
-                        "+" + amountFormatter.formatAssetAmount(details.actualFee.percent, details.assetCode))
+                        "+" + amountFormatter.formatAssetAmount(details.actualFee.percent, item.assetCode))
     }
 
     private fun displayReceived(item: BalanceChange) {
