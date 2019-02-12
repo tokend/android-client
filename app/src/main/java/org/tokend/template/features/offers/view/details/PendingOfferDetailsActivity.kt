@@ -44,9 +44,9 @@ open class PendingOfferDetailsActivity : BaseActivity() {
     }
 
     protected open fun displayDetails(item: OfferRecord) {
+        displayPrice(item)
         displayCharged(item)
         displayToReceive(item)
-        displayPrice(item)
         displayDate(item)
     }
 
