@@ -23,7 +23,7 @@ class SwitchingFavoriteStateTest {
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
 
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())

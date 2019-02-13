@@ -31,7 +31,7 @@ class WithdrawTest {
         )
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
@@ -73,7 +73,7 @@ class WithdrawTest {
         )
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
@@ -177,7 +177,7 @@ class WithdrawTest {
         )
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)

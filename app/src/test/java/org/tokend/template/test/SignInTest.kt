@@ -19,7 +19,7 @@ class SignInTest {
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
 
         val (walletData, rootAccount, recoveryAccount)
                 = apiProvider.getKeyServer().createAndSaveWallet(email, password)
@@ -68,7 +68,7 @@ class SignInTest {
         )
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
 
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
 
         val (walletData, rootAccount, recoveryAccount)
                 = apiProvider.getKeyServer().createAndSaveWallet(email, password)

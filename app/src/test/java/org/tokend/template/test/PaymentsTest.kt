@@ -33,7 +33,7 @@ class PaymentsTest {
         )
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
         val recipientEmail = "${SecureRandom.getSeed(12).encodeHexString()}@mail.com"
 
         val apiProvider =
@@ -87,7 +87,7 @@ class PaymentsTest {
         )
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
         val recipientEmail = "${SecureRandom.getSeed(12).encodeHexString()}@mail.com"
 
         val apiProvider =
@@ -150,7 +150,7 @@ class PaymentsTest {
         )
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
         val recipientEmail = "${SecureRandom.getSeed(12).encodeHexString()}@mail.com"
 
         val apiProvider =

@@ -11,7 +11,7 @@ class SignUpTest {
         val urlConfigProvider = Util.getUrlConfigProvider()
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
         val keyStorage = ApiProviderFactory().createApiProvider(urlConfigProvider).getKeyServer()
 
         val useCase = SignUpUseCase(email, password, keyStorage)

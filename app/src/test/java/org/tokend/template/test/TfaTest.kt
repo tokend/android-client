@@ -33,7 +33,7 @@ class TfaTest {
         )
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
 
         var authenticator: GoogleAuthenticator? = null
 
@@ -100,7 +100,7 @@ class TfaTest {
         )
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
 
         var authenticator: GoogleAuthenticator? = null
 

@@ -16,7 +16,7 @@ class RecoveryTest {
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, accountProvider)
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
         val newPassword = "qwerty".toCharArray()
 
         val (walletData, rootAccount, recoveryAccount)
@@ -58,7 +58,7 @@ class RecoveryTest {
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider)
 
         val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
         val newPassword = "qwerty".toCharArray()
 
         val (_, _, recoveryAccount)

@@ -25,7 +25,7 @@ class NewHistory {
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
 
         val email = "1549876678839@mail.com"
-        val password = "qwe123".toCharArray()
+        val password = Config.DEFAULT_PASSWORD
 
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
