@@ -9,6 +9,7 @@ import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.sdk.utils.extentions.bitmask
 import org.tokend.sdk.utils.extentions.decodeHex
+import org.tokend.sdk.utils.extentions.encodeHexString
 import org.tokend.template.data.model.UrlConfig
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
@@ -22,6 +23,7 @@ import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.*
 import org.tokend.wallet.xdr.op_extensions.CreateFeeOp
 import java.math.BigDecimal
+import java.security.SecureRandom
 
 object Util {
     fun getUrlConfigProvider(url: String = Config.API): UrlConfigProvider {
@@ -165,7 +167,7 @@ object Util {
             txManager: TxManager,
             externalSystemType: String? = null
     ): String {
-        val code = "${System.currentTimeMillis() / 1000}"
+        val code = SecureRandom.getSeed(3).encodeHexString().toUpperCase()
 
         val systemInfo =
                 apiProvider.getApi()
@@ -187,7 +189,7 @@ object Util {
                         }
 
         val assetDetailsJson = GsonFactory().getBaseGson().toJson(
-                AssetDetails("Asset name", null, null, externalSystemType)
+                AssetDetails("$code token", null, null, externalSystemType)
         )
 
         var policies = listOf(
