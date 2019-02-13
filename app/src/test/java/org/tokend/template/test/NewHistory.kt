@@ -3,7 +3,6 @@ package org.tokend.template.test
 import org.junit.Test
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
-import org.tokend.template.data.model.history.details.IssuanceDetails
 import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.di.providers.AccountProviderFactory
