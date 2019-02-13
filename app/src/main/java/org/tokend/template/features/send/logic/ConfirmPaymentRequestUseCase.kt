@@ -104,6 +104,6 @@ class ConfirmPaymentRequestUseCase(
 
     private fun updateRepositories() {
         repositoryProvider.balances().updateIfEverUpdated()
-        repositoryProvider.transactions(request.asset).updateIfEverUpdated()
+        repositoryProvider.balanceChanges(request.senderBalanceId).updateIfEverUpdated()
     }
 }

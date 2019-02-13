@@ -2,6 +2,7 @@ package org.tokend.template.features.withdraw.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
+import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
@@ -17,10 +18,12 @@ class CreateWithdrawalRequestUseCase(
         private val asset: String,
         private val destinationAddress: String,
         private val walletInfoProvider: WalletInfoProvider,
+        private val balancesRepository: BalancesRepository,
         private val feeManager: FeeManager
 ) {
     private lateinit var account: String
     private lateinit var fee: FeeRecord
+    private lateinit var balanceId: String
 
     fun perform(): Single<WithdrawalRequest> {
         return getAccount()
@@ -32,6 +35,12 @@ class CreateWithdrawalRequestUseCase(
                 }
                 .doOnSuccess { fee ->
                     this.fee = fee
+                }
+                .flatMap {
+                    getBalanceId()
+                }
+                .doOnSuccess { balanceId ->
+                    this.balanceId = balanceId
                 }
                 .flatMap {
                     getWithdrawalRequest()
@@ -56,6 +65,17 @@ class CreateWithdrawalRequestUseCase(
                 )
     }
 
+    private fun getBalanceId(): Single<String> {
+        return balancesRepository
+                .updateIfNotFreshDeferred()
+                .toSingleDefault(true)
+                .map {
+                    balancesRepository.itemsList.find {
+                        it.assetCode == asset
+                    }?.id ?: throw IllegalStateException("No balance found for $asset")
+                }
+    }
+
     private fun getWithdrawalRequest(): Single<WithdrawalRequest> {
         return Single.just(
                 WithdrawalRequest(
@@ -63,6 +83,7 @@ class CreateWithdrawalRequestUseCase(
                         amount,
                         asset,
                         destinationAddress,
+                        balanceId,
                         fee
                 )
         )

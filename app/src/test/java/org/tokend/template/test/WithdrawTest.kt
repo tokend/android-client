@@ -3,9 +3,9 @@ package org.tokend.template.test
 import junit.framework.Assert
 import org.junit.Test
 import org.tokend.sdk.api.assets.model.SimpleAsset
-import org.tokend.sdk.api.base.model.operations.WithdrawalOperation
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.template.data.model.history.details.WithdrawalDetails
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
@@ -47,6 +47,7 @@ class WithdrawTest {
                 asset,
                 destAddress,
                 session,
+                repositoryProvider.balances(),
                 FeeManager(apiProvider)
         )
 
@@ -95,6 +96,7 @@ class WithdrawTest {
                 asset,
                 destAddress,
                 session,
+                repositoryProvider.balances(),
                 FeeManager(apiProvider)
         ).perform().blockingGet()
 
@@ -112,20 +114,21 @@ class WithdrawTest {
 
         Thread.sleep(500)
 
-        val txRepository = repositoryProvider.transactions(asset)
-        txRepository.updateIfNotFreshDeferred().blockingAwait()
-        val transactions = txRepository.itemsList
+        val historyRepository = repositoryProvider.balanceChanges(request.balanceId)
+        historyRepository.updateIfNotFreshDeferred().blockingAwait()
+        val transactions = historyRepository.itemsList
 
         Assert.assertTrue("History must not be empty after withdrawal sending",
                 transactions.isNotEmpty())
         Assert.assertTrue("First history entry must be a withdrawal after withdrawal sending",
-                transactions.first() is WithdrawalOperation)
+                transactions.first().details is WithdrawalDetails)
         Assert.assertEquals("Withdrawal history entry must have a requested destination address",
                 destAddress,
                 transactions
                         .first()
-                        .let { it as WithdrawalOperation }
-                        .destAddress
+                        .details
+                        .let { it as WithdrawalDetails }
+                        .destinationAddress
         )
     }
 
@@ -213,6 +216,7 @@ class WithdrawTest {
                 asset,
                 destAddress,
                 session,
+                repositoryProvider.balances(),
                 FeeManager(apiProvider)
         ).perform().blockingGet()
 

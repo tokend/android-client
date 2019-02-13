@@ -20,8 +20,6 @@ import org.tokend.template.data.repository.pairs.AssetPairsCache
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.data.repository.tfa.TfaFactorsCache
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
-import org.tokend.template.data.repository.transactions.TxCache
-import org.tokend.template.data.repository.transactions.TxRepository
 import org.tokend.template.features.invest.repository.SalesCache
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.send.repository.ContactsRepository
@@ -41,7 +39,6 @@ class RepositoryProviderImpl(
     private val balancesRepository: BalancesRepository by lazy {
         BalancesRepository(apiProvider, walletInfoProvider, urlConfigProvider, BalancesCache())
     }
-    private val transactionsRepositoriesByAsset = mutableMapOf<String, TxRepository>()
     private val accountDetails: AccountDetailsRepository by lazy {
         AccountDetailsRepository(apiProvider)
     }
@@ -94,12 +91,6 @@ class RepositoryProviderImpl(
 
     override fun balances(): BalancesRepository {
         return balancesRepository
-    }
-
-    override fun transactions(asset: String): TxRepository {
-        return transactionsRepositoriesByAsset.getOrPut(asset) {
-            TxRepository(apiProvider, walletInfoProvider, asset, accountDetails(), TxCache())
-        }
     }
 
     override fun accountDetails(): AccountDetailsRepository {

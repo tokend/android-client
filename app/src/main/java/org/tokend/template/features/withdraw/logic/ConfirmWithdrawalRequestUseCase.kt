@@ -53,17 +53,10 @@ class ConfirmWithdrawalRequestUseCase(
 
     private fun getTransaction(): Single<Transaction> {
         return Single.defer {
-            val balanceId = repositoryProvider.balances().itemsList
-                    .find { it.assetCode == request.asset }
-                    ?.id
-                    ?: return@defer Single.error<Transaction>(
-                            IllegalStateException("Cannot obtain balance ID for ${request.asset}")
-                    )
-
             val precisedAmount = networkParams.amountToPrecised(request.amount)
             val operation = CreateWithdrawalRequestOp(
                     request = org.tokend.wallet.xdr.WithdrawalRequest(
-                            balance = PublicKeyFactory.fromBalanceId(balanceId),
+                            balance = PublicKeyFactory.fromBalanceId(request.balanceId),
                             amount = precisedAmount,
                             fee = Fee(
                                     fixed = networkParams.amountToPrecised(request.fee.fixed),
@@ -97,6 +90,6 @@ class ConfirmWithdrawalRequestUseCase(
 
     private fun updateRepositories() {
         repositoryProvider.balances().updateIfEverUpdated()
-        repositoryProvider.transactions(request.asset).updateIfEverUpdated()
+        repositoryProvider.balanceChanges(request.balanceId).updateIfEverUpdated()
     }
 }
