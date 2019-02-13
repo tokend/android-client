@@ -32,7 +32,7 @@ class TfaTest {
                 AccountProviderFactory().createAccountProvider()
         )
 
-        val email = "${System.currentTimeMillis()}@mail.com"
+        val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
 
         var authenticator: GoogleAuthenticator? = null
@@ -99,7 +99,7 @@ class TfaTest {
                 AccountProviderFactory().createAccountProvider()
         )
 
-        val email = "${System.currentTimeMillis()}@mail.com"
+        val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
 
         var authenticator: GoogleAuthenticator? = null

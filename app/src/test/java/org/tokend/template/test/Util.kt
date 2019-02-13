@@ -43,6 +43,8 @@ object Util {
         System.out.println("Email is $email")
         System.out.println("Recovery seed is " +
                 createResult.recoveryAccount.secretSeed!!.joinToString(""))
+        System.out.println("Password is " +
+                password.joinToString(""))
 
         SignInUseCase(
                 email,
@@ -275,5 +277,22 @@ object Util {
         }
 
         return code
+    }
+
+    private val random = java.util.Random()
+
+    fun getEmail(): String {
+        val adjectives = listOf("adorable", "immortal", "quantum", "casual", "hierarchicalDeterministic",
+                "fresh", "lovely", "strange", "sick", "creative", "lucky", "successful", "tired")
+        val nouns = listOf("lawyer", "pumpkin", "wallet", "oleg", "dog", "tester", "pen",
+                "robot", "think", "bottle", "flower", "AtbBag", "dungeonMaster", "kitten")
+
+        val salt = 1000 + random.nextInt(9000)
+
+        val domain = "mail.com"
+
+        val pickRandom: (List<String>) -> String = { it[random.nextInt(it.size)] }
+
+        return "${pickRandom(adjectives)}${pickRandom(nouns).capitalize()}$salt@$domain"
     }
 }

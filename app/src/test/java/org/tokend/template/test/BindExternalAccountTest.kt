@@ -24,7 +24,7 @@ class BindExternalAccountTest {
                 AccountProviderFactory().createAccountProvider()
         )
 
-        val email = "${System.currentTimeMillis()}@mail.com"
+        val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
 
         val apiProvider =

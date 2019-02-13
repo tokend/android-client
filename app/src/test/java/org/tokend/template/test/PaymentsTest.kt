@@ -32,9 +32,9 @@ class PaymentsTest {
                 AccountProviderFactory().createAccountProvider()
         )
 
-        val email = "${System.currentTimeMillis()}@mail.com"
+        val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
-        val recipientEmail = "${SecureRandom.getSeed(12).encodeHexString()}@mail.com"
+        val recipientEmail = Util.getEmail()
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
@@ -86,9 +86,9 @@ class PaymentsTest {
                 AccountProviderFactory().createAccountProvider()
         )
 
-        val email = "${System.currentTimeMillis()}@mail.com"
+        val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
-        val recipientEmail = "${SecureRandom.getSeed(12).encodeHexString()}@mail.com"
+        val recipientEmail = Util.getEmail()
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
@@ -149,9 +149,9 @@ class PaymentsTest {
                 AccountProviderFactory().createAccountProvider()
         )
 
-        val email = "${System.currentTimeMillis()}@mail.com"
+        val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
-        val recipientEmail = "${SecureRandom.getSeed(12).encodeHexString()}@mail.com"
+        val recipientEmail = Util.getEmail()
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session)
