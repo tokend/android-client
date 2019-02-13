@@ -5,8 +5,8 @@ import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
-import org.tokend.sdk.api.v2.history.params.ParticipantEffectsPageParams
-import org.tokend.sdk.api.v2.history.params.ParticipantEffectsParams
+import org.tokend.sdk.api.v3.history.params.ParticipantEffectsPageParams
+import org.tokend.sdk.api.v3.history.params.ParticipantEffectsParams
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.converter.ParticipantEffectConverter
 import org.tokend.template.data.repository.base.RepositoryCache
@@ -25,7 +25,7 @@ class BalanceChangesRepository(
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         return signedApi
-                .v2
+                .v3
                 .history
                 .get(
                         ParticipantEffectsPageParams(

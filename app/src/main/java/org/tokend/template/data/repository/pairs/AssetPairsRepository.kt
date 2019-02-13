@@ -4,7 +4,7 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.params.PagingParamsV2
-import org.tokend.sdk.api.v2.assetpairs.params.AssetPairsPageParams
+import org.tokend.sdk.api.v3.assetpairs.params.AssetPairsPageParams
 import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.repository.base.RepositoryCache
@@ -22,7 +22,7 @@ class AssetPairsRepository(
 
         val loader = SimplePagedResourceLoader(
                 { nextCursor ->
-                    apiProvider.getApi().v2.assetPairs.get(
+                    apiProvider.getApi().v3.assetPairs.get(
                             AssetPairsPageParams(
                                     pagingParams = PagingParamsV2(page = nextCursor)
                             )
@@ -47,7 +47,7 @@ class AssetPairsRepository(
                 .toMaybe()
                 .switchIfEmpty(
                         apiProvider.getApi()
-                                .v2
+                                .v3
                                 .assetPairs
                                 .getById(code)
                                 .toSingle()

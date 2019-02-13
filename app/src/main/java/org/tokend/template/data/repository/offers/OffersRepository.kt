@@ -6,10 +6,8 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import org.tokend.sdk.api.accounts.params.OffersParams
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
-import org.tokend.sdk.api.base.params.PagingParams
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.base.RepositoryCache
@@ -19,7 +17,7 @@ import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.params.PagingParamsV2
-import org.tokend.sdk.api.v2.offers.params.OffersPageParamsV2
+import org.tokend.sdk.api.v3.offers.params.OffersPageParamsV3
 import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.Account
@@ -41,7 +39,7 @@ class OffersRepository(
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
-        val requestParams = OffersPageParamsV2(
+        val requestParams = OffersPageParamsV3(
                 ownerAccount = accountId,
                 orderBook = if (onlyPrimary) null else 0L,
                 baseAsset = null,
@@ -53,7 +51,7 @@ class OffersRepository(
                 )
         )
 
-        return signedApi.v2.offers.get(requestParams)
+        return signedApi.v3.offers.get(requestParams)
                 .toSingle()
                 .map {
                     DataPage(
@@ -73,8 +71,8 @@ class OffersRepository(
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
         val loader = SimplePagedResourceLoader({ nextCursor ->
-            signedApi.v2.offers.get(
-                    OffersPageParamsV2(
+            signedApi.v3.offers.get(
+                    OffersPageParamsV3(
                             ownerAccount = accountId,
                             orderBook = saleId,
                             pagingParams = PagingParamsV2(page = nextCursor)
