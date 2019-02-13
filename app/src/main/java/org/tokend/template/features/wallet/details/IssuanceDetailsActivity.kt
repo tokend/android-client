@@ -3,7 +3,7 @@ package org.tokend.template.features.wallet.details
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.IssuanceDetails
+import org.tokend.template.data.model.history.details.BalanceChangeDetails
 import org.tokend.template.view.InfoCard
 
 class IssuanceDetailsActivity : BalanceChangeDetailsActivity() {
@@ -11,7 +11,7 @@ class IssuanceDetailsActivity : BalanceChangeDetailsActivity() {
         setContentView(R.layout.activity_details)
         setTitle(R.string.issuance_details_title)
 
-        val details = item.details as? IssuanceDetails
+        val details = item.details as? BalanceChangeDetails.Issuance
 
         if (details == null) {
             finish()
@@ -24,7 +24,7 @@ class IssuanceDetailsActivity : BalanceChangeDetailsActivity() {
     }
 
     private fun displayReceived(item: BalanceChange,
-                                details: IssuanceDetails) {
+                                details: BalanceChangeDetails.Issuance) {
         InfoCard(cards_layout)
                 .setHeading(R.string.received, null)
                 .addRow(R.string.amount,
@@ -38,7 +38,7 @@ class IssuanceDetailsActivity : BalanceChangeDetailsActivity() {
                 }
     }
 
-    private fun displayReference(details: IssuanceDetails) {
+    private fun displayReference(details: BalanceChangeDetails.Issuance) {
         val reference = details.reference?.takeIf { it.isNotBlank() }
                 ?: return
 

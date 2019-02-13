@@ -5,7 +5,7 @@ import org.tokend.sdk.api.generated.resources.*
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.data.model.history.SimpleFeeRecord
-import org.tokend.template.data.model.history.details.*
+import org.tokend.template.data.model.history.details.BalanceChangeDetails
 
 class DefaultParticipantEffectConverter(
         private val contextBalanceId: String
@@ -130,21 +130,21 @@ class DefaultParticipantEffectConverter(
         return try {
             when (operationDetails) {
                 is OpPaymentDetailsResource ->
-                    PaymentDetails(operationDetails)
+                    BalanceChangeDetails.Payment(operationDetails)
                 is OpCreateIssuanceRequestDetailsResource ->
-                    IssuanceDetails(operationDetails)
+                    BalanceChangeDetails.Issuance(operationDetails)
                 is OpCreateWithdrawRequestDetailsResource ->
-                    WithdrawalDetails(operationDetails)
+                    BalanceChangeDetails.Withdrawal(operationDetails)
                 is OpManageOfferDetailsResource ->
-                    OfferMatchDetails(operationDetails, effect as EffectMatchedResource)
+                    BalanceChangeDetails.OfferMatch(operationDetails, effect as EffectMatchedResource)
                 is OpCheckSaleStateDetailsResource ->
-                    InvestmentDetails(effect as EffectMatchedResource)
+                    BalanceChangeDetails.Investment(effect as EffectMatchedResource)
                 is OpCreateAMLAlertRequestDetailsResource ->
-                    AmlAlertDetails(operationDetails)
+                    BalanceChangeDetails.AmlAlert(operationDetails)
                 is OpPayoutDetailsResource ->
-                    PayoutDetails(operationDetails)
+                    BalanceChangeDetails.Payout(operationDetails)
                 else ->
-                    BalanceChangeDetails()
+                    BalanceChangeDetails.Unknown
             }
         } catch (e: Exception) {
             logError("Unable to parse operation details ${operationDetails.id}: "

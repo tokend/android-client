@@ -17,7 +17,7 @@ import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.*
+import org.tokend.template.data.model.history.details.BalanceChangeDetails
 import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
@@ -226,14 +226,14 @@ object Navigator {
     fun openBalanceChangeDetails(activity: Activity,
                                  change: BalanceChange) {
         val activityClass = when (change.details) {
-            is AmlAlertDetails -> AmlAlertDetailsActivity::class.java
-            is IssuanceDetails -> IssuanceDetailsActivity::class.java
-            is InvestmentDetails -> InvestmentDetailsActivity::class.java
-            is OfferMatchDetails -> OfferMatchDetailsActivity::class.java
-            is PaymentDetails -> PaymentDetailsActivity::class.java
-            is WithdrawalDetails -> WithdrawalDetailsActivity::class.java
-            is PayoutDetails -> PayoutDetailsActivity::class.java
-            else -> return
+            is BalanceChangeDetails.Unknown -> return
+            is BalanceChangeDetails.AmlAlert -> AmlAlertDetailsActivity::class.java
+            is BalanceChangeDetails.OfferMatch -> OfferMatchDetailsActivity::class.java
+            is BalanceChangeDetails.Issuance -> IssuanceDetailsActivity::class.java
+            is BalanceChangeDetails.Payment -> PaymentDetailsActivity::class.java
+            is BalanceChangeDetails.Payout -> PayoutDetailsActivity::class.java
+            is BalanceChangeDetails.Withdrawal -> WithdrawalDetailsActivity::class.java
+            is BalanceChangeDetails.Investment -> InvestmentDetailsActivity::class.java
         }
 
         activity.startActivity(

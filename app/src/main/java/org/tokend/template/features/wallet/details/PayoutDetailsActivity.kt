@@ -3,7 +3,7 @@ package org.tokend.template.features.wallet.details
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.PayoutDetails
+import org.tokend.template.data.model.history.details.BalanceChangeDetails
 import org.tokend.template.view.InfoCard
 
 class PayoutDetailsActivity : BalanceChangeDetailsActivity() {
@@ -11,7 +11,7 @@ class PayoutDetailsActivity : BalanceChangeDetailsActivity() {
         setContentView(R.layout.activity_details)
         setTitle(R.string.payout_details_title)
 
-        val details = item.details as? PayoutDetails
+        val details = item.details as? BalanceChangeDetails.Payout
 
         if (details == null) {
             finish()
@@ -34,7 +34,8 @@ class PayoutDetailsActivity : BalanceChangeDetailsActivity() {
         displayDate(item, cards_layout)
     }
 
-    private fun displayConditions(item: BalanceChange, details: PayoutDetails) {
+    private fun displayConditions(item: BalanceChange,
+                                  details: BalanceChangeDetails.Payout) {
         InfoCard(cards_layout)
                 .setHeading(R.string.payout_conditions, null)
                 .addRow(R.string.payout_asset, details.assetCode)
@@ -46,7 +47,8 @@ class PayoutDetailsActivity : BalanceChangeDetailsActivity() {
                         amountFormatter.formatAssetAmount(details.maxPayoutAmount, item.assetCode))
     }
 
-    private fun displayResults(item: BalanceChange, details: PayoutDetails) {
+    private fun displayResults(item: BalanceChange,
+                               details: BalanceChangeDetails.Payout) {
         val paidTotal = details.actualPayoutAmount + details.actualFee.total
 
         InfoCard(cards_layout)

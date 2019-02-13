@@ -3,7 +3,7 @@ package org.tokend.template.features.wallet.details
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.PaymentDetails
+import org.tokend.template.data.model.history.details.BalanceChangeDetails
 import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
@@ -13,7 +13,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         setContentView(R.layout.activity_details)
         setTitle(R.string.payment_details_title)
 
-        val details = item.details as? PaymentDetails
+        val details = item.details as? BalanceChangeDetails.Payment
 
         if (details == null) {
             finish()
@@ -33,7 +33,8 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         displayDate(item, cards_layout)
     }
 
-    private fun displayCounterparty(details: PaymentDetails, accountId: String) {
+    private fun displayCounterparty(details: BalanceChangeDetails.Payment,
+                                    accountId: String) {
         val counterpartyAccount = details.getCounterpartyAccountId(accountId)
         val counterpartyName = details.getCounterpartyName(accountId)
 
@@ -55,7 +56,8 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                 .addRow(counterpartyAccount, null)
     }
 
-    private fun displayPaidOrReceived(item: BalanceChange, details: PaymentDetails,
+    private fun displayPaidOrReceived(item: BalanceChange,
+                                      details: BalanceChangeDetails.Payment,
                                       accountId: String) {
         val isReceived = details.isReceived(accountId)
 
@@ -66,7 +68,8 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         }
     }
 
-    private fun displayReceived(item: BalanceChange, details: PaymentDetails) {
+    private fun displayReceived(item: BalanceChange,
+                                details: BalanceChangeDetails.Payment) {
         val feePaidBySender = details.isDestFeePaidBySource
 
         val paidFeePercent =
@@ -102,7 +105,8 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                 }
     }
 
-    private fun displayPaid(item: BalanceChange, details: PaymentDetails) {
+    private fun displayPaid(item: BalanceChange,
+                            details: BalanceChangeDetails.Payment) {
         val feePaidBySender = details.isDestFeePaidBySource
 
         val paidFeePercent =
@@ -138,7 +142,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                 }
     }
 
-    private fun displaySubject(details: PaymentDetails) {
+    private fun displaySubject(details: BalanceChangeDetails.Payment) {
         val subject = details.subject?.takeIf { it.isNotBlank() }
                 ?: return
 

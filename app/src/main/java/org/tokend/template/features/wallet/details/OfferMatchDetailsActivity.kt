@@ -3,7 +3,7 @@ package org.tokend.template.features.wallet.details
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.OfferMatchDetails
+import org.tokend.template.data.model.history.details.BalanceChangeDetails
 import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.formatter.AmountFormatter
 
@@ -12,7 +12,7 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
         setContentView(R.layout.activity_details)
         setTitle(getTitleString())
 
-        val details = item.details as? OfferMatchDetails
+        val details = item.details as? BalanceChangeDetails.OfferMatch
 
         if (details == null) {
             finish()
@@ -29,7 +29,7 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
         return getString(R.string.offer_match_details_title)
     }
 
-    protected open fun displayPrice(details: OfferMatchDetails) {
+    protected open fun displayPrice(details: BalanceChangeDetails.OfferMatch) {
         val formattedPrice = amountFormatter
                 .formatAssetAmount(details.price, details.quoteAssetCode)
 
@@ -41,14 +41,10 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
                 .addRow(priceString, null)
     }
 
-    protected open fun displayCharged(details: OfferMatchDetails) {
+    protected open fun displayCharged(details: BalanceChangeDetails.OfferMatch) {
         val charged = details.charged
 
-        val chargedTotal =
-                if (details.chargedInQuote)
-                    charged.amount + charged.fee.total
-                else
-                    charged.amount
+        val chargedTotal = charged.amount + charged.fee.total
 
         InfoCard(cards_layout)
                 .setHeading(R.string.charged,
@@ -64,14 +60,10 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
                                 minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
     }
 
-    protected open fun displayFunded(details: OfferMatchDetails) {
+    protected open fun displayFunded(details: BalanceChangeDetails.OfferMatch) {
         val funded = details.funded
 
-        val fundedTotal =
-                if (details.fundedInQuote)
-                    funded.amount - funded.fee.total
-                else
-                    funded.amount
+        val fundedTotal = funded.amount - funded.fee.total
 
         InfoCard(cards_layout)
                 .setHeading(R.string.received,

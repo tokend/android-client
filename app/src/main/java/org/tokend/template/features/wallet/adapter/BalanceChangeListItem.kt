@@ -2,9 +2,7 @@ package org.tokend.template.features.wallet.adapter
 
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.BalanceChangeAction
-import org.tokend.template.data.model.history.details.OfferMatchDetails
-import org.tokend.template.data.model.history.details.PaymentDetails
-import org.tokend.template.data.model.history.details.WithdrawalDetails
+import org.tokend.template.data.model.history.details.BalanceChangeDetails
 import org.tokend.template.util.DateProvider
 import java.math.BigDecimal
 import java.util.*
@@ -34,10 +32,10 @@ class BalanceChangeListItem(
             val details = balanceChange.details
 
             return when (details) {
-                is PaymentDetails ->
+                is BalanceChangeDetails.Payment ->
                     details.getCounterpartyName(accountId)
                             ?: details.getCounterpartyAccountId(accountId)
-                is WithdrawalDetails ->
+                is BalanceChangeDetails.Withdrawal ->
                     details.destinationAddress
                 else -> null
             }
@@ -51,7 +49,7 @@ class BalanceChangeListItem(
                 BalanceChangeAction.CHARGED -> false
                 BalanceChangeAction.WITHDRAWN -> false
                 BalanceChangeAction.MATCHED ->
-                    (balanceChange.details as OfferMatchDetails)
+                    (balanceChange.details as BalanceChangeDetails.OfferMatch)
                             .isReceivedByAsset(balanceChange.assetCode)
                 BalanceChangeAction.ISSUED -> true
                 BalanceChangeAction.FUNDED -> true
