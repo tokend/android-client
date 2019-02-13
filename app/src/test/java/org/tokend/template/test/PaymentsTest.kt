@@ -14,6 +14,7 @@ import org.tokend.template.logic.FeeManager
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.Account
+import org.tokend.wallet.Base32Check
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.PaymentFeeType
 import java.math.BigDecimal
@@ -69,7 +70,12 @@ class PaymentsTest {
 
         val request = useCase.perform().blockingGet()
 
-        Assert.assertEquals(paymentAmount, request.amount)
+        Assert.assertEquals("Payment request amount must be equal to the requested amount",
+                paymentAmount, request.amount)
+        Assert.assertEquals("Payment request recipient must be a valid account ID",
+                Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID, request.recipientAccountId.toCharArray()))
+        Assert.assertEquals("Payment request fee must have a valid type",
+                FeeType.PAYMENT_FEE.value, request.senderFee.feeType)
     }
 
     @Test
@@ -131,7 +137,8 @@ class PaymentsTest {
         val currentBalance = repositoryProvider.balances().itemsList
                 .find { it.assetCode == asset }!!.available
 
-        Assert.assertNotEquals(0, initialBalance.compareTo(currentBalance))
+        Assert.assertNotEquals("Balance must be changed after the payment sending",
+                0, initialBalance.compareTo(currentBalance))
     }
 
     @Test
@@ -178,7 +185,7 @@ class PaymentsTest {
                 asset
         )
 
-        Assert.assertTrue(result)
+        Assert.assertTrue("Fee must be added successfully", result)
 
         val initialBalance = Util.getSomeMoney(asset, emissionAmount,
                 repositoryProvider, session, txManager)
@@ -194,7 +201,8 @@ class PaymentsTest {
                 repositoryProvider.accountDetails()
         ).perform().blockingGet()
 
-        Assert.assertTrue(request.senderFee.total > BigDecimal.ZERO)
+        Assert.assertTrue("Payment request sender fee must greater than zero",
+                request.senderFee.total > BigDecimal.ZERO)
 
         ConfirmPaymentRequestUseCase(
                 request,
@@ -212,6 +220,7 @@ class PaymentsTest {
 
         val expected = initialBalance - paymentAmount - request.senderFee.total
 
-        Assert.assertEquals(expected, currentBalance)
+        Assert.assertEquals("Result balance must be lower than the initial one by payment amount and fee",
+                expected, currentBalance)
     }
 }

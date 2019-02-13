@@ -40,10 +40,12 @@ class SwitchingFavoriteStateTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(favoritesRepository.itemsList.isNotEmpty())
+        Assert.assertTrue("Favorites repository must contain a newly created entry",
+                favoritesRepository.itemsList.isNotEmpty())
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(favoritesRepository.itemsList.isEmpty())
+        Assert.assertTrue("Favorites repository must be empty after switching the same favorite entry",
+                favoritesRepository.itemsList.isEmpty())
     }
 }

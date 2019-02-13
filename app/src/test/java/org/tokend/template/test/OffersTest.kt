@@ -56,7 +56,7 @@ class OffersTest {
 
         val prepared = useCase.perform().blockingGet()
 
-        Assert.assertNotNull(prepared.fee)
+        Assert.assertNotNull("Prepared offer must contain fee", prepared.fee)
     }
 
     @Test
@@ -86,14 +86,17 @@ class OffersTest {
 
         val offersRepository = repositoryProvider.offers(false)
 
-        Assert.assertFalse(offersRepository.isFresh)
-        Assert.assertFalse(repositoryProvider.balances().isFresh)
+        Assert.assertFalse("Offers repository must be invalidated after offer submitting",
+                offersRepository.isFresh)
+        Assert.assertFalse("Balances repository must be invalidated after offer submitting",
+                repositoryProvider.balances().isFresh)
 
         Thread.sleep(500)
 
         offersRepository.updateIfNotFreshDeferred().blockingAwait()
 
-        Assert.assertTrue(offersRepository.itemsList.isNotEmpty())
+        Assert.assertTrue("There must be a newly created offer in offers repository",
+                offersRepository.itemsList.isNotEmpty())
     }
 
     @Test
@@ -135,10 +138,12 @@ class OffersTest {
 
         offersRepository.updateIfNotFreshDeferred().blockingAwait()
 
-        Assert.assertTrue(offersRepository.itemsList.isNotEmpty())
-        Assert.assertFalse(offersRepository.itemsList.any {
-            it.id == offerToCancel.id
-        })
+        Assert.assertTrue("There must be a newly created offer in offers repository",
+                offersRepository.itemsList.isNotEmpty())
+        Assert.assertFalse("There must not be a cancelled offer in offers repository",
+                offersRepository.itemsList.any {
+                    it.id == offerToCancel.id
+                })
     }
 
     @Test
@@ -183,8 +188,10 @@ class OffersTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(offersRepository.itemsList.isEmpty())
-        Assert.assertFalse(repositoryProvider.balances().isFresh)
+        Assert.assertTrue("Offers repository must be empty after the only offer cancellation",
+                offersRepository.itemsList.isEmpty())
+        Assert.assertFalse("Balances repository must be invalidated after offer cancellation",
+                repositoryProvider.balances().isFresh)
 
         Thread.sleep(500)
 
@@ -193,7 +200,8 @@ class OffersTest {
         val currentBalance = repositoryProvider.balances().itemsList
                 .find { it.assetCode == baseAsset }!!.available
 
-        Assert.assertEquals(0, initialBalance.compareTo(currentBalance))
+        Assert.assertEquals("Balance after offer cancellation must be equal to the initial one",
+                0, initialBalance.compareTo(currentBalance))
     }
 
     private fun submitOffer(session: Session, apiProvider: ApiProvider,

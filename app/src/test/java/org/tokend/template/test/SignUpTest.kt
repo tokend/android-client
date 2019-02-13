@@ -18,9 +18,15 @@ class SignUpTest {
 
         useCase.perform().blockingGet()
 
-        val walletInfo = keyStorage.getWalletInfo(email, password, false)
-                .execute().get()
+        try {
+            val walletInfo = keyStorage.getWalletInfo(email, password, false)
+                    .execute().get()
 
-        Assert.assertEquals(email, walletInfo.email)
+            Assert.assertEquals("Wallet email must be the same as the used one for sign up",
+                    email, walletInfo.email)
+        } catch (e: Exception) {
+            Assert.fail("Wallet must be accessible with specified credentials")
+        }
+
     }
 }

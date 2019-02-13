@@ -22,6 +22,8 @@ import org.tokend.template.util.confirmation.ConfirmationProvider
 import java.util.*
 
 class TfaTest {
+    private val factorType = TfaFactor.Type.TOTP
+
     @Test
     fun enableTfa() {
         val urlConfigProvider = Util.getUrlConfigProvider()
@@ -33,7 +35,6 @@ class TfaTest {
         val email = "${System.currentTimeMillis()}@mail.com"
         val password = "qwe123".toCharArray()
 
-        var addedFactorId = 0L
         var authenticator: GoogleAuthenticator? = null
 
         val tfaCallback = object : TfaCallback {
@@ -54,7 +55,7 @@ class TfaTest {
                         )
                     }
                     else ->
-                        Assert.fail("Unknown 2FA type: ${exception.factorType}")
+                        Assert.fail("Unknown TFA type: ${exception.factorType}")
                 }
             }
         }
@@ -70,23 +71,24 @@ class TfaTest {
 
         val confirmation = object : ConfirmationProvider<TfaFactorCreationResult> {
             override fun requestConfirmation(payload: TfaFactorCreationResult): Completable {
-                Assert.assertEquals(TfaFactor.Type.TOTP, payload.newFactor.type)
+                Assert.assertEquals("Newly created factor must be $factorType",
+                        factorType, payload.newFactor.type)
                 authenticator = GoogleAuthenticator(payload.confirmationAttributes["secret"].toString())
-                addedFactorId = payload.newFactor.id
                 return Completable.complete()
             }
         }
         val useCase = EnableTfaUseCase(
-                TfaFactor.Type.TOTP,
+                factorType,
                 repositoryProvider.tfaFactors(),
                 confirmation
         )
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(repositoryProvider.tfaFactors().itemsList.any {
-            it.id == addedFactorId && it.priority > 0
-        })
+        Assert.assertTrue("TFA factors repository must contain a newly created active factor of type $factorType",
+                repositoryProvider.tfaFactors().itemsList.any {
+                    it.type == factorType && it.priority > 0
+                })
     }
 
     @Test
@@ -120,7 +122,7 @@ class TfaTest {
                         )
                     }
                     else ->
-                        Assert.fail("Unknown 2FA type: ${exception.factorType}")
+                        Assert.fail("Unknown TFA type: ${exception.factorType}")
                 }
             }
         }
@@ -134,27 +136,27 @@ class TfaTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
-        val confirmation =  object : ConfirmationProvider<TfaFactorCreationResult> {
+        val confirmation = object : ConfirmationProvider<TfaFactorCreationResult> {
             override fun requestConfirmation(payload: TfaFactorCreationResult): Completable {
                 authenticator = GoogleAuthenticator(payload.confirmationAttributes["secret"].toString())
                 return Completable.complete()
             }
         }
         EnableTfaUseCase(
-                TfaFactor.Type.TOTP,
+                factorType,
                 repositoryProvider.tfaFactors(),
                 confirmation
         ).perform().blockingAwait()
 
         val useCase = DisableTfaUseCase(
-                TfaFactor.Type.TOTP,
+                factorType,
                 repositoryProvider.tfaFactors()
         )
 
         useCase.perform().blockingAwait()
 
-        Assert.assertFalse(repositoryProvider.tfaFactors().itemsList.any {
-            it.type == TfaFactor.Type.TOTP && it.priority > 0
+        Assert.assertFalse("TFA factors repository must not contain an active factor of type $factorType", repositoryProvider.tfaFactors().itemsList.any {
+            it.type == factorType && it.priority > 0
         })
     }
 }

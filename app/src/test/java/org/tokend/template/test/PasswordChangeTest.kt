@@ -13,8 +13,6 @@ import org.tokend.template.di.providers.ApiProviderFactory
 import org.tokend.template.di.providers.RepositoryProviderImpl
 import org.tokend.template.di.providers.WalletInfoProviderFactory
 import org.tokend.template.features.changepassword.ChangePasswordUseCase
-import org.tokend.template.features.signin.logic.PostSignInManager
-import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.wallet.WalletUpdateManager
 
@@ -44,24 +42,11 @@ class PasswordChangeTest {
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session,
                 tfaCallback)
 
-        val (originalWalletData, rootAccount, recoveryAccount)
-                = apiProvider.getKeyServer().createAndSaveWallet(email, password)
-                .execute().get()
-
-        System.out.println("Email is $email")
-        System.out.println("Recovery seed is ${recoveryAccount.secretSeed!!.joinToString("")}")
-
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
-        SignInUseCase(
-                email,
-                password,
-                apiProvider.getKeyServer(),
-                session,
-                null,
-                PostSignInManager(repositoryProvider)
-        ).perform().blockingAwait()
+        val (originalWalletData, rootAccount, recoveryAccount)
+                = Util.getVerifiedWallet(email, password, apiProvider, session, repositoryProvider)
 
         val useCase = ChangePasswordUseCase(
                 newPassword,
@@ -81,23 +66,27 @@ class PasswordChangeTest {
 
         // Check that account has been updated to the actual.
         val currentAccount = session.getAccount()!!
-        Assert.assertNotEquals(rootAccount.accountId, currentAccount.accountId)
+        Assert.assertNotEquals("Account in AccountProvider must be updated",
+                rootAccount.accountId, currentAccount.accountId)
 
         // Check that new signer has been added.
-        Assert.assertTrue(signers.any { signer ->
-            signer.accountId == currentAccount.accountId
-        })
+        Assert.assertTrue("A new signer ${currentAccount.accountId} must be added to account signers",
+                signers.any { signer ->
+                    signer.accountId == currentAccount.accountId
+                })
 
         // Check that old signer has been removed.
-        Assert.assertFalse(signers.any { signer ->
-            signer.accountId == rootAccount.accountId
-        })
+        Assert.assertFalse("The old signer ${rootAccount.accountId} must be removed from account signers",
+                signers.any { signer ->
+                    signer.accountId == rootAccount.accountId
+                })
 
         // Check that wallet info has been updated to the actual.
-        Assert.assertNotEquals(originalWalletData.id, session.getWalletInfo()!!.walletIdHex)
+        Assert.assertNotEquals("Wallet info in WalletInfoProvider must be updated",
+                originalWalletData.id, session.getWalletInfo()!!.walletIdHex)
 
         // Check that we after all can sign in with new password.
-        Assert.assertNotNull(apiProvider.getKeyServer()
-                .getWalletInfo(email, newPassword))
+        Assert.assertNotNull("Sign in with a new password must complete",
+                apiProvider.getKeyServer().getWalletInfo(email, newPassword))
     }
 }

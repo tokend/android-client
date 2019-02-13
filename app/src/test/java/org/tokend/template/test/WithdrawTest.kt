@@ -52,11 +52,16 @@ class WithdrawTest {
 
         val request = useCase.perform().blockingGet()
 
-        Assert.assertEquals(0, amount.compareTo(request.amount))
-        Assert.assertEquals(asset, request.asset)
-        Assert.assertEquals(destAddress, request.destinationAddress)
-        Assert.assertEquals(session.getWalletInfo()!!.accountId, request.accountId)
-        Assert.assertEquals(FeeType.WITHDRAWAL_FEE.value, request.fee.feeType)
+        Assert.assertEquals("Withdrawal request amount must be equal to the requested one",
+                0, amount.compareTo(request.amount))
+        Assert.assertEquals("Withdrawal request asset must be equal to the requested one",
+                asset, request.asset)
+        Assert.assertEquals("Withdrawal request destination address must be equal to the requested one",
+                destAddress, request.destinationAddress)
+        Assert.assertEquals("Withdrawal request account ID must be equal to the actual one",
+                session.getWalletInfo()!!.accountId, request.accountId)
+        Assert.assertEquals("Withdrawal request fee must have a valid type",
+                FeeType.WITHDRAWAL_FEE.value, request.fee.feeType)
     }
 
     @Test
@@ -102,7 +107,8 @@ class WithdrawTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertFalse(repositoryProvider.balances().isFresh)
+        Assert.assertFalse("Balances repository must be invalidated after withdrawal sending",
+                repositoryProvider.balances().isFresh)
 
         Thread.sleep(500)
 
@@ -110,9 +116,12 @@ class WithdrawTest {
         txRepository.updateIfNotFreshDeferred().blockingAwait()
         val transactions = txRepository.itemsList
 
-        Assert.assertTrue(transactions.isNotEmpty())
-        Assert.assertTrue(transactions.first() is WithdrawalOperation)
-        Assert.assertEquals(destAddress,
+        Assert.assertTrue("History must not be empty after withdrawal sending",
+                transactions.isNotEmpty())
+        Assert.assertTrue("First history entry must be a withdrawal after withdrawal sending",
+                transactions.first() is WithdrawalOperation)
+        Assert.assertEquals("Withdrawal history entry must have a requested destination address",
+                destAddress,
                 transactions
                         .first()
                         .let { it as WithdrawalOperation }
@@ -197,7 +206,7 @@ class WithdrawTest {
                 asset = asset
         )
 
-        Assert.assertTrue(result)
+        Assert.assertTrue("Withdrawal fee must be set", result)
 
         val request = CreateWithdrawalRequestUseCase(
                 amount,
@@ -207,7 +216,8 @@ class WithdrawTest {
                 FeeManager(apiProvider)
         ).perform().blockingGet()
 
-        Assert.assertTrue(request.fee.total > BigDecimal.ZERO)
+        Assert.assertTrue("Withdrawal request fee must be greater than zero",
+                request.fee.total > BigDecimal.ZERO)
 
         ConfirmWithdrawalRequestUseCase(
                 request,
@@ -225,6 +235,7 @@ class WithdrawTest {
 
         val expected = initialBalance - amount - request.fee.total
 
-        Assert.assertEquals(expected, currentBalance)
+        Assert.assertEquals("Result balance must be lower than the initial one by withdrawal amount and fee",
+                expected, currentBalance)
     }
 }

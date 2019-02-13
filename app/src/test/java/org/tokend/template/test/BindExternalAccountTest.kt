@@ -74,7 +74,8 @@ class BindExternalAccountTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertFalse(repositoryProvider.account().isFresh)
+        Assert.assertFalse("Account repository must be invalidated after external account binding",
+                repositoryProvider.account().isFresh)
 
         repositoryProvider.account().updateDeferred().blockingAwait()
 
@@ -83,7 +84,8 @@ class BindExternalAccountTest {
             it.type == asset.externalSystemType
         }
 
-        Assert.assertNotNull(externalAccount)
+        Assert.assertNotNull("Deposit accounts must contain a newly created account of ${asset.externalSystemType} type",
+                externalAccount)
     }
 
     private fun addNewExternalSystemAddress(asset: AssetRecord,

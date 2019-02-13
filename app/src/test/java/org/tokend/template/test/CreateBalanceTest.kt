@@ -29,7 +29,7 @@ class CreateBalanceTest {
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
-        val (walletData, rootAccount, _) = Util.getVerifiedWallet(
+        Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
         )
 
@@ -48,10 +48,11 @@ class CreateBalanceTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(repositoryProvider.balances().itemsList
-                .any {
-                    it.assetCode == assetCode
-                }
+        Assert.assertTrue("Balances must contain a newly created balance of $assetCode asset",
+                repositoryProvider.balances().itemsList
+                        .any {
+                            it.assetCode == assetCode
+                        }
         )
     }
 }

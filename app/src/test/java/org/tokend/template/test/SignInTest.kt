@@ -42,8 +42,10 @@ class SignInTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertEquals(walletData.attributes!!.accountId, session.getWalletInfo()!!.accountId)
-        Assert.assertArrayEquals(rootAccount.secretSeed, session.getAccount()?.secretSeed)
+        Assert.assertEquals("WalletInfoProvider must hold an actual wallet data",
+                walletData.attributes!!.accountId, session.getWalletInfo()!!.accountId)
+        Assert.assertArrayEquals("AccountProvider must hold an actual account",
+                rootAccount.secretSeed, session.getAccount()?.secretSeed)
 
         checkRepositories(repositoryProvider)
     }
@@ -96,15 +98,20 @@ class SignInTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertEquals(walletData.attributes!!.accountId, session.getWalletInfo()!!.accountId)
-        Assert.assertArrayEquals(rootAccount.secretSeed, session.getAccount()?.secretSeed)
+        Assert.assertEquals("WalletInfoProvider must hold an actual wallet data",
+                walletData.attributes!!.accountId, session.getWalletInfo()!!.accountId)
+        Assert.assertArrayEquals("AccountProvider must hold an actual account",
+                rootAccount.secretSeed, session.getAccount()?.secretSeed)
 
         checkRepositories(repositoryProvider)
     }
 
     private fun checkRepositories(repositoryProvider: RepositoryProvider) {
-        Assert.assertTrue(repositoryProvider.balances().isFresh)
-        Assert.assertTrue(repositoryProvider.tfaFactors().isFresh)
-        Assert.assertTrue(repositoryProvider.account().isFresh)
+        Assert.assertTrue("Balances repository must be updated after sign in",
+                repositoryProvider.balances().isFresh)
+        Assert.assertTrue("TFA factors repository must be updated after sign in",
+                repositoryProvider.tfaFactors().isFresh)
+        Assert.assertTrue("Account repository must be updated after sign in",
+                repositoryProvider.account().isFresh)
     }
 }

@@ -44,10 +44,12 @@ class RecoveryTest {
 
         useCase.perform().blockingAwait()
 
-        val newWalletInfo = apiProvider.getKeyServer().getWalletInfo(email, newPassword)
-                .execute().get()
-
-        Assert.assertEquals(email, newWalletInfo.email)
+        try {
+            apiProvider.getKeyServer().getWalletInfo(email, newPassword)
+                    .execute().get()
+        } catch (e: Exception) {
+            Assert.fail("Recovered wallet must be accessible with a new password")
+        }
     }
 
     @Test
@@ -78,9 +80,11 @@ class RecoveryTest {
 
         useCase.perform().blockingAwait()
 
-        val newWalletInfo = apiProvider.getKeyServer().getWalletInfo(email, newPassword)
-                .execute().get()
-
-        Assert.assertEquals(email, newWalletInfo.email)
+        try {
+            apiProvider.getKeyServer().getWalletInfo(email, newPassword)
+                    .execute().get()
+        } catch (e: Exception) {
+            Assert.fail("Recovered wallet must be accessible with a new password")
+        }
     }
 }
