@@ -82,8 +82,8 @@ class CreateWithdrawalRequestUseCase(
                         account,
                         amount,
                         asset,
-                        destinationAddress,
                         balanceId,
+                        destinationAddress,
                         fee
                 )
         )
