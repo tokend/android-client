@@ -1,7 +1,9 @@
 package org.tokend.template.test
 
 import junit.framework.Assert
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import org.tokend.sdk.api.assets.model.SimpleAsset
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.factory.JsonApiToolsProvider
@@ -17,13 +19,14 @@ import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.*
 import java.math.BigDecimal
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class WithdrawTest {
     private val asset = "ETH"
     private val amount = BigDecimal.TEN
     private val destAddress = "0x6a7a43be33ba930fe58f34e07d0ad6ba7adb9b1f"
 
     @Test
-    fun createWithdrawal() {
+    fun aCreateWithdrawal() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
@@ -66,7 +69,7 @@ class WithdrawTest {
     }
 
     @Test
-    fun confirmWithdrawal() {
+    fun bConfirmWithdrawal() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
@@ -172,7 +175,7 @@ class WithdrawTest {
     }
 
     @Test
-    fun withdrawWithFee() {
+    fun cWithdrawWithFee() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),

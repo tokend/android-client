@@ -1,7 +1,9 @@
 package org.tokend.template.test
 
 import org.junit.Assert
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.data.model.history.details.BalanceChangeDetails
 import org.tokend.template.di.providers.AccountProviderFactory
@@ -19,12 +21,13 @@ import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.PaymentFeeType
 import java.math.BigDecimal
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class PaymentsTest {
     private val emissionAmount = BigDecimal.TEN
     private val paymentAmount = BigDecimal.ONE
 
     @Test
-    fun createPayment() {
+    fun aCreatePayment() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
@@ -71,14 +74,14 @@ class PaymentsTest {
 
         Assert.assertEquals("Payment request amount must be equal to the requested amount",
                 paymentAmount, request.amount)
-        Assert.assertEquals("Payment request recipient must be a valid account ID",
+        Assert.assertTrue("Payment request recipient must be a valid account ID",
                 Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID, request.recipientAccountId.toCharArray()))
         Assert.assertEquals("Payment request fee must have a valid type",
                 FeeType.PAYMENT_FEE.value, request.senderFee.feeType)
     }
 
     @Test
-    fun confirmPayment() {
+    fun bConfirmPayment() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
@@ -112,7 +115,7 @@ class PaymentsTest {
                 repositoryProvider, session, txManager)
 
         val request = CreatePaymentRequestUseCase(
-                recipientEmail,
+                recipientAccountId,
                 paymentAmount,
                 asset,
                 "Test payment",
@@ -158,7 +161,7 @@ class PaymentsTest {
     }
 
     @Test
-    fun paymentWithFee() {
+    fun cPaymentWithFee() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),

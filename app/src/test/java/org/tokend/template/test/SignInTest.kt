@@ -1,16 +1,19 @@
 package org.tokend.template.test
 
 import org.junit.Assert
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.logic.Session
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class SignInTest {
     @Test
-    fun firstSignIn() {
+    fun aFirstSignIn() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
@@ -51,12 +54,12 @@ class SignInTest {
     }
 
     @Test
-    fun regularSignIn() {
+    fun bRegularSignIn() {
         performSignInTest("${System.currentTimeMillis()}@mail.com")
     }
 
     @Test
-    fun differentEmailCaseSignIn() {
+    fun cDifferentEmailCaseSignIn() {
         performSignInTest("aBcD${System.currentTimeMillis()}@mail.com")
     }
 

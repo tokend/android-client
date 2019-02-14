@@ -1,7 +1,9 @@
 package org.tokend.template.test
 
 import junit.framework.Assert
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.di.providers.*
@@ -13,6 +15,7 @@ import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
 import java.math.BigDecimal
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class OffersTest {
     private val baseAsset = "ETH"
     private val quoteAsset = "USD"
@@ -21,7 +24,7 @@ class OffersTest {
     private val emissionAmount = BigDecimal.TEN!!
 
     @Test
-    fun prepareOffer() {
+    fun aPrepareOffer() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
@@ -60,7 +63,7 @@ class OffersTest {
     }
 
     @Test
-    fun confirmOffer() {
+    fun bConfirmOffer() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
@@ -100,54 +103,7 @@ class OffersTest {
     }
 
     @Test
-    fun confirmOfferCancelPrevious() {
-        val urlConfigProvider = Util.getUrlConfigProvider()
-        val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
-        )
-
-        val email = Util.getEmail()
-        val password = Config.DEFAULT_PASSWORD
-
-        val apiProvider =
-                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper())
-
-        Util.getVerifiedWallet(
-                email, password, apiProvider, session, repositoryProvider
-        )
-
-        Util.getSomeMoney(baseAsset, emissionAmount,
-                repositoryProvider, session, TxManager(apiProvider))
-
-        submitOffer(session, apiProvider, repositoryProvider)
-
-        val offersRepository = repositoryProvider.offers(false)
-
-        Thread.sleep(500)
-
-        offersRepository.updateIfNotFreshDeferred().blockingAwait()
-
-        val offerToCancel = offersRepository.itemsList.first()
-
-        submitOffer(session, apiProvider, repositoryProvider, offerToCancel)
-
-        Thread.sleep(500)
-
-        offersRepository.updateIfNotFreshDeferred().blockingAwait()
-
-        Assert.assertTrue("There must be a newly created offer in offers repository",
-                offersRepository.itemsList.isNotEmpty())
-        Assert.assertFalse("There must not be a cancelled offer in offers repository",
-                offersRepository.itemsList.any {
-                    it.id == offerToCancel.id
-                })
-    }
-
-    @Test
-    fun cancelOffer() {
+    fun cCancelOffer() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
@@ -202,6 +158,53 @@ class OffersTest {
 
         Assert.assertEquals("Balance after offer cancellation must be equal to the initial one",
                 0, initialBalance.compareTo(currentBalance))
+    }
+
+    @Test
+    fun dConfirmOfferCancelPrevious() {
+        val urlConfigProvider = Util.getUrlConfigProvider()
+        val session = Session(
+                WalletInfoProviderFactory().createWalletInfoProvider(),
+                AccountProviderFactory().createAccountProvider()
+        )
+
+        val email = Util.getEmail()
+        val password = Config.DEFAULT_PASSWORD
+
+        val apiProvider =
+                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
+
+        Util.getVerifiedWallet(
+                email, password, apiProvider, session, repositoryProvider
+        )
+
+        Util.getSomeMoney(baseAsset, emissionAmount,
+                repositoryProvider, session, TxManager(apiProvider))
+
+        submitOffer(session, apiProvider, repositoryProvider)
+
+        val offersRepository = repositoryProvider.offers(false)
+
+        Thread.sleep(500)
+
+        offersRepository.updateIfNotFreshDeferred().blockingAwait()
+
+        val offerToCancel = offersRepository.itemsList.first()
+
+        submitOffer(session, apiProvider, repositoryProvider, offerToCancel)
+
+        Thread.sleep(500)
+
+        offersRepository.updateIfNotFreshDeferred().blockingAwait()
+
+        Assert.assertTrue("There must be a newly created offer in offers repository",
+                offersRepository.itemsList.isNotEmpty())
+        Assert.assertFalse("There must not be a cancelled offer in offers repository",
+                offersRepository.itemsList.any {
+                    it.id == offerToCancel.id
+                })
     }
 
     private fun submitOffer(session: Session, apiProvider: ApiProvider,

@@ -34,7 +34,7 @@ class PasswordChangeTest {
                                        verifierInterface: TfaVerifier.Interface) {
                 Assert.assertEquals(TfaFactor.Type.PASSWORD, exception.factorType)
                 verifierInterface.verify(PasswordTfaOtpGenerator().generate(
-                        exception, email, password
+                        exception, session.getWalletInfo()!!.email, password
                 ))
             }
         }

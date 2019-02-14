@@ -1,16 +1,19 @@
 package org.tokend.template.test
 
 import junit.framework.Assert
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.ApiProviderFactory
 import org.tokend.template.features.recovery.logic.RecoveryUseCase
 import org.tokend.template.logic.wallet.WalletUpdateManager
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class RecoveryTest {
     @Test
-    fun recoveryOfConfirmed() {
+    fun aRecoveryOfConfirmed() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val accountProvider = AccountProviderFactory().createAccountProvider()
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, accountProvider)
@@ -53,7 +56,7 @@ class RecoveryTest {
     }
 
     @Test
-    fun recoveryOfNonConfirmed() {
+    fun bRecoveryOfNonConfirmed() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider)
 

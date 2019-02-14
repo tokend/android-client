@@ -3,7 +3,9 @@ package org.tokend.template.test
 import com.marcelkliemannel.kotlinonetimepassword.GoogleAuthenticator
 import io.reactivex.Completable
 import junit.framework.Assert
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.sdk.tfa.NeedTfaException
@@ -21,11 +23,12 @@ import org.tokend.template.logic.Session
 import org.tokend.template.util.confirmation.ConfirmationProvider
 import java.util.*
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TfaTest {
     private val factorType = TfaFactor.Type.TOTP
 
     @Test
-    fun enableTfa() {
+    fun aEnableTfa() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
@@ -44,7 +47,7 @@ class TfaTest {
                     TfaFactor.Type.PASSWORD ->
                         verifierInterface.verify(
                                 PasswordTfaOtpGenerator()
-                                        .generate(exception, email, password)
+                                        .generate(exception, session.getWalletInfo()!!.email, password)
                         )
                     TfaFactor.Type.TOTP -> {
                         verifierInterface.verify(
@@ -92,7 +95,7 @@ class TfaTest {
     }
 
     @Test
-    fun disableTfa() {
+    fun bDisableTfa() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
@@ -111,7 +114,7 @@ class TfaTest {
                     TfaFactor.Type.PASSWORD ->
                         verifierInterface.verify(
                                 PasswordTfaOtpGenerator()
-                                        .generate(exception, email, password)
+                                        .generate(exception, session.getWalletInfo()!!.email, password)
                         )
                     TfaFactor.Type.TOTP -> {
                         verifierInterface.verify(
