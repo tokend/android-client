@@ -2,10 +2,10 @@ package org.tokend.template.features.wallet.adapter
 
 import android.view.View
 import org.tokend.template.R
-import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.history.HistoryItemView
 import org.tokend.template.view.history.HistoryItemViewImpl
+import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.formatter.AmountFormatter
 
 class BalanceChangeItemViewHolder(view: View,
@@ -23,9 +23,9 @@ class BalanceChangeItemViewHolder(view: View,
 
     private fun displayIcon(item: BalanceChangeListItem) {
         val icon = when (item.action) {
-            BalanceChangeAction.LOCKED -> lockedIcon
-            BalanceChangeAction.UNLOCKED -> unlockedIcon
-            BalanceChangeAction.MATCHED -> matchIcon
+            BalanceChangeListItem.Action.LOCKED -> lockedIcon
+            BalanceChangeListItem.Action.UNLOCKED -> unlockedIcon
+            BalanceChangeListItem.Action.MATCHED -> matchIcon
             else -> if (item.isReceived) incomingIcon else outgoingIcon
         }
 
@@ -33,18 +33,8 @@ class BalanceChangeItemViewHolder(view: View,
     }
 
     private fun displayActionName(item: BalanceChangeListItem) {
-        val stringRes = when (item.action) {
-            BalanceChangeAction.LOCKED -> R.string.tx_action_locked
-            BalanceChangeAction.CHARGED_FROM_LOCKED -> R.string.tx_action_charged
-            BalanceChangeAction.UNLOCKED -> R.string.tx_action_unlocked
-            BalanceChangeAction.CHARGED -> R.string.tx_action_charged
-            BalanceChangeAction.WITHDRAWN -> R.string.tx_action_withdrawn
-            BalanceChangeAction.MATCHED -> R.string.tx_action_matched
-            BalanceChangeAction.ISSUED -> R.string.tx_action_issued
-            BalanceChangeAction.FUNDED -> R.string.tx_action_received
-        }
-
-        actionTextView.setText(stringRes)
+        actionTextView.text =
+                LocalizedName(view.context).forBalanceChangeListItemAction(item.action)
     }
 
     private fun displayCounterparty(item: BalanceChangeListItem) {
@@ -64,7 +54,7 @@ class BalanceChangeItemViewHolder(view: View,
 
     private fun displayAmount(item: BalanceChangeListItem) {
         val color =
-                if (item.action == BalanceChangeAction.LOCKED)
+                if (item.action == BalanceChangeListItem.Action.LOCKED)
                     secondaryTextColor
                 else if (item.isReceived)
                     incomingColor

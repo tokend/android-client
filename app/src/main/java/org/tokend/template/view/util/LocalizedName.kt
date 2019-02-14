@@ -3,6 +3,7 @@ package org.tokend.template.view.util
 import android.content.Context
 import org.tokend.template.R
 import org.tokend.template.features.fees.adapter.FeeItem
+import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.wallet.xdr.FeeType
 
 /**
@@ -29,6 +30,19 @@ class LocalizedName(private val context: Context) {
             FeeItem.Subtype.INCOMING_OUTGOING -> context.getString(R.string.incoming_outgoing_fee)
             FeeItem.Subtype.OUTGOING -> context.getString(R.string.outgoing_fee)
             FeeItem.Subtype.INCOMING -> context.getString(R.string.incoming_fee)
+        }
+    }
+
+    fun forBalanceChangeListItemAction(action: BalanceChangeListItem.Action): String {
+        return when (action) {
+            BalanceChangeListItem.Action.LOCKED -> context.getString(R.string.tx_action_locked)
+            BalanceChangeListItem.Action.UNLOCKED -> context.getString(R.string.tx_action_unlocked)
+            BalanceChangeListItem.Action.WITHDRAWN -> context.getString(R.string.tx_action_withdrawn)
+            BalanceChangeListItem.Action.MATCHED -> context.getString(R.string.tx_action_matched)
+            BalanceChangeListItem.Action.ISSUED -> context.getString(R.string.tx_action_issued)
+            BalanceChangeListItem.Action.RECEIVED -> context.getString(R.string.tx_action_received)
+            BalanceChangeListItem.Action.SENT -> context.getString(R.string.tx_action_sent)
+            BalanceChangeListItem.Action.CHARGED -> context.getString(R.string.tx_action_charged)
         }
     }
 }

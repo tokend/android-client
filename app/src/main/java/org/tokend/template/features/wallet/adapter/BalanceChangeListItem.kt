@@ -8,17 +8,28 @@ import java.math.BigDecimal
 import java.util.*
 
 class BalanceChangeListItem(
-        val action: BalanceChangeAction,
+        val action: Action,
         val amount: BigDecimal,
         val assetCode: String,
         val isReceived: Boolean,
         override val date: Date,
         val counterparty: String?,
         val source: BalanceChange? = null
-): DateProvider {
+) : DateProvider {
+    enum class Action {
+        LOCKED,
+        UNLOCKED,
+        WITHDRAWN,
+        MATCHED,
+        ISSUED,
+        RECEIVED,
+        SENT,
+        CHARGED
+    }
+
     constructor(balanceChange: BalanceChange,
                 accountId: String) : this(
-            action = balanceChange.action,
+            action = getAction(balanceChange),
             amount = balanceChange.amount,
             assetCode = balanceChange.assetCode,
             isReceived = isReceived(balanceChange),
@@ -28,6 +39,23 @@ class BalanceChangeListItem(
     )
 
     private companion object {
+        private fun getAction(balanceChange: BalanceChange): Action {
+            return when (balanceChange.action) {
+                BalanceChangeAction.LOCKED -> BalanceChangeListItem.Action.LOCKED
+                BalanceChangeAction.CHARGED_FROM_LOCKED -> BalanceChangeListItem.Action.CHARGED
+                BalanceChangeAction.CHARGED ->
+                    if (balanceChange.details is BalanceChangeDetails.Payment)
+                        BalanceChangeListItem.Action.SENT
+                    else
+                        BalanceChangeListItem.Action.CHARGED
+                BalanceChangeAction.UNLOCKED -> BalanceChangeListItem.Action.UNLOCKED
+                BalanceChangeAction.WITHDRAWN -> BalanceChangeListItem.Action.WITHDRAWN
+                BalanceChangeAction.MATCHED -> BalanceChangeListItem.Action.MATCHED
+                BalanceChangeAction.ISSUED -> BalanceChangeListItem.Action.ISSUED
+                BalanceChangeAction.FUNDED -> BalanceChangeListItem.Action.RECEIVED
+            }
+        }
+
         private fun getCounterparty(balanceChange: BalanceChange, accountId: String): String? {
             val details = balanceChange.details
 
