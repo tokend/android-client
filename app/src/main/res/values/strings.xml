@@ -138,8 +138,8 @@
 
     <string name="template_tx_from">From %1$s</string>
     <string name="template_tx_to">To %1$s</string>
-    <string name="tx_action_deposit">Deposit</string>
-    <string name="tx_action_withdrawal">Withdrawn</string>
+    <string name="tx_action_issued">Issued</string>
+    <string name="tx_action_withdrawn">Withdrawn</string>
     <string name="tx_action_investment">Investment</string>
     <string name="tx_action_received">Received</string>
     <string name="tx_action_sent">Sent</string>

@@ -38,9 +38,9 @@ class BalanceChangeItemViewHolder(view: View,
             BalanceChangeAction.CHARGED_FROM_LOCKED -> R.string.tx_action_charged
             BalanceChangeAction.UNLOCKED -> R.string.tx_action_unlocked
             BalanceChangeAction.CHARGED -> R.string.tx_action_charged
-            BalanceChangeAction.WITHDRAWN -> R.string.tx_action_withdrawal
+            BalanceChangeAction.WITHDRAWN -> R.string.tx_action_withdrawn
             BalanceChangeAction.MATCHED -> R.string.tx_action_matched
-            BalanceChangeAction.ISSUED -> R.string.tx_action_deposit
+            BalanceChangeAction.ISSUED -> R.string.tx_action_issued
             BalanceChangeAction.FUNDED -> R.string.tx_action_received
         }
 
