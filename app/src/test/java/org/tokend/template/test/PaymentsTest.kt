@@ -3,7 +3,7 @@ package org.tokend.template.test
 import org.junit.Assert
 import org.junit.Test
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.sdk.utils.extentions.encodeHexString
+import org.tokend.template.data.model.history.details.BalanceChangeDetails
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.ApiProviderFactory
 import org.tokend.template.di.providers.RepositoryProviderImpl
@@ -18,7 +18,6 @@ import org.tokend.wallet.Base32Check
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.PaymentFeeType
 import java.math.BigDecimal
-import java.security.SecureRandom
 
 class PaymentsTest {
     private val emissionAmount = BigDecimal.TEN
@@ -113,7 +112,7 @@ class PaymentsTest {
                 repositoryProvider, session, txManager)
 
         val request = CreatePaymentRequestUseCase(
-                recipientAccountId,
+                recipientEmail,
                 paymentAmount,
                 asset,
                 "Test payment",
@@ -139,6 +138,23 @@ class PaymentsTest {
 
         Assert.assertNotEquals("Balance must be changed after the payment sending",
                 0, initialBalance.compareTo(currentBalance))
+
+        val historyRepository = repositoryProvider.balanceChanges(request.senderBalanceId)
+        historyRepository.updateIfNotFreshDeferred().blockingAwait()
+        val transactions = historyRepository.itemsList
+
+        Assert.assertTrue("History must not be empty after the payment sending",
+                transactions.isNotEmpty())
+        Assert.assertTrue("First history entry must be a payment after the payment sending",
+                transactions.first().details is BalanceChangeDetails.Payment)
+        Assert.assertEquals("Payment history entry must have a requested destination account id",
+                request.recipientAccountId,
+                transactions
+                        .first()
+                        .details
+                        .let { it as BalanceChangeDetails.Payment }
+                        .destAccountId
+        )
     }
 
     @Test
