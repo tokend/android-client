@@ -4,7 +4,7 @@ import org.tokend.sdk.api.generated.resources.OfferResource
 import org.tokend.sdk.api.generated.resources.OrderBookEntryResource
 import org.tokend.sdk.utils.ApiDateUtil
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.BalanceChangeDetails
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.wallet.Base32Check
 import java.io.Serializable
 import java.math.BigDecimal
@@ -75,12 +75,12 @@ class OfferRecord(
         }
 
         /**
-         * @param source [BalanceChange] with [BalanceChangeDetails.Offer] details
+         * @param source [BalanceChange] with [BalanceChangeCause.Offer] details
          */
         @JvmStatic
         fun fromBalanceChange(source: BalanceChange): OfferRecord {
-            val details = source.details as? BalanceChangeDetails.Offer
-                    ?: throw IllegalArgumentException("BalanceChangeDetails.Offer is required")
+            val details = source.cause as? BalanceChangeCause.Offer
+                    ?: throw IllegalArgumentException("BalanceChangeCause.Offer is required")
 
             val baseBalanceId =
                     if (details.isBuy)

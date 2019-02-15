@@ -89,7 +89,7 @@ class CreatePaymentRequestUseCase(
             accountDetailsRepository
                     ?.getAccountIdByEmail(recipient)
                     ?: Single.error(
-                            IllegalStateException("Account details repository is required" +
+                            IllegalStateException("Account cause repository is required" +
                                     " to get recipient's account ID")
                     )
     }

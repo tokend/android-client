@@ -5,7 +5,7 @@ import org.tokend.sdk.api.generated.resources.*
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.data.model.history.SimpleFeeRecord
-import org.tokend.template.data.model.history.details.BalanceChangeDetails
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 
 class DefaultParticipantEffectConverter(
         private val contextBalanceId: String
@@ -105,7 +105,7 @@ class DefaultParticipantEffectConverter(
                 return@forEach
             }
 
-            val details = getBalanceChangeDetails(effect, operationDetails)
+            val cause = getCause(effect, operationDetails)
 
             result.add(
                     BalanceChange(
@@ -116,7 +116,7 @@ class DefaultParticipantEffectConverter(
                             assetCode = assetCode,
                             balanceId = contextBalanceId,
                             date = date,
-                            details = details
+                            cause = cause
                     )
             )
         }
@@ -124,38 +124,38 @@ class DefaultParticipantEffectConverter(
         return result
     }
 
-    private fun getBalanceChangeDetails(effect: EffectResource,
-                                        operationDetails: OperationDetailsResource)
-            : BalanceChangeDetails {
+    private fun getCause(effect: EffectResource,
+                         operationDetails: OperationDetailsResource)
+            : BalanceChangeCause {
         return try {
             when (operationDetails) {
                 is OpPaymentDetailsResource ->
-                    BalanceChangeDetails.Payment(operationDetails)
+                    BalanceChangeCause.Payment(operationDetails)
                 is OpCreateIssuanceRequestDetailsResource ->
-                    BalanceChangeDetails.Issuance(operationDetails)
+                    BalanceChangeCause.Issuance(operationDetails)
                 is OpCreateWithdrawRequestDetailsResource ->
-                    BalanceChangeDetails.Withdrawal(operationDetails)
+                    BalanceChangeCause.Withdrawal(operationDetails)
                 is OpManageOfferDetailsResource ->
                     if (effect is EffectMatchedResource)
-                        BalanceChangeDetails.MatchedOffer(operationDetails, effect)
+                        BalanceChangeCause.MatchedOffer(operationDetails, effect)
                     else
-                        BalanceChangeDetails.Offer(operationDetails)
+                        BalanceChangeCause.Offer(operationDetails)
                 is OpCheckSaleStateDetailsResource ->
                     if (effect is EffectMatchedResource)
-                        BalanceChangeDetails.Investment(effect)
+                        BalanceChangeCause.Investment(effect)
                     else
-                        BalanceChangeDetails.Unknown
+                        BalanceChangeCause.Unknown
                 is OpCreateAMLAlertRequestDetailsResource ->
-                    BalanceChangeDetails.AmlAlert(operationDetails)
+                    BalanceChangeCause.AmlAlert(operationDetails)
                 is OpPayoutDetailsResource ->
-                    BalanceChangeDetails.Payout(operationDetails)
+                    BalanceChangeCause.Payout(operationDetails)
                 else ->
-                    BalanceChangeDetails.Unknown
+                    BalanceChangeCause.Unknown
             }
         } catch (e: Exception) {
             logError("Unable to parse operation details ${operationDetails.id}: "
                     + e.localizedMessage)
-            BalanceChangeDetails.Unknown
+            BalanceChangeCause.Unknown
         }
     }
 

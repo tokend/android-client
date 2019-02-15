@@ -5,7 +5,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.template.data.model.history.details.BalanceChangeDetails
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.ApiProviderFactory
 import org.tokend.template.di.providers.RepositoryProviderImpl
@@ -146,13 +146,13 @@ class PaymentsTest {
         Assert.assertTrue("History must not be empty after the payment sending",
                 transactions.isNotEmpty())
         Assert.assertTrue("First history entry must be a payment after the payment sending",
-                transactions.first().details is BalanceChangeDetails.Payment)
+                transactions.first().cause is BalanceChangeCause.Payment)
         Assert.assertEquals("Payment history entry must have a requested destination account id",
                 request.recipientAccountId,
                 transactions
                         .first()
-                        .details
-                        .let { it as BalanceChangeDetails.Payment }
+                        .cause
+                        .let { it as BalanceChangeCause.Payment }
                         .destAccountId
         )
     }

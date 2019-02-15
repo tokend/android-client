@@ -6,7 +6,7 @@ import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.data.model.OfferRecord
-import org.tokend.template.data.model.history.details.BalanceChangeDetails
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
 import org.tokend.template.features.offers.logic.ConfirmOfferUseCase
@@ -124,13 +124,13 @@ class OffersTest {
         Assert.assertTrue("History must not be empty after withdrawal sending",
                 transactions.isNotEmpty())
         Assert.assertTrue("First history entry must be offer-related after offer sending",
-                transactions.first().details is BalanceChangeDetails.Offer)
+                transactions.first().cause is BalanceChangeCause.Offer)
         Assert.assertEquals("Offer-related history entry must have the same id with sent offer",
                 offer.id,
                 transactions
                         .first()
-                        .details
-                        .let { it as BalanceChangeDetails.Offer }
+                        .cause
+                        .let { it as BalanceChangeCause.Offer }
                         .offerId
         )
     }

@@ -1,6 +1,6 @@
 package org.tokend.template.data.model.history
 
-import org.tokend.template.data.model.history.details.BalanceChangeDetails
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 import java.io.Serializable
 import java.math.BigDecimal
 import java.util.*
@@ -13,7 +13,7 @@ open class BalanceChange(
         val balanceId: String,
         val fee: SimpleFeeRecord,
         val date: Date,
-        val details: BalanceChangeDetails
+        val cause: BalanceChangeCause
 ): Serializable {
     override fun equals(other: Any?): Boolean {
         return other is BalanceChange && other.id == this.id

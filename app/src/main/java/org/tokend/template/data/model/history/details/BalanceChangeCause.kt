@@ -5,14 +5,17 @@ import org.tokend.template.data.model.history.SimpleFeeRecord
 import java.io.Serializable
 import java.math.BigDecimal
 
-sealed class BalanceChangeDetails : Serializable {
-    object Unknown : BalanceChangeDetails()
+/**
+ * Financial action resulted in the balance change
+ */
+sealed class BalanceChangeCause : Serializable {
+    object Unknown : BalanceChangeCause()
 
     // ------- AML Alert -------- //
 
     class AmlAlert(
             val reason: String?
-    ) : BalanceChangeDetails() {
+    ) : BalanceChangeCause() {
         constructor(op: OpCreateAMLAlertRequestDetailsResource) : this(
                 reason = op.reason.takeIf { it.isNotEmpty() }
         )
@@ -29,7 +32,7 @@ sealed class BalanceChangeDetails : Serializable {
             val baseAssetCode: String,
             val quoteAssetCode: String,
             val fee: SimpleFeeRecord
-    ) : BalanceChangeDetails() {
+    ) : BalanceChangeCause() {
         constructor(op: OpManageOfferDetailsResource) : this(
                 offerId = op.offerId,
                 orderBookId = op.orderBookId,
@@ -113,7 +116,7 @@ sealed class BalanceChangeDetails : Serializable {
     class Issuance(
             val cause: String?,
             val reference: String?
-    ) : BalanceChangeDetails() {
+    ) : BalanceChangeCause() {
         constructor(op: OpCreateIssuanceRequestDetailsResource) : this(
                 cause = op.externalDetails?.get("cause")?.asText(),
                 reference = op.reference
@@ -132,7 +135,7 @@ sealed class BalanceChangeDetails : Serializable {
             val reference: String?,
             val sourceName: String?,
             val destName: String?
-    ) : BalanceChangeDetails() {
+    ) : BalanceChangeCause() {
         constructor(op: OpPaymentDetailsResource) : this(
                 sourceAccountId = op.accountFrom.id,
                 destAccountId = op.accountTo.id,
@@ -202,7 +205,7 @@ sealed class BalanceChangeDetails : Serializable {
             val actualFee: SimpleFeeRecord,
             val assetCode: String,
             val sourceAccountId: String
-    ) : BalanceChangeDetails() {
+    ) : BalanceChangeCause() {
         constructor(op: OpPayoutDetailsResource) : this(
                 maxPayoutAmount = op.maxPayoutAmount,
                 minPayoutAmount = op.minPayoutAmount,
@@ -226,7 +229,7 @@ sealed class BalanceChangeDetails : Serializable {
 
     class Withdrawal(
             val destinationAddress: String
-    ) : BalanceChangeDetails() {
+    ) : BalanceChangeCause() {
         constructor(op: OpCreateWithdrawRequestDetailsResource) : this(
                 destinationAddress = op.externalDetails.get("address").asText()
         )

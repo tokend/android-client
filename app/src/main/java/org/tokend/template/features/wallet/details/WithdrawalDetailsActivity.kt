@@ -3,7 +3,7 @@ package org.tokend.template.features.wallet.details
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.BalanceChangeDetails
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.formatter.AmountFormatter
 
@@ -12,7 +12,7 @@ class WithdrawalDetailsActivity : BalanceChangeDetailsActivity() {
         setContentView(R.layout.activity_details)
         setTitle(R.string.withdrawal_details_title)
 
-        val details = item.details as? BalanceChangeDetails.Withdrawal
+        val details = item.cause as? BalanceChangeCause.Withdrawal
 
         if (details == null) {
             finish()
@@ -42,10 +42,10 @@ class WithdrawalDetailsActivity : BalanceChangeDetailsActivity() {
     }
 
     private fun displayDestination(item: BalanceChange,
-                                   details: BalanceChangeDetails.Withdrawal) {
+                                   cause: BalanceChangeCause.Withdrawal) {
         InfoCard(cards_layout)
                 .setHeading(R.string.tx_withdrawal_destination, null)
-                .addRow(details.destinationAddress, null)
+                .addRow(cause.destinationAddress, null)
                 .addRow("\n" + getString(R.string.template_withdrawal_fee_warning, item.assetCode), null)
     }
 }

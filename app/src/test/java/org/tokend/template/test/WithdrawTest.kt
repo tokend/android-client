@@ -6,7 +6,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.template.data.model.history.details.BalanceChangeDetails
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.ApiProviderFactory
 import org.tokend.template.di.providers.RepositoryProviderImpl
@@ -177,13 +177,13 @@ class WithdrawTest {
         Assert.assertTrue("History must not be empty after withdrawal sending",
                 transactions.isNotEmpty())
         Assert.assertTrue("First history entry must be a withdrawal after withdrawal sending",
-                transactions.first().details is BalanceChangeDetails.Withdrawal)
+                transactions.first().cause is BalanceChangeCause.Withdrawal)
         Assert.assertEquals("Withdrawal history entry must have a requested destination address",
                 destAddress,
                 transactions
                         .first()
-                        .details
-                        .let { it as BalanceChangeDetails.Withdrawal }
+                        .cause
+                        .let { it as BalanceChangeCause.Withdrawal }
                         .destinationAddress
         )
     }

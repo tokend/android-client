@@ -3,7 +3,7 @@ package org.tokend.template.features.wallet.details
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.BalanceChangeDetails
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
@@ -13,7 +13,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         setContentView(R.layout.activity_details)
         setTitle(R.string.payment_details_title)
 
-        val details = item.details as? BalanceChangeDetails.Payment
+        val details = item.cause as? BalanceChangeCause.Payment
 
         if (details == null) {
             finish()
@@ -33,12 +33,12 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         displayDate(item, cards_layout)
     }
 
-    private fun displayCounterparty(details: BalanceChangeDetails.Payment,
+    private fun displayCounterparty(cause: BalanceChangeCause.Payment,
                                     accountId: String) {
-        val counterpartyAccount = details.getCounterpartyAccountId(accountId)
-        val counterpartyName = details.getCounterpartyName(accountId)
+        val counterpartyAccount = cause.getCounterpartyAccountId(accountId)
+        val counterpartyName = cause.getCounterpartyName(accountId)
 
-        val isReceived = details.isReceived(accountId)
+        val isReceived = cause.isReceived(accountId)
 
         val titleStringRes =
                 if (isReceived)
@@ -57,32 +57,32 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
     }
 
     private fun displayPaidOrReceived(item: BalanceChange,
-                                      details: BalanceChangeDetails.Payment,
+                                      cause: BalanceChangeCause.Payment,
                                       accountId: String) {
-        val isReceived = details.isReceived(accountId)
+        val isReceived = cause.isReceived(accountId)
 
         if (isReceived) {
-            displayReceived(item, details)
+            displayReceived(item, cause)
         } else {
-            displayPaid(item, details)
+            displayPaid(item, cause)
         }
     }
 
     private fun displayReceived(item: BalanceChange,
-                                details: BalanceChangeDetails.Payment) {
-        val feePaidBySender = details.isDestFeePaidBySource
+                                cause: BalanceChangeCause.Payment) {
+        val feePaidBySender = cause.isDestFeePaidBySource
 
         val paidFeePercent =
                 if (feePaidBySender)
                     BigDecimal.ZERO
                 else
-                    details.destFee.percent
+                    cause.destFee.percent
 
         val paidFeeFixed =
                 if (feePaidBySender)
                     BigDecimal.ZERO
                 else
-                    details.destFee.fixed
+                    cause.destFee.fixed
 
         val receivedTotal = item.amount - paidFeeFixed - paidFeePercent
 
@@ -106,20 +106,20 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
     }
 
     private fun displayPaid(item: BalanceChange,
-                            details: BalanceChangeDetails.Payment) {
-        val feePaidBySender = details.isDestFeePaidBySource
+                            cause: BalanceChangeCause.Payment) {
+        val feePaidBySender = cause.isDestFeePaidBySource
 
         val paidFeePercent =
                 if (feePaidBySender)
-                    details.sourceFee.percent
+                    cause.sourceFee.percent
                 else
-                    details.sourceFee.percent + details.destFee.percent
+                    cause.sourceFee.percent + cause.destFee.percent
 
         val paidFeeFixed =
                 if (feePaidBySender)
-                    details.sourceFee.fixed
+                    cause.sourceFee.fixed
                 else
-                    details.sourceFee.fixed + details.destFee.fixed
+                    cause.sourceFee.fixed + cause.destFee.fixed
 
         val paidTotal = item.amount + paidFeeFixed + paidFeePercent
 
@@ -142,8 +142,8 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                 }
     }
 
-    private fun displaySubject(details: BalanceChangeDetails.Payment) {
-        val subject = details.subject?.takeIf { it.isNotBlank() }
+    private fun displaySubject(cause: BalanceChangeCause.Payment) {
+        val subject = cause.subject?.takeIf { it.isNotBlank() }
                 ?: return
 
         InfoCard(cards_layout)

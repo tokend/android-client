@@ -17,7 +17,7 @@ import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.BalanceChangeDetails
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
@@ -225,22 +225,22 @@ object Navigator {
 
     fun openBalanceChangeDetails(activity: Activity,
                                  change: BalanceChange) {
-        val activityClass = when (change.details) {
-            is BalanceChangeDetails.AmlAlert -> AmlAlertDetailsActivity::class.java
-            is BalanceChangeDetails.Investment -> InvestmentDetailsActivity::class.java
-            is BalanceChangeDetails.MatchedOffer -> OfferMatchDetailsActivity::class.java
-            is BalanceChangeDetails.Issuance -> IssuanceDetailsActivity::class.java
-            is BalanceChangeDetails.Payment -> PaymentDetailsActivity::class.java
-            is BalanceChangeDetails.Payout -> PayoutDetailsActivity::class.java
-            is BalanceChangeDetails.Withdrawal -> WithdrawalDetailsActivity::class.java
-            is BalanceChangeDetails.Offer -> {
+        val activityClass = when (change.cause) {
+            is BalanceChangeCause.AmlAlert -> AmlAlertDetailsActivity::class.java
+            is BalanceChangeCause.Investment -> InvestmentDetailsActivity::class.java
+            is BalanceChangeCause.MatchedOffer -> OfferMatchDetailsActivity::class.java
+            is BalanceChangeCause.Issuance -> IssuanceDetailsActivity::class.java
+            is BalanceChangeCause.Payment -> PaymentDetailsActivity::class.java
+            is BalanceChangeCause.Payout -> PayoutDetailsActivity::class.java
+            is BalanceChangeCause.Withdrawal -> WithdrawalDetailsActivity::class.java
+            is BalanceChangeCause.Offer -> {
                 openPendingOfferDetails(
                         activity,
                         OfferRecord.fromBalanceChange(change)
                 )
                 return
             }
-            is BalanceChangeDetails.Unknown -> return
+            is BalanceChangeCause.Unknown -> return
         }
 
         activity.startActivity(

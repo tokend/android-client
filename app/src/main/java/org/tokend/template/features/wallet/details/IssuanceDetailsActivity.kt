@@ -3,7 +3,7 @@ package org.tokend.template.features.wallet.details
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.BalanceChangeDetails
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.view.InfoCard
 
 class IssuanceDetailsActivity : BalanceChangeDetailsActivity() {
@@ -11,7 +11,7 @@ class IssuanceDetailsActivity : BalanceChangeDetailsActivity() {
         setContentView(R.layout.activity_details)
         setTitle(R.string.issuance_details_title)
 
-        val details = item.details as? BalanceChangeDetails.Issuance
+        val details = item.cause as? BalanceChangeCause.Issuance
 
         if (details == null) {
             finish()
@@ -24,13 +24,13 @@ class IssuanceDetailsActivity : BalanceChangeDetailsActivity() {
     }
 
     private fun displayReceived(item: BalanceChange,
-                                details: BalanceChangeDetails.Issuance) {
+                                cause: BalanceChangeCause.Issuance) {
         InfoCard(cards_layout)
                 .setHeading(R.string.received, null)
                 .addRow(R.string.amount,
                         amountFormatter.formatAssetAmount(item.amount, item.assetCode))
                 .apply {
-                    val cause = details.cause
+                    val cause = cause.cause
 
                     if (cause != null) {
                         addRow(R.string.tx_cause, cause)
@@ -38,8 +38,8 @@ class IssuanceDetailsActivity : BalanceChangeDetailsActivity() {
                 }
     }
 
-    private fun displayReference(details: BalanceChangeDetails.Issuance) {
-        val reference = details.reference?.takeIf { it.isNotBlank() }
+    private fun displayReference(cause: BalanceChangeCause.Issuance) {
+        val reference = cause.reference?.takeIf { it.isNotBlank() }
                 ?: return
 
         InfoCard(cards_layout)

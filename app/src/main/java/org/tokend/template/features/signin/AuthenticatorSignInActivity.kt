@@ -263,7 +263,7 @@ class AuthenticatorSignInActivity : BaseActivity() {
     companion object {
         private const val AUTHENTICATOR_URI = "org.tokend.authenticator"
         private const val GOOGLE_PLAY_AUTHENTICATOR_URI =
-                "https://play.google.com/store/apps/details?id=org.tokend.authenticator"
+                "https://play.google.com/store/apps/cause?id=org.tokend.authenticator"
         private val OPEN_AUTHENTICATOR_REQUEST = "open_authenticator".hashCode() and 0xffff
     }
 

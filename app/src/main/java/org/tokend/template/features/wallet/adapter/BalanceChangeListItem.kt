@@ -2,7 +2,7 @@ package org.tokend.template.features.wallet.adapter
 
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.BalanceChangeAction
-import org.tokend.template.data.model.history.details.BalanceChangeDetails
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.util.DateProvider
 import java.math.BigDecimal
 import java.util.*
@@ -44,7 +44,7 @@ class BalanceChangeListItem(
                 BalanceChangeAction.LOCKED -> BalanceChangeListItem.Action.LOCKED
                 BalanceChangeAction.CHARGED_FROM_LOCKED -> BalanceChangeListItem.Action.CHARGED
                 BalanceChangeAction.CHARGED ->
-                    if (balanceChange.details is BalanceChangeDetails.Payment)
+                    if (balanceChange.cause is BalanceChangeCause.Payment)
                         BalanceChangeListItem.Action.SENT
                     else
                         BalanceChangeListItem.Action.CHARGED
@@ -57,7 +57,7 @@ class BalanceChangeListItem(
         }
 
         private fun getCounterparty(balanceChange: BalanceChange, accountId: String): String? {
-            val details = balanceChange.details
+            val details = balanceChange.cause
 
             if (balanceChange.action == BalanceChangeAction.LOCKED
                     || balanceChange.action == BalanceChangeAction.UNLOCKED) {
@@ -66,10 +66,10 @@ class BalanceChangeListItem(
             }
 
             return when (details) {
-                is BalanceChangeDetails.Payment ->
+                is BalanceChangeCause.Payment ->
                     details.getCounterpartyName(accountId)
                             ?: details.getCounterpartyAccountId(accountId)
-                is BalanceChangeDetails.Withdrawal ->
+                is BalanceChangeCause.Withdrawal ->
                     details.destinationAddress
                 else -> null
             }
@@ -83,7 +83,7 @@ class BalanceChangeListItem(
                 BalanceChangeAction.CHARGED -> false
                 BalanceChangeAction.WITHDRAWN -> false
                 BalanceChangeAction.MATCHED ->
-                    (balanceChange.details as BalanceChangeDetails.MatchedOffer)
+                    (balanceChange.cause as BalanceChangeCause.MatchedOffer)
                             .isReceivedByAsset(balanceChange.assetCode)
                 BalanceChangeAction.ISSUED -> true
                 BalanceChangeAction.FUNDED -> true
