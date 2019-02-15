@@ -1,6 +1,6 @@
 package org.tokend.template.features.invest.model
 
-import org.tokend.sdk.api.sales.model.SaleStates
+import org.tokend.sdk.api.sales.model.SaleState
 import org.tokend.sdk.api.sales.model.SimpleSale
 import org.tokend.template.data.model.UrlConfig
 import org.tokend.wallet.xdr.SaleType
@@ -19,7 +19,7 @@ class SaleRecord(
         val logoUrl: String?,
         val startDate: Date,
         val endDate: Date,
-        val state: Int,
+        val state: SaleState,
         val type: SaleType,
         val softCap: BigDecimal,
         val hardCap: BigDecimal,
@@ -48,7 +48,7 @@ class SaleRecord(
             logoUrl = source.details.logo.getUrl(urlConfig?.storage),
             startDate = source.startDate,
             endDate = source.endDate,
-            state = source.state.value,
+            state = SaleState.fromName(source.state.name),
             type = SaleType.values().find { it.value == source.type.value }!!,
             softCap = source.softCap,
             hardCap = source.hardCap,
@@ -74,10 +74,10 @@ class SaleRecord(
         get() = isClosed || isCanceled
 
     val isClosed: Boolean
-        get() = state == SaleStates.STATE_CLOSED
+        get() = state == SaleState.CLOSED
 
     val isCanceled: Boolean
-        get() = state == SaleStates.STATE_CANCELED
+        get() = state == SaleState.CANCELED
 
     override fun equals(other: Any?): Boolean {
         return other is SaleRecord && other.id == this.id
