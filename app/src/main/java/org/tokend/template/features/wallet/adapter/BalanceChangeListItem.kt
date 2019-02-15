@@ -59,6 +59,12 @@ class BalanceChangeListItem(
         private fun getCounterparty(balanceChange: BalanceChange, accountId: String): String? {
             val details = balanceChange.details
 
+            if (balanceChange.action == BalanceChangeAction.LOCKED
+                    || balanceChange.action == BalanceChangeAction.UNLOCKED) {
+                // Do not show "Locked to ole21@mail.com"
+                return null
+            }
+
             return when (details) {
                 is BalanceChangeDetails.Payment ->
                     details.getCounterpartyName(accountId)
