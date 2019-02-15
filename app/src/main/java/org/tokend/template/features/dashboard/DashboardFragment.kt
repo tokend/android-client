@@ -1,7 +1,5 @@
 package org.tokend.template.features.dashboard
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
@@ -48,7 +46,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
 
     private fun initAssetTabsCard(): AssetTabsCard {
         return AssetTabsCard(
-                activity!!,
+                requireActivity(),
                 repositoryProvider,
                 errorHandlerFactory,
                 assetComparator,
@@ -60,6 +58,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
 
     private fun initPendingOffersCard(): PendingOffersCard {
         return PendingOffersCard(
+                requireActivity(),
                 context,
                 repositoryProvider,
                 compositeDisposable,
@@ -80,16 +79,6 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     private fun update() {
         repositoryProvider.balances().updateIfNotFresh()
         repositoryProvider.offers().updateIfNotFresh()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                PendingOffersCard.CANCEL_OFFER_REQUEST,
-                AssetTabsCard.SEND_REQUEST -> update()
-            }
-        }
     }
 
     companion object {

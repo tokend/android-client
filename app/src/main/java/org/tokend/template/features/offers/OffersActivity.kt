@@ -1,6 +1,5 @@
 package org.tokend.template.features.offers
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -59,7 +58,7 @@ class OffersActivity : BaseActivity() {
         adapter = PendingOffersAdapter(amountFormatter, false)
         adapter.onItemClick { _, item ->
             item.source?.also {
-                Navigator.openPendingOfferDetails(this, it, CANCEL_OFFER_REQUEST)
+                Navigator.openPendingOfferDetails(this, it)
             }
         }
 
@@ -136,13 +135,7 @@ class OffersActivity : BaseActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        setResult(resultCode)
-    }
-
     companion object {
         const val ONLY_PRIMARY_EXTRA = "only_primary"
-        private val CANCEL_OFFER_REQUEST = "cancel_offer".hashCode() and 0xffff
     }
 }

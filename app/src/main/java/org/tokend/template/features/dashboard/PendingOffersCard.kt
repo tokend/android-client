@@ -1,5 +1,6 @@
 package org.tokend.template.features.dashboard
 
+import android.app.Activity
 import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -25,7 +26,8 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ViewProvider
 import org.tokend.template.view.util.formatter.AmountFormatter
 
-class PendingOffersCard(private val context: Context?,
+class PendingOffersCard(private val activity: Activity,
+                        private val context: Context?,
                         private val repositoryProvider: RepositoryProvider,
                         private val disposable: CompositeDisposable,
                         private val amountFormatter: AmountFormatter) : ViewProvider {
@@ -58,7 +60,7 @@ class PendingOffersCard(private val context: Context?,
 
     fun initViewMoreButton(fragment: Fragment) {
         view.view_more_offers_button.onClick {
-            Navigator.openPendingOffers(fragment, CANCEL_OFFER_REQUEST)
+            Navigator.openPendingOffers(fragment)
         }
     }
 
@@ -94,6 +96,9 @@ class PendingOffersCard(private val context: Context?,
                     offersRepository
                 }
         )
+        offersAdapter.onItemClick { _, item ->
+            item.source?.also { Navigator.openPendingOfferDetails(activity, it) }
+        }
 
         view.offers_list.layoutManager = LinearLayoutManager(context)
         view.offers_list.adapter = offersAdapter
@@ -130,6 +135,5 @@ class PendingOffersCard(private val context: Context?,
 
     companion object {
         private const val TRANSACTIONS_TO_DISPLAY = 3
-        val CANCEL_OFFER_REQUEST = "cancel_offer".hashCode() and 0xffff
     }
 }

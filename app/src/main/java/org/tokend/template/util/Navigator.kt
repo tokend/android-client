@@ -197,7 +197,7 @@ object Navigator {
         ), requestCode)
     }
 
-    fun openPendingOffers(fragment: Fragment, requestCode: Int,
+    fun openPendingOffers(fragment: Fragment, requestCode: Int = 0,
                           onlyPrimary: Boolean = false) {
         fragment.startActivityForResult(fragment.context?.intentFor<OffersActivity>(
                 OffersActivity.ONLY_PRIMARY_EXTRA to onlyPrimary
@@ -236,8 +236,7 @@ object Navigator {
             is BalanceChangeDetails.Offer -> {
                 openPendingOfferDetails(
                         activity,
-                        OfferRecord.fromBalanceChange(change),
-                        0
+                        OfferRecord.fromBalanceChange(change)
                 )
                 return
             }
@@ -253,7 +252,7 @@ object Navigator {
 
     fun openPendingOfferDetails(activity: Activity,
                                 offer: OfferRecord,
-                                requestCode: Int) {
+                                requestCode: Int = 0) {
         val activityClass =
                 if (offer.isInvestment)
                     PendingInvestmentDetailsActivity::class.java
