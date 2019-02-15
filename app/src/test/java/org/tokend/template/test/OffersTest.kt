@@ -46,9 +46,11 @@ class OffersTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
+        val quoteAsset = Util.createAsset(apiProvider, TxManager(apiProvider))
+
         val offer = OfferRecord(
                 "ETH",
-                "USD",
+                quoteAsset,
                 isBuy = false,
                 baseAmount = baseAmount,
                 price = price
