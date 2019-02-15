@@ -83,7 +83,7 @@ class BalanceChangeListItem(
                 BalanceChangeAction.CHARGED -> false
                 BalanceChangeAction.WITHDRAWN -> false
                 BalanceChangeAction.MATCHED ->
-                    (balanceChange.details as BalanceChangeDetails.OfferMatch)
+                    (balanceChange.details as BalanceChangeDetails.MatchedOffer)
                             .isReceivedByAsset(balanceChange.assetCode)
                 BalanceChangeAction.ISSUED -> true
                 BalanceChangeAction.FUNDED -> true

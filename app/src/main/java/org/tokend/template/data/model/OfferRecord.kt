@@ -3,6 +3,8 @@ package org.tokend.template.data.model
 import org.tokend.sdk.api.generated.resources.OfferResource
 import org.tokend.sdk.api.generated.resources.OrderBookEntryResource
 import org.tokend.sdk.utils.ApiDateUtil
+import org.tokend.template.data.model.history.BalanceChange
+import org.tokend.template.data.model.history.details.BalanceChangeDetails
 import org.tokend.wallet.Base32Check
 import java.io.Serializable
 import java.math.BigDecimal
@@ -25,6 +27,9 @@ class OfferRecord(
 
     val isInvestment: Boolean
         get() = orderBookId != 0L
+
+    val isCancellable: Boolean
+        get() = baseAmount.signum() > 0
 
     override fun equals(other: Any?): Boolean {
         return other is OfferRecord && other.id == this.id
@@ -66,6 +71,42 @@ class OfferRecord(
                     isBuy = source.isBuy,
                     date = source.createdAt,
                     price = source.price
+            )
+        }
+
+        /**
+         * @param source [BalanceChange] with [BalanceChangeDetails.Offer] details
+         */
+        @JvmStatic
+        fun fromBalanceChange(source: BalanceChange): OfferRecord {
+            val details = source.details as? BalanceChangeDetails.Offer
+                    ?: throw IllegalArgumentException("BalanceChangeDetails.Offer is required")
+
+            val baseBalanceId =
+                    if (details.isBuy)
+                        EMPTY_BALANCE_ID
+                    else
+                        source.balanceId
+
+            val quoteBalanceId =
+                    if (details.isBuy)
+                        source.balanceId
+                    else
+                        EMPTY_BALANCE_ID
+
+            return OfferRecord(
+                    id = details.offerId,
+                    orderBookId = details.orderBookId,
+                    baseAmount = details.baseAmount,
+                    baseAssetCode = details.baseAssetCode,
+                    quoteAmount = details.quoteAmount,
+                    quoteAssetCode = details.quoteAssetCode,
+                    isBuy = details.isBuy,
+                    date = source.date,
+                    fee = details.fee.total,
+                    price = details.price,
+                    baseBalanceId = baseBalanceId,
+                    quoteBalanceId = quoteBalanceId
             )
         }
     }

@@ -12,7 +12,7 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
         setContentView(R.layout.activity_details)
         setTitle(getTitleString())
 
-        val details = item.details as? BalanceChangeDetails.OfferMatch
+        val details = item.details as? BalanceChangeDetails.MatchedOffer
 
         if (details == null) {
             finish()
@@ -29,7 +29,7 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
         return getString(R.string.offer_match_details_title)
     }
 
-    protected open fun displayPrice(details: BalanceChangeDetails.OfferMatch) {
+    protected open fun displayPrice(details: BalanceChangeDetails.MatchedOffer) {
         val formattedPrice = amountFormatter
                 .formatAssetAmount(details.price, details.quoteAssetCode)
 
@@ -41,7 +41,7 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
                 .addRow(priceString, null)
     }
 
-    protected open fun displayCharged(details: BalanceChangeDetails.OfferMatch) {
+    protected open fun displayCharged(details: BalanceChangeDetails.MatchedOffer) {
         val charged = details.charged
 
         val chargedTotal = charged.amount + charged.fee.total
@@ -60,7 +60,7 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
                                 minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
     }
 
-    protected open fun displayFunded(details: BalanceChangeDetails.OfferMatch) {
+    protected open fun displayFunded(details: BalanceChangeDetails.MatchedOffer) {
         val funded = details.funded
 
         val fundedTotal = funded.amount - funded.fee.total

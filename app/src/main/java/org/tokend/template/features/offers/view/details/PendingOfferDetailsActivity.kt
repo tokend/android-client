@@ -45,19 +45,19 @@ open class PendingOfferDetailsActivity : BaseActivity() {
 
     protected open fun displayDetails(item: OfferRecord) {
         displayPrice(item)
-        displayCharged(item)
+        displayToPay(item)
         displayToReceive(item)
         displayDate(item)
     }
 
-    protected open fun displayCharged(item: OfferRecord) {
+    protected open fun displayToPay(item: OfferRecord) {
         val asset = if (item.isBuy) item.quoteAssetCode else item.baseAssetCode
         val amount = if (item.isBuy) item.quoteAmount else item.baseAmount
         val fee = if (item.isBuy) item.fee else BigDecimal.ZERO
         val total = amount + fee
 
         InfoCard(cards_layout)
-                .setHeading(R.string.charged,
+                .setHeading(R.string.to_pay,
                         amountFormatter.formatAssetAmount(total, asset))
                 .addRow(R.string.amount,
                         "+" + amountFormatter.formatAssetAmount(amount, asset,
@@ -104,6 +104,10 @@ open class PendingOfferDetailsActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.offer_details, menu)
+
+        val cancelOption = menu?.findItem(R.id.cancel_offer)
+        cancelOption?.isVisible = item.isCancellable
+
         return super.onCreateOptionsMenu(menu)
     }
 

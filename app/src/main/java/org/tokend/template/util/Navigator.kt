@@ -226,14 +226,22 @@ object Navigator {
     fun openBalanceChangeDetails(activity: Activity,
                                  change: BalanceChange) {
         val activityClass = when (change.details) {
-            is BalanceChangeDetails.Unknown -> return
             is BalanceChangeDetails.AmlAlert -> AmlAlertDetailsActivity::class.java
             is BalanceChangeDetails.Investment -> InvestmentDetailsActivity::class.java
-            is BalanceChangeDetails.OfferMatch -> OfferMatchDetailsActivity::class.java
+            is BalanceChangeDetails.MatchedOffer -> OfferMatchDetailsActivity::class.java
             is BalanceChangeDetails.Issuance -> IssuanceDetailsActivity::class.java
             is BalanceChangeDetails.Payment -> PaymentDetailsActivity::class.java
             is BalanceChangeDetails.Payout -> PayoutDetailsActivity::class.java
             is BalanceChangeDetails.Withdrawal -> WithdrawalDetailsActivity::class.java
+            is BalanceChangeDetails.Offer -> {
+                openPendingOfferDetails(
+                        activity,
+                        OfferRecord.fromBalanceChange(change),
+                        0
+                )
+                return
+            }
+            is BalanceChangeDetails.Unknown -> return
         }
 
         activity.startActivity(

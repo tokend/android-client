@@ -199,6 +199,7 @@
     <string name="error_tx_invalid_fee">Transaction fee is invalid</string>
     <string name="error_tx_not_allowed">You are not allowed to perform this action</string>
     <string name="error_tx_cross_self">Current offer crosses one of your existing offers</string>
+    <string name="error_tx_not_found">Requested entity not found</string>
 
     <string name="tfa_dialog_title">Two-factor authentication</string>
     <string name="tfa_default_dialog_message">Enter verification code</string>

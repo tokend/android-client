@@ -10,6 +10,7 @@ open class BalanceChange(
         val action: BalanceChangeAction,
         val amount: BigDecimal,
         val assetCode: String,
+        val balanceId: String,
         val fee: SimpleFeeRecord,
         val date: Date,
         val details: BalanceChangeDetails

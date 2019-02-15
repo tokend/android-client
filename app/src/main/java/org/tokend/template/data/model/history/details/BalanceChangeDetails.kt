@@ -18,47 +18,60 @@ sealed class BalanceChangeDetails : Serializable {
         )
     }
 
-    // ------- Offer Match -------- //
+    // ------- Offer -------- //
 
-    open class OfferMatch(
+    open class Offer(
             val offerId: Long,
             val orderBookId: Long,
             val price: BigDecimal,
             val isBuy: Boolean,
+            val baseAmount: BigDecimal,
+            val baseAssetCode: String,
             val quoteAssetCode: String,
+            val fee: SimpleFeeRecord
+    ) : BalanceChangeDetails() {
+        constructor(op: OpManageOfferDetailsResource) : this(
+                offerId = op.offerId,
+                orderBookId = op.orderBookId,
+                price = op.price,
+                isBuy = op.isBuy,
+                baseAmount = op.baseAmount,
+                baseAssetCode = op.baseAsset.id,
+                quoteAssetCode = op.quoteAsset.id,
+                fee = SimpleFeeRecord(op.fee)
+        )
+
+        val quoteAmount: BigDecimal = baseAmount * price
+    }
+
+    // ------- Offer Match -------- //
+
+    open class MatchedOffer(
+            offerId: Long,
+            orderBookId: Long,
+            price: BigDecimal,
+            isBuy: Boolean,
+            baseAmount: BigDecimal,
+            baseAssetCode: String,
+            quoteAssetCode: String,
+            fee: SimpleFeeRecord,
             val charged: ParticularBalanceChangeDetails,
             val funded: ParticularBalanceChangeDetails
 
-    ) : BalanceChangeDetails() {
+    ) : Offer(offerId, orderBookId, price, isBuy, baseAmount, baseAssetCode, quoteAssetCode, fee) {
         constructor(op: OpManageOfferDetailsResource,
                     effect: EffectMatchedResource) : this(
                 offerId = effect.offerId,
                 orderBookId = effect.orderBookId,
                 price = effect.price,
                 isBuy = op.isBuy,
+                baseAmount = op.baseAmount,
+                baseAssetCode = op.baseAsset.id,
                 quoteAssetCode = op.quoteAsset.id,
+                fee = SimpleFeeRecord(op.fee),
                 charged = ParticularBalanceChangeDetails(effect.charged),
                 funded = ParticularBalanceChangeDetails(effect.funded)
         )
-
-        val chargedInQuote = charged.assetCode == quoteAssetCode
-
-        val fundedInQuote = funded.assetCode == quoteAssetCode
-
-        val baseAssetCode =
-                if (chargedInQuote)
-                    funded.assetCode
-                else
-                    charged.assetCode
-
-        val isPrimaryMarket = orderBookId != 0L
-
-        /**
-         * @return true if given balance was funded by this match
-         */
-        fun isReceivedByBalance(balanceId: String): Boolean {
-            return funded.balanceId == balanceId
-        }
 
         /**
          * @return true if this match has funded in given asset
@@ -74,15 +87,22 @@ sealed class BalanceChangeDetails : Serializable {
             offerId: Long,
             orderBookId: Long,
             price: BigDecimal,
+            baseAmount: BigDecimal,
+            baseAssetCode: String,
             quoteAssetCode: String,
+            fee: SimpleFeeRecord,
             charged: ParticularBalanceChangeDetails,
             funded: ParticularBalanceChangeDetails
-    ) : OfferMatch(offerId, orderBookId, price, true, quoteAssetCode, charged, funded) {
+    ) : MatchedOffer(offerId, orderBookId, price, true,
+            baseAmount, baseAssetCode, quoteAssetCode, fee, charged, funded) {
         constructor(effect: EffectMatchedResource) : this(
                 offerId = effect.offerId,
                 orderBookId = effect.orderBookId,
                 price = effect.price,
+                baseAmount = effect.funded.amount, // Investments are always fund in base asset
+                baseAssetCode = effect.funded.assetCode,
                 quoteAssetCode = effect.charged.assetCode, // Investments always charge in quote asset
+                fee = SimpleFeeRecord(effect.charged.fee), // Fee is always paid in quote asset
                 charged = ParticularBalanceChangeDetails(effect.charged),
                 funded = ParticularBalanceChangeDetails(effect.funded)
         )
@@ -93,8 +113,8 @@ sealed class BalanceChangeDetails : Serializable {
     class Issuance(
             val cause: String?,
             val reference: String?
-    ): BalanceChangeDetails() {
-        constructor(op: OpCreateIssuanceRequestDetailsResource): this(
+    ) : BalanceChangeDetails() {
+        constructor(op: OpCreateIssuanceRequestDetailsResource) : this(
                 cause = op.externalDetails?.get("cause")?.asText(),
                 reference = op.reference
         )
@@ -113,7 +133,7 @@ sealed class BalanceChangeDetails : Serializable {
             val sourceName: String?,
             val destName: String?
     ) : BalanceChangeDetails() {
-        constructor(op: OpPaymentDetailsResource): this(
+        constructor(op: OpPaymentDetailsResource) : this(
                 sourceAccountId = op.accountFrom.id,
                 destAccountId = op.accountTo.id,
                 destFee = SimpleFeeRecord(op.destinationFee),
@@ -206,8 +226,8 @@ sealed class BalanceChangeDetails : Serializable {
 
     class Withdrawal(
             val destinationAddress: String
-    ): BalanceChangeDetails() {
-        constructor(op: OpCreateWithdrawRequestDetailsResource): this(
+    ) : BalanceChangeDetails() {
+        constructor(op: OpCreateWithdrawRequestDetailsResource) : this(
                 destinationAddress = op.externalDetails.get("address").asText()
         )
     }

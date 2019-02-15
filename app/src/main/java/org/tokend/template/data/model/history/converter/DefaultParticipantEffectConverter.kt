@@ -106,7 +106,6 @@ class DefaultParticipantEffectConverter(
             }
 
             val details = getBalanceChangeDetails(effect, operationDetails)
-                    ?: return@forEach
 
             result.add(
                     BalanceChange(
@@ -115,6 +114,7 @@ class DefaultParticipantEffectConverter(
                             amount = amount,
                             fee = SimpleFeeRecord(fee),
                             assetCode = assetCode,
+                            balanceId = contextBalanceId,
                             date = date,
                             details = details
                     )
@@ -126,7 +126,7 @@ class DefaultParticipantEffectConverter(
 
     private fun getBalanceChangeDetails(effect: EffectResource,
                                         operationDetails: OperationDetailsResource)
-            : BalanceChangeDetails? {
+            : BalanceChangeDetails {
         return try {
             when (operationDetails) {
                 is OpPaymentDetailsResource ->
@@ -136,9 +136,15 @@ class DefaultParticipantEffectConverter(
                 is OpCreateWithdrawRequestDetailsResource ->
                     BalanceChangeDetails.Withdrawal(operationDetails)
                 is OpManageOfferDetailsResource ->
-                    BalanceChangeDetails.OfferMatch(operationDetails, effect as EffectMatchedResource)
+                    if (effect is EffectMatchedResource)
+                        BalanceChangeDetails.MatchedOffer(operationDetails, effect)
+                    else
+                        BalanceChangeDetails.Offer(operationDetails)
                 is OpCheckSaleStateDetailsResource ->
-                    BalanceChangeDetails.Investment(effect as EffectMatchedResource)
+                    if (effect is EffectMatchedResource)
+                        BalanceChangeDetails.Investment(effect)
+                    else
+                        BalanceChangeDetails.Unknown
                 is OpCreateAMLAlertRequestDetailsResource ->
                     BalanceChangeDetails.AmlAlert(operationDetails)
                 is OpPayoutDetailsResource ->
@@ -149,7 +155,7 @@ class DefaultParticipantEffectConverter(
         } catch (e: Exception) {
             logError("Unable to parse operation details ${operationDetails.id}: "
                     + e.localizedMessage)
-            null
+            BalanceChangeDetails.Unknown
         }
     }
 

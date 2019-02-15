@@ -6,6 +6,7 @@ import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.data.model.history.details.BalanceChangeDetails
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
 import org.tokend.template.features.offers.logic.ConfirmOfferUseCase
@@ -95,10 +96,10 @@ class OffersTest {
 
         createAssetPair(baseAsset, quoteAsset, apiProvider, txManager)
 
-        Util.getSomeMoney(baseAsset, emissionAmount,
+        Util.getSomeMoney(quoteAsset, emissionAmount,
                 repositoryProvider, session, txManager)
 
-        submitOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
+        submitBuyOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
 
         val offersRepository = repositoryProvider.offers(false)
 
@@ -113,6 +114,25 @@ class OffersTest {
 
         Assert.assertTrue("There must be a newly created offer in offers repository",
                 offersRepository.itemsList.isNotEmpty())
+
+        val offer = offersRepository.itemsList.first()
+
+        val historyRepository = repositoryProvider.balanceChanges(offer.quoteBalanceId)
+        historyRepository.updateIfNotFreshDeferred().blockingAwait()
+        val transactions = historyRepository.itemsList
+
+        Assert.assertTrue("History must not be empty after withdrawal sending",
+                transactions.isNotEmpty())
+        Assert.assertTrue("First history entry must be offer-related after offer sending",
+                transactions.first().details is BalanceChangeDetails.Offer)
+        Assert.assertEquals("Offer-related history entry must have the same id with sent offer",
+                offer.id,
+                transactions
+                        .first()
+                        .details
+                        .let { it as BalanceChangeDetails.Offer }
+                        .offerId
+        )
     }
 
     @Test
@@ -143,10 +163,10 @@ class OffersTest {
 
         createAssetPair(baseAsset, quoteAsset, apiProvider, txManager)
 
-        val initialBalance = Util.getSomeMoney(baseAsset, emissionAmount,
+        val initialBalance = Util.getSomeMoney(quoteAsset, emissionAmount,
                 repositoryProvider, session, txManager)
 
-        submitOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
+        submitBuyOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
 
         val offersRepository = repositoryProvider.offers(false)
 
@@ -209,10 +229,10 @@ class OffersTest {
 
         createAssetPair(baseAsset, quoteAsset, apiProvider, txManager)
 
-        Util.getSomeMoney(baseAsset, emissionAmount,
+        Util.getSomeMoney(quoteAsset, emissionAmount,
                 repositoryProvider, session, txManager)
 
-        submitOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
+        submitBuyOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
 
         val offersRepository = repositoryProvider.offers(false)
 
@@ -222,7 +242,7 @@ class OffersTest {
 
         val offerToCancel = offersRepository.itemsList.first()
 
-        submitOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider, offerToCancel)
+        submitBuyOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider, offerToCancel)
 
         Thread.sleep(500)
 
@@ -236,14 +256,14 @@ class OffersTest {
                 })
     }
 
-    private fun submitOffer(baseAsset: String, quoteAsset: String,
-                            session: Session, apiProvider: ApiProvider,
-                            repositoryProvider: RepositoryProvider,
-                            offerToCancel: OfferRecord? = null) {
+    private fun submitBuyOffer(baseAsset: String, quoteAsset: String,
+                               session: Session, apiProvider: ApiProvider,
+                               repositoryProvider: RepositoryProvider,
+                               offerToCancel: OfferRecord? = null) {
         val offer = OfferRecord(
                 baseAsset,
                 quoteAsset,
-                isBuy = false,
+                isBuy = true,
                 baseAmount = baseAmount,
                 price = price
         )

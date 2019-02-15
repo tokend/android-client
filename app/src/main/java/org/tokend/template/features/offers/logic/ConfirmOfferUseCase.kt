@@ -141,6 +141,12 @@ class ConfirmOfferUseCase(
         }
         repositoryProvider.balances().updateIfEverUpdated()
 
+        if (offer.isBuy) {
+            repositoryProvider.balanceChanges(offer.quoteBalanceId).updateIfEverUpdated()
+        } else {
+            repositoryProvider.balanceChanges(offer.baseBalanceId).updateIfEverUpdated()
+        }
+
         return Single.just(true)
     }
 }
