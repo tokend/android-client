@@ -1,30 +1,76 @@
 package org.tokend.template.test
 
 import junit.framework.Assert
+import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import org.tokend.sdk.api.assets.model.SimpleAsset
-import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.data.model.history.details.BalanceChangeDetails
-import org.tokend.template.di.providers.*
+import org.tokend.template.di.providers.AccountProviderFactory
+import org.tokend.template.di.providers.ApiProviderFactory
+import org.tokend.template.di.providers.RepositoryProviderImpl
+import org.tokend.template.di.providers.WalletInfoProviderFactory
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
-import org.tokend.wallet.Account
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.*
+import org.tokend.wallet.xdr.utils.XdrDataOutputStream
+import org.tokend.wallet.xdr.utils.toXdr
 import java.math.BigDecimal
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class WithdrawTest {
-    private val asset = "ETH"
     private val amount = BigDecimal.TEN
     private val destAddress = "0x6a7a43be33ba930fe58f34e07d0ad6ba7adb9b1f"
 
+    @Before
+    fun setKeyValueWithdrawalTasks() {
+        val key = "withdrawal_tasks:*"
+
+        val urlConfigProvider = Util.getUrlConfigProvider()
+        val session = Session(
+                WalletInfoProviderFactory().createWalletInfoProvider(),
+                AccountProviderFactory().createAccountProvider()
+        )
+
+        val apiProvider =
+                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+
+        val op = ManageKeyValueOp(
+                key = key,
+                action = ManageKeyValueOp.ManageKeyValueOpAction.Put(
+                        object : KeyValueEntryValue(KeyValueEntryType.UINT32) {
+                            override fun toXdr(stream: XdrDataOutputStream) {
+                                super.toXdr(stream)
+                                1.toXdr(stream)
+                            }
+                        }
+                ),
+                ext = ManageKeyValueOp.ManageKeyValueOpExt.EmptyVersion()
+        )
+
+        val sourceAccount = Config.ADMIN_ACCOUNT
+
+        val systemInfo =
+                apiProvider.getApi()
+                        .general
+                        .getSystemInfo()
+                        .execute()
+                        .get()
+        val netParams = systemInfo.toNetworkParams()
+
+        val tx = TransactionBuilder(netParams, sourceAccount.accountId)
+                .addOperation(Operation.OperationBody.ManageKeyValue(op))
+                .build()
+
+        tx.addSignature(sourceAccount)
+
+        TxManager(apiProvider).submit(tx).blockingGet()
+    }
     @Test
     fun aCreateWithdrawal() {
         val urlConfigProvider = Util.getUrlConfigProvider()
@@ -44,6 +90,12 @@ class WithdrawTest {
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
         )
+
+        val txManager = TxManager(apiProvider)
+
+        val asset = Util.createAsset(apiProvider, txManager)
+
+        Util.getSomeMoney(asset, BigDecimal.ONE, repositoryProvider, session, txManager)
 
         val useCase = CreateWithdrawalRequestUseCase(
                 amount,
@@ -88,11 +140,12 @@ class WithdrawTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
+        val txManager = TxManager(apiProvider)
+
+        val asset = Util.createAsset(apiProvider, txManager)
+
         Util.getSomeMoney(asset, amount * BigDecimal("2"),
                 repositoryProvider, session, TxManager(apiProvider))
-
-        val assetDetails = apiProvider.getSignedApi()?.assets?.getByCode(asset)?.execute()?.get()!!
-        makeAssetWithdrawable(assetDetails, repositoryProvider, TxManager(apiProvider))
 
         val request = CreateWithdrawalRequestUseCase(
                 amount,
@@ -135,45 +188,6 @@ class WithdrawTest {
         )
     }
 
-    private fun makeAssetWithdrawable(asset: SimpleAsset,
-                                      repositoryProvider: RepositoryProvider,
-                                      txManager: TxManager) {
-        val netParams = repositoryProvider.systemInfo().getNetworkParams().blockingGet()
-
-        val req =
-                ManageAssetOp.ManageAssetOpRequest.CreateAssetUpdateRequest(
-                        ManageAssetOp.ManageAssetOpRequest.ManageAssetOpCreateAssetUpdateRequest(
-                                AssetUpdateRequest(
-                                        asset.code,
-                                        GsonFactory().getBaseGson().toJson(asset.details),
-                                        asset.policy or AssetPolicy.WITHDRAWABLE.value,
-                                        0,
-                                        AssetUpdateRequest.AssetUpdateRequestExt.EmptyVersion()
-                                ),
-                                0,
-                                ManageAssetOp.ManageAssetOpRequest
-                                        .ManageAssetOpCreateAssetUpdateRequest
-                                        .ManageAssetOpCreateAssetUpdateRequestExt
-                                        .EmptyVersion())
-                )
-
-        val op = ManageAssetOp(
-                0L,
-                req,
-                ManageAssetOp.ManageAssetOpExt.EmptyVersion()
-        )
-
-        val sourceAccount = Account.fromSecretSeed(Config.ADMIN_SEED)
-
-        val tx = TransactionBuilder(netParams, sourceAccount.accountId)
-                .addOperation(Operation.OperationBody.ManageAsset(op))
-                .build()
-
-        tx.addSignature(sourceAccount)
-
-        txManager.submit(tx).blockingGet()
-    }
-
     @Test
     fun cWithdrawWithFee() {
         val urlConfigProvider = Util.getUrlConfigProvider()
@@ -194,13 +208,12 @@ class WithdrawTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
-        val initialBalance = Util.getSomeMoney(asset, amount * BigDecimal("2"),
-                repositoryProvider, session, TxManager(apiProvider))
-
-        val assetDetails = apiProvider.getSignedApi()?.assets?.getByCode(asset)?.execute()?.get()!!
-        makeAssetWithdrawable(assetDetails, repositoryProvider, TxManager(apiProvider))
-
         val txManager = TxManager(apiProvider)
+
+        val asset = Util.createAsset(apiProvider, txManager)
+
+        val initialBalance = Util.getSomeMoney(asset, amount * BigDecimal("2"),
+                repositoryProvider, session, txManager)
 
         val feeType = FeeType.WITHDRAWAL_FEE
 

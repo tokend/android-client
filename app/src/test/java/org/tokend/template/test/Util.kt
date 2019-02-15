@@ -41,6 +41,7 @@ object Util {
                 .execute().get()
 
         System.out.println("Email is $email")
+        System.out.println("Account id is " + createResult.rootAccount.accountId)
         System.out.println("Recovery seed is " +
                 createResult.recoveryAccount.secretSeed!!.joinToString(""))
         System.out.println("Password is " +
@@ -109,7 +110,7 @@ object Util {
                 CreateIssuanceRequestOp.CreateIssuanceRequestOpExt.EmptyVersion()
         )
 
-        val sourceAccount = Account.fromSecretSeed(Config.ADMIN_SEED)
+        val sourceAccount = Config.ADMIN_ACCOUNT
 
         val tx = TransactionBuilder(netParams, sourceAccount.accountId)
                 .addOperation(Operation.OperationBody.CreateIssuanceRequest(op))
@@ -129,7 +130,7 @@ object Util {
             feeSubType: Int = 0,
             asset: String
     ): Boolean {
-        val sourceAccount = Account.fromSecretSeed(Config.ADMIN_SEED)
+        val sourceAccount = Config.ADMIN_ACCOUNT
 
         val netParams = repositoryProvider.systemInfo().getNetworkParams().blockingGet()
 
@@ -164,11 +165,12 @@ object Util {
     }
 
     fun createAsset(
-            sourceAccount: Account,
             apiProvider: ApiProvider,
             txManager: TxManager,
             externalSystemType: String? = null
     ): String {
+        val sourceAccount = Config.ADMIN_ACCOUNT
+
         val code = SecureRandom.getSeed(3).encodeHexString().toUpperCase()
 
         val systemInfo =
@@ -210,9 +212,9 @@ object Util {
                                 preissuedAssetSigner = PublicKeyFactory.fromAccountId(
                                         systemInfo.masterExchangeAccountId
                                 ),
-                                maxIssuanceAmount = netParams.amountToPrecised(BigDecimal.TEN),
+                                maxIssuanceAmount = netParams.amountToPrecised(BigDecimal("10000")),
                                 policies = policies,
-                                initialPreissuedAmount = netParams.amountToPrecised(BigDecimal.TEN),
+                                initialPreissuedAmount = netParams.amountToPrecised(BigDecimal("10000")),
                                 details = assetDetailsJson,
                                 ext = AssetCreationRequest.AssetCreationRequestExt.EmptyVersion(),
                                 sequenceNumber = 0,

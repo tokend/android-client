@@ -10,7 +10,6 @@ import org.tokend.template.di.providers.WalletInfoProviderFactory
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
-import org.tokend.wallet.Account
 
 class CreateBalanceTest {
     @Test
@@ -35,8 +34,7 @@ class CreateBalanceTest {
 
         val txManager = TxManager(apiProvider)
 
-        val assetCode = Util.createAsset(Account.fromSecretSeed(Config.ADMIN_SEED), apiProvider,
-                txManager)
+        val assetCode = Util.createAsset(apiProvider, txManager)
 
         val useCase = CreateBalanceUseCase(
                 assetCode,

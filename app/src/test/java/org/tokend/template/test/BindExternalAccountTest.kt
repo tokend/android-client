@@ -9,7 +9,6 @@ import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.deposit.BindExternalAccountUseCase
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
-import org.tokend.wallet.Account
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.CreateExternalSystemAccountIdPoolEntryActionInput
 import org.tokend.wallet.xdr.ManageExternalSystemAccountIdPoolEntryOp
@@ -38,7 +37,7 @@ class BindExternalAccountTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
-        val assetCode = Util.createAsset(Account.fromSecretSeed(Config.ADMIN_SEED), apiProvider,
+        val assetCode = Util.createAsset(apiProvider,
                 txManager, "0")
 
         CreateBalanceUseCase(
@@ -110,7 +109,7 @@ class BindExternalAccountTest {
                         .EmptyVersion()
         )
 
-        val sourceAccount = Account.fromSecretSeed(Config.ADMIN_SEED)
+        val sourceAccount = Config.ADMIN_ACCOUNT
 
         val tx = TransactionBuilder(netParams, sourceAccount.accountId)
                 .addOperation(Operation.OperationBody.ManageExternalSystemAccountIdPoolEntry(op))

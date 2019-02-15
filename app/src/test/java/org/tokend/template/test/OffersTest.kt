@@ -13,12 +13,15 @@ import org.tokend.template.features.offers.logic.PrepareOfferUseCase
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
+import org.tokend.wallet.TransactionBuilder
+import org.tokend.wallet.xdr.AssetPairPolicy
+import org.tokend.wallet.xdr.ManageAssetPairAction
+import org.tokend.wallet.xdr.ManageAssetPairOp
+import org.tokend.wallet.xdr.Operation
 import java.math.BigDecimal
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class OffersTest {
-    private val baseAsset = "ETH"
-    private val quoteAsset = "USD"
     private val price = BigDecimal("5.5")
     private val baseAmount = BigDecimal.ONE
     private val emissionAmount = BigDecimal.TEN!!
@@ -44,8 +47,8 @@ class OffersTest {
         )
 
         val offer = OfferRecord(
-                baseAsset,
-                quoteAsset,
+                "ETH",
+                "USD",
                 isBuy = false,
                 baseAmount = baseAmount,
                 price = price
@@ -82,10 +85,18 @@ class OffersTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
-        Util.getSomeMoney(baseAsset, emissionAmount,
-                repositoryProvider, session, TxManager(apiProvider))
+        val txManager = TxManager(apiProvider)
 
-        submitOffer(session, apiProvider, repositoryProvider)
+        val baseAsset = Util.createAsset(apiProvider, txManager)
+
+        val quoteAsset = Util.createAsset(apiProvider, txManager)
+
+        createAssetPair(baseAsset, quoteAsset, apiProvider, txManager)
+
+        Util.getSomeMoney(baseAsset, emissionAmount,
+                repositoryProvider, session, txManager)
+
+        submitOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
 
         val offersRepository = repositoryProvider.offers(false)
 
@@ -122,10 +133,18 @@ class OffersTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
-        val initialBalance = Util.getSomeMoney(baseAsset, emissionAmount,
-                repositoryProvider, session, TxManager(apiProvider))
+        val txManager = TxManager(apiProvider)
 
-        submitOffer(session, apiProvider, repositoryProvider)
+        val baseAsset = Util.createAsset(apiProvider, txManager)
+
+        val quoteAsset = Util.createAsset(apiProvider, txManager)
+
+        createAssetPair(baseAsset, quoteAsset, apiProvider, txManager)
+
+        val initialBalance = Util.getSomeMoney(baseAsset, emissionAmount,
+                repositoryProvider, session, txManager)
+
+        submitOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
 
         val offersRepository = repositoryProvider.offers(false)
 
@@ -180,10 +199,18 @@ class OffersTest {
                 email, password, apiProvider, session, repositoryProvider
         )
 
-        Util.getSomeMoney(baseAsset, emissionAmount,
-                repositoryProvider, session, TxManager(apiProvider))
+        val txManager = TxManager(apiProvider)
 
-        submitOffer(session, apiProvider, repositoryProvider)
+        val baseAsset = Util.createAsset(apiProvider, txManager)
+
+        val quoteAsset = Util.createAsset(apiProvider, txManager)
+
+        createAssetPair(baseAsset, quoteAsset, apiProvider, txManager)
+
+        Util.getSomeMoney(baseAsset, emissionAmount,
+                repositoryProvider, session, txManager)
+
+        submitOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
 
         val offersRepository = repositoryProvider.offers(false)
 
@@ -193,7 +220,7 @@ class OffersTest {
 
         val offerToCancel = offersRepository.itemsList.first()
 
-        submitOffer(session, apiProvider, repositoryProvider, offerToCancel)
+        submitOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider, offerToCancel)
 
         Thread.sleep(500)
 
@@ -207,7 +234,8 @@ class OffersTest {
                 })
     }
 
-    private fun submitOffer(session: Session, apiProvider: ApiProvider,
+    private fun submitOffer(baseAsset: String, quoteAsset: String,
+                            session: Session, apiProvider: ApiProvider,
                             repositoryProvider: RepositoryProvider,
                             offerToCancel: OfferRecord? = null) {
         val offer = OfferRecord(
@@ -233,5 +261,49 @@ class OffersTest {
         )
 
         useCase.perform().blockingAwait()
+    }
+
+    private fun createAssetPair(baseAsset: String, quoteAsset: String,
+                                apiProvider: ApiProvider, txManager: TxManager) {
+        val sourceAccount = Config.ADMIN_ACCOUNT
+
+        val systemInfo =
+                apiProvider.getApi()
+                        .general
+                        .getSystemInfo()
+                        .execute()
+                        .get()
+        val netParams = systemInfo.toNetworkParams()
+
+        val createOp = ManageAssetPairOp(
+                base = baseAsset,
+                quote = quoteAsset,
+                physicalPrice = netParams.amountToPrecised(price),
+                physicalPriceCorrection = 0,
+                maxPriceStep = netParams.amountToPrecised(BigDecimal.TEN),
+                policies = AssetPairPolicy.TRADEABLE_SECONDARY_MARKET.value,
+                action = ManageAssetPairAction.CREATE,
+                ext = ManageAssetPairOp.ManageAssetPairOpExt.EmptyVersion()
+        )
+
+        val updateOp = ManageAssetPairOp(
+                base = baseAsset,
+                quote = quoteAsset,
+                physicalPrice = netParams.amountToPrecised(price),
+                physicalPriceCorrection = 0,
+                maxPriceStep = netParams.amountToPrecised(BigDecimal.TEN),
+                policies = AssetPairPolicy.TRADEABLE_SECONDARY_MARKET.value,
+                action = ManageAssetPairAction.UPDATE_POLICIES,
+                ext = ManageAssetPairOp.ManageAssetPairOpExt.EmptyVersion()
+        )
+
+        val tx = TransactionBuilder(netParams, sourceAccount.accountId)
+                .addOperation(Operation.OperationBody.ManageAssetPair(createOp))
+                .addOperation(Operation.OperationBody.ManageAssetPair(updateOp))
+                .build()
+
+        tx.addSignature(sourceAccount)
+
+        txManager.submit(tx).blockingGet()
     }
 }
