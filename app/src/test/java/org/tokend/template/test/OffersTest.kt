@@ -195,7 +195,7 @@ class OffersTest {
         repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
 
         val currentBalance = repositoryProvider.balances().itemsList
-                .find { it.assetCode == baseAsset }!!.available
+                .find { it.assetCode == quoteAsset }!!.available
 
         Assert.assertEquals("Balance after offer cancellation must be equal to the initial one",
                 0, initialBalance.compareTo(currentBalance))
