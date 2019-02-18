@@ -37,7 +37,13 @@ class RepositoryProviderImpl(
         private val context: Context? = null
 ) : RepositoryProvider {
     private val balancesRepository: BalancesRepository by lazy {
-        BalancesRepository(apiProvider, walletInfoProvider, urlConfigProvider, BalancesCache())
+        BalancesRepository(
+                apiProvider,
+                walletInfoProvider,
+                urlConfigProvider,
+                mapper,
+                BalancesCache()
+        )
     }
     private val accountDetails: AccountDetailsRepository by lazy {
         AccountDetailsRepository(apiProvider)

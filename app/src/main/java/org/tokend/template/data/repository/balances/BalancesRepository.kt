@@ -1,5 +1,6 @@
 package org.tokend.template.data.repository.balances
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -21,6 +22,7 @@ class BalancesRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
         private val urlConfigProvider: UrlConfigProvider,
+        private val mapper: ObjectMapper,
         itemsCache: RepositoryCache<BalanceRecord>
 ) : SimpleMultipleItemsRepository<BalanceRecord>(itemsCache) {
 
@@ -31,12 +33,13 @@ class BalancesRepository(
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
         return signedApi
+                .v3
                 .accounts
-                .getBalancesDetails(accountId)
+                .getBalances(accountId)
                 .toSingle()
                 .map { sourceList ->
                     sourceList.map {
-                        BalanceRecord(it, urlConfigProvider.getConfig())
+                        BalanceRecord(it, urlConfigProvider.getConfig(), mapper)
                     }
                 }
     }

@@ -1,6 +1,7 @@
 package org.tokend.template.data.model
 
-import org.tokend.sdk.api.accounts.model.SimpleBalanceDetails
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.tokend.sdk.api.generated.resources.BalanceResource
 import org.tokend.template.features.assets.model.AssetRecord
 import java.io.Serializable
 import java.math.BigDecimal
@@ -8,16 +9,12 @@ import java.math.BigDecimal
 class BalanceRecord(
         val id: String,
         val asset: AssetRecord,
-        val available: BigDecimal,
-        val availableConverted: BigDecimal,
-        val conversionAssetCode: String
+        val available: BigDecimal
 ): Serializable {
-    constructor(source: SimpleBalanceDetails, urlConfig: UrlConfig?) : this(
-            id = source.balanceId,
-            available = source.balance,
-            availableConverted = source.convertedBalance,
-            asset = AssetRecord(source.assetDetails!!, urlConfig),
-            conversionAssetCode = source.conversionAsset
+    constructor(source: BalanceResource, urlConfig: UrlConfig?, mapper: ObjectMapper): this(
+            id = source.id,
+            available = source.state.available,
+            asset = AssetRecord.fromResource(source.asset, urlConfig, mapper)
     )
 
     val assetCode: String

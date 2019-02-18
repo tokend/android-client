@@ -32,6 +32,7 @@
             android:layout_marginEnd="@dimen/toolbar_text_padding_end"
             android:textColor="@android:color/white"
             android:textSize="@dimen/toolbar_subtitle_size"
+            android:visibility="gone"
             app:layout_collapseMode="parallax"
             tools:text="12 USD" />
 

@@ -1,7 +1,6 @@
 package org.tokend.template.features.assets.model
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.tokend.sdk.api.assets.model.SimpleAsset
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.generated.resources.AssetResource
 import org.tokend.template.data.model.UrlConfig
@@ -20,21 +19,6 @@ class AssetRecord(
         val available: BigDecimal?,
         val maximum: BigDecimal
 ) : Serializable, PolicyChecker {
-
-    constructor(source: SimpleAsset,
-                urlConfig: UrlConfig?
-    ) : this(
-            code = source.code,
-            policy = source.policy,
-            name = source.details.name,
-            logoUrl = source.details.logo?.getUrl(urlConfig?.storage),
-            terms = source.details.terms,
-            externalSystemType = source.details.externalSystemType,
-            issued = source.issued,
-            available = source.available,
-            maximum = source.maximum
-    )
-
     val isBackedByExternalSystem: Boolean
         get() = externalSystemType != null
 
