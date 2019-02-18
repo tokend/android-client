@@ -24,7 +24,7 @@ sealed class BalanceChangeCause : Serializable {
     // ------- Offer -------- //
 
     open class Offer(
-            val offerId: Long,
+            val offerId: Long?,
             val orderBookId: Long,
             val price: BigDecimal,
             val isBuy: Boolean,
@@ -34,7 +34,7 @@ sealed class BalanceChangeCause : Serializable {
             val fee: SimpleFeeRecord
     ) : BalanceChangeCause() {
         constructor(op: OpManageOfferDetailsResource) : this(
-                offerId = op.offerId ?: 0,
+                offerId = op.offerId,
                 orderBookId = op.orderBookId,
                 price = op.price,
                 isBuy = op.isBuy,

@@ -95,7 +95,7 @@ class OfferRecord(
                         EMPTY_BALANCE_ID
 
             return OfferRecord(
-                    id = details.offerId,
+                    id = details.offerId ?: 0,
                     orderBookId = details.orderBookId,
                     baseAmount = details.baseAmount,
                     baseAssetCode = details.baseAssetCode,
