@@ -100,7 +100,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                                 minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
                 .apply {
                     if (feePaidBySender) {
-                        addRow(R.string.fee_paid_by_sender_explanation, null)
+                        addRow("\n" + getString(R.string.fee_paid_by_sender_explanation), null)
                     }
                 }
     }
@@ -137,7 +137,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                                 minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
                 .apply {
                     if (feePaidBySender) {
-                        addRow(R.string.fee_paid_by_sender_explanation, null)
+                        addRow("\n" + getString(R.string.fee_paid_by_sender_explanation), null)
                     }
                 }
     }
