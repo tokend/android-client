@@ -111,15 +111,15 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
         val paidFeePercent =
                 if (feePaidBySender)
-                    cause.sourceFee.percent
-                else
                     cause.sourceFee.percent + cause.destFee.percent
+                else
+                    cause.sourceFee.percent
 
         val paidFeeFixed =
                 if (feePaidBySender)
-                    cause.sourceFee.fixed
-                else
                     cause.sourceFee.fixed + cause.destFee.fixed
+                else
+                    cause.sourceFee.fixed
 
         val paidTotal = item.amount + paidFeeFixed + paidFeePercent
 
