@@ -17,7 +17,6 @@ import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
-import org.tokend.wallet.Account
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.*
@@ -123,8 +122,8 @@ object Util {
     }
 
     fun addFeeForAccount(
-            rootAccount: Account,
-            repositoryProvider: RepositoryProvider,
+            rootAccountId: String,
+            apiProvider: ApiProvider,
             txManager: TxManager,
             feeType: FeeType,
             feeSubType: Int = 0,
@@ -132,7 +131,7 @@ object Util {
     ): Boolean {
         val sourceAccount = Config.ADMIN_ACCOUNT
 
-        val netParams = repositoryProvider.systemInfo().getNetworkParams().blockingGet()
+        val netParams = apiProvider.getApi().general.getSystemInfo().execute().get().toNetworkParams()
 
         val fixedFee = netParams.amountToPrecised(BigDecimal("0.050000"))
         val percentFee = netParams.amountToPrecised(BigDecimal("0.001000"))
@@ -148,7 +147,7 @@ object Util {
                         upperBound,
                         lowerBound,
                         feeSubType.toLong(),
-                        accountId = rootAccount.accountId
+                        accountId = rootAccountId
                 )
 
         val op = Operation.OperationBody.SetFees(feeOp)

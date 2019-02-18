@@ -218,8 +218,8 @@ class WithdrawTest {
         val feeType = FeeType.WITHDRAWAL_FEE
 
         val result = Util.addFeeForAccount(
-                rootAccount,
-                repositoryProvider,
+                rootAccount.accountId,
+                apiProvider,
                 txManager,
                 feeType,
                 asset = asset

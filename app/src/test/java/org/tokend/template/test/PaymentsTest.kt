@@ -192,8 +192,8 @@ class PaymentsTest {
         val feeSubType = PaymentFeeType.OUTGOING.value
 
         val result = Util.addFeeForAccount(
-                rootAccount,
-                repositoryProvider,
+                rootAccount.accountId,
+                apiProvider,
                 txManager,
                 feeType,
                 feeSubType,
