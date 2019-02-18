@@ -34,7 +34,7 @@ sealed class BalanceChangeCause : Serializable {
             val fee: SimpleFeeRecord
     ) : BalanceChangeCause() {
         constructor(op: OpManageOfferDetailsResource) : this(
-                offerId = op.offerId,
+                offerId = op.offerId ?: 0,
                 orderBookId = op.orderBookId,
                 price = op.price,
                 isBuy = op.isBuy,
