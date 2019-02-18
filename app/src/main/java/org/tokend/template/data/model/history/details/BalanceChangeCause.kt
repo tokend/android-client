@@ -132,9 +132,8 @@ sealed class BalanceChangeCause : Serializable {
             val destFee: SimpleFeeRecord,
             val isDestFeePaidBySource: Boolean,
             val subject: String?,
-            val reference: String?,
-            val sourceName: String?,
-            val destName: String?
+            var sourceName: String?,
+            var destName: String?
     ) : BalanceChangeCause() {
         constructor(op: OpPaymentDetailsResource) : this(
                 sourceAccountId = op.accountFrom.id,
@@ -142,7 +141,6 @@ sealed class BalanceChangeCause : Serializable {
                 destFee = SimpleFeeRecord(op.destinationFee),
                 sourceFee = SimpleFeeRecord(op.sourceFee),
                 isDestFeePaidBySource = op.sourcePayForDestination(),
-                reference = op.reference,
                 subject = op.subject.takeIf { it.isNotEmpty() },
                 destName = null,
                 sourceName = null
