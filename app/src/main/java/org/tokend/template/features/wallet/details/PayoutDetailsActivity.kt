@@ -50,16 +50,20 @@ class PayoutDetailsActivity : BalanceChangeDetailsActivity() {
     private fun displayResults(item: BalanceChange,
                                cause: BalanceChangeCause.Payout) {
         val paidTotal = cause.actualPayoutAmount + cause.actualFee.total
+        val minDecimals = amountFormatter.getDecimalDigitsCount(item.assetCode)
 
         InfoCard(cards_layout)
                 .setHeading(R.string.paid,
-                        amountFormatter.formatAssetAmount(paidTotal, item.assetCode))
+                        amountFormatter.formatAssetAmount(paidTotal, item.assetCode, minDecimals))
                 .addRow(R.string.amount,
-                        "+" + amountFormatter.formatAssetAmount(cause.actualPayoutAmount, item.assetCode))
+                        "+" + amountFormatter.formatAssetAmount(cause.actualPayoutAmount, item.assetCode,
+                                minDecimals))
                 .addRow(R.string.fixed_fee,
-                        "+" + amountFormatter.formatAssetAmount(cause.actualFee.fixed, item.assetCode))
+                        "+" + amountFormatter.formatAssetAmount(cause.actualFee.fixed, item.assetCode,
+                                minDecimals))
                 .addRow(R.string.amount,
-                        "+" + amountFormatter.formatAssetAmount(cause.actualFee.percent, item.assetCode))
+                        "+" + amountFormatter.formatAssetAmount(cause.actualFee.percent, item.assetCode,
+                                minDecimals))
     }
 
     private fun displayReceived(item: BalanceChange) {

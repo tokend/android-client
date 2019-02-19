@@ -62,7 +62,7 @@ open class OfferConfirmationActivity : BaseActivity() {
     protected open fun initData() {
         offer =
                 (intent.getSerializableExtra(OFFER_EXTRA) as? OfferRecord)
-                ?: return
+                        ?: return
         prevOffer = intent.getSerializableExtra(OFFER_TO_CANCEL_EXTRA) as? OfferRecord
     }
 
@@ -75,6 +75,8 @@ open class OfferConfirmationActivity : BaseActivity() {
     }
 
     protected open fun displayToPay() {
+        val minDecimals = amountFormatter.getDecimalDigitsCount(payAsset)
+
         val payBaseAmount =
                 if (offer.isBuy)
                     offer.quoteAmount
@@ -83,13 +85,13 @@ open class OfferConfirmationActivity : BaseActivity() {
 
         val card = InfoCard(cards_layout)
                 .setHeading(R.string.to_pay,
-                        amountFormatter.formatAssetAmount(toPayAmount, payAsset))
+                        amountFormatter.formatAssetAmount(toPayAmount, payAsset, minDecimals))
 
         if (offer.isBuy) {
             card.addRow(R.string.amount,
-                    "+${amountFormatter.formatAssetAmount(payBaseAmount, payAsset)}")
+                    "+${amountFormatter.formatAssetAmount(payBaseAmount, payAsset, minDecimals)}")
                     .addRow(R.string.tx_fee,
-                            "+${amountFormatter.formatAssetAmount(offer.fee, payAsset)}")
+                            "+${amountFormatter.formatAssetAmount(offer.fee, payAsset, minDecimals)}")
         } else {
             card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAssetCode,
                     amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode))
@@ -98,6 +100,8 @@ open class OfferConfirmationActivity : BaseActivity() {
     }
 
     protected open fun displayToReceive() {
+        val minDecimals = amountFormatter.getDecimalDigitsCount(receiveAsset)
+
         val receiveBaseAmount =
                 if (!offer.isBuy)
                     offer.quoteAmount
@@ -106,14 +110,16 @@ open class OfferConfirmationActivity : BaseActivity() {
 
         val card = InfoCard(cards_layout)
                 .setHeading(R.string.to_receive,
-                        amountFormatter.formatAssetAmount(toReceiveAmount, receiveAsset))
+                        amountFormatter.formatAssetAmount(toReceiveAmount, receiveAsset, minDecimals))
 
         if (!offer.isBuy) {
             card
                     .addRow(R.string.amount,
-                            "+${amountFormatter.formatAssetAmount(receiveBaseAmount, receiveAsset)}")
+                            "+${amountFormatter.formatAssetAmount(receiveBaseAmount, receiveAsset,
+                                    minDecimals)}")
                     .addRow(R.string.tx_fee,
-                            "-${amountFormatter.formatAssetAmount(offer.fee, receiveAsset)}")
+                            "-${amountFormatter.formatAssetAmount(offer.fee, receiveAsset,
+                                    minDecimals)}")
         } else {
             card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAssetCode,
                     amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode))

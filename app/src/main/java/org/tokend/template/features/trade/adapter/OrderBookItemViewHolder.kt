@@ -24,7 +24,7 @@ class OrderBookItemViewHolder(view: View,
         volumeTextView.text = amountFormatter.formatAssetAmount(item.baseAmount, item.baseAssetCode,
                 withAssetCode = false)
         priceTextView.text = amountFormatter.formatAssetAmount(item.price, item.quoteAssetCode,
-                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS,
+                amountFormatter.getDecimalDigitsCount(item.quoteAssetCode),
                 withAssetCode = false)
         if (isBuy) {
             priceTextView.textColor =

@@ -141,7 +141,7 @@ class CreateOfferDialog : DialogFragment() {
         }
 
         val total = BigDecimalUtil.scaleAmount(price * amount,
-                AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS
+                amountFormatter.getDecimalDigitsCount(asset)
         )
 
         return OfferRecord(

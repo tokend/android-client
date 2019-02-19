@@ -15,7 +15,6 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.formatter.DateFormatter
 import java.math.BigDecimal
 
@@ -55,16 +54,15 @@ open class PendingOfferDetailsActivity : BaseActivity() {
         val amount = if (item.isBuy) item.quoteAmount else item.baseAmount
         val fee = if (item.isBuy) item.fee else BigDecimal.ZERO
         val total = amount + fee
+        val minDecimals = amountFormatter.getDecimalDigitsCount(asset)
 
         InfoCard(cards_layout)
                 .setHeading(R.string.to_pay,
                         amountFormatter.formatAssetAmount(total, asset))
                 .addRow(R.string.amount,
-                        "+" + amountFormatter.formatAssetAmount(amount, asset,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                        "+" + amountFormatter.formatAssetAmount(amount, asset, minDecimals))
                 .addRow(R.string.tx_fee,
-                        "+" + amountFormatter.formatAssetAmount(fee, asset,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                        "+" + amountFormatter.formatAssetAmount(fee, asset, minDecimals))
     }
 
     protected open fun displayToReceive(item: OfferRecord) {
@@ -72,16 +70,15 @@ open class PendingOfferDetailsActivity : BaseActivity() {
         val amount = if (item.isBuy) item.baseAmount else item.quoteAmount
         val fee = if (item.isBuy) BigDecimal.ZERO else item.fee
         val total = amount - fee
+        val minDecimals = amountFormatter.getDecimalDigitsCount(asset)
 
         InfoCard(cards_layout)
                 .setHeading(R.string.to_receive,
                         amountFormatter.formatAssetAmount(total, asset))
                 .addRow(R.string.amount,
-                        "+" + amountFormatter.formatAssetAmount(amount, asset,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                        "+" + amountFormatter.formatAssetAmount(amount, asset, minDecimals))
                 .addRow(R.string.tx_fee,
-                        "-" + amountFormatter.formatAssetAmount(fee, asset,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                        "-" + amountFormatter.formatAssetAmount(fee, asset, minDecimals))
     }
 
     protected open fun displayPrice(item: OfferRecord) {

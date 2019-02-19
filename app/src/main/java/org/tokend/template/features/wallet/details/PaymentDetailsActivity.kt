@@ -5,7 +5,6 @@ import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
 class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
@@ -70,6 +69,8 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
     private fun displayReceived(item: BalanceChange,
                                 cause: BalanceChangeCause.Payment) {
+        val minDecimals = amountFormatter.getDecimalDigitsCount(item.assetCode)
+
         val feePaidBySender = cause.isDestFeePaidBySource
 
         val paidFeePercent =
@@ -88,16 +89,16 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
         InfoCard(cards_layout)
                 .setHeading(R.string.received,
-                        amountFormatter.formatAssetAmount(receivedTotal, item.assetCode))
+                        amountFormatter.formatAssetAmount(receivedTotal, item.assetCode, minDecimals))
                 .addRow(R.string.amount,
                         "+" + amountFormatter.formatAssetAmount(item.amount, item.assetCode,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                                minDecimals))
                 .addRow(R.string.fixed_fee,
                         "-" + amountFormatter.formatAssetAmount(paidFeeFixed, item.assetCode,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                                minDecimals))
                 .addRow(R.string.percent_fee,
                         "-" + amountFormatter.formatAssetAmount(paidFeePercent, item.assetCode,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                                minDecimals))
                 .apply {
                     if (feePaidBySender) {
                         addRow("\n" + getString(R.string.fee_paid_by_sender_explanation), null)
@@ -107,6 +108,8 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
     private fun displayPaid(item: BalanceChange,
                             cause: BalanceChangeCause.Payment) {
+        val minDecimals = amountFormatter.getDecimalDigitsCount(item.assetCode)
+
         val feePaidBySender = cause.isDestFeePaidBySource
 
         val paidFeePercent =
@@ -125,16 +128,16 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
         InfoCard(cards_layout)
                 .setHeading(R.string.paid,
-                        amountFormatter.formatAssetAmount(paidTotal, item.assetCode))
+                        amountFormatter.formatAssetAmount(paidTotal, item.assetCode, minDecimals))
                 .addRow(R.string.amount,
                         "+" + amountFormatter.formatAssetAmount(item.amount, item.assetCode,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                                minDecimals))
                 .addRow(R.string.fixed_fee,
                         "+" + amountFormatter.formatAssetAmount(paidFeeFixed, item.assetCode,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                                minDecimals))
                 .addRow(R.string.percent_fee,
                         "+" + amountFormatter.formatAssetAmount(paidFeePercent, item.assetCode,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                                minDecimals))
                 .apply {
                     if (feePaidBySender) {
                         addRow("\n" + getString(R.string.fee_paid_by_sender_explanation), null)

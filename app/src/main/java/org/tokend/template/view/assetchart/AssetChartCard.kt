@@ -308,7 +308,7 @@ class AssetChartCard : LinearLayout {
         val amount =
                 BigDecimalUtil.stripTrailingZeros(
                         BigDecimal(count.toDouble()).setScale(
-                                AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS,
+                                amountFormatter.getDecimalDigitsCount(asset),
                                 RoundingMode.HALF_UP
                         )
                 )

@@ -5,7 +5,6 @@ import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.AmountFormatter
 
 open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
     override fun displayDetails(item: BalanceChange) {
@@ -43,39 +42,39 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
 
     protected open fun displayCharged(cause: BalanceChangeCause.MatchedOffer) {
         val charged = cause.charged
-
         val chargedTotal = charged.amount + charged.fee.total
+        val minDecimals = amountFormatter.getDecimalDigitsCount(charged.assetCode)
 
         InfoCard(cards_layout)
                 .setHeading(R.string.charged,
-                        amountFormatter.formatAssetAmount(chargedTotal, charged.assetCode))
+                        amountFormatter.formatAssetAmount(chargedTotal, charged.assetCode, minDecimals))
                 .addRow(R.string.amount,
                         "+" + amountFormatter.formatAssetAmount(charged.amount, charged.assetCode,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                                minDecimals))
                 .addRow(R.string.fixed_fee,
                         "+" + amountFormatter.formatAssetAmount(charged.fee.fixed, charged.assetCode,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                                minDecimals))
                 .addRow(R.string.percent_fee,
                         "+" + amountFormatter.formatAssetAmount(charged.fee.percent, charged.assetCode,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                                minDecimals))
     }
 
     protected open fun displayFunded(cause: BalanceChangeCause.MatchedOffer) {
         val funded = cause.funded
-
         val fundedTotal = funded.amount - funded.fee.total
+        val minDecimals = amountFormatter.getDecimalDigitsCount(funded.assetCode)
 
         InfoCard(cards_layout)
                 .setHeading(R.string.received,
-                        amountFormatter.formatAssetAmount(fundedTotal, funded.assetCode))
+                        amountFormatter.formatAssetAmount(fundedTotal, funded.assetCode, minDecimals))
                 .addRow(R.string.amount,
                         "+" + amountFormatter.formatAssetAmount(funded.amount, funded.assetCode,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                                minDecimals))
                 .addRow(R.string.fixed_fee,
                         "-" + amountFormatter.formatAssetAmount(funded.fee.fixed, funded.assetCode,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                                minDecimals))
                 .addRow(R.string.percent_fee,
                         "-" + amountFormatter.formatAssetAmount(funded.fee.percent, funded.assetCode,
-                                minDecimalDigits = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS))
+                                minDecimals))
     }
 }
