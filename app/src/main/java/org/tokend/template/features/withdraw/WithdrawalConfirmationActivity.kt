@@ -44,21 +44,26 @@ class WithdrawalConfirmationActivity : BaseActivity() {
 
     private fun displayToPay() {
         val toPay = request.amount + request.fee.total
+        val minDecimals = amountFormatter.getDecimalDigitsCount(request.asset)
 
         InfoCard(cards_layout)
                 .setHeading(R.string.to_pay,
-                        amountFormatter.formatAssetAmount(toPay, request.asset))
+                        amountFormatter.formatAssetAmount(toPay, request.asset, minDecimals))
                 .addRow(R.string.amount,
-                        "+${amountFormatter.formatAssetAmount(request.amount, request.asset)}")
+                        "+${amountFormatter.formatAssetAmount(request.amount,
+                                request.asset, minDecimals)}")
                 .addRow(R.string.fixed_fee,
-                        "+${amountFormatter.formatAssetAmount(request.fee.fixed, request.asset)}")
+                        "+${amountFormatter.formatAssetAmount(request.fee.fixed,
+                                request.asset, minDecimals)}")
                 .addRow(R.string.percent_fee,
-                        "+${amountFormatter.formatAssetAmount(request.fee.percent, request.asset)}")
+                        "+${amountFormatter.formatAssetAmount(request.fee.percent,
+                                request.asset, minDecimals)}")
     }
 
     private fun displayToReceive() {
         InfoCard(cards_layout)
-                .setHeading(R.string.to_receive, amountFormatter.formatAssetAmount(request.amount, request.asset))
+                .setHeading(R.string.to_receive, amountFormatter.formatAssetAmount(request.amount,
+                        request.asset, amountFormatter.getDecimalDigitsCount(request.asset)))
                 .addRow(getString(R.string.template_withdrawal_fee_warning, request.asset),
                         null)
     }
