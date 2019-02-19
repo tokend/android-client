@@ -16,6 +16,7 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.ProgressDialogFactory
+import java.math.BigDecimal
 
 class PaymentConfirmationActivity : BaseActivity() {
     private lateinit var request: PaymentRequest
@@ -27,18 +28,18 @@ class PaymentConfirmationActivity : BaseActivity() {
 
         request =
                 (intent.getSerializableExtra(PAYMENT_REQUEST_EXTRA) as? PaymentRequest)
-                ?: return
+                        ?: return
 
         displayDetails()
     }
 
     // region Display
-    private fun displayDetails() {
+    private fun displayDetails(payRecipientFee: Boolean = false) {
         cards_layout.removeAllViews()
 
         displayRecipient()
         displaySubjectIfNeeded()
-        displayAmount()
+        displayAmount(payRecipientFee)
     }
 
     private fun displayRecipient() {
@@ -55,20 +56,69 @@ class PaymentConfirmationActivity : BaseActivity() {
         }
     }
 
-    private fun displayAmount() {
+    private fun displayAmount(payRecipientFee: Boolean) {
+        val minDecimals = amountFormatter.getDecimalDigitsCount(request.asset)
+
+        val senderFeeTotal: BigDecimal
+        val senderFeeFixed: BigDecimal
+        val senderFeePercent: BigDecimal
+
+        val recipientFeeTotal: BigDecimal
+        val recipientFeeFixed: BigDecimal
+        val recipientFeePercent: BigDecimal
+
+        if (payRecipientFee) {
+            recipientFeeTotal = BigDecimal.ZERO
+            recipientFeeFixed = BigDecimal.ZERO
+            recipientFeePercent = BigDecimal.ZERO
+            senderFeeTotal = request.senderFee.total + request.recipientFee.total
+            senderFeeFixed = request.senderFee.fixed + request.recipientFee.fixed
+            senderFeePercent = request.senderFee.percent + request.recipientFee.percent
+        } else {
+            recipientFeeTotal = request.recipientFee.total
+            recipientFeeFixed = request.recipientFee.fixed
+            recipientFeePercent = request.recipientFee.percent
+            senderFeeTotal = request.senderFee.total
+            senderFeeFixed = request.senderFee.fixed
+            senderFeePercent = request.senderFee.percent
+        }
+
+        val toPay = request.amount + senderFeeTotal
         InfoCard(cards_layout)
-                .setHeading(R.string.amount,
-                        amountFormatter.formatAssetAmount(request.amount, request.asset))
-                .addRow(R.string.tx_fee,
-                        amountFormatter.formatAssetAmount(request.senderFee.total,
-                                request.senderFee.asset))
-                .addRow(R.string.tx_recipient_fee,
-                        amountFormatter.formatAssetAmount(request.recipientFee.total,
-                                request.recipientFee.asset))
-                .addSwitcherRow(R.string.pay_recipient_fee_action,
+                .setHeading(R.string.to_pay,
+                        amountFormatter.formatAssetAmount(toPay, request.asset, minDecimals))
+                .addRow(R.string.amount,
+                        "+${amountFormatter.formatAssetAmount(request.amount,
+                                request.asset, minDecimals)}")
+                .addRow(R.string.fixed_fee,
+                        "+${amountFormatter.formatAssetAmount(senderFeeFixed,
+                                request.asset, minDecimals)}")
+                .addRow(R.string.percent_fee,
+                        "+${amountFormatter.formatAssetAmount(senderFeePercent,
+                                request.asset, minDecimals)}")
+
+
+
+        val toReceive = request.amount - recipientFeeTotal
+        InfoCard(cards_layout)
+                .setHeading(R.string.to_receive,
+                        amountFormatter.formatAssetAmount(toReceive,
+                                request.asset, minDecimals))
+                .addRow(R.string.amount,
+                        "+${amountFormatter.formatAssetAmount(request.amount,
+                                request.asset, minDecimals)}")
+                .addRow(R.string.fixed_fee,
+                        "-${amountFormatter.formatAssetAmount(recipientFeeFixed,
+                                request.asset, minDecimals)}")
+                .addRow(R.string.percent_fee,
+                        "-${amountFormatter.formatAssetAmount(recipientFeePercent,
+                                request.asset, minDecimals)}")
+                .addSwitcherRow(R.string.pay_recipient_fee_action, payRecipientFee,
                         CompoundButton.OnCheckedChangeListener { _, isChecked ->
                             request.senderPaysRecipientFee = isChecked
+                            displayDetails(isChecked)
                         })
+
     }
     // endregion
 
