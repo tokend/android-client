@@ -15,7 +15,7 @@ class AccountRecord(
             id = source.id,
             // TODO: Figure out what to do
             type = AccountType.VERIFIED,
-            depositAccounts = source.externalSystemIds.map(::DepositAccount)
+            depositAccounts = source.externalSystemIds?.map(::DepositAccount) ?: emptyList()
     )
 
     class DepositAccount(
