@@ -54,11 +54,19 @@ class OffersRepository(
         return signedApi.v3.offers.get(requestParams)
                 .toSingle()
                 .map {
+                    val items = it.items.map { offerResource ->
+                        OfferRecord.fromResource(offerResource)
+                    }.let { offers ->
+                        if (onlyPrimary) {
+                            offers.filter { record ->
+                                record.orderBookId != 0L
+                            }
+                        } else offers
+                    }
+
                     DataPage(
                             it.nextCursor,
-                            it.items.map { offerResource ->
-                                OfferRecord.fromResource(offerResource)
-                            },
+                            items,
                             it.isLast
                     )
                 }
