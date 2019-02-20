@@ -20,6 +20,7 @@ import java.math.BigDecimal
 
 class PaymentConfirmationActivity : BaseActivity() {
     private lateinit var request: PaymentRequest
+    private var switchClicked = false
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details)
@@ -34,12 +35,12 @@ class PaymentConfirmationActivity : BaseActivity() {
     }
 
     // region Display
-    private fun displayDetails(payRecipientFee: Boolean = false) {
+    private fun displayDetails() {
         cards_layout.removeAllViews()
 
         displayRecipient()
         displaySubjectIfNeeded()
-        displayAmount(payRecipientFee)
+        displayAmount()
     }
 
     private fun displayRecipient() {
@@ -56,7 +57,7 @@ class PaymentConfirmationActivity : BaseActivity() {
         }
     }
 
-    private fun displayAmount(payRecipientFee: Boolean) {
+    private fun displayAmount() {
         val minDecimals = amountFormatter.getDecimalDigitsCount(request.asset)
 
         val senderFeeTotal: BigDecimal
@@ -67,7 +68,7 @@ class PaymentConfirmationActivity : BaseActivity() {
         val recipientFeeFixed: BigDecimal
         val recipientFeePercent: BigDecimal
 
-        if (payRecipientFee) {
+        if (request.senderPaysRecipientFee) {
             recipientFeeTotal = BigDecimal.ZERO
             recipientFeeFixed = BigDecimal.ZERO
             recipientFeePercent = BigDecimal.ZERO
@@ -98,7 +99,6 @@ class PaymentConfirmationActivity : BaseActivity() {
                                 request.asset, minDecimals)}")
 
 
-
         val toReceive = request.amount - recipientFeeTotal
         InfoCard(cards_layout)
                 .setHeading(R.string.to_receive,
@@ -113,11 +113,15 @@ class PaymentConfirmationActivity : BaseActivity() {
                 .addRow(R.string.percent_fee,
                         "-${amountFormatter.formatAssetAmount(recipientFeePercent,
                                 request.asset, minDecimals)}")
-                .addSwitcherRow(R.string.pay_recipient_fee_action, payRecipientFee,
+                .addSwitcherRow(R.string.pay_recipient_fee_action,
                         CompoundButton.OnCheckedChangeListener { _, isChecked ->
+                            switchClicked = true
                             request.senderPaysRecipientFee = isChecked
-                            displayDetails(isChecked)
-                        })
+                            displayDetails()
+                        },
+                        request.senderPaysRecipientFee,
+                        switchClicked
+                )
 
     }
     // endregion
