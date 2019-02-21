@@ -141,10 +141,11 @@ class DefaultParticipantEffectConverter(
                     else
                         BalanceChangeCause.Offer(operationDetails)
                 is OpCheckSaleStateDetailsResource ->
-                    if (effect is EffectMatchedResource)
-                        BalanceChangeCause.Investment(effect)
-                    else
-                        BalanceChangeCause.Unknown
+                    when (effect) {
+                        is EffectMatchedResource -> BalanceChangeCause.Investment(effect)
+                        is EffectIssuedResource -> BalanceChangeCause.Issuance(null, null)
+                        else -> BalanceChangeCause.Unknown
+                    }
                 is OpCreateAMLAlertRequestDetailsResource ->
                     BalanceChangeCause.AmlAlert(operationDetails)
                 is OpPayoutDetailsResource ->
