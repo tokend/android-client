@@ -14,12 +14,25 @@ open class BalanceChange(
         val fee: SimpleFeeRecord,
         val date: Date,
         val cause: BalanceChangeCause
-): Serializable {
+) : Serializable {
     override fun equals(other: Any?): Boolean {
         return other is BalanceChange && other.id == this.id
     }
 
     override fun hashCode(): Int {
         return id.hashCode()
+    }
+
+    val isReceived: Boolean? = when (action) {
+        BalanceChangeAction.LOCKED -> false
+        BalanceChangeAction.CHARGED_FROM_LOCKED -> false
+        BalanceChangeAction.UNLOCKED -> true
+        BalanceChangeAction.CHARGED -> false
+        BalanceChangeAction.WITHDRAWN -> false
+        BalanceChangeAction.MATCHED ->
+            (cause as? BalanceChangeCause.MatchedOffer)
+                    ?.isReceivedByAsset(assetCode)
+        BalanceChangeAction.ISSUED -> true
+        BalanceChangeAction.FUNDED -> true
     }
 }

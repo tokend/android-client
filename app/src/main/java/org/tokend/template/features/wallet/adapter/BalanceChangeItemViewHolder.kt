@@ -26,7 +26,11 @@ class BalanceChangeItemViewHolder(view: View,
             BalanceChangeListItem.Action.LOCKED -> lockedIcon
             BalanceChangeListItem.Action.UNLOCKED -> unlockedIcon
             BalanceChangeListItem.Action.MATCHED -> matchIcon
-            else -> if (item.isReceived) incomingIcon else outgoingIcon
+            else -> when (item.isReceived) {
+                true -> incomingIcon
+                false -> outgoingIcon
+                null -> matchIcon
+            }
         }
 
         iconImageView.setImageDrawable(icon)
@@ -43,23 +47,27 @@ class BalanceChangeItemViewHolder(view: View,
         if (counterparty == null) {
             counterpartyTextView.visibility = View.GONE
         } else {
-            counterpartyTextView.visibility = View.VISIBLE
-            counterpartyTextView.text =
-                    if (item.isReceived)
-                        view.context.getString(R.string.template_tx_from, counterparty)
-                    else
-                        view.context.getString(R.string.template_tx_to, counterparty)
+            if (item.isReceived != null) {
+                counterpartyTextView.visibility = View.VISIBLE
+                counterpartyTextView.text =
+                        if (item.isReceived)
+                            view.context.getString(R.string.template_tx_from, counterparty)
+                        else
+                            view.context.getString(R.string.template_tx_to, counterparty)
+            } else {
+                counterpartyTextView.visibility = View.GONE
+            }
         }
     }
 
     private fun displayAmount(item: BalanceChangeListItem) {
         val color =
-                if (item.action == BalanceChangeListItem.Action.LOCKED)
-                    secondaryTextColor
-                else if (item.isReceived)
-                    incomingColor
-                else
-                    outgoingColor
+                when {
+                    item.action == BalanceChangeListItem.Action.LOCKED -> secondaryTextColor
+                    item.isReceived == true -> incomingColor
+                    item.isReceived == false -> outgoingColor
+                    else -> secondaryTextColor
+                }
 
         amountTextView.setTextColor(color)
 
@@ -67,7 +75,7 @@ class BalanceChangeItemViewHolder(view: View,
                 item.amount, item.assetCode, abbreviation = true
         )
 
-        if (!item.isReceived) {
+        if (item.isReceived == false) {
             formattedAmount = "-$formattedAmount"
         }
 
