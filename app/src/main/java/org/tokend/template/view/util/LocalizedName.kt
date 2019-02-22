@@ -2,6 +2,7 @@ package org.tokend.template.view.util
 
 import android.content.Context
 import org.tokend.template.R
+import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.features.fees.adapter.FeeItem
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.wallet.xdr.FeeType
@@ -43,6 +44,18 @@ class LocalizedName(private val context: Context) {
             BalanceChangeListItem.Action.RECEIVED -> context.getString(R.string.tx_action_received)
             BalanceChangeListItem.Action.SENT -> context.getString(R.string.tx_action_sent)
             BalanceChangeListItem.Action.CHARGED -> context.getString(R.string.tx_action_charged)
+        }
+    }
+
+    fun forBalanceChangeAction(action: BalanceChangeAction): String {
+        return when (action) {
+            BalanceChangeAction.LOCKED -> context.getString(R.string.tx_action_locked)
+            BalanceChangeAction.UNLOCKED -> context.getString(R.string.tx_action_unlocked)
+            BalanceChangeAction.CHARGED, BalanceChangeAction.CHARGED_FROM_LOCKED -> context.getString(R.string.tx_action_charged)
+            BalanceChangeAction.WITHDRAWN -> context.getString(R.string.tx_action_withdrawn)
+            BalanceChangeAction.MATCHED -> context.getString(R.string.tx_action_matched)
+            BalanceChangeAction.ISSUED -> context.getString(R.string.tx_action_issued)
+            BalanceChangeAction.FUNDED -> context.getString(R.string.tx_action_received)
         }
     }
 }

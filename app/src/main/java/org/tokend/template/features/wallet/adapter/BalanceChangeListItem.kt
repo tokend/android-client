@@ -11,7 +11,7 @@ class BalanceChangeListItem(
         val action: Action,
         val amount: BigDecimal,
         val assetCode: String,
-        val isReceived: Boolean,
+        val isReceived: Boolean?,
         override val date: Date,
         val counterparty: String?,
         val source: BalanceChange? = null
@@ -32,7 +32,7 @@ class BalanceChangeListItem(
             action = getAction(balanceChange),
             amount = balanceChange.amount,
             assetCode = balanceChange.assetCode,
-            isReceived = isReceived(balanceChange),
+            isReceived = balanceChange.isReceived,
             date = balanceChange.date,
             counterparty = getCounterparty(balanceChange, accountId),
             source = balanceChange
@@ -72,21 +72,6 @@ class BalanceChangeListItem(
                 is BalanceChangeCause.Withdrawal ->
                     details.destinationAddress
                 else -> null
-            }
-        }
-
-        private fun isReceived(balanceChange: BalanceChange): Boolean {
-            return when (balanceChange.action) {
-                BalanceChangeAction.LOCKED -> false
-                BalanceChangeAction.CHARGED_FROM_LOCKED -> false
-                BalanceChangeAction.UNLOCKED -> true
-                BalanceChangeAction.CHARGED -> false
-                BalanceChangeAction.WITHDRAWN -> false
-                BalanceChangeAction.MATCHED ->
-                    (balanceChange.cause as BalanceChangeCause.MatchedOffer)
-                            .isReceivedByAsset(balanceChange.assetCode)
-                BalanceChangeAction.ISSUED -> true
-                BalanceChangeAction.FUNDED -> true
             }
         }
     }

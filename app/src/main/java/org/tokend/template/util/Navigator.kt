@@ -240,7 +240,7 @@ object Navigator {
                 )
                 return
             }
-            is BalanceChangeCause.Unknown -> return
+            is BalanceChangeCause.Unknown -> UnknownDetailsActivity::class.java
         }
 
         activity.startActivity(

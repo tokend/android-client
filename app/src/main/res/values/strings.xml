@@ -160,6 +160,7 @@
     <string name="template_tx_in">In %1$s</string>
     <string name="pay_recipient_fee_action">Pay recipient\'s fee</string>
     <string name="tx_recipient_fee">Recipient\'s fee</string>
+    <string name="tx_effect">Effect</string>
 
     <string name="settings_account_group">Account</string>
     <string name="settings_security_group">Security</string>
@@ -357,4 +358,6 @@
     <string name="sale_info_to_sell_template">%1$s to sell</string>
 
     <string name="seed_alert_dialog">"You are about to show sensitive data.\nAnyone who knows the secret seed can take possession of your account.\nDo you want to continue?"</string>
+
+    <string name="unknown_balance_change_details_title">Balance change details</string>
 </resources>
