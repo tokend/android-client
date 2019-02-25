@@ -80,13 +80,6 @@ class SignInTest {
         System.out.println("Email is $email")
         System.out.println("Recovery seed is ${recoveryAccount.secretSeed!!.joinToString("")}")
 
-        // Create user
-        ApiProviderFactory().createApiProvider(urlConfigProvider, rootAccount)
-                .getSignedApi()!!
-                .users
-                .create(walletData.attributes!!.accountId)
-                .execute()
-
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
@@ -114,7 +107,5 @@ class SignInTest {
                 repositoryProvider.balances().isFresh)
         Assert.assertTrue("TFA factors repository must be updated after sign in",
                 repositoryProvider.tfaFactors().isFresh)
-        Assert.assertTrue("Account repository must be updated after sign in",
-                repositoryProvider.account().isFresh)
     }
 }

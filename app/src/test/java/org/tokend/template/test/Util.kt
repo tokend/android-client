@@ -55,16 +55,6 @@ object Util {
                 repositoryProvider?.let { PostSignInManager(it) }
         ).perform().blockingAwait()
 
-        try {
-            apiProvider.getSignedApi()
-                    ?.users
-                    ?.create(createResult.rootAccount.accountId)
-                    ?.execute()
-                    ?.get()
-        } catch (e: Exception) {
-            System.err.println(e.localizedMessage)
-        }
-
         return createResult
     }
 
@@ -209,15 +199,16 @@ object Util {
                         AssetCreationRequest(
                                 code = code,
                                 preissuedAssetSigner = PublicKeyFactory.fromAccountId(
-                                        systemInfo.masterExchangeAccountId
+                                        systemInfo.adminAccountId
                                 ),
                                 maxIssuanceAmount = netParams.amountToPrecised(BigDecimal("10000")),
                                 policies = policies,
                                 initialPreissuedAmount = netParams.amountToPrecised(BigDecimal("10000")),
-                                details = assetDetailsJson,
+                                creatorDetails = assetDetailsJson,
                                 ext = AssetCreationRequest.AssetCreationRequestExt.EmptyVersion(),
                                 sequenceNumber = 0,
-                                trailingDigitsCount = 6
+                                trailingDigitsCount = 6,
+                                type = 0
                         ),
                         0,
                         ManageAssetOp.ManageAssetOpRequest
@@ -265,7 +256,7 @@ object Util {
                     reviewDetails = ReviewDetails(0, requestToReview.pendingTasks,
                             "", ReviewDetails.ReviewDetailsExt.EmptyVersion()),
                     ext = ReviewRequestOp.ReviewRequestOpExt.EmptyVersion(),
-                    requestDetails = object : ReviewRequestOp.ReviewRequestOpRequestDetails(ReviewableRequestType.ASSET_CREATE) {}
+                    requestDetails = object : ReviewRequestOp.ReviewRequestOpRequestDetails(ReviewableRequestType.CREATE_ASSET) {}
             )
 
             val reviewTx = TransactionBuilder(netParams, sourceAccount.accountId)

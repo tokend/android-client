@@ -11,7 +11,7 @@ class PostSignInManager(
     class AuthMismatchException : Exception()
 
     /**
-     * Updates all important repositories, creates account on first sign in.
+     * Updates all important repositories.
      */
     fun doPostSignIn(): Completable {
         val parallelActions = listOf<Completable>(
@@ -33,22 +33,6 @@ class PostSignInManager(
         val syncActions = listOf<Completable>(
                 // Added actions will be performed on after another in
                 // provided order.
-
-                // Update account just to create user for the first time.
-                repositoryProvider.account().updateDeferred()
-                        .onErrorResumeNext { error ->
-                            if (error is HttpException
-                                    && error.code() == HttpURLConnection.HTTP_NOT_FOUND) {
-                                createUnverifiedUser(repositoryProvider)
-                                        .andThen(repositoryProvider.account().updateDeferred())
-                            } else if (error is HttpException
-                                    && error.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                                Completable.error(AuthMismatchException())
-                            } else {
-                                // Other account update errors are not critical.
-                                Completable.complete()
-                            }
-                        }
         )
 
         val performParallelActions = Completable.merge(parallelActions)
@@ -56,20 +40,5 @@ class PostSignInManager(
 
         return performSyncActions
                 .andThen(performParallelActions)
-    }
-
-    private fun createUnverifiedUser(repositoryProvider: RepositoryProvider): Completable {
-        return repositoryProvider.user().createUnverified()
-                .onErrorResumeNext {
-                    if (it is HttpException
-                            && (it.code() == HttpURLConnection.HTTP_UNAUTHORIZED
-                                    || it.code() == HttpURLConnection.HTTP_FORBIDDEN)
-                    )
-                        Completable.error(
-                                AuthMismatchException()
-                        )
-                    else
-                        Completable.error(it)
-                }
     }
 }

@@ -65,9 +65,6 @@ class RepositoryProviderImpl(
     private val accountRepository: AccountRepository by lazy {
         AccountRepository(apiProvider, walletInfoProvider)
     }
-    private val userRepository: UserRepository by lazy {
-        UserRepository(apiProvider, walletInfoProvider)
-    }
     private val favoritesRepository: FavoritesRepository by lazy {
         FavoritesRepository(apiProvider, walletInfoProvider, FavoritesCache())
     }
@@ -137,10 +134,6 @@ class RepositoryProviderImpl(
 
     override fun account(): AccountRepository {
         return accountRepository
-    }
-
-    override fun user(): UserRepository {
-        return userRepository
     }
 
     override fun favorites(): FavoritesRepository {

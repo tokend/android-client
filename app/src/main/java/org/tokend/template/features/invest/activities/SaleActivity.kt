@@ -47,8 +47,6 @@ import org.tokend.template.view.ContentLoadingProgressBar
 import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.AmountEditTextWrapper
-import org.tokend.wallet.xdr.AccountType
-import org.tokend.wallet.xdr.AssetPolicy
 import org.tokend.wallet.xdr.SaleType
 import java.math.BigDecimal
 import java.math.MathContext
@@ -327,8 +325,8 @@ class SaleActivity : BaseActivity() {
     // region Invest
     private fun initInvestIfNeeded() {
         if (sale.isAvailable) {
-            if (saleAsset.policy and AssetPolicy.REQUIRES_KYC.value == AssetPolicy.REQUIRES_KYC.value &&
-                    accountRepository.item?.type == AccountType.NOT_VERIFIED) {
+            // TODO: Decide how to know if KYC is required
+            if (false) {
                 displayKycRequired()
             } else {
                 initInvest()

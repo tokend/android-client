@@ -64,7 +64,7 @@ class ConfirmWithdrawalRequestUseCase(
                                     ext = Fee.FeeExt.EmptyVersion()
                             ),
                             universalAmount = 0,
-                            externalDetails = "{\"address\":\"${request.destinationAddress}\"}",
+                            creatorDetails = "{\"address\":\"${request.destinationAddress}\"}",
                             ext = org.tokend.wallet.xdr.WithdrawalRequest
                                     .WithdrawalRequestExt.EmptyVersion()
                     ),

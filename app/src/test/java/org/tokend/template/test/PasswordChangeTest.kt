@@ -59,8 +59,9 @@ class PasswordChangeTest {
         useCase.perform().blockingAwait()
 
         val signers = apiProvider.getApi()
-                .accounts
-                .getSigners(session.getWalletInfo()!!.accountId)
+                .v3
+                .signers
+                .get(session.getWalletInfo()!!.accountId)
                 .execute()
                 .get()
 
@@ -72,13 +73,13 @@ class PasswordChangeTest {
         // Check that new signer has been added.
         Assert.assertTrue("A new signer ${currentAccount.accountId} must be added to account signers",
                 signers.any { signer ->
-                    signer.accountId == currentAccount.accountId
+                    signer.id == currentAccount.accountId
                 })
 
         // Check that old signer has been removed.
         Assert.assertFalse("The old signer ${rootAccount.accountId} must be removed from account signers",
                 signers.any { signer ->
-                    signer.accountId == rootAccount.accountId
+                    signer.id == rootAccount.accountId
                 })
 
         // Check that wallet info has been updated to the actual.

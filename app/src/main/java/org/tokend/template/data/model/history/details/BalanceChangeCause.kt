@@ -17,7 +17,7 @@ sealed class BalanceChangeCause : Serializable {
             val reason: String?
     ) : BalanceChangeCause() {
         constructor(op: OpCreateAMLAlertRequestDetailsResource) : this(
-                reason = op.reason.takeIf { it.isNotEmpty() }
+                reason = op.creatorDetails?.get("reason")?.asText()?.takeIf { it.isNotEmpty() }
         )
     }
 
@@ -118,7 +118,7 @@ sealed class BalanceChangeCause : Serializable {
             val reference: String?
     ) : BalanceChangeCause() {
         constructor(op: OpCreateIssuanceRequestDetailsResource) : this(
-                cause = op.externalDetails?.get("cause")?.asText(),
+                cause = op.creatorDetails?.get("cause")?.asText(),
                 reference = op.reference
         )
     }
@@ -229,7 +229,7 @@ sealed class BalanceChangeCause : Serializable {
             val destinationAddress: String
     ) : BalanceChangeCause() {
         constructor(op: OpCreateWithdrawRequestDetailsResource) : this(
-                destinationAddress = op.externalDetails.get("address").asText()
+                destinationAddress = op.creatorDetails.get("address").asText()
         )
     }
 }
