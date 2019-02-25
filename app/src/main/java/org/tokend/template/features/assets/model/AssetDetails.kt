@@ -1,10 +1,12 @@
 package org.tokend.template.features.assets.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.utils.HashCodes
 import java.io.Serializable
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 open class AssetDetails(
         @JsonProperty("name")
         val name: String,
