@@ -26,11 +26,11 @@ class FeeItem(
 
             val fixed = amountFormatter.formatAssetAmount(fee.fixed, fee.asset, 1)
 
-            val percent = "${amountFormatter.formatAmount(fee.percent, 2, 1)}%"
+            val percent = "${amountFormatter.formatAmount(fee.percent, 6, 1)}%"
 
-            val lowerBound = amountFormatter.formatAssetAmount(fee.lowerBound, fee.requestAsset, 1)
+            val lowerBound = amountFormatter.formatAssetAmount(fee.lowerBound, fee.asset, 1)
 
-            val upperBound = amountFormatter.formatAssetAmount(fee.upperBound, fee.requestAsset, 1)
+            val upperBound = amountFormatter.formatAssetAmount(fee.upperBound, fee.asset, 1)
 
             return FeeItem(type, subtype, fixed, percent, lowerBound, upperBound)
         }

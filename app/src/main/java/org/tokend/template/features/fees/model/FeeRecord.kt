@@ -1,23 +1,22 @@
 package org.tokend.template.features.fees.model
 
 import org.tokend.sdk.api.fees.model.Fee
+import org.tokend.sdk.api.generated.resources.FeeResource
 import java.io.Serializable
 import java.math.BigDecimal
 
 class FeeRecord(
         val feeType: Int,
         val subtype: Int,
-        val requestAsset: String,
         val asset: String,
         val fixed: BigDecimal,
         val percent: BigDecimal,
-        val lowerBound: BigDecimal,
-        val upperBound: BigDecimal
-): Serializable {
+        val lowerBound: BigDecimal = BigDecimal.ZERO,
+        val upperBound: BigDecimal = BigDecimal.ZERO
+) : Serializable {
     constructor(source: Fee) : this(
             feeType = source.feeType,
             subtype = source.subtype,
-            requestAsset = source.requestAsset,
             asset = source.asset,
             fixed = source.fixed,
             percent = source.percent,
@@ -33,7 +32,6 @@ class FeeRecord(
         if (other !is FeeRecord) return false
 
         if (feeType != other.feeType) return false
-        if (requestAsset != other.requestAsset) return false
         if (asset != other.asset) return false
         if (fixed != other.fixed) return false
         if (percent != other.percent) return false
@@ -44,11 +42,25 @@ class FeeRecord(
 
     override fun hashCode(): Int {
         var result = feeType
-        result = 31 * result + requestAsset.hashCode()
         result = 31 * result + asset.hashCode()
         result = 31 * result + fixed.hashCode()
         result = 31 * result + percent.hashCode()
         result = 31 * result + lowerBound.hashCode()
         return result
+    }
+
+    companion object {
+        @JvmStatic
+        fun fromResource(source: FeeResource): FeeRecord {
+            return FeeRecord(
+                    feeType = source.appliedTo.feeType,
+                    subtype = source.appliedTo.subtype.toInt(),
+                    asset = source.appliedTo.asset,
+                    fixed = source.fixed,
+                    percent = source.percent,
+                    lowerBound = source.appliedTo.lowerBound,
+                    upperBound = source.appliedTo.upperBound
+            )
+        }
     }
 }
