@@ -69,7 +69,8 @@ open class DefaultErrorHandler(
                         context.getString(R.string.error_tx_account_blocked)
                     TransactionFailedException.OP_INVALID_FEE ->
                         context.getString(R.string.error_tx_invalid_fee)
-                    TransactionFailedException.OP_NOT_ALLOWED ->
+                    TransactionFailedException.OP_NOT_ALLOWED,
+                    TransactionFailedException.OP_NO_ROLE_PERMISSION ->
                         context.getString(R.string.error_tx_not_allowed)
                     TransactionFailedException.OP_OFFER_CROSS_SELF ->
                         context.getString(R.string.error_tx_cross_self)
@@ -84,6 +85,8 @@ open class DefaultErrorHandler(
                 }
             TransactionFailedException.TX_BAD_AUTH ->
                 context.getString(R.string.error_tx_bad_auth)
+            TransactionFailedException.TX_NO_ROLE_PERMISSION ->
+                context.getString(R.string.error_tx_not_allowed)
             else ->
                 context.getString(R.string.error_tx_general)
         }
