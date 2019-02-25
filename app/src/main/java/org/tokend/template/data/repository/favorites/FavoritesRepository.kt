@@ -2,14 +2,14 @@ package org.tokend.template.data.repository.favorites
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.tokend.sdk.api.favorites.model.FavoriteEntry
-import org.tokend.template.data.model.FavoriteRecord
-import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
-import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.di.providers.ApiProvider
-import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.rx.extensions.toCompletable
 import org.tokend.rx.extensions.toSingle
+import org.tokend.sdk.api.favorites.model.FavoriteEntry
+import org.tokend.template.data.model.FavoriteRecord
+import org.tokend.template.data.repository.base.RepositoryCache
+import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
+import org.tokend.template.di.providers.ApiProvider
+import org.tokend.template.di.providers.WalletInfoProvider
 
 class FavoritesRepository(
         private val apiProvider: ApiProvider,

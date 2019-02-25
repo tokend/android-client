@@ -166,7 +166,6 @@ class RepositoryProviderImpl(
                     balanceId,
                     apiProvider,
                     DefaultParticipantEffectConverter(balanceId),
-                    accountDetails(),
                     BalanceChangesCache()
             )
         }
