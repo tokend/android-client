@@ -6,6 +6,9 @@ import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.rx.extensions.toSingle
+import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.v3.fees.params.FeesPageParamsV3
+import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.template.features.fees.model.FeesRecords
 
@@ -20,17 +23,25 @@ class FeesRepository(private val apiProvider: ApiProvider,
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
-        return signedApi
-                .fees
-                .getExistingFees(walletInfoProvider.getWalletInfo()?.accountId)
+        val accountId = walletInfoProvider.getWalletInfo()?.accountId
+                ?: return Single.error(IllegalStateException("No wallet info found"))
+
+        val loader = SimplePagedResourceLoader({ nextCursor ->
+            signedApi.v3.fees.get(
+                    FeesPageParamsV3(
+                            account = accountId,
+                            pagingParams = PagingParamsV2(
+                                    page = nextCursor
+                            )
+                    )
+            )
+        })
+
+        return loader.loadAll()
                 .toSingle()
-                .map {
-                    val feesMap = it.feesAssetMap.mapValues { entry ->
-                        entry.value.map { fee ->
-                            FeeRecord(fee)
-                        }
-                    }
-                    FeesRecords(feesMap)
+                .map { resourceList ->
+                    val records = resourceList.map { FeeRecord.fromResource(it) }
+                    FeesRecords(records.groupBy { it.asset })
                 }
     }
 }

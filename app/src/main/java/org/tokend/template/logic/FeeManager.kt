@@ -1,9 +1,9 @@
 package org.tokend.template.logic
 
 import io.reactivex.Single
-import org.tokend.sdk.api.fees.params.FeeParams
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.rx.extensions.toSingle
+import org.tokend.sdk.api.v3.fees.params.FeeCalculationParams
 import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.PaymentFeeType
@@ -24,21 +24,24 @@ class FeeManager(
      * @param amount operation amount
      * @param asset operation asset
      */
-    fun getFee(type: Int, subtype: Int,
+    fun getFee(type: FeeType, subtype: Int,
                accountId: String, asset: String, amount: BigDecimal): Single<FeeRecord> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
-        return signedApi.fees.getByType(
-                type,
-                FeeParams(
-                        asset,
-                        accountId,
-                        amount,
-                        subtype)
+        val params = FeeCalculationParams(
+                asset = asset,
+                type = type,
+                subtype = subtype,
+                amount = amount
         )
+
+        return signedApi.v3.fees
+                .getCalculatedFee(accountId, params)
                 .toSingle()
-                .map { FeeRecord(it) }
+                .map {
+                    FeeRecord(type.value, subtype, asset, it.fixed,  it.calculatedPercent)
+                }
     }
 
     /**
@@ -56,7 +59,7 @@ class FeeManager(
                     PaymentFeeType.OUTGOING.value
                 else
                     PaymentFeeType.INCOMING.value
-        return getFee(FeeType.PAYMENT_FEE.value, subtype, accountId, asset, amount)
+        return getFee(FeeType.PAYMENT_FEE, subtype, accountId, asset, amount)
     }
 
     /**
@@ -65,7 +68,7 @@ class FeeManager(
      * @see getFee
      */
     fun getWithdrawalFee(accountId: String, asset: String, amount: BigDecimal): Single<FeeRecord> {
-        return getFee(FeeType.WITHDRAWAL_FEE.value, 0, accountId, asset, amount)
+        return getFee(FeeType.WITHDRAWAL_FEE, 0, accountId, asset, amount)
     }
 
     /**
@@ -74,6 +77,6 @@ class FeeManager(
      * @see getFee
      */
     fun getOfferFee(accountId: String, asset: String, amount: BigDecimal): Single<FeeRecord> {
-        return getFee(FeeType.OFFER_FEE.value, 0, accountId, asset, amount)
+        return getFee(FeeType.OFFER_FEE, 0, accountId, asset, amount)
     }
 }
