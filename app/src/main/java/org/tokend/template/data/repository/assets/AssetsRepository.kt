@@ -35,8 +35,12 @@ class AssetsRepository(
                 .loadAll()
                 .toSingle()
                 .map { assetResources ->
-                    assetResources.map {
-                        AssetRecord.fromResource(it, urlConfigProvider.getConfig(), mapper)
+                    assetResources.mapNotNull {
+                        try {
+                            AssetRecord.fromResource(it, urlConfigProvider.getConfig(), mapper)
+                        } catch (e: IllegalArgumentException) {
+                            null
+                        }
                     }
                 }
     }
