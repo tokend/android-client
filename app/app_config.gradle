@@ -127,7 +127,7 @@ ext {
     // Allows to see an analytics for your app.
     enable_analytics = 'false'
     // Allows TokenD Authenticator usage
-    allow_authenticator_auth = 'true'
+    allow_authenticator_auth = 'false'
     // ----------------------
 }
 
