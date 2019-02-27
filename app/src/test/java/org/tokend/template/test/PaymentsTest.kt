@@ -46,8 +46,6 @@ class PaymentsTest {
                 recipientEmail, password, apiProvider, session, null
         )
 
-        val recipientAccountId = recipientAccount.accountId
-
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
         )
@@ -58,7 +56,7 @@ class PaymentsTest {
                 repositoryProvider, session, txManager)
 
         val useCase = CreatePaymentRequestUseCase(
-                recipientAccountId,
+                recipientEmail,
                 paymentAmount,
                 asset,
                 "Test payment",

@@ -230,8 +230,11 @@ object Util {
         txManager.submit(tx).blockingGet()
 
         val requestToReview =
-                apiProvider
-                        .getApi()
+                ApiProviderFactory().createApiProvider(
+                        urlConfigProvider = getUrlConfigProvider(),
+                        account = Config.ADMIN_ACCOUNT
+                )
+                        .getSignedApi()!!
                         .requests
                         .getAssets(
                                 AssetRequestsParams(
