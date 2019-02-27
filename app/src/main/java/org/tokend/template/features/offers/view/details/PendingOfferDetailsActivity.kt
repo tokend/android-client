@@ -52,7 +52,7 @@ open class PendingOfferDetailsActivity : BaseActivity() {
     protected open fun displayToPay(item: OfferRecord) {
         val asset = if (item.isBuy) item.quoteAssetCode else item.baseAssetCode
         val amount = if (item.isBuy) item.quoteAmount else item.baseAmount
-        val fee = if (item.isBuy) item.fee else BigDecimal.ZERO
+        val fee = if (item.isBuy && item.isCancellable) item.fee else BigDecimal.ZERO
         val total = amount + fee
         val minDecimals = amountFormatter.getDecimalDigitsCount(asset)
 
@@ -68,7 +68,7 @@ open class PendingOfferDetailsActivity : BaseActivity() {
     protected open fun displayToReceive(item: OfferRecord) {
         val asset = if (item.isBuy) item.baseAssetCode else item.quoteAssetCode
         val amount = if (item.isBuy) item.baseAmount else item.quoteAmount
-        val fee = if (item.isBuy) BigDecimal.ZERO else item.fee
+        val fee = if (item.isBuy && !item.isCancellable) BigDecimal.ZERO else item.fee
         val total = amount - fee
         val minDecimals = amountFormatter.getDecimalDigitsCount(asset)
 
