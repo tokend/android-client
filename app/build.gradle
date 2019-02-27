@@ -115,7 +115,7 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.13'
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
-    implementation "org.tokend:sdk:2.0.0-x.14"
+    implementation "org.tokend:sdk:2.0.0-x.15"
     implementation "org.tokend:rx-sdk:1.0.3"
 
     implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'
