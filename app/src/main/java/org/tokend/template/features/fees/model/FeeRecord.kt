@@ -1,6 +1,5 @@
 package org.tokend.template.features.fees.model
 
-import org.tokend.sdk.api.fees.model.Fee
 import org.tokend.sdk.api.generated.resources.FeeResource
 import java.io.Serializable
 import java.math.BigDecimal
@@ -14,14 +13,14 @@ class FeeRecord(
         val lowerBound: BigDecimal = BigDecimal.ZERO,
         val upperBound: BigDecimal = BigDecimal.ZERO
 ) : Serializable {
-    constructor(source: Fee) : this(
-            feeType = source.feeType,
-            subtype = source.subtype,
-            asset = source.asset,
+    constructor(source: FeeResource) : this(
+            feeType = source.appliedTo.feeType,
+            subtype = source.appliedTo.subtype.toInt(),
+            asset = source.appliedTo.asset,
             fixed = source.fixed,
             percent = source.percent,
-            lowerBound = source.lowerBound,
-            upperBound = source.upperBound
+            lowerBound = source.appliedTo.lowerBound,
+            upperBound = source.appliedTo.upperBound
     )
 
     val total: BigDecimal
@@ -47,20 +46,5 @@ class FeeRecord(
         result = 31 * result + percent.hashCode()
         result = 31 * result + lowerBound.hashCode()
         return result
-    }
-
-    companion object {
-        @JvmStatic
-        fun fromResource(source: FeeResource): FeeRecord {
-            return FeeRecord(
-                    feeType = source.appliedTo.feeType,
-                    subtype = source.appliedTo.subtype.toInt(),
-                    asset = source.appliedTo.asset,
-                    fixed = source.fixed,
-                    percent = source.percent,
-                    lowerBound = source.appliedTo.lowerBound,
-                    upperBound = source.appliedTo.upperBound
-            )
-        }
     }
 }
