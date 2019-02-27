@@ -436,6 +436,7 @@ class SaleActivity : BaseActivity() {
                 amount_edit_text.text.clear()
             }
         }
+        investAmountWrapper.maxPlacesAfterComa = amountFormatter.getDecimalDigitsCount(investAsset)
     }
 
     private fun getAvailableBalance(asset: String): BigDecimal {
