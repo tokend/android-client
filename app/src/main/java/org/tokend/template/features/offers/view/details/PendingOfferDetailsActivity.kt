@@ -68,7 +68,7 @@ open class PendingOfferDetailsActivity : BaseActivity() {
     protected open fun displayToReceive(item: OfferRecord) {
         val asset = if (item.isBuy) item.baseAssetCode else item.quoteAssetCode
         val amount = if (item.isBuy) item.baseAmount else item.quoteAmount
-        val fee = if (item.isBuy && !item.isCancellable) BigDecimal.ZERO else item.fee
+        val fee = if (item.isBuy || !item.isCancellable) BigDecimal.ZERO else item.fee
         val total = amount - fee
         val minDecimals = amountFormatter.getDecimalDigitsCount(asset)
 
