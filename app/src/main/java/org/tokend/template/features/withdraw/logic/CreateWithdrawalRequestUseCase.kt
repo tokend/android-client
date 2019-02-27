@@ -2,6 +2,7 @@ package org.tokend.template.features.withdraw.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
+import org.tokend.template.data.model.history.SimpleFeeRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.fees.model.FeeRecord
@@ -22,7 +23,7 @@ class CreateWithdrawalRequestUseCase(
         private val feeManager: FeeManager
 ) {
     private lateinit var account: String
-    private lateinit var fee: FeeRecord
+    private lateinit var fee: SimpleFeeRecord
     private lateinit var balanceId: String
 
     fun perform(): Single<WithdrawalRequest> {
@@ -56,7 +57,7 @@ class CreateWithdrawalRequestUseCase(
                 .switchIfEmpty(Single.error(IllegalStateException("Missing account ID")))
     }
 
-    private fun getFee(): Single<FeeRecord> {
+    private fun getFee(): Single<SimpleFeeRecord> {
         return feeManager
                 .getWithdrawalFee(
                         account,

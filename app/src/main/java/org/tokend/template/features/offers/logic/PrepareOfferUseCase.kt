@@ -3,8 +3,8 @@ package org.tokend.template.features.offers.logic
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.data.model.history.SimpleFeeRecord
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.template.logic.FeeManager
 
 /**
@@ -45,7 +45,7 @@ class PrepareOfferUseCase(
                 )
     }
 
-    private fun getFee(): Single<FeeRecord> {
+    private fun getFee(): Single<SimpleFeeRecord> {
         return feeManager.getOfferFee(
                 accountId,
                 offer.quoteAssetCode,

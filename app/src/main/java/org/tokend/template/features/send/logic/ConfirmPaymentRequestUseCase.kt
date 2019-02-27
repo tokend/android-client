@@ -10,7 +10,6 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.Transaction
 import org.tokend.wallet.TransactionBuilder
-import org.tokend.wallet.xdr.Fee
 import org.tokend.wallet.xdr.Operation
 import org.tokend.wallet.xdr.PaymentFeeData
 import org.tokend.wallet.xdr.op_extensions.SimplePaymentOp
@@ -53,24 +52,8 @@ class ConfirmPaymentRequestUseCase(
                     subject = request.paymentSubject ?: "",
                     reference = request.reference,
                     feeData = PaymentFeeData(
-                            sourceFee = Fee(
-                                    fixed = networkParams.amountToPrecised(
-                                            request.senderFee.fixed
-                                    ),
-                                    percent = networkParams.amountToPrecised(
-                                            request.senderFee.total
-                                    ),
-                                    ext = Fee.FeeExt.EmptyVersion()
-                            ),
-                            destinationFee = Fee(
-                                    fixed = networkParams.amountToPrecised(
-                                            request.recipientFee.fixed
-                                    ),
-                                    percent = networkParams.amountToPrecised(
-                                            request.recipientFee.total
-                                    ),
-                                    ext = Fee.FeeExt.EmptyVersion()
-                            ),
+                            sourceFee = request.senderFee.toXdrFee(networkParams),
+                            destinationFee = request.recipientFee.toXdrFee(networkParams),
                             sourcePaysForDest = request.senderPaysRecipientFee,
                             ext = PaymentFeeData.PaymentFeeDataExt.EmptyVersion()
                     )

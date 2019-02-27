@@ -3,10 +3,10 @@ package org.tokend.template.features.send.logic
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toMaybe
+import org.tokend.template.data.model.history.SimpleFeeRecord
 import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.logic.FeeManager
 import org.tokend.wallet.Base32Check
@@ -32,8 +32,8 @@ class CreatePaymentRequestUseCase(
     private lateinit var senderAccount: String
     private lateinit var senderBalance: String
     private lateinit var recipientAccount: String
-    private lateinit var senderFee: FeeRecord
-    private lateinit var recipientFee: FeeRecord
+    private lateinit var senderFee: SimpleFeeRecord
+    private lateinit var recipientFee: SimpleFeeRecord
 
     fun perform(): Single<PaymentRequest> {
         return getAccounts()
@@ -110,7 +110,7 @@ class CreatePaymentRequestUseCase(
                 ))
     }
 
-    private fun getFees(): Single<Pair<FeeRecord, FeeRecord>> {
+    private fun getFees(): Single<Pair<SimpleFeeRecord, SimpleFeeRecord>> {
         return Single.zip(
                 feeManager.getPaymentFee(
                         senderAccount,
@@ -124,7 +124,7 @@ class CreatePaymentRequestUseCase(
                         amount,
                         false
                 ),
-                BiFunction { senderFee: FeeRecord, recipientFee: FeeRecord ->
+                BiFunction { senderFee: SimpleFeeRecord, recipientFee: SimpleFeeRecord ->
                     senderFee to recipientFee
                 }
         )

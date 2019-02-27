@@ -74,8 +74,6 @@ class PaymentsTest {
                 paymentAmount, request.amount)
         Assert.assertTrue("Payment request recipient must be a valid account ID",
                 Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID, request.recipientAccountId.toCharArray()))
-        Assert.assertEquals("Payment request fee must have a valid type",
-                FeeType.PAYMENT_FEE.value, request.senderFee.feeType)
     }
 
     @Test

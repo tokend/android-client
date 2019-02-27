@@ -116,8 +116,6 @@ class WithdrawTest {
                 destAddress, request.destinationAddress)
         Assert.assertEquals("Withdrawal request account ID must be equal to the actual one",
                 session.getWalletInfo()!!.accountId, request.accountId)
-        Assert.assertEquals("Withdrawal request fee must have a valid type",
-                FeeType.WITHDRAWAL_FEE.value, request.fee.feeType)
     }
 
     @Test

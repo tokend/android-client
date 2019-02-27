@@ -4,13 +4,13 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toMaybe
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.TokenDApi
 import org.tokend.sdk.api.assets.model.AssetChartData
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.rx.extensions.toSingle
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.logic.FeeManager
@@ -109,7 +109,7 @@ class InvestmentInfoManager(
                                     )
                                             .map {
                                                 val percent = it.percent
-                                                feeMap[it.asset] = percent
+                                                feeMap[quoteAsset.code] = percent
                                                 percent
                                             }
                                             .onErrorResumeNext(Single.just(BigDecimal.ZERO))

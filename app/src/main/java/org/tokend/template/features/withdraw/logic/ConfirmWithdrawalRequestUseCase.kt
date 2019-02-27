@@ -12,7 +12,6 @@ import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.Transaction
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.CreateWithdrawalRequestOp
-import org.tokend.wallet.xdr.Fee
 import org.tokend.wallet.xdr.Operation
 
 /**
@@ -58,11 +57,7 @@ class ConfirmWithdrawalRequestUseCase(
                     request = org.tokend.wallet.xdr.WithdrawalRequest(
                             balance = PublicKeyFactory.fromBalanceId(request.balanceId),
                             amount = precisedAmount,
-                            fee = Fee(
-                                    fixed = networkParams.amountToPrecised(request.fee.fixed),
-                                    percent = networkParams.amountToPrecised(request.fee.percent),
-                                    ext = Fee.FeeExt.EmptyVersion()
-                            ),
+                            fee = request.fee.toXdrFee(networkParams),
                             universalAmount = 0,
                             creatorDetails = "{\"address\":\"${request.destinationAddress}\"}",
                             ext = org.tokend.wallet.xdr.WithdrawalRequest
