@@ -22,8 +22,8 @@ class DefaultParticipantEffectConverter(
                 return@forEach
             }
 
-            if (!operation.hasAttributes()) {
-                logError("Operation ${operation.id} has no attributes")
+            if (!operation.isFilled) {
+                logError("Operation ${operation.id} attributes are not filled")
                 return@forEach
             }
 
@@ -100,8 +100,8 @@ class DefaultParticipantEffectConverter(
                 return@forEach
             }
 
-            if (!operationDetails.hasAttributes()) {
-                logError("Operation details ${operationDetails.id} has no attributes")
+            if (!operationDetails.isFilled) {
+                logError("Operation ${operationDetails.id} attributes are not fileld")
                 return@forEach
             }
 
