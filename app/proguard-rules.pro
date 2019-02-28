@@ -28,33 +28,30 @@
 -dontwarn java.lang.**
 -dontwarn javax.lang.**
 -dontwarn javax.annotation.**
--keepclassmembers class * {
-    @com.github.jasminb.jsonapi.annotations.Id <fields>;
-}
+-keep class com.google.gson.** { *; }
+-keepclassmembers enum * { *; }
+-keepclassmembers class * { @com.github.jasminb.jsonapi.annotations.Id <fields>; }
 -keep class com.fasterxml.jackson.databind.ObjectMapper {
     public <methods>;
     protected <methods>;
 }
--keep class com.fasterxml.jackson.databind.ObjectWriter {
-    public ** writeValueAsString(**);
-}
+-keep class com.fasterxml.jackson.databind.ObjectWriter { public ** writeValueAsString(**); }
 -keepnames class com.fasterxml.jackson.** { *; }
 -dontwarn com.fasterxml.jackson.databind.**
 -keep class * implements com.github.jasminb.jsonapi.ResourceIdHandler
-
-# JSON
 -keep class sun.misc.Unsafe { *; }
--keep class com.google.gson.** { *; }
--keepclassmembers enum * { *; }
 -keep class org.codehaus.** { *; }
 -keep class com.fasterxml.jackson.annotation.** { *; }
--keepattributes Signature
--keepattributes *Annotation*
--keepattributes EnclosingMethod
+-keep @com.fasterxml.jackson.annotation.JsonIgnoreProperties class * { *; }
+-keep @com.fasterxml.jackson.annotation.JsonCreator class * { *; }
+-keep @com.fasterxml.jackson.annotation.JsonValue class * { *; }
+-keep class com.fasterxml.** { *; }
+-keepclassmembers public final enum com.fasterxml.jackson.annotation.JsonAutoDetect$Visibility {
+    public static final com.fasterxml.jackson.annotation.JsonAutoDetect$Visibility *;
+}
 
-# Debug
--keepattributes *Annotation*
--keepattributes Exceptions, SourceFile, LineNumberTable
+# General
+-keepattributes SourceFile,LineNumberTable,*Annotation*,EnclosingMethod,Signature,Exceptions,InnerClasses
 -keep public class * extends java.lang.Exception
 
 # Optimize
