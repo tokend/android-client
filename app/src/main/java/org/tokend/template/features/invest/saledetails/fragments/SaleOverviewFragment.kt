@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.gson.JsonParser
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_sale_overview.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_progress.*
+import org.tokend.sdk.api.blobs.model.Blob
 import org.tokend.sdk.factory.HttpClientFactory
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
@@ -68,7 +70,14 @@ class SaleOverviewFragment : BaseFragment() {
         loadingDisposable =
                 BlobManager(apiProvider, walletInfoProvider)
                         .getBlob(blobId)
-                        .map { it.valueString }
+                        .map(Blob::valueString)
+                        .map { rawValue ->
+                            try {
+                                JsonParser().parse(rawValue).asString
+                            } catch (e: Exception) {
+                                rawValue
+                            }
+                        }
                         .map { markdownString ->
                             Markwon.markdown(markdownConfiguration, markdownString)
                         }
