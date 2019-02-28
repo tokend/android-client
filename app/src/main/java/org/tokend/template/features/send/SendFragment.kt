@@ -290,6 +290,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 && !amount_edit_text.hasError()
                 && !recipient_edit_text.hasError()
                 && !subject_edit_text.hasError()
+                && !recipient_edit_text.text.isBlank()
                 && amountEditTextWrapper.scaledAmount.signum() > 0
     }
     // endregion
@@ -355,6 +356,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         checkAmount()
         updateConfirmAvailability()
         displayBalance()
+        amountEditTextWrapper.maxPlacesAfterComa = amountFormatter.getDecimalDigitsCount(asset)
     }
 
     private fun updateContactsData(items: List<Contact>) {

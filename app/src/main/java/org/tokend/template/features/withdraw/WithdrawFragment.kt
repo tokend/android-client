@@ -225,6 +225,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         canConfirm = !isLoading
                 && !amount_edit_text.hasError()
                 && !address_edit_text.hasError()
+                && !address_edit_text.text.isBlank()
                 && amountEditTextWrapper.scaledAmount.signum() > 0
     }
     // endregion
@@ -281,6 +282,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         checkAmount()
         updateConfirmAvailability()
         displayBalance()
+        amountEditTextWrapper.maxPlacesAfterComa = amountFormatter.getDecimalDigitsCount(asset)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
