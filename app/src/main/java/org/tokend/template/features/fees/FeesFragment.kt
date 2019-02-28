@@ -69,6 +69,7 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initFeeList() {
+        error_empty_view.setEmptyDrawable(R.drawable.ic_flash)
         error_empty_view.setPadding(0, 0, 0,
                 resources.getDimensionPixelSize(R.dimen.quadra_margin))
 
@@ -83,6 +84,7 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
         asset_tabs.onItemSelected {
             asset = it.text
         }
+        asset_tabs.visibility = View.GONE
     }
 
     private fun initHorizontalSwipes() {
@@ -143,15 +145,17 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
     private fun onFeesUpdated() {
         asset_tabs.setSimpleItems(assets)
         if (assets.isEmpty()) {
+            asset_tabs.visibility = View.GONE
             error_empty_view.showEmpty(getString(R.string.no_fees))
         } else {
+            asset_tabs.visibility = View.VISIBLE
             error_empty_view.hide()
         }
     }
 
     private fun onAssetChanged() {
         feesRepository.item?.feesAssetMap?.get(asset)?.let { fees ->
-            feeAdapter.setData(fees.map { FeeItem.fromFee(it) })
+            feeAdapter.setData(fees.map { FeeItem.fromFee(it, amountFormatter) })
         }
     }
 

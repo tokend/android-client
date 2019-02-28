@@ -10,16 +10,23 @@ class SignUpTest {
     fun signUp() {
         val urlConfigProvider = Util.getUrlConfigProvider()
 
-        val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
-        val keyStorage = ApiProviderFactory().createApiProvider(urlConfigProvider).getKeyStorage()
+        val email = Util.getEmail()
+        val password = Config.DEFAULT_PASSWORD
+        val keyStorage = ApiProviderFactory().createApiProvider(urlConfigProvider).getKeyServer()
 
         val useCase = SignUpUseCase(email, password, keyStorage)
 
         useCase.perform().blockingGet()
 
-        val walletInfo = keyStorage.getWalletInfo(email, password, false)
+        try {
+            val walletInfo = keyStorage.getWalletInfo(email, password, false)
+                    .execute().get()
 
-        Assert.assertEquals(email, walletInfo.email)
+            Assert.assertTrue("Wallet email must be the same as the used one for sign up",
+                    email.equals(walletInfo.email, true))
+        } catch (e: Exception) {
+            Assert.fail("Wallet must be accessible with specified credentials")
+        }
+
     }
 }

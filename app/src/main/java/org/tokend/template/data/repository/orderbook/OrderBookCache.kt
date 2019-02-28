@@ -1,14 +1,14 @@
 package org.tokend.template.data.repository.orderbook
 
 import io.reactivex.Single
-import org.tokend.sdk.api.trades.model.Offer
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.base.RepositoryCache
 
 class OrderBookCache(
         private val isBuy: Boolean
-): RepositoryCache<Offer>() {
-    override fun isContentSame(first: Offer, second: Offer): Boolean {
-        return first == second
+) : RepositoryCache<OfferRecord>() {
+    override fun isContentSame(first: OfferRecord, second: OfferRecord): Boolean {
+        return false
     }
 
     override fun sortItems() {
@@ -19,13 +19,13 @@ class OrderBookCache(
         }
     }
 
-    override fun getAllFromDb(): Single<List<Offer>> = Single.just(emptyList())
+    override fun getAllFromDb(): Single<List<OfferRecord>> = Single.just(emptyList())
 
-    override fun addToDb(items: List<Offer>) {}
+    override fun addToDb(items: List<OfferRecord>) {}
 
-    override fun updateInDb(items: List<Offer>) {}
+    override fun updateInDb(items: List<OfferRecord>) {}
 
-    override fun deleteFromDb(items: List<Offer>) {}
+    override fun deleteFromDb(items: List<OfferRecord>) {}
 
     override fun clearDb() {}
 }

@@ -2,7 +2,8 @@ package org.tokend.template.test
 
 import junit.framework.Assert
 import org.junit.Test
-import org.tokend.sdk.api.favorites.model.AssetPairFavoriteEntry
+import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.template.data.model.FavoriteRecord
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.ApiProviderFactory
 import org.tokend.template.di.providers.RepositoryProviderImpl
@@ -21,10 +22,11 @@ class SwitchingFavoriteStateTest {
         )
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
 
-        val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val email = Util.getEmail()
+        val password = Config.DEFAULT_PASSWORD
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -32,16 +34,18 @@ class SwitchingFavoriteStateTest {
 
         val favoritesRepository = repositoryProvider.favorites()
 
-        val favoriteEntry = AssetPairFavoriteEntry("ETH", "BTC")
+        val favoriteEntry = FavoriteRecord.assetPair("ETH", "BTC")
 
         val useCase = SwitchFavoriteUseCase(favoriteEntry, favoritesRepository)
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(favoritesRepository.itemsList.isNotEmpty())
+        Assert.assertTrue("Favorites repository must contain a newly created entry",
+                favoritesRepository.itemsList.isNotEmpty())
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(favoritesRepository.itemsList.isEmpty())
+        Assert.assertTrue("Favorites repository must be empty after switching the same favorite entry",
+                favoritesRepository.itemsList.isEmpty())
     }
 }

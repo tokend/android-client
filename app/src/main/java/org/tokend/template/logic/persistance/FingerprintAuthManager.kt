@@ -15,7 +15,7 @@ class FingerprintAuthManager(
     private var isAuthCanceled = false
 
     private var successCallback: ((String, CharArray) -> Unit)? = null
-    private var errorCallback: ((String) -> Unit)? = null
+    private var errorCallback: ((String?) -> Unit)? = null
 
     /**
      * @param onAuthStart will be called when auth is available and started
@@ -25,15 +25,13 @@ class FingerprintAuthManager(
      */
     fun requestAuthIfAvailable(onAuthStart: () -> Unit,
                                onSuccess: (String, CharArray) -> Unit,
-                               onError: (String) -> Unit) {
-
-
+                               onError: (String?) -> Unit) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return
         }
 
         val preferences = applicationContext.defaultSharedPreferences
-        if(!preferences.getBoolean("fingerprint", true)) {
+        if (!preferences.getBoolean("fingerprint", true)) {
             return
         }
 
@@ -53,9 +51,7 @@ class FingerprintAuthManager(
             onAuthStart()
 
             val handleErrorMessage: (String?) -> Unit = { errorMessage ->
-                if (errorMessage != null) {
-                    errorCallback?.invoke(errorMessage)
-                }
+                errorCallback?.invoke(errorMessage)
             }
 
             fingerprintUtil.requestAuth(

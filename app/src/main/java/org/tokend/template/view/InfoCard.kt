@@ -100,7 +100,10 @@ class InfoCard(parent: ViewGroup) {
     /**
      * Adds a row with a switcher instead of the value
      */
-    fun addSwitcherRow(title: String, switchListener: CompoundButton.OnCheckedChangeListener?): InfoCard {
+    fun addSwitcherRow(title: String,
+                       switchListener: CompoundButton.OnCheckedChangeListener?,
+                       isChecked: Boolean = false,
+                       animate: Boolean = false): InfoCard {
         val rowView =
                 context.layoutInflater.inflate(R.layout.layout_info_card_switch_row, contentLayout,
                         false)
@@ -108,19 +111,30 @@ class InfoCard(parent: ViewGroup) {
         val titleTextView = rowView.find<TextView>(R.id.title)
         val switcherView = rowView.find<SwitchCompat>(R.id.switcher)
 
+        switcherView.isChecked = animate != isChecked
+
         titleTextView.text = title
-        if (switchListener != null) {
-            switcherView.setOnCheckedChangeListener(switchListener)
+
+        val result = addView(rowView)
+
+        switcherView.post {
+            switcherView.isChecked = isChecked
+            if (switchListener != null) {
+                switcherView.setOnCheckedChangeListener(switchListener)
+            }
         }
 
-        return addView(rowView)
+        return result
     }
 
     /**
      * Adds a row with a switcher instead of the value
      */
-    fun addSwitcherRow(@StringRes title: Int, switchListener: CompoundButton.OnCheckedChangeListener?): InfoCard {
-        return addSwitcherRow(context.getString(title), switchListener)
+    fun addSwitcherRow(@StringRes title: Int,
+                       switchListener: CompoundButton.OnCheckedChangeListener?,
+                       isChecked: Boolean = false,
+                       animate: Boolean = false): InfoCard {
+        return addSwitcherRow(context.getString(title), switchListener, isChecked, animate)
     }
 
     /**

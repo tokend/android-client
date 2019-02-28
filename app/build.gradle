@@ -78,6 +78,10 @@ android {
         generateJsonReport = false
         copyHtmlReportToAssets = true
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 ext {
@@ -87,7 +91,7 @@ ext {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation "com.android.support:appcompat-v7:${support_lib_version}"
     implementation "com.android.support:recyclerview-v7:${support_lib_version}"
@@ -101,7 +105,7 @@ dependencies {
 
     implementation 'org.jetbrains.anko:anko-sdk15:0.9.1'
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
-    implementation("com.mikepenz:materialdrawer:6.0.7@aar") { transitive = true }
+    implementation("com.mikepenz:materialdrawer:6.0.9@aar") { transitive = true }
     implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     implementation 'com.google.zxing:core:3.2.1'
     implementation 'me.grantland:autofittextview:0.2.1'
@@ -111,8 +115,8 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.13'
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
-    implementation "org.tokend:sdk:1.2.14"
-    implementation "org.tokend:rx-sdk:1.0"
+    implementation "org.tokend:sdk:2.0.0"
+    implementation "org.tokend:rx-sdk:2.0.0"
 
     implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'

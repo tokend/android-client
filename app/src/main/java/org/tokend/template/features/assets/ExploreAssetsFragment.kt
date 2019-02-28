@@ -2,14 +2,16 @@ package org.tokend.template.features.assets
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.transition.Fade
 import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -28,20 +30,20 @@ import kotlinx.android.synthetic.main.fragment_explore.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
-import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.logic.transactions.TxManager
-import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.features.assets.adapter.AssetListItem
 import org.tokend.template.features.assets.adapter.AssetsAdapter
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
-import org.tokend.template.util.*
-import org.tokend.template.view.ToastManager
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.util.Navigator
+import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.SearchUtil
+import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 import java.util.concurrent.TimeUnit
-
 
 class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -66,6 +68,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 onFilterChanged()
             }
         }
+
+    private lateinit var layoutManager: GridLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_explore, container, false)
@@ -93,9 +97,15 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initAssetsList() {
-        assets_recycler_view.layoutManager = LinearLayoutManager(context)
+        val columns = calculateColumnCount()
+
+        layoutManager = GridLayoutManager(context, columns)
+
+        assets_recycler_view.layoutManager = layoutManager
+
         assets_recycler_view.adapter = assetsAdapter
 
+        error_empty_view.setEmptyDrawable(R.drawable.ic_coins)
         error_empty_view.observeAdapter(assetsAdapter, R.string.no_assets_found)
         error_empty_view.setEmptyViewDenial { assetsRepository.isNeverUpdated || balancesRepository.isNeverUpdated }
 
@@ -106,6 +116,16 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 openAssetDetails(view, item)
             }
         }
+    }
+
+    private fun calculateColumnCount(): Int {
+        val displayMetrics = DisplayMetrics()
+        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        val screenWidth = displayMetrics.widthPixels.toDouble()
+        return (screenWidth / resources.getDimensionPixelSize(R.dimen.max_content_width))
+                .let { Math.ceil(it) }
+                .toInt()
     }
 
     private fun initMenu() {
@@ -131,8 +151,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 .skipInitialValue()
                 .debounce(400, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    filter = it.trim().toString().takeIf { it.isNotEmpty() }
+                .subscribe { query ->
+                    filter = query.trim().toString().takeIf { it.isNotEmpty() }
                 }
                 .addTo(compositeDisposable)
 
@@ -153,7 +173,6 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
             }
         })
     }
-
 
     // endregion
 
@@ -194,15 +213,13 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayAssets() {
-        val storageUrl = urlConfigProvider.getConfig().storage
         val balances = balancesRepository.itemsList
         val items = assetsRepository.itemsList
                 .asSequence()
                 .map { asset ->
                     AssetListItem(
                             asset,
-                            balances.find { it.asset == asset.code } != null,
-                            storageUrl
+                            balances.find { it.assetCode == asset.code } != null
                     )
                 }
                 .sortedWith(Comparator { o1, o2 ->
@@ -218,7 +235,6 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                         }
                     } ?: items
                 }
-
 
         assetsAdapter.setData(items)
     }
@@ -274,8 +290,9 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 }
                 .subscribeBy(
                         onComplete = {
-                            ToastManager(requireContext())
-                                    .short(getString(R.string.template_asset_balance_created, asset))
+                            toastManager.short(
+                                    getString(R.string.template_asset_balance_created, asset)
+                            )
                             displayAssets()
                         },
                         onError = {
@@ -325,6 +342,11 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         return searchItem?.isActionViewExpanded == false.also {
             searchItem?.collapseActionView()
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        layoutManager.spanCount = calculateColumnCount()
     }
 
     companion object {

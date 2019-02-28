@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/InfoCard"
@@ -37,13 +36,13 @@
 
         <TextView
             android:id="@+id/deposit_text"
+            style="@style/SecondaryText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/standard_margin"
             android:layout_marginBottom="@dimen/standard_margin"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:text="@string/deposit"
-            style="@style/SecondaryText"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/payment_text"
             app:layout_constraintTop_toBottomOf="@id/payment_text" />
 
@@ -68,7 +67,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/payment_text"
             app:layout_constraintTop_toTopOf="@id/deposit_text" />
-
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

@@ -66,6 +66,7 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initEmptyErrorView() {
+        error_empty_view.setEmptyDrawable(R.drawable.ic_insert_chart)
         error_empty_view.setPadding(0,
                 requireContext().resources.getDimensionPixelSize(R.dimen.standard_padding), 0, 0)
     }
@@ -105,7 +106,7 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
         limit_cards_holder.removeAllViews()
 
         limitsRepository.item?.getAssetEntries(asset)?.let { entries ->
-            LimitCardsProvider(requireContext(), asset, entries)
+            LimitCardsProvider(requireContext(), asset, entries, amountFormatter)
                     .addTo(limit_cards_holder)
         }
     }
@@ -113,9 +114,11 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
     private fun onLimitsUpdated() {
         if (assets.isNotEmpty()) {
             error_empty_view.hide()
+            asset_tabs.visibility = View.VISIBLE
             asset_tabs.setSimpleItems(assets)
             updateCards(asset)
         } else {
+            asset_tabs.visibility = View.GONE
             error_empty_view.showEmpty(getString(R.string.no_limits_message))
         }
     }

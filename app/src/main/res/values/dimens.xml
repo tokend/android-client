@@ -32,7 +32,7 @@
 
     <dimen name="navigation_profile_header_top_margin">24dp</dimen>
 
-    <dimen name="toolbar_expanded_height">200dp</dimen>
+    <dimen name="toolbar_expanded_height">180dp</dimen> <!-- 200dp for visible subtitle -->
     <dimen name="toolbar_title_size">28sp</dimen>
     <dimen name="toolbar_subtitle_size">20sp</dimen>
     <dimen name="toolbar_text_padding_start">48dp</dimen>
@@ -48,4 +48,8 @@
     <dimen name="spinner_arrow_align_margin">9dp</dimen>
 
     <dimen name="asset_list_item_logo_size">56dp</dimen>
+
+    <dimen name="max_content_width">640dp</dimen>
+
+    <dimen name="tablet_drawer_width">320dp</dimen>
 </resources>

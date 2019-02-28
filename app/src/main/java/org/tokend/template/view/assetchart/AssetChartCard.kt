@@ -26,6 +26,7 @@ import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
 import org.tokend.sdk.api.assets.model.AssetChartData
 import org.tokend.sdk.utils.BigDecimalUtil
+import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.view.ContentLoadingProgressBar
 import org.tokend.template.view.util.formatter.AmountFormatter
@@ -34,6 +35,7 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Interactive chart of the asset price
@@ -51,13 +53,16 @@ class AssetChartCard : LinearLayout {
 
     constructor(context: Context) : super(context)
 
+    @Inject
+    lateinit var amountFormatter: AmountFormatter
+
     private var chartScale = AssetChartScale.DAY
         set(value) {
             field = value
             onScaleChanged()
         }
     private var passScrollToChart = false
-    private var chartXOffset: Float = 0f
+    private var chartWindowXOffset: Float = 0f
     private val chartData = Collections.synchronizedList(mutableListOf<Entry>())
 
     private val chartScaleTabs: TabLayout
@@ -69,6 +74,7 @@ class AssetChartCard : LinearLayout {
     private val progressBar: ContentLoadingProgressBar
 
     init {
+        (context.applicationContext as App).stateComponent.inject(this)
         removeAllViews()
         LayoutInflater.from(context).inflate(R.layout.layout_asset_chart, this, true)
 
@@ -294,7 +300,7 @@ class AssetChartCard : LinearLayout {
 
     private fun displayTotalValue() {
         valueTextView.text =
-                "${AmountFormatter.formatAssetAmount(total, asset)} $asset"
+                amountFormatter.formatAssetAmount(total, asset)
         valueHintTextView.text = valueHint
     }
 
@@ -302,12 +308,12 @@ class AssetChartCard : LinearLayout {
         val amount =
                 BigDecimalUtil.stripTrailingZeros(
                         BigDecimal(count.toDouble()).setScale(
-                                AmountFormatter.ASSET_DECIMAL_DIGITS,
+                                amountFormatter.getDecimalDigitsCount(asset),
                                 RoundingMode.HALF_UP
                         )
                 )
         valueTextView.text =
-                "${AmountFormatter.formatAssetAmount(amount)} $asset"
+                amountFormatter.formatAssetAmount(amount, asset)
         valueHintTextView.text =
                 context.getString(R.string.chart_highlight_at_hint,
                         valueHint, DateFormatter(context).formatCompact(date))
@@ -322,7 +328,7 @@ class AssetChartCard : LinearLayout {
                     else
                         ContextCompat.getColor(context, R.color.ok)
             var growthString =
-                    "$sign${AmountFormatter.formatAssetAmount(growth, asset)} $asset"
+                    "$sign${amountFormatter.formatAssetAmount(growth, asset)}"
             if (percent != null) {
                 growthString += " ($sign${BigDecimalUtil.toPlainString(percent)}%)"
             }
@@ -339,7 +345,7 @@ class AssetChartCard : LinearLayout {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         chart.getLocationInWindow(location)
-        chartXOffset = location[0].toFloat()
+        chartWindowXOffset = location[0].toFloat()
     }
     // endregion
 
@@ -352,7 +358,11 @@ class AssetChartCard : LinearLayout {
     fun applyTouchHook(parent: View) {
         parent.setOnTouchListener { _, event ->
             if (passScrollToChart) {
-                event.offsetLocation(-chartXOffset, 0f)
+                val location = IntArray(2)
+                parent.getLocationInWindow(location)
+                val chartParentXOffset = chartWindowXOffset - location[0].toFloat()
+
+                event.offsetLocation(-chartParentXOffset, 0f)
                 chart.dispatchTouchEvent(event)
             }
 
@@ -451,5 +461,5 @@ class AssetChartCard : LinearLayout {
                 }
         chart.invalidate()
     }
-    // endregion
+// endregion
 }

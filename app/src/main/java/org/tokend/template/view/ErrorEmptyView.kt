@@ -1,33 +1,47 @@
 package org.tokend.template.view
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
+import android.support.annotation.ColorInt
+import android.support.annotation.Dimension
+import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
+import android.support.v4.content.res.ResourcesCompat
+import android.support.v4.widget.ImageViewCompat
+import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.util.errorhandler.ErrorHandler
+import kotlin.math.roundToInt
 
 /**
  * Used to display empty or error state.
  */
-class ErrorEmptyView : LinearLayout {
-    constructor(context: Context, attributeSet: AttributeSet?) :
-            super(context, attributeSet)
-
-    constructor(context: Context, attributeSet: AttributeSet?, style: Int) :
-            super(context, attributeSet, style)
-
-    constructor(context: Context) : super(context)
+class ErrorEmptyView @JvmOverloads constructor(
+        context: Context,
+        attributeSet: AttributeSet? = null,
+        defStyleAttr: Int = 0
+) : LinearLayout(context, attributeSet, defStyleAttr) {
 
     private val messageTextView: TextView
     private val actionButton: Button
+    private val iconImageView: AppCompatImageView
+
+    private var emptyDrawable: Drawable? = null
+    private var errorDrawable: Drawable? = null
+    private var drawableSize = ViewGroup.LayoutParams.WRAP_CONTENT
+    @ColorInt
+    private var drawableTint: Int? = null
 
     private var emptyViewDenial: () -> Boolean = { false }
 
@@ -41,6 +55,109 @@ class ErrorEmptyView : LinearLayout {
 
         messageTextView = findViewById(R.id.message_text_view)
         actionButton = findViewById(R.id.action_button)
+        iconImageView = findViewById(R.id.icon_image_view)
+
+        attributeSet?.let {
+            val typedArray = context.obtainStyledAttributes(it, R.styleable.ErrorEmptyView, defStyleAttr, 0)
+
+            val emptyRes = typedArray.getResourceId(R.styleable.ErrorEmptyView_empty_drawable, 0)
+            val errorRes = typedArray.getResourceId(R.styleable.ErrorEmptyView_error_drawable, 0)
+            val drawableSize = typedArray.getDimension(R.styleable.ErrorEmptyView_drawable_size, 0f)
+            val drawableTint = typedArray.getColor(R.styleable.ErrorEmptyView_drawable_tint_color, Int.MIN_VALUE)
+
+            if (emptyRes != 0) {
+                emptyDrawable = ResourcesCompat.getDrawable(resources, emptyRes, null)
+            }
+
+            if (errorRes != 0) {
+                errorDrawable = ResourcesCompat.getDrawable(resources, errorRes, null)
+            }
+
+            if (drawableSize != 0f) {
+                this.drawableSize = drawableSize.roundToInt()
+            }
+
+            if (drawableTint != Int.MIN_VALUE) {
+                this.drawableTint = drawableTint
+            }
+
+            typedArray.recycle()
+        }
+    }
+
+    /***
+     * Sets drawable that would be shown with empty message.
+     */
+    fun setEmptyDrawable(@DrawableRes id: Int) {
+        setEmptyDrawable(ResourcesCompat.getDrawable(resources, id, null))
+    }
+
+    fun setEmptyDrawable(drawable: Drawable?) {
+        emptyDrawable = drawable
+    }
+
+    fun getEmptyDrawable(): Drawable? {
+        return emptyDrawable
+    }
+
+    /***
+     * Sets drawable that would be shown with error message.
+     */
+    fun setErrorDrawable(@DrawableRes id: Int) {
+        setErrorDrawable(ResourcesCompat.getDrawable(resources, id, null))
+    }
+
+    fun setErrorDrawable(drawable: Drawable?) {
+        errorDrawable = drawable
+    }
+
+    fun getErrorDrawable(): Drawable? {
+        return errorDrawable
+    }
+
+    /**
+     * Sets drawable pixel size.
+     */
+    fun setDrawableSize(@Dimension(unit = Dimension.PX) size: Int?) {
+        drawableSize = size ?: ViewGroup.LayoutParams.WRAP_CONTENT
+    }
+
+    fun getDrawableSize(): Int {
+        return drawableSize
+    }
+
+    /**
+     * Sets drawable tint color.
+     */
+    fun setDrawableTintColor(@ColorInt color: Int?) {
+        drawableTint = color
+    }
+
+    @ColorInt
+    fun getDrawableTintColor(): Int? {
+        return drawableTint
+    }
+
+    private fun setIcon(drawable: Drawable?) {
+        if (drawable != null) {
+            iconImageView.visibility = View.VISIBLE
+            iconImageView.layoutParams = iconImageView.layoutParams.apply {
+                width = drawableSize
+                height = drawableSize
+            }
+
+            iconImageView.setImageDrawable(drawable)
+
+            drawableTint.also { tint ->
+                if (tint != null) {
+                    ImageViewCompat.setImageTintList(iconImageView, ColorStateList.valueOf(tint))
+                } else {
+                    ImageViewCompat.setImageTintList(iconImageView, null)
+                }
+            }
+        } else {
+            iconImageView.visibility = View.GONE
+        }
     }
 
     /**
@@ -65,6 +182,8 @@ class ErrorEmptyView : LinearLayout {
 
         messageTextView.text = message
         actionButton.visibility = View.GONE
+
+        setIcon(emptyDrawable)
     }
 
     /**
@@ -101,6 +220,8 @@ class ErrorEmptyView : LinearLayout {
         } else {
             actionButton.visibility = View.GONE
         }
+
+        setIcon(errorDrawable)
     }
 
     /**

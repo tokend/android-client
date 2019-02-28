@@ -17,7 +17,8 @@ import org.tokend.template.view.ToastManager
  */
 class FileDownloader(
         private val context: Context,
-        private val storageUrl: String
+        private val storageUrl: String,
+        private val toastManager: ToastManager?
 ) {
     private val storagePermission =
             PermissionManager(Manifest.permission.WRITE_EXTERNAL_STORAGE, 403)
@@ -73,7 +74,7 @@ class FileDownloader(
         val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         manager.enqueue(request)
 
-        ToastManager(context).long(context.getString(R.string.template_file_download_location,
+        toastManager?.long(context.getString(R.string.template_file_download_location,
                 Environment.DIRECTORY_DOWNLOADS))
     }
 }

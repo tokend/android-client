@@ -39,7 +39,7 @@ class AmountEditTextWrapper(private val editText: EditText) {
     /**
      * Limit for decimal digits after coma
      */
-    var maxPlacesAfterComa = AmountFormatter.ASSET_DECIMAL_DIGITS
+    var maxPlacesAfterComa = AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS
         set(value) {
             field = value
             trimInputAndUpdateAmount()

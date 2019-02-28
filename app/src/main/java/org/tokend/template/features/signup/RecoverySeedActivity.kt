@@ -3,7 +3,6 @@ package org.tokend.template.features.signup
 import android.app.Activity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.InputType
 import kotlinx.android.synthetic.main.activity_recovery_seed.*
@@ -12,15 +11,17 @@ import org.jetbrains.anko.dip
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.view.util.input.SimpleTextWatcher
+import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.onEditorAction
-import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.input.SimpleTextWatcher
 
-class RecoverySeedActivity : AppCompatActivity() {
+class RecoverySeedActivity : BaseActivity() {
     companion object {
         const val SEED_EXTRA = "seed"
     }
+
+    override val allowUnauthorized = true
 
     private val seed: String?
         get() = intent.getNullableStringExtra(SEED_EXTRA)
@@ -33,9 +34,7 @@ class RecoverySeedActivity : AppCompatActivity() {
 
     private var seedsMatch = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onCreateAllowed(savedInstanceState: Bundle?) {
         if (seed == null) {
             finish()
             return
@@ -82,7 +81,7 @@ class RecoverySeedActivity : AppCompatActivity() {
 
         copy_button.onClick {
             clipboardManager.text = seed
-            ToastManager(this).short(R.string.seed_copied)
+            toastManager.short(R.string.seed_copied)
         }
     }
     // endregion

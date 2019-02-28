@@ -1,21 +1,21 @@
 package org.tokend.template.fragments
 
 import android.support.v4.app.Fragment
-import org.tokend.template.features.send.SendFragment
-import org.tokend.template.features.wallet.WalletFragment
-import org.tokend.template.features.settings.GeneralSettingsFragment
-import org.tokend.template.extensions.Asset
-import org.tokend.template.extensions.Sale
-import org.tokend.template.features.dashboard.DashboardFragment
-import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.assets.AssetDetailsFragment
 import org.tokend.template.features.assets.ExploreAssetsFragment
+import org.tokend.template.features.assets.model.AssetRecord
+import org.tokend.template.features.dashboard.DashboardFragment
+import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.fees.FeesFragment
 import org.tokend.template.features.invest.SalesFragment
+import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.fragments.SaleGeneralInfoFragment
 import org.tokend.template.features.invest.saledetails.fragments.SaleOverviewFragment
 import org.tokend.template.features.limits.LimitsFragment
+import org.tokend.template.features.send.SendFragment
+import org.tokend.template.features.settings.GeneralSettingsFragment
 import org.tokend.template.features.trade.TradeFragment
+import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 
 class FragmentFactory {
@@ -28,7 +28,7 @@ class FragmentFactory {
         return WalletFragment.newInstance(asset, needTabs)
     }
 
-    fun getAssetDetailsFragment(asset: Asset, balanceCreation: Boolean = true): Fragment {
+    fun getAssetDetailsFragment(asset: AssetRecord, balanceCreation: Boolean = true): Fragment {
         return AssetDetailsFragment.newInstance(asset, balanceCreation)
     }
 
@@ -76,7 +76,7 @@ class FragmentFactory {
         return SaleOverviewFragment.newInstance(blobId)
     }
 
-    fun getSaleGeneralInfoFragment(sale: Sale): Fragment {
+    fun getSaleGeneralInfoFragment(sale: SaleRecord): Fragment {
         return SaleGeneralInfoFragment.newInstance(sale)
     }
 }

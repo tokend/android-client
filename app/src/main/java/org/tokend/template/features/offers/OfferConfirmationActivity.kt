@@ -6,44 +6,43 @@ import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
-import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.features.offers.logic.ConfirmOfferUseCase
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
 open class OfferConfirmationActivity : BaseActivity() {
-    protected lateinit var offer: Offer
-    protected var prevOffer: Offer? = null
+    protected lateinit var offer: OfferRecord
+    protected var prevOffer: OfferRecord? = null
 
     protected val payAsset: String
         get() =
             if (offer.isBuy)
-                offer.quoteAsset
+                offer.quoteAssetCode
             else
-                offer.baseAsset
+                offer.baseAssetCode
     protected val toPayAmount: BigDecimal
         get() =
             if (offer.isBuy)
-                offer.quoteAmount + (offer.fee ?: BigDecimal.ZERO)
+                offer.quoteAmount + offer.fee
             else
                 offer.baseAmount
 
     protected val receiveAsset: String
         get() =
             if (!offer.isBuy)
-                offer.quoteAsset
+                offer.quoteAssetCode
             else
-                offer.baseAsset
+                offer.baseAssetCode
     protected val toReceiveAmount: BigDecimal
         get() =
             (if (!offer.isBuy)
-                offer.quoteAmount - (offer.fee ?: BigDecimal.ZERO)
+                offer.quoteAmount - offer.fee
             else
                 offer.baseAmount).takeIf { it.signum() > 0 } ?: BigDecimal.ZERO
 
@@ -62,9 +61,9 @@ open class OfferConfirmationActivity : BaseActivity() {
 
     protected open fun initData() {
         offer =
-                (intent.getSerializableExtra(OFFER_EXTRA) as? Offer)
-                ?: return
-        prevOffer = intent.getSerializableExtra(OFFER_TO_CANCEL_EXTRA) as? Offer
+                (intent.getSerializableExtra(OFFER_EXTRA) as? OfferRecord)
+                        ?: return
+        prevOffer = intent.getSerializableExtra(OFFER_TO_CANCEL_EXTRA) as? OfferRecord
     }
 
     // region Display
@@ -76,6 +75,8 @@ open class OfferConfirmationActivity : BaseActivity() {
     }
 
     protected open fun displayToPay() {
+        val minDecimals = amountFormatter.getDecimalDigitsCount(payAsset)
+
         val payBaseAmount =
                 if (offer.isBuy)
                     offer.quoteAmount
@@ -84,25 +85,23 @@ open class OfferConfirmationActivity : BaseActivity() {
 
         val card = InfoCard(cards_layout)
                 .setHeading(R.string.to_pay,
-                        "${AmountFormatter.formatAssetAmount(toPayAmount, payAsset)
-                        } $payAsset")
+                        amountFormatter.formatAssetAmount(toPayAmount, payAsset, minDecimals))
 
         if (offer.isBuy) {
             card.addRow(R.string.amount,
-                    "+${AmountFormatter.formatAssetAmount(payBaseAmount,
-                            payAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                    } $payAsset")
+                    "+${amountFormatter.formatAssetAmount(payBaseAmount, payAsset, minDecimals)}")
                     .addRow(R.string.tx_fee,
-                            "+${AmountFormatter.formatAssetAmount(offer.fee,
-                                    payAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                            } $payAsset")
+                            "+${amountFormatter.formatAssetAmount(offer.fee, payAsset, minDecimals)}")
         } else {
-            card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAsset,
-                    AmountFormatter.formatAssetAmount(offer.price), offer.quoteAsset))
+            card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAssetCode,
+                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode))
+            )
         }
     }
 
     protected open fun displayToReceive() {
+        val minDecimals = amountFormatter.getDecimalDigitsCount(receiveAsset)
+
         val receiveBaseAmount =
                 if (!offer.isBuy)
                     offer.quoteAmount
@@ -111,22 +110,20 @@ open class OfferConfirmationActivity : BaseActivity() {
 
         val card = InfoCard(cards_layout)
                 .setHeading(R.string.to_receive,
-                        "${AmountFormatter.formatAssetAmount(toReceiveAmount, receiveAsset)
-                        } $receiveAsset")
+                        amountFormatter.formatAssetAmount(toReceiveAmount, receiveAsset, minDecimals))
 
         if (!offer.isBuy) {
             card
                     .addRow(R.string.amount,
-                            "+${AmountFormatter.formatAssetAmount(receiveBaseAmount,
-                                    receiveAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                            } $receiveAsset")
+                            "+${amountFormatter.formatAssetAmount(receiveBaseAmount, receiveAsset,
+                                    minDecimals)}")
                     .addRow(R.string.tx_fee,
-                            "-${AmountFormatter.formatAssetAmount(offer.fee,
-                                    receiveAsset, minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                            } $receiveAsset")
+                            "-${amountFormatter.formatAssetAmount(offer.fee, receiveAsset,
+                                    minDecimals)}")
         } else {
-            card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAsset,
-                    AmountFormatter.formatAssetAmount(offer.price), offer.quoteAsset))
+            card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAssetCode,
+                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode))
+            )
         }
     }
     // endregion

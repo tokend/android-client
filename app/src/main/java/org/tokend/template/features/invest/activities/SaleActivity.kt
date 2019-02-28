@@ -11,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.RelativeLayout
-import com.google.gson.JsonSyntaxException
 import com.squareup.picasso.Picasso
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,22 +22,20 @@ import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.favorites.model.FavoriteEntry
-import org.tokend.sdk.api.favorites.model.SaleFavoriteEntry
-import org.tokend.sdk.api.trades.model.Offer
-import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.data.model.FavoriteRecord
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.favorites.FavoritesRepository
-import org.tokend.template.extensions.Sale
-import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.assets.LogoFactory
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.invest.InvestmentHelpDialog
 import org.tokend.template.features.invest.logic.InvestmentInfoManager
 import org.tokend.template.features.invest.logic.SwitchFavoriteUseCase
+import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
 import org.tokend.template.logic.FeeManager
@@ -49,10 +46,7 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.ContentLoadingProgressBar
 import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.input.AmountEditTextWrapper
-import org.tokend.wallet.xdr.AccountType
-import org.tokend.wallet.xdr.AssetPolicy
 import org.tokend.wallet.xdr.SaleType
 import java.math.BigDecimal
 import java.math.MathContext
@@ -78,8 +72,8 @@ class SaleActivity : BaseActivity() {
 
     private lateinit var feeManager: FeeManager
 
-    private lateinit var sale: Sale
-    private lateinit var saleAsset: org.tokend.template.extensions.Asset
+    private lateinit var sale: SaleRecord
+    private lateinit var saleAsset: AssetRecord
     private lateinit var investmentInfoManager: InvestmentInfoManager
 
     private var isFavorited = false
@@ -88,7 +82,7 @@ class SaleActivity : BaseActivity() {
             invalidateOptionsMenu()
         }
 
-    private var existingOffers: Map<String, Offer> = emptyMap()
+    private var existingOffers: Map<String, OfferRecord> = emptyMap()
     private var maxFees: Map<String, BigDecimal> = emptyMap()
     private var maxInvestAmount = BigDecimal.ZERO
 
@@ -111,7 +105,7 @@ class SaleActivity : BaseActivity() {
             val quoteAmount = investAmountWrapper.scaledAmount
             return BigDecimalUtil.scaleAmount(
                     quoteAmount.divide(currentPrice, MathContext.DECIMAL128),
-                    AmountFormatter.getDecimalDigitsCount(sale.baseAsset)
+                    amountFormatter.getDecimalDigitsCount(sale.baseAssetCode)
             )
         }
 
@@ -132,7 +126,7 @@ class SaleActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         feeManager = FeeManager(apiProvider)
-        fileDownloader = FileDownloader(this, urlConfigProvider.getConfig().storage)
+        fileDownloader = FileDownloader(this, urlConfigProvider.getConfig().storage, toastManager)
 
         supportPostponeEnterTransition()
 
@@ -140,14 +134,13 @@ class SaleActivity : BaseActivity() {
         initFields()
 
         try {
-            sale = GsonFactory().getBaseGson().fromJson(
-                    intent.getNullableStringExtra(SALE_JSON_EXTRA),
-                    Sale::class.java)
-            investmentInfoManager = InvestmentInfoManager(sale, repositoryProvider, walletInfoProvider)
+            sale = intent.getSerializableExtra(SALE_EXTRA) as SaleRecord
+            investmentInfoManager = InvestmentInfoManager(sale, repositoryProvider,
+                    walletInfoProvider, amountFormatter)
 
             displaySaleInfo()
             update()
-        } catch (e: JsonSyntaxException) {
+        } catch (e: Exception) {
             finish()
             return
         } finally {
@@ -258,11 +251,11 @@ class SaleActivity : BaseActivity() {
 
     // region Info display
     private fun displaySaleInfo() {
-        title = sale.details.name
-        sale_name_text_view.text = sale.details.name
-        sale_description_text_view.text = sale.details.shortDescription
+        title = sale.name
+        sale_name_text_view.text = sale.name
+        sale_description_text_view.text = sale.shortDescription
 
-        if (sale.details.youtubeVideo != null) {
+        if (sale.youtubeVideo != null) {
             displayYoutubePreview()
         }
 
@@ -277,11 +270,11 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun displayChangeableSaleInfo() {
-        SaleProgressWrapper(scroll_view).displayProgress(sale)
+        SaleProgressWrapper(scroll_view, amountFormatter).displayProgress(sale)
     }
 
     private fun displayAssetDetails() {
-        saleAsset.details.logo?.getUrl(urlConfigProvider.getConfig().storage)?.let {
+        saleAsset.logoUrl?.let {
             Picasso.with(this)
                     .load(it)
                     .resizeDimen(R.dimen.asset_list_item_logo_size, R.dimen.asset_list_item_logo_size)
@@ -312,7 +305,7 @@ class SaleActivity : BaseActivity() {
             video_preview_image_view.layoutParams = RelativeLayout.LayoutParams(width, height)
 
             Picasso.with(this)
-                    .load(sale.details.youtubeVideoPreviewImage)
+                    .load(sale.youtubeVideo?.previewUrl)
                     .placeholder(ColorDrawable(ContextCompat.getColor(this,
                             R.color.saleImagePlaceholder)))
                     .resize(width, height)
@@ -321,7 +314,7 @@ class SaleActivity : BaseActivity() {
         }
 
         video_preview_layout.onClick {
-            sale.details.getYoutubeVideoUrl(mobile = true)
+            sale.youtubeVideo?.url
                     ?.also { url ->
                         browse(url)
                     }
@@ -332,8 +325,8 @@ class SaleActivity : BaseActivity() {
     // region Invest
     private fun initInvestIfNeeded() {
         if (sale.isAvailable) {
-            if (saleAsset.policy and AssetPolicy.REQUIRES_KYC.value == AssetPolicy.REQUIRES_KYC.value &&
-                    accountRepository.item?.typeI == AccountType.NOT_VERIFIED.value) {
+            // TODO: Decide how to know if KYC is required
+            if (false) {
                 displayKycRequired()
             } else {
                 initInvest()
@@ -424,14 +417,12 @@ class SaleActivity : BaseActivity() {
     private fun updateInvestHelperAndError() {
         if (investAmountWrapper.scaledAmount > maxInvestAmount) {
             amount_edit_text.error = getString(R.string.template_sale_max_investment,
-                    AmountFormatter.formatAssetAmount(maxInvestAmount),
-                    investAsset)
+                    amountFormatter.formatAssetAmount(maxInvestAmount, investAsset))
         } else {
             amount_edit_text.error = null
             amount_edit_text.setHelperText(
                     getString(R.string.template_available,
-                            AmountFormatter.formatAssetAmount(getAvailableBalance(investAsset)),
-                            investAsset)
+                            amountFormatter.formatAssetAmount(getAvailableBalance(investAsset), investAsset))
             )
         }
     }
@@ -445,6 +436,7 @@ class SaleActivity : BaseActivity() {
                 amount_edit_text.text.clear()
             }
         }
+        investAmountWrapper.maxPlacesAfterComa = amountFormatter.getDecimalDigitsCount(investAsset)
     }
 
     private fun getAvailableBalance(asset: String): BigDecimal {
@@ -464,11 +456,9 @@ class SaleActivity : BaseActivity() {
 
             setLimitLines(listOf(
                     sale.softCap.toFloat() to
-                            "${AmountFormatter.formatAssetAmount(sale.softCap,
-                                    quoteAsset)} $quoteAsset",
+                            amountFormatter.formatAssetAmount(sale.softCap, quoteAsset),
                     sale.hardCap.toFloat() to
-                            "${AmountFormatter.formatAssetAmount(sale.hardCap,
-                                    quoteAsset)} $quoteAsset"
+                            amountFormatter.formatAssetAmount(sale.hardCap, quoteAsset)
             ))
 
             post {
@@ -524,9 +514,9 @@ class SaleActivity : BaseActivity() {
         val getNewOffer =
                 if (cancel)
                     Single.just(
-                            Offer(
-                                    baseAsset = sale.baseAsset,
-                                    quoteAsset = asset,
+                            OfferRecord(
+                                    baseAssetCode = sale.baseAssetCode,
+                                    quoteAssetCode = asset,
                                     baseAmount = BigDecimal.ZERO,
                                     price = price,
                                     isBuy = true,
@@ -536,10 +526,10 @@ class SaleActivity : BaseActivity() {
                     )
                 else
                     PrepareOfferUseCase(
-                            Offer(
-                                    baseAsset = sale.baseAsset,
+                            OfferRecord(
+                                    baseAssetCode = sale.baseAssetCode,
                                     baseAmount = receiveAmount,
-                                    quoteAsset = asset,
+                                    quoteAssetCode = asset,
                                     quoteAmount = amount,
                                     price = price,
                                     isBuy = true,
@@ -567,7 +557,7 @@ class SaleActivity : BaseActivity() {
                                             INVESTMENT_REQUEST,
                                             offer = offer,
                                             offerToCancel = existingOffers[investAsset],
-                                            assetName = sale.baseAsset,
+                                            assetName = sale.baseAssetCode,
                                             displayToReceive =
                                             sale.type.value == SaleType.BASIC_SALE.value
                                     )
@@ -615,9 +605,9 @@ class SaleActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun getFavoriteEntry(): FavoriteEntry? {
+    private fun getFavoriteEntry(): FavoriteRecord? {
         return favoritesRepository.itemsList.find {
-            it.type == SaleFavoriteEntry.TYPE && it.key == sale.baseAsset
+            it.type == FavoriteRecord.TYPE_SALE && it.key == sale.baseAssetCode
         }
     }
 
@@ -626,7 +616,7 @@ class SaleActivity : BaseActivity() {
         switchFavoriteDisposable?.dispose()
         switchFavoriteDisposable =
                 SwitchFavoriteUseCase(
-                        SaleFavoriteEntry(sale.baseAsset),
+                        FavoriteRecord.sale(sale.baseAssetCode),
                         favoritesRepository
                 )
                         .perform()
@@ -699,6 +689,6 @@ class SaleActivity : BaseActivity() {
 
     companion object {
         private val INVESTMENT_REQUEST = "invest".hashCode() and 0xffff
-        const val SALE_JSON_EXTRA = "sale_json"
+        const val SALE_EXTRA = "sale"
     }
 }

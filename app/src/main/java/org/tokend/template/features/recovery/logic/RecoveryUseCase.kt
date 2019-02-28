@@ -4,9 +4,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.tokend.rx.extensions.fromSecretSeedSingle
-import org.tokend.rx.extensions.getWalletInfoSingle
 import org.tokend.rx.extensions.randomSingle
-import org.tokend.sdk.keyserver.KeyStorage
+import org.tokend.rx.extensions.toSingle
+import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.di.providers.*
 import org.tokend.template.logic.wallet.WalletUpdateManager
@@ -30,7 +30,7 @@ class RecoveryUseCase(
 
     private lateinit var accountProvider: AccountProvider
     private lateinit var apiProvider: ApiProvider
-    private lateinit var signedKeyStorage: KeyStorage
+    private lateinit var signedKeyServer: KeyServer
     private lateinit var walletInfoProvider: WalletInfoProvider
 
     fun perform(): Completable {
@@ -43,7 +43,7 @@ class RecoveryUseCase(
                             AccountProviderFactory().createAccountProvider(recoveryAccount)
                     this.apiProvider =
                             ApiProviderFactory().createApiProvider(urlConfigProvider, accountProvider)
-                    this.signedKeyStorage = apiProvider.getSignedKeyStorage()!!
+                    this.signedKeyServer = apiProvider.getSignedKeyServer()!!
                 }
                 .flatMap {
                     getRecoveryWallet()
@@ -77,7 +77,9 @@ class RecoveryUseCase(
     }
 
     private fun getRecoveryWallet(): Single<WalletInfo> {
-        return signedKeyStorage.getWalletInfoSingle(email, recoverySeed, true)
+        return signedKeyServer
+                .getWalletInfo(email, recoverySeed, true)
+                .toSingle()
     }
 
     private fun updateWallet(): Single<Boolean> {

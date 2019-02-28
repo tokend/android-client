@@ -3,18 +3,18 @@ package org.tokend.template.features.assets
 import android.os.Bundle
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.extensions.Asset
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.fragments.FragmentFactory
 
 class AssetDetailsActivity : BaseActivity() {
 
-    private lateinit var asset: Asset
+    private lateinit var asset: AssetRecord
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_asset_details)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        asset = (intent.getSerializableExtra(ASSET_EXTRA) as? Asset)
+        asset = (intent.getSerializableExtra(ASSET_EXTRA) as? AssetRecord)
                 ?: return
 
         title = getString(R.string.template_asset_details, asset.code)

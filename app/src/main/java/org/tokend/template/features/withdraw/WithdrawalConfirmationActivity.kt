@@ -9,14 +9,12 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.logic.transactions.TxManager
-import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
+import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.template.view.ToastManager
 
 class WithdrawalConfirmationActivity : BaseActivity() {
     private lateinit var request: WithdrawalRequest
@@ -46,29 +44,26 @@ class WithdrawalConfirmationActivity : BaseActivity() {
 
     private fun displayToPay() {
         val toPay = request.amount + request.fee.total
+        val minDecimals = amountFormatter.getDecimalDigitsCount(request.asset)
 
         InfoCard(cards_layout)
                 .setHeading(R.string.to_pay,
-                        "${AmountFormatter.formatAssetAmount(toPay)} ${request.asset}")
+                        amountFormatter.formatAssetAmount(toPay, request.asset, minDecimals))
                 .addRow(R.string.amount,
-                        "+${AmountFormatter.formatAssetAmount(request.amount,
-                                minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                        } ${request.asset}")
-                .addRow(R.string.tx_fixed_fee,
-                        "+${AmountFormatter.formatAssetAmount(request.fee.fixed,
-                                minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                        } ${request.asset}")
-                .addRow(R.string.tx_percent_fee,
-                        "+${AmountFormatter.formatAssetAmount(request.fee.percent,
-                                minDecimalDigits = AmountFormatter.ASSET_DECIMAL_DIGITS)
-                        } ${request.asset}")
+                        "+${amountFormatter.formatAssetAmount(request.amount,
+                                request.asset, minDecimals)}")
+                .addRow(R.string.fixed_fee,
+                        "+${amountFormatter.formatAssetAmount(request.fee.fixed,
+                                request.asset, minDecimals)}")
+                .addRow(R.string.percent_fee,
+                        "+${amountFormatter.formatAssetAmount(request.fee.percent,
+                                request.asset, minDecimals)}")
     }
 
     private fun displayToReceive() {
         InfoCard(cards_layout)
-                .setHeading(R.string.to_receive,
-                        "${AmountFormatter.formatAssetAmount(request.amount)} " +
-                                request.asset)
+                .setHeading(R.string.to_receive, amountFormatter.formatAssetAmount(request.amount,
+                        request.asset, amountFormatter.getDecimalDigitsCount(request.asset)))
                 .addRow(getString(R.string.template_withdrawal_fee_warning, request.asset),
                         null)
     }
@@ -105,7 +100,7 @@ class WithdrawalConfirmationActivity : BaseActivity() {
                 .subscribeBy(
                         onComplete = {
                             progress.dismiss()
-                            ToastManager(this).long(R.string.withdrawal_request_created)
+                            toastManager.long(R.string.withdrawal_request_created)
                             finishWithSuccess()
                         },
                         onError = {
@@ -113,7 +108,6 @@ class WithdrawalConfirmationActivity : BaseActivity() {
                         }
                 )
     }
-
 
     private fun finishWithSuccess() {
         setResult(Activity.RESULT_OK,

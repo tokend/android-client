@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".features.assets.AssetDetailsActivity"
     tools:ignore="UnusedAttribute">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        android:paddingTop="@dimen/half_standard_margin">
-
-        <include layout="@layout/layout_progress" />
-
-        <include layout="@layout/list_item_asset" />
+    <ScrollView style="@style/LimitedMatchParentWidthConstraint">
 
         <LinearLayout
-            android:id="@+id/cards_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/half_standard_margin"
-            android:layout_marginStart="@dimen/half_standard_margin"
-            android:layout_marginTop="-5dp"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:paddingStart="5dp"
+            android:paddingTop="@dimen/half_standard_margin"
+            android:paddingEnd="5dp">
 
-    </LinearLayout>
+            <include layout="@layout/layout_progress" />
 
-</ScrollView>
+            <include layout="@layout/list_item_asset" />
+
+            <LinearLayout
+                android:id="@+id/cards_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/half_standard_margin"
+                android:layout_marginTop="-5dp"
+                android:layout_marginEnd="@dimen/half_standard_margin"
+                android:orientation="vertical" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

@@ -12,6 +12,7 @@ import org.jetbrains.anko.onClick
 import org.jetbrains.anko.textColor
 import org.tokend.template.R
 import org.tokend.template.view.util.ViewProvider
+import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
 class LimitCard(private val context: Context,
@@ -20,7 +21,8 @@ class LimitCard(private val context: Context,
                 private val paymentTotal: BigDecimal?,
                 private val paymentUsed: BigDecimal?,
                 private val depositTotal: BigDecimal?,
-                private val depositUsed: BigDecimal?) : ViewProvider {
+                private val depositUsed: BigDecimal?,
+                private val amountFormatter: AmountFormatter) : ViewProvider {
 
     private lateinit var view: View
 
@@ -48,8 +50,10 @@ class LimitCard(private val context: Context,
     private fun setLimit() {
         val zero = BigDecimal.ZERO
 
-        view.payment_limit.setValues(paymentUsed ?: zero, paymentTotal ?: zero, asset)
-        view.deposit_limit.setValues(depositUsed ?: zero, depositTotal ?: zero, asset)
+        view.payment_limit.setValues(paymentUsed ?: zero, paymentTotal
+                ?: zero, asset, amountFormatter)
+        view.deposit_limit.setValues(depositUsed ?: zero, depositTotal
+                ?: zero, asset, amountFormatter)
         view.limit_type.text = type
     }
 

@@ -32,7 +32,7 @@ class InvestmentConfirmationActivity : OfferConfirmationActivity() {
     private fun displayToken() {
         InfoCard(cards_layout)
                 .setHeading(R.string.sale_token, null)
-                .addRow(assetName, offer.baseAsset)
+                .addRow(assetName, offer.baseAssetCode)
     }
 
     private fun displayTitle() {

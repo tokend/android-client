@@ -4,17 +4,15 @@ import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.text.InputType
-import android.view.View
-import org.jetbrains.anko.onClick
-import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.sdk.tfa.NeedTfaException
+import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.template.logic.persistance.FingerprintAuthManager
-import org.tokend.template.view.util.AnimationUtil
-import org.tokend.template.view.ToastManager
 import org.tokend.template.util.errorhandler.ErrorHandler
+import org.tokend.template.view.FingerprintIndicatorManager
+import org.tokend.template.view.ToastManager
 
 /**
  * TFA verification dialog requesting user's password and
@@ -25,11 +23,14 @@ class TfaPasswordDialog(context: Context,
                         tfaVerifierInterface: TfaVerifier.Interface,
                         credentialsPersistor: CredentialsPersistor?,
                         private val tfaException: NeedTfaException,
-                        private val email: String)
+                        private val email: String,
+                        private val toastManager: ToastManager?)
     : TfaDialog(context, errorHandler, tfaVerifierInterface) {
     private val fingerprintAuthManager = credentialsPersistor?.let {
         FingerprintAuthManager(context, it)
     }
+
+    private lateinit var fingerprintIndicatorManager: FingerprintIndicatorManager
 
     override fun beforeDialogShow() {
         super.beforeDialogShow()
@@ -40,23 +41,23 @@ class TfaPasswordDialog(context: Context,
             hint = context.getString(R.string.password)
         }
 
-        inputButtonImageView.apply {
-            setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_fingerprint))
-            onClick {
-                ToastManager(context).short(R.string.touch_sensor)
-            }
-        }
+        inputButtonImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_fingerprint))
+        fingerprintIndicatorManager =
+                FingerprintIndicatorManager(context, inputButtonImageView, toastManager)
     }
 
     override fun afterDialogShown() {
         super.afterDialogShown()
 
-        inputButtonImageView.visibility = View.GONE
+        fingerprintIndicatorManager.hide()
         fingerprintAuthManager?.requestAuthIfAvailable(
                 onAuthStart = {
-                    AnimationUtil.fadeInView(inputButtonImageView)
+                    fingerprintIndicatorManager.show()
                 },
-                onError = { ToastManager(context).short(it) },
+                onError = {
+                    toastManager?.short(it)
+                    fingerprintIndicatorManager.error()
+                },
                 onSuccess = { _, password ->
                     inputEditText.setText(password, 0, password.size)
                     inputEditText.setSelection(password.size)

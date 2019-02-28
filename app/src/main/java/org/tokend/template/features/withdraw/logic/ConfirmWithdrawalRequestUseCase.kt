@@ -11,9 +11,7 @@ import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.Transaction
 import org.tokend.wallet.TransactionBuilder
-import org.tokend.wallet.xdr.AutoConversionWithdrawalDetails
 import org.tokend.wallet.xdr.CreateWithdrawalRequestOp
-import org.tokend.wallet.xdr.Fee
 import org.tokend.wallet.xdr.Operation
 
 /**
@@ -54,39 +52,19 @@ class ConfirmWithdrawalRequestUseCase(
 
     private fun getTransaction(): Single<Transaction> {
         return Single.defer {
-            val balanceId = repositoryProvider.balances().itemsList
-                    .find { it.asset == request.asset }
-                    ?.balanceId
-                    ?: return@defer Single.error<Transaction>(
-                            IllegalStateException("Cannot obtain balance ID for ${request.asset}")
-                    )
-
             val precisedAmount = networkParams.amountToPrecised(request.amount)
             val operation = CreateWithdrawalRequestOp(
                     request = org.tokend.wallet.xdr.WithdrawalRequest(
-                            balance = PublicKeyFactory.fromBalanceId(balanceId),
+                            balance = PublicKeyFactory.fromBalanceId(request.balanceId),
                             amount = precisedAmount,
-                            fee = Fee(
-                                    fixed = networkParams.amountToPrecised(request.fee.fixed),
-                                    percent = networkParams.amountToPrecised(request.fee.percent),
-                                    ext = Fee.FeeExt.EmptyVersion()
-                            ),
-                            details = org.tokend.wallet.xdr.WithdrawalRequest
-                                    .WithdrawalRequestDetails.AutoConversion(
-                                    AutoConversionWithdrawalDetails(
-                                            destAsset = request.asset,
-                                            expectedAmount = precisedAmount,
-                                            ext = AutoConversionWithdrawalDetails
-                                                    .AutoConversionWithdrawalDetailsExt.EmptyVersion()
-                                    )
-                            ),
-                            externalDetails = "{\"address\":\"${request.destinationAddress}\"}",
-                            preConfirmationDetails = "",
-                            universalAmount = 0L,
+                            fee = request.fee.toXdrFee(networkParams),
+                            universalAmount = 0,
+                            creatorDetails = "{\"address\":\"${request.destinationAddress}\"}",
                             ext = org.tokend.wallet.xdr.WithdrawalRequest
                                     .WithdrawalRequestExt.EmptyVersion()
                     ),
-                    ext = CreateWithdrawalRequestOp.CreateWithdrawalRequestOpExt.EmptyVersion()
+                    ext = CreateWithdrawalRequestOp.CreateWithdrawalRequestOpExt.EmptyVersion(),
+                    allTasks = null
             )
 
             val transaction =
@@ -107,6 +85,6 @@ class ConfirmWithdrawalRequestUseCase(
 
     private fun updateRepositories() {
         repositoryProvider.balances().updateIfEverUpdated()
-        repositoryProvider.transactions(request.asset).updateIfEverUpdated()
+        repositoryProvider.balanceChanges(request.balanceId).updateIfEverUpdated()
     }
 }

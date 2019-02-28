@@ -5,14 +5,14 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import io.reactivex.rxkotlin.addTo
 import org.tokend.template.R
-import org.tokend.template.features.send.SendFragment
-import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.features.wallet.WalletFragment
-import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.dashboard.DashboardFragment
+import org.tokend.template.features.send.SendFragment
+import org.tokend.template.features.send.model.PaymentRequest
+import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
-import org.tokend.template.logic.wallet.WalletEventsListener
 import org.tokend.template.fragments.FragmentFactory
+import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.wallet.WalletEventsListener
 
 class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
     private var asset: String? = null
@@ -63,9 +63,9 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
     }
 
     override fun onBackPressed() {
-        if(screenId == SendFragment.ID) {
+        if (screenId == SendFragment.ID) {
             val fragment = supportFragmentManager.fragments.first() as SendFragment
-            if(fragment.onBackPressed()) super.onBackPressed()
+            if (fragment.onBackPressed()) super.onBackPressed()
         } else super.onBackPressed()
     }
 

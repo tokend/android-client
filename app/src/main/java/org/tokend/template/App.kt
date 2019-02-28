@@ -25,6 +25,7 @@ import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
+import org.jetbrains.anko.defaultSharedPreferences
 import org.tokend.template.data.model.UrlConfig
 import org.tokend.template.di.*
 import org.tokend.template.di.providers.AccountProviderFactory
@@ -32,6 +33,7 @@ import org.tokend.template.di.providers.AppModule
 import org.tokend.template.di.providers.SessionModule
 import org.tokend.template.di.providers.WalletInfoProviderFactory
 import org.tokend.template.logic.Session
+import org.tokend.template.logic.persistance.SessionInfoStorage
 import org.tokend.template.logic.persistance.UrlConfigPersistor
 import org.tokend.template.util.Navigator
 import java.io.IOException
@@ -59,6 +61,8 @@ class App : MultiDexApplication() {
 
     private lateinit var cookiePersistor: CookiePersistor
     private lateinit var cookieCache: CookieCache
+
+    private lateinit var sessionInfoStorage: SessionInfoStorage
     private lateinit var session: Session
 
     lateinit var stateComponent: AppStateComponent
@@ -103,9 +107,7 @@ class App : MultiDexApplication() {
             override fun onActivityDestroyed(a: Activity) {}
         })
 
-        initSession()
-        initCookies()
-        initStateComponent()
+        initState()
         initPicasso()
         initCrashlytics()
         initRxErrorHandler()
@@ -161,18 +163,6 @@ class App : MultiDexApplication() {
     }
 
     // region State
-    private fun initSession() {
-        session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
-        )
-    }
-
-    private fun initCookies() {
-        cookiePersistor = SharedPrefsCookiePersistor(this)
-        cookieCache = SetCookieCache()
-    }
-
     private fun getCredentialsPreferences(): SharedPreferences {
         return getSharedPreferences("CredentialsPersistence",
                 Context.MODE_PRIVATE)
@@ -183,8 +173,16 @@ class App : MultiDexApplication() {
                 Context.MODE_PRIVATE)
     }
 
-    private fun initStateComponent() {
-        val cookieJar = PersistentCookieJar(cookieCache, cookiePersistor)
+    private fun initState() {
+        sessionInfoStorage = SessionInfoStorage(defaultSharedPreferences)
+        session = Session(
+                WalletInfoProviderFactory().createWalletInfoProvider(),
+                AccountProviderFactory().createAccountProvider(),
+                sessionInfoStorage
+        )
+
+        cookiePersistor = SharedPrefsCookiePersistor(this)
+        cookieCache = SetCookieCache()
 
         val defaultUrlConfig = UrlConfig(BuildConfig.API_URL, BuildConfig.STORAGE_URL,
                 BuildConfig.KYC_URL, BuildConfig.TERMS_URL)
@@ -198,7 +196,9 @@ class App : MultiDexApplication() {
                         else
                             defaultUrlConfig
                 ))
-                .apiProviderModule(ApiProviderModule(cookieJar))
+                .apiProviderModule(ApiProviderModule(
+                        PersistentCookieJar(cookieCache, cookiePersistor)
+                ))
                 .persistenceModule(PersistenceModule(
                         getCredentialsPreferences(),
                         getNetworkPreferences()
@@ -207,14 +207,11 @@ class App : MultiDexApplication() {
                 .build()
     }
 
-    private fun clearState() {
-        session.reset()
-        initStateComponent()
-    }
-
-    private fun clearCookies() {
+    private fun clearUserData() {
         cookiePersistor.clear()
         cookieCache.clear()
+        sessionInfoStorage.clear()
+        getCredentialsPreferences().edit().clear().apply()
     }
 
     /**
@@ -223,9 +220,10 @@ class App : MultiDexApplication() {
     @SuppressLint("ApplySharedPref")
     fun signOut(activity: Activity?, soft: Boolean = false) {
         if (!soft) {
-            getCredentialsPreferences().edit().clear().commit()
-            clearCookies()
-            clearState()
+            clearUserData()
+            initState()
+        } else {
+            session.reset()
         }
 
         Navigator.toSignIn(this)

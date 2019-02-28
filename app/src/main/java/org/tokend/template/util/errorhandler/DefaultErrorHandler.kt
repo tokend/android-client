@@ -2,7 +2,6 @@ package org.tokend.template.util.errorhandler
 
 import android.content.Context
 import org.tokend.sdk.api.transactions.model.TransactionFailedException
-import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.view.ToastManager
 import retrofit2.HttpException
@@ -13,7 +12,8 @@ import java.net.SocketTimeoutException
 import java.util.concurrent.CancellationException
 
 open class DefaultErrorHandler(
-        private val context: Context
+        private val context: Context,
+        private val toastManager: ToastManager
 ) : ErrorHandler {
     /**
      * Handles given [Throwable]
@@ -25,7 +25,7 @@ open class DefaultErrorHandler(
                 return true
             else -> {
                 return getErrorMessage(error)?.let {
-                    ToastManager(context).short(it)
+                    toastManager.short(it)
                     true
                 } ?: false
             }
@@ -69,7 +69,8 @@ open class DefaultErrorHandler(
                         context.getString(R.string.error_tx_account_blocked)
                     TransactionFailedException.OP_INVALID_FEE ->
                         context.getString(R.string.error_tx_invalid_fee)
-                    TransactionFailedException.OP_NOT_ALLOWED ->
+                    TransactionFailedException.OP_NOT_ALLOWED,
+                    TransactionFailedException.OP_NO_ROLE_PERMISSION ->
                         context.getString(R.string.error_tx_not_allowed)
                     TransactionFailedException.OP_OFFER_CROSS_SELF ->
                         context.getString(R.string.error_tx_cross_self)
@@ -77,11 +78,15 @@ open class DefaultErrorHandler(
                         context.getString(R.string.error_payment_amount_less_than_fee)
                     TransactionFailedException.OP_REQUIRES_KYC ->
                         context.getString(R.string.error_kyc_required_to_own_asset)
+                    TransactionFailedException.OP_NOT_FOUND ->
+                        context.getString(R.string.error_tx_not_found)
                     else ->
                         context.getString(R.string.error_tx_general)
                 }
             TransactionFailedException.TX_BAD_AUTH ->
                 context.getString(R.string.error_tx_bad_auth)
+            TransactionFailedException.TX_NO_ROLE_PERMISSION ->
+                context.getString(R.string.error_tx_not_allowed)
             else ->
                 context.getString(R.string.error_tx_general)
         }

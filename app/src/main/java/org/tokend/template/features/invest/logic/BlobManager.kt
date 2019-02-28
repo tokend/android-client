@@ -1,10 +1,10 @@
 package org.tokend.template.features.invest.logic
 
 import io.reactivex.Single
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.blobs.model.Blob
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.toSingle
 
 class BlobManager(
         private val apiProvider: ApiProvider,
@@ -16,7 +16,7 @@ class BlobManager(
 
         return apiProvider.getApi()
                 .blobs
-                .getById(
+                .getAccountOwnedBlob(
                         accountId,
                         blobId
                 )

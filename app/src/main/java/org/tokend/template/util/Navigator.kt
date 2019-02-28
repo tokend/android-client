@@ -12,22 +12,23 @@ import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
-import org.tokend.sdk.api.base.model.operations.*
-import org.tokend.sdk.api.trades.model.Offer
-import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
-import org.tokend.template.extensions.Asset
-import org.tokend.template.extensions.Sale
+import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.data.model.history.BalanceChange
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.assets.AssetDetailsActivity
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.invest.activities.InvestmentConfirmationActivity
-import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
 import org.tokend.template.features.invest.activities.SaleActivity
+import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
+import org.tokend.template.features.offers.view.details.PendingInvestmentDetailsActivity
+import org.tokend.template.features.offers.view.details.PendingOfferDetailsActivity
 import org.tokend.template.features.qr.ShareQrActivity
 import org.tokend.template.features.recovery.RecoveryActivity
 import org.tokend.template.features.send.PaymentConfirmationActivity
@@ -38,7 +39,7 @@ import org.tokend.template.features.signin.SignInActivity
 import org.tokend.template.features.signup.RecoverySeedActivity
 import org.tokend.template.features.signup.SignUpActivity
 import org.tokend.template.features.wallet.WalletFragment
-import org.tokend.template.features.wallet.txdetails.*
+import org.tokend.template.features.wallet.details.*
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 
@@ -158,7 +159,7 @@ object Navigator {
     }
 
     fun openAssetDetails(fragment: Fragment, requestCode: Int,
-                         asset: Asset,
+                         asset: AssetRecord,
                          cardView: View? = null) {
         val transitionBundle = createTransitionBundle(fragment.activity!!,
                 cardView to fragment.activity!!.getString(R.string.transition_asset_card)
@@ -168,7 +169,6 @@ object Navigator {
         ), requestCode, transitionBundle)
     }
 
-
     fun openPaymentConfirmation(fragment: Fragment, requestCode: Int,
                                 paymentRequest: PaymentRequest) {
         val confirmationIntent = Intent(fragment.context, PaymentConfirmationActivity::class.java)
@@ -177,14 +177,16 @@ object Navigator {
     }
 
     fun openOfferConfirmation(fragment: Fragment, requestCode: Int,
-                              offer: Offer) {
+                              offer: OfferRecord) {
         fragment.startActivityForResult(fragment.context?.intentFor<OfferConfirmationActivity>(
                 OfferConfirmationActivity.OFFER_EXTRA to offer
         ), requestCode)
     }
 
-    fun openInvestmentConfirmation(activity: Activity, requestCode: Int,
-                                   offer: Offer, offerToCancel: Offer? = null,
+    fun openInvestmentConfirmation(activity: Activity,
+                                   requestCode: Int,
+                                   offer: OfferRecord,
+                                   offerToCancel: OfferRecord? = null,
                                    displayToReceive: Boolean = true,
                                    assetName: String? = null) {
         activity.startActivityForResult(activity.intentFor<InvestmentConfirmationActivity>(
@@ -195,53 +197,72 @@ object Navigator {
         ), requestCode)
     }
 
-    fun openPendingOffers(fragment: Fragment, requestCode: Int,
+    fun openPendingOffers(fragment: Fragment, requestCode: Int = 0,
                           onlyPrimary: Boolean = false) {
         fragment.startActivityForResult(fragment.context?.intentFor<OffersActivity>(
                 OffersActivity.ONLY_PRIMARY_EXTRA to onlyPrimary
         ), requestCode)
     }
 
-    fun openSale(fragment: Fragment, requestCode: Int, sale: Sale) {
+    fun openSale(fragment: Fragment, requestCode: Int, sale: SaleRecord) {
         fragment.startActivityForResult(fragment.requireContext().intentFor<SaleActivity>(
-                SaleActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
+                SaleActivity.SALE_EXTRA to sale
         ), requestCode)
     }
 
-    fun openSaleDetails(activity: Activity, sale: Sale) {
+    fun openSaleDetails(activity: Activity, sale: SaleRecord) {
         activity.startActivity(activity.intentFor<SaleDetailsActivity>(
-                SaleDetailsActivity.SALE_JSON_EXTRA to GsonFactory().getBaseGson().toJson(sale)
+                SaleDetailsActivity.SALE_EXTRA to sale
         ))
-    }
-
-    fun openTransactionDetails(activity: Activity, tx: TransferOperation) {
-        when (tx) {
-            is PaymentOperation ->
-                TxDetailsActivity
-                        .start<PaymentDetailsActivity, PaymentOperation>(activity, tx)
-            is IssuanceOperation ->
-                TxDetailsActivity
-                        .start<DepositDetailsActivity, IssuanceOperation>(activity, tx)
-            is WithdrawalOperation ->
-                TxDetailsActivity
-                        .start<WithdrawalDetailsActivity, WithdrawalOperation>(activity, tx)
-            is InvestmentOperation ->
-                TxDetailsActivity
-                        .start<InvestmentDetailsActivity, InvestmentOperation>(activity, tx)
-            is OfferMatchOperation ->
-                TxDetailsActivity
-                        .start<OfferMatchDetailsActivity, OfferMatchOperation>(activity, tx)
-            else ->
-                (tx as? BaseTransferOperation)?.let {
-                    TxDetailsActivity
-                            .start<UnknownTxDetailsActivity, BaseTransferOperation>(activity, it)
-                }
-        }
     }
 
     fun openAuthenticatorSignIn(activity: Activity, requestCode: Int) {
         activity.startActivityForResult(
                 activity.intentFor<AuthenticatorSignInActivity>(),
+                requestCode
+        )
+    }
+
+    fun openBalanceChangeDetails(activity: Activity,
+                                 change: BalanceChange) {
+        val activityClass = when (change.cause) {
+            is BalanceChangeCause.AmlAlert -> AmlAlertDetailsActivity::class.java
+            is BalanceChangeCause.Investment -> InvestmentDetailsActivity::class.java
+            is BalanceChangeCause.MatchedOffer -> OfferMatchDetailsActivity::class.java
+            is BalanceChangeCause.Issuance -> IssuanceDetailsActivity::class.java
+            is BalanceChangeCause.Payment -> PaymentDetailsActivity::class.java
+            is BalanceChangeCause.Payout -> PayoutDetailsActivity::class.java
+            is BalanceChangeCause.Withdrawal -> WithdrawalDetailsActivity::class.java
+            is BalanceChangeCause.Offer -> {
+                openPendingOfferDetails(
+                        activity,
+                        OfferRecord.fromBalanceChange(change)
+                )
+                return
+            }
+            is BalanceChangeCause.Unknown -> UnknownDetailsActivity::class.java
+        }
+
+        activity.startActivity(
+                Intent(activity, activityClass).apply {
+                    putExtra(BalanceChangeDetailsActivity.BALANCE_CHANGE_EXTRA, change)
+                }
+        )
+    }
+
+    fun openPendingOfferDetails(activity: Activity,
+                                offer: OfferRecord,
+                                requestCode: Int = 0) {
+        val activityClass =
+                if (offer.isInvestment)
+                    PendingInvestmentDetailsActivity::class.java
+                else
+                    PendingOfferDetailsActivity::class.java
+
+        activity.startActivityForResult(
+                Intent(activity, activityClass).apply {
+                    putExtra(PendingOfferDetailsActivity.OFFER_EXTRA, offer)
+                },
                 requestCode
         )
     }

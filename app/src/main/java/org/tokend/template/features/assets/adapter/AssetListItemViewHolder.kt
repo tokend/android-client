@@ -21,6 +21,7 @@ class AssetListItemViewHolder(view: View) : BaseViewHolder<AssetListItem>(view) 
     private val detailsButton: TextView = view.find(R.id.asset_details_button)
     private val primaryActionButton: Button = view.find(R.id.asset_primary_action_button)
     private val balanceExistsIndicator: View = view.find(R.id.asset_balance_exists_image_view)
+    private val picasso = Picasso.with(view.context)
 
     init {
         TooltipCompat.setTooltipText(balanceExistsIndicator,
@@ -40,14 +41,14 @@ class AssetListItemViewHolder(view: View) : BaseViewHolder<AssetListItem>(view) 
 
     override fun bind(item: AssetListItem) {
         if (item.logoUrl != null) {
-            Picasso.with(view.context)
-                    .load(item.logoUrl)
+            picasso.load(item.logoUrl)
                     .placeholder(R.color.white)
                     .resize(logoSize, logoSize)
                     .centerInside()
                     .transform(CircleTransform())
                     .into(logoImageView)
         } else {
+            picasso.cancelRequest(logoImageView)
             logoImageView.setImageBitmap(
                     LogoFactory(view.context).getWithAutoBackground(
                             item.code,

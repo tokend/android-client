@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="500dp"
-    android:height="500dp"
+    android:width="@dimen/tx_list_item_icon_size"
+    android:height="@dimen/tx_list_item_icon_size"
     android:viewportWidth="500"
     android:viewportHeight="500">
 
     <path
-        android:strokeColor="@color/primary"
-        android:strokeWidth="15"
         android:pathData="M250,14.1 C380.284,14.1,485.9,119.716,485.9,250
 C485.9,380.284,380.284,485.9,250,485.9 C119.716,485.9,14.1,380.284,14.1,250
-C14.1,119.716,119.716,14.1,250,14.1 Z" />
+C14.1,119.716,119.716,14.1,250,14.1 Z"
+        android:strokeWidth="15"
+        android:strokeColor="@color/primary" />
     <path
         android:fillColor="@color/primary"
         android:pathData="M363.8,125.6 L374.4,136.2 L153.4,357.2 L283.3,357.2 L283.3,372.2 L128.4,372.2

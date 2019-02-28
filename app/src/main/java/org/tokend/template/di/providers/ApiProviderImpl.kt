@@ -2,7 +2,7 @@ package org.tokend.template.di.providers
 
 import okhttp3.CookieJar
 import org.tokend.sdk.api.TokenDApi
-import org.tokend.sdk.keyserver.KeyStorage
+import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.signing.AccountRequestSigner
 import org.tokend.sdk.tfa.TfaCallback
 import org.tokend.sdk.utils.CookieJarProvider
@@ -29,12 +29,9 @@ class ApiProviderImpl(
         get() = BuildConfig.WITH_LOGS
 
     private var apiByHash: Pair<Int, TokenDApi>? = null
-    private var ketStorageByHash: Pair<Int, KeyStorage>? = null
-
     private var signedApiByHash: Pair<Int, TokenDApi>? = null
-    private var signedKeyStorageByHash: Pair<Int, KeyStorage>? = null
 
-    override fun getApi(): TokenDApi {
+    override fun getApi(): TokenDApi = synchronized(this) {
         val hash = url.hashCode()
 
         val api = apiByHash
@@ -55,22 +52,11 @@ class ApiProviderImpl(
         return api
     }
 
-    override fun getKeyStorage(): KeyStorage {
-        val hash = url.hashCode()
-
-        val keyStorage = ketStorageByHash
-                ?.takeIf { (currentHash, _) ->
-                    currentHash == hash
-                }
-                ?.second
-                ?: KeyStorage(getApi().wallets)
-
-        ketStorageByHash = Pair(hash, keyStorage)
-
-        return keyStorage
+    override fun getKeyServer(): KeyServer {
+        return KeyServer(getApi().wallets)
     }
 
-    override fun getSignedApi(): TokenDApi? {
+    override fun getSignedApi(): TokenDApi? = synchronized(this) {
         val account = accountProvider.getAccount() ?: return null
         val hash = HashCodes.ofMany(account.accountId, url)
 
@@ -93,20 +79,7 @@ class ApiProviderImpl(
         return signedApi
     }
 
-    override fun getSignedKeyStorage(): KeyStorage? {
-        val account = accountProvider.getAccount() ?: return null
-        val hash = HashCodes.ofMany(account, url)
-
-        val signedKeyStorage =
-                signedKeyStorageByHash
-                        ?.takeIf { (currentHash, _) ->
-                            currentHash == hash
-                        }
-                        ?.second
-                        ?: KeyStorage(getSignedApi()?.wallets!!)
-
-        signedKeyStorageByHash = Pair(hash, signedKeyStorage)
-
-        return signedKeyStorage
+    override fun getSignedKeyServer(): KeyServer? {
+        return getSignedApi()?.let { KeyServer(it.wallets) }
     }
 }

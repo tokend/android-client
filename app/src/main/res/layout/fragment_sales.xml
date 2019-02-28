@@ -25,10 +25,10 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:overScrollMode="never"
-                android:paddingBottom="@dimen/half_standard_margin"
-                android:paddingEnd="6dp"
                 android:paddingStart="6dp"
-                android:paddingTop="@dimen/half_standard_margin" />
+                android:paddingTop="@dimen/half_standard_margin"
+                android:paddingEnd="6dp"
+                android:paddingBottom="@dimen/half_standard_margin" />
 
         </LinearLayout>
     </android.support.v4.widget.SwipeRefreshLayout>

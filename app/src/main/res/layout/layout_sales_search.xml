@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/tool_bar_top_padding"
     android:orientation="vertical"
-    android:paddingEnd="@dimen/standard_margin"
-    android:paddingTop="@dimen/standard_padding">
+    android:paddingTop="@dimen/standard_padding"
+    android:paddingEnd="@dimen/standard_margin">
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/search_name_edit_text"

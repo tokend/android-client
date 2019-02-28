@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="isTablet">false</bool>
+
+    <declare-styleable name="ErrorEmptyView">
+        <attr name="empty_drawable" format="reference" />
+        <attr name="error_drawable" format="reference" />
+        <attr name="drawable_size" format="dimension" />
+        <attr name="drawable_tint_color" format="color" />
+    </declare-styleable>
+</resources>

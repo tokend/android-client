@@ -3,7 +3,6 @@ package org.tokend.template.activities
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.MenuItem
 import android.view.WindowManager
 import io.reactivex.disposables.CompositeDisposable
@@ -20,6 +19,7 @@ import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.template.logic.persistance.UrlConfigPersistor
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.formatter.AmountFormatter
 import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity(), TfaCallback {
@@ -47,6 +47,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var assetComparator: Comparator<String>
     @Inject
     lateinit var session: Session
+    @Inject
+    lateinit var amountFormatter: AmountFormatter
 
     /**
      * If set to true the activity will be operational
@@ -55,7 +57,7 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     protected open val allowUnauthorized = false
 
     /**
-     * Disposable holder which will be disposed on fragment destroy
+     * Disposable holder which will be disposed on activity destroy
      */
     protected val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -120,7 +122,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
                                verifierInterface: TfaVerifier.Interface) {
         runOnUiThread {
             val email = walletInfoProvider.getWalletInfo()?.email
-            TfaDialogFactory(this, errorHandlerFactory.getDefault(), credentialsPersistor)
+            TfaDialogFactory(this, errorHandlerFactory.getDefault(),
+                    credentialsPersistor, toastManager)
                     .getForException(exception, verifierInterface, email)
                     ?.show()
                     ?: verifierInterface.cancelVerification()

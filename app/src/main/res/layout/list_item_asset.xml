@@ -6,10 +6,10 @@
     style="@style/InfoCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/quarter_standard_margin"
-    android:layout_marginEnd="@dimen/half_standard_margin"
     android:layout_marginStart="@dimen/half_standard_margin"
     android:layout_marginTop="@dimen/quarter_standard_margin"
+    android:layout_marginEnd="@dimen/half_standard_margin"
+    android:layout_marginBottom="@dimen/quarter_standard_margin"
     android:transitionName="@string/transition_asset_card"
     app:contentPadding="0dp"
     tools:ignore="UnusedAttribute">
@@ -46,10 +46,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/standard_margin"
                 android:layout_marginStart="@dimen/standard_margin"
-                android:layout_toEndOf="@id/asset_logo_image_view"
+                android:layout_marginEnd="@dimen/standard_margin"
                 android:layout_toStartOf="@id/asset_balance_exists_image_view"
+                android:layout_toEndOf="@id/asset_logo_image_view"
                 android:orientation="vertical">
 
                 <TextView
@@ -85,8 +85,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/half_standard_margin"
-            android:layout_marginStart="@dimen/half_standard_margin">
+            android:layout_marginStart="@dimen/half_standard_margin"
+            android:layout_marginEnd="@dimen/half_standard_margin">
 
             <Button
                 android:id="@+id/asset_primary_action_button"

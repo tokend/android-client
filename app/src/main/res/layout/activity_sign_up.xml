@@ -1,102 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/standard_margin"
-        android:orientation="vertical">
-
-        <include layout="@layout/layout_network_field" />
-
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/email_edit_text"
-            style="@style/EditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            app:met_floatingLabelText="@string/email" />
-
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/password_edit_text"
-            style="@style/EditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standard_padding"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            app:met_floatingLabelText="@string/password" />
-
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/confirm_password_edit_text"
-            style="@style/EditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standard_padding"
-            android:hint="@string/confirm_password"
-            android:inputType="textPassword"
-            app:met_floatingLabelText="@string/confirm_password" />
+    <ScrollView style="@style/LimitedMatchParentWidthConstraint">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="-6dp"
-            android:layout_marginTop="@dimen/standard_margin"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_margin="@dimen/standard_margin"
+            android:orientation="vertical">
 
-            <CheckBox
-                android:id="@+id/terms_of_service_checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5sp"
-                android:checked="false"
-                android:text="@string/i_agree_to_the" />
+            <include layout="@layout/layout_network_field" />
 
-            <TextView
-                android:id="@+id/terms_text_view"
-                style="@style/PrimaryActionTextView"
-                android:layout_width="wrap_content"
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/email_edit_text"
+                style="@style/EditText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/terms_of_service" />
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                app:met_floatingLabelText="@string/email" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/password_edit_text"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_padding"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                app:met_floatingLabelText="@string/password" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/confirm_password_edit_text"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_padding"
+                android:hint="@string/confirm_password"
+                android:inputType="textPassword"
+                app:met_floatingLabelText="@string/confirm_password" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-6dp"
+                android:layout_marginTop="@dimen/standard_margin"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/terms_of_service_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5sp"
+                    android:checked="false"
+                    android:text="@string/i_agree_to_the" />
+
+                <TextView
+                    android:id="@+id/terms_text_view"
+                    style="@style/PrimaryActionTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/terms_of_service" />
+            </LinearLayout>
+
+            <include
+                layout="@layout/layout_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_margin"
+                android:paddingBottom="@dimen/standard_padding">
+
+                <Button
+                    android:id="@+id/sign_up_button"
+                    style="@style/PrimaryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingStart="@dimen/double_margin"
+                    android:paddingEnd="@dimen/double_margin"
+                    android:text="@string/sign_up" />
+
+                <TextView
+                    android:id="@+id/sign_in_text_view"
+                    style="@style/PrimaryActionTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/sign_up_button"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/sign_up_button"
+                    android:text="@string/back_to_sign_in" />
+            </RelativeLayout>
+
         </LinearLayout>
 
-        <include
-            layout="@layout/layout_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+    </ScrollView>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standard_margin"
-            android:paddingBottom="@dimen/standard_padding">
-
-            <Button
-                android:id="@+id/sign_up_button"
-                style="@style/PrimaryButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:paddingEnd="@dimen/double_margin"
-                android:paddingStart="@dimen/double_margin"
-                android:text="@string/sign_up" />
-
-            <TextView
-                android:id="@+id/sign_in_text_view"
-                style="@style/PrimaryActionTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@id/sign_up_button"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@id/sign_up_button"
-                android:text="@string/back_to_sign_in" />
-        </RelativeLayout>
-
-    </LinearLayout>
-
-</ScrollView>
+</android.support.constraint.ConstraintLayout>

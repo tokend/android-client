@@ -1,6 +1,5 @@
 package org.tokend.template.features.wallet
 
-
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
@@ -11,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
@@ -21,19 +21,17 @@ import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
+import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.data.repository.transactions.TxRepository
-import org.tokend.template.extensions.BalanceDetails
-import org.tokend.template.extensions.isTransferable
+import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
+import org.tokend.template.features.wallet.adapter.BalanceChangesAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.adapter.history.TxHistoryAdapter
-import org.tokend.template.view.adapter.history.TxHistoryItem
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.formatter.AmountFormatter
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -46,8 +44,8 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     )
 
     private lateinit var balancesRepository: BalancesRepository
-    private val txRepository: TxRepository
-        get() = repositoryProvider.transactions(asset)
+    private val balanceChangesRepository: BalanceChangesRepository
+        get() = repositoryProvider.balanceChanges(balanceId)
 
     private val needAssetTabs: Boolean
         get() = arguments?.getBoolean(NEED_TABS_EXTRA) == true
@@ -58,7 +56,10 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             onAssetChanged()
         }
 
-    private val txAdapter = TxHistoryAdapter()
+    private val balanceId: String
+        get() = balancesRepository.itemsList.find { it.assetCode == asset }?.id ?: ""
+
+    private lateinit var adapter: BalanceChangesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,9 +80,11 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         initSend()
         initHorizontalSwipesIfNeeded()
 
-        arguments?.getString(ASSET_EXTRA)?.let { requiredAsset ->
-            asset = requiredAsset
-        }
+        arguments
+                ?.getString(ASSET_EXTRA)
+                ?.also { requiredAsset ->
+                    asset = requiredAsset
+                }
 
         subscribeToBalances()
     }
@@ -123,24 +126,25 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             }
 
     private fun initHistory() {
-        txAdapter.onItemClick { _, item ->
-            item.source?.let { Navigator.openTransactionDetails(this.activity!!, it) }
+        adapter = BalanceChangesAdapter(amountFormatter, false)
+        adapter.onItemClick { _, item ->
+            item.source?.let { Navigator.openBalanceChangeDetails(this.requireActivity(), it) }
         }
 
+        error_empty_view.setEmptyDrawable(R.drawable.ic_balance)
         error_empty_view.setPadding(0, 0, 0,
                 resources.getDimensionPixelSize(R.dimen.quadra_margin))
-        error_empty_view.observeAdapter(txAdapter, R.string.no_transaction_history)
-        error_empty_view.setEmptyViewDenial { txRepository.isNeverUpdated }
+        error_empty_view.observeAdapter(adapter, R.string.no_transaction_history)
+        error_empty_view.setEmptyViewDenial { balanceChangesRepository.isNeverUpdated }
 
-        history_list.adapter = txAdapter
+        history_list.adapter = adapter
         history_list.layoutManager = LinearLayoutManager(context!!)
         history_list.addOnScrollListener(hideFabScrollListener)
 
-        history_list.listenBottomReach({ txAdapter.getDataItemCount() }) {
-            txRepository.loadMore() || txRepository.noMoreItems
+        history_list.listenBottomReach({ adapter.getDataItemCount() }) {
+            balanceChangesRepository.loadMore() || balanceChangesRepository.noMoreItems
         }
     }
-
 
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
@@ -195,46 +199,40 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                 .addTo(compositeDisposable)
     }
 
-    private var transactionsDisposable: Disposable? = null
-    private var transactionsLoadingDisposable: Disposable? = null
-    private var transactionsErrorsDisposable: Disposable? = null
-    private fun subscribeToTransactions() {
-        transactionsDisposable?.dispose()
-        transactionsDisposable =
-                txRepository.itemsSubject
+    private var historyDisposable: Disposable? = null
+    private fun subscribeToHistory() {
+        historyDisposable?.dispose()
+
+        val accountId = walletInfoProvider.getWalletInfo()?.accountId
+                ?: return
+
+        historyDisposable = CompositeDisposable(
+                balanceChangesRepository.itemsSubject
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
-                            txAdapter.setData(it.map {
-                                TxHistoryItem.fromTransaction(it)
+                            adapter.setData(it.map { balanceChange ->
+                                BalanceChangeListItem(balanceChange, accountId)
                             })
                             history_list.resetBottomReachHandled()
-                        }
-                        .addTo(compositeDisposable)
-
-        transactionsLoadingDisposable?.dispose()
-        transactionsLoadingDisposable =
-                txRepository.loadingSubject
+                        },
+                balanceChangesRepository.loadingSubject
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { loading ->
                             if (loading) {
-                                if (txRepository.isOnFirstPage) {
+                                if (balanceChangesRepository.isOnFirstPage) {
                                     loadingIndicator.show("transactions")
                                 } else {
-                                    txAdapter.showLoadingFooter()
+                                    adapter.showLoadingFooter()
                                 }
                             } else {
                                 loadingIndicator.hide("transactions")
-                                txAdapter.hideLoadingFooter()
+                                adapter.hideLoadingFooter()
                             }
-                        }
-                        .addTo(compositeDisposable)
-
-        transactionsErrorsDisposable?.dispose()
-        transactionsErrorsDisposable =
-                txRepository.errorsSubject
+                        },
+                balanceChangesRepository.errorsSubject
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { error ->
-                            if (!txAdapter.hasData) {
+                            if (!adapter.hasData) {
                                 error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
                                     update(true)
                                 }
@@ -242,7 +240,8 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                                 errorHandlerFactory.getDefault().handle(error)
                             }
                         }
-                        .addTo(compositeDisposable)
+        )
+                .addTo(compositeDisposable)
     }
     // endregion
 
@@ -254,24 +253,18 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayBalance() {
         balancesRepository.itemsList
-                .find { it.asset == asset }
-                ?.let { balanceItem ->
-                    val balance = balanceItem.balance
-                    collapsing_toolbar.title = AmountFormatter.formatAssetAmount(balance, asset) +
-                            " $asset"
-                    val converted = balanceItem.convertedBalance
-                    val conversionAsset = balanceItem.conversionAsset
-                    converted_balance_text_view.text =
-                            AmountFormatter.formatAssetAmount(converted, conversionAsset) +
-                            " $conversionAsset"
+                .find { it.assetCode == asset }
+                ?.let { balance ->
+                    collapsing_toolbar.title =
+                            amountFormatter.formatAssetAmount(balance.available, asset)
                 }
     }
 
     private fun displaySendIfNeeded() {
         (balancesRepository.itemsList
-                .find { it.asset == asset }
-                ?.assetDetails
-                ?.isTransferable() == true)
+                .find { it.assetCode == asset }
+                ?.asset
+                ?.isTransferable == true)
                 .let { isTransferable ->
                     if (!isTransferable || !BuildConfig.IS_SEND_ALLOWED) {
                         send_fab.hide()
@@ -287,26 +280,31 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     private fun update(force: Boolean = false) {
         if (!force) {
             balancesRepository.updateIfNotFresh()
-            txRepository.updateIfNotFresh()
+            balanceChangesRepository.updateIfNotFresh()
         } else {
             balancesRepository.update()
-            txRepository.update()
+            balanceChangesRepository.update()
         }
     }
 
-    private fun onBalancesUpdated(balances: List<BalanceDetails>) {
-        displayAssetTabs(balances.map { it.asset })
+    private fun onBalancesUpdated(balances: List<BalanceRecord>) {
+        displayAssetTabs(balances.map { it.assetCode })
         displayBalance()
         displaySendIfNeeded()
     }
 
     private fun onAssetChanged() {
         displayBalance()
-        subscribeToTransactions()
-        date_text_switcher.init(history_list, txAdapter)
+        subscribeToHistory()
+        date_text_switcher.init(history_list, adapter)
         history_list.scrollToPosition(0)
         displaySendIfNeeded()
         update()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        history_list.clearOnScrollListeners()
     }
 
     companion object {

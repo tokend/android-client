@@ -3,7 +3,7 @@ package org.tokend.template.features.send.logic
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toMaybe
-import org.tokend.sdk.api.fees.model.Fee
+import org.tokend.template.data.model.history.SimpleFeeRecord
 import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.di.providers.WalletInfoProvider
@@ -32,8 +32,8 @@ class CreatePaymentRequestUseCase(
     private lateinit var senderAccount: String
     private lateinit var senderBalance: String
     private lateinit var recipientAccount: String
-    private lateinit var senderFee: Fee
-    private lateinit var recipientFee: Fee
+    private lateinit var senderFee: SimpleFeeRecord
+    private lateinit var recipientFee: SimpleFeeRecord
 
     fun perform(): Single<PaymentRequest> {
         return getAccounts()
@@ -89,7 +89,7 @@ class CreatePaymentRequestUseCase(
             accountDetailsRepository
                     ?.getAccountIdByEmail(recipient)
                     ?: Single.error(
-                            IllegalStateException("Account details repository is required" +
+                            IllegalStateException("Account cause repository is required" +
                                     " to get recipient's account ID")
                     )
     }
@@ -101,8 +101,8 @@ class CreatePaymentRequestUseCase(
                 .flatMapMaybe {
                     balancesRepository
                             .itemsList
-                            .find { it.asset == asset }
-                            ?.balanceId
+                            .find { it.assetCode == asset }
+                            ?.id
                             .toMaybe()
                 }
                 .switchIfEmpty(Single.error(
@@ -110,7 +110,7 @@ class CreatePaymentRequestUseCase(
                 ))
     }
 
-    private fun getFees(): Single<Pair<Fee, Fee>> {
+    private fun getFees(): Single<Pair<SimpleFeeRecord, SimpleFeeRecord>> {
         return Single.zip(
                 feeManager.getPaymentFee(
                         senderAccount,
@@ -124,7 +124,7 @@ class CreatePaymentRequestUseCase(
                         amount,
                         false
                 ),
-                BiFunction { senderFee: Fee, recipientFee: Fee ->
+                BiFunction { senderFee: SimpleFeeRecord, recipientFee: SimpleFeeRecord ->
                     senderFee to recipientFee
                 }
         )

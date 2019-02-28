@@ -2,20 +2,22 @@ package org.tokend.template.data.repository.favorites
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.tokend.rx.extensions.toCompletable
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.favorites.model.FavoriteEntry
+import org.tokend.template.data.model.FavoriteRecord
+import org.tokend.template.data.repository.base.RepositoryCache
+import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
-import org.tokend.template.extensions.toCompletable
-import org.tokend.template.extensions.toSingle
 
 class FavoritesRepository(
         private val apiProvider: ApiProvider,
-        private val walletInfoProvider: WalletInfoProvider
-) : SimpleMultipleItemsRepository<FavoriteEntry>() {
-    override val itemsCache = FavoritesCache()
+        private val walletInfoProvider: WalletInfoProvider,
+        itemsCache: RepositoryCache<FavoriteRecord>
+) : SimpleMultipleItemsRepository<FavoriteRecord>(itemsCache) {
 
-    override fun getItems(): Single<List<FavoriteEntry>> {
+    override fun getItems(): Single<List<FavoriteRecord>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
@@ -25,17 +27,22 @@ class FavoritesRepository(
                 .favorites
                 .get(accountId)
                 .toSingle()
+                .map { entries ->
+                    entries.map { FavoriteRecord(it) }
+                }
     }
 
     /**
      * Adds given entry to favorites,
      * update repository on complete
      */
-    fun addToFavorites(entry: FavoriteEntry): Completable {
+    fun addToFavorites(record: FavoriteRecord): Completable {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Completable.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Completable.error(IllegalStateException("No wallet info found"))
+
+        val entry = FavoriteEntry(record.type, record.key, record.id)
 
         return signedApi
                 .favorites

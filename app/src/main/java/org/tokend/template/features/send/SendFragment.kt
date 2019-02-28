@@ -31,7 +31,6 @@ import org.tokend.template.R
 import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
-import org.tokend.template.extensions.isTransferable
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.send.adapter.ContactsAdapter
 import org.tokend.template.features.send.logic.CreatePaymentRequestUseCase
@@ -50,7 +49,6 @@ import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.util.validator.EmailValidator
 import org.tokend.template.view.adapter.base.SimpleItemClickListener
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.wallet.Base32Check
@@ -221,14 +219,13 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private fun updateBalance() {
         assetBalance = balancesRepository.itemsList
-                .find { it.asset == asset }
-                ?.balance ?: BigDecimal.ZERO
+                .find { it.assetCode == asset }
+                ?.available ?: BigDecimal.ZERO
     }
 
     private fun displayBalance() {
         balance_text_view.text = getString(R.string.template_balance,
-                AmountFormatter.formatAssetAmount(assetBalance),
-                asset
+                amountFormatter.formatAssetAmount(assetBalance, asset)
         )
     }
 
@@ -236,10 +233,10 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         val transferableAssets = balancesRepository.itemsList
                 .asSequence()
                 .mapNotNull {
-                    it.assetDetails
+                    it.asset
                 }
                 .filter {
-                    it.isTransferable()
+                    it.isTransferable
                 }
                 .map {
                     it.code
@@ -248,6 +245,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 .toList()
 
         if (transferableAssets.isEmpty()) {
+            error_empty_view.setEmptyDrawable(R.drawable.ic_send)
             error_empty_view.showEmpty(R.string.error_no_transferable_assets)
             return
         }
@@ -292,6 +290,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 && !amount_edit_text.hasError()
                 && !recipient_edit_text.hasError()
                 && !subject_edit_text.hasError()
+                && !recipient_edit_text.text.isBlank()
                 && amountEditTextWrapper.scaledAmount.signum() > 0
     }
     // endregion
@@ -357,6 +356,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         checkAmount()
         updateConfirmAvailability()
         displayBalance()
+        amountEditTextWrapper.maxPlacesAfterComa = amountFormatter.getDecimalDigitsCount(asset)
     }
 
     private fun updateContactsData(items: List<Contact>) {

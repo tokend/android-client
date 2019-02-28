@@ -7,6 +7,10 @@ import org.tokend.template.view.util.LocalizedName
 
 class FeeViewHolder(itemView: View) : BaseViewHolder<FeeItem>(itemView) {
 
+    init {
+        setIsRecyclable(false)
+    }
+
     private val localizedName = LocalizedName(view.context)
 
     override fun bind(item: FeeItem) {

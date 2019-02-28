@@ -1,41 +1,16 @@
 package org.tokend.template.view.util
 
 import android.content.Context
-import org.tokend.sdk.api.base.model.operations.OperationState
 import org.tokend.template.R
+import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.features.fees.adapter.FeeItem
-import org.tokend.template.view.adapter.history.TxHistoryItem
+import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.wallet.xdr.FeeType
 
 /**
  * Holds localized name getters for enums
  */
 class LocalizedName(private val context: Context) {
-    fun forTransactionState(state: OperationState): String {
-        return when (state) {
-            OperationState.PENDING -> context.getString(R.string.tx_state_pending)
-            OperationState.SUCCESS -> context.getString(R.string.tx_state_success)
-            OperationState.REJECTED -> context.getString(R.string.tx_state_rejected)
-            OperationState.CANCELED -> context.getString(R.string.tx_state_cancelled)
-            OperationState.FAILED -> context.getString(R.string.tx_state_failed)
-        }
-    }
-
-    fun forTransactionAction(action: TxHistoryItem.Action): String {
-        return when (action) {
-            TxHistoryItem.Action.DEPOSIT -> context.getString(R.string.tx_action_deposit)
-            TxHistoryItem.Action.WITHDRAWAL -> context.getString(R.string.tx_action_withdrawal)
-            TxHistoryItem.Action.INVESTMENT -> context.getString(R.string.tx_action_investment)
-            TxHistoryItem.Action.RECEIVED -> context.getString(R.string.tx_action_received)
-            TxHistoryItem.Action.SENT -> context.getString(R.string.tx_action_sent)
-            TxHistoryItem.Action.BOUGHT -> context.getString(R.string.tx_action_bought)
-            TxHistoryItem.Action.SOLD -> context.getString(R.string.tx_action_sold)
-            TxHistoryItem.Action.SPENT -> context.getString(R.string.tx_action_spent)
-            TxHistoryItem.Action.BUY -> context.getString(R.string.buy)
-            TxHistoryItem.Action.SELL -> context.getString(R.string.sell)
-        }
-    }
-
     fun forFeeType(type: FeeType): String {
         return when (type) {
             FeeType.PAYMENT_FEE -> context.getString(R.string.payment_fee)
@@ -46,6 +21,8 @@ class LocalizedName(private val context: Context) {
             FeeType.CAPITAL_DEPLOYMENT_FEE -> context.getString(R.string.capital_deployment_fee)
             FeeType.OPERATION_FEE -> context.getString(R.string.operation_fee)
             FeeType.PAYOUT_FEE -> context.getString(R.string.payout_fee)
+            FeeType.ATOMIC_SWAP_SALE_FEE -> context.getString(R.string.atomic_swap_sale_fee)
+            FeeType.ATOMIC_SWAP_PURCHASE_FEE -> context.getString(R.string.atomic_swap_purchase_fee)
         }
     }
 
@@ -54,6 +31,31 @@ class LocalizedName(private val context: Context) {
             FeeItem.Subtype.INCOMING_OUTGOING -> context.getString(R.string.incoming_outgoing_fee)
             FeeItem.Subtype.OUTGOING -> context.getString(R.string.outgoing_fee)
             FeeItem.Subtype.INCOMING -> context.getString(R.string.incoming_fee)
+        }
+    }
+
+    fun forBalanceChangeListItemAction(action: BalanceChangeListItem.Action): String {
+        return when (action) {
+            BalanceChangeListItem.Action.LOCKED -> context.getString(R.string.tx_action_locked)
+            BalanceChangeListItem.Action.UNLOCKED -> context.getString(R.string.tx_action_unlocked)
+            BalanceChangeListItem.Action.WITHDRAWN -> context.getString(R.string.tx_action_withdrawn)
+            BalanceChangeListItem.Action.MATCHED -> context.getString(R.string.tx_action_matched)
+            BalanceChangeListItem.Action.ISSUED -> context.getString(R.string.tx_action_issued)
+            BalanceChangeListItem.Action.RECEIVED -> context.getString(R.string.tx_action_received)
+            BalanceChangeListItem.Action.SENT -> context.getString(R.string.tx_action_sent)
+            BalanceChangeListItem.Action.CHARGED -> context.getString(R.string.tx_action_charged)
+        }
+    }
+
+    fun forBalanceChangeAction(action: BalanceChangeAction): String {
+        return when (action) {
+            BalanceChangeAction.LOCKED -> context.getString(R.string.tx_action_locked)
+            BalanceChangeAction.UNLOCKED -> context.getString(R.string.tx_action_unlocked)
+            BalanceChangeAction.CHARGED, BalanceChangeAction.CHARGED_FROM_LOCKED -> context.getString(R.string.tx_action_charged)
+            BalanceChangeAction.WITHDRAWN -> context.getString(R.string.tx_action_withdrawn)
+            BalanceChangeAction.MATCHED -> context.getString(R.string.tx_action_matched)
+            BalanceChangeAction.ISSUED -> context.getString(R.string.tx_action_issued)
+            BalanceChangeAction.FUNDED -> context.getString(R.string.tx_action_received)
         }
     }
 }

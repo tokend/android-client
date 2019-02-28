@@ -6,7 +6,6 @@ import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.PaintCompat
 import android.support.v4.util.LruCache
-import org.tokend.sdk.utils.HashCodes
 import org.tokend.template.R
 
 /**
@@ -14,14 +13,25 @@ import org.tokend.template.R
  */
 class LogoFactory(private val context: Context) {
     private val colors = listOf(
-            "#EF9A9A", "#F48FB1", "#CE93D8",
-            "#FF8A80", "#FF80AB", "#90CAF9",
-            "#B39DDB", "#9FA8DA", "#8C9EFF",
-            "#80DEEA", "#80CBC4", "#82B1FF",
-            "#A5D6A7", "#C5E1A5", "#DCE775",
-            "#FBC02D", "#FFD54F", "#FFCC80",
-            "#FFAB91", "#BCAAA4", "#BDBDBD",
-            "#B0BEC5"
+            "#80CBC4",
+            "#80DEEA",
+            "#82B1FF",
+            "#8C9EFF",
+            "#90CAF9",
+            "#9FA8DA",
+            "#A5D6A7",
+            "#B0BEC5",
+            "#BCAAA4",
+            "#C5E1A5",
+            "#CE93D8",
+            "#DCE775",
+            "#EF9A9A",
+            "#F48FB1",
+            "#FBC02D",
+            "#FF8A80",
+            "#FFAB91",
+            "#FFCC80",
+            "#FFD54F"
     )
             .map { Color.parseColor(it) }
 
@@ -31,9 +41,11 @@ class LogoFactory(private val context: Context) {
                               @ColorInt
                               fontColor: Int = ContextCompat.getColor(context, R.color.white)
     ): Bitmap {
-        val code = 70507 % (HashCodes.ofMany(mainValue, *values) and 0xffff)
-
-        val background = colors[code % colors.size]
+        val string = mainValue + values.filterNotNull().joinToString("")
+        val code = string.toCharArray().fold(0) { result, char ->
+            (31 * result + char.toInt()) % colors.size
+        }
+        val background = colors[code]
         return getForValue(mainValue, size, background, fontColor)
     }
 
@@ -44,12 +56,12 @@ class LogoFactory(private val context: Context) {
     fun getForValue(value: String,
                     size: Int,
                     @ColorInt
-                   backgroundColor: Int,
+                    backgroundColor: Int,
                     @ColorInt
-                   fontColor: Int
+                    fontColor: Int
     ): Bitmap {
         val letter = value.firstOrNull()?.toString()
-        val key = "${letter}_$size"
+        val key = "${value}_$size"
         val cached = cache.get(key)
         return cached
                 ?: generate(letter, size, backgroundColor, fontColor).also { cache.put(key, it) }

@@ -8,7 +8,7 @@ import org.tokend.sdk.tfa.TfaVerifier
 /**
  * Application-wide TFA callback that allows screen-specific TFA handling.
  */
-class AppTfaCallback: TfaCallback {
+class AppTfaCallback : TfaCallback {
     private val handlers = linkedSetOf<TfaCallback>()
 
     /**

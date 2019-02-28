@@ -1,5 +1,6 @@
 package org.tokend.template.features.dashboard
 
+import android.app.Activity
 import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -14,20 +15,22 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.layout_pending_offers_card.view.*
 import kotlinx.android.synthetic.main.layout_progress.view.*
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.base.model.operations.OfferMatchOperation
 import org.tokend.template.R
-import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.data.repository.base.MultipleItemsRepository
-import org.tokend.template.view.adapter.history.TxHistoryAdapter
-import org.tokend.template.view.adapter.history.TxHistoryItem
+import org.tokend.template.data.repository.offers.OffersRepository
+import org.tokend.template.di.providers.RepositoryProvider
+import org.tokend.template.features.offers.view.PendingOfferListItem
+import org.tokend.template.features.offers.view.PendingOffersAdapter
+import org.tokend.template.util.Navigator
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ViewProvider
-import org.tokend.template.data.repository.offers.OffersRepository
-import org.tokend.template.util.Navigator
+import org.tokend.template.view.util.formatter.AmountFormatter
 
-class PendingOffersCard(private val context: Context?,
+class PendingOffersCard(private val activity: Activity,
+                        private val context: Context?,
                         private val repositoryProvider: RepositoryProvider,
-                        private val disposable: CompositeDisposable) : ViewProvider {
+                        private val disposable: CompositeDisposable,
+                        private val amountFormatter: AmountFormatter) : ViewProvider {
 
     private lateinit var view: View
 
@@ -36,7 +39,7 @@ class PendingOffersCard(private val context: Context?,
     private val offersRepository: OffersRepository
         get() = repositoryProvider.offers()
 
-    private val offersAdapter = TxHistoryAdapter(true)
+    private lateinit var offersAdapter: PendingOffersAdapter
 
     override fun addTo(rootView: ViewGroup): PendingOffersCard {
         rootView.addView(getView(rootView))
@@ -57,7 +60,7 @@ class PendingOffersCard(private val context: Context?,
 
     fun initViewMoreButton(fragment: Fragment) {
         view.view_more_offers_button.onClick {
-            Navigator.openPendingOffers(fragment, CANCEL_OFFER_REQUEST)
+            Navigator.openPendingOffers(fragment)
         }
     }
 
@@ -85,6 +88,7 @@ class PendingOffersCard(private val context: Context?,
     }
 
     private fun initPendingOffers() {
+        offersAdapter = PendingOffersAdapter(amountFormatter, true)
         offersAdapter.registerAdapterDataObserver(
                 getEmptyViewObserver(view.offers_empty_view,
                         context?.getString(R.string.no_pending_offers),
@@ -92,6 +96,9 @@ class PendingOffersCard(private val context: Context?,
                     offersRepository
                 }
         )
+        offersAdapter.onItemClick { _, item ->
+            item.source?.also { Navigator.openPendingOfferDetails(activity, it) }
+        }
 
         view.offers_list.layoutManager = LinearLayoutManager(context)
         view.offers_list.adapter = offersAdapter
@@ -113,11 +120,7 @@ class PendingOffersCard(private val context: Context?,
                         .map { it.subList(0, Math.min(it.size, TRANSACTIONS_TO_DISPLAY)) }
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
-                            offersAdapter.setData(it.map {
-                                TxHistoryItem.fromTransaction(
-                                        OfferMatchOperation.fromOffer(it)
-                                )
-                            })
+                            offersAdapter.setData(it.map(::PendingOfferListItem))
                         },
                 offersRepository.loadingSubject
                         .observeOn(AndroidSchedulers.mainThread())
@@ -132,6 +135,5 @@ class PendingOffersCard(private val context: Context?,
 
     companion object {
         private const val TRANSACTIONS_TO_DISPLAY = 3
-        val CANCEL_OFFER_REQUEST = "cancel_offer".hashCode() and 0xffff
     }
 }

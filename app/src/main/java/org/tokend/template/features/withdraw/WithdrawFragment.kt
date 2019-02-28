@@ -25,7 +25,6 @@ import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
-import org.tokend.template.extensions.isWithdrawable
 import org.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.logic.WithdrawalAddressUtil
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
@@ -38,7 +37,6 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import java.math.BigDecimal
@@ -170,14 +168,13 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
     private fun updateBalance() {
         assetBalance = balancesRepository.itemsList
-                .find { it.asset == asset }
-                ?.balance ?: BigDecimal.ZERO
+                .find { it.assetCode == asset }
+                ?.available ?: BigDecimal.ZERO
     }
 
     private fun displayBalance() {
         balance_text_view.text = getString(R.string.template_balance,
-                AmountFormatter.formatAssetAmount(assetBalance),
-                asset
+                amountFormatter.formatAssetAmount(assetBalance, asset)
         )
     }
 
@@ -185,10 +182,10 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         val withdrawableAssets = balancesRepository.itemsList
                 .asSequence()
                 .mapNotNull {
-                    it.assetDetails
+                    it.asset
                 }
                 .filter {
-                    it.isWithdrawable()
+                    it.isWithdrawable
                 }
                 .map {
                     it.code
@@ -197,6 +194,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                 .toList()
 
         if (withdrawableAssets.isEmpty()) {
+            error_empty_view.setEmptyDrawable(R.drawable.ic_withdraw)
             error_empty_view.showEmpty(R.string.error_no_withdrawable_assets)
             return
         }
@@ -227,6 +225,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         canConfirm = !isLoading
                 && !amount_edit_text.hasError()
                 && !address_edit_text.hasError()
+                && !address_edit_text.text.isBlank()
                 && amountEditTextWrapper.scaledAmount.signum() > 0
     }
     // endregion
@@ -256,6 +255,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                 asset,
                 address,
                 walletInfoProvider,
+                repositoryProvider.balances(),
                 FeeManager(apiProvider)
         )
                 .perform()
@@ -282,6 +282,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         checkAmount()
         updateConfirmAvailability()
         displayBalance()
+        amountEditTextWrapper.maxPlacesAfterComa = amountFormatter.getDecimalDigitsCount(asset)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,

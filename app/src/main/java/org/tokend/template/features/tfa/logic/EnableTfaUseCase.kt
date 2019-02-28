@@ -5,7 +5,8 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
-import java.util.concurrent.CancellationException
+import org.tokend.template.features.tfa.model.TfaFactorCreationResult
+import org.tokend.template.util.confirmation.ConfirmationProvider
 
 /**
  * Adds and enables 2FA factor of given type.
@@ -16,9 +17,11 @@ import java.util.concurrent.CancellationException
 class EnableTfaUseCase(
         private val factorType: TfaFactor.Type,
         private val factorsRepository: TfaFactorsRepository,
-        private val newFactorConfirmation: (TfaFactor) -> Single<Boolean>
+        private val newFactorConfirmation: ConfirmationProvider<TfaFactorCreationResult>
 ) {
-    private lateinit var newFactor: TfaFactor
+    private lateinit var creationResult: TfaFactorCreationResult
+    private val newFactorId: Long
+        get() = creationResult.newFactor.id
 
     fun perform(): Completable {
         val scheduler = Schedulers.newThread()
@@ -30,8 +33,8 @@ class EnableTfaUseCase(
                 .flatMap {
                     addNewFactor()
                 }
-                .doOnSuccess { newFactor ->
-                    this.newFactor = newFactor
+                .doOnSuccess { creationResult ->
+                    this.creationResult = creationResult
                 }
                 .flatMap {
                     confirmNewFactor()
@@ -60,28 +63,23 @@ class EnableTfaUseCase(
             Single.just(false)
         else
             factorsRepository
-                    .deleteBackend(oldFactor.id)
+                    .deleteFactor(oldFactor.id)
                     .toSingleDefault(true)
     }
 
-    private fun addNewFactor(): Single<TfaFactor> {
-        return factorsRepository.addBackend(factorType)
+    private fun addNewFactor(): Single<TfaFactorCreationResult> {
+        return factorsRepository.addFactor(factorType)
     }
 
     private fun confirmNewFactor(): Single<Boolean> {
-        return newFactorConfirmation.invoke(newFactor)
-                .map { isConfirmed ->
-                    if (!isConfirmed) {
-                        throw CancellationException("Flow has been canceled on confirmation")
-                    }
-
-                    isConfirmed
-                }
+        return newFactorConfirmation
+                .requestConfirmation(creationResult)
+                .toSingleDefault(true)
     }
 
     private fun enableNewFactor(): Single<Boolean> {
         return factorsRepository
-                .setBackendAsMain(newFactor.id)
+                .setFactorAsMain(newFactorId)
                 .toSingleDefault(true)
     }
 }

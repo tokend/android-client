@@ -6,16 +6,16 @@ import org.tokend.sdk.api.accounts.model.limits.Limits
 import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 
 class LimitsRepository(private val apiProvider: ApiProvider,
                        private val walletInfoProvider: WalletInfoProvider
-                       ) : SimpleSingleItemRepository<Limits>() {
+) : SimpleSingleItemRepository<Limits>() {
     override fun getItem(): Observable<Limits> {
         return getLimitsResponse().toObservable()
     }
 
-    private fun getLimitsResponse() : Single<Limits> {
+    private fun getLimitsResponse(): Single<Limits> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
         val signedApi = apiProvider.getSignedApi()

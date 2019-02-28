@@ -6,15 +6,15 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.CompletableSubject
 import org.tokend.sdk.api.base.model.DataPage
-import org.tokend.sdk.api.base.params.PagingParamsHolder
 import org.tokend.template.data.repository.base.MultipleItemsRepository
+import org.tokend.template.data.repository.base.RepositoryCache
 
 /**
  * Repository for paged data of type [T] with request params of type [R].
  */
-abstract class PagedDataRepository<T, R> : MultipleItemsRepository<T>()
-        where R : PagingParamsHolder {
-    protected var nextCursor: String? = null
+abstract class PagedDataRepository<T>(itemsCache: RepositoryCache<T>)
+    : MultipleItemsRepository<T>(itemsCache) {
+    private var nextCursor: String? = null
 
     val isOnFirstPage: Boolean
         get() = nextCursor == null
@@ -22,8 +22,7 @@ abstract class PagedDataRepository<T, R> : MultipleItemsRepository<T>()
     var noMoreItems: Boolean = false
         protected set
 
-    abstract fun getPage(requestParams: R): Single<DataPage<T>>
-    protected abstract fun getNextPageRequestParams(): R
+    abstract fun getPage(nextCursor: String?): Single<DataPage<T>>
 
     protected var loadingDisposable: Disposable? = null
     protected open fun loadMore(force: Boolean,
@@ -36,7 +35,7 @@ abstract class PagedDataRepository<T, R> : MultipleItemsRepository<T>()
             isLoading = true
 
             loadingDisposable?.dispose()
-            loadingDisposable = getPage(getNextPageRequestParams())
+            loadingDisposable = getPage(nextCursor)
                     .subscribeBy(
                             onSuccess = {
                                 onNewItems(it.items)
@@ -106,5 +105,10 @@ abstract class PagedDataRepository<T, R> : MultipleItemsRepository<T>()
 
             return@synchronized resultSubject
         }
+    }
+
+    // TODO: Implement me
+    override fun getItems(): Single<List<T>> {
+        return Single.error(NotImplementedError("Cannot get whole paged resource"))
     }
 }

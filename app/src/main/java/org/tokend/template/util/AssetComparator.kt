@@ -1,6 +1,5 @@
 package org.tokend.template.util
 
-
 /**
  * Default asset comparator.
  */

@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
-import org.tokend.template.view.adapter.base.BaseViewHolder
-import org.tokend.template.view.adapter.base.SimpleItemClickListener
 import org.tokend.template.features.send.model.Contact
 import org.tokend.template.features.send.model.ContactEmail
+import org.tokend.template.view.adapter.base.BaseViewHolder
+import org.tokend.template.view.adapter.base.SimpleItemClickListener
 
 class ContactsAdapter : RecyclerView.Adapter<BaseViewHolder<Any>>() {
 
@@ -19,7 +19,7 @@ class ContactsAdapter : RecyclerView.Adapter<BaseViewHolder<Any>>() {
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: BaseViewHolder<Any>, position: Int) {
-        when(getItemViewType(position)) {
+        when (getItemViewType(position)) {
             TYPE_CONTACT -> (holder as ContactViewHolder)
                     .bind(items[position] as Contact, onContactClickListener)
             else -> (holder as EmailViewHolder)
@@ -29,14 +29,14 @@ class ContactsAdapter : RecyclerView.Adapter<BaseViewHolder<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<Any> {
         val inflater = parent.context.layoutInflater
-        return when(viewType) {
+        return when (viewType) {
             TYPE_CONTACT -> ContactViewHolder(inflater.inflate(R.layout.item_contact, parent, false))
             else -> EmailViewHolder(inflater.inflate(R.layout.item_email, parent, false))
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(items[position]) {
+        return when (items[position]) {
             is Contact -> TYPE_CONTACT
             else -> TYPE_EMAIL
         }
@@ -58,12 +58,12 @@ class ContactsAdapter : RecyclerView.Adapter<BaseViewHolder<Any>>() {
         override fun invoke(view: View?, item: Any) {
             item as Contact
             val emails = item.emails
-            if(items.containsAll(emails)) {
+            if (items.containsAll(emails)) {
                 notifyItemRangeRemoved(items.indexOf(emails[0]), emails.size)
                 items.removeAll(emails)
             } else {
                 val index = items.indexOf(item)
-                if(index == items.size) {
+                if (index == items.size) {
                     items.addAll(emails)
                 } else {
                     items.addAll(index + 1, emails)

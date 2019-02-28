@@ -34,32 +34,40 @@ class LimitTextView : TextView {
         textPaint.getTextBounds(left, 0, left.length, bounds)
 
         val width = textPaint.measureText(left)
-        val x = this.width/2 - width
+        val x = this.width / 2 - width
         val y = textPaint.textSize
 
         canvas?.drawText("$left $total", x, y, textPaint)
     }
 
-    fun setValues(used: BigDecimal, total: BigDecimal, asset: String) {
+    fun setValues(used: BigDecimal, total: BigDecimal, asset: String, amountFormatter: AmountFormatter) {
 
         val zeroForAsset = BigDecimalUtil
-                .scaleAmount(BigDecimal.ZERO, AmountFormatter.getDecimalDigitsCount(asset))
+                .scaleAmount(BigDecimal.ZERO, amountFormatter.getDecimalDigitsCount(asset))
 
         unformatted = when (total) {
             zeroForAsset -> "$DASH_SYMBOL $SLASH_SYMBOL $DASH_SYMBOL"
             else -> "${total - used} $SLASH_SYMBOL $total"
         }
 
-        when(total == zeroForAsset || total == MAX) {
+        when (total == zeroForAsset || total == MAX) {
             true -> {
                 this.left = "$DASH_SYMBOL $SLASH_SYMBOL"
                 this.total = DASH_SYMBOL
             }
             else -> {
                 val leftFormat =
-                        AmountFormatter.formatAssetAmount(total - used, asset, abbreviation = true)
+                        amountFormatter.formatAssetAmount(
+                                total - used, asset,
+                                abbreviation = true,
+                                withAssetCode = false
+                        )
                 val totalFormat =
-                        AmountFormatter.formatAssetAmount(total, asset, abbreviation = true)
+                        amountFormatter.formatAssetAmount(
+                                total, asset,
+                                abbreviation = true,
+                                withAssetCode = false
+                        )
 
                 this.left = "$leftFormat $SLASH_SYMBOL"
                 this.total = totalFormat

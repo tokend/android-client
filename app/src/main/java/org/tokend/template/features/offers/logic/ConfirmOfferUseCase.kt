@@ -2,7 +2,7 @@ package org.tokend.template.features.offers.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.tokend.sdk.api.trades.model.Offer
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.offers.OffersRepository
@@ -16,8 +16,8 @@ import org.tokend.template.logic.transactions.TxManager
  * Updates related repositories: order book, balances, offers
  */
 class ConfirmOfferUseCase(
-        private val offer: Offer,
-        private val offerToCancel: Offer?,
+        private val offer: OfferRecord,
+        private val offerToCancel: OfferRecord?,
         private val repositoryProvider: RepositoryProvider,
         private val accountProvider: AccountProvider,
         private val txManager: TxManager
@@ -40,11 +40,11 @@ class ConfirmOfferUseCase(
                     getBalances()
                 }
                 .doOnSuccess { (baseBalanceId, quoteBalanceId) ->
-                    offer.baseBalance = baseBalanceId
-                    offerToCancel?.baseBalance = baseBalanceId
+                    offer.baseBalanceId = baseBalanceId
+                    offerToCancel?.baseBalanceId = baseBalanceId
 
-                    offer.quoteBalance = quoteBalanceId
-                    offerToCancel?.quoteBalance = quoteBalanceId
+                    offer.quoteBalanceId = quoteBalanceId
+                    offerToCancel?.quoteBalanceId = quoteBalanceId
                 }
                 .flatMap {
                     submitOfferActions()
@@ -64,11 +64,11 @@ class ConfirmOfferUseCase(
     private fun getBalances(): Single<Pair<String, String>> {
         val balances = balancesRepository.itemsList
 
-        val baseAsset = offer.baseAsset
-        val quoteAsset = offer.quoteAsset
+        val baseAsset = offer.baseAssetCode
+        val quoteAsset = offer.quoteAssetCode
 
-        val existingBase = balances.find { it.asset == baseAsset }
-        val existingQuote = balances.find { it.asset == quoteAsset }
+        val existingBase = balances.find { it.assetCode == baseAsset }
+        val existingQuote = balances.find { it.assetCode == quoteAsset }
 
         val toCreate = mutableListOf<String>()
         if (existingBase == null) {
@@ -89,14 +89,14 @@ class ConfirmOfferUseCase(
                 .andThen(
                         Single.defer {
                             val base = balancesRepository.itemsList
-                                    .find { it.asset == baseAsset }
-                                    ?.balanceId
+                                    .find { it.assetCode == baseAsset }
+                                    ?.id
                                     ?: throw IllegalStateException(
                                             "Unable to create balance for $baseAsset"
                                     )
                             val quote = balancesRepository.itemsList
-                                    .find { it.asset == quoteAsset }
-                                    ?.balanceId
+                                    .find { it.assetCode == quoteAsset }
+                                    ?.id
                                     ?: throw IllegalStateException(
                                             "Unable to create balance for $quoteAsset"
                                     )
@@ -130,16 +130,22 @@ class ConfirmOfferUseCase(
     private fun updateRepositories(): Single<Boolean> {
         if (!isPrimaryMarket) {
             listOf(repositoryProvider.orderBook(
-                    offer.baseAsset,
-                    offer.quoteAsset,
+                    offer.baseAssetCode,
+                    offer.quoteAssetCode,
                     true
             ), repositoryProvider.orderBook(
-                    offer.baseAsset,
-                    offer.quoteAsset,
+                    offer.baseAssetCode,
+                    offer.quoteAssetCode,
                     false
             )).forEach { it.updateIfEverUpdated() }
         }
         repositoryProvider.balances().updateIfEverUpdated()
+
+        if (offer.isBuy) {
+            repositoryProvider.balanceChanges(offer.quoteBalanceId).updateIfEverUpdated()
+        } else {
+            repositoryProvider.balanceChanges(offer.baseBalanceId).updateIfEverUpdated()
+        }
 
         return Single.just(true)
     }

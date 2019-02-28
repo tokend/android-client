@@ -7,15 +7,13 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_contact.view.*
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.view.adapter.base.BaseViewHolder
-import org.tokend.template.view.adapter.base.SimpleItemClickListener
 import org.tokend.template.features.assets.LogoFactory
 import org.tokend.template.features.send.model.Contact
 import org.tokend.template.util.CircleTransform
-
+import org.tokend.template.view.adapter.base.BaseViewHolder
+import org.tokend.template.view.adapter.base.SimpleItemClickListener
 
 class ContactViewHolder(itemView: View) : BaseViewHolder<Any>(itemView) {
-
     private val logoSize: Int by lazy {
         view.context.resources.getDimensionPixelSize(R.dimen.double_margin)
     }
@@ -59,7 +57,7 @@ class ContactViewHolder(itemView: View) : BaseViewHolder<Any>(itemView) {
 
     private fun animateArrow() {
 
-        val rotation = when(expand) {
+        val rotation = when (expand) {
             false -> PropertyValuesHolder.ofFloat(PROPERTY_ROTATION, 90f, 180f)
             else -> PropertyValuesHolder.ofFloat(PROPERTY_ROTATION, 180f, 90f)
         }

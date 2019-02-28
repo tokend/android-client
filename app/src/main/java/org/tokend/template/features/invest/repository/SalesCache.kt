@@ -2,24 +2,20 @@ package org.tokend.template.features.invest.repository
 
 import io.reactivex.Single
 import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.extensions.Sale
+import org.tokend.template.features.invest.model.SaleRecord
 
-class SalesCache : RepositoryCache<Sale>() {
-    override fun isContentSame(first: Sale, second: Sale): Boolean {
-        return first.currentCap == second.currentCap
-                && first.baseCurrentCap == second.baseCurrentCap
-                && first.statistics == second.statistics
-                && first.state == second.state
-                && first.details == second.details
+class SalesCache : RepositoryCache<SaleRecord>() {
+    override fun isContentSame(first: SaleRecord, second: SaleRecord): Boolean {
+        return false
     }
 
-    override fun getAllFromDb(): Single<List<Sale>> = Single.just(emptyList())
+    override fun getAllFromDb(): Single<List<SaleRecord>> = Single.just(emptyList())
 
-    override fun addToDb(items: List<Sale>) {}
+    override fun addToDb(items: List<SaleRecord>) {}
 
-    override fun updateInDb(items: List<Sale>) {}
+    override fun updateInDb(items: List<SaleRecord>) {}
 
-    override fun deleteFromDb(items: List<Sale>) {}
+    override fun deleteFromDb(items: List<SaleRecord>) {}
 
     override fun clearDb() {}
 }

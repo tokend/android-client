@@ -4,78 +4,86 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toMaybe
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.TokenDApi
-import org.tokend.sdk.api.accounts.params.OffersParams
 import org.tokend.sdk.api.assets.model.AssetChartData
-import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.sdk.utils.BigDecimalUtil
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.Asset
-import org.tokend.template.extensions.Sale
-import org.tokend.template.extensions.toSingle
+import org.tokend.template.features.assets.model.AssetRecord
+import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
+/**
+ * Loads and manages investment-related information
+ */
 class InvestmentInfoManager(
-        private val sale: Sale,
+        private val sale: SaleRecord,
         private val repositoryProvider: RepositoryProvider,
-        private val walletInfoProvider: WalletInfoProvider
+        private val walletInfoProvider: WalletInfoProvider,
+        private val amountFormatter: AmountFormatter
 ) {
+    /**
+     * Contains data required for sale details display
+     * and investment calculations
+     */
     class InvestmentInfo(
-            val assetDetails: Asset,
+            val assetDetails: AssetRecord,
             val financialInfo: InvestmentFinancialInfo
     )
 
+    /**
+     * Contains data required for investment calculations
+     */
     class InvestmentFinancialInfo(
-            val offersByAsset: Map<String, Offer>,
-            val detailedSale: Sale,
+            /**
+             * Pending offers by quote assets
+             */
+            val offersByAsset: Map<String, OfferRecord>,
+            /**
+             * Detailed sale info contains calculated caps for quote assets
+             */
+            val detailedSale: SaleRecord,
+            /**
+             * Max possible fee for each quote asset
+             */
             val maxFeeByAsset: Map<String, BigDecimal>
     )
 
-    fun getAssetDetails(): Single<Asset> {
+    private fun getAssetDetails(): Single<AssetRecord> {
         return repositoryProvider
                 .assets()
-                .getSingle(sale.baseAsset)
+                .getSingle(sale.baseAssetCode)
     }
 
-    fun getOffersByAsset(): Single<Map<String, Offer>> {
+    private fun getOffersByAsset(): Single<Map<String, OfferRecord>> {
         return repositoryProvider
                 .offers()
-                .getPage(
-                        OffersParams(
-                                orderBookId = sale.id,
-                                isBuy = true,
-                                onlyPrimary = true,
-                                baseAsset = null,
-                                quoteAsset = null
-                        )
-                )
-                .map {
-                    it.items
-                }
+                .getForSale(sale.id)
                 .map {
                     it.associateBy { offer ->
-                        offer.quoteAsset
+                        offer.quoteAssetCode
                     }
                 }
     }
 
-    fun getDetailedSale(): Single<Sale> {
+    private fun getDetailedSale(): Single<SaleRecord> {
         return repositoryProvider
                 .sales()
                 .getSingle(sale.id)
     }
 
-    fun getDetailedSaleIfNeeded(): Single<Sale> {
+    private fun getDetailedSaleIfNeeded(): Single<SaleRecord> {
         return if (sale.isAvailable)
             getDetailedSale()
         else Single.just(sale)
     }
 
-    fun getMaxFeesMap(feeManager: FeeManager,
-                      offersByAsset: Map<String, Offer>): Single<Map<String, BigDecimal>> {
+    private fun getMaxFeesMap(feeManager: FeeManager,
+                              offersByAsset: Map<String, OfferRecord>): Single<Map<String, BigDecimal>> {
         val feeMap = mutableMapOf<String, BigDecimal>()
 
         return walletInfoProvider
@@ -101,7 +109,7 @@ class InvestmentInfoManager(
                                     )
                                             .map {
                                                 val percent = it.percent
-                                                feeMap[it.asset] = percent
+                                                feeMap[quoteAsset.code] = percent
                                                 percent
                                             }
                                             .onErrorResumeNext(Single.just(BigDecimal.ZERO))
@@ -114,30 +122,38 @@ class InvestmentInfoManager(
                 }
     }
 
-    fun getMaxFeesMapIfNeeded(feeManager: FeeManager,
-                              offersByAsset: Map<String, Offer>): Single<Map<String, BigDecimal>> {
+    private fun getMaxFeesMapIfNeeded(feeManager: FeeManager,
+                                      offersByAsset: Map<String, OfferRecord>): Single<Map<String, BigDecimal>> {
         return if (sale.isAvailable)
             getMaxFeesMap(feeManager, offersByAsset)
         else
             Single.just(emptyMap())
     }
 
-    fun getAvailableBalance(asset: String, offersByAsset: Map<String, Offer>): BigDecimal {
+    /**
+     * @return balance available for investment in specified [asset]
+     * considering pending offers
+     */
+    fun getAvailableBalance(asset: String, offersByAsset: Map<String, OfferRecord>): BigDecimal {
         val offer = offersByAsset.get(asset)
         val locked = (offer?.quoteAmount ?: BigDecimal.ZERO).add(offer?.fee ?: BigDecimal.ZERO)
 
         val assetBalance = repositoryProvider
                 .balances()
                 .itemsList
-                .find { it.asset == asset }
-                ?.balance ?: BigDecimal.ZERO
+                .find { it.assetCode == asset }
+                ?.available ?: BigDecimal.ZERO
 
         return locked + assetBalance
     }
 
+    /**
+     * @return maximal investment amount in specified [asset]
+     * considering pending offers, available balance, fees and sale limitations
+     */
     fun getMaxInvestmentAmount(asset: String,
-                               detailedSale: Sale,
-                               offersByAsset: Map<String, Offer>,
+                               detailedSale: SaleRecord,
+                               offersByAsset: Map<String, OfferRecord>,
                                maxFeeByAsset: Map<String, BigDecimal>): BigDecimal {
         val investAssetDetails = detailedSale.quoteAssets.find { it.code == asset }
         val maxByHardCap = (investAssetDetails?.hardCap ?: BigDecimal.ZERO)
@@ -149,20 +165,28 @@ class InvestmentInfoManager(
 
         return BigDecimalUtil.scaleAmount(
                 maxByBalance.min(maxByHardCap),
-                AmountFormatter.getDecimalDigitsCount(asset)
+                amountFormatter.getDecimalDigitsCount(asset)
         )
     }
 
+    /**
+     * @return amount of investment in specified [asset]
+     * i.e. amount locked by the pending offer
+     */
     fun getExistingInvestmentAmount(asset: String,
-                                    offersByAsset: Map<String, Offer>): BigDecimal {
+                                    offersByAsset: Map<String, OfferRecord>): BigDecimal {
         return offersByAsset[asset]?.quoteAmount ?: BigDecimal.ZERO
     }
 
+    /**
+     * @return data required for sale details display
+     * and investment calculations
+     */
     fun getInvestmentInfo(feeManager: FeeManager): Single<InvestmentInfo> {
         return Single.zip(
                 getAssetDetails(),
                 getFinancialInfo(feeManager),
-                BiFunction { assetDetails: Asset, financialInfo: InvestmentFinancialInfo ->
+                BiFunction { assetDetails: AssetRecord, financialInfo: InvestmentFinancialInfo ->
                     InvestmentInfo(
                             assetDetails,
                             financialInfo
@@ -171,11 +195,14 @@ class InvestmentInfoManager(
         )
     }
 
+    /**
+     * @return data required for investment calculations
+     */
     fun getFinancialInfo(feeManager: FeeManager): Single<InvestmentFinancialInfo> {
         return Single.zip(
                 getDetailedSaleIfNeeded(),
                 getOffersByAsset(),
-                BiFunction { detailedSale: Sale, offers: Map<String, Offer> ->
+                BiFunction { detailedSale: SaleRecord, offers: Map<String, OfferRecord> ->
                     detailedSale to offers
                 }
         )
@@ -194,10 +221,13 @@ class InvestmentInfoManager(
                 }
     }
 
+    /**
+     * @return sale chart (amount of investments by time)
+     */
     fun getChart(api: TokenDApi): Single<AssetChartData> {
         return api
                 .assets
-                .getChart(sale.baseAsset)
+                .getChart(sale.baseAssetCode)
                 .toSingle()
     }
 }

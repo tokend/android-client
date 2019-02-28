@@ -11,11 +11,11 @@ class ContactsRepositoryCache : RepositoryCache<Contact>() {
 
     override fun getAllFromDb(): Single<List<Contact>> = Single.just(emptyList())
 
-    override fun addToDb(items: List<Contact>) { }
+    override fun addToDb(items: List<Contact>) {}
 
-    override fun updateInDb(items: List<Contact>) { }
+    override fun updateInDb(items: List<Contact>) {}
 
-    override fun deleteFromDb(items: List<Contact>) { }
+    override fun deleteFromDb(items: List<Contact>) {}
 
-    override fun clearDb() { }
+    override fun clearDb() {}
 }

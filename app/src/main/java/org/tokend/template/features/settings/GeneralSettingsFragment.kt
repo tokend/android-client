@@ -1,50 +1,47 @@
 package org.tokend.template.features.settings
 
-import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.support.v7.preference.SwitchPreferenceCompat
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.browse
-import org.jetbrains.anko.isSelectable
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.R
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
 import org.tokend.template.features.tfa.logic.EnableTfaUseCase
-import org.tokend.template.features.tfa.view.TotpFactorConfirmationDialog
+import org.tokend.template.features.tfa.model.TfaFactorRecord
+import org.tokend.template.features.tfa.view.confirmation.TfaConfirmationDialogFactory
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.persistance.FingerprintUtil
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.SecretSeedDialog
 import org.tokend.template.view.util.LoadingIndicatorManager
-import java.nio.CharBuffer
 
 class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
 
     override fun getScreenKey(): String? = null
 
-    private val TFA_BACKEND_TYPE = TfaFactor.Type.TOTP
+    private val TFA_FACTOR_TYPE = TfaFactor.Type.TOTP
 
     private var fingerprintPreference: SwitchPreferenceCompat? = null
 
     private val tfaRepository: TfaFactorsRepository
         get() = repositoryProvider.tfaFactors()
     private var tfaPreference: SwitchPreferenceCompat? = null
-    private val tfaBackend: TfaFactor?
-        get() = tfaRepository.itemsList.find { it.type == TFA_BACKEND_TYPE }
+    private val tfaFactor: TfaFactorRecord?
+        get() = tfaRepository.itemsList.find { it.type == TFA_FACTOR_TYPE }
     private val isTfaEnabled: Boolean
-        get() = tfaBackend?.let { it.attributes.priority > 0 } ?: false
+        get() = tfaFactor?.let { it.priority > 0 } ?: false
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress?.show() },
@@ -111,19 +108,10 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         val seedPreference = findPreference("secret_seed") ?: return
 
         seedPreference.setOnPreferenceClickListener {
-            val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogStyle)
-                    .setMessage(
-                            CharBuffer.wrap(accountProvider.getAccount()?.secretSeed
-                                    ?: getString(R.string.error_try_again).toCharArray())
-                    )
-                    .setTitle(R.string.secret_seed)
-                    .setPositiveButton(R.string.ok, null)
-                    .show()
-
-            dialog.findViewById<TextView>(android.R.id.message)?.let { textView ->
-                textView.isSelectable = true
-                textView.typeface = Typeface.MONOSPACE
-            }
+            SecretSeedDialog(
+                    requireContext(),
+                    accountProvider
+            ).show()
 
             true
         }
@@ -155,7 +143,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         }
 
         tfaRepository.updateIfNotFresh()
-        subscribeToTfaBackends()
+        subscribeToTfaFactors()
     }
 
     private fun initChangePasswordItem() {
@@ -171,7 +159,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 // endregion
 
     // region TFA
-    private fun subscribeToTfaBackends() {
+    private fun subscribeToTfaFactors() {
         tfaRepository.itemsSubject
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe {
@@ -197,13 +185,13 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         if (isTfaEnabled) {
             disableTfa()
         } else {
-            addAndEnableNewTfaBackend()
+            addAndEnableNewTfaFactor()
         }
     }
 
     private fun disableTfa() {
         DisableTfaUseCase(
-                TFA_BACKEND_TYPE,
+                TFA_FACTOR_TYPE,
                 tfaRepository
         )
                 .perform()
@@ -216,18 +204,14 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
                 .addTo(compositeDisposable)
     }
 
-    private fun addAndEnableNewTfaBackend() {
-        val confirmationDialog = TotpFactorConfirmationDialog(
-                requireContext(),
-                toastManager,
-                R.style.AlertDialogStyle
-
-        )
+    private fun addAndEnableNewTfaFactor() {
+        val confirmationDialogFactory =
+                TfaConfirmationDialogFactory(requireContext(), toastManager)
 
         EnableTfaUseCase(
-                TFA_BACKEND_TYPE,
+                TFA_FACTOR_TYPE,
                 tfaRepository,
-                confirmationDialog::show
+                confirmationDialogFactory
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())

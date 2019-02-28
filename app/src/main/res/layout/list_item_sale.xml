@@ -5,10 +5,10 @@
     style="@style/InfoCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/quarter_standard_margin"
-    android:layout_marginEnd="@dimen/half_standard_margin"
     android:layout_marginStart="@dimen/half_standard_margin"
     android:layout_marginTop="@dimen/quarter_standard_margin"
+    android:layout_marginEnd="@dimen/half_standard_margin"
+    android:layout_marginBottom="@dimen/quarter_standard_margin"
     app:cardPreventCornerOverlap="false"
     app:contentPadding="0dp">
 
@@ -33,8 +33,8 @@
                 android:id="@+id/sale_upcoming_image_view"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/upcoming_label" />

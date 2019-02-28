@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.R
+import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.extensions.Sale
 import org.tokend.template.view.util.formatter.DateFormatter
 
 class SaleGeneralInfoFragment : BaseFragment() {
@@ -19,13 +18,13 @@ class SaleGeneralInfoFragment : BaseFragment() {
         return inflater.inflate(R.layout.activity_details, container, false)
     }
 
-    private lateinit var sale: Sale
+    private lateinit var sale: SaleRecord
 
     override fun onInitAllowed() {
         try {
             sale = GsonFactory().getBaseGson().fromJson(
                     arguments?.getString(SALE_JSON_EXTRA),
-                    Sale::class.java)
+                    SaleRecord::class.java)
         } catch (e: Exception) {
             return
         }
@@ -35,25 +34,24 @@ class SaleGeneralInfoFragment : BaseFragment() {
 
     private fun displaySaleInfo() {
         InfoCard(cards_layout)
-                .addRow("Start time",
+                .addRow(getString(R.string.sale_info_start_time),
                         DateFormatter(requireContext()).formatCompact(sale.startDate))
-                .addRow("Close time",
+                .addRow(getString(R.string.sale_info_close_time),
                         DateFormatter(requireContext()).formatCompact(sale.endDate))
-                .addRow("Base asset for hard cap", sale.defaultQuoteAsset)
-                .addRow("Soft cap",
-                        "${AmountFormatter.formatAssetAmount(sale.softCap,
-                                sale.defaultQuoteAsset)} ${sale.defaultQuoteAsset}")
-                .addRow("Hard cap",
-                        "${AmountFormatter.formatAssetAmount(sale.hardCap,
-                                sale.defaultQuoteAsset)} ${sale.defaultQuoteAsset}")
-                .addRow("${sale.baseAsset} to sell",
-                        AmountFormatter.formatAssetAmount(sale.baseHardCap, sale.baseAsset))
+                .addRow(getString(R.string.sale_info_hard_cap_base_asset), sale.defaultQuoteAsset)
+                .addRow(getString(R.string.sale_info_soft_cap),
+                        amountFormatter.formatAssetAmount(sale.softCap, sale.defaultQuoteAsset))
+                .addRow(getString(R.string.sale_info_hard_cap),
+                        amountFormatter.formatAssetAmount(sale.hardCap, sale.defaultQuoteAsset))
+                .addRow(getString(R.string.sale_info_to_sell_template, sale.baseAssetCode),
+                        amountFormatter.formatAssetAmount(sale.baseHardCap, sale.baseAssetCode,
+                                withAssetCode = false))
     }
 
     companion object {
         private const val SALE_JSON_EXTRA = "asset"
 
-        fun newInstance(sale: Sale): SaleGeneralInfoFragment {
+        fun newInstance(sale: SaleRecord): SaleGeneralInfoFragment {
             val fragment = SaleGeneralInfoFragment()
             fragment.arguments = Bundle().apply {
                 putString(SALE_JSON_EXTRA, GsonFactory().getBaseGson().toJson(sale))

@@ -2,7 +2,7 @@ package org.tokend.template.features.signin.logic
 
 import io.reactivex.Completable
 import org.tokend.sdk.api.TokenDApi
-import org.tokend.template.extensions.toCompletable
+import org.tokend.rx.extensions.toCompletable
 
 /**
  * Requests email verification letter resend

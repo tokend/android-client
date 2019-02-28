@@ -4,18 +4,20 @@ import android.content.Context
 import android.view.ViewGroup
 import org.tokend.sdk.api.accounts.model.limits.LimitEntry
 import org.tokend.template.R
+import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.wallet.xdr.StatsOpType
 
 class LimitCardsProvider(context: Context,
                          asset: String,
-                         entries: Collection<LimitEntry>) {
+                         entries: Collection<LimitEntry>,
+                         amountFormatter: AmountFormatter) {
 
     private val cards = arrayListOf<LimitCard>()
     private val limitTypes = context.resources.getStringArray(R.array.limit_types)
 
     init {
-        val paymentEntry = entries.find { it.limit.statsOpType == StatsOpType.PAYMENT_OUT}
-        val depositEntry = entries.find { it.limit.statsOpType == StatsOpType.WITHDRAW}
+        val paymentEntry = entries.find { it.limit.statsOpType == StatsOpType.PAYMENT_OUT }
+        val depositEntry = entries.find { it.limit.statsOpType == StatsOpType.WITHDRAW }
 
         LimitCard(context,
                 limitTypes[0],
@@ -23,7 +25,8 @@ class LimitCardsProvider(context: Context,
                 paymentEntry?.limit?.daily,
                 paymentEntry?.statistics?.daily,
                 depositEntry?.limit?.daily,
-                depositEntry?.statistics?.daily)
+                depositEntry?.statistics?.daily,
+                amountFormatter)
                 .also { cards.add(it) }
 
         LimitCard(context,
@@ -32,7 +35,8 @@ class LimitCardsProvider(context: Context,
                 paymentEntry?.limit?.weekly,
                 paymentEntry?.statistics?.weekly,
                 depositEntry?.limit?.weekly,
-                depositEntry?.statistics?.weekly)
+                depositEntry?.statistics?.weekly,
+                amountFormatter)
                 .also { cards.add(it) }
 
         LimitCard(context,
@@ -41,7 +45,8 @@ class LimitCardsProvider(context: Context,
                 paymentEntry?.limit?.monthly,
                 paymentEntry?.statistics?.monthly,
                 depositEntry?.limit?.monthly,
-                depositEntry?.statistics?.monthly)
+                depositEntry?.statistics?.monthly,
+                amountFormatter)
                 .also { cards.add(it) }
 
         LimitCard(context,
@@ -50,7 +55,8 @@ class LimitCardsProvider(context: Context,
                 paymentEntry?.limit?.annual,
                 paymentEntry?.statistics?.annual,
                 depositEntry?.limit?.annual,
-                depositEntry?.statistics?.annual)
+                depositEntry?.statistics?.annual,
+                amountFormatter)
                 .also { cards.add(it) }
     }
 

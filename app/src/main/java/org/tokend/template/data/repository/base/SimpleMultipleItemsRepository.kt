@@ -5,7 +5,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.CompletableSubject
 
-abstract class SimpleMultipleItemsRepository<T> : MultipleItemsRepository<T>() {
+abstract class SimpleMultipleItemsRepository<T>(itemsCache: RepositoryCache<T>)
+    : MultipleItemsRepository<T>(itemsCache) {
     private var updateResultSubject: CompletableSubject? = null
 
     private var updateDisposable: Disposable? = null

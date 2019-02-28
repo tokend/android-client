@@ -1,26 +1,20 @@
 package org.tokend.template.features.offers
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_offers.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import org.tokend.sdk.api.trades.model.Offer
-import org.tokend.sdk.api.base.model.operations.InvestmentOperation
-import org.tokend.sdk.api.base.model.operations.OfferMatchOperation
-import org.tokend.sdk.api.base.model.operations.TransferOperation
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.features.wallet.txdetails.OfferMatchDetailsActivity
-import org.tokend.template.features.wallet.txdetails.TxDetailsActivity
-import org.tokend.template.view.adapter.history.TxHistoryAdapter
-import org.tokend.template.view.adapter.history.TxHistoryItem
-import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.features.invest.activities.InvestmentDetailsActivity
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.offers.OffersRepository
+import org.tokend.template.features.offers.view.PendingOfferListItem
+import org.tokend.template.features.offers.view.PendingOffersAdapter
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.LoadingIndicatorManager
 
 class OffersActivity : BaseActivity() {
     private val onlyPrimary: Boolean
@@ -34,7 +28,7 @@ class OffersActivity : BaseActivity() {
             hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
-    private val txAdapter = TxHistoryAdapter()
+    private lateinit var adapter: PendingOffersAdapter
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_offers)
@@ -61,11 +55,15 @@ class OffersActivity : BaseActivity() {
     }
 
     private fun initHistory() {
-        txAdapter.onItemClick { _, item ->
-            openDetails(item.source)
+        adapter = PendingOffersAdapter(amountFormatter, false)
+        adapter.onItemClick { _, item ->
+            item.source?.also {
+                Navigator.openPendingOfferDetails(this, it)
+            }
         }
 
-        error_empty_view.observeAdapter(txAdapter) {
+        error_empty_view.setEmptyDrawable(R.drawable.ic_pending)
+        error_empty_view.observeAdapter(adapter) {
             if (onlyPrimary)
                 getString(R.string.no_pending_investments)
             else
@@ -73,14 +71,14 @@ class OffersActivity : BaseActivity() {
         }
         error_empty_view.setEmptyViewDenial { offersRepository.isNeverUpdated }
 
-        history_list.adapter = txAdapter
+        history_list.adapter = adapter
         history_list.layoutManager = LinearLayoutManager(this)
 
-        history_list.listenBottomReach({ txAdapter.getDataItemCount() }) {
+        history_list.listenBottomReach({ adapter.getDataItemCount() }) {
             offersRepository.loadMore() || offersRepository.noMoreItems
         }
 
-        date_text_switcher.init(history_list, txAdapter)
+        date_text_switcher.init(history_list, adapter)
     }
     // endregion
 
@@ -97,11 +95,11 @@ class OffersActivity : BaseActivity() {
                         if (offersRepository.isOnFirstPage) {
                             loadingIndicator.show("offers")
                         } else {
-                            txAdapter.showLoadingFooter()
+                            adapter.showLoadingFooter()
                         }
                     } else {
                         loadingIndicator.hide("offers")
-                        txAdapter.hideLoadingFooter()
+                        adapter.hideLoadingFooter()
                     }
                 }
                 .addTo(compositeDisposable)
@@ -109,7 +107,7 @@ class OffersActivity : BaseActivity() {
         offersRepository.errorsSubject
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe { error ->
-                    if (!txAdapter.hasData) {
+                    if (!adapter.hasData) {
                         error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
                             update(true)
                         }
@@ -120,33 +118,13 @@ class OffersActivity : BaseActivity() {
                 .addTo(compositeDisposable)
     }
 
-    private fun displayOffers(items: List<Offer>) {
-        txAdapter.setData(
+    private fun displayOffers(items: List<OfferRecord>) {
+        adapter.setData(
                 items
-                        .asSequence()
                         .map {
-                            if (onlyPrimary)
-                                InvestmentOperation.fromOffer(it)
-                            else
-                                OfferMatchOperation.fromOffer(it)
+                            PendingOfferListItem(it)
                         }
-                        .map {
-                            TxHistoryItem.fromTransaction(it)
-                        }
-                        .toList()
         )
-    }
-
-    private fun openDetails(tx: TransferOperation?) {
-        when (tx) {
-            is InvestmentOperation -> TxDetailsActivity
-                    .startForResult<InvestmentDetailsActivity, InvestmentOperation>(
-                            this, tx, CANCEL_OFFER_REQUEST
-                    )
-            is OfferMatchOperation -> TxDetailsActivity
-                    .startForResult<OfferMatchDetailsActivity, OfferMatchOperation>(
-                            this, tx, CANCEL_OFFER_REQUEST)
-        }
     }
 
     private fun update(force: Boolean = false) {
@@ -157,13 +135,7 @@ class OffersActivity : BaseActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        setResult(resultCode)
-    }
-
     companion object {
         const val ONLY_PRIMARY_EXTRA = "only_primary"
-        private val CANCEL_OFFER_REQUEST = "cancel_offer".hashCode() and 0xffff
     }
 }

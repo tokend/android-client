@@ -1,40 +1,66 @@
 package org.tokend.template.data.repository.assets
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
+import org.tokend.rx.extensions.toSingle
+import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.v3.assets.params.AssetsPageParams
+import org.tokend.sdk.utils.SimplePagedResourceLoader
+import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
-import org.tokend.template.extensions.Asset
-import org.tokend.template.extensions.toSingle
+import org.tokend.template.di.providers.UrlConfigProvider
+import org.tokend.template.features.assets.model.AssetRecord
 
 class AssetsRepository(
-        private val apiProvider: ApiProvider
-) : SimpleMultipleItemsRepository<Asset>() {
-    override val itemsCache = AssetsRepositoryCache()
+        private val apiProvider: ApiProvider,
+        private val urlConfigProvider: UrlConfigProvider,
+        private val mapper: ObjectMapper,
+        itemsCache: RepositoryCache<AssetRecord>
+) : SimpleMultipleItemsRepository<AssetRecord>(itemsCache) {
+    override fun getItems(): Single<List<AssetRecord>> {
 
-    override fun getItems(): Single<List<Asset>> {
-        return apiProvider.getApi()
-                .assets
-                .get()
+        val loader = SimplePagedResourceLoader(
+                { nextCursor ->
+                    apiProvider.getApi().v3.assets.get(
+                            AssetsPageParams(
+                                    pagingParams = PagingParamsV2(page = nextCursor)
+                            )
+                    )
+                }
+        )
+
+        return loader
+                .loadAll()
                 .toSingle()
+                .map { assetResources ->
+                    assetResources.mapNotNull {
+                        try {
+                            AssetRecord.fromResource(it, urlConfigProvider.getConfig(), mapper)
+                        } catch (e: IllegalArgumentException) {
+                            null
+                        }
+                    }
+                }
     }
 
     /**
      * @return single asset info
      */
-    fun getSingle(code: String): Single<Asset> {
+    fun getSingle(code: String): Single<AssetRecord> {
         return itemsCache.items
                 .find { it.code == code }
                 .toMaybe()
                 .switchIfEmpty(
                         apiProvider.getApi()
+                                .v3
                                 .assets
-                                .getByCode(code)
+                                .getById(code)
                                 .toSingle()
-                                .doOnSuccess { _ ->
-                                    itemsCache.items.find { it.code == code }?.also {
-                                        itemsCache.updateOrAdd(it)
-                                    }
+                                .map { AssetRecord.fromResource(it, urlConfigProvider.getConfig(), mapper) }
+                                .doOnSuccess {
+                                    itemsCache.updateOrAdd(it)
                                 }
                 )
     }

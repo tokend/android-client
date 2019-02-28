@@ -23,23 +23,20 @@ import kotlinx.android.synthetic.main.list_item_asset.view.*
 import org.jetbrains.anko.find
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.extensions.Asset
 import org.tokend.template.features.assets.adapter.AssetListItem
 import org.tokend.template.features.assets.adapter.AssetListItemViewHolder
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.template.view.util.formatter.AmountFormatter
-
 
 class AssetDetailsFragment : BaseFragment() {
-    private lateinit var asset: Asset
+    private lateinit var asset: AssetRecord
 
     private val assetCode: String? by lazy {
         arguments?.getString(ASSET_CODE_EXTRA)
@@ -51,7 +48,7 @@ class AssetDetailsFragment : BaseFragment() {
 
     private val balanceExists: Boolean
         get() = repositoryProvider.balances().itemsList
-                .find { it.asset == asset.code } != null
+                .find { it.assetCode == asset.code } != null
 
     private lateinit var fileDownloader: FileDownloader
 
@@ -70,7 +67,11 @@ class AssetDetailsFragment : BaseFragment() {
                 return true
             }
         })
-        fileDownloader = FileDownloader(activity!!, urlConfigProvider.getConfig().storage)
+        fileDownloader = FileDownloader(
+                requireActivity(),
+                urlConfigProvider.getConfig().storage,
+                toastManager
+        )
         return view
     }
 
@@ -92,8 +93,8 @@ class AssetDetailsFragment : BaseFragment() {
                 .addTo(compositeDisposable)
     }
 
-    private fun getAsset(): Single<Asset> {
-        return (arguments?.getSerializable(ASSET_EXTRA) as? Asset)
+    private fun getAsset(): Single<AssetRecord> {
+        return (arguments?.getSerializable(ASSET_EXTRA) as? AssetRecord)
                 .toMaybe()
                 .switchIfEmpty(
                         assetCode?.let { repositoryProvider.assets().getSingle(it) }
@@ -110,7 +111,7 @@ class AssetDetailsFragment : BaseFragment() {
 
     private fun displayLogoAndName() {
         AssetListItemViewHolder(asset_card).bind(
-                AssetListItem(asset, balanceExists, urlConfigProvider.getConfig().storage)
+                AssetListItem(asset, balanceExists)
         )
     }
 
@@ -118,13 +119,18 @@ class AssetDetailsFragment : BaseFragment() {
         InfoCard(cards_layout)
                 .setHeading(R.string.asset_summary_title, null)
                 .addRow(R.string.asset_available,
-                        AmountFormatter.formatAssetAmount(asset.available))
-                .addRow(R.string.asset_issued, AmountFormatter.formatAssetAmount(asset.issued))
-                .addRow(R.string.asset_maximum, AmountFormatter.formatAssetAmount(asset.maximum))
+                        amountFormatter.formatAssetAmount(asset.available, asset.code,
+                                withAssetCode = false))
+                .addRow(R.string.asset_issued,
+                        amountFormatter.formatAssetAmount(asset.issued, asset.code,
+                                withAssetCode = false))
+                .addRow(R.string.asset_maximum,
+                        amountFormatter.formatAssetAmount(asset.maximum, asset.code,
+                                withAssetCode = false))
     }
 
     private fun displayTermsIfNeeded() {
-        val terms = asset.details.terms?.takeIf { !it.name.isNullOrEmpty() }
+        val terms = asset.terms?.takeIf { !it.name.isNullOrEmpty() }
                 ?: return
 
         val fileCardView =
@@ -209,8 +215,7 @@ class AssetDetailsFragment : BaseFragment() {
     }
 
     private fun onBalanceCreated() {
-        ToastManager(requireContext()).short(getString(R.string.template_asset_balance_created,
-                asset.code))
+        toastManager.short(getString(R.string.template_asset_balance_created, asset.code))
 
         activity?.setResult(Activity.RESULT_OK)
         displayLogoAndName()
@@ -227,7 +232,7 @@ class AssetDetailsFragment : BaseFragment() {
         private const val ASSET_CODE_EXTRA = "asset_code"
         private const val BALANCE_CREATION_EXTRA = "balance_creation"
 
-        fun newInstance(asset: Asset, balanceCreation: Boolean): AssetDetailsFragment {
+        fun newInstance(asset: AssetRecord, balanceCreation: Boolean): AssetDetailsFragment {
             val fragment = AssetDetailsFragment()
             fragment.arguments = Bundle().apply {
                 putSerializable(ASSET_EXTRA, asset)

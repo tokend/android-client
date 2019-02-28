@@ -1,10 +1,13 @@
 package org.tokend.template.test
 
 import com.marcelkliemannel.kotlinonetimepassword.GoogleAuthenticator
-import io.reactivex.Single
+import io.reactivex.Completable
 import junit.framework.Assert
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import org.tokend.sdk.api.tfa.model.TfaFactor
+import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.sdk.tfa.TfaCallback
@@ -15,22 +18,26 @@ import org.tokend.template.di.providers.RepositoryProviderImpl
 import org.tokend.template.di.providers.WalletInfoProviderFactory
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
 import org.tokend.template.features.tfa.logic.EnableTfaUseCase
+import org.tokend.template.features.tfa.model.TfaFactorCreationResult
 import org.tokend.template.logic.Session
+import org.tokend.template.util.confirmation.ConfirmationProvider
 import java.util.*
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TfaTest {
+    private val factorType = TfaFactor.Type.TOTP
+
     @Test
-    fun enableTfa() {
+    fun aEnableTfa() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
                 AccountProviderFactory().createAccountProvider()
         )
 
-        val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val email = Util.getEmail()
+        val password = Config.DEFAULT_PASSWORD
 
-        var addedFactorId = 0L
         var authenticator: GoogleAuthenticator? = null
 
         val tfaCallback = object : TfaCallback {
@@ -40,7 +47,7 @@ class TfaTest {
                     TfaFactor.Type.PASSWORD ->
                         verifierInterface.verify(
                                 PasswordTfaOtpGenerator()
-                                        .generate(exception, email, password)
+                                        .generate(exception, session.getWalletInfo()!!.email, password)
                         )
                     TfaFactor.Type.TOTP -> {
                         verifierInterface.verify(
@@ -51,45 +58,52 @@ class TfaTest {
                         )
                     }
                     else ->
-                        Assert.fail("Unknown 2FA type: ${exception.factorType}")
+                        Assert.fail("Unknown TFA type: ${exception.factorType}")
                 }
             }
         }
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session, tfaCallback)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
         )
 
-        val useCase = EnableTfaUseCase(
-                TfaFactor.Type.TOTP,
-                repositoryProvider.tfaFactors()
-        ) { factor ->
-            authenticator = GoogleAuthenticator(factor.attributes.secret!!)
-            addedFactorId = factor.id
-            Single.just(true)
+        val confirmation = object : ConfirmationProvider<TfaFactorCreationResult> {
+            override fun requestConfirmation(payload: TfaFactorCreationResult): Completable {
+                Assert.assertEquals("Newly created factor must be $factorType",
+                        factorType, payload.newFactor.type)
+                authenticator = GoogleAuthenticator(payload.confirmationAttributes["secret"].toString())
+                return Completable.complete()
+            }
         }
+        val useCase = EnableTfaUseCase(
+                factorType,
+                repositoryProvider.tfaFactors(),
+                confirmation
+        )
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue(repositoryProvider.tfaFactors().itemsList.any {
-            it.id == addedFactorId && it.attributes.priority > 0
-        })
+        Assert.assertTrue("TFA factors repository must contain a newly created active factor of type $factorType",
+                repositoryProvider.tfaFactors().itemsList.any {
+                    it.type == factorType && it.priority > 0
+                })
     }
 
     @Test
-    fun disableTfa() {
+    fun bDisableTfa() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
                 AccountProviderFactory().createAccountProvider()
         )
 
-        val email = "${System.currentTimeMillis()}@mail.com"
-        val password = "qwe123".toCharArray()
+        val email = Util.getEmail()
+        val password = Config.DEFAULT_PASSWORD
 
         var authenticator: GoogleAuthenticator? = null
 
@@ -100,7 +114,7 @@ class TfaTest {
                     TfaFactor.Type.PASSWORD ->
                         verifierInterface.verify(
                                 PasswordTfaOtpGenerator()
-                                        .generate(exception, email, password)
+                                        .generate(exception, session.getWalletInfo()!!.email, password)
                         )
                     TfaFactor.Type.TOTP -> {
                         verifierInterface.verify(
@@ -111,36 +125,41 @@ class TfaTest {
                         )
                     }
                     else ->
-                        Assert.fail("Unknown 2FA type: ${exception.factorType}")
+                        Assert.fail("Unknown TFA type: ${exception.factorType}")
                 }
             }
         }
 
         val apiProvider =
                 ApiProviderFactory().createApiProvider(urlConfigProvider, session, tfaCallback)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
         )
 
+        val confirmation = object : ConfirmationProvider<TfaFactorCreationResult> {
+            override fun requestConfirmation(payload: TfaFactorCreationResult): Completable {
+                authenticator = GoogleAuthenticator(payload.confirmationAttributes["secret"].toString())
+                return Completable.complete()
+            }
+        }
         EnableTfaUseCase(
-                TfaFactor.Type.TOTP,
-                repositoryProvider.tfaFactors()
-        ) { factor ->
-            authenticator = GoogleAuthenticator(factor.attributes.secret!!)
-            Single.just(true)
-        }.perform().blockingAwait()
+                factorType,
+                repositoryProvider.tfaFactors(),
+                confirmation
+        ).perform().blockingAwait()
 
         val useCase = DisableTfaUseCase(
-                TfaFactor.Type.TOTP,
+                factorType,
                 repositoryProvider.tfaFactors()
         )
 
         useCase.perform().blockingAwait()
 
-        Assert.assertFalse(repositoryProvider.tfaFactors().itemsList.any {
-            it.type == TfaFactor.Type.TOTP && it.attributes.priority > 0
+        Assert.assertFalse("TFA factors repository must not contain an active factor of type $factorType", repositoryProvider.tfaFactors().itemsList.any {
+            it.type == factorType && it.priority > 0
         })
     }
 }

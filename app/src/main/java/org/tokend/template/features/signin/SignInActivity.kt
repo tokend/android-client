@@ -28,6 +28,7 @@ import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.ResendVerificationEmailUseCase
+import org.tokend.template.features.signin.logic.SignInMethod
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.logic.UrlConfigManager
 import org.tokend.template.logic.persistance.FingerprintAuthManager
@@ -35,8 +36,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
-import org.tokend.template.view.ToastManager
-import org.tokend.template.view.util.AnimationUtil
+import org.tokend.template.view.FingerprintIndicatorManager
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
@@ -54,6 +54,7 @@ class SignInActivity : BaseActivity() {
 
     private lateinit var fingerprintAuthManager: FingerprintAuthManager
     private lateinit var urlConfigManager: UrlConfigManager
+    private lateinit var fingerprintIndicatorManager: FingerprintIndicatorManager
 
     private var isLoading: Boolean = false
         set(value) {
@@ -75,6 +76,8 @@ class SignInActivity : BaseActivity() {
         setTitle(R.string.sign_in)
 
         fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
+        fingerprintIndicatorManager =
+                FingerprintIndicatorManager(applicationContext, fingerprint_indicator, toastManager)
         urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistor)
         urlConfigManager.onConfigUpdated {
             initNetworkField()
@@ -90,6 +93,11 @@ class SignInActivity : BaseActivity() {
 
         // Does nothing but EC engine warm up.
         doAsync { Account.random() }
+
+        if (session.lastSignInMethod == SignInMethod.AUTHENTICATOR
+                && BuildConfig.ENABLE_AUTHENTICATOR_AUTH) {
+            openAuthenticatorSignIn()
+        }
     }
 
     // region Init
@@ -147,13 +155,9 @@ class SignInActivity : BaseActivity() {
                     email_edit_text.text.toString())
         }
 
-        fingerprint_indicator.onClick {
-            ToastManager(this).short(R.string.touch_sensor)
-        }
-
         if (BuildConfig.ENABLE_AUTHENTICATOR_AUTH) {
             sign_in_with_authenticator_button.onClick {
-                Navigator.openAuthenticatorSignIn(this, SIGN_IN_WITH_AUTHENTICATOR_REQUEST)
+                openAuthenticatorSignIn()
             }
         } else {
             sign_in_with_authenticator_button.visibility = View.GONE
@@ -163,14 +167,17 @@ class SignInActivity : BaseActivity() {
 
     // region Fingerprint
     private fun requestFingerprintAuthIfAvailable() {
-        fingerprint_indicator.visibility = View.GONE
+        fingerprintIndicatorManager.hide()
         fingerprintAuthManager.requestAuthIfAvailable(
-                onAuthStart = { AnimationUtil.fadeInView(fingerprint_indicator) },
+                onAuthStart = { fingerprintIndicatorManager.show() },
                 onSuccess = { email, password ->
                     tryToSignInWithCredentials(email, password)
                     password.fill('0')
                 },
-                onError = { ToastManager(this).short(it) }
+                onError = {
+                    toastManager.short(it)
+                    fingerprintIndicatorManager.error()
+                }
         )
     }
 
@@ -183,6 +190,10 @@ class SignInActivity : BaseActivity() {
         cameraPermission.check(this) {
             QrScannerUtil.openScanner(this)
         }
+    }
+
+    private fun openAuthenticatorSignIn() {
+        Navigator.openAuthenticatorSignIn(this, SIGN_IN_WITH_AUTHENTICATOR_REQUEST)
     }
 
     private fun updateSignInAvailability() {
@@ -224,7 +235,7 @@ class SignInActivity : BaseActivity() {
         SignInUseCase(
                 email,
                 password,
-                apiProvider.getKeyStorage(),
+                apiProvider.getKeyServer(),
                 session,
                 credentialsPersistor,
                 PostSignInManager(repositoryProvider)
@@ -233,9 +244,11 @@ class SignInActivity : BaseActivity() {
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     isLoading = true
+                    updateAdditionalButtonsState(false)
                 }
                 .doOnTerminate {
                     isLoading = false
+                    updateAdditionalButtonsState(true)
                     password_edit_text.text.getChars()
                 }
                 .subscribeBy(
@@ -263,6 +276,14 @@ class SignInActivity : BaseActivity() {
         updateSignInAvailability()
     }
 
+    private fun updateAdditionalButtonsState(isEnabled: Boolean) {
+        scan_qr_button.isEnabled = isEnabled
+        sign_in_with_authenticator_button.isEnabled = isEnabled
+        sign_up_button.isEnabled = isEnabled
+        recovery_button.isEnabled = isEnabled
+
+    }
+
     private fun displayEmailNotVerifiedDialog(walletId: String) {
         AlertDialog.Builder(this, R.style.AlertDialogStyle)
                 .setTitle(R.string.error_email_not_verified)
@@ -283,7 +304,7 @@ class SignInActivity : BaseActivity() {
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .subscribeBy(
                         onComplete = {
-                            ToastManager(this).long(R.string.check_your_email_to_verify_account)
+                            toastManager.long(R.string.check_your_email_to_verify_account)
                         },
                         onError = {
                             errorHandlerFactory.getDefault().handle(it)

@@ -18,15 +18,18 @@ import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.logic.UrlConfigManager
-import org.tokend.template.logic.wallet.WalletUpdateManager
-import org.tokend.template.view.util.input.EditTextHelper
-import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.extensions.*
 import org.tokend.template.features.recovery.logic.RecoveryUseCase
-import org.tokend.template.util.*
+import org.tokend.template.logic.UrlConfigManager
+import org.tokend.template.logic.wallet.WalletUpdateManager
+import org.tokend.template.util.Navigator
+import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.PermissionManager
+import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.view.ToastManager
+import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.input.EditTextHelper
+import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
 import org.tokend.wallet.Base32Check
 
@@ -227,7 +230,7 @@ class RecoveryActivity : BaseActivity() {
                 }
                 .subscribeBy(
                         onComplete = {
-                            ToastManager(this).long(R.string.password_was_changed)
+                            toastManager.long(R.string.password_was_changed)
                             finishWithSuccess()
                         },
                         onError = {

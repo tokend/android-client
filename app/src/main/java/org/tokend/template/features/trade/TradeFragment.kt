@@ -22,14 +22,13 @@ import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_asset_chart_sheet.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
-import org.tokend.sdk.api.assets.model.AssetPair
-import org.tokend.sdk.api.trades.model.Offer
 import org.tokend.template.R
+import org.tokend.template.data.model.AssetPairRecord
+import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.orderbook.OrderBookRepository
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
-import org.tokend.template.extensions.isTradeable
-import org.tokend.template.extensions.toSingle
+import org.tokend.rx.extensions.toSingle
 import org.tokend.template.features.offers.CreateOfferDialog
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
 import org.tokend.template.features.trade.adapter.OrderBookAdapter
@@ -42,18 +41,16 @@ import org.tokend.template.view.picker.PickerItem
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.template.view.util.formatter.AmountFormatter
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
-
 
 class TradeFragment : BaseFragment(), ToolbarProvider {
 
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
 
-    private val pairs = mutableListOf<AssetPair>()
-    private var currentPair: AssetPair =
-            AssetPair("", "", BigDecimal.ONE, BigDecimal.ONE)
+    private val pairs = mutableListOf<AssetPairRecord>()
+    private var currentPair: AssetPairRecord =
+            AssetPairRecord("", "", BigDecimal.ONE)
         set(value) {
             field = value
             onPairChanged()
@@ -105,6 +102,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initLists() {
+        buyAdapter.amountFormatter = amountFormatter
+        sellAdapter.amountFormatter = amountFormatter
+
         buy_offers_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = buyAdapter
@@ -126,7 +126,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     private fun initPairSelection() {
         pairs_tabs.onItemSelected {
-            (it.tag as? AssetPair)?.let { currentPair = it }
+            (it.tag as? AssetPairRecord)?.let { pair ->
+                currentPair = pair
+            }
         }
     }
 
@@ -252,12 +254,12 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     private fun displayBalance() {
         val balances = balancesRepository.itemsList
 
-        val firstBalance = balances.find { it.asset == currentPair.base }?.balance
-        val secondBalance = balances.find { it.asset == currentPair.quote }?.balance
+        val firstBalance = balances.find { it.assetCode == currentPair.base }?.available
+        val secondBalance = balances.find { it.assetCode == currentPair.quote }?.available
 
         balance_text_view.text = getString(R.string.template_balance_two_assets,
-                AmountFormatter.formatAssetAmount(firstBalance), currentPair.base,
-                AmountFormatter.formatAssetAmount(secondBalance), currentPair.quote)
+                amountFormatter.formatAssetAmount(firstBalance, currentPair.base),
+                amountFormatter.formatAssetAmount(secondBalance, currentPair.quote))
     }
 // endregion
 
@@ -289,7 +291,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         ).also { it.addTo(compositeDisposable) }
     }
 
-    private fun onNewPairs(newPairs: List<AssetPair>) {
+    private fun onNewPairs(newPairs: List<AssetPairRecord>) {
         pairs.clear()
         pairs.addAll(
                 newPairs
@@ -309,17 +311,19 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         if (pairs.isEmpty()) {
             pairs_tabs.visibility = View.GONE
             bottom_sheet.visibility = View.GONE
-            error_empty_view.showEmpty(
-                    if (assetPairsRepository.isNeverUpdated)
-                        ""
-                    else
-                        getString(R.string.error_no_tradeable_pairs)
-            )
+            order_book_layout.visibility = View.GONE
+
+            error_empty_view.setEmptyDrawable(R.drawable.ic_trade)
+            if (!assetPairsRepository.isNeverUpdated) {
+                error_empty_view.showEmpty(getString(R.string.error_no_tradeable_pairs))
+            }
+
             return
         } else {
             error_empty_view.hide()
             bottom_sheet.visibility = View.VISIBLE
             pairs_tabs.visibility = View.VISIBLE
+            order_book_layout.visibility = View.VISIBLE
         }
 
         pairs_tabs.setItems(
@@ -330,7 +334,6 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 }
         )
     }
-
 
     private fun onPairChanged() {
         pair_chart.asset = currentPair.quote
@@ -349,7 +352,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayPrice() {
         price_text_view.text = getString(R.string.template_price_one_equals, currentPair.base,
-                AmountFormatter.formatAssetAmount(currentPair.price), currentPair.quote)
+                amountFormatter.formatAssetAmount(currentPair.price, currentPair.quote))
     }
 // endregion
 
@@ -366,7 +369,6 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         }
 
     }
-
 
     private fun updateOrderBook(force: Boolean = false) {
         if (force) {
@@ -452,8 +454,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         ).also { it.addTo(compositeDisposable) }
     }
 
-
-    private fun displayBuyItems(items: Collection<Offer>) {
+    private fun displayBuyItems(items: Collection<OfferRecord>) {
         buyAdapter.setData(items)
         if (items.isEmpty() && !buyRepository.isNeverUpdated) {
             bids_empty_view.visibility = View.VISIBLE
@@ -462,7 +463,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
-    private fun displaySellItems(items: Collection<Offer>) {
+    private fun displaySellItems(items: Collection<OfferRecord>) {
         sellAdapter.setData(items)
         if (items.isEmpty() && !sellRepository.isNeverUpdated) {
             asks_empty_view.visibility = View.VISIBLE
@@ -488,9 +489,9 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
     // region Offer creation
     private fun createOffer() {
         openOfferDialog(
-                Offer(
-                        baseAsset = currentPair.base,
-                        quoteAsset = currentPair.quote,
+                OfferRecord(
+                        baseAssetCode = currentPair.base,
+                        quoteAssetCode = currentPair.quote,
                         baseAmount = BigDecimal.ZERO,
                         price = currentPair.price,
                         isBuy = false
@@ -498,8 +499,8 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
         )
     }
 
-    private fun openOfferDialog(offer: Offer) {
-        CreateOfferDialog.withArgs(offer)
+    private fun openOfferDialog(offer: OfferRecord) {
+        CreateOfferDialog.withArgs(offer, amountFormatter)
                 .showDialog(this.childFragmentManager, "create_offer")
                 .subscribe {
                     goToOfferConfirmation(it)
@@ -507,7 +508,7 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
                 .addTo(compositeDisposable)
     }
 
-    private fun goToOfferConfirmation(offer: Offer) {
+    private fun goToOfferConfirmation(offer: OfferRecord) {
         val progress = ProgressDialogFactory.getTunedDialog(requireContext())
 
         PrepareOfferUseCase(

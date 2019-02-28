@@ -15,14 +15,15 @@
         <ImageView
             android:id="@+id/file_icon_image_view"
             android:layout_width="@dimen/triple_margin"
-            android:layout_height="@dimen/triple_margin" />
+            android:layout_height="@dimen/triple_margin"
+            android:scaleType="fitXY" />
 
         <TextView
             android:id="@+id/file_name_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
             android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginBottom="0dp"
             tools:text="MyFile.txt" />
 
     </LinearLayout>
