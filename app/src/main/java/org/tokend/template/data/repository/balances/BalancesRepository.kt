@@ -13,6 +13,7 @@ import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.extensions.mapSuccessful
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.*
 import org.tokend.wallet.xdr.Operation
@@ -38,7 +39,7 @@ class BalancesRepository(
                 .getBalances(accountId)
                 .toSingle()
                 .map { sourceList ->
-                    sourceList.map {
+                    sourceList.mapSuccessful {
                         BalanceRecord(it, urlConfigProvider.getConfig(), mapper)
                     }
                 }

@@ -11,6 +11,7 @@ import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
+import org.tokend.template.extensions.mapSuccessful
 import org.tokend.template.features.assets.model.AssetRecord
 
 class AssetsRepository(
@@ -35,12 +36,8 @@ class AssetsRepository(
                 .loadAll()
                 .toSingle()
                 .map { assetResources ->
-                    assetResources.mapNotNull {
-                        try {
-                            AssetRecord.fromResource(it, urlConfigProvider.getConfig(), mapper)
-                        } catch (e: IllegalArgumentException) {
-                            null
-                        }
+                    assetResources.mapSuccessful {
+                        AssetRecord.fromResource(it, urlConfigProvider.getConfig(), mapper)
                     }
                 }
     }
