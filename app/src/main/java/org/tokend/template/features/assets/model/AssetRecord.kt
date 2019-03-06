@@ -1,6 +1,7 @@
 package org.tokend.template.features.assets.model
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.NullNode
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.generated.resources.AssetResource
 import org.tokend.template.data.model.UrlConfig
@@ -40,15 +41,27 @@ class AssetRecord(
     companion object {
         @JvmStatic
         fun fromResource(source: AssetResource, urlConfig: UrlConfig?, mapper: ObjectMapper): AssetRecord {
-            val details = mapper.convertValue(source.details, AssetDetails::class.java)
+
+            val name = source.details.get("name")?.takeIf { it !is NullNode }?.asText()
+
+            val logo = source.details.get("logo")?.takeIf { it !is NullNode }?.let {
+                mapper.convertValue(it, RemoteFile::class.java)
+            }
+
+            val terms = source.details.get("terms")?.takeIf { it !is NullNode }?.let {
+                mapper.convertValue(it, RemoteFile::class.java)
+            }
+
+            val externalSystemType =
+                    source.details.get("external_system_type")?.takeIf { it !is NullNode }?.asInt()
 
             return AssetRecord(
                     code = source.id,
                     policy = source.policies.value,
-                    name = details.name,
-                    logoUrl = details.logo?.getUrl(urlConfig?.storage),
-                    terms = details.terms,
-                    externalSystemType = details.externalSystemType,
+                    name = name,
+                    logoUrl = logo?.getUrl(urlConfig?.storage),
+                    terms = terms,
+                    externalSystemType = externalSystemType,
                     issued = source.issued,
                     available = source.availableForIssuance,
                     maximum = source.maxIssuanceAmount
