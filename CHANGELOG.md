@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [Unreleased]
+## [1.5.1] 2019-03-06
 
 ### Fixed
 
 - Error on sign in when user has balances with unknown asset details
 
-[Unreleased]: https://github.com/tokend/android-client/compare/1.5.0(5)...HEAD
+[1.5.1]: https://github.com/tokend/android-client/compare/1.5.0(5)...1.5.1(6)
+[Unreleased]: https://github.com/tokend/android-client/compare/1.5.1(6)...HEAD
