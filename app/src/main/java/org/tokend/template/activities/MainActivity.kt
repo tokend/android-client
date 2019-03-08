@@ -48,6 +48,7 @@ import org.tokend.template.util.Navigator
 class MainActivity : BaseActivity(), WalletEventsListener {
     companion object {
         private const val SIGN_OUT = 7L
+        private val DEFAULT_FRAGMENT_ID = DashboardFragment.ID
     }
 
     private var navigationDrawer: Drawer? = null
@@ -67,7 +68,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
         initNavigation()
 
-        navigationDrawer?.setSelection(DashboardFragment.ID)
+        navigationDrawer?.setSelection(DEFAULT_FRAGMENT_ID)
     }
 
     // region Init
@@ -354,11 +355,11 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         if (navigationDrawer?.isDrawerOpen == true) {
             navigationDrawer?.closeDrawer()
         } else {
-            if (navigationDrawer?.currentSelection == DashboardFragment.ID) {
+            if (navigationDrawer?.currentSelection == DEFAULT_FRAGMENT_ID) {
                 moveTaskToBack(true)
             } else {
                 if (onBackPressedListener?.onBackPressed() != false)
-                    navigateTo(DashboardFragment.ID)
+                    navigateTo(DEFAULT_FRAGMENT_ID)
             }
         }
     }
