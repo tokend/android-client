@@ -52,7 +52,8 @@
                 android:layout_marginTop="@dimen/half_standard_margin"
                 android:gravity="center"
                 android:maxLines="2"
-                android:paddingBottom="@dimen/standard_margin" />
+                android:paddingBottom="@dimen/standard_margin"
+                android:textIsSelectable="true" />
         </LinearLayout>
     </ScrollView>
 </android.support.constraint.ConstraintLayout>
