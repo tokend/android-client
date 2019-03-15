@@ -48,9 +48,11 @@
     <string name="payment_details_title">Payment details</string>
     <string name="aml_alert_details_title">AML alert details</string>
     <string name="issuance_details_title">Issuance details</string>
+    <string name="sale_cancellation_details_title">Fund cancellation details</string>
     <string name="paid">Paid</string>
     <string name="received">Received</string>
     <string name="sent">Sent</string>
+    <string name="unlocked">Unlocked</string>
     <string name="price">Price</string>
     <string name="payment_description">Description</string>
     <string name="withdrawal_details_title">Withdrawal details</string>

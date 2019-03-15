@@ -111,6 +111,10 @@ sealed class BalanceChangeCause : Serializable {
         )
     }
 
+    // ------- Sale cancellation -------- //
+
+    object SaleCancellation: BalanceChangeCause()
+
     // ------- Issuance -------- //
 
     class Issuance(

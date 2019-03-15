@@ -144,6 +144,7 @@ class DefaultParticipantEffectConverter(
                     when (effect) {
                         is EffectMatchedResource -> BalanceChangeCause.Investment(effect)
                         is EffectIssuedResource -> BalanceChangeCause.Issuance(null, null)
+                        is EffectUnlockedResource -> BalanceChangeCause.SaleCancellation
                         else -> BalanceChangeCause.Unknown
                     }
                 is OpCreateAMLAlertRequestDetailsResource ->

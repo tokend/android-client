@@ -189,6 +189,11 @@
             android:label="@string/payout_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
+            android:name=".features.wallet.details.SaleCancellationDetailsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/sale_cancellation_details_title"
+            android:theme="@style/AppTheme.CardsBackground" />
+        <activity
             android:name=".features.offers.view.details.PendingOfferDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/pending_offer_details_title"
