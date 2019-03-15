@@ -1,15 +1,7 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/tx_list_item_icon_size"
-    android:height="@dimen/tx_list_item_icon_size"
-    android:viewportWidth="256"
-    android:viewportHeight="256">
-    <path
-        android:fillColor="@color/primary"
-        android:pathData="M128,250.9C60.2,250.9 5.1,195.7 5.1,128C5.1,60.2 60.2,5.1 128,5.1S250.9,60.2 250.9,128C250.9,195.7 195.7,250.9 128,250.9zM128,13C64.6,13 13,64.6 13,128s51.6,115 115,115s115,-51.6 115,-115S191.4,13 128,13z" />
-    <path
-        android:fillColor="@color/primary"
-        android:pathData="M158.1,79.5l-59.3,14.6l0,-7.6l81.6,-19.7l-112,112.3l-5.3,-5.3z" />
-    <path
-        android:fillColor="@color/primary"
-        android:pathData="M100.3,177.9l59.4,-14.6l0,7.6l-81.6,19.7l110.8,-111.7l5.3,5.3z" />
+    android:height="24dp"
+    android:width="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:fillColor="#f2a100" android:pathData="M7.5,21.5L8.85,20.16L12.66,23.97L12,24C5.71,24 0.56,19.16 0.05,13H1.55C1.91,16.76 4.25,19.94 7.5,21.5M16.5,2.5L15.15,3.84L11.34,0.03L12,0C18.29,0 23.44,4.84 23.95,11H22.45C22.09,7.24 19.75,4.07 16.5,2.5M6,17C6,15 10,13.9 12,13.9C14,13.9 18,15 18,17V18H6V17M15,9A3,3 0 0,1 12,12A3,3 0 0,1 9,9A3,3 0 0,1 12,6A3,3 0 0,1 15,9Z" />
 </vector>
