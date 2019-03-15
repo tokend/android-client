@@ -3,6 +3,7 @@ package org.tokend.template.features.wallet.details
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
+import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.LocalizedName
 import java.math.BigDecimal
@@ -36,13 +37,18 @@ class UnknownDetailsActivity : BalanceChangeDetailsActivity() {
         var percentFeeString = amountFormatter.formatAssetAmount(item.fee.percent, asset, minDigits)
 
         if (item.isReceived != null) {
-            if (item.isReceived) {
-                titleRes = R.string.received
+            titleRes = if (item.isReceived) {
+                R.string.received
+            } else {
+                R.string.charged
+            }
+
+            // Unlocked action is 'received' but fees are received as well as the amount.
+            if (item.isReceived && item.action != BalanceChangeAction.UNLOCKED) {
                 total = item.amount - item.fee.total
                 fixedFeeString = "-$fixedFeeString"
                 percentFeeString = "-$percentFeeString"
             } else {
-                titleRes = R.string.charged
                 total = item.amount + item.fee.total
                 fixedFeeString = "+$fixedFeeString"
                 percentFeeString = "+$percentFeeString"
