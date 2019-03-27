@@ -6,14 +6,11 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.RelativeLayout
 import com.squareup.picasso.Picasso
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -25,16 +22,12 @@ import org.jetbrains.anko.onClick
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.data.model.FavoriteRecord
 import org.tokend.template.data.model.OfferRecord
-import org.tokend.template.data.repository.AccountRepository
-import org.tokend.template.data.repository.favorites.FavoritesRepository
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.assets.LogoFactory
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.invest.InvestmentHelpDialog
 import org.tokend.template.features.invest.logic.InvestmentInfoManager
-import org.tokend.template.features.invest.logic.SwitchFavoriteUseCase
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
@@ -64,23 +57,11 @@ class SaleActivity : BaseActivity() {
 
     private lateinit var fileDownloader: FileDownloader
 
-    private val accountRepository: AccountRepository
-        get() = repositoryProvider.account()
-
-    private val favoritesRepository: FavoritesRepository
-        get() = repositoryProvider.favorites()
-
     private lateinit var feeManager: FeeManager
 
     private lateinit var sale: SaleRecord
     private lateinit var saleAsset: AssetRecord
     private lateinit var investmentInfoManager: InvestmentInfoManager
-
-    private var isFavorited = false
-        set(value) {
-            field = value
-            invalidateOptionsMenu()
-        }
 
     private var existingOffers: Map<String, OfferRecord> = emptyMap()
     private var maxFees: Map<String, BigDecimal> = emptyMap()
@@ -146,8 +127,6 @@ class SaleActivity : BaseActivity() {
         } finally {
             supportStartPostponedEnterTransition()
         }
-
-        subscribeToFavorites()
 
         canInvest = false
     }
@@ -564,73 +543,6 @@ class SaleActivity : BaseActivity() {
                                 },
                                 onError = {
                                     errorHandlerFactory.getDefault().handle(it)
-                                }
-                        )
-                        .addTo(compositeDisposable)
-    }
-    // endregion
-
-    // region Favorites
-    private fun subscribeToFavorites() {
-        favoritesRepository
-                .itemsSubject
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    isFavorited = getFavoriteEntry() != null
-                }
-                .addTo(compositeDisposable)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.sale, menu)
-        menu?.findItem(R.id.follow)
-                ?.apply {
-                    if (isFavorited) {
-                        icon = ContextCompat
-                                .getDrawable(this@SaleActivity, R.drawable.ic_star)
-                        title = getString(R.string.remove_from_favorites_action)
-                    } else {
-                        icon = ContextCompat
-                                .getDrawable(this@SaleActivity, R.drawable.ic_star_outline)
-                        title = getString(R.string.add_to_favorites_action)
-                    }
-                }
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.follow -> switchFavorite()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun getFavoriteEntry(): FavoriteRecord? {
-        return favoritesRepository.itemsList.find {
-            it.type == FavoriteRecord.TYPE_SALE && it.key == sale.baseAssetCode
-        }
-    }
-
-    private var switchFavoriteDisposable: Disposable? = null
-    private fun switchFavorite() {
-        switchFavoriteDisposable?.dispose()
-        switchFavoriteDisposable =
-                SwitchFavoriteUseCase(
-                        FavoriteRecord.sale(sale.baseAssetCode),
-                        favoritesRepository
-                )
-                        .perform()
-                        .compose(ObservableTransformers.defaultSchedulersCompletable())
-                        .doOnSubscribe { mainLoading.show("favorite") }
-                        .subscribeBy(
-                                onError = {
-                                    errorHandlerFactory.getDefault().handle(it)
-                                    mainLoading.hide("favorite")
-                                    updateInvestAvailability()
-                                },
-                                onComplete = {
-                                    mainLoading.hide("favorite")
-                                    updateInvestAvailability()
                                 }
                         )
                         .addTo(compositeDisposable)

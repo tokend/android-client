@@ -27,8 +27,7 @@ class PostSignInManager(
                                 )
                             else
                                 Completable.error(it)
-                        },
-                repositoryProvider.favorites().updateIfNotFreshDeferred()
+                        }
         )
         val syncActions = listOf<Completable>(
                 // Added actions will be performed on after another in

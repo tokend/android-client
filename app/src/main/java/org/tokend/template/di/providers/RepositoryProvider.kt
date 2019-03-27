@@ -4,7 +4,6 @@ import org.tokend.template.data.repository.*
 import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.data.repository.favorites.FavoritesRepository
 import org.tokend.template.data.repository.offers.OffersRepository
 import org.tokend.template.data.repository.orderbook.OrderBookRepository
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
@@ -22,7 +21,6 @@ interface RepositoryProvider {
     fun orderBook(baseAsset: String, quoteAsset: String, isBuy: Boolean): OrderBookRepository
     fun offers(onlyPrimaryMarket: Boolean = false): OffersRepository
     fun account(): AccountRepository
-    fun favorites(): FavoritesRepository
     fun sales(): SalesRepository
     fun filteredSales(): SalesRepository
     fun contacts(): ContactsRepository

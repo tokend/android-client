@@ -260,8 +260,6 @@
     <string name="no_sales_found">No funds found</string>
     <string name="pending_investments_title">Pending investments</string>
     <string name="no_pending_investments">No pending investments</string>
-    <string name="add_to_favorites_action">Add to favorites</string>
-    <string name="remove_from_favorites_action">Remove from favorites</string>
     <string name="sale_investing">Investing</string>
     <string name="invest_action">Invest</string>
     <string name="update_investment_action">Update</string>

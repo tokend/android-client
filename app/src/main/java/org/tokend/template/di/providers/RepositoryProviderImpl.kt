@@ -10,8 +10,6 @@ import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.balances.BalancesCache
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.data.repository.favorites.FavoritesCache
-import org.tokend.template.data.repository.favorites.FavoritesRepository
 import org.tokend.template.data.repository.offers.OffersCache
 import org.tokend.template.data.repository.offers.OffersRepository
 import org.tokend.template.data.repository.orderbook.OrderBookCache
@@ -64,9 +62,6 @@ class RepositoryProviderImpl(
     private val offersRepositories = mutableMapOf<String, OffersRepository>()
     private val accountRepository: AccountRepository by lazy {
         AccountRepository(apiProvider, walletInfoProvider)
-    }
-    private val favoritesRepository: FavoritesRepository by lazy {
-        FavoritesRepository(apiProvider, walletInfoProvider, FavoritesCache())
     }
     private val salesRepository: SalesRepository by lazy {
         SalesRepository(apiProvider, urlConfigProvider, SalesCache())
@@ -134,10 +129,6 @@ class RepositoryProviderImpl(
 
     override fun account(): AccountRepository {
         return accountRepository
-    }
-
-    override fun favorites(): FavoritesRepository {
-        return favoritesRepository
     }
 
     override fun sales(): SalesRepository {

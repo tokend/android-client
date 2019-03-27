@@ -58,7 +58,5 @@ class SignInTest {
                 repositoryProvider.balances().isFresh)
         Assert.assertTrue("TFA factors repository must be updated after sign in",
                 repositoryProvider.tfaFactors().isFresh)
-        Assert.assertTrue("Favorites repository must be updated after sign in",
-                repositoryProvider.favorites().isFresh)
     }
 }
