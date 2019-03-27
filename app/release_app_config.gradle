@@ -1,7 +1,7 @@
 // Following config will be merged with the default one
 // for "release" builds.
 ext {
-    enable_analytics = 'true'
-    allow_authenticator_auth = 'false'
-    logs_enabled = 'false'
+    enable_analytics = true
+    allow_authenticator_auth = false
+    logs_enabled = false
 }
