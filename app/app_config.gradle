@@ -14,26 +14,26 @@ ext {
     // ----- Network params -----
 
     // API URL - TokenD instance root URL
-    api_url = '"https://api.testnet.tokend.org"'
+    api_url = '"https://api.demo.tokend.io"'
 
     // Storage URL - Root URL of file storage
-    storage_url = '"https://storage.testnet.tokend.org/api/"'
+    storage_url = '"https://s3.eu-west-1.amazonaws.com/demo-identity-storage-festive-colden/"'
 
     // Web-client URL - Root URL of the related web-client,
     // will be opened if some functions are not available in mobile app
-    web_client_url = '"https://demo.tokend.org"'
+    web_client_url = '"https://demo.tokend.io"'
 
     // App host - Host of the related web-client,
     // used to open verification and referral links in app
-    app_host = '"demo.tokend.org"'
+    app_host = '"demo.tokend.io"'
 
     // Terms of Service URL - Link to the Terms of Service page of your project,
     // used during sign in
-    terms_url = '"https://demo.tokend.org/terms"'
+    terms_url = '"https://demo.tokend.io/terms"'
 
     // KYC URL - Link to the user verification page of your project,
     // used on settings screen
-    kyc_url = '"https://demo.tokend.org/verification/make"'
+    kyc_url = '"https://demo.tokend.io/settings/verification/"'
 
     //Allow to log request and response information.
     logs_enabled = "true"
