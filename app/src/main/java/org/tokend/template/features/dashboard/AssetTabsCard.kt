@@ -216,7 +216,6 @@ class AssetTabsCard(private val activity: Activity,
         transactionsDisposable?.dispose()
         transactionsDisposable = CompositeDisposable(
                 historyRepository.itemsSubject
-                        .map { it.subList(0, Math.min(it.size, TRANSACTIONS_TO_DISPLAY)) }
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { displayHistory() },
                 historyRepository.loadingSubject
@@ -235,9 +234,14 @@ class AssetTabsCard(private val activity: Activity,
     private fun displayHistory() {
         val localizedName = LocalizedName(activity)
 
-        activityAdapter.setData(historyRepository.itemsList.map { balanceChange ->
-            BalanceChangeListItem(balanceChange, accountId, localizedName)
-        })
+        val items = historyRepository
+                .itemsList
+                .let { it.subList(0, Math.min(it.size, TRANSACTIONS_TO_DISPLAY)) }
+                .map { balanceChange ->
+                    BalanceChangeListItem(balanceChange, accountId, localizedName)
+                }
+
+        activityAdapter.setData(items)
     }
 
     companion object {
