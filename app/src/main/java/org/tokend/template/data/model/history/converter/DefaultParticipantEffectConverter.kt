@@ -151,6 +151,8 @@ class DefaultParticipantEffectConverter(
                     BalanceChangeCause.AmlAlert(operationDetails)
                 is OpPayoutDetailsResource ->
                     BalanceChangeCause.Payout(operationDetails)
+                is OpManageAssetPairDetailsResource ->
+                    BalanceChangeCause.AssetPairUpdate(operationDetails)
                 else ->
                     BalanceChangeCause.Unknown
             }

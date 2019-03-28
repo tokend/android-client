@@ -241,6 +241,7 @@ object Navigator {
                 return
             }
             is BalanceChangeCause.SaleCancellation -> SaleCancellationDetailsActivity::class.java
+            is BalanceChangeCause.AssetPairUpdate -> AssetPairUpdateDetailsActivity::class.java
             is BalanceChangeCause.Unknown -> UnknownDetailsActivity::class.java
         }
 

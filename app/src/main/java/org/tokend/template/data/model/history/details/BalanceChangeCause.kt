@@ -2,6 +2,8 @@ package org.tokend.template.data.model.history.details
 
 import org.tokend.sdk.api.generated.resources.*
 import org.tokend.template.data.model.history.SimpleFeeRecord
+import org.tokend.template.util.PolicyChecker
+import org.tokend.wallet.xdr.AssetPairPolicy
 import java.io.Serializable
 import java.math.BigDecimal
 
@@ -116,7 +118,7 @@ sealed class BalanceChangeCause : Serializable {
 
     // ------- Sale cancellation -------- //
 
-    object SaleCancellation: BalanceChangeCause()
+    object SaleCancellation : BalanceChangeCause()
 
     // ------- Issuance -------- //
 
@@ -238,5 +240,30 @@ sealed class BalanceChangeCause : Serializable {
         constructor(op: OpCreateWithdrawRequestDetailsResource) : this(
                 destinationAddress = op.creatorDetails.get("address").asText()
         )
+    }
+
+    // ------- Physical/current price restriction or policy update for asset pair ------ //
+    class AssetPairUpdate(
+            val baseAssetCode: String,
+            val quoteAssetCode: String,
+            val physicalPrice: BigDecimal,
+            private val policies: Int
+    ) : BalanceChangeCause(), PolicyChecker {
+
+        constructor(op: OpManageAssetPairDetailsResource): this(
+                baseAssetCode = op.baseAsset.id,
+                quoteAssetCode = op.quoteAsset.id,
+                physicalPrice = op.physicalPrice,
+                policies = op.policies.value
+        )
+
+        val isRestrictedByCurrentPrice: Boolean
+            get() = checkPolicy(policies, AssetPairPolicy.CURRENT_PRICE_RESTRICTION.value)
+
+        val isRestrictedByPhysicalPrice: Boolean
+            get() = checkPolicy(policies, AssetPairPolicy.PHYSICAL_PRICE_RESTRICTION.value)
+
+        val isTradeable: Boolean
+            get() = checkPolicy(policies, AssetPairPolicy.TRADEABLE_SECONDARY_MARKET.value)
     }
 }

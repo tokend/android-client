@@ -204,6 +204,11 @@
             android:label="@string/pending_investment_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
+            android:name=".features.wallet.details.AssetPairUpdateDetailsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/asset_pair_update_details_title"
+            android:theme="@style/AppTheme.CardsBackground" />
+        <activity
             android:name=".features.wallet.details.UnknownDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/unknown_balance_change_details_title"
