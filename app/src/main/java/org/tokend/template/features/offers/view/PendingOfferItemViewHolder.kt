@@ -43,8 +43,8 @@ class PendingOfferItemViewHolder(
                     R.string.template_tx_in
                 else
                     R.string.template_tx_for
-        counterpartyTextView.visibility = View.VISIBLE
-        counterpartyTextView.text =
+        actionDetailsTextView.visibility = View.VISIBLE
+        actionDetailsTextView.text =
                 view.context.getString(counterpartyStringRes, item.counterpartyAssetCode)
 
     }

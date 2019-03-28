@@ -32,6 +32,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.LocalizedName
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -203,18 +204,10 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     private fun subscribeToHistory() {
         historyDisposable?.dispose()
 
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                ?: return
-
         historyDisposable = CompositeDisposable(
                 balanceChangesRepository.itemsSubject
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
-                            adapter.setData(it.map { balanceChange ->
-                                BalanceChangeListItem(balanceChange, accountId)
-                            })
-                            history_list.resetBottomReachHandled()
-                        },
+                        .subscribe { displayHistory() },
                 balanceChangesRepository.loadingSubject
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { loading ->
@@ -274,6 +267,18 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                         send_fab.isEnabled = true
                     }
                 }
+    }
+
+    private fun displayHistory() {
+        val localizedName = LocalizedName(requireContext())
+        val accountId = walletInfoProvider.getWalletInfo()?.accountId
+                ?: return
+
+        adapter.setData(balanceChangesRepository.itemsList.map { balanceChange ->
+            BalanceChangeListItem(balanceChange, accountId, localizedName)
+        })
+
+        history_list.resetBottomReachHandled()
     }
     // endregion
 

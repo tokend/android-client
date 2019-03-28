@@ -8,7 +8,7 @@ import android.widget.TextView
 interface HistoryItemView {
     val iconImageView: AppCompatImageView
     val actionTextView: TextView
-    val counterpartyTextView: TextView
+    val actionDetailsTextView: TextView
     val amountTextView: TextView
     val extraInfoTextView: TextView
     val dividerView: View

@@ -360,4 +360,16 @@
     <string name="seed_alert_dialog">"You are about to show sensitive data.\nAnyone who knows the secret seed can take possession of your account.\nDo you want to continue?"</string>
 
     <string name="unknown_balance_change_details_title">Balance change details</string>
+
+    <string name="balance_change_cause_unknown">Unknown</string>
+    <string name="balance_change_cause_aml">AML alert</string>
+    <string name="balance_change_cause_investment">Investment</string>
+    <string name="balance_change_cause_matched_offer">Offer match</string>
+    <string name="balance_change_cause_issuance">Issuance/deposit request</string>
+    <string name="balance_change_cause_payment">Payment</string>
+    <string name="balance_change_cause_payout">Payout</string>
+    <string name="balance_change_cause_withdrawal">Withdrawal</string>
+    <string name="balance_change_cause_pending_offer">Pending offer</string>
+    <string name="balance_change_cause_pending_investment">Pending investment</string>
+    <string name="balance_change_cause_sale_cancellation">Fund cancellation</string>
 </resources>

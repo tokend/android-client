@@ -3,6 +3,7 @@ package org.tokend.template.view.util
 import android.content.Context
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChangeAction
+import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.fees.adapter.FeeItem
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.wallet.xdr.FeeType
@@ -56,6 +57,27 @@ class LocalizedName(private val context: Context) {
             BalanceChangeAction.MATCHED -> context.getString(R.string.tx_action_matched)
             BalanceChangeAction.ISSUED -> context.getString(R.string.tx_action_issued)
             BalanceChangeAction.FUNDED -> context.getString(R.string.tx_action_received)
+        }
+    }
+
+    fun forBalanceChangeCause(cause: BalanceChangeCause): String {
+        return when (cause) {
+            is BalanceChangeCause.AmlAlert -> context.getString(R.string.balance_change_cause_aml)
+            is BalanceChangeCause.Investment -> context.getString(R.string.balance_change_cause_investment)
+            is BalanceChangeCause.MatchedOffer -> context.getString(R.string.balance_change_cause_matched_offer)
+            is BalanceChangeCause.Issuance -> context.getString(R.string.balance_change_cause_issuance)
+            is BalanceChangeCause.Payment -> context.getString(R.string.balance_change_cause_payment)
+            is BalanceChangeCause.Payout -> context.getString(R.string.balance_change_cause_payout)
+            is BalanceChangeCause.Withdrawal -> context.getString(R.string.balance_change_cause_withdrawal)
+            is BalanceChangeCause.Offer -> {
+                if (cause.isInvestment)
+                    context.getString(R.string.balance_change_cause_pending_investment)
+                else
+                    context.getString(R.string.balance_change_cause_pending_offer)
+
+            }
+            is BalanceChangeCause.SaleCancellation -> context.getString(R.string.balance_change_cause_sale_cancellation)
+            BalanceChangeCause.Unknown -> context.getString(R.string.balance_change_cause_unknown)
         }
     }
 }

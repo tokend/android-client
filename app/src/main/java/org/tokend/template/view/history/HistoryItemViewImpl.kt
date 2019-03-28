@@ -12,7 +12,7 @@ class HistoryItemViewImpl(val view: View,
                           smallIcon: Boolean) : HistoryItemView {
     override val iconImageView: AppCompatImageView = view.find(R.id.tx_icon_image_view)
     override val actionTextView: TextView = view.find(R.id.tx_action_text_view)
-    override val counterpartyTextView: TextView = view.find(R.id.tx_counterparty_text_view)
+    override val actionDetailsTextView: TextView = view.find(R.id.tx_counterparty_text_view)
     override val amountTextView: TextView = view.find(R.id.tx_amount_text_view)
     override val extraInfoTextView: TextView = view.find(R.id.tx_below_amount_text_view)
     override val dividerView: View = view.find(R.id.divider_view)

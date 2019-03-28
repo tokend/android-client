@@ -29,6 +29,7 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.ViewProvider
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.lang.ref.WeakReference
@@ -217,11 +218,7 @@ class AssetTabsCard(private val activity: Activity,
                 historyRepository.itemsSubject
                         .map { it.subList(0, Math.min(it.size, TRANSACTIONS_TO_DISPLAY)) }
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
-                            activityAdapter.setData(it.map { balanceChange ->
-                                BalanceChangeListItem(balanceChange, accountId)
-                            })
-                        },
+                        .subscribe { displayHistory() },
                 historyRepository.loadingSubject
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { loading ->
@@ -233,6 +230,14 @@ class AssetTabsCard(private val activity: Activity,
                             }
                         }
         ).addTo(disposable)
+    }
+
+    private fun displayHistory() {
+        val localizedName = LocalizedName(activity)
+
+        activityAdapter.setData(historyRepository.itemsList.map { balanceChange ->
+            BalanceChangeListItem(balanceChange, accountId, localizedName)
+        })
     }
 
     companion object {

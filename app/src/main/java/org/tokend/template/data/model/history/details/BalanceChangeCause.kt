@@ -45,6 +45,9 @@ sealed class BalanceChangeCause : Serializable {
         )
 
         val quoteAmount: BigDecimal = baseAmount * price
+
+        val isInvestment: Boolean
+            get() = orderBookId != 0L
     }
 
     // ------- Offer Match -------- //

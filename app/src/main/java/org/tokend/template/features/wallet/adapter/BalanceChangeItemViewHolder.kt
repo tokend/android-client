@@ -16,7 +16,7 @@ class BalanceChangeItemViewHolder(view: View,
     override fun bind(item: BalanceChangeListItem) {
         displayIcon(item)
         displayActionName(item)
-        displayCounterparty(item)
+        displayCounterpartyOrCause(item)
         displayAmount(item)
         displayExtraInfo()
     }
@@ -41,22 +41,24 @@ class BalanceChangeItemViewHolder(view: View,
                 LocalizedName(view.context).forBalanceChangeListItemAction(item.action)
     }
 
-    private fun displayCounterparty(item: BalanceChangeListItem) {
+    private fun displayCounterpartyOrCause(item: BalanceChangeListItem) {
         val counterparty = item.counterparty
+        val cause = item.causeName
 
-        if (counterparty == null) {
-            counterpartyTextView.visibility = View.GONE
-        } else {
-            if (item.isReceived != null) {
-                counterpartyTextView.visibility = View.VISIBLE
-                counterpartyTextView.text =
+        if (counterparty != null || cause != null) {
+            actionDetailsTextView.visibility = View.VISIBLE
+
+            if (counterparty != null && item.isReceived != null) {
+                actionDetailsTextView.text =
                         if (item.isReceived)
                             view.context.getString(R.string.template_tx_from, counterparty)
                         else
                             view.context.getString(R.string.template_tx_to, counterparty)
             } else {
-                counterpartyTextView.visibility = View.GONE
+                actionDetailsTextView.text = cause
             }
+        } else {
+            actionDetailsTextView.visibility = View.GONE
         }
     }
 
