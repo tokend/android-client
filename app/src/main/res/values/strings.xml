@@ -90,8 +90,7 @@
     <string name="payment_confirmation_title">Payment confirmation</string>
     <string name="payment_successfully_sent">Successfully sent</string>
     <string name="template_balance_two_assets">Balance: %1$s, %2$s</string>
-    <string name="no_bids">No bids</string>
-    <string name="no_asks">No asks</string>
+    <string name="no_offers">No offers</string>
     <string name="template_offer_bid_asset">Bid (%1$s)</string>
     <string name="template_offer_ask_asset">Ask (%1$s)</string>
     <string name="template_asset_pair">%1$s/%2$s</string>

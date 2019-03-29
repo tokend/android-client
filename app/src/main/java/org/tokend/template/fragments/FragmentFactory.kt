@@ -1,6 +1,7 @@
 package org.tokend.template.fragments
 
 import android.support.v4.app.Fragment
+import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.features.assets.AssetDetailsFragment
 import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.assets.model.AssetRecord
@@ -14,7 +15,8 @@ import org.tokend.template.features.invest.saledetails.fragments.SaleOverviewFra
 import org.tokend.template.features.limits.LimitsFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.settings.GeneralSettingsFragment
-import org.tokend.template.features.trade.TradeFragment
+import org.tokend.template.features.trade.chart.view.AssetPairChartFragment
+import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
 import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
 import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
@@ -41,8 +43,8 @@ class FragmentFactory {
         return GeneralSettingsFragment()
     }
 
-    fun getTradeFragment(): Fragment {
-        return TradeFragment()
+    fun getOrderBookFragment(assetPair: AssetPairRecord): Fragment {
+        return OrderBookFragment.newInstance(assetPair)
     }
 
     fun getWithdrawFragment(asset: String? = null): Fragment {
@@ -83,5 +85,9 @@ class FragmentFactory {
 
     fun getTradeAssetPairsFragment(): Fragment {
         return TradeAssetPairsFragment()
+    }
+
+    fun getAssetPairChartFragment(assetPair: AssetPairRecord): Fragment {
+        return AssetPairChartFragment.newInstance(assetPair)
     }
 }

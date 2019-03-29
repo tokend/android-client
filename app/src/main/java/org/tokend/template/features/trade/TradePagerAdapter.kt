@@ -15,9 +15,9 @@ class TradePagerAdapter(assetPair: AssetPairRecord,
     private val fragmentFactory = FragmentFactory()
 
     private val pages = listOf(
-            Fragment() to
+            fragmentFactory.getOrderBookFragment(assetPair) to
                     context.getString(R.string.trade_order_book_title),
-            Fragment() to
+            fragmentFactory.getAssetPairChartFragment(assetPair) to
                     context.getString(R.string.trade_chart_title),
             Fragment() to
                     context.getString(R.string.trade_trades_title)

@@ -202,14 +202,12 @@ class AssetChartCard : LinearLayout {
             AssetChartScale.WEEK -> data?.week
             AssetChartScale.MONTH -> data?.month
             AssetChartScale.YEAR -> data?.year
-        }
+        } ?: emptyList()
 
-        (0 until (points?.size ?: 0)).forEach { i ->
-            val point = points?.get(i)
-            if (point != null) {
-                newChartData.add(Entry(i.toFloat(), point.value?.toFloat() ?: 0f,
-                        point.date))
-            }
+        for (i in 0 until points.size) {
+            val point = points[i]
+            newChartData.add(Entry(i.toFloat(), point.value?.toFloat() ?: 0f,
+                    point.date))
         }
 
         Collections.sort(newChartData, EntryXComparator())
@@ -217,8 +215,8 @@ class AssetChartCard : LinearLayout {
         chartData.clear()
         chartData.addAll(newChartData)
 
-        val startValue = points?.firstOrNull()?.value ?: BigDecimal.ZERO
-        val finalValue = points?.lastOrNull()?.value ?: BigDecimal.ZERO
+        val startValue = points.firstOrNull()?.value ?: BigDecimal.ZERO
+        val finalValue = points.lastOrNull()?.value ?: BigDecimal.ZERO
         val growth = finalValue - startValue
 
         val percentGrowth =
@@ -230,7 +228,7 @@ class AssetChartCard : LinearLayout {
                             .multiply(BigDecimal(100))
                             .setScale(2, BigDecimal.ROUND_HALF_UP)
 
-        if (points != null && points.isNotEmpty() && finalValue > total) {
+        if (points.isNotEmpty() && finalValue > total) {
             total = finalValue
         }
 
@@ -432,6 +430,9 @@ class AssetChartCard : LinearLayout {
             field = value
             valueTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, value)
         }
+
+    val chartView: LineChart
+        get() = chart
 
     /**
      * Sets named horizontal lines that will be displayed over the chart
