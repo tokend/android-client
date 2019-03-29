@@ -108,9 +108,7 @@
 
                         <android.support.v4.widget.NestedScrollView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clipToPadding="false"
-                            android:paddingBottom="3dp">
+                            android:layout_height="wrap_content">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -120,79 +118,37 @@
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/half_standard_margin"
                                     android:orientation="horizontal"
-                                    android:paddingStart="@dimen/half_standard_margin"
-                                    android:paddingEnd="@dimen/half_standard_margin"
-                                    android:paddingBottom="@dimen/standard_margin">
+                                    android:padding="@dimen/half_standard_margin">
 
                                     <TextView
-                                        android:id="@+id/bid_heading"
-                                        style="@style/HeadingText"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:textSize="18sp"
-                                        tools:text="Buy" />
-
-                                    <TextView
-                                        android:id="@+id/ask_heading"
-                                        style="@style/HeadingText"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:paddingStart="@dimen/half_standard_margin"
-                                        android:textSize="18sp"
-                                        tools:text="Sell" />
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:paddingStart="@dimen/half_standard_margin"
-                                    android:paddingEnd="@dimen/half_standard_margin"
-                                    android:paddingBottom="@dimen/quarter_standard_margin">
-
-                                    <TextView
-                                        android:id="@+id/buy_amount_hint"
+                                        android:id="@+id/bid_hint"
                                         style="@style/SecondaryText"
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:textSize="@dimen/text_size_hint"
-                                        tools:text="Amount" />
+                                        android:textSize="@dimen/text_size_order_book"
+                                        tools:text="Bid (USD)" />
 
                                     <TextView
-                                        android:id="@+id/buy_price_hint"
+                                        android:id="@+id/amount"
+                                        style="@style/SecondaryText"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="center_horizontal"
+                                        android:textSize="@dimen/text_size_order_book"
+                                        android:text="@string/amount_label"/>
+
+                                    <TextView
+                                        android:id="@+id/ask_hint"
                                         style="@style/SecondaryText"
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:gravity="end"
-                                        android:paddingEnd="@dimen/half_standard_margin"
-                                        android:textSize="@dimen/text_size_hint"
-                                        tools:text="Price" />
-
-                                    <TextView
-                                        android:id="@+id/sell_price_hint"
-                                        style="@style/SecondaryText"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:paddingStart="@dimen/half_standard_margin"
-                                        android:textSize="@dimen/text_size_hint"
-                                        tools:text="Price" />
-
-                                    <TextView
-                                        android:id="@+id/sell_amount_hint"
-                                        style="@style/SecondaryText"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:gravity="end"
-                                        android:textSize="@dimen/text_size_hint"
-                                        tools:text="Amount" />
+                                        android:textSize="@dimen/text_size_order_book"
+                                        tools:text="Ask (USD)" />
                                 </LinearLayout>
 
                                 <include layout="@layout/layout_progress" />
