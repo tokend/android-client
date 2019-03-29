@@ -37,6 +37,7 @@ import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.settings.SettingsFragment
 import org.tokend.template.features.trade.TradeFragment
+import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
 import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
@@ -290,6 +291,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     DepositFragment.ID -> factory.getDepositFragment()
                     SalesFragment.ID -> factory.getSalesFragment()
                     FeesFragment.ID -> factory.getFeesFragment()
+                    TradeAssetPairsFragment.ID -> factory.getTradeAssetPairsFragment()
                     else -> return
                 }
 

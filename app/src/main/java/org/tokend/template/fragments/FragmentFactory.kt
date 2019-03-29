@@ -15,6 +15,7 @@ import org.tokend.template.features.limits.LimitsFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.settings.GeneralSettingsFragment
 import org.tokend.template.features.trade.TradeFragment
+import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
 import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 
@@ -78,5 +79,9 @@ class FragmentFactory {
 
     fun getSaleGeneralInfoFragment(sale: SaleRecord): Fragment {
         return SaleGeneralInfoFragment.newInstance(sale)
+    }
+
+    fun getTradeAssetPairsFragment(): Fragment {
+        return TradeAssetPairsFragment()
     }
 }
