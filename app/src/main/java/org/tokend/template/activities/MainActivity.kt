@@ -133,7 +133,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
         PrimaryDrawerItem()
                 .withName(R.string.trade_title)
-                .withIdentifier(TradeFragment.ID)
+                .withIdentifier(TradeAssetPairsFragment.ID)
                 .withIcon(R.drawable.ic_trade)
                 .also { items[TradeFragment.ID] = it }
 

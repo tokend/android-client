@@ -15,6 +15,7 @@ import org.jetbrains.anko.singleTop
 import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
+import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
@@ -38,6 +39,7 @@ import org.tokend.template.features.signin.AuthenticatorSignInActivity
 import org.tokend.template.features.signin.SignInActivity
 import org.tokend.template.features.signup.RecoverySeedActivity
 import org.tokend.template.features.signup.SignUpActivity
+import org.tokend.template.features.trade.TradeActivity
 import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.wallet.details.*
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
@@ -266,6 +268,15 @@ object Navigator {
                     putExtra(PendingOfferDetailsActivity.OFFER_EXTRA, offer)
                 },
                 requestCode
+        )
+    }
+
+    fun openTrade(fragment: Fragment,
+                  assetPair: AssetPairRecord) {
+        fragment.startActivity(
+                Intent(fragment.requireContext(), TradeActivity::class.java).apply {
+                    putExtra(TradeActivity.ASSET_PAIR_EXTRA, assetPair)
+                }
         )
     }
 }

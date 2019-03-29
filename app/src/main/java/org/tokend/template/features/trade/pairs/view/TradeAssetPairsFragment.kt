@@ -119,7 +119,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
 
         pairsAdapter.onItemClick { _, item ->
             item.source?.let { assetPair ->
-                toastManager.short(assetPair.id)
+                Navigator.openTrade(this, assetPair)
             }
         }
     }

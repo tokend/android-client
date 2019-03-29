@@ -382,4 +382,8 @@
     <string name="asset_pair_not_restricted_by_current_price">Is restricted by current price</string>
     <string name="asset_pair_can_be_traded">Can be traded on secondary market</string>
     <string name="asset_pair_can_not_be_traded">Can\'t be traded on secondary market</string>
+
+    <string name="trade_order_book_title">Order book</string>
+    <string name="trade_chart_title">Chart</string>
+    <string name="trade_trades_title">Trades</string>
 </resources>
