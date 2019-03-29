@@ -358,16 +358,8 @@ class TradeFragment : BaseFragment(), ToolbarProvider {
 
     // region Order book
     private fun displayOrderBookHeaders() {
-        bid_heading.text = getString(R.string.template_buy_bid_asset, currentPair.base)
-        ask_heading.text = getString(R.string.template_sell_ask_asset, currentPair.base)
-
-        listOf(buy_amount_hint, sell_amount_hint).forEach {
-            it.text = getString(R.string.template_offer_amount_asset, currentPair.base)
-        }
-        listOf(buy_price_hint, sell_price_hint).forEach {
-            it.text = getString(R.string.template_offer_price_asset, currentPair.quote)
-        }
-
+        bid_hint.text = getString(R.string.template_offer_bid_asset, currentPair.quote)
+        ask_hint.text = getString(R.string.template_offer_ask_asset, currentPair.quote)
     }
 
     private fun updateOrderBook(force: Boolean = false) {
