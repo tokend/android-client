@@ -100,4 +100,8 @@ class FragmentFactory {
     fun getOffersFragment(assetPair: AssetPairRecord): Fragment {
         return OffersFragment.newInstance(assetPair)
     }
+
+    fun getOffersFragment(onlyPrimary: Boolean): Fragment {
+        return OffersFragment.newInstance(onlyPrimary)
+    }
 }

@@ -22,12 +22,17 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 
 class OffersFragment : BaseFragment() {
 
-    private lateinit var assetPair: AssetPairRecord
+    private val assetPair: AssetPairRecord?
+        get() = arguments?.getSerializable(ASSET_PAIR_EXTRA) as? AssetPairRecord
 
-    private lateinit var adapter: PendingOffersAdapter
+    private val onlyPrimary: Boolean
+        get() = arguments?.getBoolean(ONLY_PRIMARY_EXTRA)
+                ?: false
 
     private val offersRepository: OffersRepository
-        get() = repositoryProvider.offers()
+        get() = repositoryProvider.offers(onlyPrimary)
+
+    private lateinit var adapter: PendingOffersAdapter
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },
@@ -39,12 +44,10 @@ class OffersFragment : BaseFragment() {
     }
 
     override fun onInitAllowed() {
-        assetPair = arguments?.getSerializable(EXTRA_ASSET_PAIR) as? AssetPairRecord
-                ?: return
-
         initSwipeRefresh()
         initList()
         subscribeToOffers()
+        update()
     }
 
     private fun initSwipeRefresh() {
@@ -56,13 +59,16 @@ class OffersFragment : BaseFragment() {
         adapter = PendingOffersAdapter(amountFormatter, false)
         adapter.onItemClick { _, item ->
             item.source?.also {
-                Navigator.openPendingOfferDetails(this.requireActivity(), it)
+                Navigator.openPendingOfferDetails(requireActivity(), it)
             }
         }
 
         error_empty_view.setEmptyDrawable(R.drawable.ic_pending)
         error_empty_view.observeAdapter(adapter) {
-            getString(R.string.no_pending_offers)
+            if (onlyPrimary)
+                getString(R.string.no_pending_investments)
+            else
+                getString(R.string.no_pending_offers)
         }
         error_empty_view.setEmptyViewDenial { offersRepository.isNeverUpdated }
 
@@ -116,8 +122,10 @@ class OffersFragment : BaseFragment() {
         adapter.setData(
                 items
                         .filter {
-                            it.baseAssetCode == assetPair.base
-                                    && it.quoteAssetCode == assetPair.quote
+                            if (assetPair != null) {
+                                it.baseAssetCode == assetPair!!.base
+                                        && it.quoteAssetCode == assetPair!!.quote
+                            } else true
                         }
                         .map {
                             PendingOfferListItem(it)
@@ -134,12 +142,21 @@ class OffersFragment : BaseFragment() {
     }
 
     companion object {
-        private const val EXTRA_ASSET_PAIR = "asset_pair"
+        private const val ASSET_PAIR_EXTRA = "asset_pair"
+        const val ONLY_PRIMARY_EXTRA = "only_primary"
 
         fun newInstance(pair: AssetPairRecord): OffersFragment {
             val fragment = OffersFragment()
             fragment.arguments = Bundle().apply {
-                putSerializable(EXTRA_ASSET_PAIR, pair)
+                putSerializable(ASSET_PAIR_EXTRA, pair)
+            }
+            return fragment
+        }
+
+        fun newInstance(onlyPrimary: Boolean): OffersFragment {
+            val fragment = OffersFragment()
+            fragment.arguments = Bundle().apply {
+                putBoolean(ONLY_PRIMARY_EXTRA, onlyPrimary)
             }
             return fragment
         }
