@@ -18,7 +18,8 @@ import org.tokend.template.features.settings.GeneralSettingsFragment
 import org.tokend.template.features.trade.chart.view.AssetPairChartFragment
 import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
 import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
-import org.tokend.template.features.trade.TradeHistoryFragment
+import org.tokend.template.features.trade.history.view.TradeHistoryFragment
+import org.tokend.template.features.trade.offers.view.OffersFragment
 import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 
@@ -94,5 +95,9 @@ class FragmentFactory {
 
     fun getTradeHistoryFragment(assetPair: AssetPairRecord): Fragment {
         return TradeHistoryFragment.newInstance(assetPair)
+    }
+
+    fun getOffersFragment(assetPair: AssetPairRecord): Fragment {
+        return OffersFragment.newInstance(assetPair)
     }
 }

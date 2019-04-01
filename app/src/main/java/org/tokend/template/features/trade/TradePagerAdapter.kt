@@ -20,7 +20,9 @@ class TradePagerAdapter(assetPair: AssetPairRecord,
             fragmentFactory.getAssetPairChartFragment(assetPair) to
                     context.getString(R.string.trade_chart_title),
             fragmentFactory.getTradeHistoryFragment(assetPair) to
-                    context.getString(R.string.trade_trades_title)
+                    context.getString(R.string.trade_trades_title),
+            fragmentFactory.getOffersFragment(assetPair) to
+                    context.getString(R.string.trade_offers_title)
     )
 
     override fun getItem(position: Int): Fragment? {

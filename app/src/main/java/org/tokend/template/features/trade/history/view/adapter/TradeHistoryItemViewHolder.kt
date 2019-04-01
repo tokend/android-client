@@ -1,4 +1,4 @@
-package org.tokend.template.features.trade.adapter
+package org.tokend.template.features.trade.history.view.adapter
 
 import android.view.View
 import kotlinx.android.synthetic.main.list_item_trade_history.view.*
