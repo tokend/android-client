@@ -16,8 +16,11 @@ class PostSignInManager(
     fun doPostSignIn(): Completable {
         val parallelActions = listOf<Completable>(
                 // Added actions will be performed simultaneously.
-
-                repositoryProvider.balances().updateDeferred(),
+                repositoryProvider.balances().updateDeferred()
+        )
+        val syncActions = listOf<Completable>(
+                // Added actions will be performed on after another in
+                // provided order.
                 repositoryProvider.tfaFactors().updateDeferred()
                         .onErrorResumeNext {
                             if (it is HttpException
@@ -28,10 +31,6 @@ class PostSignInManager(
                             else
                                 Completable.error(it)
                         }
-        )
-        val syncActions = listOf<Completable>(
-                // Added actions will be performed on after another in
-                // provided order.
         )
 
         val performParallelActions = Completable.merge(parallelActions)
