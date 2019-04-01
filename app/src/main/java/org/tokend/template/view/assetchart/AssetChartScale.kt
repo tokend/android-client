@@ -11,7 +11,7 @@ enum class AssetChartScale {
     YEAR;
 
     /**
-     * @returns best looking [DateFormat] for the scale
+     * @return best looking [DateFormat] for the scale
      */
     val dateFormat: DateFormat
         get() {
@@ -26,7 +26,7 @@ enum class AssetChartScale {
         }
 
     /**
-     * @returns short label of the scale
+     * @return short label of the scale
      */
     val label: String
         get() = when (this) {
@@ -37,7 +37,7 @@ enum class AssetChartScale {
         }
 
     /**
-     * @returns scale unit name
+     * @return scale unit name
      */
     val unitName: String
         get() = when (this) {
@@ -45,5 +45,16 @@ enum class AssetChartScale {
             WEEK -> "week"
             MONTH -> "month"
             YEAR -> "year"
+        }
+
+    /**
+     * @return best looking points count for the scale
+     */
+    val pointsToDisplay: Int
+        get() = when (this) {
+            DAY -> 24
+            WEEK -> 14
+            MONTH -> 31
+            YEAR -> 24
         }
 }

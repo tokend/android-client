@@ -204,12 +204,19 @@ class AssetChartCard : LinearLayout {
             AssetChartScale.YEAR -> data?.year
         } ?: emptyList()
 
-        for (i in 0 until points.size) {
+        val displayCount = Math.min(points.size, chartScale.pointsToDisplay)
+
+        val step = points.size / displayCount * -1
+
+        val range = IntProgression.fromClosedRange(points.size - 1, 0, step)
+        for (i in range) {
             val point = points[i]
-            newChartData.add(Entry(i.toFloat(), point.value?.toFloat() ?: 0f,
+            newChartData.add(Entry(0f, point.value?.toFloat() ?: 0f,
                     point.date))
         }
-
+        newChartData.forEachIndexed { i, it ->
+            it.x = (newChartData.size - 1 - i).toFloat()
+        }
         Collections.sort(newChartData, EntryXComparator())
 
         chartData.clear()
@@ -250,6 +257,8 @@ class AssetChartCard : LinearLayout {
     private fun drawChartData() {
         if (chartData.isEmpty()) {
             chart.setNoDataText(context.getString(R.string.no_data))
+            chart.clear()
+            return
         }
 
         val dataSet = LineDataSet(chartData, "")
