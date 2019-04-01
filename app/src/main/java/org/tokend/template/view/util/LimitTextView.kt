@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.widget.TextView
 import org.tokend.sdk.utils.BigDecimalUtil
+import org.tokend.template.extensions.isMaxPossibleAmount
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
@@ -50,7 +51,7 @@ class LimitTextView : TextView {
             else -> "${total - used} $SLASH_SYMBOL $total"
         }
 
-        when (total == zeroForAsset || total == MAX) {
+        when (total == zeroForAsset || total.isMaxPossibleAmount()) {
             true -> {
                 this.left = "$DASH_SYMBOL $SLASH_SYMBOL"
                 this.total = DASH_SYMBOL
@@ -81,7 +82,5 @@ class LimitTextView : TextView {
     companion object {
         private const val SLASH_SYMBOL = "/"
         private const val DASH_SYMBOL = "—"
-
-        private val MAX = BigDecimal("9223372036854.775807")
     }
 }
