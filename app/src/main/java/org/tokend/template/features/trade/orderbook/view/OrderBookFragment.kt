@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_order_book.*
@@ -269,10 +270,19 @@ class OrderBookFragment : BaseFragment() {
                 .addTo(compositeDisposable)
     }
 
+    private var offerPreparationDisposable: Disposable? = null
     private fun goToOfferConfirmation(offer: OfferRecord) {
-        val progress = ProgressDialogFactory.getTunedDialog(requireContext())
+        offerPreparationDisposable?.dispose()
 
-        PrepareOfferUseCase(
+        val progress = ProgressDialogFactory.getTunedDialog(requireContext()).apply {
+            setCanceledOnTouchOutside(true)
+            setMessage(getString(R.string.loading_data))
+            setOnCancelListener {
+                offerPreparationDisposable?.dispose()
+            }
+        }
+
+        offerPreparationDisposable = PrepareOfferUseCase(
                 offer,
                 walletInfoProvider,
                 FeeManager(apiProvider)
