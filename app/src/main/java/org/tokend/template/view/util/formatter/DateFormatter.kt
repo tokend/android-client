@@ -41,4 +41,22 @@ class DateFormatter(private val context: Context) {
         val timeFormat = android.text.format.DateFormat.getTimeFormat(context)
         return timeFormat.format(date)
     }
+
+    /**
+     * Formats given date to 24-hour time format if it is today.
+     * Otherwise formats to date with short month name, 2-digits year number.
+     */
+    fun formatTimeOrDate(date: Date): String {
+        val dateFormat = SimpleDateFormat("dd MMM yy", Locale.ENGLISH)
+        val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
+        val current = Calendar.getInstance().get(Calendar.DATE)
+        val action = Calendar.getInstance().apply { timeInMillis = date.time }.get(Calendar.DATE)
+
+        return when (current) {
+            action -> {
+                timeFormat.format(date)
+            }
+            else -> dateFormat.format(date)
+        }
+    }
 }
