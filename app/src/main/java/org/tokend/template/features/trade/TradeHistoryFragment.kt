@@ -20,8 +20,8 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 
 class TradeHistoryFragment : BaseFragment() {
 
-    private val assetPair: AssetPairRecord
-        get() = arguments?.getSerializable(EXTRA_ASSET_PAIR) as AssetPairRecord
+    private lateinit var assetPair: AssetPairRecord
+
 
     private val tradeHistoryRepository: TradeHistoryRepository
         get() = repositoryProvider.tradeHistory(assetPair.base, assetPair.quote)
@@ -39,6 +39,9 @@ class TradeHistoryFragment : BaseFragment() {
     }
 
     override fun onInitAllowed() {
+        assetPair = arguments?.getSerializable(EXTRA_ASSET_PAIR) as? AssetPairRecord
+                ?: return
+
         initViews()
         subscribeToTradeHistory()
         update()
@@ -56,8 +59,8 @@ class TradeHistoryFragment : BaseFragment() {
     }
 
     private fun initFields() {
-        price_hint.text = getString(R.string.price_hint_template, assetPair.quote)
-        amount_hint.text = getString(R.string.amount_hint_template, assetPair.base)
+        price_hint.text = getString(R.string.template_price_hint, assetPair.quote)
+        amount_hint.text = getString(R.string.template_amount_hint, assetPair.base)
     }
 
     private fun initList() {

@@ -11,13 +11,17 @@ class TradeHistoryItemViewHolder(view: View,
                                  private val amountFormatter: AmountFormatter
 ) : BaseViewHolder<TradeHistoryRecord>(view) {
 
+    private val priceText = view.price_text_view
+    private val amountText = view.amount_text_view
+    private val timeText = view.time_text_view
+
     override fun bind(item: TradeHistoryRecord) {
-        view.price_text_view.text =
-                amountFormatter.formatAssetAmount(item.price,
-                        item.quoteAsset, withAssetCode = false, abbreviation = true)
-        view.amount_text_view.text =
-                amountFormatter.formatAssetAmount(item.baseAmount,
-                        item.baseAsset, withAssetCode = false, abbreviation = true)
-        view.time_text_view.text = DateFormatter(view.context).formatTimeOrDate(item.createdAt)
+        priceText.text = amountFormatter.formatAssetAmount(item.price,
+                item.quoteAsset, withAssetCode = false, abbreviation = true)
+
+        amountText.text = amountFormatter.formatAssetAmount(item.baseAmount,
+                item.baseAsset, withAssetCode = false, abbreviation = true)
+
+        timeText.text = DateFormatter(view.context).formatTimeOrDate(item.createdAt)
     }
 }

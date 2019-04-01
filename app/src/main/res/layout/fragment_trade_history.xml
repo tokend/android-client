@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh"
@@ -57,7 +57,7 @@
                 android:layout_height="3dp"
                 android:background="@drawable/below_shadow" />
 
-            <include layout="@layout/include_error_empty_view"/>
+            <include layout="@layout/include_error_empty_view" />
 
             <org.tokend.template.view.PaginationRecyclerView
                 android:id="@+id/trade_history_list"
@@ -71,4 +71,4 @@
 
     </LinearLayout>
 
-</org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

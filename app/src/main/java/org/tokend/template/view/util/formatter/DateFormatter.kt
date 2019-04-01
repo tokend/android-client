@@ -18,10 +18,7 @@ class DateFormatter(private val context: Context) {
      * short month name, 2-digits year number, 12-/24-hour time based on device preference
      */
     fun formatCompact(date: Date): String {
-        val dateFormat = SimpleDateFormat("dd MMM yy", Locale.ENGLISH)
-        val formattedDate = dateFormat.format(date)
-
-        return "$formattedDate ${formatTimeOnly(date)}"
+        return "${formatCompactDateOnly(date)} ${formatTimeOnly(date)}"
     }
 
     /**
@@ -30,6 +27,15 @@ class DateFormatter(private val context: Context) {
      */
     fun formatDateOnly(date: Date): String {
         return SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH)
+                .format(date)
+    }
+
+    /**
+     * Formats given date to the long string without time:
+     * short month name, 2-digits year number
+     */
+    fun formatCompactDateOnly(date: Date): String {
+        return SimpleDateFormat("dd MMM yy", Locale.ENGLISH)
                 .format(date)
     }
 
@@ -43,20 +49,18 @@ class DateFormatter(private val context: Context) {
     }
 
     /**
-     * Formats given date to 24-hour time format if it is today.
+     * Formats given date to 12-/24-hour time if it is today.
      * Otherwise formats to date with short month name, 2-digits year number.
      */
     fun formatTimeOrDate(date: Date): String {
-        val dateFormat = SimpleDateFormat("dd MMM yy", Locale.ENGLISH)
-        val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
         val current = Calendar.getInstance().get(Calendar.DATE)
         val action = Calendar.getInstance().apply { timeInMillis = date.time }.get(Calendar.DATE)
 
         return when (current) {
             action -> {
-                timeFormat.format(date)
+                formatTimeOnly(date)
             }
-            else -> dateFormat.format(date)
+            else -> formatCompactDateOnly(date)
         }
     }
 }

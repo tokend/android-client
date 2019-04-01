@@ -387,6 +387,6 @@
     <string name="trade_trades_title">Trades</string>
 
     <string name="time_hint">Time</string>
-    <string name="price_hint_template">Price (%1$s)</string>
-    <string name="amount_hint_template">Amount (%1$s)</string>
+    <string name="template_price_hint">Price (%1$s)</string>
+    <string name="template_amount_hint">Amount (%1$s)</string>
 </resources>
