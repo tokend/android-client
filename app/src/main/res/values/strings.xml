@@ -385,4 +385,8 @@
     <string name="trade_order_book_title">Order book</string>
     <string name="trade_chart_title">Chart</string>
     <string name="trade_trades_title">Trades</string>
+
+    <string name="time_hint">Time</string>
+    <string name="template_price_hint">Price (%1$s)</string>
+    <string name="template_amount_hint">Amount (%1$s)</string>
 </resources>

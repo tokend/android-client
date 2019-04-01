@@ -8,6 +8,7 @@ import org.tokend.template.data.repository.offers.OffersRepository
 import org.tokend.template.data.repository.orderbook.OrderBookRepository
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
+import org.tokend.template.data.repository.tradehistory.TradeHistoryRepository
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.send.repository.ContactsRepository
 
@@ -27,4 +28,5 @@ interface RepositoryProvider {
     fun limits(): LimitsRepository
     fun fees(): FeesRepository
     fun balanceChanges(balanceId: String): BalanceChangesRepository
+    fun tradeHistory(base: String, quote: String): TradeHistoryRepository
 }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/half_standard_margin">
+
+            <TextView
+                android:id="@+id/price_hint"
+                style="@style/SecondaryText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/text_size_order_book"
+                tools:text="Price (USD)" />
+
+            <TextView
+                android:id="@+id/amount_hint"
+                style="@style/SecondaryText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/text_size_order_book"
+                tools:text="Amount (BTC)" />
+
+            <TextView
+                android:id="@+id/time_hint"
+                style="@style/SecondaryText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/time_hint"
+                android:textSize="@dimen/text_size_order_book" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/below_shadow" />
+
+            <include layout="@layout/include_error_empty_view" />
+
+            <org.tokend.template.view.PaginationRecyclerView
+                android:id="@+id/trade_history_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingBottom="62dp" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>
