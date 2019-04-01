@@ -20,7 +20,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
     private val factory = FragmentFactory()
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_explore_asset)
+        setContentView(R.layout.activity_single_fragment)
         asset = intent.getStringExtra(ASSET_EXTRA)
         screenId = intent.getLongExtra(SCREEN_ID, DashboardFragment.ID)
 

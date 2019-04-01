@@ -4,20 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.transition.Fade
-import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -42,8 +37,8 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SearchUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.MenuSearchViewManager
 import org.tokend.template.view.util.ProgressDialogFactory
-import java.util.concurrent.TimeUnit
 
 class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -133,45 +128,22 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         val menu = toolbar.menu
 
         searchItem = menu?.findItem(R.id.search) ?: return
-        val searchView = searchItem?.actionView as? SearchView ?: return
+        val searchItem = menu.findItem(R.id.search) ?: return
 
-        (searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text) as? EditText)
-                ?.apply {
-                    setHintTextColor(ContextCompat.getColor(context!!, R.color.white_almost))
-                    setTextColor(ContextCompat.getColor(context!!, R.color.white))
-                }
-        searchView.queryHint = getString(R.string.search)
-        searchView.setOnQueryTextFocusChangeListener { _, focused ->
-            if (!focused && searchView.query.isBlank()) {
-                searchItem?.collapseActionView()
-            }
+        try {
+            val searchManager = MenuSearchViewManager(searchItem, toolbar, compositeDisposable)
+
+            searchManager.queryHint = getString(R.string.search)
+            searchManager
+                    .queryChanges
+                    .compose(ObservableTransformers.defaultSchedulers())
+                    .subscribe { newValue ->
+                        filter = newValue.takeIf { it.isNotEmpty() }
+                    }
+                    .addTo(compositeDisposable)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
-        RxSearchView.queryTextChanges(searchView)
-                .skipInitialValue()
-                .debounce(400, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { query ->
-                    filter = query.trim().toString().takeIf { it.isNotEmpty() }
-                }
-                .addTo(compositeDisposable)
-
-        searchItem?.setOnMenuItemClickListener {
-            TransitionManager.beginDelayedTransition(toolbar, Fade().setDuration(
-                    resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-            ))
-            searchItem?.expandActionView()
-            true
-        }
-
-        searchItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
-
-            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                filter = null
-                return true
-            }
-        })
     }
 
     // endregion

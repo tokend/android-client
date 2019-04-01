@@ -90,8 +90,7 @@
     <string name="payment_confirmation_title">Payment confirmation</string>
     <string name="payment_successfully_sent">Successfully sent</string>
     <string name="template_balance_two_assets">Balance: %1$s, %2$s</string>
-    <string name="no_bids">No bids</string>
-    <string name="no_asks">No asks</string>
+    <string name="no_offers">No offers</string>
     <string name="template_offer_bid_asset">Bid (%1$s)</string>
     <string name="template_offer_ask_asset">Ask (%1$s)</string>
     <string name="template_asset_pair">%1$s/%2$s</string>
@@ -382,4 +381,12 @@
     <string name="asset_pair_not_restricted_by_current_price">Is restricted by current price</string>
     <string name="asset_pair_can_be_traded">Can be traded on secondary market</string>
     <string name="asset_pair_can_not_be_traded">Can\'t be traded on secondary market</string>
+
+    <string name="trade_order_book_title">Order book</string>
+    <string name="trade_chart_title">Chart</string>
+    <string name="trade_trades_title">Trades</string>
+
+    <string name="time_hint">Time</string>
+    <string name="template_price_hint">Price (%1$s)</string>
+    <string name="template_amount_hint">Amount (%1$s)</string>
 </resources>

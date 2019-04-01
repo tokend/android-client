@@ -1,4 +1,4 @@
-package org.tokend.template.features.trade.adapter
+package org.tokend.template.features.trade.orderbook.view.adapter
 
 import android.view.View
 import android.view.ViewGroup

@@ -1,6 +1,8 @@
 package org.tokend.template.data.model
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.sdk.api.generated.resources.AssetPairResource
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.util.PolicyChecker
 import org.tokend.wallet.xdr.AssetPairPolicy
 import java.io.Serializable
@@ -10,7 +12,8 @@ class AssetPairRecord(
         val base: String,
         val quote: String,
         val price: BigDecimal,
-        val policy: Int = 0
+        val policy: Int = 0,
+        val baseAssetLogoUrl: String?
 ) : Serializable, PolicyChecker {
     val id = "$base:$quote"
 
@@ -28,12 +31,20 @@ class AssetPairRecord(
 
     companion object {
         @JvmStatic
-        fun fromResource(resource: AssetPairResource): AssetPairRecord {
+        fun fromResource(resource: AssetPairResource,
+                         urlConfig: UrlConfig?,
+                         objectMapper: ObjectMapper): AssetPairRecord {
             return AssetPairRecord(
                     base = resource.baseAsset.id,
                     quote = resource.quoteAsset.id,
                     price = resource.price,
-                    policy = resource.policies.value
+                    policy = resource.policies.value,
+                    baseAssetLogoUrl =
+                    if (resource.baseAsset.isFilled)
+                        AssetRecord.fromResource(resource.baseAsset, urlConfig, objectMapper)
+                                .logoUrl
+                    else
+                        null
             )
         }
     }

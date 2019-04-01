@@ -213,7 +213,10 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/unknown_balance_change_details_title"
             android:theme="@style/AppTheme.CardsBackground" />
-
+        <activity
+            android:name=".features.trade.TradeActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/trade_title" />
     </application>
 
 </manifest>

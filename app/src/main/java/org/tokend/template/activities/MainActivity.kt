@@ -36,7 +36,8 @@ import org.tokend.template.features.limits.LimitsFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.settings.SettingsFragment
-import org.tokend.template.features.trade.TradeFragment
+import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
+import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
 import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
@@ -132,9 +133,9 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
         PrimaryDrawerItem()
                 .withName(R.string.trade_title)
-                .withIdentifier(TradeFragment.ID)
+                .withIdentifier(TradeAssetPairsFragment.ID)
                 .withIcon(R.drawable.ic_trade)
-                .also { items[TradeFragment.ID] = it }
+                .also { items[OrderBookFragment.ID] = it }
 
         PrimaryDrawerItem()
                 .withName(getString(R.string.fees_title))
@@ -230,7 +231,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                         }
 
                         if (BuildConfig.IS_TRADE_ALLOWED) {
-                            addDrawerItems(items[TradeFragment.ID])
+                            addDrawerItems(items[OrderBookFragment.ID])
                         }
                     }
                 }
@@ -286,10 +287,10 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     LimitsFragment.ID -> factory.getLimitsFragment()
                     ExploreAssetsFragment.ID -> factory.getExploreFragment()
                     SettingsFragment.ID -> factory.getSettingsFragment()
-                    TradeFragment.ID -> factory.getTradeFragment()
                     DepositFragment.ID -> factory.getDepositFragment()
                     SalesFragment.ID -> factory.getSalesFragment()
                     FeesFragment.ID -> factory.getFeesFragment()
+                    TradeAssetPairsFragment.ID -> factory.getTradeAssetPairsFragment()
                     else -> return
                 }
 

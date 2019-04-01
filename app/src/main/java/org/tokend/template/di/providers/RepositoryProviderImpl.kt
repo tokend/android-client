@@ -18,6 +18,8 @@ import org.tokend.template.data.repository.pairs.AssetPairsCache
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.data.repository.tfa.TfaFactorsCache
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
+import org.tokend.template.data.repository.tradehistory.TradeHistoryCache
+import org.tokend.template.data.repository.tradehistory.TradeHistoryRepository
 import org.tokend.template.features.invest.repository.SalesCache
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.send.repository.ContactsRepository
@@ -57,7 +59,7 @@ class RepositoryProviderImpl(
     }
     private val orderBookRepositories = mutableMapOf<String, OrderBookRepository>()
     private val assetPairsRepository: AssetPairsRepository by lazy {
-        AssetPairsRepository(apiProvider, AssetPairsCache())
+        AssetPairsRepository(apiProvider, urlConfigProvider, mapper, AssetPairsCache())
     }
     private val offersRepositories = mutableMapOf<String, OffersRepository>()
     private val accountRepository: AccountRepository by lazy {
@@ -86,6 +88,8 @@ class RepositoryProviderImpl(
     }
 
     private val balanceChangesRepositoriesByBalanceId = mutableMapOf<String, BalanceChangesRepository>()
+
+    private val tradesRepositoriesByAssetPair = mutableMapOf<String, TradeHistoryRepository>()
 
     override fun balances(): BalancesRepository {
         return balancesRepository
@@ -158,6 +162,17 @@ class RepositoryProviderImpl(
                     apiProvider,
                     DefaultParticipantEffectConverter(balanceId),
                     BalanceChangesCache()
+            )
+        }
+    }
+
+    override fun tradeHistory(base: String, quote: String): TradeHistoryRepository {
+        return tradesRepositoriesByAssetPair.getOrPut("$base:$quote") {
+            TradeHistoryRepository(
+                    base,
+                    quote,
+                    apiProvider,
+                    TradeHistoryCache()
             )
         }
     }

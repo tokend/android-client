@@ -1,4 +1,4 @@
-package org.tokend.template.features.trade.adapter
+package org.tokend.template.features.trade.orderbook.view.adapter
 
 import android.support.v4.content.ContextCompat
 import android.view.View
