@@ -59,7 +59,7 @@ class RepositoryProviderImpl(
     }
     private val orderBookRepositories = mutableMapOf<String, OrderBookRepository>()
     private val assetPairsRepository: AssetPairsRepository by lazy {
-        AssetPairsRepository(apiProvider, AssetPairsCache())
+        AssetPairsRepository(apiProvider, urlConfigProvider, mapper, AssetPairsCache())
     }
     private val offersRepositories = mutableMapOf<String, OffersRepository>()
     private val accountRepository: AccountRepository by lazy {

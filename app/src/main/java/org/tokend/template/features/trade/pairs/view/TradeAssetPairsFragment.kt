@@ -2,6 +2,7 @@ package org.tokend.template.features.trade.pairs.view
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import kotlinx.android.synthetic.main.fragment_trade_asset_pairs.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
+import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.features.trade.pairs.view.adapter.AssetPairItemsAdapter
 import org.tokend.template.features.trade.pairs.view.adapter.AssetPairListItem
@@ -22,8 +24,11 @@ import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SearchUtil
+import org.tokend.template.view.picker.PickerItem
+import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.MenuSearchViewManager
+import org.tokend.template.view.util.ScrollOnTopItemUpdateAdapterObserver
 
 class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
 
@@ -41,11 +46,23 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
 
     private lateinit var pairsAdapter: AssetPairItemsAdapter
 
+    private val comparator = Comparator<AssetPairListItem> { o1, o2 ->
+        assetComparator.compare(o1.baseAssetCode, o2.baseAssetCode)
+    }
+
     private var filter: String? = null
         set(value) {
             if (value != field) {
                 field = value
                 onFilterChanged()
+            }
+        }
+
+    private var quoteAsset: String? = null
+        set(value) {
+            if (value != field) {
+                field = value
+                onQuoteChanged()
             }
         }
 
@@ -57,6 +74,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
         initToolbar()
         initSwipeRefresh()
         initList()
+        initHorizontalSwipes()
 
         subscribeToAssetPairs()
 
@@ -69,6 +87,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
         toolbar.title = context?.getString(R.string.trade_title)
 
         initMenu()
+        initQuoteTabs()
     }
 
     private fun initMenu() {
@@ -117,10 +136,37 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
         error_empty_view.observeAdapter(pairsAdapter, R.string.error_no_tradeable_pairs)
         error_empty_view.setEmptyViewDenial { assetPairsRepository.isNeverUpdated }
 
+        pairsAdapter.registerAdapterDataObserver(
+                ScrollOnTopItemUpdateAdapterObserver(asset_pairs_recycler_view)
+        )
         pairsAdapter.onItemClick { _, item ->
             item.source?.let { assetPair ->
                 Navigator.openTrade(this, assetPair)
             }
+        }
+    }
+
+    private fun initQuoteTabs() {
+        pairs_tabs.onItemSelected {
+            (it.tag as? String)?.let { quote ->
+                quoteAsset = quote
+            }
+        }
+    }
+
+    private fun initHorizontalSwipes() {
+        val gestureDetector = GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
+                onSwipeToLeft = {
+                    pairs_tabs.apply { selectedItemIndex++ }
+                },
+                onSwipeToRight = {
+                    pairs_tabs.apply { selectedItemIndex-- }
+                }
+        ))
+
+        swipe_refresh.setTouchEventInterceptor { motionEvent ->
+            gestureDetector.onTouchEvent(motionEvent)
+            false
         }
     }
     // endregion
@@ -149,7 +195,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
         assetPairsRepository
                 .itemsSubject
                 .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { displayPairs() }
+                .subscribe { displayQuotes() }
                 .addTo(compositeDisposable)
     }
 
@@ -157,29 +203,46 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
         displayPairs()
     }
 
-    private fun displayPairs() {
-        val comparator = Comparator<AssetPairListItem> { o1, o2 ->
-            assetComparator.compare(o1.baseAssetCode, o2.baseAssetCode)
-        }
+    private fun onQuoteChanged() {
+        displayPairs()
+    }
 
+    private fun displayPairs() {
         val items = assetPairsRepository
                 .itemsList
-                .map { AssetPairListItem(it, requireContext()) }
+                .filter { it.isTradeable() && it.quote == quoteAsset }
+                .map(::AssetPairListItem)
                 .sortedWith(comparator)
                 .let { items ->
                     filter?.let {
                         items.filter { item ->
                             SearchUtil.isMatchGeneralCondition(
                                     it,
-                                    item.baseAssetCode,
-                                    item.quoteAssetCode,
-                                    item.code
+                                    item.baseAssetCode
                             )
                         }
                     } ?: items
                 }
 
         pairsAdapter.setData(items)
+    }
+
+    private fun displayQuotes() {
+        val quotes = assetPairsRepository
+                .itemsList
+                .filter { it.isTradeable() }
+                .map(AssetPairRecord::quote)
+                .distinct()
+                .sortedWith(assetComparator)
+
+        if (quotes.isEmpty()) {
+            pairs_tabs.visibility = View.GONE
+            pairsAdapter.setData(null)
+        } else {
+            pairs_tabs.visibility = View.VISIBLE
+        }
+
+        pairs_tabs.setItems(quotes.map { PickerItem(it, it) })
     }
 
     private fun update(force: Boolean = false) {

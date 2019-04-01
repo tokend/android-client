@@ -15,15 +15,10 @@ class AssetPairItemsAdapter(
         return AssetPairItemViewHolder(view, amountFormatter)
     }
 
-    override fun bindItemViewHolder(holder: AssetPairItemViewHolder, position: Int) {
-        super.bindItemViewHolder(holder, position)
-        holder.dividerIsVisible = position != itemCount - 1
-    }
-
     override fun getDiffCallback(newItems: List<AssetPairListItem>): DiffUtil.Callback? {
         return object : DiffUtil.Callback() {
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return items[oldItemPosition].code == newItems[newItemPosition].code
+                return items[oldItemPosition].id == newItems[newItemPosition].id
             }
 
             override fun getOldListSize(): Int {
@@ -38,15 +33,10 @@ class AssetPairItemsAdapter(
                 val first = items[oldItemPosition]
                 val second = newItems[newItemPosition]
 
-                // Divider.
-                if (oldItemPosition == items.size - 1 && newItemPosition != newItems.size - 1
-                        || oldItemPosition != items.size - 1 && newItemPosition == newItems.size - 1) {
-                    return false
-                }
-
                 return first.baseAssetCode == second.baseAssetCode
                         && first.quoteAssetCode == second.quoteAssetCode
                         && first.price == second.price
+                        && first.baseAssetLogoUrl == second.baseAssetLogoUrl
             }
         }
     }
