@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="start"
-        android:fontFamily="sans-serif-medium"
         tools:text="3611.32"/>
 
     <TextView
@@ -22,7 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_horizontal"
-        android:fontFamily="sans-serif-medium"
         tools:text="0.067509"/>
 
     <TextView
@@ -31,7 +29,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="end"
-        android:fontFamily="sans-serif-medium"
         tools:text="Yesterday"/>
 
 </LinearLayout>

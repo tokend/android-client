@@ -19,7 +19,7 @@ class TradePagerAdapter(assetPair: AssetPairRecord,
                     context.getString(R.string.trade_order_book_title),
             fragmentFactory.getAssetPairChartFragment(assetPair) to
                     context.getString(R.string.trade_chart_title),
-            Fragment() to
+            fragmentFactory.getTradeHistoryFragment(assetPair) to
                     context.getString(R.string.trade_trades_title)
     )
 
