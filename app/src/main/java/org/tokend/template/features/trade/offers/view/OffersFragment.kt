@@ -22,8 +22,9 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 
 class OffersFragment : BaseFragment() {
 
-    private val assetPair: AssetPairRecord?
-        get() = arguments?.getSerializable(ASSET_PAIR_EXTRA) as? AssetPairRecord
+    private val assetPair: AssetPairRecord? by lazy {
+        arguments?.getSerializable(ASSET_PAIR_EXTRA) as? AssetPairRecord
+    }
 
     private val onlyPrimary: Boolean
         get() = arguments?.getBoolean(ONLY_PRIMARY_EXTRA)
@@ -121,11 +122,11 @@ class OffersFragment : BaseFragment() {
     private fun displayOffers(items: List<OfferRecord>) {
         adapter.setData(
                 items
-                        .filter {
-                            if (assetPair != null) {
-                                it.baseAssetCode == assetPair!!.base
-                                        && it.quoteAssetCode == assetPair!!.quote
-                            } else true
+                        .filter { item ->
+                            assetPair?.let {
+                                item.baseAssetCode == it.base
+                                        && item.quoteAssetCode == it.quote
+                            } ?: true
                         }
                         .map {
                             PendingOfferListItem(it)
