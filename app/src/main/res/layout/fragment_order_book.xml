@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,114 +11,58 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/balance_app_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:elevation="0dp">
-
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|enterAlways">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/background"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:orientation="vertical"
-                        android:padding="@dimen/half_standard_padding">
-
-                        <TextView
-                            android:id="@+id/balance_text_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            tools:text="Balance: 101 BTC" />
-
-                        <TextView
-                            android:id="@+id/price_text_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/quarter_standard_margin"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="center"
-                            android:textSize="18sp"
-                            tools:text="1 TKD = 0.5 BTC" />
-                    </LinearLayout>
-
-                    <include layout="@layout/layout_cards_divider" />
-
-                </LinearLayout>
-
-            </android.support.design.widget.CollapsingToolbarLayout>
-
-        </android.support.design.widget.AppBarLayout>
-
         <LinearLayout
             android:id="@+id/order_book_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
             android:clipToPadding="false"
-            android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:orientation="vertical">
 
-            <android.support.v4.widget.NestedScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:padding="@dimen/half_standard_margin">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/bid_hint"
+                        style="@style/SecondaryText"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/half_standard_margin">
+                        android:layout_weight="1"
+                        android:textSize="@dimen/text_size_order_book"
+                        tools:text="Bid (USD)" />
 
-                        <TextView
-                            android:id="@+id/bid_hint"
-                            style="@style/SecondaryText"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textSize="@dimen/text_size_order_book"
-                            tools:text="Bid (USD)" />
+                    <TextView
+                        android:id="@+id/amount"
+                        style="@style/SecondaryText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:text="@string/amount_label"
+                        android:textSize="@dimen/text_size_order_book" />
 
-                        <TextView
-                            android:id="@+id/amount"
-                            style="@style/SecondaryText"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:text="@string/amount_label"
-                            android:textSize="@dimen/text_size_order_book" />
-
-                        <TextView
-                            android:id="@+id/ask_hint"
-                            style="@style/SecondaryText"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:textSize="@dimen/text_size_order_book"
-                            tools:text="Ask (USD)" />
-                    </LinearLayout>
-
-                    <include layout="@layout/layout_progress" />
-
+                    <TextView
+                        android:id="@+id/ask_hint"
+                        style="@style/SecondaryText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textSize="@dimen/text_size_order_book"
+                        tools:text="Ask (USD)" />
                 </LinearLayout>
-            </android.support.v4.widget.NestedScrollView>
+
+                <include layout="@layout/layout_progress" />
+
+            </LinearLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -145,8 +88,7 @@
                         android:clipToPadding="false"
                         android:overScrollMode="never"
                         android:paddingStart="@dimen/half_standard_margin"
-                        android:paddingBottom="62dp"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                        android:paddingBottom="62dp" />
 
                     <org.tokend.template.view.PaginationRecyclerView
                         android:id="@+id/sell_offers_recycler_view"
@@ -156,8 +98,7 @@
                         android:clipToPadding="false"
                         android:overScrollMode="never"
                         android:paddingEnd="@dimen/half_standard_margin"
-                        android:paddingBottom="62dp"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                        android:paddingBottom="62dp" />
 
                 </LinearLayout>
 

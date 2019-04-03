@@ -67,8 +67,6 @@ class OrderBookFragment : BaseFragment() {
         subscribeToBalances()
         subscribeToOrderBook()
 
-        displayBalance()
-        displayPrice()
         displayOrderBookHeaders()
 
         update()
@@ -102,10 +100,6 @@ class OrderBookFragment : BaseFragment() {
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
         swipe_refresh.setOnRefreshListener { update(true) }
-
-        balance_app_bar.addOnOffsetChangedListener { _, verticalOffset ->
-            swipe_refresh.isEnabled = verticalOffset == 0
-        }
     }
 
     private fun initFab() {
@@ -123,36 +117,13 @@ class OrderBookFragment : BaseFragment() {
         balancesDisposable = CompositeDisposable(
                 balancesRepository.itemsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            onBalancesUpdated()
-                        },
+                        .subscribe (),
                 balancesRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe { loadingIndicator.setLoading(it, "balances") }
         ).also { it.addTo(compositeDisposable) }
     }
-
-    private fun onBalancesUpdated() {
-        displayBalance()
-    }
-
-    private fun displayBalance() {
-        val balances = balancesRepository.itemsList
-
-        val firstBalance = balances.find { it.assetCode == assetPair.base }?.available
-        val secondBalance = balances.find { it.assetCode == assetPair.quote }?.available
-
-        balance_text_view.text = getString(R.string.template_balance_two_assets,
-                amountFormatter.formatAssetAmount(firstBalance, assetPair.base),
-                amountFormatter.formatAssetAmount(secondBalance, assetPair.quote))
-    }
     // endregion
-
-
-    private fun displayPrice() {
-        price_text_view.text = getString(R.string.template_price_one_equals, assetPair.base,
-                amountFormatter.formatAssetAmount(assetPair.price, assetPair.quote))
-    }
 
     // region Order book
     private fun displayOrderBookHeaders() {
@@ -262,7 +233,7 @@ class OrderBookFragment : BaseFragment() {
     }
 
     private fun openOfferDialog(offer: OfferRecord) {
-        CreateOfferDialog.withArgs(offer, amountFormatter)
+        CreateOfferDialog.withArgs(offer, amountFormatter, balancesRepository.itemsList)
                 .showDialog(this.childFragmentManager, "create_offer")
                 .subscribe {
                     goToOfferConfirmation(it)

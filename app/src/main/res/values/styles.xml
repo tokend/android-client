@@ -163,4 +163,8 @@
         <item name="android:layout_height">0dp</item>
         <item name="android:overScrollMode">never</item>
     </style>
+
+    <style name="ToolbarSubtitleAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>

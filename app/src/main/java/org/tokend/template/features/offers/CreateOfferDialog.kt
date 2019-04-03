@@ -14,7 +14,9 @@ import kotlinx.android.synthetic.main.fragment_dialog_crate_order.*
 import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
+import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.inputChanges
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.input.AmountEditTextWrapper
@@ -23,24 +25,6 @@ import java.math.BigDecimal
 import java.math.MathContext
 
 class CreateOfferDialog : DialogFragment() {
-
-    lateinit var amountFormatter: AmountFormatter
-
-    companion object {
-        private const val EXTRA_ORDER = "extra_order"
-
-        fun withArgs(order: OfferRecord, amountFormatter: AmountFormatter): CreateOfferDialog {
-
-            val dialog = CreateOfferDialog()
-
-            val args = Bundle()
-            args.putSerializable(EXTRA_ORDER, order)
-            dialog.arguments = args
-            dialog.amountFormatter = amountFormatter
-
-            return dialog
-        }
-    }
 
     private var asset: String = ""
         set(value) {
@@ -55,6 +39,8 @@ class CreateOfferDialog : DialogFragment() {
     private lateinit var currentOffer: OfferRecord
     private lateinit var amountEditTextWrapper: AmountEditTextWrapper
     private lateinit var priceEditTextWrapper: AmountEditTextWrapper
+    private lateinit var amountFormatter: AmountFormatter
+    private lateinit var balances: List<BalanceRecord>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
@@ -84,8 +70,20 @@ class CreateOfferDialog : DialogFragment() {
         } ?: return
 
         asset = currentOffer.baseAssetCode
+
+        displayBalance()
         initTextFields()
         initAssetSpinner()
+    }
+
+    private fun displayBalance() {
+        val firstBalance = balances.find { it.assetCode == currentOffer.baseAssetCode }?.available
+        val secondBalance = balances.find { it.assetCode == currentOffer.quoteAssetCode }?.available
+
+        base_balance_text_view.text =
+                amountFormatter.formatAssetAmount(firstBalance, currentOffer.baseAssetCode)
+        quote_balance_text_view.text =
+                amountFormatter.formatAssetAmount(secondBalance, currentOffer.quoteAssetCode)
     }
 
     private fun initTextFields() {
@@ -216,5 +214,26 @@ class CreateOfferDialog : DialogFragment() {
                 priceEditTextWrapper.rawAmount,
                 amountEditTextWrapper.rawAmount
         )
+    }
+
+    companion object {
+        private const val EXTRA_ORDER = "extra_order"
+
+        fun withArgs(
+                order: OfferRecord,
+                amountFormatter: AmountFormatter,
+                balances: List<BalanceRecord>
+        ): CreateOfferDialog {
+
+            val dialog = CreateOfferDialog()
+
+            val args = Bundle()
+            args.putSerializable(EXTRA_ORDER, order)
+            dialog.arguments = args
+            dialog.amountFormatter = amountFormatter
+            dialog.balances = balances
+
+            return dialog
+        }
     }
 }
