@@ -21,6 +21,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/balances_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/half_standard_padding"
+        android:layout_marginEnd="@dimen/half_standard_padding"
+        android:layout_marginTop="@dimen/standard_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_text_view">
+
+        <TextView
+            android:id="@+id/balance_title_text_view"
+            style="@style/HintText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_offer_balances_hint" />
+
+        <TextView
+            android:id="@+id/base_balance_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="101 BTC"
+            android:layout_marginTop="@dimen/quarter_standard_margin"/>
+
+        <TextView
+            android:id="@+id/quote_balance_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="101 BTC"
+            android:layout_marginTop="@dimen/quarter_standard_margin"/>
+    </LinearLayout>
+
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/price_edit_text"
         style="@style/EditText"
@@ -34,7 +67,7 @@
         android:lines="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_text_view" />
+        app:layout_constraintTop_toBottomOf="@id/balances_layout" />
 
     <include
         android:id="@+id/include_amount"
