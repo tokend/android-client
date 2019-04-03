@@ -32,6 +32,9 @@ class TradeActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = getString(R.string.template_asset_pair, assetPair.base, assetPair.quote)
+        toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleAppearance)
+        toolbar.subtitle = getString(R.string.template_price_one_equals, assetPair.base,
+                amountFormatter.formatAssetAmount(assetPair.price, assetPair.quote))
     }
 
     private fun initViewPager() {
