@@ -31,7 +31,7 @@ abstract class RepositoryCache<T> {
                     else
                         Single.just(listOf())
 
-            return Completable.fromSingle(initSingle).observeOn(Schedulers.io())
+            return Completable.fromSingle(initSingle)
         }
     }
 
