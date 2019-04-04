@@ -5,25 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
 import org.tokend.template.data.repository.*
 import org.tokend.template.data.repository.assets.AssetsRepository
-import org.tokend.template.data.repository.assets.AssetsRepositoryCache
 import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
-import org.tokend.template.data.repository.balances.BalancesCache
 import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
 import org.tokend.template.data.repository.offers.OffersCache
 import org.tokend.template.data.repository.offers.OffersRepository
 import org.tokend.template.data.repository.orderbook.OrderBookCache
 import org.tokend.template.data.repository.orderbook.OrderBookRepository
-import org.tokend.template.data.repository.pairs.AssetPairsCache
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
-import org.tokend.template.data.repository.tfa.TfaFactorsCache
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
-import org.tokend.template.data.repository.tradehistory.TradeHistoryCache
 import org.tokend.template.data.repository.tradehistory.TradeHistoryRepository
-import org.tokend.template.features.invest.repository.SalesCache
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.send.repository.ContactsRepository
-import org.tokend.template.features.send.repository.ContactsRepositoryCache
 
 /**
  * @param context if not specified then android-related repositories
@@ -42,7 +36,7 @@ class RepositoryProviderImpl(
                 walletInfoProvider,
                 urlConfigProvider,
                 mapper,
-                BalancesCache()
+                MemoryOnlyRepositoryCache()
         )
     }
     private val accountDetails: AccountDetailsRepository by lazy {
@@ -52,31 +46,31 @@ class RepositoryProviderImpl(
         SystemInfoRepository(apiProvider)
     }
     private val tfaFactorsRepository: TfaFactorsRepository by lazy {
-        TfaFactorsRepository(apiProvider, walletInfoProvider, TfaFactorsCache())
+        TfaFactorsRepository(apiProvider, walletInfoProvider, MemoryOnlyRepositoryCache())
     }
     private val assetsRepository: AssetsRepository by lazy {
-        AssetsRepository(apiProvider, urlConfigProvider, mapper, AssetsRepositoryCache())
+        AssetsRepository(apiProvider, urlConfigProvider, mapper, MemoryOnlyRepositoryCache())
     }
     private val orderBookRepositories = mutableMapOf<String, OrderBookRepository>()
     private val assetPairsRepository: AssetPairsRepository by lazy {
-        AssetPairsRepository(apiProvider, urlConfigProvider, mapper, AssetPairsCache())
+        AssetPairsRepository(apiProvider, urlConfigProvider, mapper, MemoryOnlyRepositoryCache())
     }
     private val offersRepositories = mutableMapOf<String, OffersRepository>()
     private val accountRepository: AccountRepository by lazy {
         AccountRepository(apiProvider, walletInfoProvider)
     }
     private val salesRepository: SalesRepository by lazy {
-        SalesRepository(apiProvider, urlConfigProvider, SalesCache())
+        SalesRepository(apiProvider, urlConfigProvider, MemoryOnlyRepositoryCache())
     }
 
     private val filteredSalesRepository: SalesRepository by lazy {
-        SalesRepository(apiProvider, urlConfigProvider, SalesCache())
+        SalesRepository(apiProvider, urlConfigProvider, MemoryOnlyRepositoryCache())
     }
 
     private val contactsRepository: ContactsRepository by lazy {
         context ?: throw IllegalStateException("This provider has no context " +
                 "required to provide contacts repository")
-        ContactsRepository(context, ContactsRepositoryCache())
+        ContactsRepository(context, MemoryOnlyRepositoryCache())
     }
 
     private val limitsRepository: LimitsRepository by lazy {
@@ -172,7 +166,7 @@ class RepositoryProviderImpl(
                     base,
                     quote,
                     apiProvider,
-                    TradeHistoryCache()
+                    MemoryOnlyRepositoryCache()
             )
         }
     }

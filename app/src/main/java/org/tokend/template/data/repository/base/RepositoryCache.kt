@@ -3,6 +3,7 @@ package org.tokend.template.data.repository.base
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.doAsync
 
 /**
  * Represents in-memory cache of given type with persistence.
@@ -21,7 +22,7 @@ abstract class RepositoryCache<T> {
         synchronized(this) {
             val initSingle =
                     if (!isLoaded)
-                        getAllFromDb()
+                        getAllFromDbSafe()
                                 .doOnSuccess {
                                     isLoaded = true
                                     mItems.clear()
@@ -36,7 +37,7 @@ abstract class RepositoryCache<T> {
 
     fun add(item: T): Boolean {
         return if (!mItems.contains(item)) {
-            addToDb(listOf(item))
+            addToDbSafe(listOf(item))
             mItems.add(0, item)
             true
         } else {
@@ -47,7 +48,7 @@ abstract class RepositoryCache<T> {
     fun delete(item: T): Boolean {
         return mItems.remove(item).also { deleted ->
             if (deleted) {
-                deleteFromDb(listOf(item))
+                deleteFromDbSafe(listOf(item))
             }
         }
     }
@@ -56,7 +57,7 @@ abstract class RepositoryCache<T> {
         val index = mItems.indexOf(item)
         return if (index >= 0) {
             mItems[index] = item
-            updateInDb(listOf(item))
+            updateInDbSafe(listOf(item))
             return true
         } else {
             false
@@ -89,13 +90,13 @@ abstract class RepositoryCache<T> {
         if (operatingItems.isEmpty()) {
             if (newStateItems.isNotEmpty()) {
                 mItems.addAll(newStateItems)
-                addToDb(newStateItems)
+                addToDbSafe(newStateItems)
                 changesOccurred = true
             }
         } else if (newStateItems.isEmpty() && filter == null) {
             if (mItems.isNotEmpty()) {
                 mItems.clear()
-                clearDb()
+                clearDbSafe()
                 changesOccurred = true
             }
         } else {
@@ -130,18 +131,18 @@ abstract class RepositoryCache<T> {
             }
 
             if (toUpdateInDb.isNotEmpty()) {
-                updateInDb(toUpdateInDb)
+                updateInDbSafe(toUpdateInDb)
             }
 
             if (removedItems.isNotEmpty()) {
                 mItems.removeAll(removedItems)
-                deleteFromDb(removedItems)
+                deleteFromDbSafe(removedItems)
                 changesOccurred = true
             }
 
             if (newItems.isNotEmpty()) {
                 mItems.addAll(newItems)
-                addToDb(newItems)
+                addToDbSafe(newItems)
                 changesOccurred = true
             }
         }
@@ -162,6 +163,48 @@ abstract class RepositoryCache<T> {
      */
     protected open fun sortItems() {}
 
+    private fun getAllFromDbSafe(): Single<List<T>> {
+        return Single.defer {
+            val items = synchronized(this@RepositoryCache) {
+                getAllFromDb()
+            }
+
+            Single.just(items)
+        }.subscribeOn(Schedulers.io())
+    }
+
+    private fun addToDbSafe(items: List<T>) {
+        doAsync {
+            synchronized(this@RepositoryCache) {
+                addToDb(items)
+            }
+        }
+    }
+
+    private fun updateInDbSafe(items: List<T>) {
+        doAsync {
+            synchronized(this@RepositoryCache) {
+                updateInDb(items)
+            }
+        }
+    }
+
+    private fun deleteFromDbSafe(items: List<T>) {
+        doAsync {
+            synchronized(this@RepositoryCache) {
+                deleteFromDb(items)
+            }
+        }
+    }
+
+    private fun clearDbSafe() {
+        doAsync {
+            synchronized(this@RepositoryCache) {
+                clearDb()
+            }
+        }
+    }
+
     // region Abstract
 
     /**
@@ -170,7 +213,7 @@ abstract class RepositoryCache<T> {
     protected abstract fun isContentSame(first: T, second: T): Boolean
 
     // region DB
-    protected abstract fun getAllFromDb(): Single<List<T>>
+    protected abstract fun getAllFromDb(): List<T>
 
     protected abstract fun addToDb(items: List<T>)
 

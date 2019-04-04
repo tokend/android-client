@@ -1,20 +1,21 @@
 package org.tokend.template.features.invest.repository
 
 import io.reactivex.Single
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.sales.params.SalesParams
+import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
-import org.tokend.rx.extensions.toSingle
 import org.tokend.template.features.invest.model.SaleRecord
 
 class SalesRepository(
         private val apiProvider: ApiProvider,
         private val urlConfigProvider: UrlConfigProvider,
-        itemsCache: SalesCache
+        itemsCache: RepositoryCache<SaleRecord>
 ) : PagedDataRepository<SaleRecord>(itemsCache) {
 
     private var name: String? = null

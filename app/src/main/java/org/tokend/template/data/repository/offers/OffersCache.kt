@@ -1,6 +1,5 @@
 package org.tokend.template.data.repository.offers
 
-import io.reactivex.Single
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.base.RepositoryCache
 
@@ -13,21 +12,13 @@ class OffersCache : RepositoryCache<OfferRecord>() {
         mItems.sortByDescending { it.date }
     }
 
-    override fun getAllFromDb(): Single<List<OfferRecord>> = Single.just(emptyList())
+    override fun getAllFromDb() = emptyList<OfferRecord>()
 
-    override fun addToDb(items: List<OfferRecord>) {
+    override fun addToDb(items: List<OfferRecord>) {}
 
-    }
+    override fun updateInDb(items: List<OfferRecord>) {}
 
-    override fun updateInDb(items: List<OfferRecord>) {
+    override fun deleteFromDb(items: List<OfferRecord>) {}
 
-    }
-
-    override fun deleteFromDb(items: List<OfferRecord>) {
-
-    }
-
-    override fun clearDb() {
-
-    }
+    override fun clearDb() {}
 }

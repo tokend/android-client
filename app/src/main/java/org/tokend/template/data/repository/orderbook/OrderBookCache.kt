@@ -1,6 +1,5 @@
 package org.tokend.template.data.repository.orderbook
 
-import io.reactivex.Single
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.base.RepositoryCache
 
@@ -19,7 +18,7 @@ class OrderBookCache(
         }
     }
 
-    override fun getAllFromDb(): Single<List<OfferRecord>> = Single.just(emptyList())
+    override fun getAllFromDb() = emptyList<OfferRecord>()
 
     override fun addToDb(items: List<OfferRecord>) {}
 
