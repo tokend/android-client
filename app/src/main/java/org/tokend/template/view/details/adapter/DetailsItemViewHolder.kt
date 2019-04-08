@@ -1,5 +1,6 @@
 package org.tokend.template.view.details.adapter
 
+import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,6 +15,23 @@ class DetailsItemViewHolder(view: View) : BaseViewHolder<DetailsItem>(view) {
     private val headerTextView: TextView = view.find(R.id.header_text_view)
     private val iconImageView: ImageView = view.find(android.R.id.icon)
     private val dividerView: View = view.find(R.id.divider_view)
+
+    init {
+        mainTextView.setSingleLine(false)
+        mainTextView.setTextIsSelectable(true)
+
+        mainTextView.setOnTouchListener { _, event ->
+            if (event.action == 1 && !mainTextView.hasSelection()) {
+                view.callOnClick()
+            }
+            false
+        }
+
+        hintTextView.setTextSize(
+                TypedValue.COMPLEX_UNIT_PX,
+                view.context.resources.getDimensionPixelSize(R.dimen.text_size_hint).toFloat()
+        )
+    }
 
     var dividerIsVisible: Boolean
         get() = dividerView.visibility == View.VISIBLE

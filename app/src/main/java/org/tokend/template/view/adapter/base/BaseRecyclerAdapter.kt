@@ -77,6 +77,13 @@ abstract class BaseRecyclerAdapter<ItemType, ViewHolderType>
     }
 
     /**
+     * Appends given items to the current data list
+     */
+    open fun addData(vararg items: ItemType) {
+        addData(items.toList())
+    }
+
+    /**
      * @returns true if adapter has data, false otherwise
      */
     open val hasData: Boolean

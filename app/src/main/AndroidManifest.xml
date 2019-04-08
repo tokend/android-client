@@ -177,7 +177,7 @@
             android:name=".features.wallet.details.PaymentDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/payment_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.WithdrawalDetailsActivity"
             android:configChanges="orientation|screenSize"
@@ -212,7 +212,7 @@
             android:name=".features.wallet.details.UnknownDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/unknown_balance_change_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.trade.TradeActivity"
             android:configChanges="orientation|screenSize"

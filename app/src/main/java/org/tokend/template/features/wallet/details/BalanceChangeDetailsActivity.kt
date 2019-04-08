@@ -1,13 +1,17 @@
 package org.tokend.template.features.wallet.details
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.ViewGroup
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.BalanceChangeAction
+import org.tokend.template.features.wallet.view.BalanceChangeIconFactory
 import org.tokend.template.view.InfoCard
+import org.tokend.template.view.details.DetailsItem
+import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.formatter.DateFormatter
 import java.math.BigDecimal
@@ -37,15 +41,39 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
                 .addRow(DateFormatter(this).formatLong(item.date), null)
     }
 
+    protected open fun displayDate(item: BalanceChange,
+                                   adapter: DetailsItemsAdapter) {
+        adapter.addData(
+                DetailsItem(
+                        text = DateFormatter(this).formatLong(item.date),
+                        hint = getString(R.string.date),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_date)
+                )
+        )
+    }
+
     protected open fun displayEffect(item: BalanceChange,
-                                cardsLayout: ViewGroup) {
+                                     cardsLayout: ViewGroup) {
         InfoCard(cardsLayout)
                 .setHeading(R.string.tx_effect, null)
                 .addRow(LocalizedName(this).forBalanceChangeAction(item.action), null)
     }
 
+    protected open fun displayEffect(item: BalanceChange,
+                                     adapter: DetailsItemsAdapter) {
+        val iconFactory = BalanceChangeIconFactory(this)
+
+        adapter.addData(
+                DetailsItem(
+                        text = LocalizedName(this).forBalanceChangeAction(item.action),
+                        hint = getString(R.string.tx_effect),
+                        icon = iconFactory.get(item)
+                )
+        )
+    }
+
     protected open fun displayBalanceChange(item: BalanceChange,
-                                     cardsLayout: ViewGroup) {
+                                            cardsLayout: ViewGroup) {
         val minDigits = amountFormatter.getDecimalDigitsCount(item.assetCode)
         val asset = item.assetCode
 
@@ -85,6 +113,27 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
                     .setHeading(R.string.amount, amountString)
                     .addRow(R.string.fixed_fee, fixedFeeString)
                     .addRow(R.string.percent_fee, percentFeeString)
+        }
+    }
+
+    protected open fun displayBalanceChange(item: BalanceChange,
+                                            adapter: DetailsItemsAdapter) {
+        val asset = item.assetCode
+
+        adapter.addData(
+                DetailsItem(
+                        text = amountFormatter.formatAssetAmount(item.amount, asset),
+                        hint = getString(R.string.amount),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
+                )
+        )
+        if (item.fee.total.signum() > 0) {
+            adapter.addData(
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(item.fee.total, asset),
+                            hint = getString(R.string.tx_fee)
+                    )
+            )
         }
     }
 
