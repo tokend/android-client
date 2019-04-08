@@ -25,7 +25,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -217,6 +216,9 @@
             android:name=".features.trade.TradeActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/trade_title" />
+        <activity
+            android:name=".features.offers.CreateOfferActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/create_offer_title"/>
     </application>
-
 </manifest>

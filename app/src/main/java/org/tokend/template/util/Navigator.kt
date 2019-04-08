@@ -26,6 +26,7 @@ import org.tokend.template.features.invest.activities.InvestmentConfirmationActi
 import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
+import org.tokend.template.features.offers.CreateOfferActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
 import org.tokend.template.features.offers.view.details.PendingInvestmentDetailsActivity
@@ -276,6 +277,14 @@ object Navigator {
         fragment.startActivity(
                 Intent(fragment.requireContext(), TradeActivity::class.java).apply {
                     putExtra(TradeActivity.ASSET_PAIR_EXTRA, assetPair)
+                }
+        )
+    }
+
+    fun openCreateOffer(fragment: Fragment, offer: OfferRecord) {
+        fragment.startActivity(
+                Intent(fragment.requireContext(), CreateOfferActivity::class.java).apply {
+                    putExtra(CreateOfferActivity.EXTRA_OFFER, offer)
                 }
         )
     }
