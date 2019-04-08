@@ -157,7 +157,7 @@
             android:name=".features.wallet.details.AmlAlertDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/aml_alert_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.IssuanceDetailsActivity"
             android:configChanges="orientation|screenSize"
