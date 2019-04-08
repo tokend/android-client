@@ -389,5 +389,7 @@
     <string name="time_hint">Time</string>
     <string name="template_price_hint">Price (%1$s)</string>
     <string name="template_amount_hint">Amount (%1$s)</string>
+    <string name="template_total_hint">Total (%1$s)</string>
     <string name="trade_offers_title">Offers</string>
+    <string name="total_label">Total</string>
 </resources>

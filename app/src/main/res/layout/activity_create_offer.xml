@@ -1,9 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/standard_margin"
     tools:context=".features.offers.CreateOfferActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/price_edit_text"
+        style="@style/EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/price"
+        android:inputType="numberDecimal"
+        android:lines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/balances_layout" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/amount_edit_text"
+        style="@style/EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:hint="@string/amount_label"
+        android:inputType="numberDecimal"
+        android:lines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/balances_layout"
+        app:met_helperText="Available 11 CO1"
+        app:met_helperTextAlwaysShown="true" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/total_edit_text"
+        style="@style/EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:hint="@string/total_label"
+        android:inputType="numberDecimal"
+        android:lines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/balances_layout"
+        app:met_helperText="Available 25 CO2"
+        app:met_helperTextAlwaysShown="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_padding"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/sell_btn"
+            style="@style/PrimaryButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/half_standard_margin"
+            android:layout_weight="1"
+            android:enabled="true"
+            android:text="@string/sell_action"
+            android:textAllCaps="true" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/buy_btn"
+            style="@style/PrimaryButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/half_standard_margin"
+            android:layout_weight="1"
+            android:enabled="true"
+            android:text="@string/buy_action"
+            android:textAllCaps="true" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/sell_hint"
+            style="@style/SecondaryText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/half_standard_margin"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/buy_hint"
+            style="@style/SecondaryText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/half_standard_margin"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -89,11 +89,13 @@ class OrderBookFragment : BaseFragment() {
         }
 
         buyAdapter.onItemClick { _, item ->
-            openOfferDialog(item)
+            //            openOfferDialog(item)
+            Navigator.openCreateOffer(this, item)
         }
 
         sellAdapter.onItemClick { _, item ->
-            openOfferDialog(item)
+            //            openOfferDialog(item)
+            Navigator.openCreateOffer(this, item)
         }
     }
 
@@ -117,7 +119,7 @@ class OrderBookFragment : BaseFragment() {
         balancesDisposable = CompositeDisposable(
                 balancesRepository.itemsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe (),
+                        .subscribe(),
                 balancesRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe { loadingIndicator.setLoading(it, "balances") }
@@ -221,7 +223,17 @@ class OrderBookFragment : BaseFragment() {
 
     // region Offer creation
     private fun createOffer() {
-        openOfferDialog(
+//        openOfferDialog(
+//                OfferRecord(
+//                        baseAssetCode = assetPair.base,
+//                        quoteAssetCode = assetPair.quote,
+//                        baseAmount = BigDecimal.ZERO,
+//                        price = assetPair.price,
+//                        isBuy = false
+//                )
+//        )
+
+        Navigator.openCreateOffer(this,
                 OfferRecord(
                         baseAssetCode = assetPair.base,
                         quoteAssetCode = assetPair.quote,

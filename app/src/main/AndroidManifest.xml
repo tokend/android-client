@@ -219,6 +219,7 @@
         <activity
             android:name=".features.offers.CreateOfferActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/create_offer_title"/>
+            android:label="@string/create_offer_title"
+            android:theme="@style/AppTheme"/>
     </application>
 </manifest>
