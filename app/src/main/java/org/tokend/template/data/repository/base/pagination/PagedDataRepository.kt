@@ -65,15 +65,20 @@ abstract class PagedDataRepository<T>(itemsCache: RepositoryCache<T>)
             isFresh = true
         }
 
-        if (isOnFirstPage) {
-            itemsCache.transform(newItems)
-        } else {
-            itemsCache.transform(newItems, { false })
-        }
+        cacheNewItems(newItems)
+
         broadcast()
 
         if (newItems.isEmpty()) {
             noMoreItems = true
+        }
+    }
+
+    override fun cacheNewItems(newItems: List<T>) {
+        if (isOnFirstPage) {
+            itemsCache.transform(newItems)
+        } else {
+            itemsCache.transform(newItems, { false })
         }
     }
 

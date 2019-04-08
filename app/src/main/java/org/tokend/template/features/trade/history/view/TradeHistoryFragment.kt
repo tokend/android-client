@@ -67,6 +67,9 @@ class TradeHistoryFragment : BaseFragment() {
         trade_history_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         adapter = TradeHistoryAdapter(amountFormatter)
         trade_history_list.adapter = adapter
+        trade_history_list.listenBottomReach({ adapter.getDataItemCount() }) {
+            tradeHistoryRepository.loadMore() || tradeHistoryRepository.noMoreItems
+        }
 
         error_empty_view.observeAdapter(adapter, R.string.no_transaction_history)
         error_empty_view.setEmptyViewDenial { tradeHistoryRepository.isNeverUpdated }

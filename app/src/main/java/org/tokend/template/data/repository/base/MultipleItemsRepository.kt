@@ -31,8 +31,12 @@ abstract class MultipleItemsRepository<T>( val itemsCache: RepositoryCache<T>) :
         isNeverUpdated = false
         isFresh = true
 
-        itemsCache.transform(newItems)
+        cacheNewItems(newItems)
 
         broadcast()
+    }
+
+    protected open fun cacheNewItems(newItems: List<T>) {
+        itemsCache.transform(newItems)
     }
 }

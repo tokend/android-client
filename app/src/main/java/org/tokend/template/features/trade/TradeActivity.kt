@@ -41,6 +41,7 @@ class TradeActivity : BaseActivity() {
         val adapter = TradePagerAdapter(assetPair, this, supportFragmentManager)
         pager.adapter = adapter
         toolbar_tabs.setupWithViewPager(pager)
+        pager.offscreenPageLimit = adapter.count
     }
 
     companion object {
