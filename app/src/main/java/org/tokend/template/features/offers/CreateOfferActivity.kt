@@ -12,10 +12,23 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.DynamicDrawableSpan
 import android.text.style.ImageSpan
+import android.view.WindowManager
+import com.rengwuxian.materialedittext.MaterialEditText
+import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
+import org.jetbrains.anko.onClick
+import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.features.offers.logic.PrepareOfferUseCase
+import org.tokend.template.logic.FeeManager
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.input.AmountEditTextWrapper
+import org.tokend.template.view.util.input.SoftInputUtil
+import java.math.BigDecimal
+import java.math.MathContext
 
 class CreateOfferActivity : BaseActivity() {
 
@@ -28,72 +41,134 @@ class CreateOfferActivity : BaseActivity() {
     private lateinit var currentOffer: OfferRecord
     private var arrow: Drawable? = null
 
+    private var triggerOthers: Boolean = false
+
+    private var baseScale: Int = 0
+    private var quoteScale: Int = 0
+    private var baseBalance: BigDecimal? = BigDecimal.ZERO
+    private var quoteBalance: BigDecimal? = BigDecimal.ZERO
+
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_create_offer)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
         currentOffer = intent.getSerializableExtra(EXTRA_OFFER) as? OfferRecord ?: return
 
+        baseScale = amountFormatter.getDecimalDigitsCount(currentOffer.baseAssetCode)
+        quoteScale = amountFormatter.getDecimalDigitsCount(currentOffer.quoteAssetCode)
+
         initViews()
         subscribeToBalances()
+        updateActionsAvailability()
+        updateActionHints()
         update()
     }
 
 
     private fun initViews() {
-        initArrowDrawable()
         initTextFields()
-        updateActionHints()
+        initArrowDrawable()
+        initButtons()
     }
 
     private fun initTextFields() {
-        priceEditTextWrapper = AmountEditTextWrapper(price_edit_text)
-        priceEditTextWrapper.onAmountChanged { _, _ ->
+        initAmountWrappers()
 
-        }
-        price_edit_text.setText(
-                amountFormatter.formatAssetAmount(
-                        currentOffer.price,
-                        currentOffer.quoteAssetCode,
-                        withAssetCode = false)
-        )
-        getString(R.string.template_offer_creation_price,
-                currentOffer.quoteAssetCode, currentOffer.baseAssetCode)
-                .also {
-                    price_edit_text.floatingLabelText = it
-                    price_edit_text.hint = it
+        price_edit_text.setAmount(currentOffer.price, quoteScale)
+        price_edit_text.floatingLabelText =
+                getString(R.string.template_offer_creation_price,
+                        currentOffer.quoteAssetCode, currentOffer.baseAssetCode)
+
+        amount_edit_text.setAmount(currentOffer.baseAmount, baseScale)
+        amount_edit_text.floatingLabelText =
+                getString(R.string.template_amount_hint, currentOffer.baseAssetCode)
+
+        total_edit_text.setAmount(currentOffer.quoteAmount, quoteScale)
+        total_edit_text.floatingLabelText =
+                getString(R.string.template_total_hint, currentOffer.quoteAssetCode)
+
+        amount_edit_text.requestFocus()
+        triggerOthers = true
+    }
+
+    private fun initAmountWrappers() {
+        priceEditTextWrapper = AmountEditTextWrapper(price_edit_text).apply {
+            maxPlacesAfterComa = quoteScale
+            onAmountChanged { scaledAmount, rawAmount ->
+                onInputUpdated {
+                    total_edit_text.setAmount(rawAmount * amountEditTextWrapper.rawAmount, quoteScale)
+                    updateActionHints()
                 }
-
-        amountEditTextWrapper = AmountEditTextWrapper(amount_edit_text)
-        amountEditTextWrapper.onAmountChanged { _, _ ->
-
-        }
-        amount_edit_text.setText(
-                amountFormatter.formatAssetAmount(
-                        currentOffer.baseAmount,
-                        currentOffer.baseAssetCode,
-                        withAssetCode = false
-                )
-        )
-        getString(R.string.template_amount_hint, currentOffer.baseAssetCode).also {
-            amount_edit_text.floatingLabelText = it
-            amount_edit_text.hint = it
+            }
         }
 
-        totalEditTextWrapper = AmountEditTextWrapper(total_edit_text)
-        totalEditTextWrapper.onAmountChanged { _, _ ->
-
+        amountEditTextWrapper = AmountEditTextWrapper(amount_edit_text).apply {
+            onAmountChanged { scaledAmount, rawAmount ->
+                onInputUpdated {
+                    val unscaledTotal = rawAmount * priceEditTextWrapper.rawAmount
+                    total_edit_text.setAmount(unscaledTotal, quoteScale)
+                }
+            }
         }
-        total_edit_text.setText(
-                amountFormatter.formatAssetAmount(
-                        currentOffer.quoteAmount,
-                        currentOffer.quoteAssetCode,
-                        withAssetCode = false
-                )
-        )
-        getString(R.string.template_total_hint, currentOffer.quoteAssetCode).also {
-            total_edit_text.floatingLabelText = it
-            total_edit_text.hint = it
+
+        totalEditTextWrapper = AmountEditTextWrapper(total_edit_text).apply {
+            maxPlacesBeforeComa = 16
+            maxPlacesAfterComa = quoteScale
+            onAmountChanged { scaledAmount, rawAmount ->
+                onInputUpdated {
+                    val unscaledAmount =
+                            if (rawAmount.signum() > 0 && priceEditTextWrapper.rawAmount.signum() > 0) {
+                                rawAmount.divide(priceEditTextWrapper.rawAmount, MathContext.DECIMAL128)
+                            } else BigDecimal.ZERO
+
+                    amount_edit_text.setAmount(unscaledAmount, baseScale)
+                }
+            }
+        }
+    }
+
+    private fun onInputUpdated(updateFields: () -> Unit) {
+        if (triggerOthers) {
+            triggerOthers = false
+            updateFields.invoke()
+            updateActionHints()
+            updateActionsAvailability()
+            triggerOthers = true
+        }
+    }
+
+    private fun initButtons() {
+        sell_btn.onClick {
+            goToOfferConfirmation(buildOffer(false))
+        }
+
+        buy_btn.onClick {
+            goToOfferConfirmation(buildOffer(true))
+        }
+
+        max_sell_text_view.onClick {
+            baseBalance?.let {
+                amount_edit_text.setAmount(it, baseScale)
+                amount_edit_text.requestFocus()
+            }
+        }
+
+        max_buy_text_view.onClick {
+            quoteBalance?.let {
+                total_edit_text.setAmount(it, quoteScale)
+                total_edit_text.requestFocus()
+            }
+        }
+    }
+
+    private fun MaterialEditText.setAmount(amount: BigDecimal, scale: Int) {
+        if (amount.signum() > 0) {
+            val value = BigDecimalUtil.scaleAmount(amount, scale)
+            setText(BigDecimalUtil.toPlainString(value))
+            setSelection(text.length)
+        } else {
+            setText("")
         }
     }
 
@@ -111,29 +186,40 @@ class CreateOfferActivity : BaseActivity() {
         buy_hint.text = getActionHintString(total, amount)
     }
 
+    private fun initArrowDrawable() {
+        arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_right)
+        val ascent = sell_hint.paint.fontMetrics.ascent
+        val h = (-ascent).toInt()
+        arrow?.let {
+            it.setBounds(0, 0, it.intrinsicWidth, h)
+        }
+    }
+
     private fun getActionHintString(from: String, to: String): SpannableString {
         val template = SpannableString("$from * $to")
         template.setSpan(
                 ImageSpan(arrow, DynamicDrawableSpan.ALIGN_BASELINE),
                 from.length + 1,
-                to.length + 2,
+                from.length + 2,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         return template
     }
 
     private fun updateAvailable(balances: List<BalanceRecord>) {
-        val baseBalance = balances.find { it.assetCode == currentOffer.baseAssetCode }?.available
-        val quoteBalance = balances.find { it.assetCode == currentOffer.quoteAssetCode }?.available
+        baseBalance = balances.find { it.assetCode == currentOffer.baseAssetCode }?.available
+        quoteBalance = balances.find { it.assetCode == currentOffer.quoteAssetCode }?.available
 
         amount_edit_text.setHelperText(
                 getString(R.string.template_available,
-                        amountFormatter.formatAssetAmount(baseBalance, currentOffer.baseAssetCode))
+                        amountFormatter.formatAssetAmount(baseBalance,
+                                currentOffer.baseAssetCode, withAssetCode = false))
         )
 
-        amount_edit_text.setHelperText(
+        total_edit_text.setHelperText(
                 getString(R.string.template_available,
-                        amountFormatter.formatAssetAmount(quoteBalance, currentOffer.quoteAssetCode))
+                        amountFormatter.formatAssetAmount(quoteBalance,
+                                currentOffer.quoteAssetCode, withAssetCode = false))
         )
     }
 
@@ -161,14 +247,64 @@ class CreateOfferActivity : BaseActivity() {
         }
     }
 
-    private fun initArrowDrawable() {
-        arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_right)
-        val ascent = sell_hint.paint.fontMetrics.ascent
-        val h = (-ascent).toInt()
-        arrow!!.setBounds(0, 0, h, h)
+    private fun buildOffer(isBuy: Boolean): OfferRecord {
+        val price = priceEditTextWrapper.rawAmount
+        val amount = amountEditTextWrapper.rawAmount
+        val total = BigDecimalUtil.scaleAmount(price * amount,
+                amountFormatter.getDecimalDigitsCount(currentOffer.quoteAssetCode))
+
+        return OfferRecord(
+                baseAssetCode = currentOffer.baseAssetCode,
+                quoteAssetCode = currentOffer.quoteAssetCode,
+                baseAmount = amount,
+                price = price,
+                quoteAmount = total,
+                isBuy = isBuy
+        )
+    }
+
+    private fun updateActionsAvailability() {
+        val isAvailable = !price_edit_text.text.isNullOrBlank()
+                && !amount_edit_text.text.isNullOrBlank()
+                && !total_edit_text.text.isNullOrBlank()
+
+        sell_btn.isEnabled = isAvailable
+        buy_btn.isEnabled = isAvailable
+    }
+
+    private var offerPreparationDisposable: Disposable? = null
+    private fun goToOfferConfirmation(offer: OfferRecord) {
+        offerPreparationDisposable?.dispose()
+
+        val progress = ProgressDialogFactory.getTunedDialog(this).apply {
+            setCanceledOnTouchOutside(true)
+            setMessage(getString(R.string.loading_data))
+            setOnCancelListener {
+                offerPreparationDisposable?.dispose()
+            }
+        }
+
+        offerPreparationDisposable = PrepareOfferUseCase(
+                offer,
+                walletInfoProvider,
+                FeeManager(apiProvider)
+        )
+                .perform()
+                .compose(ObservableTransformers.defaultSchedulersSingle())
+                .doOnSubscribe { progress.show() }
+                .doOnEvent { _, _ -> progress.hide() }
+                .subscribeBy(
+                        onSuccess = { completedOffer ->
+                            Navigator.openOfferConfirmation(this,
+                                    CREATE_OFFER_REQUEST, completedOffer)
+                        },
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
+                )
+                .addTo(compositeDisposable)
     }
 
     companion object {
+        private val CREATE_OFFER_REQUEST = "create_offer".hashCode() and 0xffff
         const val EXTRA_OFFER = "extra_offer"
     }
 }

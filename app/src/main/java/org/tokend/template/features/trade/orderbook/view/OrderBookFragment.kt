@@ -94,8 +94,8 @@ class OrderBookFragment : BaseFragment() {
         }
 
         sellAdapter.onItemClick { _, item ->
-            //            openOfferDialog(item)
-            Navigator.openCreateOffer(this, item)
+                        openOfferDialog(item)
+//            Navigator.openCreateOffer(this, item)
         }
     }
 

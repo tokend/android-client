@@ -186,6 +186,13 @@ object Navigator {
         ), requestCode)
     }
 
+    fun openOfferConfirmation(activity: Activity, requestCode: Int,
+                              offer: OfferRecord) {
+        activity.startActivityForResult(activity.intentFor<OfferConfirmationActivity>(
+                OfferConfirmationActivity.OFFER_EXTRA to offer
+        ), requestCode)
+    }
+
     fun openInvestmentConfirmation(activity: Activity,
                                    requestCode: Int,
                                    offer: OfferRecord,

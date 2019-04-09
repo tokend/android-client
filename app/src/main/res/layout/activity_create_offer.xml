@@ -13,42 +13,75 @@
         style="@style/EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/price"
+        android:hint="@string/zero"
         android:inputType="numberDecimal"
-        android:lines="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/balances_layout" />
+        app:met_floatingLabelAlwaysShown="true"
+        android:lines="1" />
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/amount_edit_text"
-        style="@style/EditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/standard_margin"
-        android:hint="@string/amount_label"
-        android:inputType="numberDecimal"
-        android:lines="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/balances_layout"
-        app:met_helperText="Available 11 CO1"
-        app:met_helperTextAlwaysShown="true" />
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/total_edit_text"
-        style="@style/EditText"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/standard_margin"
-        android:hint="@string/total_label"
-        android:inputType="numberDecimal"
-        android:lines="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/balances_layout"
-        app:met_helperText="Available 25 CO2"
-        app:met_helperTextAlwaysShown="true" />
+        android:layout_height="wrap_content">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/amount_edit_text"
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:hint="@string/zero"
+            android:inputType="numberDecimal"
+            android:lines="1"
+            app:met_helperText="@string/template_available"
+            app:met_helperTextAlwaysShown="true"
+            app:met_floatingLabelAlwaysShown="true"
+            android:paddingRight="@dimen/quadra_margin"/>
+
+        <TextView
+            android:id="@+id/max_sell_text_view"
+            style="@style/SecondaryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/amount_edit_text"
+            android:layout_alignBaseline="@id/amount_edit_text"
+            android:padding="@dimen/half_standard_margin"
+            android:focusable="true"
+            android:clickable="true"
+            android:text="Max Sell"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/total_edit_text"
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:hint="@string/zero"
+            android:inputType="numberDecimal"
+            android:lines="1"
+            app:met_helperText="@string/template_available"
+            app:met_helperTextAlwaysShown="true"
+            app:met_floatingLabelAlwaysShown="true"
+            android:paddingRight="@dimen/quadra_margin"/>
+
+        <TextView
+            android:id="@+id/max_buy_text_view"
+            style="@style/SecondaryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/total_edit_text"
+            android:layout_alignBaseline="@id/total_edit_text"
+            android:padding="@dimen/half_standard_margin"
+            android:focusable="true"
+            android:clickable="true"
+            android:text="Max Buy"/>
+    </RelativeLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -93,7 +126,7 @@
             android:layout_marginEnd="@dimen/half_standard_margin"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="10sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/buy_hint"
@@ -103,7 +136,7 @@
             android:layout_marginStart="@dimen/half_standard_margin"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="10sp" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 
