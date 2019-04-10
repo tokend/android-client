@@ -11,7 +11,6 @@ import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.view.util.formatter.AmountFormatter
@@ -26,14 +25,6 @@ class InvestmentInfoManager(
         private val walletInfoProvider: WalletInfoProvider,
         private val amountFormatter: AmountFormatter
 ) {
-    /**
-     * Contains data required for sale details display
-     * and investment calculations
-     */
-    class InvestmentInfo(
-            val assetDetails: AssetRecord,
-            val financialInfo: InvestmentFinancialInfo
-    )
 
     /**
      * Contains data required for investment calculations
@@ -52,12 +43,6 @@ class InvestmentInfoManager(
              */
             val maxFeeByAsset: Map<String, BigDecimal>
     )
-
-    private fun getAssetDetails(): Single<AssetRecord> {
-        return repositoryProvider
-                .assets()
-                .getSingle(sale.baseAssetCode)
-    }
 
     private fun getOffersByAsset(): Single<Map<String, OfferRecord>> {
         return repositoryProvider
@@ -182,17 +167,8 @@ class InvestmentInfoManager(
      * @return data required for sale details display
      * and investment calculations
      */
-    fun getInvestmentInfo(feeManager: FeeManager): Single<InvestmentInfo> {
-        return Single.zip(
-                getAssetDetails(),
-                getFinancialInfo(feeManager),
-                BiFunction { assetDetails: AssetRecord, financialInfo: InvestmentFinancialInfo ->
-                    InvestmentInfo(
-                            assetDetails,
-                            financialInfo
-                    )
-                }
-        )
+    fun getInvestmentInfo(feeManager: FeeManager): Single<InvestmentFinancialInfo> {
+        return getFinancialInfo(feeManager)
     }
 
     /**
