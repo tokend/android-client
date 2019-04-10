@@ -46,14 +46,17 @@ class PendingOfferItemViewHolder(
     }
 
     private fun displayCounterparty(item: PendingOfferListItem) {
-        val counterpartyStringRes =
+        val counterpartyString =
                 if (item.isInvestment)
-                    R.string.template_tx_in
+                    view.context.getString(R.string.template_tx_in, item.counterpartyAssetCode)
                 else
-                    R.string.template_tx_for
+                    view.context.getString(
+                            R.string.template_price_one_equals,
+                            item.assetCode,
+                            amountFormatter.formatAssetAmount(item.price, item.counterpartyAssetCode))
+
         actionDetailsTextView.visibility = View.VISIBLE
-        actionDetailsTextView.text =
-                view.context.getString(counterpartyStringRes, item.counterpartyAssetCode)
+        actionDetailsTextView.text = counterpartyString
 
     }
 
