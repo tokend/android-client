@@ -67,7 +67,6 @@ class LocalizedName(private val context: Context) {
             is BalanceChangeCause.MatchedOffer -> context.getString(R.string.balance_change_cause_matched_offer)
             is BalanceChangeCause.Issuance -> context.getString(R.string.balance_change_cause_issuance)
             is BalanceChangeCause.Payment -> context.getString(R.string.balance_change_cause_payment)
-            is BalanceChangeCause.Payout -> context.getString(R.string.balance_change_cause_payout)
             is BalanceChangeCause.Withdrawal -> context.getString(R.string.balance_change_cause_withdrawal)
             is BalanceChangeCause.Offer -> {
                 if (cause.isInvestment)

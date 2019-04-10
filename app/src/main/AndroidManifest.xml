@@ -187,7 +187,7 @@
             android:name=".features.wallet.details.SaleCancellationDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/sale_cancellation_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.offers.view.details.PendingOfferDetailsActivity"
             android:configChanges="orientation|screenSize"
