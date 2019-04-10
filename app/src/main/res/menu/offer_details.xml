@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/cancel_offer"
-        android:icon="@drawable/ic_close_cancel"
+        android:icon="@drawable/ic_delete_outline"
         android:title="@string/cancel_offer_action"
         app:showAsAction="ifRoom" />
 </menu>
