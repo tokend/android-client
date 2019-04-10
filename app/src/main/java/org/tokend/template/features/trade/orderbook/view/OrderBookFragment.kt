@@ -9,24 +9,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_order_book.*
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.orderbook.OrderBookRepository
-import org.tokend.template.features.offers.CreateOfferDialog
-import org.tokend.template.features.offers.logic.PrepareOfferUseCase
 import org.tokend.template.features.trade.orderbook.view.adapter.OrderBookAdapter
 import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.logic.FeeManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.ProgressDialogFactory
 import java.math.BigDecimal
 
 class OrderBookFragment : BaseFragment() {
@@ -89,13 +83,11 @@ class OrderBookFragment : BaseFragment() {
         }
 
         buyAdapter.onItemClick { _, item ->
-            //            openOfferDialog(item)
             Navigator.openCreateOffer(this, item)
         }
 
         sellAdapter.onItemClick { _, item ->
-                        openOfferDialog(item)
-//            Navigator.openCreateOffer(this, item)
+            Navigator.openCreateOffer(this, item)
         }
     }
 
@@ -223,16 +215,6 @@ class OrderBookFragment : BaseFragment() {
 
     // region Offer creation
     private fun createOffer() {
-//        openOfferDialog(
-//                OfferRecord(
-//                        baseAssetCode = assetPair.base,
-//                        quoteAssetCode = assetPair.quote,
-//                        baseAmount = BigDecimal.ZERO,
-//                        price = assetPair.price,
-//                        isBuy = false
-//                )
-//        )
-
         Navigator.openCreateOffer(this,
                 OfferRecord(
                         baseAssetCode = assetPair.base,
@@ -242,46 +224,6 @@ class OrderBookFragment : BaseFragment() {
                         isBuy = false
                 )
         )
-    }
-
-    private fun openOfferDialog(offer: OfferRecord) {
-        CreateOfferDialog.withArgs(offer, amountFormatter, balancesRepository.itemsList)
-                .showDialog(this.childFragmentManager, "create_offer")
-                .subscribe {
-                    goToOfferConfirmation(it)
-                }
-                .addTo(compositeDisposable)
-    }
-
-    private var offerPreparationDisposable: Disposable? = null
-    private fun goToOfferConfirmation(offer: OfferRecord) {
-        offerPreparationDisposable?.dispose()
-
-        val progress = ProgressDialogFactory.getTunedDialog(requireContext()).apply {
-            setCanceledOnTouchOutside(true)
-            setMessage(getString(R.string.loading_data))
-            setOnCancelListener {
-                offerPreparationDisposable?.dispose()
-            }
-        }
-
-        offerPreparationDisposable = PrepareOfferUseCase(
-                offer,
-                walletInfoProvider,
-                FeeManager(apiProvider)
-        )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe { progress.show() }
-                .doOnEvent { _, _ -> progress.hide() }
-                .subscribeBy(
-                        onSuccess = { completedOffer ->
-                            Navigator.openOfferConfirmation(this,
-                                    CREATE_OFFER_REQUEST, completedOffer)
-                        },
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
-                .addTo(compositeDisposable)
     }
     // endregion
 
@@ -296,7 +238,6 @@ class OrderBookFragment : BaseFragment() {
     }
 
     companion object {
-        private val CREATE_OFFER_REQUEST = "create_offer".hashCode() and 0xffff
         private const val ASSET_PAIR_EXTRA = "asset_pair"
         const val ID = 1115L
 

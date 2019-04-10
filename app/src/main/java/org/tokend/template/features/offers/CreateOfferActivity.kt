@@ -1,5 +1,7 @@
 package org.tokend.template.features.offers
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_create_offer.*
@@ -20,6 +22,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.extensions.hasError
+import org.tokend.template.extensions.isMaxPossibleAmount
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.util.Navigator
@@ -27,6 +31,7 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.template.view.util.input.SoftInputUtil
+import java.lang.ArithmeticException
 import java.math.BigDecimal
 import java.math.MathContext
 
@@ -45,8 +50,8 @@ class CreateOfferActivity : BaseActivity() {
 
     private var baseScale: Int = 0
     private var quoteScale: Int = 0
-    private var baseBalance: BigDecimal? = BigDecimal.ZERO
-    private var quoteBalance: BigDecimal? = BigDecimal.ZERO
+    private var baseBalance: BigDecimal = BigDecimal.ZERO
+    private var quoteBalance: BigDecimal = BigDecimal.ZERO
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_create_offer)
@@ -95,16 +100,19 @@ class CreateOfferActivity : BaseActivity() {
     private fun initAmountWrappers() {
         priceEditTextWrapper = AmountEditTextWrapper(price_edit_text).apply {
             maxPlacesAfterComa = quoteScale
-            onAmountChanged { scaledAmount, rawAmount ->
+            onAmountChanged { _, rawAmount ->
                 onInputUpdated {
-                    total_edit_text.setAmount(rawAmount * amountEditTextWrapper.rawAmount, quoteScale)
+                    val unscaledTotal = rawAmount * amountEditTextWrapper.rawAmount
+                    total_edit_text.setAmount(unscaledTotal, quoteScale)
                     updateActionHints()
                 }
             }
         }
 
-        amountEditTextWrapper = AmountEditTextWrapper(amount_edit_text).apply {
-            onAmountChanged { scaledAmount, rawAmount ->
+        amountEditTextWrapper = AmountEditTextWrapper(amount_edit_text, true).apply {
+            maxPlacesAfterComa = baseScale
+            onAmountChanged { _, rawAmount ->
+                amount_edit_text.error = getError(rawAmount)
                 onInputUpdated {
                     val unscaledTotal = rawAmount * priceEditTextWrapper.rawAmount
                     total_edit_text.setAmount(unscaledTotal, quoteScale)
@@ -112,19 +120,30 @@ class CreateOfferActivity : BaseActivity() {
             }
         }
 
-        totalEditTextWrapper = AmountEditTextWrapper(total_edit_text).apply {
-            maxPlacesBeforeComa = 16
+        totalEditTextWrapper = AmountEditTextWrapper(total_edit_text, true).apply {
             maxPlacesAfterComa = quoteScale
-            onAmountChanged { scaledAmount, rawAmount ->
+            onAmountChanged { _, rawAmount ->
+                total_edit_text.error = getError(rawAmount)
                 onInputUpdated {
+                    val price = priceEditTextWrapper.rawAmount
                     val unscaledAmount =
-                            if (rawAmount.signum() > 0 && priceEditTextWrapper.rawAmount.signum() > 0) {
-                                rawAmount.divide(priceEditTextWrapper.rawAmount, MathContext.DECIMAL128)
+                            if (price.signum() > 0) {
+                                rawAmount.divide(price, MathContext.DECIMAL128)
                             } else BigDecimal.ZERO
 
                     amount_edit_text.setAmount(unscaledAmount, baseScale)
                 }
             }
+        }
+    }
+
+    private fun getError(amount: BigDecimal): String? {
+        return try {
+            if (amount.isMaxPossibleAmount()) {
+                return getString(R.string.error_amount_to_big)
+            } else null
+        } catch (e: ArithmeticException) {
+            getString(R.string.error_amount_to_big)
         }
     }
 
@@ -148,17 +167,13 @@ class CreateOfferActivity : BaseActivity() {
         }
 
         max_sell_text_view.onClick {
-            baseBalance?.let {
-                amount_edit_text.setAmount(it, baseScale)
-                amount_edit_text.requestFocus()
-            }
+            amount_edit_text.setAmount(baseBalance, baseScale)
+            amount_edit_text.requestFocus()
         }
 
         max_buy_text_view.onClick {
-            quoteBalance?.let {
-                total_edit_text.setAmount(it, quoteScale)
-                total_edit_text.requestFocus()
-            }
+            total_edit_text.setAmount(quoteBalance, quoteScale)
+            total_edit_text.requestFocus()
         }
     }
 
@@ -190,9 +205,7 @@ class CreateOfferActivity : BaseActivity() {
         arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_right)
         val ascent = sell_hint.paint.fontMetrics.ascent
         val h = (-ascent).toInt()
-        arrow?.let {
-            it.setBounds(0, 0, it.intrinsicWidth, h)
-        }
+        arrow?.setBounds(0, 0, h, h)
     }
 
     private fun getActionHintString(from: String, to: String): SpannableString {
@@ -208,7 +221,9 @@ class CreateOfferActivity : BaseActivity() {
 
     private fun updateAvailable(balances: List<BalanceRecord>) {
         baseBalance = balances.find { it.assetCode == currentOffer.baseAssetCode }?.available
+                ?: BigDecimal.ZERO
         quoteBalance = balances.find { it.assetCode == currentOffer.quoteAssetCode }?.available
+                ?: BigDecimal.ZERO
 
         amount_edit_text.setHelperText(
                 getString(R.string.template_available,
@@ -267,6 +282,8 @@ class CreateOfferActivity : BaseActivity() {
         val isAvailable = !price_edit_text.text.isNullOrBlank()
                 && !amount_edit_text.text.isNullOrBlank()
                 && !total_edit_text.text.isNullOrBlank()
+                && !amount_edit_text.hasError()
+                && !total_edit_text.hasError()
 
         sell_btn.isEnabled = isAvailable
         buy_btn.isEnabled = isAvailable
@@ -301,6 +318,13 @@ class CreateOfferActivity : BaseActivity() {
                         onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == CREATE_OFFER_REQUEST && resultCode == Activity.RESULT_OK) {
+            finish()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     companion object {

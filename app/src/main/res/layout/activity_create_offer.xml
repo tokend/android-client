@@ -15,9 +15,8 @@
         android:layout_height="wrap_content"
         android:hint="@string/zero"
         android:inputType="numberDecimal"
-        app:met_floatingLabelAlwaysShown="true"
-        android:lines="1" />
-
+        android:lines="1"
+        app:met_floatingLabelAlwaysShown="true" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -32,22 +31,22 @@
             android:hint="@string/zero"
             android:inputType="numberDecimal"
             android:lines="1"
-            app:met_helperText="@string/template_available"
-            app:met_helperTextAlwaysShown="true"
+            android:paddingRight="@dimen/quadra_margin"
             app:met_floatingLabelAlwaysShown="true"
-            android:paddingRight="@dimen/quadra_margin"/>
+            app:met_helperText="@string/template_available"
+            app:met_helperTextAlwaysShown="true" />
 
         <TextView
             android:id="@+id/max_sell_text_view"
             style="@style/SecondaryText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@id/amount_edit_text"
             android:layout_alignBaseline="@id/amount_edit_text"
-            android:padding="@dimen/half_standard_margin"
-            android:focusable="true"
+            android:layout_alignEnd="@id/amount_edit_text"
             android:clickable="true"
-            android:text="Max Sell"/>
+            android:focusable="true"
+            android:padding="@dimen/half_standard_margin"
+            android:text="@string/max_sell_hint" />
     </RelativeLayout>
 
 
@@ -64,22 +63,22 @@
             android:hint="@string/zero"
             android:inputType="numberDecimal"
             android:lines="1"
-            app:met_helperText="@string/template_available"
-            app:met_helperTextAlwaysShown="true"
+            android:paddingRight="@dimen/quadra_margin"
             app:met_floatingLabelAlwaysShown="true"
-            android:paddingRight="@dimen/quadra_margin"/>
+            app:met_helperText="@string/template_available"
+            app:met_helperTextAlwaysShown="true" />
 
         <TextView
             android:id="@+id/max_buy_text_view"
             style="@style/SecondaryText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@id/total_edit_text"
             android:layout_alignBaseline="@id/total_edit_text"
-            android:padding="@dimen/half_standard_margin"
-            android:focusable="true"
+            android:layout_alignEnd="@id/total_edit_text"
             android:clickable="true"
-            android:text="Max Buy"/>
+            android:focusable="true"
+            android:padding="@dimen/half_standard_margin"
+            android:text="@string/max_buy_hint" />
     </RelativeLayout>
 
 
