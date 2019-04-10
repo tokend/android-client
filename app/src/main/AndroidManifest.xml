@@ -182,7 +182,7 @@
             android:name=".features.wallet.details.WithdrawalDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/withdrawal_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.SaleCancellationDetailsActivity"
             android:configChanges="orientation|screenSize"
