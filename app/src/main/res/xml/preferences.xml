@@ -25,6 +25,12 @@
             android:summary="@string/secret_seed_description"
             android:title="@string/secret_seed" />
 
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_sign_out"
+            android:key="sign_out"
+            android:layout="@layout/preference_layout"
+            android:title="@string/sign_out" />
+
     </android.support.v7.preference.PreferenceCategory>
 
     <android.support.v7.preference.PreferenceCategory
@@ -57,7 +63,20 @@
 
     <android.support.v7.preference.PreferenceCategory
         android:layout="@layout/preference_category_layout_divider"
-        android:title="@string/settings_information_group">
+        android:title="@string/settings_information_group"
+        android:key="info">
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_insert_chart"
+            android:key="limits"
+            android:layout="@layout/preference_layout"
+            android:title="@string/limits_title" />
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_flash"
+            android:key="fees"
+            android:layout="@layout/preference_layout"
+            android:title="@string/fees_title" />
 
         <android.support.v7.preference.Preference
             android:icon="@drawable/ic_text_script"
