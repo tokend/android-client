@@ -167,12 +167,12 @@
             android:name=".features.wallet.details.OfferMatchDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/offer_match_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.InvestmentDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/investment_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.PaymentDetailsActivity"
             android:configChanges="orientation|screenSize"

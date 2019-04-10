@@ -82,8 +82,6 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
     private fun displayReceived(item: BalanceChange,
                                 cause: BalanceChangeCause.Payment) {
-        val minDecimals = amountFormatter.getDecimalDigitsCount(item.assetCode)
-
         val feePaidBySender = cause.isDestFeePaidBySource
 
         val paidFeeTotal =
@@ -94,8 +92,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
         adapter.addData(
                 DetailsItem(
-                        text = amountFormatter.formatAssetAmount(item.amount, item.assetCode,
-                                minDecimals),
+                        text = amountFormatter.formatAssetAmount(item.amount, item.assetCode),
                         hint = getString(R.string.amount),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
                 )
@@ -104,8 +101,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         if (paidFeeTotal.signum() > 0) {
             adapter.addData(
                     DetailsItem(
-                            text = amountFormatter.formatAssetAmount(paidFeeTotal, item.assetCode,
-                                    minDecimals),
+                            text = amountFormatter.formatAssetAmount(paidFeeTotal, item.assetCode),
                             hint = getString(R.string.tx_fee)
                     )
             )
@@ -122,8 +118,6 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
     private fun displayPaid(item: BalanceChange,
                             cause: BalanceChangeCause.Payment) {
-        val minDecimals = amountFormatter.getDecimalDigitsCount(item.assetCode)
-
         val feePaidBySender = cause.isDestFeePaidBySource
 
         val paidFeeTotal =
@@ -134,8 +128,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
         adapter.addData(
                 DetailsItem(
-                        text = amountFormatter.formatAssetAmount(item.amount, item.assetCode,
-                                minDecimals),
+                        text = amountFormatter.formatAssetAmount(item.amount, item.assetCode),
                         hint = getString(R.string.amount),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
                 )
@@ -144,8 +137,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         if (paidFeeTotal.signum() > 0) {
             adapter.addData(
                     DetailsItem(
-                            text = amountFormatter.formatAssetAmount(paidFeeTotal, item.assetCode,
-                                    minDecimals),
+                            text = amountFormatter.formatAssetAmount(paidFeeTotal, item.assetCode),
                             hint = getString(R.string.tx_fee)
                     )
             )
