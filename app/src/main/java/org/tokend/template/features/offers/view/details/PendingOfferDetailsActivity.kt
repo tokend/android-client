@@ -2,28 +2,32 @@ package org.tokend.template.features.offers.view.details
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_details.*
+import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.InfoCard
+import org.tokend.template.view.details.DetailsItem
+import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.formatter.DateFormatter
 import java.math.BigDecimal
 
 open class PendingOfferDetailsActivity : BaseActivity() {
+    protected val adapter = DetailsItemsAdapter()
+
     protected lateinit var item: OfferRecord
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_details)
-        title = getTitleString()
+        setContentView(R.layout.activity_details_list)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val item = intent.getSerializableExtra(OFFER_EXTRA) as? OfferRecord
@@ -35,50 +39,65 @@ open class PendingOfferDetailsActivity : BaseActivity() {
 
         this.item = item
 
-        displayDetails(item)
-    }
+        details_list.layoutManager = LinearLayoutManager(this)
+        details_list.adapter = adapter
 
-    protected open fun getTitleString(): String {
-        return getString(R.string.pending_offer_details_title)
+        displayDetails(item)
     }
 
     protected open fun displayDetails(item: OfferRecord) {
         displayPrice(item)
+        displayDate(item)
         displayToPay(item)
         displayToReceive(item)
-        displayDate(item)
     }
 
     protected open fun displayToPay(item: OfferRecord) {
         val asset = if (item.isBuy) item.quoteAssetCode else item.baseAssetCode
         val amount = if (item.isBuy) item.quoteAmount else item.baseAmount
         val fee = if (item.isBuy && item.isCancellable) item.fee else BigDecimal.ZERO
-        val total = amount + fee
-        val minDecimals = amountFormatter.getDecimalDigitsCount(asset)
 
-        InfoCard(cards_layout)
-                .setHeading(R.string.to_pay,
-                        amountFormatter.formatAssetAmount(total, asset))
-                .addRow(R.string.amount,
-                        "+" + amountFormatter.formatAssetAmount(amount, asset, minDecimals))
-                .addRow(R.string.tx_fee,
-                        "+" + amountFormatter.formatAssetAmount(fee, asset, minDecimals))
+        adapter.addData(
+                DetailsItem(
+                        header = getString(R.string.to_pay),
+                        text = amountFormatter.formatAssetAmount(amount, asset),
+                        hint = getString(R.string.amount),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
+                )
+        )
+
+        if (fee.signum() > 0) {
+            adapter.addData(
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(fee, asset),
+                            hint = getString(R.string.tx_fee)
+                    )
+            )
+        }
     }
 
     protected open fun displayToReceive(item: OfferRecord) {
         val asset = if (item.isBuy) item.baseAssetCode else item.quoteAssetCode
         val amount = if (item.isBuy) item.baseAmount else item.quoteAmount
         val fee = if (item.isBuy || !item.isCancellable) BigDecimal.ZERO else item.fee
-        val total = amount - fee
-        val minDecimals = amountFormatter.getDecimalDigitsCount(asset)
 
-        InfoCard(cards_layout)
-                .setHeading(R.string.to_receive,
-                        amountFormatter.formatAssetAmount(total, asset))
-                .addRow(R.string.amount,
-                        "+" + amountFormatter.formatAssetAmount(amount, asset, minDecimals))
-                .addRow(R.string.tx_fee,
-                        "-" + amountFormatter.formatAssetAmount(fee, asset, minDecimals))
+        adapter.addData(
+                DetailsItem(
+                        header = getString(R.string.to_receive),
+                        text = amountFormatter.formatAssetAmount(amount, asset),
+                        hint = getString(R.string.amount),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
+                )
+        )
+
+        if (fee.signum() > 0) {
+            adapter.addData(
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(fee, asset),
+                            hint = getString(R.string.tx_fee)
+                    )
+            )
+        }
     }
 
     protected open fun displayPrice(item: OfferRecord) {
@@ -88,15 +107,23 @@ open class PendingOfferDetailsActivity : BaseActivity() {
         val priceString = getString(R.string.template_price_one_equals,
                 item.baseAssetCode, formattedPrice)
 
-        InfoCard(cards_layout)
-                .setHeading(R.string.price, null)
-                .addRow(priceString, null)
+        adapter.addData(
+                DetailsItem(
+                        text = priceString,
+                        hint = getString(R.string.price),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_asset_pair)
+                )
+        )
     }
 
     protected open fun displayDate(item: OfferRecord) {
-        InfoCard(cards_layout)
-                .setHeading(R.string.date, null)
-                .addRow(DateFormatter(this).formatLong(item.date), null)
+        adapter.addData(
+                DetailsItem(
+                        text = DateFormatter(this).formatLong(item.date),
+                        hint = getString(R.string.date),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_date)
+                )
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

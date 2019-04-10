@@ -192,12 +192,12 @@
             android:name=".features.offers.view.details.PendingOfferDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/pending_offer_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.offers.view.details.PendingInvestmentDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/pending_investment_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.AssetPairUpdateDetailsActivity"
             android:configChanges="orientation|screenSize"
