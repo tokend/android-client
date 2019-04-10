@@ -63,7 +63,14 @@
 
     <android.support.v7.preference.PreferenceCategory
         android:layout="@layout/preference_category_layout_divider"
-        android:title="@string/settings_information_group">
+        android:title="@string/settings_information_group"
+        android:key="info">
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_insert_chart"
+            android:key="limits"
+            android:layout="@layout/preference_layout"
+            android:title="@string/limits" />
 
         <android.support.v7.preference.Preference
             android:icon="@drawable/ic_text_script"

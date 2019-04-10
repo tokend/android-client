@@ -217,6 +217,10 @@
             android:name=".features.trade.TradeActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/trade_title" />
+        <activity
+            android:name=".features.limits.LimitsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/limits" />
     </application>
 
 </manifest>

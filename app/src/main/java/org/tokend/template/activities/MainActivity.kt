@@ -24,7 +24,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
 import org.jetbrains.anko.onClick
-import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.features.assets.ExploreAssetsFragment
@@ -32,7 +31,6 @@ import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.fees.FeesFragment
 import org.tokend.template.features.invest.SalesFragment
-import org.tokend.template.features.limits.LimitsFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.settings.SettingsFragment
@@ -108,15 +106,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withSelectedIconColorRes(R.color.icons)
                 .withIconTintingEnabled(true)
                 .also { items[SendFragment.ID] = it }
-
-        PrimaryDrawerItem()
-                .withName(R.string.limits)
-                .withIdentifier(LimitsFragment.ID)
-                .withIcon(R.drawable.ic_insert_chart)
-                .withIconColorRes(R.color.icons)
-                .withSelectedIconColorRes(R.color.icons)
-                .withIconTintingEnabled(true)
-                .also { items[LimitsFragment.ID] = it }
 
         PrimaryDrawerItem()
                 .withName(R.string.explore_sales_title)
@@ -232,10 +221,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                             || BuildConfig.IS_LIMITS_ALLOWED) {
                         addDrawerItems(DividerDrawerItem())
 
-                        if (BuildConfig.IS_LIMITS_ALLOWED) {
-                            addDrawerItems(items[LimitsFragment.ID])
-                        }
-
                         if (BuildConfig.IS_FEES_ALLOWED) {
                             addDrawerItems(items[FeesFragment.ID])
                         }
@@ -271,7 +256,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     WalletFragment.ID -> factory.getWalletFragment()
                     WithdrawFragment.ID -> factory.getWithdrawFragment()
                     SendFragment.ID -> factory.getSendFragment()
-                    LimitsFragment.ID -> factory.getLimitsFragment()
                     ExploreAssetsFragment.ID -> factory.getExploreFragment()
                     SettingsFragment.ID -> factory.getSettingsFragment()
                     DepositFragment.ID -> factory.getDepositFragment()

@@ -2,6 +2,7 @@ package org.tokend.template.features.settings
 
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.preference.PreferenceCategory
 import android.support.v7.preference.SwitchPreferenceCompat
 import android.support.v7.widget.Toolbar
 import android.view.View
@@ -14,6 +15,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.browse
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.App
+import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
@@ -243,8 +245,21 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     // region Info
     private fun initInfoCategory() {
+        initLimitsItem()
         initTermsItem()
         initOpenSourceLicensesItem()
+    }
+
+    private fun initLimitsItem() {
+        val limitsPreference = findPreference("limits")
+        limitsPreference?.setOnPreferenceClickListener {
+            Navigator.openLimits(this)
+            true
+        }
+        if(!BuildConfig.IS_LIMITS_ALLOWED) {
+            (findPreference("info") as? PreferenceCategory)
+                    ?.removePreference(limitsPreference)
+        }
     }
 
     private fun initTermsItem() {

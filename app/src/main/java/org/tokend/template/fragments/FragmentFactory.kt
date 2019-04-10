@@ -12,7 +12,6 @@ import org.tokend.template.features.invest.SalesFragment
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.fragments.SaleGeneralInfoFragment
 import org.tokend.template.features.invest.saledetails.fragments.SaleOverviewFragment
-import org.tokend.template.features.limits.LimitsFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.settings.GeneralSettingsFragment
 import org.tokend.template.features.trade.chart.view.AssetPairChartFragment
@@ -55,10 +54,6 @@ class FragmentFactory {
 
     fun getSendFragment(asset: String? = null): Fragment {
         return SendFragment.newInstance(asset)
-    }
-
-    fun getLimitsFragment(): Fragment {
-        return LimitsFragment()
     }
 
     fun getExploreFragment(): Fragment {

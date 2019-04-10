@@ -26,6 +26,7 @@ import org.tokend.template.features.invest.activities.InvestmentConfirmationActi
 import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
+import org.tokend.template.features.limits.LimitsActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
 import org.tokend.template.features.offers.view.details.PendingInvestmentDetailsActivity
@@ -278,5 +279,9 @@ object Navigator {
                     putExtra(TradeActivity.ASSET_PAIR_EXTRA, assetPair)
                 }
         )
+    }
+
+    fun openLimits(fragment: Fragment) {
+        fragment.startActivity(Intent(fragment.requireContext(), LimitsActivity::class.java))
     }
 }
