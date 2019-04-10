@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".features.offers.CreateOfferActivity">
+
+    <ScrollView style="@style/LimitedMatchParentWidthConstraint">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/standard_margin">
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/price_edit_text"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/zero"
+                android:inputType="numberDecimal"
+                android:lines="1"
+                app:met_floatingLabelAlwaysShown="true" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_padding">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/amount_edit_text"
+                    style="@style/EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/zero"
+                    android:inputType="numberDecimal"
+                    android:lines="1"
+                    android:paddingRight="@dimen/quadra_margin"
+                    app:met_floatingLabelAlwaysShown="true"
+                    app:met_helperText="@string/template_available"
+                    app:met_helperTextAlwaysShown="true" />
+
+                <TextView
+                    android:id="@+id/max_sell_text_view"
+                    style="@style/SecondaryText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/amount_edit_text"
+                    android:layout_alignEnd="@id/amount_edit_text"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="@dimen/half_standard_margin"
+                    android:text="@string/max_sell_hint" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_padding">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/total_edit_text"
+                    style="@style/EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/zero"
+                    android:inputType="numberDecimal"
+                    android:lines="1"
+                    android:paddingRight="@dimen/quadra_margin"
+                    app:met_floatingLabelAlwaysShown="true"
+                    app:met_helperText="@string/template_available"
+                    app:met_helperTextAlwaysShown="true" />
+
+                <TextView
+                    android:id="@+id/max_buy_text_view"
+                    style="@style/SecondaryText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/total_edit_text"
+                    android:layout_alignEnd="@id/total_edit_text"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="@dimen/half_standard_margin"
+                    android:text="@string/max_buy_hint" />
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_padding"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/sell_btn"
+                    style="@style/PrimaryButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/half_standard_margin"
+                    android:layout_weight="1"
+                    android:enabled="true"
+                    android:text="@string/sell_action"
+                    android:textAllCaps="true" />
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/buy_btn"
+                    style="@style/PrimaryButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/half_standard_margin"
+                    android:layout_weight="1"
+                    android:enabled="true"
+                    android:text="@string/buy_action"
+                    android:textAllCaps="true" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/sell_hint"
+                    style="@style/SecondaryText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/half_standard_margin"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/buy_hint"
+                    style="@style/SecondaryText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/half_standard_margin"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

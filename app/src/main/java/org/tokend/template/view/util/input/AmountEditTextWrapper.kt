@@ -12,7 +12,8 @@ typealias AmountChangeListener = (scaled: BigDecimal, raw: BigDecimal) -> Unit
 /**
  * Wraps [EditText] to simplify amount input
  */
-class AmountEditTextWrapper(private val editText: EditText) {
+class AmountEditTextWrapper(private val editText: EditText,
+                            maxLength: Boolean = false) {
     private var amountListener: AmountChangeListener? = null
     private var textWatcher = object : SimpleTextWatcher() {
         override fun afterTextChanged(s: Editable?) {
@@ -30,7 +31,7 @@ class AmountEditTextWrapper(private val editText: EditText) {
     /**
      * Limit for decimal digits before coma
      */
-    var maxPlacesBeforeComa = 8
+    var maxPlacesBeforeComa = if (maxLength) MAX_LENGTH else 8
         set(value) {
             field = value
             trimInputAndUpdateAmount()
@@ -93,5 +94,9 @@ class AmountEditTextWrapper(private val editText: EditText) {
 
     private fun updateInputFilter() {
         editText.filters = arrayOf(DecimalDigitsInputFilter(maxPlacesBeforeComa, maxPlacesAfterComa))
+    }
+
+    companion object {
+        const val MAX_LENGTH = 100
     }
 }

@@ -27,6 +27,7 @@ import org.tokend.template.features.invest.activities.InvestmentConfirmationActi
 import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
+import org.tokend.template.features.offers.CreateOfferActivity
 import org.tokend.template.features.limits.LimitsActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
@@ -180,9 +181,9 @@ object Navigator {
         fragment.startActivityForResult(confirmationIntent, requestCode)
     }
 
-    fun openOfferConfirmation(fragment: Fragment, requestCode: Int,
+    fun openOfferConfirmation(activity: Activity, requestCode: Int,
                               offer: OfferRecord) {
-        fragment.startActivityForResult(fragment.context?.intentFor<OfferConfirmationActivity>(
+        activity.startActivityForResult(activity.intentFor<OfferConfirmationActivity>(
                 OfferConfirmationActivity.OFFER_EXTRA to offer
         ), requestCode)
     }
@@ -281,6 +282,14 @@ object Navigator {
         )
     }
 
+    fun openCreateOffer(fragment: Fragment, offer: OfferRecord) {
+        fragment.startActivity(
+                Intent(fragment.requireContext(), CreateOfferActivity::class.java).apply {
+                    putExtra(CreateOfferActivity.EXTRA_OFFER, offer)
+                }
+        )
+    }
+  
     fun openLimits(fragment: Fragment) {
         fragment.startActivity(Intent(fragment.requireContext(), LimitsActivity::class.java))
     }

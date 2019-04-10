@@ -388,5 +388,12 @@
     <string name="time_hint">Time</string>
     <string name="template_price_hint">Price (%1$s)</string>
     <string name="template_amount_hint">Amount (%1$s)</string>
+    <string name="template_total_hint">Total (%1$s)</string>
     <string name="trade_offers_title">Offers</string>
+    <string name="total_label">Total</string>
+
+    <string name="zero">0</string>
+    <string name="max_sell_hint">Max Sell</string>
+    <string name="max_buy_hint">Max Buy</string>
+    <string name="error_amount_to_big">Amount is to big</string>
 </resources>

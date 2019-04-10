@@ -25,7 +25,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -213,6 +212,11 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/trade_title" />
         <activity
+            android:name=".features.offers.CreateOfferActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/create_offer_title"
+            android:theme="@style/AppTheme"/>
+        <activity
             android:name=".features.limits.LimitsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/limits_title" />
@@ -220,7 +224,5 @@
             android:name=".features.fees.FeesActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/fees_title"/>
-
     </application>
-
 </manifest>
