@@ -22,6 +22,7 @@ import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
+import org.tokend.template.features.fees.FeesActivity
 import org.tokend.template.features.invest.activities.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.invest.model.SaleRecord
@@ -283,5 +284,9 @@ object Navigator {
 
     fun openLimits(fragment: Fragment) {
         fragment.startActivity(Intent(fragment.requireContext(), LimitsActivity::class.java))
+    }
+
+    fun openFees(fragment: Fragment) {
+        fragment.startActivity(Intent(fragment.requireContext(), FeesActivity::class.java))
     }
 }

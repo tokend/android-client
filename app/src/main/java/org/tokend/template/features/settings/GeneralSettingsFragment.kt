@@ -246,6 +246,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     // region Info
     private fun initInfoCategory() {
         initLimitsItem()
+        initFeesItem()
         initTermsItem()
         initOpenSourceLicensesItem()
     }
@@ -259,6 +260,18 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         if(!BuildConfig.IS_LIMITS_ALLOWED) {
             (findPreference("info") as? PreferenceCategory)
                     ?.removePreference(limitsPreference)
+        }
+    }
+
+    private fun initFeesItem() {
+        val feesPreference = findPreference("fees")
+        feesPreference?.setOnPreferenceClickListener {
+            Navigator.openFees(this)
+            true
+        }
+        if(!BuildConfig.IS_FEES_ALLOWED) {
+            (findPreference("info") as? PreferenceCategory)
+                    ?.removePreference(feesPreference)
         }
     }
 

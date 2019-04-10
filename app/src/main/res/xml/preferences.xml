@@ -70,7 +70,13 @@
             android:icon="@drawable/ic_insert_chart"
             android:key="limits"
             android:layout="@layout/preference_layout"
-            android:title="@string/limits" />
+            android:title="@string/limits_title" />
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_flash"
+            android:key="fees"
+            android:layout="@layout/preference_layout"
+            android:title="@string/fees_title" />
 
         <android.support.v7.preference.Preference
             android:icon="@drawable/ic_text_script"

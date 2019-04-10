@@ -307,7 +307,7 @@
         • If the fund has reached it\'s soft cap by it\'s end date you will receive
         tokens according to your investments, otherwise your investments will be returned
     </string>
-    <string name="limits">Limits</string>
+    <string name="limits_title">Limits</string>
     <string name="payment">Payment</string>
     <string name="deposit">Deposit</string>
     <string name="no_limits_message">No limits</string>

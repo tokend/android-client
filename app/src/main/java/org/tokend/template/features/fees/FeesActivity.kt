@@ -4,29 +4,23 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.Toolbar
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.BehaviorSubject
-import kotlinx.android.synthetic.main.fragment_fees.*
+import kotlinx.android.synthetic.main.activity_fees.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
+import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.repository.FeesRepository
 import org.tokend.template.features.fees.adapter.FeeAdapter
 import org.tokend.template.features.fees.adapter.FeeItem
-import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import java.lang.ref.WeakReference
 
-class FeesFragment : BaseFragment(), ToolbarProvider {
-    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
+class FeesActivity : BaseActivity() {
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },
@@ -47,14 +41,10 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
 
     private val feeAdapter = FeeAdapter()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_fees, container, false)
-    }
-
-    override fun onInitAllowed() {
-        toolbarSubject.onNext(toolbar)
-        toolbar.title = getString(R.string.fees_title)
+    override fun onCreateAllowed(savedInstanceState: Bundle?) {
+        setContentView(R.layout.activity_fees)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initViews()
         subscribeToFees()
@@ -75,7 +65,7 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
 
         fee_list.apply {
             layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                    LinearLayoutManager(this@FeesActivity, LinearLayoutManager.VERTICAL, false)
             adapter = feeAdapter
         }
     }
@@ -91,7 +81,7 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
 
         val weakTabs = WeakReference(asset_tabs)
 
-        val gestureDetector = GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
+        val gestureDetector = GestureDetectorCompat(this, HorizontalSwipesGestureDetector(
                 onSwipeToLeft = {
                     weakTabs.get()?.apply { selectedItemIndex++ }
                 },
@@ -110,7 +100,7 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initSwipeRefresh() {
-        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
+        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(this, R.color.accent))
         swipe_refresh.setOnRefreshListener { update(force = true) }
     }
 
@@ -143,7 +133,7 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun onFeesUpdated() {
-        asset_tabs.setSimpleItems(assets)
+        asset_tabs.setSimpleItems(assets.sortedWith(assetComparator))
         if (assets.isEmpty()) {
             asset_tabs.visibility = View.GONE
             error_empty_view.showEmpty(getString(R.string.no_fees))
@@ -164,16 +154,6 @@ class FeesFragment : BaseFragment(), ToolbarProvider {
             feesRepository.updateIfNotFresh()
         } else {
             feesRepository.update()
-        }
-    }
-
-    companion object {
-        const val ID = 1120L
-        fun newInstance(): FeesFragment {
-            val fragment = FeesFragment()
-            val args = Bundle()
-            fragment.arguments = args
-            return fragment
         }
     }
 }

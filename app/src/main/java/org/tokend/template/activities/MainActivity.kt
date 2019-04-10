@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
@@ -29,7 +28,6 @@ import org.tokend.template.R
 import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
-import org.tokend.template.features.fees.FeesFragment
 import org.tokend.template.features.invest.SalesFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
@@ -126,12 +124,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .also { items[OrderBookFragment.ID] = it }
 
         PrimaryDrawerItem()
-                .withName(getString(R.string.fees_title))
-                .withIdentifier(FeesFragment.ID)
-                .withIcon(R.drawable.ic_flash)
-                .also { items[FeesFragment.ID] = it }
-
-        PrimaryDrawerItem()
                 .withName(R.string.settings_title)
                 .withIdentifier(SettingsFragment.ID)
                 .withIcon(R.drawable.ic_settings)
@@ -216,16 +208,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                         }
                     }
                 }
-                .apply {
-                    if (BuildConfig.IS_FEES_ALLOWED
-                            || BuildConfig.IS_LIMITS_ALLOWED) {
-                        addDrawerItems(DividerDrawerItem())
-
-                        if (BuildConfig.IS_FEES_ALLOWED) {
-                            addDrawerItems(items[FeesFragment.ID])
-                        }
-                    }
-                }
                 .addDrawerItems(
                         DividerDrawerItem(),
                         items[SettingsFragment.ID]
@@ -260,7 +242,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     SettingsFragment.ID -> factory.getSettingsFragment()
                     DepositFragment.ID -> factory.getDepositFragment()
                     SalesFragment.ID -> factory.getSalesFragment()
-                    FeesFragment.ID -> factory.getFeesFragment()
                     TradeAssetPairsFragment.ID -> factory.getTradeAssetPairsFragment()
                     else -> return
                 }
