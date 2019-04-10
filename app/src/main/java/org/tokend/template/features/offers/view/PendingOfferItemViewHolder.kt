@@ -1,5 +1,7 @@
 package org.tokend.template.features.offers.view
 
+import android.graphics.drawable.Drawable
+import android.support.v4.content.ContextCompat
 import android.view.View
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
@@ -13,6 +15,12 @@ class PendingOfferItemViewHolder(
         smallIcon: Boolean
 ) : BaseViewHolder<PendingOfferListItem>(view),
         HistoryItemView by HistoryItemViewImpl(view, smallIcon) {
+
+    private val incomingIcon: Drawable? =
+            ContextCompat.getDrawable(view.context, R.drawable.ic_tx_received)
+
+    private val outgoingIcon: Drawable? =
+            ContextCompat.getDrawable(view.context, R.drawable.ic_tx_sent)
 
     override fun bind(item: PendingOfferListItem) {
         displayIcon(item)

@@ -1,25 +1,25 @@
 package org.tokend.template.features.offers.view.details
 
-import kotlinx.android.synthetic.main.activity_details.*
+import android.support.v4.content.ContextCompat
 import org.tokend.template.R
 import org.tokend.template.data.model.OfferRecord
-import org.tokend.template.view.InfoCard
+import org.tokend.template.view.details.DetailsItem
 
-class PendingInvestmentDetailsActivity: PendingOfferDetailsActivity() {
-    override fun getTitleString(): String {
-        return getString(R.string.pending_investment_details_title)
-    }
-
+class PendingInvestmentDetailsActivity : PendingOfferDetailsActivity() {
     override fun displayDetails(item: OfferRecord) {
         displayToken(item)
-        displayToPay(item)
         displayDate(item)
+        displayToPay(item)
     }
 
     private fun displayToken(item: OfferRecord) {
-        InfoCard(cards_layout)
-                .setHeading(R.string.sale_token, null)
-                .addRow(item.baseAssetCode, null)
+        adapter.addData(
+                DetailsItem(
+                        text = item.baseAssetCode,
+                        hint = getString(R.string.sale_token),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_token)
+                )
+        )
     }
 
     override fun getOfferCancellationMessage(): String {
