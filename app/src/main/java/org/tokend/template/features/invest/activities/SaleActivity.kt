@@ -17,6 +17,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sale.*
 import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import kotlinx.android.synthetic.main.layout_progress.*
+import kotlinx.android.synthetic.main.layout_sale_picture.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.utils.BigDecimalUtil
@@ -231,7 +232,6 @@ class SaleActivity : BaseActivity() {
     // region Info display
     private fun displaySaleInfo() {
         title = sale.name
-        sale_name_text_view.text = sale.name
         sale_description_text_view.text = sale.shortDescription
 
         if (sale.youtubeVideo != null) {
@@ -253,25 +253,20 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun displayAssetDetails() {
-        saleAsset.logoUrl?.let {
+        sale.logoUrl?.let {
             Picasso.with(this)
                     .load(it)
-                    .resizeDimen(R.dimen.asset_list_item_logo_size, R.dimen.asset_list_item_logo_size)
-                    .centerInside()
-                    .transform(CircleTransform())
-                    .into(asset_logo_image_view)
-        } ?: displayGeneratedLogo()
-    }
+                    .placeholder(R.color.saleImagePlaceholder)
+                    .fit()
+                    .centerCrop()
+                    .into(sale_picture_image_view)
+        }
 
-    private fun displayGeneratedLogo() {
-        val logoSize = resources.getDimensionPixelSize(R.dimen.asset_list_item_logo_size)
-
-        asset_logo_image_view.setImageBitmap(
-                LogoFactory(this).getWithAutoBackground(
-                        saleAsset.code,
-                        logoSize
-                )
-        )
+        if (sale.isUpcoming) {
+            sale_upcoming_image_view.visibility = View.VISIBLE
+        } else {
+            sale_upcoming_image_view.visibility = View.GONE
+        }
     }
 
     private fun displayYoutubePreview() {

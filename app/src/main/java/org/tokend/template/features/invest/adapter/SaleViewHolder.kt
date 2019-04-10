@@ -2,6 +2,7 @@ package org.tokend.template.features.invest.adapter
 
 import android.view.View
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.layout_sale_picture.view.*
 import kotlinx.android.synthetic.main.list_item_sale.view.*
 import org.tokend.template.R
 import org.tokend.template.features.invest.model.SaleRecord
