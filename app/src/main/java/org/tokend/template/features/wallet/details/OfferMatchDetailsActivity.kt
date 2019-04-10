@@ -1,15 +1,19 @@
 package org.tokend.template.features.wallet.details
 
-import kotlinx.android.synthetic.main.activity_details.*
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
-import org.tokend.template.view.InfoCard
+import org.tokend.template.view.details.DetailsItem
+import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 
 open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
+    private val adapter = DetailsItemsAdapter()
+
     override fun displayDetails(item: BalanceChange) {
-        setContentView(R.layout.activity_details)
-        setTitle(getTitleString())
+        setContentView(R.layout.activity_details_list)
 
         val details = item.cause as? BalanceChangeCause.MatchedOffer
 
@@ -18,14 +22,14 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
             return
         }
 
+        details_list.layoutManager = LinearLayoutManager(this)
+        details_list.adapter = adapter
+
+        displayEffect(item, adapter)
         displayPrice(details)
+        displayDate(item, adapter)
         displayCharged(details)
         displayFunded(details)
-        displayDate(item, cards_layout)
-    }
-
-    protected open fun getTitleString(): String {
-        return getString(R.string.offer_match_details_title)
     }
 
     protected open fun displayPrice(cause: BalanceChangeCause.MatchedOffer) {
@@ -35,46 +39,56 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
         val priceString = getString(R.string.template_price_one_equals,
                 cause.baseAssetCode, formattedPrice)
 
-        InfoCard(cards_layout)
-                .setHeading(R.string.price, null)
-                .addRow(priceString, null)
+        adapter.addData(
+                DetailsItem(
+                        text = priceString,
+                        hint = getString(R.string.price),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_asset_pair)
+                )
+        )
     }
 
     protected open fun displayCharged(cause: BalanceChangeCause.MatchedOffer) {
         val charged = cause.charged
-        val chargedTotal = charged.amount + charged.fee.total
-        val minDecimals = amountFormatter.getDecimalDigitsCount(charged.assetCode)
 
-        InfoCard(cards_layout)
-                .setHeading(R.string.charged,
-                        amountFormatter.formatAssetAmount(chargedTotal, charged.assetCode, minDecimals))
-                .addRow(R.string.amount,
-                        "+" + amountFormatter.formatAssetAmount(charged.amount, charged.assetCode,
-                                minDecimals))
-                .addRow(R.string.fixed_fee,
-                        "+" + amountFormatter.formatAssetAmount(charged.fee.fixed, charged.assetCode,
-                                minDecimals))
-                .addRow(R.string.percent_fee,
-                        "+" + amountFormatter.formatAssetAmount(charged.fee.percent, charged.assetCode,
-                                minDecimals))
+        adapter.addData(
+                DetailsItem(
+                        header = getString(R.string.charged),
+                        text = amountFormatter.formatAssetAmount(charged.amount, charged.assetCode),
+                        hint = getString(R.string.amount),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
+                )
+        )
+
+        if (charged.fee.total.signum() > 0) {
+            adapter.addData(
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(charged.fee.total, charged.assetCode),
+                            hint = getString(R.string.tx_fee)
+                    )
+            )
+        }
     }
 
     protected open fun displayFunded(cause: BalanceChangeCause.MatchedOffer) {
         val funded = cause.funded
-        val fundedTotal = funded.amount - funded.fee.total
-        val minDecimals = amountFormatter.getDecimalDigitsCount(funded.assetCode)
 
-        InfoCard(cards_layout)
-                .setHeading(R.string.received,
-                        amountFormatter.formatAssetAmount(fundedTotal, funded.assetCode, minDecimals))
-                .addRow(R.string.amount,
-                        "+" + amountFormatter.formatAssetAmount(funded.amount, funded.assetCode,
-                                minDecimals))
-                .addRow(R.string.fixed_fee,
-                        "-" + amountFormatter.formatAssetAmount(funded.fee.fixed, funded.assetCode,
-                                minDecimals))
-                .addRow(R.string.percent_fee,
-                        "-" + amountFormatter.formatAssetAmount(funded.fee.percent, funded.assetCode,
-                                minDecimals))
+        adapter.addData(
+                DetailsItem(
+                        header = getString(R.string.received),
+                        text = amountFormatter.formatAssetAmount(funded.amount, funded.assetCode),
+                        hint = getString(R.string.amount),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
+                )
+        )
+
+        if (funded.fee.total.signum() > 0) {
+            adapter.addData(
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(funded.fee.total, funded.assetCode),
+                            hint = getString(R.string.tx_fee)
+                    )
+            )
+        }
     }
 }

@@ -6,6 +6,7 @@ import java.math.BigDecimal
 import java.util.*
 
 class PendingOfferListItem(
+        val price: BigDecimal,
         val amount: BigDecimal,
         val assetCode: String,
         val isBuy: Boolean,
@@ -15,6 +16,7 @@ class PendingOfferListItem(
         val source: OfferRecord? = null
 ): DateProvider {
     constructor(record: OfferRecord): this(
+            price = record.price,
             amount = if (record.isInvestment) record.quoteAmount else record.baseAmount,
             assetCode = if (record.isInvestment) record.quoteAssetCode else record.baseAssetCode,
             isBuy = record.isBuy,

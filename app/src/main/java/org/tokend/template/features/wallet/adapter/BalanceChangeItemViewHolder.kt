@@ -2,6 +2,7 @@ package org.tokend.template.features.wallet.adapter
 
 import android.view.View
 import org.tokend.template.R
+import org.tokend.template.features.wallet.view.BalanceChangeIconFactory
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.history.HistoryItemView
 import org.tokend.template.view.history.HistoryItemViewImpl
@@ -13,6 +14,9 @@ class BalanceChangeItemViewHolder(view: View,
                                   smallIcon: Boolean
 ) : BaseViewHolder<BalanceChangeListItem>(view),
         HistoryItemView by HistoryItemViewImpl(view, smallIcon) {
+
+    private val iconFactory = BalanceChangeIconFactory(view.context)
+
     override fun bind(item: BalanceChangeListItem) {
         displayIcon(item)
         displayActionName(item)
@@ -22,18 +26,7 @@ class BalanceChangeItemViewHolder(view: View,
     }
 
     private fun displayIcon(item: BalanceChangeListItem) {
-        val icon = when (item.action) {
-            BalanceChangeListItem.Action.LOCKED -> lockedIcon
-            BalanceChangeListItem.Action.UNLOCKED -> unlockedIcon
-            BalanceChangeListItem.Action.MATCHED -> matchIcon
-            else -> when (item.isReceived) {
-                true -> incomingIcon
-                false -> outgoingIcon
-                null -> matchIcon
-            }
-        }
-
-        iconImageView.setImageDrawable(icon)
+        iconImageView.setImageDrawable(iconFactory.get(item.action, item.isReceived))
     }
 
     private fun displayActionName(item: BalanceChangeListItem) {

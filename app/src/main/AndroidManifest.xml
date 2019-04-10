@@ -156,62 +156,57 @@
             android:name=".features.wallet.details.AmlAlertDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/aml_alert_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.IssuanceDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/issuance_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.OfferMatchDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/offer_match_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.InvestmentDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/investment_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.PaymentDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/payment_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.WithdrawalDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/withdrawal_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
-        <activity
-            android:name=".features.wallet.details.PayoutDetailsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/payout_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.SaleCancellationDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/sale_cancellation_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.offers.view.details.PendingOfferDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/pending_offer_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.offers.view.details.PendingInvestmentDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/pending_investment_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.AssetPairUpdateDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/asset_pair_update_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.wallet.details.UnknownDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/unknown_balance_change_details_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.trade.TradeActivity"
             android:configChanges="orientation|screenSize"
@@ -221,5 +216,13 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/create_offer_title"
             android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".features.limits.LimitsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/limits_title" />
+        <activity
+            android:name=".features.fees.FeesActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/fees_title"/>
     </application>
 </manifest>

@@ -7,12 +7,10 @@ import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
-import org.tokend.template.features.fees.FeesFragment
 import org.tokend.template.features.invest.SalesFragment
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.fragments.SaleGeneralInfoFragment
 import org.tokend.template.features.invest.saledetails.fragments.SaleOverviewFragment
-import org.tokend.template.features.limits.LimitsFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.settings.GeneralSettingsFragment
 import org.tokend.template.features.trade.chart.view.AssetPairChartFragment
@@ -57,10 +55,6 @@ class FragmentFactory {
         return SendFragment.newInstance(asset)
     }
 
-    fun getLimitsFragment(): Fragment {
-        return LimitsFragment()
-    }
-
     fun getExploreFragment(): Fragment {
         return ExploreAssetsFragment()
     }
@@ -71,10 +65,6 @@ class FragmentFactory {
 
     fun getSalesFragment(): Fragment {
         return SalesFragment()
-    }
-
-    fun getFeesFragment(): Fragment {
-        return FeesFragment()
     }
 
     fun getSaleOverviewFragment(blobId: String): Fragment {

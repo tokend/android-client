@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
@@ -24,15 +23,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
 import org.jetbrains.anko.onClick
-import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
-import org.tokend.template.features.fees.FeesFragment
 import org.tokend.template.features.invest.SalesFragment
-import org.tokend.template.features.limits.LimitsFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.settings.SettingsFragment
@@ -48,7 +44,6 @@ import org.tokend.template.util.Navigator
 
 class MainActivity : BaseActivity(), WalletEventsListener {
     companion object {
-        private const val SIGN_OUT = 7L
         private val DEFAULT_FRAGMENT_ID = DashboardFragment.ID
     }
 
@@ -111,15 +106,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .also { items[SendFragment.ID] = it }
 
         PrimaryDrawerItem()
-                .withName(R.string.limits)
-                .withIdentifier(LimitsFragment.ID)
-                .withIcon(R.drawable.ic_insert_chart)
-                .withIconColorRes(R.color.icons)
-                .withSelectedIconColorRes(R.color.icons)
-                .withIconTintingEnabled(true)
-                .also { items[LimitsFragment.ID] = it }
-
-        PrimaryDrawerItem()
                 .withName(R.string.explore_sales_title)
                 .withIdentifier(SalesFragment.ID)
                 .withIcon(R.drawable.ic_invest)
@@ -138,23 +124,10 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .also { items[OrderBookFragment.ID] = it }
 
         PrimaryDrawerItem()
-                .withName(getString(R.string.fees_title))
-                .withIdentifier(FeesFragment.ID)
-                .withIcon(R.drawable.ic_flash)
-                .also { items[FeesFragment.ID] = it }
-
-        PrimaryDrawerItem()
                 .withName(R.string.settings_title)
                 .withIdentifier(SettingsFragment.ID)
                 .withIcon(R.drawable.ic_settings)
                 .also { items[SettingsFragment.ID] = it }
-
-        PrimaryDrawerItem()
-                .withName(R.string.sign_out)
-                .withIdentifier(SIGN_OUT)
-                .withSelectable(false)
-                .withIcon(R.drawable.ic_sign_out)
-                .also { items[SIGN_OUT] = it }
 
         navigationDrawer = initDrawerBuilder(items, getHeaderInstance(email)).build()
         landscapeNavigationDrawer = initDrawerBuilder(items, getHeaderInstance(email)).buildView()
@@ -235,24 +208,9 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                         }
                     }
                 }
-                .apply {
-                    if (BuildConfig.IS_FEES_ALLOWED
-                            || BuildConfig.IS_LIMITS_ALLOWED) {
-                        addDrawerItems(DividerDrawerItem())
-
-                        if (BuildConfig.IS_LIMITS_ALLOWED) {
-                            addDrawerItems(items[LimitsFragment.ID])
-                        }
-
-                        if (BuildConfig.IS_FEES_ALLOWED) {
-                            addDrawerItems(items[FeesFragment.ID])
-                        }
-                    }
-                }
                 .addDrawerItems(
                         DividerDrawerItem(),
-                        items[SettingsFragment.ID],
-                        items[SIGN_OUT]
+                        items[SettingsFragment.ID]
                 )
                 .withOnDrawerItemClickListener { _, _, item ->
                     return@withOnDrawerItemClickListener onNavigationItemSelected(item)
@@ -263,11 +221,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     // region Navigation
     private fun onNavigationItemSelected(item: IDrawerItem<Any, RecyclerView.ViewHolder>)
             : Boolean {
-        if (item.identifier == SIGN_OUT) {
-            signOutWithConfirmation()
-        } else {
-            navigateTo(item.identifier)
-        }
+        navigateTo(item.identifier)
         return false
     }
 
@@ -284,12 +238,10 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     WalletFragment.ID -> factory.getWalletFragment()
                     WithdrawFragment.ID -> factory.getWithdrawFragment()
                     SendFragment.ID -> factory.getSendFragment()
-                    LimitsFragment.ID -> factory.getLimitsFragment()
                     ExploreAssetsFragment.ID -> factory.getExploreFragment()
                     SettingsFragment.ID -> factory.getSettingsFragment()
                     DepositFragment.ID -> factory.getDepositFragment()
                     SalesFragment.ID -> factory.getSalesFragment()
-                    FeesFragment.ID -> factory.getFeesFragment()
                     TradeAssetPairsFragment.ID -> factory.getTradeAssetPairsFragment()
                     else -> return
                 }
@@ -325,16 +277,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     }
                     .addTo(compositeDisposable)
         }
-    }
-
-    private fun signOutWithConfirmation() {
-        AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                .setMessage(R.string.sign_out_confirmation)
-                .setPositiveButton(R.string.yes) { _, _ ->
-                    (application as App).signOut(this)
-                }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
     }
 
     private fun updateDrawerVisibility() {

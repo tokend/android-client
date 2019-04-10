@@ -1,15 +1,19 @@
 package org.tokend.template.features.wallet.details
 
-import kotlinx.android.synthetic.main.activity_details.*
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
-import org.tokend.template.view.InfoCard
+import org.tokend.template.view.details.DetailsItem
+import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 
 class WithdrawalDetailsActivity : BalanceChangeDetailsActivity() {
+    private val adapter = DetailsItemsAdapter()
+
     override fun displayDetails(item: BalanceChange) {
-        setContentView(R.layout.activity_details)
-        setTitle(R.string.withdrawal_details_title)
+        setContentView(R.layout.activity_details_list)
 
         val details = item.cause as? BalanceChangeCause.Withdrawal
 
@@ -18,34 +22,22 @@ class WithdrawalDetailsActivity : BalanceChangeDetailsActivity() {
             return
         }
 
-        displayPaid(item)
-        displayDestination(item, details)
-        displayDate(item, cards_layout)
+        details_list.layoutManager = LinearLayoutManager(this)
+        details_list.adapter = adapter
+
+        displayEffect(item, adapter)
+        displayBalanceChange(item, adapter)
+        displayDestination(details)
+        displayDate(item, adapter)
     }
 
-    private fun displayPaid(item: BalanceChange) {
-        val totalPaid = item.amount + item.fee.total
-        val minDecimals = amountFormatter.getDecimalDigitsCount(item.assetCode)
-
-        InfoCard(cards_layout)
-                .setHeading(R.string.paid,
-                        amountFormatter.formatAssetAmount(totalPaid, item.assetCode, minDecimals))
-                .addRow(R.string.amount,
-                        "+" + amountFormatter.formatAssetAmount(totalPaid, item.assetCode,
-                                minDecimals))
-                .addRow(R.string.fixed_fee,
-                        "+" + amountFormatter.formatAssetAmount(item.fee.fixed, item.assetCode,
-                                minDecimals))
-                .addRow(R.string.percent_fee,
-                        "+" + amountFormatter.formatAssetAmount(item.fee.percent, item.assetCode,
-                                minDecimals))
-    }
-
-    private fun displayDestination(item: BalanceChange,
-                                   cause: BalanceChangeCause.Withdrawal) {
-        InfoCard(cards_layout)
-                .setHeading(R.string.tx_withdrawal_destination, null)
-                .addRow(cause.destinationAddress, null)
-                .addRow("\n" + getString(R.string.template_withdrawal_fee_warning, item.assetCode), null)
+    private fun displayDestination(cause: BalanceChangeCause.Withdrawal) {
+        adapter.addData(
+                DetailsItem(
+                        text = cause.destinationAddress,
+                        hint = getString(R.string.tx_withdrawal_destination),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_forward)
+                )
+        )
     }
 }

@@ -1,23 +1,22 @@
 package org.tokend.template.features.wallet.details
 
-import kotlinx.android.synthetic.main.activity_details.*
+import android.support.v7.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.view.InfoCard
+import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 
 class SaleCancellationDetailsActivity : BalanceChangeDetailsActivity() {
+    private val adapter = DetailsItemsAdapter()
+
     override fun displayDetails(item: BalanceChange) {
-        setContentView(R.layout.activity_details)
-        setTitle(R.string.sale_cancellation_details_title)
+        setContentView(R.layout.activity_details_list)
 
-        displayUnlocked(item)
-        displayDate(item, cards_layout)
-    }
+        details_list.layoutManager = LinearLayoutManager(this)
+        details_list.adapter = adapter
 
-    private fun displayUnlocked(item: BalanceChange) {
-        InfoCard(cards_layout)
-                .setHeading(R.string.unlocked, null)
-                .addRow(R.string.amount,
-                        amountFormatter.formatAssetAmount(item.amount, item.assetCode))
+        displayEffect(item, adapter)
+        displayBalanceChange(item, adapter)
+        displayDate(item, adapter)
     }
 }

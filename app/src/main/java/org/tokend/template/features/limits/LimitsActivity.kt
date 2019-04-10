@@ -3,27 +3,21 @@ package org.tokend.template.features.limits
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
-import android.support.v7.widget.Toolbar
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.BehaviorSubject
-import kotlinx.android.synthetic.main.fragment_limits.*
+import kotlinx.android.synthetic.main.activity_limits.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
+import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.repository.LimitsRepository
-import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import java.lang.ref.WeakReference
 
-class LimitsFragment : BaseFragment(), ToolbarProvider {
-    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
+class LimitsActivity : BaseActivity() {
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },
@@ -42,14 +36,10 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
             onAssetChanged()
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_limits, container, false)
-    }
-
-    override fun onInitAllowed() {
-        toolbarSubject.onNext(toolbar)
-        toolbar.title = getString(R.string.limits)
+    override fun onCreateAllowed(savedInstanceState: Bundle?) {
+        setContentView(R.layout.activity_limits)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initSwipeRefresh()
         initTabs()
@@ -67,12 +57,11 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
 
     private fun initEmptyErrorView() {
         error_empty_view.setEmptyDrawable(R.drawable.ic_insert_chart)
-        error_empty_view.setPadding(0,
-                requireContext().resources.getDimensionPixelSize(R.dimen.standard_padding), 0, 0)
+        error_empty_view.setPadding(0, resources.getDimensionPixelSize(R.dimen.standard_padding), 0, 0)
     }
 
     private fun initSwipeRefresh() {
-        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
+        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(this, R.color.accent))
         swipe_refresh.setOnRefreshListener { update(force = true) }
     }
 
@@ -80,7 +69,7 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
 
         val weakTabs = WeakReference(asset_tabs)
 
-        val gestureDetector = GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
+        val gestureDetector = GestureDetectorCompat(this, HorizontalSwipesGestureDetector(
                 onSwipeToLeft = {
                     weakTabs.get()?.apply { selectedItemIndex++ }
                 },
@@ -106,7 +95,7 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
         limit_cards_holder.removeAllViews()
 
         limitsRepository.item?.getAssetEntries(asset)?.let { entries ->
-            LimitCardsProvider(requireContext(), asset, entries, amountFormatter)
+            LimitCardsProvider(this, asset, entries, amountFormatter)
                     .addTo(limit_cards_holder)
         }
     }
@@ -156,16 +145,6 @@ class LimitsFragment : BaseFragment(), ToolbarProvider {
             limitsRepository.updateIfNotFresh()
         } else {
             limitsRepository.update()
-        }
-    }
-
-    companion object {
-        const val ID = 1119L
-        fun newInstance(): LimitsFragment {
-            val fragment = LimitsFragment()
-            val args = Bundle()
-            fragment.arguments = args
-            return fragment
         }
     }
 }
