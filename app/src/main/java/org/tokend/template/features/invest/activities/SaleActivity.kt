@@ -25,15 +25,12 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.extensions.hasError
-import org.tokend.template.features.assets.LogoFactory
-import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.invest.InvestmentHelpDialog
 import org.tokend.template.features.invest.logic.InvestmentInfoManager
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
 import org.tokend.template.logic.FeeManager
-import org.tokend.template.util.CircleTransform
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -61,7 +58,6 @@ class SaleActivity : BaseActivity() {
     private lateinit var feeManager: FeeManager
 
     private lateinit var sale: SaleRecord
-    private lateinit var saleAsset: AssetRecord
     private lateinit var investmentInfoManager: InvestmentInfoManager
 
     private var existingOffers: Map<String, OfferRecord> = emptyMap()
@@ -166,10 +162,9 @@ class SaleActivity : BaseActivity() {
                 }
                 .subscribeBy(
                         onSuccess = { result ->
-                            this.sale = result.financialInfo.detailedSale
-                            this.saleAsset = result.assetDetails
-                            this.existingOffers = result.financialInfo.offersByAsset
-                            this.maxFees = result.financialInfo.maxFeeByAsset
+                            this.sale = result.detailedSale
+                            this.existingOffers = result.offersByAsset
+                            this.maxFees = result.maxFeeByAsset
 
                             onInvestmentInfoUpdated()
                         },
@@ -220,7 +215,6 @@ class SaleActivity : BaseActivity() {
 
     private fun onInvestmentInfoUpdated() {
         displayChangeableSaleInfo()
-        displayAssetDetails()
         initInvestIfNeeded()
         displayExistingInvestmentAmount()
         updateInvestLimit()
@@ -246,13 +240,14 @@ class SaleActivity : BaseActivity() {
         }
 
         displayChangeableSaleInfo()
+        displaySalePhoto()
     }
 
     private fun displayChangeableSaleInfo() {
         SaleProgressWrapper(scroll_view, amountFormatter).displayProgress(sale)
     }
 
-    private fun displayAssetDetails() {
+    private fun displaySalePhoto() {
         sale.logoUrl?.let {
             Picasso.with(this)
                     .load(it)
