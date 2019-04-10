@@ -1,6 +1,7 @@
 package org.tokend.template.features.settings
 
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.preference.SwitchPreferenceCompat
 import android.support.v7.widget.Toolbar
 import android.view.View
@@ -12,6 +13,7 @@ import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.browse
 import org.tokend.sdk.api.tfa.model.TfaFactor
+import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
@@ -77,6 +79,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         initAccountIdItem()
         initKycItem()
         initSecretSeedItem()
+        initSignOutItem()
     }
 
     private fun initAccountIdItem() {
@@ -113,6 +116,20 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
                     accountProvider
             ).show()
 
+            true
+        }
+    }
+
+    private fun initSignOutItem() {
+        val signOutPreference = findPreference("sign_out")
+        signOutPreference?.setOnPreferenceClickListener {
+            AlertDialog.Builder(requireContext(), R.style.AlertDialogStyle)
+                    .setMessage(R.string.sign_out_confirmation)
+                    .setPositiveButton(R.string.yes) { _, _ ->
+                        (requireActivity().application as App).signOut(requireActivity())
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
             true
         }
     }

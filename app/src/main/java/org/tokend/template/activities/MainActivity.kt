@@ -48,7 +48,6 @@ import org.tokend.template.util.Navigator
 
 class MainActivity : BaseActivity(), WalletEventsListener {
     companion object {
-        private const val SIGN_OUT = 7L
         private val DEFAULT_FRAGMENT_ID = DashboardFragment.ID
     }
 
@@ -149,13 +148,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withIcon(R.drawable.ic_settings)
                 .also { items[SettingsFragment.ID] = it }
 
-        PrimaryDrawerItem()
-                .withName(R.string.sign_out)
-                .withIdentifier(SIGN_OUT)
-                .withSelectable(false)
-                .withIcon(R.drawable.ic_sign_out)
-                .also { items[SIGN_OUT] = it }
-
         navigationDrawer = initDrawerBuilder(items, getHeaderInstance(email)).build()
         landscapeNavigationDrawer = initDrawerBuilder(items, getHeaderInstance(email)).buildView()
         nav_tablet.addView(landscapeNavigationDrawer?.slider, 0)
@@ -251,8 +243,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 }
                 .addDrawerItems(
                         DividerDrawerItem(),
-                        items[SettingsFragment.ID],
-                        items[SIGN_OUT]
+                        items[SettingsFragment.ID]
                 )
                 .withOnDrawerItemClickListener { _, _, item ->
                     return@withOnDrawerItemClickListener onNavigationItemSelected(item)
@@ -263,11 +254,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     // region Navigation
     private fun onNavigationItemSelected(item: IDrawerItem<Any, RecyclerView.ViewHolder>)
             : Boolean {
-        if (item.identifier == SIGN_OUT) {
-            signOutWithConfirmation()
-        } else {
-            navigateTo(item.identifier)
-        }
+        navigateTo(item.identifier)
         return false
     }
 
@@ -325,16 +312,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     }
                     .addTo(compositeDisposable)
         }
-    }
-
-    private fun signOutWithConfirmation() {
-        AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                .setMessage(R.string.sign_out_confirmation)
-                .setPositiveButton(R.string.yes) { _, _ ->
-                    (application as App).signOut(this)
-                }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
     }
 
     private fun updateDrawerVisibility() {
