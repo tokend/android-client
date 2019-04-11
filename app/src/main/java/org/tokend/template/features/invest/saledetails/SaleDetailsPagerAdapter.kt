@@ -20,7 +20,7 @@ class SaleDetailsPagerAdapter(sale: SaleRecord,
             fragmentFactory.getSaleGeneralInfoFragment(sale) to
                     context.getString(R.string.sale_general_info_title),
             fragmentFactory.getAssetDetailsFragment(sale.baseAssetCode, balanceCreation = false) to
-                    context.getString(R.string.sale_token_title)
+                    context.getString(R.string.sale_asset_title)
     )
 
     override fun getItem(position: Int): Fragment? {

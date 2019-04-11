@@ -18,7 +18,7 @@ class SaleViewHolder(view: View,
     private val upcomingIndicator = view.sale_upcoming_image_view
 
     override fun bind(item: SaleRecord) {
-        nameTextView.text = view.context.getString(R.string.template_sale_name_token,
+        nameTextView.text = view.context.getString(R.string.template_sale_name_asset,
                 item.name, item.baseAssetCode)
         shortDescriptionTextView.text = item.shortDescription
 

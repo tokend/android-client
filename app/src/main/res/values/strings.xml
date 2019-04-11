@@ -79,7 +79,7 @@
     <string name="details">Details</string>
     <string name="create_balance_action">Create balance</string>
     <string name="view_asset_history_action">View history</string>
-    <string name="no_assets_found">No tokens found</string>
+    <string name="no_assets_found">No assets found</string>
     <string name="asset_balance_exists">Balance exists</string>
     <string name="template_asset_details">%1$s details</string>
     <string name="template_file_download_location">File will be downloaded to the \"%1$s\" directory</string>
@@ -121,7 +121,7 @@
     <string name="payout_min_amount">Min payout amount</string>
     <string name="payout_max_total_amount">Max total payout amount</string>
 
-    <string name="asset_summary_title">Token summary</string>
+    <string name="asset_summary_title">Asset summary</string>
     <string name="asset_available">Available</string>
     <string name="asset_issued">Issued</string>
     <string name="asset_maximum">Maximum</string>
@@ -131,7 +131,7 @@
     <string name="wallet_title">Wallet</string>
     <string name="deposit_title">Deposit</string>
     <string name="withdraw_title">Withdraw</string>
-    <string name="explore_tokens_title">Explore tokens</string>
+    <string name="explore_assets_title">Explore assets</string>
     <string name="send_title">Send</string>
     <string name="trade_title">Trade</string>
     <string name="settings_title">Settings</string>
@@ -184,9 +184,9 @@
     <string name="error_seed_mismatch">Seed doesn\'t match confirmation</string>
     <string name="error_invalid_seed">Invalid seed</string>
     <string name="error_insufficient_balance">Insufficient balance</string>
-    <string name="error_no_transferable_assets">No transferable tokens found</string>
+    <string name="error_no_transferable_assets">No transferable assets found</string>
     <string name="error_invalid_recipient">Invalid recipient</string>
-    <string name="error_no_withdrawable_assets">No withdrawable tokens found</string>
+    <string name="error_no_withdrawable_assets">No withdrawable assets found</string>
     <string name="error_no_tradeable_pairs">No tradeable pairs found</string>
     <string name="error_cannot_send_to_yourself">Send to yourself is not allowed</string>
     <string name="error_fingerprint_locked">Too many failed attempts. Try again later</string>
@@ -253,9 +253,9 @@
     <string name="template_sale_days_to_go">%1$d %2$s to go</string>
     <string name="template_sale_starts_in">Starts in %1$d %2$s</string>
     <string name="template_sale_max_investment">Max investment is %1$s</string>
-    <string name="template_sale_name_token">%1$s (%2$s)</string>
+    <string name="template_sale_name_asset">%1$s (%2$s)</string>
     <string name="sales_search_name_hint">Name</string>
-    <string name="sales_search_token_hint">Token code (exact match)</string>
+    <string name="sales_search_asset_hint">Asset code (exact match)</string>
     <string name="explore_sales_title">Explore sales</string>
     <string name="no_sales_found">No sales found</string>
     <string name="pending_investments_title">Pending investments</string>
@@ -268,7 +268,7 @@
     <string name="investment_confirmation_title">Investment confirmation</string>
     <string name="investment_cancellation_title">Investment cancellation</string>
     <string name="investment_updating_title">Investment update</string>
-    <string name="sale_token">Token</string>
+    <string name="sale_asset">Asset</string>
     <string name="successfully_invested">Successfully invested</string>
     <string name="investment_canceled">Investment has been canceled</string>
     <string name="investment_updated">Investment has been updated</string>
@@ -276,7 +276,7 @@
     <string name="cancel_investment_confirmation">Are you sure want to cancel this investment?</string>
     <string name="sale_details_title">Sale details</string>
     <string name="sale_overview_title">Overview</string>
-    <string name="sale_token_title">Token</string>
+    <string name="sale_asset_title">Asset</string>
     <string name="sale_general_info_title">General</string>
 
     <string name="tokend_network_hint">Network</string>
@@ -307,7 +307,7 @@
         • While the sale is active you can change amount of your investments or cancel them\n\n
         • If you cancel your investment paid amount and fee will be returned\n\n
         • If the sale has reached it\'s soft cap by it\'s end date you will receive
-        tokens according to your investments, otherwise your investments will be returned
+        amount of the sale asset according to your investments, otherwise your investments will be returned
     </string>
     <string name="limits_title">Limits</string>
     <string name="payment">Payment</string>

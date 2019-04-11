@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="fill_horizontal"
         android:layout_marginTop="@dimen/standard_margin"
-        android:hint="@string/sales_search_token_hint"
+        android:hint="@string/sales_search_asset_hint"
         android:inputType="textNoSuggestions"
         android:textColor="@color/white"
         android:theme="@style/EditText.Dark" />

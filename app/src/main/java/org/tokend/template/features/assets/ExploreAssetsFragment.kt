@@ -73,7 +73,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     override fun onInitAllowed() {
         toolbarSubject.onNext(toolbar)
 
-        toolbar.title = getString(R.string.explore_tokens_title)
+        toolbar.title = getString(R.string.explore_assets_title)
 
         initSwipeRefresh()
         initAssetsList()

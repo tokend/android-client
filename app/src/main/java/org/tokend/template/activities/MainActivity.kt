@@ -112,7 +112,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .also { items[SalesFragment.ID] = it }
 
         PrimaryDrawerItem()
-                .withName(R.string.explore_tokens_title)
+                .withName(R.string.explore_assets_title)
                 .withIdentifier(ExploreAssetsFragment.ID)
                 .withIcon(R.drawable.ic_coins)
                 .also { items[ExploreAssetsFragment.ID] = it }

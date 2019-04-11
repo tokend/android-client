@@ -16,7 +16,7 @@ class PendingInvestmentDetailsActivity : PendingOfferDetailsActivity() {
         adapter.addData(
                 DetailsItem(
                         text = item.baseAssetCode,
-                        hint = getString(R.string.sale_token),
+                        hint = getString(R.string.sale_asset),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_token)
                 )
         )
