@@ -18,4 +18,14 @@ class DetailsItemsAdapter : BaseRecyclerAdapter<DetailsItem, DetailsItemViewHold
                 || getItemAt(position + 1)?.hasHeader == true
         holder.dividerIsVisible = !lastInGroup
     }
+
+    fun addOrUpdateItem(newItem: DetailsItem) {
+        val index = items.indexOf(newItem)
+        if (index > -1) {
+            items[index] = newItem
+            notifyItemChanged(index)
+        } else {
+            addData(newItem)
+        }
+    }
 }

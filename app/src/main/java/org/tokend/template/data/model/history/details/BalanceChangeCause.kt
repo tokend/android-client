@@ -167,7 +167,7 @@ sealed class BalanceChangeCause : Serializable {
         }
 
         /**
-         * @return receiver or sender account ID on [yourAccountId]
+         * @return receiver or sender account ID based on [yourAccountId]
          *
          * @see isReceived
          */
@@ -188,6 +188,21 @@ sealed class BalanceChangeCause : Serializable {
                 sourceName
             else
                 destName
+        }
+
+        /**
+         * Sets receiver or sender name based on [yourAccountId]
+         *
+         * @see isReceived
+         */
+        fun setCounterpartyName(yourAccountId: String,
+                                counterpartyName: String) {
+            if (isReceived(yourAccountId)) {
+                sourceName = counterpartyName
+            }
+            else {
+                destName = counterpartyName
+            }
         }
     }
 

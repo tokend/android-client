@@ -2,6 +2,9 @@ package org.tokend.template.features.wallet.details
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SimpleItemAnimator
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
@@ -9,6 +12,7 @@ import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import java.math.BigDecimal
+
 
 class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
     private val adapter = DetailsItemsAdapter()
@@ -32,38 +36,51 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
         details_list.layoutManager = LinearLayoutManager(this)
         details_list.adapter = adapter
+        (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
         displayEffect(item, adapter)
         displayCounterparty(details, accountId)
         displayPaidOrReceived(item, details, accountId)
         displaySubject(details)
         displayDate(item, adapter)
+
+        loadAndDisplayCounterpartyEmail(details, accountId)
     }
 
     private fun displayCounterparty(cause: BalanceChangeCause.Payment,
                                     accountId: String) {
         val counterpartyAccount = cause.getCounterpartyAccountId(accountId)
-        val counterpartyName = cause.getCounterpartyName(accountId)
+        val counterpartyEmail = cause.getCounterpartyName(accountId)
 
         val isReceived = cause.isReceived(accountId)
 
-        val titleStringRes =
+        val accountIdHintStringRes =
                 if (isReceived)
                     R.string.tx_sender
                 else
                     R.string.tx_recipient
 
-        val counterpary =
-                if (counterpartyName != null)
-                    counterpartyName + "\n" + counterpartyAccount
-                else
-                    counterpartyAccount
-
-        adapter.addData(
+        adapter.addOrUpdateItem(
                 DetailsItem(
-                        text = counterpary,
-                        hint = getString(titleStringRes),
+                        id = COUNTERPARTY_ACCOUNT_ID_ITEM_ID,
+                        text = counterpartyAccount,
+                        hint = getString(accountIdHintStringRes),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_account)
+                )
+        )
+
+        val emailHintStringRes =
+                if (isReceived)
+                    R.string.tx_sender_email
+                else
+                    R.string.tx_recipient_email
+
+        adapter.addOrUpdateItem(
+                DetailsItem(
+                        id = COUNTERPARTY_EMAIL_ITEM_ID,
+                        text = counterpartyEmail ?: getString(R.string.loading_data),
+                        hint = getString(emailHintStringRes),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_email)
                 )
         )
     }
@@ -163,5 +180,29 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_label_outline)
                 )
         )
+    }
+
+    private fun loadAndDisplayCounterpartyEmail(cause: BalanceChangeCause.Payment,
+                                                accountId: String) {
+        val counterpartyAccountId = cause.getCounterpartyAccountId(accountId)
+
+        repositoryProvider
+                .accountDetails()
+                .getEmailByAccountId(counterpartyAccountId)
+                .subscribeBy(
+                        onSuccess = { email ->
+                            cause.setCounterpartyName(accountId, email)
+                            displayCounterparty(cause, accountId)
+                        },
+                        onError = {
+                            // Not critical.
+                        }
+                )
+                .addTo(compositeDisposable)
+    }
+
+    companion object {
+        private const val COUNTERPARTY_ACCOUNT_ID_ITEM_ID = 1L
+        private const val COUNTERPARTY_EMAIL_ITEM_ID = 2L
     }
 }

@@ -334,7 +334,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                         },
                         onError = {
                             when (it) {
-                                is AccountDetailsRepository.NoDetailsFoundException ->
+                                is AccountDetailsRepository.NoIdentityAvailableException ->
                                     recipient_edit_text.setErrorAndFocus(
                                             R.string.error_invalid_recipient
                                     )

@@ -16,4 +16,12 @@ class DetailsItem(
         val id: Long = 0L
 ) {
     val hasHeader: Boolean = header != null
+
+    override fun equals(other: Any?): Boolean {
+        return other is DetailsItem && other.id == id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }

@@ -152,6 +152,8 @@
     <string name="tx_action_matched">Matched</string>
     <string name="tx_sender">Sender</string>
     <string name="tx_recipient">Recipient</string>
+    <string name="tx_sender_email">Sender\'s email</string>
+    <string name="tx_recipient_email">Recipient\'s email</string>
     <string name="tx_fee">Fee</string>
     <string name="tx_cause">Cause</string>
     <string name="tx_reference">Reference</string>
