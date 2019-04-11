@@ -6,7 +6,7 @@ import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 
-class UnknownDetailsActivity : BalanceChangeDetailsActivity() {
+open class UnknownDetailsActivity : BalanceChangeDetailsActivity() {
 
     override fun displayDetails(item: BalanceChange) {
         setContentView(R.layout.activity_details_list)

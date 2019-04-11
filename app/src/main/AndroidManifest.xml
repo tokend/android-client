@@ -188,6 +188,11 @@
             android:label="@string/sale_cancellation_details_title"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".features.wallet.details.OfferCancellationDetailsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/offer_cancellation_details_title"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".features.offers.view.details.PendingOfferDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/pending_offer_details_title"

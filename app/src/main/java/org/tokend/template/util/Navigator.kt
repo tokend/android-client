@@ -27,8 +27,8 @@ import org.tokend.template.features.invest.activities.InvestmentConfirmationActi
 import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
-import org.tokend.template.features.offers.CreateOfferActivity
 import org.tokend.template.features.limits.LimitsActivity
+import org.tokend.template.features.offers.CreateOfferActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
 import org.tokend.template.features.offers.view.details.PendingInvestmentDetailsActivity
@@ -245,6 +245,7 @@ object Navigator {
                 return
             }
             is BalanceChangeCause.SaleCancellation -> SaleCancellationDetailsActivity::class.java
+            is BalanceChangeCause.OfferCancellation -> OfferCancellationDetailsActivity::class.java
             is BalanceChangeCause.AssetPairUpdate -> AssetPairUpdateDetailsActivity::class.java
             is BalanceChangeCause.Unknown -> UnknownDetailsActivity::class.java
         }

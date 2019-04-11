@@ -50,6 +50,7 @@
     <string name="issuance_details_title">Issuance details</string>
     <string name="sale_cancellation_details_title">Fund cancellation details</string>
     <string name="asset_pair_update_details_title">Asset pair update details</string>
+    <string name="offer_cancellation_details_title">Offer cancellation details</string>
     <string name="paid">Paid</string>
     <string name="received">Received</string>
     <string name="sent">Sent</string>
@@ -370,6 +371,7 @@
     <string name="balance_change_cause_pending_investment">Pending investment</string>
     <string name="balance_change_cause_sale_cancellation">Fund cancellation</string>
     <string name="balance_change_cause_asset_pair_update">Asset pair update</string>
+    <string name="balance_change_cause_offer_cancellation">Offer cancellation</string>
 
     <string name="asset_pair_title">Asset pair</string>
     <string name="asset_pair_code">Code</string>
