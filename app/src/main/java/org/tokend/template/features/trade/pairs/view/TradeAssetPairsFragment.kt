@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SimpleItemAnimator
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -131,6 +132,8 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
 
         asset_pairs_recycler_view.layoutManager = LinearLayoutManager(requireContext())
         asset_pairs_recycler_view.adapter = pairsAdapter
+        (asset_pairs_recycler_view.itemAnimator as? SimpleItemAnimator)
+                ?.supportsChangeAnimations = false
 
         error_empty_view.setEmptyDrawable(R.drawable.ic_trade)
         error_empty_view.observeAdapter(pairsAdapter, R.string.error_no_tradeable_pairs)
@@ -237,12 +240,12 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
 
         if (quotes.isEmpty()) {
             pairs_tabs.visibility = View.GONE
-            pairsAdapter.setData(null)
         } else {
             pairs_tabs.visibility = View.VISIBLE
         }
 
         pairs_tabs.setItems(quotes.map { PickerItem(it, it) })
+        displayPairs()
     }
 
     private fun update(force: Boolean = false) {
