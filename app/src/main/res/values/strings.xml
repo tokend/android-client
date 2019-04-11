@@ -48,7 +48,7 @@
     <string name="payment_details_title">Payment details</string>
     <string name="aml_alert_details_title">AML alert details</string>
     <string name="issuance_details_title">Issuance details</string>
-    <string name="sale_cancellation_details_title">Fund cancellation details</string>
+    <string name="sale_cancellation_details_title">Sale cancellation details</string>
     <string name="asset_pair_update_details_title">Asset pair update details</string>
     <string name="offer_cancellation_details_title">Offer cancellation details</string>
     <string name="paid">Paid</string>
@@ -256,8 +256,8 @@
     <string name="template_sale_name_token">%1$s (%2$s)</string>
     <string name="sales_search_name_hint">Name</string>
     <string name="sales_search_token_hint">Token code (exact match)</string>
-    <string name="explore_sales_title">Explore funds</string>
-    <string name="no_sales_found">No funds found</string>
+    <string name="explore_sales_title">Explore sales</string>
+    <string name="no_sales_found">No sales found</string>
     <string name="pending_investments_title">Pending investments</string>
     <string name="no_pending_investments">No pending investments</string>
     <string name="sale_investing">Investing</string>
@@ -274,7 +274,7 @@
     <string name="investment_updated">Investment has been updated</string>
     <string name="pending_investment_details_title">Pending investment details</string>
     <string name="cancel_investment_confirmation">Are you sure want to cancel this investment?</string>
-    <string name="sale_details_title">Fund details</string>
+    <string name="sale_details_title">Sale details</string>
     <string name="sale_overview_title">Overview</string>
     <string name="sale_token_title">Token</string>
     <string name="sale_general_info_title">General</string>
@@ -284,7 +284,7 @@
     <string name="error_network_not_specified">Network is not specified</string>
 
     <string name="verification_required">Verification required</string>
-    <string name="sale_verifictaion_required_details">Please verify your account to participate in this fund</string>
+    <string name="sale_verifictaion_required_details">Please verify your account to participate in this sale</string>
     <string name="go_to_verification">Go to Verification</string>
 
     <string name="sale_upcoming">Upcoming</string>
@@ -302,11 +302,11 @@
 
     <string name="investment_help_title">Investment help</string>
     <string name="investment_help_content">
-        • You can make investments in this fund using proposed assets\n\n
+        • You can make investments in this sale using proposed assets\n\n
         • You can have one investment per asset\n\n
-        • While the fund is active you can change amount of your investments or cancel them\n\n
+        • While the sale is active you can change amount of your investments or cancel them\n\n
         • If you cancel your investment paid amount and fee will be returned\n\n
-        • If the fund has reached it\'s soft cap by it\'s end date you will receive
+        • If the sale has reached it\'s soft cap by it\'s end date you will receive
         tokens according to your investments, otherwise your investments will be returned
     </string>
     <string name="limits_title">Limits</string>
@@ -371,7 +371,7 @@
     <string name="balance_change_cause_withdrawal">Withdrawal</string>
     <string name="balance_change_cause_pending_offer">Pending offer</string>
     <string name="balance_change_cause_pending_investment">Pending investment</string>
-    <string name="balance_change_cause_sale_cancellation">Fund cancellation</string>
+    <string name="balance_change_cause_sale_cancellation">Sale cancellation</string>
     <string name="balance_change_cause_asset_pair_update">Asset pair update</string>
     <string name="balance_change_cause_offer_cancellation">Offer cancellation</string>
 
