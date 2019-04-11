@@ -34,8 +34,15 @@ class DateFormatter(private val context: Context) {
      * Formats given date to the long string without time:
      * short month name, 2-digits year number
      */
-    fun formatCompactDateOnly(date: Date): String {
-        return SimpleDateFormat("dd MMM yy", Locale.ENGLISH)
+    fun formatCompactDateOnly(date: Date,
+                              includeYear: Boolean = true): String {
+        val pattern =
+                if (includeYear)
+                    "dd MMM yy"
+                else
+                    "dd MMM"
+
+        return SimpleDateFormat(pattern, Locale.ENGLISH)
                 .format(date)
     }
 
@@ -50,17 +57,22 @@ class DateFormatter(private val context: Context) {
 
     /**
      * Formats given date to 12-/24-hour time if it is today.
-     * Otherwise formats to date with short month name, 2-digits year number.
+     * Otherwise formats to date with short month name including 2-digits year number
+     * if the year is different from the current one.
      */
     fun formatTimeOrDate(date: Date): String {
-        val current = Calendar.getInstance().get(Calendar.DATE)
-        val action = Calendar.getInstance().apply { timeInMillis = date.time }.get(Calendar.DATE)
+        val currentCalendar = Calendar.getInstance()
+        val currentDay = currentCalendar.get(Calendar.DAY_OF_YEAR)
+        val currentYear = currentCalendar.get(Calendar.YEAR)
 
-        return when (current) {
-            action -> {
-                formatTimeOnly(date)
-            }
-            else -> formatCompactDateOnly(date)
+        val actionCalendar = Calendar.getInstance().apply { timeInMillis = date.time }
+        val actionDay = actionCalendar.get(Calendar.DAY_OF_YEAR)
+        val actionYear = actionCalendar.get(Calendar.YEAR)
+
+        return when {
+            currentDay == actionDay
+                    && currentYear == actionYear -> formatTimeOnly(date)
+            else -> formatCompactDateOnly(date, includeYear = currentYear != actionYear)
         }
     }
 }

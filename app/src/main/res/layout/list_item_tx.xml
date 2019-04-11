@@ -39,7 +39,7 @@
             style="@style/SecondaryText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/half_standard_margin"
+            android:layout_marginTop="@dimen/quarter_standard_margin"
             android:ellipsize="end"
             android:gravity="end"
             android:maxLines="1"
