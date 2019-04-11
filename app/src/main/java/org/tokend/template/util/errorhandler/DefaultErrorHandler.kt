@@ -78,7 +78,8 @@ open class DefaultErrorHandler(
                         context.getString(R.string.error_payment_amount_less_than_fee)
                     TransactionFailedException.OP_REQUIRES_KYC ->
                         context.getString(R.string.error_kyc_required_to_own_asset)
-                    TransactionFailedException.OP_NOT_FOUND ->
+                    TransactionFailedException.OP_NOT_FOUND,
+                    TransactionFailedException.OP_NO_ENTRY ->
                         context.getString(R.string.error_tx_not_found)
                     else ->
                         context.getString(R.string.error_tx_general)
