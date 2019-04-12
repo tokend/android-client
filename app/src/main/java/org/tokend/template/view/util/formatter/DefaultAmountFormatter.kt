@@ -65,10 +65,7 @@ class DefaultAmountFormatter : AmountFormatter {
     }
 
     override fun getDecimalDigitsCount(asset: String?): Int {
-        return when (asset) {
-            "USD", "EUR" -> AmountFormatter.DEFAULT_FIAT_DECIMAL_DIGITS
-            else -> AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS
-        }
+        return AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS
     }
 
     private fun buildDecimalFormatter(maxZerosCount: Int, minZerosCount: Int): NumberFormat {
