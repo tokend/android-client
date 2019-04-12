@@ -64,7 +64,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         }
 
     private val defaultAsset: String?
-        get() = arguments?.getString("asset")
+        get() = arguments?.getString(ASSET_EXTRA)
 
     private var asset: String = ""
         set(value) {

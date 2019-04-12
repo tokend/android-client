@@ -50,15 +50,39 @@
         </org.tokend.template.view.touchintercepting.TouchInterceptingLinearLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/send_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/menu_fab"
+        style="@style/FloatingButton"
         android:layout_marginEnd="@dimen/standard_margin"
         android:layout_marginBottom="@dimen/standard_margin"
         android:visibility="gone"
         app:layout_anchor="@id/swipe_refresh"
-        app:layout_anchorGravity="bottom|right|end"
-        app:srcCompat="@drawable/ic_send" />
+        app:layout_anchorGravity="bottom|right|end">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/send_fab"
+            style="@style/FloatingButtonMenuItem"
+            app:fab_label="@string/send_title"
+            android:src="@drawable/send" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/receive_fab"
+            style="@style/FloatingButtonMenuItem"
+            app:fab_label="Receive"
+            android:src="@drawable/receive" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/deposit_fab"
+            style="@style/FloatingButtonMenuItem"
+            app:fab_label="@string/deposit"
+            android:src="@drawable/ic_deposit_fab" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/withdraw_fab"
+            style="@style/FloatingButtonMenuItem"
+            app:fab_label="@string/withdraw_title"
+            android:src="@drawable/ic_withdraw_fab" />
+
+    </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.design.widget.CoordinatorLayout>

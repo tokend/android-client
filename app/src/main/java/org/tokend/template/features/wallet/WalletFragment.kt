@@ -24,6 +24,7 @@ import org.tokend.template.R
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.template.features.wallet.adapter.BalanceChangesAdapter
 import org.tokend.template.fragments.BaseFragment
@@ -78,7 +79,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         initAssetTabs()
         initHistory()
         initSwipeRefresh()
-        initSend()
+        initFabButtons()
         initHorizontalSwipesIfNeeded()
 
         arguments
@@ -90,9 +91,31 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         subscribeToBalances()
     }
 
-    private fun initSend() {
+    private fun initFabButtons() {
         send_fab.onClick {
             Navigator.openSend(this, asset, SEND_REQUEST)
+            menu_fab.close(false)
+        }
+
+        receive_fab.onClick {
+            val accountId = walletInfoProvider.getWalletInfo()?.accountId
+                    ?: getString(R.string.error_try_again)
+            Navigator.openQrShare(requireActivity(),
+                    data = accountId,
+                    title = getString(R.string.account_id_title),
+                    shareLabel = getString(R.string.share_account_id)
+            )
+            menu_fab.close(false)
+        }
+
+        deposit_fab.onClick {
+            Navigator.openDeposit(this, SEND_REQUEST, asset)
+            menu_fab.close(false)
+        }
+
+        withdraw_fab.onClick {
+            Navigator.openWithdraw(this, SEND_REQUEST, asset)
+            menu_fab.close(false)
         }
     }
 
@@ -119,9 +142,9 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                     if (dy > 2) {
-                        send_fab.hide()
+                        menu_fab.hideMenuButton(true)
                     } else if (dy < -2 && send_fab.isEnabled) {
-                        send_fab.show()
+                        menu_fab.showMenuButton(true)
                     }
                 }
             }
@@ -149,7 +172,10 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
-        swipe_refresh.setOnRefreshListener { update(force = true) }
+        swipe_refresh.setOnRefreshListener {
+            update(force = true)
+            menu_fab.close(true)
+        }
     }
 
     private fun initHorizontalSwipesIfNeeded() {
@@ -253,18 +279,57 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                 }
     }
 
-    private fun displaySendIfNeeded() {
-        (balancesRepository.itemsList
+    private fun updateFabMenuState() {
+        val asset = balancesRepository.itemsList
                 .find { it.assetCode == asset }
                 ?.asset
-                ?.isTransferable == true)
+        val transferable = isTransferable(asset)
+        val deposit = isDepositAvailable(asset)
+        val withdraw = isWithdrawAvailable(asset)
+        if (!transferable && !deposit && !withdraw) {
+            menu_fab.visibility = View.GONE
+        } else {
+            menu_fab.visibility = View.VISIBLE
+        }
+    }
+
+    private fun isTransferable(asset: AssetRecord?): Boolean {
+        return (asset?.isTransferable == true)
                 .let { isTransferable ->
                     if (!isTransferable || !BuildConfig.IS_SEND_ALLOWED) {
-                        send_fab.hide()
                         send_fab.isEnabled = false
+                        receive_fab.isEnabled = false
+                        false
                     } else {
-                        send_fab.show()
                         send_fab.isEnabled = true
+                        receive_fab.isEnabled = true
+                        true
+                    }
+                }
+    }
+
+    private fun isDepositAvailable(asset: AssetRecord?): Boolean {
+        return (asset?.isBackedByExternalSystem == true)
+                .let { isDepositAllowed ->
+                    if (!isDepositAllowed || !BuildConfig.IS_DEPOSIT_ALLOWED) {
+                        deposit_fab.isEnabled = false
+                        false
+                    } else {
+                        deposit_fab.isEnabled = true
+                        true
+                    }
+                }
+    }
+
+    private fun isWithdrawAvailable(asset: AssetRecord?): Boolean {
+        return (asset?.isWithdrawable == true)
+                .let { isWithdrawable ->
+                    if (!isWithdrawable || !BuildConfig.IS_WITHDRAW_ALLOWED) {
+                        withdraw_fab.isEnabled = false
+                        false
+                    } else {
+                        withdraw_fab.isEnabled = true
+                        true
                     }
                 }
     }
@@ -295,7 +360,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     private fun onBalancesUpdated(balances: List<BalanceRecord>) {
         displayAssetTabs(balances.map { it.assetCode })
         displayBalance()
-        displaySendIfNeeded()
+        updateFabMenuState()
     }
 
     private fun onAssetChanged() {
@@ -303,7 +368,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         subscribeToHistory()
         date_text_switcher.init(history_list, adapter)
         history_list.scrollToPosition(0)
-        displaySendIfNeeded()
+        updateFabMenuState()
         update()
     }
 

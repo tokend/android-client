@@ -59,8 +59,8 @@ class FragmentFactory {
         return ExploreAssetsFragment()
     }
 
-    fun getDepositFragment(): Fragment {
-        return DepositFragment()
+    fun getDepositFragment(asset: String? = null): Fragment {
+        return DepositFragment.newInstance(asset)
     }
 
     fun getSalesFragment(): Fragment {

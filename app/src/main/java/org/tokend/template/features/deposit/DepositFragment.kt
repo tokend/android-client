@@ -36,6 +36,7 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.formatter.DateFormatter
 import java.lang.ref.WeakReference
+import java.math.BigDecimal
 import java.util.*
 
 class DepositFragment : BaseFragment(), ToolbarProvider {
@@ -73,6 +74,10 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     override fun onInitAllowed() {
+        arguments?.getString(EXTRA_ASSET)?.let {
+            currentAsset = AssetRecord(it, 1, null, null, null, null, null, null, BigDecimal.ZERO)
+        }
+
         initToolbar()
         initSwipeRefresh()
         initButtons()
@@ -418,5 +423,14 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         const val ID = 1112L
         private const val EXPIRATION_WARNING_THRESHOLD = 6 * 60 * 60 * 1000L
         private const val CRITICAL_EXPIRATION_WARNING_THRESHOLD = 30 * 60 * 1000L
+        private const val EXTRA_ASSET = "extra_asset"
+
+        fun newInstance(asset: String?): DepositFragment {
+            val fragment = DepositFragment()
+            val bundle = Bundle()
+            bundle.putString(EXTRA_ASSET, asset)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }
