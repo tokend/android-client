@@ -43,7 +43,7 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
                 DetailsItem(
                         text = priceString,
                         hint = getString(R.string.price),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_asset_pair)
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_price)
                 )
         )
     }
