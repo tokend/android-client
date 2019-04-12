@@ -4,11 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_create_offer.*
-import org.tokend.template.R
-import org.tokend.template.activities.BaseActivity
-import org.tokend.template.data.model.OfferRecord
-import org.tokend.template.data.repository.balances.BalancesRepository
 import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
@@ -19,9 +14,14 @@ import com.rengwuxian.materialedittext.MaterialEditText
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.android.synthetic.main.activity_create_offer.*
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.utils.BigDecimalUtil
+import org.tokend.template.R
+import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.isMaxPossibleAmount
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
@@ -30,8 +30,6 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.input.AmountEditTextWrapper
-import org.tokend.template.view.util.input.SoftInputUtil
-import java.lang.ArithmeticException
 import java.math.BigDecimal
 import java.math.MathContext
 
@@ -85,11 +83,9 @@ class CreateOfferActivity : BaseActivity() {
                 getString(R.string.template_offer_creation_price,
                         currentOffer.quoteAssetCode, currentOffer.baseAssetCode)
 
-        amount_edit_text.setAmount(currentOffer.baseAmount, baseScale)
         amount_edit_text.floatingLabelText =
                 getString(R.string.template_amount_hint, currentOffer.baseAssetCode)
 
-        total_edit_text.setAmount(currentOffer.quoteAmount, quoteScale)
         total_edit_text.floatingLabelText =
                 getString(R.string.template_total_hint, currentOffer.quoteAssetCode)
 
