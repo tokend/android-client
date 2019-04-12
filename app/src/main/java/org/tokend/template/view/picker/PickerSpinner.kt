@@ -28,7 +28,9 @@ class PickerSpinner : AppCompatSpinner, Picker {
     override var selectedItemIndex: Int
         get() = selectedItemPosition
         set(value) {
+//            post {
             setSelection(value)
+//            }
         }
     override var selectedItem: PickerItem?
         get() = items.getOrNull(selectedItemIndex)
@@ -72,13 +74,13 @@ class PickerSpinner : AppCompatSpinner, Picker {
                     }
                 }
 
-        post {
-            itemsAdapter.clear()
-            itemsAdapter.addAll(items.map { it.text })
+        itemsAdapter.clear()
+        itemsAdapter.addAll(items.map { it.text })
 
-            selectedItemIndex = indexToSelect
+        selectedItemIndex = indexToSelect
 
-            suspendEvent = false
-        }
+        suspendEvent = false
+
+        itemsAdapter.notifyDataSetChanged()
     }
 }
