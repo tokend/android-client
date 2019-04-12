@@ -34,8 +34,10 @@ class SaleProgressWrapper(private val rootView: View,
         rootView.sale_progress.max = scaledSoftCap
         rootView.sale_progress.progress = scaledCurrentCap
 
-        val percent = (scaledCurrentCap * 100f / scaledSoftCap).roundToInt()
-        rootView.sale_progress_percent_text_view.text = "$percent%"
+        val percent = "${(scaledCurrentCap * 100f / scaledSoftCap).roundToInt()}%"
+        val funded = context.getString(R.string.template_sale_funded, percent)
+        rootView.sale_progress_percent_text_view.text = SpannableString(funded)
+                .apply { highlight(percent, highlightColor) }
 
         if (sale.isAvailable || sale.isUpcoming) {
             rootView.sale_remain_time_text_view.visibility = View.VISIBLE
@@ -60,11 +62,6 @@ class SaleProgressWrapper(private val rootView: View,
         } else {
             rootView.sale_remain_time_text_view.visibility = View.GONE
         }
-
-        val investorsCount = sale.investorsCount
-        val countString = "$investorsCount ${context.resources.getQuantityString(R.plurals.investor,
-                investorsCount)}"
-        rootView.sale_investors_count_text_view.text = SpannableString(countString)
-                .apply { highlight(investorsCount.toString(), highlightColor) }
+//`
     }
 }
