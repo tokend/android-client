@@ -26,7 +26,9 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.invest.InvestmentHelpDialog
+import org.tokend.template.features.invest.logic.BlobManager
 import org.tokend.template.features.invest.logic.InvestmentInfoManager
+import org.tokend.template.features.invest.logic.SaleOverviewMarkdownLoader
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
@@ -39,6 +41,7 @@ import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.wallet.xdr.SaleType
+import ru.noties.markwon.Markwon
 import java.math.BigDecimal
 import java.math.MathContext
 
@@ -124,6 +127,8 @@ class SaleActivity : BaseActivity() {
         } finally {
             supportStartPostponedEnterTransition()
         }
+
+        loadOverview()
 
         canInvest = false
     }
@@ -570,6 +575,29 @@ class SaleActivity : BaseActivity() {
 
             AnimationUtil.fadeInView(sale_unavailable_card)
         }
+    }
+
+    private fun loadOverview() {
+        SaleOverviewMarkdownLoader(
+                this,
+                BlobManager(apiProvider, walletInfoProvider)
+        )
+                .load(sale.fullDescriptionBlob)
+                .compose(ObservableTransformers.defaultSchedulersSingle())
+                .doOnSubscribe {
+                    mainLoading.show("overview")
+                }
+                .doOnEvent { _, _ ->
+                    mainLoading.hide("overview")
+                }
+                .subscribeBy(
+                        onSuccess = {
+                            AnimationUtil.fadeInView(sale_overview_card)
+                            Markwon.setText(sale_overview_text_view, it)
+                        },
+                        onError = {}
+                )
+                .addTo(compositeDisposable)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
