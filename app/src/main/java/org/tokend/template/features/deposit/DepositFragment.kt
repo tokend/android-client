@@ -36,7 +36,6 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.formatter.DateFormatter
 import java.lang.ref.WeakReference
-import java.math.BigDecimal
 import java.util.*
 
 class DepositFragment : BaseFragment(), ToolbarProvider {
@@ -57,11 +56,18 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             field = value
             onAssetChanged()
         }
+
     private val externalAccount: AccountRecord.DepositAccount?
         get() = accountRepository
                 .item
                 ?.depositAccounts
                 ?.find { it.type == currentAsset?.externalSystemType }
+
+    private val requestedAssetCode: String? by lazy {
+        arguments?.getString(EXTRA_ASSET)
+    }
+
+    private var requestedAssetSet = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_deposit, container, false)
@@ -74,10 +80,6 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     override fun onInitAllowed() {
-        arguments?.getString(EXTRA_ASSET)?.let {
-            currentAsset = AssetRecord(it, 1, null, null, null, null, null, null, BigDecimal.ZERO)
-        }
-
         initToolbar()
         initSwipeRefresh()
         initButtons()
@@ -198,6 +200,12 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 },
                 depositableAssets.indexOfFirst { it.code == currentAsset?.code }
         )
+
+        if (!requestedAssetSet) {
+            asset_tab_layout.selectedItemIndex =
+                    depositableAssets.indexOfFirst { it.code == requestedAssetCode }
+            requestedAssetSet = true
+        }
     }
 
     private fun initHorizontalSwipes() {
