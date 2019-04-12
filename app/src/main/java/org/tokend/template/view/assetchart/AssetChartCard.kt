@@ -198,8 +198,8 @@ class AssetChartCard : LinearLayout {
         val newChartData = mutableListOf<Entry>()
 
         val points = when (chartScale) {
+            AssetChartScale.HOUR -> data?.hour
             AssetChartScale.DAY -> data?.day
-            AssetChartScale.WEEK -> data?.week
             AssetChartScale.MONTH -> data?.month
             AssetChartScale.YEAR -> data?.year
         } ?: emptyList()

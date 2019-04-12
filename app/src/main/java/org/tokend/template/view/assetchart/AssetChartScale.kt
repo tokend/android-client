@@ -5,8 +5,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 enum class AssetChartScale {
+    HOUR,
     DAY,
-    WEEK,
     MONTH,
     YEAR;
 
@@ -16,8 +16,8 @@ enum class AssetChartScale {
     val dateFormat: DateFormat
         get() {
             val formatString = when (this) {
-                DAY -> "HH:mm"
-                WEEK, MONTH -> "dd MMM"
+                HOUR, DAY -> "HH:mm"
+                MONTH -> "dd MMM"
                 YEAR -> "MMM yyyy"
             }
             val format = SimpleDateFormat(formatString, Locale.ENGLISH)
@@ -30,8 +30,8 @@ enum class AssetChartScale {
      */
     val label: String
         get() = when (this) {
+            HOUR -> "H"
             DAY -> "D"
-            WEEK -> "W"
             MONTH -> "M"
             YEAR -> "Y"
         }
@@ -41,8 +41,8 @@ enum class AssetChartScale {
      */
     val unitName: String
         get() = when (this) {
+            HOUR -> "hour"
             DAY -> "day"
-            WEEK -> "week"
             MONTH -> "month"
             YEAR -> "year"
         }
@@ -52,8 +52,8 @@ enum class AssetChartScale {
      */
     val pointsToDisplay: Int
         get() = when (this) {
+            HOUR -> 30
             DAY -> 24
-            WEEK -> 14
             MONTH -> 31
             YEAR -> 24
         }
