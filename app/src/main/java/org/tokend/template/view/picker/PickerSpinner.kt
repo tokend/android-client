@@ -28,9 +28,7 @@ class PickerSpinner : AppCompatSpinner, Picker {
     override var selectedItemIndex: Int
         get() = selectedItemPosition
         set(value) {
-//            post {
             setSelection(value)
-//            }
         }
     override var selectedItem: PickerItem?
         get() = items.getOrNull(selectedItemIndex)
