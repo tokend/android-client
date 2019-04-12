@@ -96,6 +96,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             Navigator.openSend(this, asset, SEND_REQUEST)
             menu_fab.close(false)
         }
+        send_fab.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_send_fab))
 
         receive_fab.onClick {
             val accountId = walletInfoProvider.getWalletInfo()?.accountId
@@ -107,16 +108,19 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             )
             menu_fab.close(false)
         }
+        receive_fab.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_receive_fab))
 
         deposit_fab.onClick {
             Navigator.openDeposit(this, SEND_REQUEST, asset)
             menu_fab.close(false)
         }
+        deposit_fab.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_deposit_fab))
 
         withdraw_fab.onClick {
             Navigator.openWithdraw(this, SEND_REQUEST, asset)
             menu_fab.close(false)
         }
+        withdraw_fab.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_withdraw_fab))
     }
 
     // region Init

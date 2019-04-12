@@ -62,26 +62,22 @@
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/send_fab"
             style="@style/FloatingButtonMenuItem"
-            app:fab_label="@string/send_title"
-            android:src="@drawable/send" />
+            app:fab_label="@string/send_title" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/receive_fab"
             style="@style/FloatingButtonMenuItem"
-            app:fab_label="Receive"
-            android:src="@drawable/receive" />
+            app:fab_label="Receive" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/deposit_fab"
             style="@style/FloatingButtonMenuItem"
-            app:fab_label="@string/deposit"
-            android:src="@drawable/ic_deposit_fab" />
+            app:fab_label="@string/deposit" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/withdraw_fab"
             style="@style/FloatingButtonMenuItem"
-            app:fab_label="@string/withdraw_title"
-            android:src="@drawable/ic_withdraw_fab" />
+            app:fab_label="@string/withdraw_title" />
 
     </com.github.clans.fab.FloatingActionMenu>
 
