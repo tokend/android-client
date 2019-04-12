@@ -50,9 +50,19 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/sale_name_text_view"
+                            style="@style/HeadingText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/half_standard_margin"
+                            tools:text="Sale name" />
+
+                        <TextView
                             android:id="@+id/sale_description_text_view"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/half_standard_margin"
+                            android:lineSpacingExtra="@dimen/quarter_standard_margin" />
 
                         <RelativeLayout
                             android:id="@+id/video_preview_layout"
@@ -230,7 +240,8 @@
                 <TextView
                     android:id="@+id/sale_overview_text_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="@dimen/quarter_standard_margin" />
 
             </android.support.v7.widget.CardView>
 

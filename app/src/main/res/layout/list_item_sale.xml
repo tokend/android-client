@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/layout_sale_picture"/>
+        <include layout="@layout/layout_sale_picture" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,8 +38,9 @@
                 android:id="@+id/sale_short_description_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_padding"
+                android:layout_marginTop="@dimen/half_standard_margin"
                 android:ellipsize="end"
+                android:lineSpacingExtra="@dimen/quarter_standard_margin"
                 android:maxLines="3"
                 android:minLines="3"
                 android:paddingBottom="@dimen/standard_padding"

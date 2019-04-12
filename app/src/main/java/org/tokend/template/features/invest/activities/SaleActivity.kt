@@ -231,6 +231,7 @@ class SaleActivity : BaseActivity() {
     // region Info display
     private fun displaySaleInfo() {
         title = sale.name
+        sale_name_text_view.text = sale.name
         sale_description_text_view.text = sale.shortDescription
 
         if (sale.youtubeVideo != null) {
