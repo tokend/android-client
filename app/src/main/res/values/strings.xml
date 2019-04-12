@@ -249,9 +249,10 @@
     <string name="asset_price_for_one_part">for 1 %1$s</string>
     <string name="peek_show_text">Price chart</string>
 
-    <string name="template_sale_invested">%1$s invested</string>
-    <string name="template_sale_days_to_go">%1$d %2$s to go</string>
-    <string name="template_sale_starts_in">Starts in %1$d %2$s</string>
+    <string name="template_sale_invested">%1$s\ninvested</string>
+    <string name="template_sale_funded">%1$s\nfunded</string>
+    <string name="template_sale_days_to_go">%1$d\n%2$s to go</string>
+    <string name="template_sale_starts_in">%1$d\n%2$s to start</string>
     <string name="template_sale_max_investment">Max investment is %1$s</string>
     <string name="template_sale_name_asset">%1$s (%2$s)</string>
     <string name="sales_search_name_hint">Name</string>

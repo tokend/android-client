@@ -79,7 +79,7 @@
 
                         <Space
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/half_standard_margin" />
+                            android:layout_height="@dimen/standard_padding" />
 
                         <include layout="@layout/layout_sale_progress" />
 
