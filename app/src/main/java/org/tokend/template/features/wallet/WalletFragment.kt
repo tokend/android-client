@@ -153,6 +153,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         adapter = BalanceChangesAdapter(amountFormatter, false)
         adapter.onItemClick { _, item ->
             item.source?.let { Navigator.openBalanceChangeDetails(this.requireActivity(), it) }
+            menu_fab.close(false)
         }
 
         error_empty_view.setEmptyDrawable(R.drawable.ic_balance)
