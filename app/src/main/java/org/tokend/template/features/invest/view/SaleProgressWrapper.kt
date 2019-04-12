@@ -62,6 +62,5 @@ class SaleProgressWrapper(private val rootView: View,
         } else {
             rootView.sale_remain_time_text_view.visibility = View.GONE
         }
-//`
     }
 }
