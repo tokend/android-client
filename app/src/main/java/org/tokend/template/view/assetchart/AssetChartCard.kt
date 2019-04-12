@@ -43,6 +43,8 @@ import javax.inject.Inject
 class AssetChartCard : LinearLayout {
     companion object {
         private const val X_LABELS_COUNT = 5
+        private const val CHART_LINE_WIDTH = 2f
+        private const val HIGHLIGHT_LINE_WIDTH = 2f
     }
 
     constructor(context: Context, attributeSet: AttributeSet?) :
@@ -135,12 +137,11 @@ class AssetChartCard : LinearLayout {
                 }
 
                 setLabelCount(X_LABELS_COUNT, true)
-                axisLineColor = colorPrimaryHalf
                 textColor = colorPrimaryHalf
                 position = XAxis.XAxisPosition.BOTTOM
 
                 setDrawGridLines(false)
-                setDrawAxisLine(true)
+                setDrawAxisLine(false)
             }
 
             with(axisLeft) {
@@ -239,16 +240,6 @@ class AssetChartCard : LinearLayout {
             total = finalValue
         }
 
-        chartData.maxBy { it.y }?.let { entry ->
-            maxY = entry.y
-            chart.axisLeft.limitLines.forEach { line ->
-                if (entry.y < line.limit) {
-                    maxY = line.limit
-                    return@forEach
-                }
-            }
-        }
-
         drawChartData()
         displayTotalValue()
         displayGrowth(growth, percentGrowth)
@@ -265,7 +256,7 @@ class AssetChartCard : LinearLayout {
 
         with(dataSet) {
             color = ContextCompat.getColor(context, R.color.primary)
-            lineWidth = 2f
+            lineWidth = CHART_LINE_WIDTH
 
             setDrawFilled(true)
             if (Build.VERSION.SDK_INT >= 18) {
@@ -284,20 +275,26 @@ class AssetChartCard : LinearLayout {
             setDrawHorizontalHighlightIndicator(false)
             highLightColor =
                     ContextCompat.getColor(context, R.color.secondary_text)
-            highlightLineWidth = 2f
+            highlightLineWidth = HIGHLIGHT_LINE_WIDTH
+        }
+
+        var yMin = dataSet.yMin * 0.85f
+        if (yMin < 0f) {
+            yMin = 0f
+        }
+
+        var yMax = dataSet.yMax * 1.15f
+        chart.axisLeft.limitLines.forEach { line ->
+            if (yMax < line.limit) {
+                yMax = line.limit
+                return@forEach
+            }
         }
 
         chart.post {
             with(chart) {
-                axisLeft.axisMinimum = -5f
-
-                maxY.let {
-                    if (it != null) {
-                        axisLeft.axisMaximum = it * 1.01f
-                    } else {
-                        axisLeft.resetAxisMaximum()
-                    }
-                }
+                axisLeft.axisMinimum = yMin
+                axisLeft.axisMaximum = yMax
 
                 data = LineData(dataSet)
                 invalidate()
@@ -425,11 +422,6 @@ class AssetChartCard : LinearLayout {
             field = value
             updateChart()
         }
-
-    /**
-     * Limit by Y axis
-     */
-    var maxY: Float? = null
 
     /**
      * Text size of the main value in pixels

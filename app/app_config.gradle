@@ -44,7 +44,7 @@ ext {
     color_primary_dark = '#323051'
 
     // Primary-half color - color of asset charts
-    color_primary_half = '#756f98'
+    color_primary_half = '#C1C2DB'
     // Accent color - color of actions and controls by default
     color_accent = '#6454ee'
 
