@@ -6,9 +6,11 @@ import android.support.v4.app.Fragment
 import io.reactivex.rxkotlin.addTo
 import org.tokend.template.R
 import org.tokend.template.features.dashboard.DashboardFragment
+import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.wallet.WalletFragment
+import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.fragments.FragmentFactory
 import org.tokend.template.fragments.ToolbarProvider
@@ -24,6 +26,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         asset = intent.getStringExtra(ASSET_EXTRA)
         screenId = intent.getLongExtra(SCREEN_ID, DashboardFragment.ID)
 
+
         getFragment()?.also { displayFragment(it) }
                 ?: finish()
     }
@@ -32,6 +35,8 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         return when (screenId) {
             WalletFragment.ID -> factory.getWalletFragment(asset, false)
             SendFragment.ID -> factory.getSendFragment(asset)
+            DepositFragment.ID -> factory.getDepositFragment(asset)
+            WithdrawFragment.ID -> factory.getWithdrawFragment(asset)
             else -> null
         }
     }

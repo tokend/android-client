@@ -56,11 +56,18 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             field = value
             onAssetChanged()
         }
+
     private val externalAccount: AccountRecord.DepositAccount?
         get() = accountRepository
                 .item
                 ?.depositAccounts
                 ?.find { it.type == currentAsset?.externalSystemType }
+
+    private val requestedAssetCode: String? by lazy {
+        arguments?.getString(EXTRA_ASSET)
+    }
+
+    private var requestedAssetSet = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_deposit, container, false)
@@ -193,6 +200,12 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 },
                 depositableAssets.indexOfFirst { it.code == currentAsset?.code }
         )
+
+        if (!requestedAssetSet) {
+            asset_tab_layout.selectedItemIndex =
+                    depositableAssets.indexOfFirst { it.code == requestedAssetCode }
+            requestedAssetSet = true
+        }
     }
 
     private fun initHorizontalSwipes() {
@@ -418,5 +431,14 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         const val ID = 1112L
         private const val EXPIRATION_WARNING_THRESHOLD = 6 * 60 * 60 * 1000L
         private const val CRITICAL_EXPIRATION_WARNING_THRESHOLD = 30 * 60 * 1000L
+        private const val EXTRA_ASSET = "extra_asset"
+
+        fun newInstance(asset: String?): DepositFragment {
+            val fragment = DepositFragment()
+            val bundle = Bundle()
+            bundle.putString(EXTRA_ASSET, asset)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

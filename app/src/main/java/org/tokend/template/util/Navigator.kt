@@ -22,6 +22,7 @@ import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
+import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.fees.FeesActivity
 import org.tokend.template.features.invest.activities.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.activities.SaleActivity
@@ -45,6 +46,7 @@ import org.tokend.template.features.signup.SignUpActivity
 import org.tokend.template.features.trade.TradeActivity
 import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.wallet.details.*
+import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 
@@ -297,5 +299,21 @@ object Navigator {
 
     fun openFees(fragment: Fragment) {
         fragment.startActivity(Intent(fragment.requireContext(), FeesActivity::class.java))
+    }
+
+    fun openDeposit(fragment: Fragment, requestCode: Int, asset: String) {
+        fragment.startActivityForResult(
+                Intent(fragment.context, SingleFragmentActivity::class.java)
+                        .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
+                        .putExtra(SingleFragmentActivity.SCREEN_ID, DepositFragment.ID)
+                , requestCode)
+    }
+
+    fun openWithdraw(fragment: Fragment, requestCode: Int, asset: String) {
+        fragment.startActivityForResult(
+                Intent(fragment.context, SingleFragmentActivity::class.java)
+                        .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
+                        .putExtra(SingleFragmentActivity.SCREEN_ID, WithdrawFragment.ID)
+                , requestCode)
     }
 }

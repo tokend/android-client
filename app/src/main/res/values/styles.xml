@@ -167,4 +167,17 @@
     <style name="ToolbarSubtitleAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
         <item name="android:textSize">14sp</item>
     </style>
+
+    <style name="FloatingButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fab_colorNormal">@color/colorAccent</item>
+        <item name="fab_colorPressed">@color/colorAccent</item>
+        <item name="menu_colorNormal">@color/colorAccent</item>
+        <item name="menu_colorPressed">@color/colorAccent</item>
+    </style>
+
+    <style name="FloatingButtonMenuItem" parent="FloatingButton">
+        <item name="fab_size">mini</item>
+    </style>
 </resources>

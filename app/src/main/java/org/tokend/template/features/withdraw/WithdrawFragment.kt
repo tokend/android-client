@@ -63,8 +63,11 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
             go_to_confirmation_button.enabled = value
         }
 
-    private val defaultAsset: String?
-        get() = arguments?.getString("asset")
+    private val requestedAsset: String? by lazy {
+        arguments?.getString(ASSET_EXTRA)
+    }
+
+    private var requestedAssetSet = false
 
     private var asset: String = ""
         set(value) {
@@ -200,7 +203,11 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         }
 
         asset_spinner.setSimpleItems(withdrawableAssets)
-        asset_spinner.selectedItemIndex = (withdrawableAssets.indexOf(defaultAsset))
+
+        if (!requestedAssetSet) {
+            asset_spinner.selectedItemIndex = (withdrawableAssets.indexOf(requestedAsset))
+            requestedAssetSet = true
+        }
     }
     // endregion
 

@@ -72,13 +72,13 @@ class PickerSpinner : AppCompatSpinner, Picker {
                     }
                 }
 
-        post {
-            itemsAdapter.clear()
-            itemsAdapter.addAll(items.map { it.text })
+        itemsAdapter.clear()
+        itemsAdapter.addAll(items.map { it.text })
 
-            selectedItemIndex = indexToSelect
+        selectedItemIndex = indexToSelect
 
-            suspendEvent = false
-        }
+        suspendEvent = false
+
+        itemsAdapter.notifyDataSetChanged()
     }
 }
