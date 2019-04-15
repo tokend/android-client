@@ -36,6 +36,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
+import org.tokend.template.view.balancepicker.BalancePickerBottomDialog
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -102,8 +103,19 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
     // region Init
     private fun initAssetSelection() {
-        asset_spinner.onItemSelected {
-            asset = it.text
+        val picker = BalancePickerBottomDialog(
+                requireContext(),
+                amountFormatter,
+                assetComparator,
+                balancesRepository
+        ) { balance ->
+            balance.asset.isWithdrawable
+        }
+
+        asset_code_text_view.setOnClickListener {
+            picker.show { result ->
+                asset = result.assetCode
+            }
         }
     }
 
@@ -202,11 +214,13 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
             return
         }
 
-        asset_spinner.setSimpleItems(withdrawableAssets)
-
         if (!requestedAssetSet) {
-            asset_spinner.selectedItemIndex = (withdrawableAssets.indexOf(requestedAsset))
+            requestedAsset?.also { asset = it }
             requestedAssetSet = true
+        }
+
+        if (!withdrawableAssets.contains(asset)) {
+            asset = withdrawableAssets.first()
         }
     }
     // endregion
@@ -290,6 +304,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         updateConfirmAvailability()
         displayBalance()
         amountEditTextWrapper.maxPlacesAfterComa = amountFormatter.getDecimalDigitsCount(asset)
+        asset_code_text_view.text = asset
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
