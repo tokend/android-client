@@ -134,7 +134,6 @@
                         style="@style/HeadingText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_help_circle"
                         android:paddingBottom="@dimen/standard_padding"
                         android:text="@string/sale_investing" />
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.annotation.DrawableRes
+import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.Button
@@ -111,6 +112,7 @@ class SaleActivity : BaseActivity() {
 
         supportPostponeEnterTransition()
 
+        setHelpCircleIcon()
         initButtons()
         initFields()
 
@@ -141,6 +143,12 @@ class SaleActivity : BaseActivity() {
 
     private fun initFields() {
         investAmountWrapper = AmountEditTextWrapper(amount_edit_text)
+    }
+
+    private fun setHelpCircleIcon() {
+        val icon = VectorDrawableCompat.create(resources, R.drawable.ic_help_circle, theme)
+        invest_card_title_text_view
+                .setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, icon, null)
     }
 
     // region Update
