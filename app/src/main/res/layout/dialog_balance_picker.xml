@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/half_standard_margin">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginEnd="@dimen/standard_margin">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/search_balance_edit_text"
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search"
+            android:inputType="text|textNoSuggestions"
+            android:lines="1"
+            android:paddingLeft="72dp"
+            android:paddingRight="30dp"
+            app:met_floatingLabel="none"
+            app:met_hideUnderline="true" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/search_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/search_balance_edit_text"
+            android:layout_marginTop="@dimen/half_standard_margin"
+            app:srcCompat="@drawable/ic_search"
+            app:tint="@color/icons" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/cancel_search_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/search_balance_edit_text"
+            android:layout_marginTop="@dimen/half_standard_margin"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_close"
+            tools:visibility="visible" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/half_standard_margin">
+
+        <include layout="@layout/include_appbar_elevation" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/include_error_empty_view" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/balances_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:focusable="true">
+
+        <requestFocus />
+    </View>
+
+</LinearLayout>

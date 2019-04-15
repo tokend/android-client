@@ -220,7 +220,7 @@
             android:name=".features.offers.CreateOfferActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/create_offer_title"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.limits.LimitsActivity"
             android:configChanges="orientation|screenSize"
@@ -228,6 +228,6 @@
         <activity
             android:name=".features.fees.FeesActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/fees_title"/>
+            android:label="@string/fees_title" />
     </application>
 </manifest>

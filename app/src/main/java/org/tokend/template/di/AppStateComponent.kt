@@ -7,6 +7,7 @@ import org.tokend.template.di.providers.SessionModule
 import org.tokend.template.features.settings.SettingsFragment
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.view.assetchart.AssetChartCard
+import org.tokend.template.view.balancepicker.BalancePickerBottomDialogFragment
 import javax.inject.Singleton
 
 @Singleton
@@ -27,4 +28,5 @@ interface AppStateComponent {
     fun inject(baseFragment: BaseFragment)
     fun inject(settingsFragment: SettingsFragment)
     fun inject(assetChartCard: AssetChartCard)
+    fun inject(balancePicker: BalancePickerBottomDialogFragment)
 }
