@@ -37,6 +37,13 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+/**
+ * Modal bottom sheet with balances list and search,
+ * allows user to pick a balance
+ *
+ * @see show
+ * @see resultSingle
+ */
 class BalancePickerBottomDialogFragment : BottomSheetDialogFragment() {
     @Inject
     lateinit var amountFormatter: AmountFormatter
@@ -202,15 +209,15 @@ class BalancePickerBottomDialogFragment : BottomSheetDialogFragment() {
     private fun displayBalances() {
         val balances = balancesRepository.itemsList
         val items = balances
-                .map {
-                    BalancePickerListItem(it)
-                }
                 .let { items ->
-                    filter?.let {
+                    filter?.let { filter ->
                         items.filter { item ->
-                            SearchUtil.isMatchGeneralCondition(it, item.assetCode)
+                            SearchUtil.isMatchGeneralCondition(filter, item.assetCode, item.asset.name)
                         }
                     } ?: items
+                }
+                .map {
+                    BalancePickerListItem(it)
                 }
                 .sortedWith(comparator)
 
