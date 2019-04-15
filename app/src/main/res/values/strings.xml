@@ -70,7 +70,7 @@
     <string name="open_action">Open</string>
     <string name="copy_action">Copy</string>
     <string name="template_balance">Balance: %1$s</string>
-    <string name="template_available">Available: %1$s</string>
+    <string name="template_available">%1$s available</string>
     <string name="to_pay">To pay</string>
     <string name="to_receive">To receive</string>
     <string name="confirm_action">Confirm</string>
