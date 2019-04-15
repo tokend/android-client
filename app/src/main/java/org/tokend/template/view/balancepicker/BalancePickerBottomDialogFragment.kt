@@ -17,6 +17,7 @@ import io.reactivex.subjects.SingleSubject
 import kotlinx.android.synthetic.main.dialog_balance_picker.view.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.view.*
 import kotlinx.android.synthetic.main.include_error_empty_view.view.*
+import kotlinx.android.synthetic.main.layout_progress.view.*
 import org.jetbrains.anko.layoutInflater
 import org.tokend.template.App
 import org.tokend.template.R
@@ -28,6 +29,7 @@ import org.tokend.template.util.SearchUtil
 import org.tokend.template.view.balancepicker.adapter.BalancePickerItemsAdapter
 import org.tokend.template.view.balancepicker.adapter.BalancePickerListItem
 import org.tokend.template.view.util.ElevationUtil
+import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
@@ -50,6 +52,11 @@ class BalancePickerBottomDialogFragment : BottomSheetDialogFragment() {
 
     private lateinit var dialogView: View
     private lateinit var adapter: BalancePickerItemsAdapter
+
+    private val loadingIndicator = LoadingIndicatorManager(
+            showLoading = { dialogView.progress.show() },
+            hideLoading = { dialogView.progress.hide() }
+    )
 
     private val comparator = Comparator<BalancePickerListItem> { first, second ->
         assetComparator.compare(first.assetCode, second.assetCode)
@@ -183,6 +190,12 @@ class BalancePickerBottomDialogFragment : BottomSheetDialogFragment() {
                 .itemsSubject
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe { displayBalances() }
+                .addTo(compositeDisposable)
+
+        balancesRepository
+                .loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { loadingIndicator.setLoading(it) }
                 .addTo(compositeDisposable)
     }
 
