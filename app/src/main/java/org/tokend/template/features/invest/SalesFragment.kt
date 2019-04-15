@@ -32,6 +32,7 @@ import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.Navigator
 import org.tokend.template.view.util.AnimationUtil
+import org.tokend.template.view.util.ColumnCalculator
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SoftInputUtil
 import java.util.concurrent.TimeUnit
@@ -86,7 +87,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initSalesList() {
-        val columns = calculateColumnCount()
+        val columns = ColumnCalculator.getColumnCount(requireActivity())
 
         layoutManager = GridLayoutManager(context, columns)
 
@@ -107,16 +108,6 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
             drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
             (sales_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         }
-    }
-
-    private fun calculateColumnCount(): Int {
-        val displayMetrics = DisplayMetrics()
-        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-
-        val screenWidth = displayMetrics.widthPixels.toDouble()
-        return (screenWidth / resources.getDimensionPixelSize(R.dimen.max_content_width))
-                .let { Math.ceil(it) }
-                .toInt()
     }
 
     private fun initSubscriptionManager() {
@@ -253,7 +244,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        layoutManager.spanCount = calculateColumnCount()
+        layoutManager.spanCount = ColumnCalculator.getColumnCount(requireActivity())
     }
 
     companion object {
