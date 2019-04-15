@@ -3,7 +3,6 @@ package org.tokend.template.features.fees
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -13,8 +12,8 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.repository.FeesRepository
-import org.tokend.template.features.fees.adapter.FeeAdapter
-import org.tokend.template.features.fees.adapter.FeeItem
+import org.tokend.template.features.fees.view.FeeItem
+import org.tokend.template.features.fees.view.FeeCard
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
@@ -39,8 +38,6 @@ class FeesActivity : BaseActivity() {
             onAssetChanged()
         }
 
-    private val feeAdapter = FeeAdapter()
-
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_fees)
         setSupportActionBar(toolbar)
@@ -52,22 +49,9 @@ class FeesActivity : BaseActivity() {
     }
 
     private fun initViews() {
-        initFeeList()
         initAssetTabs()
         initSwipeRefresh()
         initHorizontalSwipes()
-    }
-
-    private fun initFeeList() {
-        error_empty_view.setEmptyDrawable(R.drawable.ic_flash)
-        error_empty_view.setPadding(0, 0, 0,
-                resources.getDimensionPixelSize(R.dimen.quadra_margin))
-
-        fee_list.apply {
-            layoutManager =
-                    LinearLayoutManager(this@FeesActivity, LinearLayoutManager.VERTICAL, false)
-            adapter = feeAdapter
-        }
     }
 
     private fun initAssetTabs() {
@@ -144,8 +128,15 @@ class FeesActivity : BaseActivity() {
     }
 
     private fun onAssetChanged() {
+        fee_container.removeAllViews()
         feesRepository.item?.feesAssetMap?.get(asset)?.let { fees ->
-            feeAdapter.setData(fees.map { FeeItem.fromFee(it, amountFormatter) })
+            val data = fees.map { fee ->
+                FeeItem.fromFee(fee, amountFormatter)
+            }.groupBy { it.subtype }.values
+
+            data.forEach {
+                FeeCard(this, it).addTo(fee_container)
+            }
         }
     }
 
