@@ -1,10 +1,10 @@
 package org.tokend.template.features.deposit
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -420,7 +420,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayEmptyPoolError() {
-        AlertDialog.Builder(context, R.style.AlertDialogStyle)
+        AlertDialog.Builder(requireContext(), R.style.AlertDialogStyle)
                 .setTitle(R.string.no_addresses_in_pool_title)
                 .setMessage(R.string.no_addresses_in_pool_explanation)
                 .setPositiveButton(R.string.ok, null)
