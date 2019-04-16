@@ -29,27 +29,26 @@
         app:layout_constraintTop_toBottomOf="@id/appbar"
         app:layout_constraintTop_toTopOf="@null">
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never"
-            android:scrollbars="none">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <include layout="@layout/include_error_empty_view" />
+
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <include layout="@layout/include_error_empty_view"/>
+                android:overScrollMode="never"
+                android:scrollbars="none">
 
                 <LinearLayout
                     android:id="@+id/fee_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/standard_margin"
                     android:orientation="vertical" />
-
-            </LinearLayout>
-        </ScrollView>
+            </ScrollView>
+        </LinearLayout>
     </org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>

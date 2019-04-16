@@ -54,7 +54,7 @@ class FeesActivity : BaseActivity() {
         initAssetTabs()
         initSwipeRefresh()
         initHorizontalSwipes()
-        initEmptyView()
+        error_empty_view.setEmptyDrawable(R.drawable.ic_flash)
     }
 
     private fun initAssetTabs() {
@@ -89,12 +89,6 @@ class FeesActivity : BaseActivity() {
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(this, R.color.accent))
         swipe_refresh.setOnRefreshListener { update(force = true) }
-    }
-
-    private fun initEmptyView() {
-        error_empty_view.setEmptyDrawable(R.drawable.ic_flash)
-        error_empty_view.setPadding(0,
-                resources.getDimensionPixelSize(R.dimen.hepta_margin), 0, 0)
     }
 
     private var feesDisposable: CompositeDisposable? = null
