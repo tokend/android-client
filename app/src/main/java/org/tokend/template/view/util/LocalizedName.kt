@@ -4,7 +4,7 @@ import android.content.Context
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.data.model.history.details.BalanceChangeCause
-import org.tokend.template.features.fees.adapter.FeeItem
+import org.tokend.template.features.fees.view.FeeItem
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.wallet.xdr.FeeType
 

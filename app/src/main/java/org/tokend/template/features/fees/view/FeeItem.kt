@@ -1,4 +1,4 @@
-package org.tokend.template.features.fees.adapter
+package org.tokend.template.features.fees.view
 
 import org.tokend.template.extensions.isMaxPossibleAmount
 import org.tokend.template.features.fees.model.FeeRecord
@@ -20,8 +20,6 @@ class FeeItem(
     }
 
     companion object {
-        private const val DASH_SYMBOL = "—"
-
         fun fromFee(fee: FeeRecord, amountFormatter: AmountFormatter): FeeItem {
             val type = FeeType.values().find { fee.feeType == it.value }!!
 
@@ -33,15 +31,22 @@ class FeeItem(
 
             val lowerBound =
                     if (fee.lowerBound.isMaxPossibleAmount())
-                        DASH_SYMBOL
+                        ""
                     else
-                        amountFormatter.formatAssetAmount(fee.lowerBound, fee.asset, 1)
+                        amountFormatter.formatAssetAmount(
+                                fee.lowerBound, fee.asset, 1,
+                                abbreviation = true,
+                                withAssetCode = false
+                        )
 
             val upperBound =
                     if (fee.upperBound.isMaxPossibleAmount())
-                        DASH_SYMBOL
+                        ""
                     else
-                        amountFormatter.formatAssetAmount(fee.upperBound, fee.asset, 1)
+                        amountFormatter.formatAssetAmount(
+                                fee.upperBound, fee.asset, 1,
+                                abbreviation = true,
+                                withAssetCode = false)
 
             return FeeItem(type, subtype, fixed, percent, lowerBound, upperBound)
         }

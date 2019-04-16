@@ -402,4 +402,8 @@
     <string name="max_sell_hint">Max Sell</string>
     <string name="max_buy_hint">Max Buy</string>
     <string name="error_amount_to_big">Amount is to big</string>
+
+    <string name="template_lower_bound">From %1$s</string>
+    <string name="template_upper_bound">to %1$s</string>
+    <string name="fee_info_titles">Fixed\nPercent</string>
 </resources>
