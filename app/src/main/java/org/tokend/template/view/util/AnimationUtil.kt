@@ -67,18 +67,56 @@ object AnimationUtil {
     /**
      * Animates view opacity from 0 to 1
      */
-    fun fadeInView(view: View?) {
+    fun fadeInView(view: View?, duration: Long = -1) {
         view ?: return
 
+        view.clearAnimation()
         view.visibility = View.VISIBLE
 
         val alphaAnimation = AlphaAnimation(0f, 1f)
         alphaAnimation.interpolator = AccelerateDecelerateInterpolator()
         alphaAnimation.duration =
-                view.context.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+                if (duration == -1L)
+                    view.context.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+                else
+                    duration
+
         alphaAnimation.fillAfter = true
 
+        view.startAnimation(alphaAnimation)
+    }
+
+    /**
+     * Animates view opacity from 1 to 0
+     */
+    fun fadeOutView(view: View?, duration: Long = -1) {
+        view ?: return
+        if (view.visibility == View.GONE
+                || view.visibility == View.INVISIBLE
+                || view.alpha == 0f
+        ) {
+            return
+        }
         view.clearAnimation()
+
+        val alphaAnimation = AlphaAnimation(1f, 0f)
+        alphaAnimation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationEnd(animation: Animation?) {
+                view.visibility = View.GONE
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+
+            override fun onAnimationStart(animation: Animation?) {}
+
+        })
+        alphaAnimation.interpolator = AccelerateDecelerateInterpolator()
+        alphaAnimation.duration =
+                if (duration == -1L)
+                    view.context.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+                else
+                    duration
+        alphaAnimation.fillAfter = true
         view.startAnimation(alphaAnimation)
     }
 
@@ -102,8 +140,10 @@ object AnimationUtil {
     fun rotateView(view: View?, from: Float, to: Float) {
         view ?: return
 
-        val rotateAnimation = RotateAnimation(from, to,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+        val rotateAnimation = RotateAnimation(
+                from, to,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
+        )
         rotateAnimation.interpolator = AccelerateDecelerateInterpolator()
         rotateAnimation.duration =
                 view.context.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()

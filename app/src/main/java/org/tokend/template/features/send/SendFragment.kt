@@ -48,6 +48,7 @@ import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.util.validator.EmailValidator
 import org.tokend.template.view.adapter.base.SimpleItemClickListener
+import org.tokend.template.view.balancepicker.BalancePickerBottomDialog
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -133,8 +134,19 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     // region Init
     private fun initAssetSelection() {
-        asset_spinner.onItemSelected {
-            asset = it.text
+        val picker = BalancePickerBottomDialog(
+                requireContext(),
+                amountFormatter,
+                assetComparator,
+                balancesRepository
+        ) { balance ->
+            balance.asset.isTransferable
+        }
+
+        asset_code_text_view.setOnClickListener {
+            picker.show { result ->
+                asset = result.assetCode
+            }
         }
     }
 
@@ -250,7 +262,9 @@ class SendFragment : BaseFragment(), ToolbarProvider {
             return
         }
 
-        asset_spinner.setSimpleItems(transferableAssets, asset)
+        if (!transferableAssets.contains(asset)) {
+            asset = transferableAssets.first()
+        }
     }
     // endregion
 
@@ -357,6 +371,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         updateConfirmAvailability()
         displayBalance()
         amountEditTextWrapper.maxPlacesAfterComa = amountFormatter.getDecimalDigitsCount(asset)
+        asset_code_text_view.text = asset
     }
 
     private fun updateContactsData(items: List<Contact>) {

@@ -24,6 +24,7 @@ import org.jetbrains.anko.onClick
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.invest.InvestmentHelpDialog
@@ -38,6 +39,7 @@ import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.ContentLoadingProgressBar
+import org.tokend.template.view.balancepicker.BalancePickerBottomDialog
 import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.AmountEditTextWrapper
@@ -332,12 +334,34 @@ class SaleActivity : BaseActivity() {
             updateInvestAvailability()
         }
 
-        asset_spinner.setSimpleItems(sale.quoteAssets.map { it.code },
-                sale.quoteAssets.indexOfFirst {
-                    (existingOffers[it.code]?.quoteAmount?.signum() ?: 0) > 0
-                })
-        asset_spinner.onItemSelected {
-            investAsset = it.text
+        val quoteAssets = sale
+                .quoteAssets
+                .map { it.code }
+                .sortedWith(assetComparator)
+
+        val picker = object : BalancePickerBottomDialog(
+                this,
+                amountFormatter,
+                assetComparator,
+                repositoryProvider.balances(),
+                quoteAssets,
+                { balance ->
+                    quoteAssets.contains(balance.assetCode)
+                }
+        ) {
+            override fun getAvailableAmount(assetCode: String, balance: BalanceRecord?): BigDecimal {
+                return getAvailableBalance(assetCode)
+            }
+        }
+
+        asset_code_text_view.setOnClickListener {
+            picker.show { result ->
+                investAsset = result.assetCode
+            }
+        }
+
+        if (!quoteAssets.contains(investAsset)) {
+            investAsset = quoteAssets.first()
         }
 
         invest_button.onClick {
@@ -382,6 +406,7 @@ class SaleActivity : BaseActivity() {
     }
 
     private fun onInvestAssetChanged() {
+        asset_code_text_view.text = investAsset
         displayExistingInvestmentAmount()
         updateInvestLimit()
         updateInvestHelperAndError()
