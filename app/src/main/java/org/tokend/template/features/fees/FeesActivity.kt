@@ -12,12 +12,14 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.repository.FeesRepository
+import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.template.features.fees.view.FeeItem
 import org.tokend.template.features.fees.view.FeeCard
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import java.lang.ref.WeakReference
+import java.math.BigDecimal
 
 class FeesActivity : BaseActivity() {
 
@@ -35,7 +37,7 @@ class FeesActivity : BaseActivity() {
     private var asset: String = ""
         set(value) {
             field = value
-            onAssetChanged()
+            updateFeeCards()
         }
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
@@ -52,6 +54,7 @@ class FeesActivity : BaseActivity() {
         initAssetTabs()
         initSwipeRefresh()
         initHorizontalSwipes()
+        initEmptyView()
     }
 
     private fun initAssetTabs() {
@@ -74,7 +77,7 @@ class FeesActivity : BaseActivity() {
                 }
         ))
 
-        touch_capture_layout.setTouchEventInterceptor(gestureDetector::onTouchEvent)
+        swipe_refresh.setTouchEventInterceptor(gestureDetector::onTouchEvent)
         swipe_refresh.setOnTouchListener { _, event ->
             if (error_empty_view.visibility == View.VISIBLE)
                 gestureDetector.onTouchEvent(event)
@@ -86,6 +89,12 @@ class FeesActivity : BaseActivity() {
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(this, R.color.accent))
         swipe_refresh.setOnRefreshListener { update(force = true) }
+    }
+
+    private fun initEmptyView() {
+        error_empty_view.setEmptyDrawable(R.drawable.ic_flash)
+        error_empty_view.setPadding(0,
+                resources.getDimensionPixelSize(R.dimen.hepta_margin), 0, 0)
     }
 
     private var feesDisposable: CompositeDisposable? = null
@@ -124,17 +133,20 @@ class FeesActivity : BaseActivity() {
         } else {
             asset_tabs.visibility = View.VISIBLE
             error_empty_view.hide()
+            updateFeeCards()
         }
     }
 
-    private fun onAssetChanged() {
+    private fun updateFeeCards() {
         fee_container.removeAllViews()
         feesRepository.item?.feesAssetMap?.get(asset)?.let { fees ->
             val data = fees.map { fee ->
                 FeeItem.fromFee(fee, amountFormatter)
-            }.groupBy { it.subtype }.values
+            }.groupBy { "${it.type}:${it.subtype}" }.values
 
-            data.forEach {
+            val sortedData = data.sortedWith(compareBy({ it.first().type }, { it.first().subtype }))
+
+            sortedData.forEach {
                 FeeCard(this, it).addTo(fee_container)
             }
         }

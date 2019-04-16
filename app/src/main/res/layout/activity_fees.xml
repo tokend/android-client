@@ -23,7 +23,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         style="@style/LimitedMatchParentWidthConstraint"
         app:layout_constraintTop_toBottomOf="@id/appbar"
@@ -32,25 +32,24 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:overScrollMode="never">
+            android:overScrollMode="never"
+            android:scrollbars="none">
 
-            <org.tokend.template.view.touchintercepting.TouchInterceptingLinearLayout
-                android:id="@+id/touch_capture_layout"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <include layout="@layout/include_error_empty_view" />
+                <include layout="@layout/include_error_empty_view"/>
 
                 <LinearLayout
                     android:id="@+id/fee_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_marginTop="@dimen/standard_margin"/>
+                    android:layout_marginTop="@dimen/standard_margin"
+                    android:orientation="vertical" />
 
-            </org.tokend.template.view.touchintercepting.TouchInterceptingLinearLayout>
+            </LinearLayout>
         </ScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>
