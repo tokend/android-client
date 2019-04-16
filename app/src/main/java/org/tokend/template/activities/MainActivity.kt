@@ -13,7 +13,6 @@ import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.DrawerBuilder
-import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
@@ -175,41 +174,32 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                         items[WalletFragment.ID]
                 )
                 .apply {
-                    if (BuildConfig.IS_DEPOSIT_ALLOWED
-                            || BuildConfig.IS_WITHDRAW_ALLOWED
-                            || BuildConfig.IS_SEND_ALLOWED
-                            || BuildConfig.IS_EXPLORE_ALLOWED
-                            || BuildConfig.IS_TRADE_ALLOWED
-                            || BuildConfig.IS_INVEST_ALLOWED) {
-                        addDrawerItems(DividerDrawerItem())
 
-                        if (BuildConfig.IS_DEPOSIT_ALLOWED) {
-                            addDrawerItems(items[DepositFragment.ID])
-                        }
+                    if (BuildConfig.IS_DEPOSIT_ALLOWED) {
+                        addDrawerItems(items[DepositFragment.ID])
+                    }
 
-                        if (BuildConfig.IS_WITHDRAW_ALLOWED) {
-                            addDrawerItems(items[WithdrawFragment.ID])
-                        }
+                    if (BuildConfig.IS_WITHDRAW_ALLOWED) {
+                        addDrawerItems(items[WithdrawFragment.ID])
+                    }
 
-                        if (BuildConfig.IS_SEND_ALLOWED) {
-                            addDrawerItems(items[SendFragment.ID])
-                        }
+                    if (BuildConfig.IS_SEND_ALLOWED) {
+                        addDrawerItems(items[SendFragment.ID])
+                    }
 
-                        if (BuildConfig.IS_INVEST_ALLOWED) {
-                            addDrawerItems(items[SalesFragment.ID])
-                        }
+                    if (BuildConfig.IS_INVEST_ALLOWED) {
+                        addDrawerItems(items[SalesFragment.ID])
+                    }
 
-                        if (BuildConfig.IS_EXPLORE_ALLOWED) {
-                            addDrawerItems(items[ExploreAssetsFragment.ID])
-                        }
+                    if (BuildConfig.IS_EXPLORE_ALLOWED) {
+                        addDrawerItems(items[ExploreAssetsFragment.ID])
+                    }
 
-                        if (BuildConfig.IS_TRADE_ALLOWED) {
-                            addDrawerItems(items[OrderBookFragment.ID])
-                        }
+                    if (BuildConfig.IS_TRADE_ALLOWED) {
+                        addDrawerItems(items[OrderBookFragment.ID])
                     }
                 }
                 .addDrawerItems(
-                        DividerDrawerItem(),
                         items[SettingsFragment.ID]
                 )
                 .withOnDrawerItemClickListener { _, _, item ->
