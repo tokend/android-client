@@ -110,7 +110,7 @@ open class BalancePickerBottomDialog(
         dialog.window.windowManager.defaultDisplay.getMetrics(displayMetrics)
         val displayHeight = displayMetrics.heightPixels
 
-        dialogView.minimumHeight = (displayHeight * 0.4).roundToInt()
+        dialogView.minimumHeight = (displayHeight * 0.3).roundToInt()
     }
 
     protected open fun initList(dialog: Dialog,
