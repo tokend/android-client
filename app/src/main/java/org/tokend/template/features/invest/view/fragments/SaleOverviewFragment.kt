@@ -25,7 +25,6 @@ import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import ru.noties.markwon.Markwon
 import java.math.BigDecimal
@@ -133,7 +132,8 @@ class SaleOverviewFragment : BaseFragment() {
 
     // region Info display
     private fun displaySaleInfo() {
-        sale_name_text_view.text = sale.name
+        sale_name_text_view.text =
+                getString(R.string.template_sale_name_asset, sale.name, sale.baseAssetCode)
         sale_description_text_view.text = sale.shortDescription
 
         if (sale.youtubeVideo != null) {
@@ -208,7 +208,6 @@ class SaleOverviewFragment : BaseFragment() {
                 }
                 .subscribeBy(
                         onSuccess = {
-                            AnimationUtil.fadeInView(sale_overview_card)
                             Markwon.setText(sale_overview_text_view, it)
                         },
                         onError = {}

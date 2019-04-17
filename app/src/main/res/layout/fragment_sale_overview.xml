@@ -4,16 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/layout_progress" />
 
     <ScrollView
         android:id="@+id/scroll_view"
         style="@style/LimitedMatchParentWidthConstraint"
-        android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/progress"
-        app:layout_constraintTop_toTopOf="@null">
+        android:clipToPadding="false">
 
         <LinearLayout
             android:id="@+id/cards_layout"
@@ -21,158 +19,79 @@
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:paddingStart="13dp"
-            android:paddingTop="@dimen/half_standard_margin"
-            android:paddingEnd="13dp"
-            android:paddingBottom="@dimen/standard_margin">
+            android:padding="@dimen/standard_margin">
 
-            <android.support.v7.widget.CardView
-                style="@style/InfoCard"
+            <include layout="@layout/layout_sale_picture" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/quarter_standard_margin"
-                app:contentPadding="0dp">
+                android:orientation="vertical"
+                android:padding="@dimen/half_standard_margin">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/sale_name_text_view"
+                    style="@style/HeadingText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginTop="@dimen/quarter_standard_margin"
+                    tools:text="Sale name" />
 
-                    <include layout="@layout/layout_sale_picture" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/standard_margin"
-                        android:layout_marginTop="@dimen/half_standard_margin"
-                        android:layout_marginEnd="@dimen/standard_margin"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/sale_name_text_view"
-                            style="@style/HeadingText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/half_standard_margin"
-                            tools:text="Sale name" />
-
-                        <TextView
-                            android:id="@+id/sale_description_text_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/half_standard_margin"
-                            android:lineSpacingExtra="@dimen/quarter_standard_margin"
-                            tools:text="Short\nSale\nDescription" />
-
-                        <RelativeLayout
-                            android:id="@+id/video_preview_layout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/standard_margin"
-                            android:paddingBottom="@dimen/quarter_standard_margin"
-                            android:visibility="gone">
-
-                            <ImageView
-                                android:id="@+id/video_preview_image_view"
-                                android:layout_width="128dp"
-                                android:layout_height="72dp" />
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/double_padding"
-                                android:layout_alignStart="@id/video_preview_image_view"
-                                android:layout_alignEnd="@id/video_preview_image_view"
-                                android:layout_centerVertical="true"
-                                android:scaleType="fitCenter"
-                                app:srcCompat="@drawable/ic_youtube_play" />
-                        </RelativeLayout>
-
-                        <Space
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/standard_padding" />
-
-                        <include layout="@layout/layout_sale_progress" />
-
-                        <Space
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/standard_margin" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/sale_unavailable_card"
-                style="@style/InfoCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/sale_description_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_marginTop="@dimen/half_standard_margin"
+                    android:lineSpacingExtra="@dimen/quarter_standard_margin"
+                    android:textIsSelectable="true"
+                    tools:text="Short\nSale\nDescription" />
+
+                <RelativeLayout
+                    android:id="@+id/video_preview_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_margin"
+                    android:paddingBottom="@dimen/quarter_standard_margin"
+                    android:visibility="gone">
 
                     <ImageView
-                        android:id="@+id/sale_unavailable_icon"
-                        android:layout_width="@dimen/quadra_margin"
-                        android:layout_height="@dimen/quadra_margin"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/ic_time" />
+                        android:id="@+id/video_preview_image_view"
+                        android:layout_width="128dp"
+                        android:layout_height="72dp" />
 
-                    <TextView
-                        android:id="@+id/sale_unavailable_reason_text_view"
-                        style="@style/HeadingText"
+                    <ImageView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/standard_margin"
-                        android:gravity="center"
-                        android:paddingBottom="@dimen/standard_margin"
-                        android:text="@string/sale_upcoming" />
+                        android:layout_height="@dimen/double_padding"
+                        android:layout_alignStart="@id/video_preview_image_view"
+                        android:layout_alignEnd="@id/video_preview_image_view"
+                        android:layout_centerVertical="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_youtube_play" />
+                </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/sale_unavailable_details_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center" />
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/standard_padding" />
 
-                    <Button
-                        android:id="@+id/sale_unavailable_details_button"
-                        style="@style/PrimaryButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginTop="@dimen/double_margin"
-                        android:text="@string/details" />
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
+                <include layout="@layout/layout_sale_progress" />
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/sale_overview_card"
-                style="@style/InfoCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/half_standard_margin"
-                android:visibility="gone"
-                tools:visibility="visible">
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/standard_padding" />
 
                 <TextView
                     android:id="@+id/sale_overview_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="@dimen/quarter_standard_margin"
-                    tools:text="Long sale overview markdown" />
+                    android:text="@string/loading_data"
+                    android:textIsSelectable="true" />
 
-            </android.support.v7.widget.CardView>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="@dimen/double_padding" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <include layout="@layout/layout_progress" />
 
     <View
         android:layout_width="0dp"
