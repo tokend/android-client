@@ -15,8 +15,6 @@ class SaleDetailsPagerAdapter(sale: SaleRecord,
     private val fragmentFactory = FragmentFactory()
 
     private val pages = listOf(
-            fragmentFactory.getSaleOverviewFragment(sale.fullDescriptionBlob) to
-                    context.getString(R.string.sale_overview_title),
             fragmentFactory.getSaleGeneralInfoFragment(sale) to
                     context.getString(R.string.sale_general_info_title),
             fragmentFactory.getAssetDetailsFragment(sale.baseAssetCode, balanceCreation = false) to
