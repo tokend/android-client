@@ -238,7 +238,7 @@ object Navigator {
             is BalanceChangeCause.MatchedOffer -> OfferMatchDetailsActivity::class.java
             is BalanceChangeCause.Issuance -> IssuanceDetailsActivity::class.java
             is BalanceChangeCause.Payment -> PaymentDetailsActivity::class.java
-            is BalanceChangeCause.Withdrawal -> WithdrawalDetailsActivity::class.java
+            is BalanceChangeCause.WithdrawalRequest -> WithdrawalDetailsActivity::class.java
             is BalanceChangeCause.Offer -> {
                 openPendingOfferDetails(
                         activity,

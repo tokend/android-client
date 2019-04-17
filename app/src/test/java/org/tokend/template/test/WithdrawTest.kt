@@ -175,13 +175,13 @@ class WithdrawTest {
         Assert.assertTrue("History must not be empty after withdrawal sending",
                 transactions.isNotEmpty())
         Assert.assertTrue("First history entry must be a withdrawal after withdrawal sending",
-                transactions.first().cause is BalanceChangeCause.Withdrawal)
+                transactions.first().cause is BalanceChangeCause.WithdrawalRequest)
         Assert.assertEquals("Withdrawal history entry must have a requested destination address",
                 destAddress,
                 transactions
                         .first()
                         .cause
-                        .let { it as BalanceChangeCause.Withdrawal }
+                        .let { it as BalanceChangeCause.WithdrawalRequest }
                         .destinationAddress
         )
     }

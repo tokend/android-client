@@ -370,7 +370,7 @@
     <string name="balance_change_cause_issuance">Issuance/deposit request</string>
     <string name="balance_change_cause_payment">Payment</string>
     <string name="balance_change_cause_payout">Payout</string>
-    <string name="balance_change_cause_withdrawal">Withdrawal</string>
+    <string name="balance_change_cause_withdrawal_request">Withdrawal request</string>
     <string name="balance_change_cause_pending_offer">Pending offer</string>
     <string name="balance_change_cause_pending_investment">Pending investment</string>
     <string name="balance_change_cause_sale_cancellation">Sale cancellation</string>
