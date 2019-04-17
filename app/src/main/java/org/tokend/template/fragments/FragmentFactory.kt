@@ -10,14 +10,17 @@ import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.SalesFragment
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.fragments.SaleGeneralInfoFragment
-import org.tokend.template.features.invest.saledetails.fragments.SaleOverviewFragment
+import org.tokend.template.features.invest.view.fragments.SaleChartFragment
+import org.tokend.template.features.invest.view.fragments.SaleDetailsFragment
+import org.tokend.template.features.invest.view.fragments.SaleInvestFragment
+import org.tokend.template.features.invest.view.fragments.SaleOverviewFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.settings.GeneralSettingsFragment
 import org.tokend.template.features.trade.chart.view.AssetPairChartFragment
-import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
-import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
 import org.tokend.template.features.trade.history.view.TradeHistoryFragment
 import org.tokend.template.features.trade.offers.view.OffersFragment
+import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
+import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
 import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 
@@ -67,8 +70,20 @@ class FragmentFactory {
         return SalesFragment()
     }
 
-    fun getSaleOverviewFragment(blobId: String): Fragment {
-        return SaleOverviewFragment.newInstance(blobId)
+    fun getSaleOverviewFragment(sale: SaleRecord): Fragment {
+        return SaleOverviewFragment.newInstance(sale)
+    }
+
+    fun getSaleInvestFragment(sale: SaleRecord): Fragment {
+        return SaleInvestFragment()
+    }
+
+    fun getSaleDetailsFragment(sale: SaleRecord): Fragment {
+        return SaleDetailsFragment()
+    }
+
+    fun getSaleChartFragment(sale: SaleRecord): Fragment {
+        return SaleChartFragment()
     }
 
     fun getSaleGeneralInfoFragment(sale: SaleRecord): Fragment {

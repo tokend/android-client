@@ -148,6 +148,10 @@
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
+            android:name=".features.invest.view.SaleActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar.CardsBackground" />
+        <activity
             android:name=".features.invest.saledetails.SaleDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/sale_details_title"

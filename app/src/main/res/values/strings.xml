@@ -276,10 +276,11 @@
     <string name="investment_updated">Investment has been updated</string>
     <string name="pending_investment_details_title">Pending investment details</string>
     <string name="cancel_investment_confirmation">Are you sure want to cancel this investment?</string>
-    <string name="sale_details_title">Sale details</string>
+    <string name="sale_details_title">Details</string>
     <string name="sale_overview_title">Overview</string>
     <string name="sale_asset_title">Asset</string>
     <string name="sale_general_info_title">General</string>
+    <string name="sale_chart_title">Chart</string>
 
     <string name="tokend_network_hint">Network</string>
     <string name="not_specified">Not specified</string>
