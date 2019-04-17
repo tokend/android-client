@@ -70,19 +70,19 @@ class FragmentFactory {
         return SalesFragment()
     }
 
-    fun getSaleOverviewFragment(sale: SaleRecord): Fragment {
-        return SaleOverviewFragment.newInstance(sale)
+    fun getSaleOverviewFragment(): Fragment {
+        return SaleOverviewFragment()
     }
 
-    fun getSaleInvestFragment(sale: SaleRecord): Fragment {
+    fun getSaleInvestFragment(): Fragment {
         return SaleInvestFragment()
     }
 
-    fun getSaleDetailsFragment(sale: SaleRecord): Fragment {
+    fun getSaleDetailsFragment(): Fragment {
         return SaleDetailsFragment()
     }
 
-    fun getSaleChartFragment(sale: SaleRecord): Fragment {
+    fun getSaleChartFragment(): Fragment {
         return SaleChartFragment()
     }
 

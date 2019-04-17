@@ -5,23 +5,21 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import org.tokend.template.R
-import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.fragments.FragmentFactory
 
-class SalePagerAdapter(sale: SaleRecord,
-                       context: Context,
+class SalePagerAdapter(context: Context,
                        fragmentManager: FragmentManager
 ) : FragmentPagerAdapter(fragmentManager) {
     private val fragmentFactory = FragmentFactory()
 
     private val pages = listOf(
-            fragmentFactory.getSaleOverviewFragment(sale) to
+            fragmentFactory.getSaleOverviewFragment() to
                     context.getString(R.string.sale_overview_title),
-            fragmentFactory.getSaleInvestFragment(sale) to
+            fragmentFactory.getSaleInvestFragment() to
                     context.getString(R.string.sale_investing),
-            fragmentFactory.getSaleDetailsFragment(sale) to
+            fragmentFactory.getSaleDetailsFragment() to
                     context.getString(R.string.sale_details_title),
-            fragmentFactory.getSaleChartFragment(sale) to
+            fragmentFactory.getSaleChartFragment() to
                     context.getString(R.string.sale_chart_title)
     )
 

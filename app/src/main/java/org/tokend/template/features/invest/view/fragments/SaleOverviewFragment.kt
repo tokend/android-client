@@ -16,119 +16,51 @@ import kotlinx.android.synthetic.main.layout_sale_picture.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.features.invest.logic.BlobManager
-import org.tokend.template.features.invest.logic.InvestmentInfoManager
 import org.tokend.template.features.invest.logic.SaleOverviewMarkdownLoader
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.SaleProgressWrapper
-import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.logic.FeeManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import ru.noties.markwon.Markwon
-import java.math.BigDecimal
 
-class SaleOverviewFragment : BaseFragment() {
-    private val mainLoading = LoadingIndicatorManager(
+class SaleOverviewFragment : SaleFragment() {
+    private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress.show() },
             hideLoading = { progress.hide() }
     )
 
-    private lateinit var sale: SaleRecord
-
-    private lateinit var feeManager: FeeManager
-    private lateinit var investmentInfoManager: InvestmentInfoManager
-
-    private var existingOffers: Map<String, OfferRecord> = emptyMap()
-    private var maxInvestAmount = BigDecimal.ZERO
+    private val sale: SaleRecord
+        get() = investmentInfoRepository.item?.detailedSale ?: initSale
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_sale_overview, container, false)
     }
 
     override fun onInitAllowed() {
-        val sale = arguments?.getSerializable(SALE_EXTRA) as? SaleRecord
-                ?: return
+        super.onInitAllowed()
 
-        this.sale = sale
-
-        feeManager = FeeManager(apiProvider)
-        investmentInfoManager = InvestmentInfoManager(sale, repositoryProvider,
-                walletInfoProvider, amountFormatter)
-
+        subscribeToInvestmentInfo()
         displaySaleInfo()
 
-        update()
         loadOverview()
     }
 
-    // region Update
-    private fun update() {
-        repositoryProvider.balances()
-                .updateIfNotFreshDeferred()
-                .andThen(
-                        investmentInfoManager
-                                .getInvestmentInfo(
-                                        FeeManager(apiProvider)
-                                )
-                )
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe {
-                    mainLoading.show()
+    private fun subscribeToInvestmentInfo() {
+        investmentInfoRepository
+                .itemSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    displayChangeableSaleInfo()
                 }
-                .doOnEvent { _, _ ->
-                    mainLoading.hide()
-                }
-                .subscribeBy(
-                        onSuccess = { result ->
-                            this.sale = result.detailedSale
-                            this.existingOffers = result.offersByAsset
+                .addTo(compositeDisposable)
 
-                            onInvestmentInfoUpdated()
-                        },
-                        onError = {
-                            it.printStackTrace()
-                            errorHandlerFactory.getDefault().handle(it)
-                        }
-                )
+        investmentInfoRepository
+                .loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { loadingIndicator.setLoading(it) }
                 .addTo(compositeDisposable)
     }
-
-    /**
-     * Updates only data required for amount calculations and validation.
-     */
-    private fun updateFinancial() {
-        repositoryProvider.balances()
-                .updateIfNotFreshDeferred()
-                .andThen(
-                        investmentInfoManager
-                                .getFinancialInfo(
-                                        FeeManager(apiProvider)
-                                )
-                )
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe {
-                    mainLoading.show()
-                }
-                .doOnEvent { _, _ ->
-                    mainLoading.hide()
-                }
-                .subscribeBy(
-                        onSuccess = { result ->
-                            this.sale = result.detailedSale
-                            this.existingOffers = result.offersByAsset
-
-                            onInvestmentInfoUpdated()
-                        },
-                        onError = {
-                            it.printStackTrace()
-                            errorHandlerFactory.getDefault().handle(it)
-                        }
-                )
-                .addTo(compositeDisposable)
-    }
-    // endregion
 
     // region Info display
     private fun displaySaleInfo() {
@@ -201,36 +133,22 @@ class SaleOverviewFragment : BaseFragment() {
                 .load(sale.fullDescriptionBlob)
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe {
-                    mainLoading.show("overview")
+                    loadingIndicator.show("overview")
                 }
                 .doOnEvent { _, _ ->
-                    mainLoading.hide("overview")
+                    loadingIndicator.hide("overview")
                 }
                 .subscribeBy(
                         onSuccess = {
                             Markwon.setText(sale_overview_text_view, it)
                         },
-                        onError = {}
+                        onError = {
+                            sale_overview_text_view.text =
+                                    errorHandlerFactory.getDefault()
+                                            .getErrorMessage(it)
+                        }
                 )
                 .addTo(compositeDisposable)
     }
     // endregion
-
-    // region Invest
-    private fun onInvestmentInfoUpdated() {
-        displayChangeableSaleInfo()
-    }
-    // endregion
-
-    companion object {
-        private const val SALE_EXTRA = "sale"
-
-        fun newInstance(sale: SaleRecord): SaleOverviewFragment {
-            val fragment = SaleOverviewFragment()
-            fragment.arguments = Bundle().apply {
-                putSerializable(SALE_EXTRA, sale)
-            }
-            return fragment
-        }
-    }
 }

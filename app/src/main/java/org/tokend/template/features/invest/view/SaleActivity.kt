@@ -5,21 +5,35 @@ import kotlinx.android.synthetic.main.activity_multiple_fragments.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.features.invest.logic.InvestmentInfoHolder
 import org.tokend.template.features.invest.model.SaleRecord
+import org.tokend.template.features.invest.repository.InvestmentInfoRepository
 import org.tokend.template.features.invest.view.fragments.SalePagerAdapter
 
-class SaleActivity: BaseActivity() {
-    private lateinit var sale: SaleRecord
+class SaleActivity : BaseActivity(), InvestmentInfoHolder {
+    private lateinit var mSale: SaleRecord
+    override val sale: SaleRecord
+        get() = mSale
+
+    private lateinit var mInvestmentInfoRepository: InvestmentInfoRepository
+    override val investmentInfoRepository: InvestmentInfoRepository
+        get() = mInvestmentInfoRepository
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_multiple_fragments)
 
         try {
-            sale = intent.getSerializableExtra(SALE_EXTRA) as SaleRecord
+            mSale = intent.getSerializableExtra(SALE_EXTRA) as SaleRecord
         } catch (e: Exception) {
             finish()
             return
         }
+
+        mInvestmentInfoRepository = InvestmentInfoRepository(
+                sale,
+                repositoryProvider.offers(),
+                repositoryProvider.sales()
+        ).also { it.update() }
 
         supportPostponeEnterTransition()
 
@@ -34,7 +48,7 @@ class SaleActivity: BaseActivity() {
     }
 
     private fun initViewPager() {
-        val adapter = SalePagerAdapter(sale, this, supportFragmentManager)
+        val adapter = SalePagerAdapter(this, supportFragmentManager)
         pager.adapter = adapter
         pager.offscreenPageLimit = adapter.count
         toolbar_tabs.setupWithViewPager(pager)
