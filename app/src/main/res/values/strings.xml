@@ -367,7 +367,7 @@
     <string name="balance_change_cause_aml">AML alert</string>
     <string name="balance_change_cause_investment">Investment</string>
     <string name="balance_change_cause_matched_offer">Offer</string>
-    <string name="balance_change_cause_issuance">Issuance/deposit request</string>
+    <string name="balance_change_cause_issuance">Issuance/deposit</string>
     <string name="balance_change_cause_payment">Payment</string>
     <string name="balance_change_cause_payout">Payout</string>
     <string name="balance_change_cause_withdrawal_request">Withdrawal request</string>
