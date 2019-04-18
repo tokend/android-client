@@ -24,7 +24,7 @@ import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.fees.FeesActivity
-import org.tokend.template.features.invest.activities.InvestmentConfirmationActivity
+import org.tokend.template.features.invest.view.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
 import org.tokend.template.features.invest.view.SaleActivity

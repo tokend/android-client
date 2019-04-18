@@ -1,4 +1,4 @@
-package org.tokend.template.features.invest.adapter
+package org.tokend.template.features.invest.view.adapter
 
 import android.view.View
 import com.squareup.picasso.Picasso

@@ -1,4 +1,4 @@
-package org.tokend.template.features.invest.adapter
+package org.tokend.template.features.invest.view.adapter
 
 import android.support.v7.util.DiffUtil
 import android.view.LayoutInflater

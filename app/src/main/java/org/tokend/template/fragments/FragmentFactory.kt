@@ -7,7 +7,7 @@ import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
-import org.tokend.template.features.invest.SalesFragment
+import org.tokend.template.features.invest.view.SalesFragment
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.saledetails.fragments.SaleGeneralInfoFragment
 import org.tokend.template.features.invest.view.fragments.SaleChartFragment

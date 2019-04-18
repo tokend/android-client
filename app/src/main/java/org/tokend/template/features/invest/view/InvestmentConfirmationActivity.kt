@@ -1,4 +1,4 @@
-package org.tokend.template.features.invest.activities
+package org.tokend.template.features.invest.view
 
 import kotlinx.android.synthetic.main.activity_details.*
 import org.tokend.template.R
