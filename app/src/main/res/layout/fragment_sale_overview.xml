@@ -1,25 +1,105 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/layout_progress" />
 
-    <include layout="@layout/include_error_empty_view" />
+    <ScrollView
+        android:id="@+id/scroll_view"
+        style="@style/LimitedMatchParentWidthConstraint"
+        android:clipToPadding="false">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/cards_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="@dimen/standard_margin">
 
-        <android.support.v4.widget.NestedScrollView style="@style/LimitedMatchParentWidthConstraint">
+            <include layout="@layout/layout_sale_picture" />
 
-            <TextView
-                android:id="@+id/markdown_text_view"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/standard_margin" />
+                android:orientation="vertical"
+                android:padding="@dimen/half_standard_margin">
 
-        </android.support.v4.widget.NestedScrollView>
-    </android.support.constraint.ConstraintLayout>
-</LinearLayout>
+                <TextView
+                    android:id="@+id/sale_name_text_view"
+                    style="@style/HeadingText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/quarter_standard_margin"
+                    tools:text="Sale name" />
+
+                <TextView
+                    android:id="@+id/sale_description_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/half_standard_margin"
+                    android:lineSpacingExtra="@dimen/quarter_standard_margin"
+                    android:textIsSelectable="true"
+                    tools:text="Short\nSale\nDescription" />
+
+                <RelativeLayout
+                    android:id="@+id/video_preview_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_margin"
+                    android:paddingBottom="@dimen/quarter_standard_margin"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/video_preview_image_view"
+                        android:layout_width="128dp"
+                        android:layout_height="72dp" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/double_padding"
+                        android:layout_alignStart="@id/video_preview_image_view"
+                        android:layout_alignEnd="@id/video_preview_image_view"
+                        android:layout_centerVertical="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_youtube_play" />
+                </RelativeLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/standard_padding" />
+
+                <include layout="@layout/layout_sale_progress" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/standard_padding" />
+
+                <TextView
+                    android:id="@+id/sale_overview_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="@dimen/quarter_standard_margin"
+                    android:text="@string/loading_data"
+                    android:textIsSelectable="true" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/layout_progress" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <requestFocus />
+    </View>
+
+</android.support.constraint.ConstraintLayout>

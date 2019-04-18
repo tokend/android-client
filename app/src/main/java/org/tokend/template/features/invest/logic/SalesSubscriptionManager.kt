@@ -3,7 +3,7 @@ package org.tokend.template.features.invest.logic
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import org.tokend.template.features.invest.adapter.SalesAdapter
+import org.tokend.template.features.invest.view.adapter.SalesAdapter
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.view.ErrorEmptyView

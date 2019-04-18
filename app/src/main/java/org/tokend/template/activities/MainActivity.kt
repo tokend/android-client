@@ -27,7 +27,7 @@ import org.tokend.template.R
 import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
-import org.tokend.template.features.invest.SalesFragment
+import org.tokend.template.features.invest.view.SalesFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.settings.SettingsFragment

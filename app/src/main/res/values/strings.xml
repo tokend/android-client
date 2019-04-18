@@ -276,10 +276,17 @@
     <string name="investment_updated">Investment has been updated</string>
     <string name="pending_investment_details_title">Pending investment details</string>
     <string name="cancel_investment_confirmation">Are you sure want to cancel this investment?</string>
-    <string name="sale_details_title">Sale details</string>
+    <string name="sale_details_title">Details</string>
     <string name="sale_overview_title">Overview</string>
     <string name="sale_asset_title">Asset</string>
     <string name="sale_general_info_title">General</string>
+    <string name="sale_chart_title">Chart</string>
+    <string name="invest_asset_hint">Asset</string>
+    <string name="template_invest_unavailable_sale_upcoming_date">Sale is upcoming, investing
+        will be available from %1$s</string>
+    <string name="invest_unavailable_sale_ended">Sale is ended, investing is not available</string>
+    <string name="invest_unavailable">Investing is not available</string>
+    <string name="sale_summary_title">Sale summary</string>
 
     <string name="tokend_network_hint">Network</string>
     <string name="not_specified">Not specified</string>
@@ -302,6 +309,7 @@
     <string name="deposit_address_renewed">Address has been renewed</string>
     <string name="error_kyc_required_to_own_asset">Only verified accounts can own this asset</string>
 
+    <string name="help">Help</string>
     <string name="investment_help_title">Investment help</string>
     <string name="investment_help_content">
         • You can make investments in this sale using proposed assets\n\n

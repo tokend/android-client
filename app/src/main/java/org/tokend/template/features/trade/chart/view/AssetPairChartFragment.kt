@@ -9,7 +9,7 @@ import com.github.mikephil.charting.listener.BarLineChartTouchListener
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.fragment_asset_pair_chart.*
+import kotlinx.android.synthetic.main.fragment_asset_chart.*
 import org.jetbrains.anko.dip
 import org.tokend.rx.extensions.toSingle
 import org.tokend.template.R
@@ -21,7 +21,7 @@ class AssetPairChartFragment : BaseFragment() {
     private lateinit var assetPair: AssetPairRecord
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_asset_pair_chart, container, false)
+        return inflater.inflate(R.layout.fragment_asset_chart, container, false)
     }
 
     override fun onInitAllowed() {

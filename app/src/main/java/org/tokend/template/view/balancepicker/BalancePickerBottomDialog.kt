@@ -110,7 +110,7 @@ open class BalancePickerBottomDialog(
         dialog.window.windowManager.defaultDisplay.getMetrics(displayMetrics)
         val displayHeight = displayMetrics.heightPixels
 
-        dialogView.minimumHeight = (displayHeight * 0.4).roundToInt()
+        dialogView.minimumHeight = (displayHeight * 0.3).roundToInt()
     }
 
     protected open fun initList(dialog: Dialog,
@@ -131,8 +131,9 @@ open class BalancePickerBottomDialog(
         errorEmptyView
                 .setPadding(
                         0,
-                        context.resources.getDimensionPixelSize(R.dimen.double_padding),
-                        0, 0
+                        context.resources.getDimensionPixelSize(R.dimen.standard_padding),
+                        0,
+                        context.resources.getDimensionPixelSize(R.dimen.standard_padding)
                 )
         errorEmptyView.setEmptyDrawable(R.drawable.ic_balance)
         errorEmptyView.observeAdapter(adapter, R.string.no_balances_found)

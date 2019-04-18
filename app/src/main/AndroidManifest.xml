@@ -107,7 +107,7 @@
             android:label="@string/offer_confirmation_title"
             android:theme="@style/AppTheme.CardsBackground" />
         <activity
-            android:name=".features.invest.activities.InvestmentConfirmationActivity"
+            android:name=".features.invest.view.InvestmentConfirmationActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/investment_confirmation_title"
             android:theme="@style/AppTheme.CardsBackground" />
@@ -147,6 +147,10 @@
             android:name=".features.invest.activities.SaleActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.CardsBackground" />
+        <activity
+            android:name=".features.invest.view.SaleActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".features.invest.saledetails.SaleDetailsActivity"
             android:configChanges="orientation|screenSize"

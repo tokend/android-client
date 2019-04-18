@@ -1,4 +1,4 @@
-package org.tokend.template.features.invest
+package org.tokend.template.features.invest.view
 
 import android.content.Context
 import android.support.annotation.StyleRes

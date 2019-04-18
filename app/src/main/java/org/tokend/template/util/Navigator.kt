@@ -24,10 +24,9 @@ import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.fees.FeesActivity
-import org.tokend.template.features.invest.activities.InvestmentConfirmationActivity
-import org.tokend.template.features.invest.activities.SaleActivity
 import org.tokend.template.features.invest.model.SaleRecord
-import org.tokend.template.features.invest.saledetails.SaleDetailsActivity
+import org.tokend.template.features.invest.view.InvestmentConfirmationActivity
+import org.tokend.template.features.invest.view.SaleActivity
 import org.tokend.template.features.limits.LimitsActivity
 import org.tokend.template.features.offers.CreateOfferActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
@@ -190,18 +189,21 @@ object Navigator {
         ), requestCode)
     }
 
-    fun openInvestmentConfirmation(activity: Activity,
+    fun openInvestmentConfirmation(fragment: Fragment,
                                    requestCode: Int,
                                    offer: OfferRecord,
                                    offerToCancel: OfferRecord? = null,
                                    displayToReceive: Boolean = true,
                                    assetName: String? = null) {
-        activity.startActivityForResult(activity.intentFor<InvestmentConfirmationActivity>(
-                OfferConfirmationActivity.OFFER_EXTRA to offer,
-                OfferConfirmationActivity.OFFER_TO_CANCEL_EXTRA to offerToCancel,
-                InvestmentConfirmationActivity.DISPLAY_TO_RECEIVE to displayToReceive,
-                InvestmentConfirmationActivity.ASSET_NAME_EXTRA to assetName
-        ), requestCode)
+        fragment.startActivityForResult(
+                Intent(fragment.requireContext(), InvestmentConfirmationActivity::class.java)
+                        .putExtra(OfferConfirmationActivity.OFFER_EXTRA, offer)
+                        .putExtra(OfferConfirmationActivity.OFFER_TO_CANCEL_EXTRA, offerToCancel)
+                        .putExtra(InvestmentConfirmationActivity.DISPLAY_TO_RECEIVE, displayToReceive)
+                        .putExtra(InvestmentConfirmationActivity.ASSET_NAME_EXTRA, assetName
+                        ),
+                requestCode
+        )
     }
 
     fun openPendingOffers(fragment: Fragment, requestCode: Int = 0,
@@ -215,12 +217,6 @@ object Navigator {
         fragment.startActivityForResult(fragment.requireContext().intentFor<SaleActivity>(
                 SaleActivity.SALE_EXTRA to sale
         ), requestCode)
-    }
-
-    fun openSaleDetails(activity: Activity, sale: SaleRecord) {
-        activity.startActivity(activity.intentFor<SaleDetailsActivity>(
-                SaleDetailsActivity.SALE_EXTRA to sale
-        ))
     }
 
     fun openAuthenticatorSignIn(activity: Activity, requestCode: Int) {
@@ -292,7 +288,7 @@ object Navigator {
                 }
         )
     }
-  
+
     fun openLimits(fragment: Fragment) {
         fragment.startActivity(Intent(fragment.requireContext(), LimitsActivity::class.java))
     }

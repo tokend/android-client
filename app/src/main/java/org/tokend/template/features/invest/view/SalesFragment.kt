@@ -1,4 +1,4 @@
-package org.tokend.template.features.invest
+package org.tokend.template.features.invest.view
 
 import android.app.Activity
 import android.content.Intent
@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.layout_sales_search.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.dip
 import org.tokend.template.R
-import org.tokend.template.features.invest.adapter.SalesAdapter
+import org.tokend.template.features.invest.view.adapter.SalesAdapter
 import org.tokend.template.features.invest.logic.SalesSubscriptionManager
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.fragments.BaseFragment

@@ -207,14 +207,21 @@ class AssetChartCard : LinearLayout {
 
         val displayCount = Math.min(points.size, chartScale.pointsToDisplay)
 
-        val step = points.size / displayCount * -1
+        if (points.isNotEmpty()) {
+            val step =
+                    if (displayCount != 0)
+                        points.size / displayCount * -1
+                    else
+                        1
 
-        val range = IntProgression.fromClosedRange(points.size - 1, 0, step)
-        for (i in range) {
-            val point = points[i]
-            newChartData.add(Entry(0f, point.value?.toFloat() ?: 0f,
-                    point.date))
+            val range = IntProgression.fromClosedRange(points.size - 1, 0, step)
+            for (i in range) {
+                val point = points[i]
+                newChartData.add(Entry(0f, point.value?.toFloat() ?: 0f,
+                        point.date))
+            }
         }
+
         newChartData.forEachIndexed { i, it ->
             it.x = (newChartData.size - 1 - i).toFloat()
         }
