@@ -9,6 +9,9 @@ abstract class SaleFragment: BaseFragment() {
     protected lateinit var investmentInfoRepository: InvestmentInfoRepository
     protected lateinit var initSale: SaleRecord
 
+    protected val sale: SaleRecord
+        get() = investmentInfoRepository.item?.detailedSale ?: initSale
+
     override fun onInitAllowed() {
         initSale = (requireActivity() as? InvestmentInfoHolder)
                 ?.sale

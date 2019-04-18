@@ -43,7 +43,6 @@ import org.tokend.template.view.balancepicker.BalancePickerBottomDialog
 import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.AmountEditTextWrapper
-import org.tokend.wallet.xdr.SaleType
 import ru.noties.markwon.Markwon
 import java.math.BigDecimal
 import java.math.MathContext
@@ -561,14 +560,14 @@ class SaleActivity : BaseActivity() {
                         }
                         .subscribeBy(
                                 onSuccess = { offer ->
-                                    Navigator.openInvestmentConfirmation(this,
-                                            INVESTMENT_REQUEST,
-                                            offer = offer,
-                                            offerToCancel = existingOffers[investAsset],
-                                            assetName = sale.baseAssetCode,
-                                            displayToReceive =
-                                            sale.type.value == SaleType.BASIC_SALE.value
-                                    )
+//                                    Navigator.openInvestmentConfirmation(this,
+//                                            INVESTMENT_REQUEST,
+//                                            offer = offer,
+//                                            offerToCancel = existingOffers[investAsset],
+//                                            assetName = sale.baseAssetCode,
+//                                            displayToReceive =
+//                                            sale.type.value == SaleType.BASIC_SALE.value
+//                                    )
                                 },
                                 onError = {
                                     errorHandlerFactory.getDefault().handle(it)

@@ -3,6 +3,7 @@ package org.tokend.template.features.invest.repository
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
+import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.base.SimpleSingleItemRepository
@@ -60,13 +61,19 @@ class InvestmentInfoRepository(
      */
     fun getAvailableBalance(asset: String,
                             balancesRepository: BalancesRepository): BigDecimal {
-        val offer = item?.offersByAsset?.get(asset)
-        val locked = (offer?.quoteAmount ?: BigDecimal.ZERO).add(offer?.fee ?: BigDecimal.ZERO)
-
         val assetBalance = balancesRepository
                 .itemsList
                 .find { it.assetCode == asset }
-                ?.available ?: BigDecimal.ZERO
+
+        return getAvailableBalance(asset, assetBalance)
+    }
+
+    fun getAvailableBalance(asset: String,
+                            balanceRecord: BalanceRecord?): BigDecimal {
+        val offer = item?.offersByAsset?.get(asset)
+        val locked = (offer?.quoteAmount ?: BigDecimal.ZERO).add(offer?.fee ?: BigDecimal.ZERO)
+
+        val assetBalance = balanceRecord?.available ?: BigDecimal.ZERO
 
         return locked + assetBalance
     }

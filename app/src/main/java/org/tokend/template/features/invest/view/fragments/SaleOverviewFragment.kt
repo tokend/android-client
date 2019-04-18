@@ -18,7 +18,6 @@ import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.features.invest.logic.BlobManager
 import org.tokend.template.features.invest.logic.SaleOverviewMarkdownLoader
-import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
@@ -29,9 +28,6 @@ class SaleOverviewFragment : SaleFragment() {
             showLoading = { progress.show() },
             hideLoading = { progress.hide() }
     )
-
-    private val sale: SaleRecord
-        get() = investmentInfoRepository.item?.detailedSale ?: initSale
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_sale_overview, container, false)

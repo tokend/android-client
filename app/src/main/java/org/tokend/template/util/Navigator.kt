@@ -190,18 +190,21 @@ object Navigator {
         ), requestCode)
     }
 
-    fun openInvestmentConfirmation(activity: Activity,
+    fun openInvestmentConfirmation(fragment: Fragment,
                                    requestCode: Int,
                                    offer: OfferRecord,
                                    offerToCancel: OfferRecord? = null,
                                    displayToReceive: Boolean = true,
                                    assetName: String? = null) {
-        activity.startActivityForResult(activity.intentFor<InvestmentConfirmationActivity>(
-                OfferConfirmationActivity.OFFER_EXTRA to offer,
-                OfferConfirmationActivity.OFFER_TO_CANCEL_EXTRA to offerToCancel,
-                InvestmentConfirmationActivity.DISPLAY_TO_RECEIVE to displayToReceive,
-                InvestmentConfirmationActivity.ASSET_NAME_EXTRA to assetName
-        ), requestCode)
+        fragment.startActivityForResult(
+                Intent(fragment.requireContext(), InvestmentConfirmationActivity::class.java)
+                        .putExtra(OfferConfirmationActivity.OFFER_EXTRA, offer)
+                        .putExtra(OfferConfirmationActivity.OFFER_TO_CANCEL_EXTRA, offerToCancel)
+                        .putExtra(InvestmentConfirmationActivity.DISPLAY_TO_RECEIVE, displayToReceive)
+                        .putExtra(InvestmentConfirmationActivity.ASSET_NAME_EXTRA, assetName
+                        ),
+                requestCode
+        )
     }
 
     fun openPendingOffers(fragment: Fragment, requestCode: Int = 0,
@@ -292,7 +295,7 @@ object Navigator {
                 }
         )
     }
-  
+
     fun openLimits(fragment: Fragment) {
         fragment.startActivity(Intent(fragment.requireContext(), LimitsActivity::class.java))
     }

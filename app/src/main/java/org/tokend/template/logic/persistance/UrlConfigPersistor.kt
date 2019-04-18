@@ -1,6 +1,7 @@
 package org.tokend.template.logic.persistance
 
 import android.content.SharedPreferences
+import android.util.Log
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.data.model.UrlConfig
 
@@ -27,6 +28,7 @@ class UrlConfigPersistor(
         return preferences
                 .getString(CONFIG_KEY, null)
                 ?.let {
+                    Log.i("Oleg", it)
                     try {
                         GsonFactory().getBaseGson().fromJson(it, UrlConfig::class.java)
                     } catch (e: Exception) {
