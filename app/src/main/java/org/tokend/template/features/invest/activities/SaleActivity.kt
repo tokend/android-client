@@ -16,6 +16,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sale.*
+import kotlinx.android.synthetic.main.fragment_asset_chart.*
 import kotlinx.android.synthetic.main.layout_amount_with_spinner.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.layout_sale_picture.*
@@ -453,7 +454,7 @@ class SaleActivity : BaseActivity() {
 
     // region Chart
     private fun initChart() {
-        asset_chart.apply {
+        chart.apply {
             val quoteAsset = sale.defaultQuoteAsset
 
             applyTouchHook(scroll_view)
