@@ -206,9 +206,9 @@ sealed class BalanceChangeCause : Serializable {
         }
     }
 
-    // ------- Withdrawal -------- //
+    // ------- WithdrawalRequest -------- //
 
-    class Withdrawal(
+    class WithdrawalRequest(
             val destinationAddress: String
     ) : BalanceChangeCause() {
         constructor(op: OpCreateWithdrawRequestDetailsResource) : this(

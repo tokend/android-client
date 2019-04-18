@@ -134,7 +134,7 @@ class DefaultParticipantEffectConverter(
                 is OpCreateIssuanceRequestDetailsResource ->
                     BalanceChangeCause.Issuance(operationDetails)
                 is OpCreateWithdrawRequestDetailsResource ->
-                    BalanceChangeCause.Withdrawal(operationDetails)
+                    BalanceChangeCause.WithdrawalRequest(operationDetails)
                 is OpManageOfferDetailsResource ->
                     when (effect) {
                         is EffectMatchedResource -> BalanceChangeCause.MatchedOffer(operationDetails, effect)

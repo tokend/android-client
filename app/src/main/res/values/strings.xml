@@ -375,10 +375,10 @@
     <string name="balance_change_cause_aml">AML alert</string>
     <string name="balance_change_cause_investment">Investment</string>
     <string name="balance_change_cause_matched_offer">Offer</string>
-    <string name="balance_change_cause_issuance">Issuance/deposit request</string>
+    <string name="balance_change_cause_issuance">Issuance/deposit</string>
     <string name="balance_change_cause_payment">Payment</string>
     <string name="balance_change_cause_payout">Payout</string>
-    <string name="balance_change_cause_withdrawal">Withdrawal</string>
+    <string name="balance_change_cause_withdrawal_request">Withdrawal request</string>
     <string name="balance_change_cause_pending_offer">Pending offer</string>
     <string name="balance_change_cause_pending_investment">Pending investment</string>
     <string name="balance_change_cause_sale_cancellation">Sale cancellation</string>
@@ -410,4 +410,8 @@
     <string name="max_sell_hint">Max Sell</string>
     <string name="max_buy_hint">Max Buy</string>
     <string name="error_amount_to_big">Amount is to big</string>
+
+    <string name="template_lower_bound">From %1$s</string>
+    <string name="template_upper_bound">to %1$s</string>
+    <string name="fee_info_titles">Fixed\nPercent</string>
 </resources>

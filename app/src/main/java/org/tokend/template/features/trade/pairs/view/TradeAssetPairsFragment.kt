@@ -1,9 +1,10 @@
 package org.tokend.template.features.trade.pairs.view
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
@@ -26,10 +27,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SearchUtil
 import org.tokend.template.view.picker.PickerItem
-import org.tokend.template.view.util.HorizontalSwipesGestureDetector
-import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.MenuSearchViewManager
-import org.tokend.template.view.util.ScrollOnTopItemUpdateAdapterObserver
+import org.tokend.template.view.util.*
 
 class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
 
@@ -46,6 +44,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
     private var searchItem: MenuItem? = null
 
     private lateinit var pairsAdapter: AssetPairItemsAdapter
+    private lateinit var layoutManager: GridLayoutManager
 
     private val comparator = Comparator<AssetPairListItem> { o1, o2 ->
         assetComparator.compare(o1.baseAssetCode, o2.baseAssetCode)
@@ -128,9 +127,13 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initList() {
+        val columns = ColumnCalculator.getColumnCount(requireActivity())
+
+        layoutManager = GridLayoutManager(requireContext(), columns)
+
         pairsAdapter = AssetPairItemsAdapter(amountFormatter)
 
-        asset_pairs_recycler_view.layoutManager = LinearLayoutManager(requireContext())
+        asset_pairs_recycler_view.layoutManager = layoutManager
         asset_pairs_recycler_view.adapter = pairsAdapter
         (asset_pairs_recycler_view.itemAnimator as? SimpleItemAnimator)
                 ?.supportsChangeAnimations = false
@@ -254,6 +257,11 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
         } else {
             assetPairsRepository.update()
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        layoutManager.spanCount = ColumnCalculator.getColumnCount(requireActivity())
     }
 
     override fun onBackPressed(): Boolean {

@@ -15,7 +15,7 @@ class WithdrawalDetailsActivity : BalanceChangeDetailsActivity() {
     override fun displayDetails(item: BalanceChange) {
         setContentView(R.layout.activity_details_list)
 
-        val details = item.cause as? BalanceChangeCause.Withdrawal
+        val details = item.cause as? BalanceChangeCause.WithdrawalRequest
 
         if (details == null) {
             finish()
@@ -31,7 +31,7 @@ class WithdrawalDetailsActivity : BalanceChangeDetailsActivity() {
         displayDate(item, adapter)
     }
 
-    private fun displayDestination(cause: BalanceChangeCause.Withdrawal) {
+    private fun displayDestination(cause: BalanceChangeCause.WithdrawalRequest) {
         adapter.addData(
                 DetailsItem(
                         text = cause.destinationAddress,

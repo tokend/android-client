@@ -36,6 +36,7 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SearchUtil
+import org.tokend.template.view.util.ColumnCalculator
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.MenuSearchViewManager
 import org.tokend.template.view.util.ProgressDialogFactory
@@ -92,7 +93,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initAssetsList() {
-        val columns = calculateColumnCount()
+        val columns = ColumnCalculator.getColumnCount(requireActivity())
 
         layoutManager = GridLayoutManager(context, columns)
 
@@ -111,16 +112,6 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 openAssetDetails(view, item)
             }
         }
-    }
-
-    private fun calculateColumnCount(): Int {
-        val displayMetrics = DisplayMetrics()
-        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-
-        val screenWidth = displayMetrics.widthPixels.toDouble()
-        return (screenWidth / resources.getDimensionPixelSize(R.dimen.max_content_width))
-                .let { Math.ceil(it) }
-                .toInt()
     }
 
     private fun initMenu() {
@@ -318,7 +309,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        layoutManager.spanCount = calculateColumnCount()
+        layoutManager.spanCount = ColumnCalculator.getColumnCount(requireActivity())
     }
 
     companion object {

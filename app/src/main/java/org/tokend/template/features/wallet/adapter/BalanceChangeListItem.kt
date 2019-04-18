@@ -73,7 +73,7 @@ class BalanceChangeListItem(
                 is BalanceChangeCause.Payment ->
                     details.getCounterpartyName(accountId)
                             ?: details.getCounterpartyAccountId(accountId)
-                is BalanceChangeCause.Withdrawal ->
+                is BalanceChangeCause.WithdrawalRequest ->
                     details.destinationAddress
                 else -> null
             }

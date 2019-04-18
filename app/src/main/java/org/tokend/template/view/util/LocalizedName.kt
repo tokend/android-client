@@ -4,7 +4,7 @@ import android.content.Context
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.data.model.history.details.BalanceChangeCause
-import org.tokend.template.features.fees.adapter.FeeItem
+import org.tokend.template.features.fees.view.FeeItem
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.wallet.xdr.FeeType
 
@@ -67,7 +67,7 @@ class LocalizedName(private val context: Context) {
             is BalanceChangeCause.MatchedOffer -> context.getString(R.string.balance_change_cause_matched_offer)
             is BalanceChangeCause.Issuance -> context.getString(R.string.balance_change_cause_issuance)
             is BalanceChangeCause.Payment -> context.getString(R.string.balance_change_cause_payment)
-            is BalanceChangeCause.Withdrawal -> context.getString(R.string.balance_change_cause_withdrawal)
+            is BalanceChangeCause.WithdrawalRequest -> context.getString(R.string.balance_change_cause_withdrawal_request)
             is BalanceChangeCause.Offer -> {
                 if (cause.isInvestment)
                     context.getString(R.string.balance_change_cause_pending_investment)
