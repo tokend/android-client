@@ -309,6 +309,7 @@
     <string name="deposit_address_renewed">Address has been renewed</string>
     <string name="error_kyc_required_to_own_asset">Only verified accounts can own this asset</string>
 
+    <string name="help">Help</string>
     <string name="investment_help_title">Investment help</string>
     <string name="investment_help_content">
         • You can make investments in this sale using proposed assets\n\n

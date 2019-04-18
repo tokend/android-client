@@ -8,8 +8,6 @@ import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
-import org.tokend.template.features.invest.model.SaleRecord
-import org.tokend.template.features.invest.saledetails.fragments.SaleGeneralInfoFragment
 import org.tokend.template.features.invest.view.fragments.SaleChartFragment
 import org.tokend.template.features.invest.view.fragments.SaleDetailsFragment
 import org.tokend.template.features.invest.view.fragments.SaleInvestFragment
@@ -84,10 +82,6 @@ class FragmentFactory {
 
     fun getSaleChartFragment(): Fragment {
         return SaleChartFragment()
-    }
-
-    fun getSaleGeneralInfoFragment(sale: SaleRecord): Fragment {
-        return SaleGeneralInfoFragment.newInstance(sale)
     }
 
     fun getTradeAssetPairsFragment(): Fragment {

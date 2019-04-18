@@ -20,6 +20,7 @@ import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
+import org.tokend.template.features.invest.view.InvestmentHelpDialog
 import org.tokend.template.features.offers.logic.PrepareOfferUseCase
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.util.Navigator
@@ -153,6 +154,11 @@ class SaleInvestFragment : SaleFragment() {
 
         cancel_investment_button.setOnClickListener {
             tryToInvest(cancel = true)
+        }
+
+        invest_help_button.setOnClickListener {
+            InvestmentHelpDialog(requireContext(), R.style.AlertDialogStyle)
+                    .show()
         }
     }
 
