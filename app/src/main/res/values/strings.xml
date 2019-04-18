@@ -127,6 +127,10 @@
     <string name="asset_issued">Issued</string>
     <string name="asset_maximum">Maximum</string>
     <string name="asset_terms_of_use">Terms of Use</string>
+    <string name="asset_can_be_transferred">Can be transferred</string>
+    <string name="asset_can_not_be_transferred">Can\'t be transferred</string>
+    <string name="asset_can_be_withdrawn">Can be withdrawn</string>
+    <string name="asset_can_not_be_withdrawn">Can\'t be withdrawn</string>
 
     <string name="dashboard_title">Dashboard</string>
     <string name="wallet_title">Wallet</string>
