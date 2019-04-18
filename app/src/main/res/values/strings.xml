@@ -286,6 +286,7 @@
         will be available from %1$s</string>
     <string name="invest_unavailable_sale_ended">Sale is ended, investing is not available</string>
     <string name="invest_unavailable">Investing is not available</string>
+    <string name="sale_summary_title">Sale summary</string>
 
     <string name="tokend_network_hint">Network</string>
     <string name="not_specified">Not specified</string>

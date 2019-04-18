@@ -48,7 +48,7 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
     }
 
     private fun initViewPager() {
-        val adapter = SalePagerAdapter(this, supportFragmentManager)
+        val adapter = SalePagerAdapter(sale, this, supportFragmentManager)
         pager.adapter = adapter
         pager.offscreenPageLimit = adapter.count
         toolbar_tabs.setupWithViewPager(pager)

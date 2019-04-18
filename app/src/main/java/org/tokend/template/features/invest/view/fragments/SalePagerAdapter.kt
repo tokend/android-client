@@ -5,9 +5,11 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import org.tokend.template.R
+import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.fragments.FragmentFactory
 
-class SalePagerAdapter(context: Context,
+class SalePagerAdapter(sale: SaleRecord,
+                       context: Context,
                        fragmentManager: FragmentManager
 ) : FragmentPagerAdapter(fragmentManager) {
     private val fragmentFactory = FragmentFactory()
@@ -17,7 +19,7 @@ class SalePagerAdapter(context: Context,
                     context.getString(R.string.sale_overview_title),
             fragmentFactory.getSaleInvestFragment() to
                     context.getString(R.string.sale_investing),
-            fragmentFactory.getSaleDetailsFragment() to
+            fragmentFactory.getSaleDetailsFragment(sale.baseAssetCode) to
                     context.getString(R.string.sale_details_title),
             fragmentFactory.getSaleChartFragment() to
                     context.getString(R.string.sale_chart_title)

@@ -78,8 +78,8 @@ class FragmentFactory {
         return SaleInvestFragment()
     }
 
-    fun getSaleDetailsFragment(): Fragment {
-        return SaleDetailsFragment()
+    fun getSaleDetailsFragment(saleAssetCode: String): Fragment {
+        return SaleDetailsFragment.newInstance(saleAssetCode)
     }
 
     fun getSaleChartFragment(): Fragment {

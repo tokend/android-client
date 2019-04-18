@@ -35,24 +35,24 @@ import org.tokend.template.view.InfoCard
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 
-class AssetDetailsFragment : BaseFragment() {
-    private lateinit var asset: AssetRecord
+open class AssetDetailsFragment : BaseFragment() {
+    protected lateinit var asset: AssetRecord
 
-    private val assetCode: String? by lazy {
+    protected val assetCode: String? by lazy {
         arguments?.getString(ASSET_CODE_EXTRA)
     }
 
-    private val isBalanceCreationEnabled: Boolean by lazy {
+    protected val isBalanceCreationEnabled: Boolean by lazy {
         arguments?.getBoolean(BALANCE_CREATION_EXTRA) ?: true
     }
 
-    private val balanceExists: Boolean
+    protected val balanceExists: Boolean
         get() = repositoryProvider.balances().itemsList
                 .find { it.assetCode == asset.code } != null
 
     private lateinit var fileDownloader: FileDownloader
 
-    private val loadingIndicator = LoadingIndicatorManager(
+    protected val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress.show() },
             hideLoading = { progress.hide() }
     )
@@ -103,7 +103,7 @@ class AssetDetailsFragment : BaseFragment() {
     }
 
     // region Display
-    private fun displayDetails() {
+    protected open fun displayDetails() {
         displayLogoAndName()
         displaySummary()
         displayTermsIfNeeded()
@@ -115,7 +115,7 @@ class AssetDetailsFragment : BaseFragment() {
         )
     }
 
-    private fun displaySummary() {
+    protected open fun displaySummary() {
         InfoCard(cards_layout)
                 .setHeading(R.string.asset_summary_title, null)
                 .addRow(R.string.asset_available,
@@ -229,8 +229,8 @@ class AssetDetailsFragment : BaseFragment() {
 
     companion object {
         private const val ASSET_EXTRA = "asset"
-        private const val ASSET_CODE_EXTRA = "asset_code"
-        private const val BALANCE_CREATION_EXTRA = "balance_creation"
+        const val ASSET_CODE_EXTRA = "asset_code"
+        const val BALANCE_CREATION_EXTRA = "balance_creation"
 
         fun newInstance(asset: AssetRecord, balanceCreation: Boolean): AssetDetailsFragment {
             val fragment = AssetDetailsFragment()
