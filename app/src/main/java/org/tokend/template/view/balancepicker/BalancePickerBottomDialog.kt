@@ -131,8 +131,9 @@ open class BalancePickerBottomDialog(
         errorEmptyView
                 .setPadding(
                         0,
-                        context.resources.getDimensionPixelSize(R.dimen.double_padding),
-                        0, 0
+                        context.resources.getDimensionPixelSize(R.dimen.standard_padding),
+                        0,
+                        context.resources.getDimensionPixelSize(R.dimen.standard_padding)
                 )
         errorEmptyView.setEmptyDrawable(R.drawable.ic_balance)
         errorEmptyView.observeAdapter(adapter, R.string.no_balances_found)
