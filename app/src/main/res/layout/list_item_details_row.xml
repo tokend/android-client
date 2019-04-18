@@ -10,12 +10,12 @@
         style="@style/HintText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/half_standard_padding"
-        android:layout_marginTop="@dimen/standard_margin"
+        android:layout_marginStart="?android:attr/listPreferredItemPaddingLeft"
+        android:layout_marginTop="@dimen/standard_padding"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
         android:maxLines="1"
-        android:paddingBottom="@dimen/standard_margin"
+        android:paddingBottom="@dimen/quarter_standard_margin"
         android:textAllCaps="true"
         tools:text="General" />
 
