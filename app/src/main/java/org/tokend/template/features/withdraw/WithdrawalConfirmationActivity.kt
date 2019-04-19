@@ -60,6 +60,16 @@ class WithdrawalConfirmationActivity : BaseActivity() {
                             hint = getString(R.string.tx_fee)
                     )
             )
+
+            adapter.addData(
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(
+                                    request.amount + request.fee.total,
+                                    asset
+                            ),
+                            hint = getString(R.string.total_label)
+                    )
+            )
         }
 
         adapter.addData(
