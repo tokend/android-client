@@ -13,6 +13,7 @@ class DetailsItem(
          * Section header
          */
         val header: String? = null,
+        val singleLineText: Boolean = false,
         val id: Long = 0L
 ) {
     val hasHeader: Boolean = header != null

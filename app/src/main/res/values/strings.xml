@@ -168,6 +168,7 @@
     <string name="pay_recipient_fee_action">Pay recipient\'s fee</string>
     <string name="tx_recipient_fee">Recipient\'s fee</string>
     <string name="tx_effect">Effect</string>
+    <string name="account_id_has_been_copied">Account ID has been copied to the clipboard</string>
 
     <string name="settings_account_group">Account</string>
     <string name="settings_security_group">Security</string>

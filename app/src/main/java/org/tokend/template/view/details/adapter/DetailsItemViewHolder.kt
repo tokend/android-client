@@ -1,5 +1,6 @@
 package org.tokend.template.view.details.adapter
 
+import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +20,7 @@ class DetailsItemViewHolder(view: View) : BaseViewHolder<DetailsItem>(view) {
     private val preferenceRoot: ViewGroup = view.find(R.id.preference_root_layout)
 
     init {
-        mainTextView.setSingleLine(false)
-        mainTextView.setTextIsSelectable(true)
+        mainTextView.ellipsize = TextUtils.TruncateAt.MIDDLE
 
         mainTextView.setOnTouchListener { _, event ->
             if (event.action == 1 && !mainTextView.hasSelection()) {
@@ -55,6 +55,8 @@ class DetailsItemViewHolder(view: View) : BaseViewHolder<DetailsItem>(view) {
             headerTextView.visibility = View.GONE
         }
 
+        mainTextView.setTextIsSelectable(!item.singleLineText)
+        mainTextView.setSingleLine(item.singleLineText)
         mainTextView.text = item.text
 
         if (item.hint != null) {

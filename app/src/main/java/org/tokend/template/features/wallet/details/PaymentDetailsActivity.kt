@@ -1,11 +1,14 @@
 package org.tokend.template.features.wallet.details
 
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
+import android.widget.TextView
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details_list.*
+import org.jetbrains.anko.clipboardManager
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
@@ -38,6 +41,8 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         details_list.adapter = adapter
         (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
+        initAccountIdClick()
+
         displayEffect(item, adapter)
         displayCounterparty(details, accountId)
         displayPaidOrReceived(item, details, accountId)
@@ -45,6 +50,29 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         displayDate(item, adapter)
 
         loadAndDisplayCounterpartyEmail(details, accountId)
+    }
+
+    private fun initAccountIdClick() {
+        adapter.onItemClick { _, item ->
+            if (item.id == COUNTERPARTY_ACCOUNT_ID_ITEM_ID) {
+                val content = item.text
+
+                AlertDialog.Builder(this, R.style.AlertDialogStyle)
+                        .setTitle(item.hint)
+                        .setMessage(content)
+                        .setPositiveButton(R.string.ok, null)
+                        .setNeutralButton(R.string.copy_action, null)
+                        .show()
+                        .apply {
+                            findViewById<TextView>(android.R.id.message)?.setTextIsSelectable(true)
+
+                            getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+                                context.clipboardManager.text = content
+                                toastManager.short(R.string.account_id_has_been_copied)
+                            }
+                        }
+            }
+        }
     }
 
     private fun displayCounterparty(cause: BalanceChangeCause.Payment,
@@ -65,7 +93,8 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                         id = COUNTERPARTY_ACCOUNT_ID_ITEM_ID,
                         text = counterpartyAccount,
                         hint = getString(accountIdHintStringRes),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_account)
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_account),
+                        singleLineText = true
                 )
         )
 
