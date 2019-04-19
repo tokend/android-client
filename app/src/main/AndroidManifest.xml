@@ -91,7 +91,7 @@
             android:name=".features.withdraw.WithdrawalConfirmationActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/withdrawal_confirmation_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.assets.AssetDetailsActivity"
             android:configChanges="orientation|screenSize"
