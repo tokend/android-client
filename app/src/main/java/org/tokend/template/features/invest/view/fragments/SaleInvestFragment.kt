@@ -357,7 +357,7 @@ class SaleInvestFragment : SaleFragment() {
                                             INVESTMENT_REQUEST,
                                             offer = offer,
                                             offerToCancel = existingOffers?.get(investAsset),
-                                            assetName = sale.baseAssetCode,
+                                            saleName = sale.name,
                                             displayToReceive =
                                             sale.type.value == SaleType.BASIC_SALE.value
                                     )

@@ -2,17 +2,20 @@ package org.tokend.template.features.offers
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_details.*
+import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.features.offers.logic.ConfirmOfferUseCase
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.InfoCard
+import org.tokend.template.view.details.DetailsItem
+import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.util.ProgressDialogFactory
 import java.math.BigDecimal
 
@@ -20,13 +23,15 @@ open class OfferConfirmationActivity : BaseActivity() {
     protected lateinit var offer: OfferRecord
     protected var prevOffer: OfferRecord? = null
 
+    protected val adapter = DetailsItemsAdapter()
+
     protected val payAsset: String
         get() =
             if (offer.isBuy)
                 offer.quoteAssetCode
             else
                 offer.baseAssetCode
-    protected val toPayAmount: BigDecimal
+    protected val toPayTotal: BigDecimal
         get() =
             if (offer.isBuy)
                 offer.quoteAmount + offer.fee
@@ -39,7 +44,7 @@ open class OfferConfirmationActivity : BaseActivity() {
                 offer.quoteAssetCode
             else
                 offer.baseAssetCode
-    protected val toReceiveAmount: BigDecimal
+    protected val toReceiveTotal: BigDecimal
         get() =
             (if (!offer.isBuy)
                 offer.quoteAmount - offer.fee
@@ -50,9 +55,12 @@ open class OfferConfirmationActivity : BaseActivity() {
         get() = offer.baseAmount.signum() == 0 && prevOffer != null
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_details)
+        setContentView(R.layout.activity_details_list)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        details_list.layoutManager = LinearLayoutManager(this)
+        details_list.adapter = adapter
 
         initData()
 
@@ -68,61 +76,85 @@ open class OfferConfirmationActivity : BaseActivity() {
 
     // region Display
     protected open fun displayDetails() {
-        cards_layout.removeAllViews()
-
+        displayPrice()
         displayToPay()
         displayToReceive()
     }
 
-    protected open fun displayToPay() {
-        val minDecimals = amountFormatter.getDecimalDigitsCount(payAsset)
+    protected open fun displayPrice() {
+        adapter.addData(
+                DetailsItem(
+                        text = getString(R.string.template_price_one_equals, offer.baseAssetCode,
+                                amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode)
+                        ),
+                        hint = getString(R.string.price),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_price)
+                )
+        )
+    }
 
-        val payBaseAmount =
+    protected open fun displayToPay() {
+        val payAmount =
                 if (offer.isBuy)
                     offer.quoteAmount
                 else
                     offer.baseAmount
 
-        val card = InfoCard(cards_layout)
-                .setHeading(R.string.to_pay,
-                        amountFormatter.formatAssetAmount(toPayAmount, payAsset, minDecimals))
+        adapter.addData(
+                DetailsItem(
+                        header = getString(R.string.to_pay),
+                        text = amountFormatter.formatAssetAmount(payAmount, payAsset),
+                        hint = getString(R.string.amount),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
+                )
+        )
 
-        if (offer.isBuy) {
-            card.addRow(R.string.amount,
-                    "+${amountFormatter.formatAssetAmount(payBaseAmount, payAsset, minDecimals)}")
-                    .addRow(R.string.tx_fee,
-                            "+${amountFormatter.formatAssetAmount(offer.fee, payAsset, minDecimals)}")
-        } else {
-            card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAssetCode,
-                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode))
+        if (offer.isBuy && offer.fee.signum() > 0) {
+            adapter.addData(
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(offer.fee, payAsset),
+                            hint = getString(R.string.tx_fee)
+                    ),
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(
+                                    toPayTotal,
+                                    payAsset
+                            ),
+                            hint = getString(R.string.total_label)
+                    )
             )
         }
     }
 
     protected open fun displayToReceive() {
-        val minDecimals = amountFormatter.getDecimalDigitsCount(receiveAsset)
-
-        val receiveBaseAmount =
+        val receiveAmount =
                 if (!offer.isBuy)
                     offer.quoteAmount
                 else
                     offer.baseAmount
 
-        val card = InfoCard(cards_layout)
-                .setHeading(R.string.to_receive,
-                        amountFormatter.formatAssetAmount(toReceiveAmount, receiveAsset, minDecimals))
+        adapter.addData(
+                DetailsItem(
+                        header = getString(R.string.to_receive),
+                        text = amountFormatter.formatAssetAmount(receiveAmount, receiveAsset),
+                        hint = getString(R.string.amount),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
+                )
+        )
 
-        if (!offer.isBuy) {
-            card
-                    .addRow(R.string.amount,
-                            "+${amountFormatter.formatAssetAmount(receiveBaseAmount, receiveAsset,
-                                    minDecimals)}")
-                    .addRow(R.string.tx_fee,
-                            "-${amountFormatter.formatAssetAmount(offer.fee, receiveAsset,
-                                    minDecimals)}")
-        } else {
-            card.addRow(R.string.price, getString(R.string.template_price_one_equals, offer.baseAssetCode,
-                    amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode))
+        if (!offer.isBuy && offer.fee.signum() > 0) {
+            adapter.addData(
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(offer.fee, receiveAsset),
+                            hint = getString(R.string.tx_fee)
+                    ),
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(
+                                    toReceiveTotal,
+                                    payAsset
+                            ),
+                            hint = getString(R.string.total_label)
+                    )
             )
         }
     }

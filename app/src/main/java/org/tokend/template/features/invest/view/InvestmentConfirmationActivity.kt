@@ -1,25 +1,23 @@
 package org.tokend.template.features.invest.view
 
-import kotlinx.android.synthetic.main.activity_details.*
+import android.support.v4.content.ContextCompat
 import org.tokend.template.R
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.features.offers.OfferConfirmationActivity
-import org.tokend.template.view.InfoCard
+import org.tokend.template.view.details.DetailsItem
 
 class InvestmentConfirmationActivity : OfferConfirmationActivity() {
-    private var assetName: String? = null
+    private var saleName: String? = null
     private var displayToReceive = false
 
     override fun initData() {
         super.initData()
-        assetName = intent.getNullableStringExtra(ASSET_NAME_EXTRA)
+        saleName = intent.getNullableStringExtra(SALE_NAME_EXTRA)
         displayToReceive = intent.getBooleanExtra(DISPLAY_TO_RECEIVE, false)
     }
 
     override fun displayDetails() {
-        cards_layout.removeAllViews()
-
-        displayToken()
+        displaySale()
         displayToPay()
 
         if (displayToReceive) {
@@ -29,10 +27,16 @@ class InvestmentConfirmationActivity : OfferConfirmationActivity() {
         displayTitle()
     }
 
-    private fun displayToken() {
-        InfoCard(cards_layout)
-                .setHeading(R.string.sale_asset, null)
-                .addRow(assetName, offer.baseAssetCode)
+    private fun displaySale() {
+        val name = saleName ?: return
+
+        adapter.addData(
+                DetailsItem(
+                        text = name,
+                        hint = getString(R.string.sale_title),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_invest)
+                )
+        )
     }
 
     private fun displayTitle() {
@@ -58,7 +62,7 @@ class InvestmentConfirmationActivity : OfferConfirmationActivity() {
     }
 
     companion object {
-        const val ASSET_NAME_EXTRA = "asset_name"
+        const val SALE_NAME_EXTRA = "sale_name"
         const val DISPLAY_TO_RECEIVE = "display_to_receive"
     }
 }

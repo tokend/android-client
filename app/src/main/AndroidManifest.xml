@@ -105,12 +105,12 @@
             android:name=".features.offers.OfferConfirmationActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/offer_confirmation_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.invest.view.InvestmentConfirmationActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/investment_confirmation_title"
-            android:theme="@style/AppTheme.CardsBackground" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".features.offers.OffersActivity"
             android:configChanges="orientation|screenSize"
