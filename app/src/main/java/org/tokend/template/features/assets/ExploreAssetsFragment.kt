@@ -223,12 +223,12 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         if (!item.balanceExists) {
             createBalanceWithConfirmation(item.code)
         } else {
-            Navigator.openWallet(this, 0, item.code)
+            Navigator(this).openWallet(0, item.code)
         }
     }
 
     private fun openAssetDetails(view: View?, item: AssetListItem) {
-        Navigator.openAssetDetails(this, CREATE_REQUEST, item.source,
+        Navigator(this).openAssetDetails(CREATE_REQUEST, item.source,
                 cardView = view
         )
     }

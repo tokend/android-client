@@ -220,7 +220,7 @@ class AuthenticatorSignInActivity : BaseActivity() {
                 .subscribeBy(
                         onComplete = {
                             setResult(Activity.RESULT_OK)
-                            Navigator.toMainActivity(this)
+                            Navigator(this).toMainActivity()
                         },
                         onError = {
                             errorHandlerFactory.getDefault().handle(it)

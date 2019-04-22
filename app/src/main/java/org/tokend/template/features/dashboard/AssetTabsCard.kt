@@ -87,7 +87,7 @@ class AssetTabsCard(private val activity: Activity,
 
     fun initViewMoreButton(fragment: Fragment) {
         view.view_more_button.onClick {
-            Navigator.openWallet(fragment, SEND_REQUEST, asset)
+            Navigator(fragment).openWallet(SEND_REQUEST, asset)
         }
     }
 
@@ -152,7 +152,7 @@ class AssetTabsCard(private val activity: Activity,
         activityAdapter = BalanceChangesAdapter(amountFormatter, true)
 
         activityAdapter.onItemClick { _, item ->
-            item.source?.let { Navigator.openBalanceChangeDetails(activity, it) }
+            item.source?.let { Navigator(activity).openBalanceChangeDetails(it) }
         }
 
         activityAdapter.registerAdapterDataObserver(

@@ -54,7 +54,16 @@ import org.tokend.template.features.withdraw.model.WithdrawalRequest
  * 'open-' will open related screen as a child.<p>
  * 'to-' will open related screen and finish current.
  */
-object Navigator {
+class Navigator(private val source: Activity) {
+
+    constructor(fragment: Fragment) : this(fragment.requireActivity())
+
+    companion object {
+        fun toSignIn(context: Context) {
+            context.startActivity(context.intentFor<SignInActivity>()
+                    .newTask())
+        }
+    }
 
     private fun fadeOut(activity: Activity) {
         ActivityCompat.finishAfterTransition(activity)
@@ -81,46 +90,39 @@ object Navigator {
         }
     }
 
-    fun openSignUp(activity: Activity) {
-        activity.startActivity(activity.intentFor<SignUpActivity>())
+    fun openSignUp() {
+        source.startActivity(source.intentFor<SignUpActivity>())
     }
 
-    fun openRecovery(activity: Activity,
-                     email: String? = null) {
-        activity.startActivity(activity.intentFor<RecoveryActivity>(
+    fun openRecovery(email: String? = null) {
+        source.startActivity(source.intentFor<RecoveryActivity>(
                 RecoveryActivity.EMAIL_EXTRA to email
         ))
     }
 
-    fun toSignIn(context: Context) {
-        context.startActivity(context.intentFor<SignInActivity>()
-                .newTask())
-    }
-
-    fun toSignIn(activity: Activity, finishAffinity: Boolean = false) {
-        activity.startActivity(activity.intentFor<SignInActivity>()
+    fun toSignIn(finishAffinity: Boolean = false) {
+        source.startActivity(source.intentFor<SignInActivity>()
                 .singleTop()
                 .clearTop())
         if (finishAffinity) {
-            activity.setResult(Activity.RESULT_CANCELED, null)
-            ActivityCompat.finishAffinity(activity)
+            source.setResult(Activity.RESULT_CANCELED, null)
+            ActivityCompat.finishAffinity(source)
         } else {
-            activity.finish()
+            source.finish()
         }
     }
 
-    fun toMainActivity(activity: Activity) {
-        activity.startActivity(activity.intentFor<MainActivity>())
-        fadeOut(activity)
+    fun toMainActivity() {
+        source.startActivity(source.intentFor<MainActivity>())
+        fadeOut(source)
     }
 
-    fun openQrShare(activity: Activity,
-                    title: String,
+    fun openQrShare(title: String,
                     data: String,
                     shareLabel: String,
                     shareText: String? = data,
                     topText: String? = null) {
-        activity.startActivity(activity.intentFor<ShareQrActivity>(
+        source.startActivity(source.intentFor<ShareQrActivity>(
                 ShareQrActivity.DATA_EXTRA to data,
                 ShareQrActivity.TITLE_EXTRA to title,
                 ShareQrActivity.SHARE_DIALOG_TEXT_EXTRA to shareLabel,
@@ -129,74 +131,70 @@ object Navigator {
         ))
     }
 
-    fun openRecoverySeedSaving(activity: Activity, requestCode: Int, seed: String) {
-        activity.startActivityForResult(activity.intentFor<RecoverySeedActivity>(
+    fun openRecoverySeedSaving(requestCode: Int, seed: String) {
+        source.startActivityForResult(source.intentFor<RecoverySeedActivity>(
                 RecoverySeedActivity.SEED_EXTRA to seed
         ), requestCode)
     }
 
-    fun openPasswordChange(activity: Activity, requestCode: Int) {
-        activity.startActivityForResult(activity.intentFor<ChangePasswordActivity>(),
+    fun openPasswordChange(requestCode: Int) {
+        source.startActivityForResult(source.intentFor<ChangePasswordActivity>(),
                 requestCode)
     }
 
-    fun openWithdrawalConfirmation(fragment: Fragment, requestCode: Int,
+    fun openWithdrawalConfirmation(requestCode: Int,
                                    withdrawalRequest: WithdrawalRequest) {
-        val confirmationIntent = Intent(fragment.context, WithdrawalConfirmationActivity::class.java)
+        val confirmationIntent = Intent(source, WithdrawalConfirmationActivity::class.java)
                 .putExtra(WithdrawalConfirmationActivity.WITHDRAWAL_REQUEST_EXTRA, withdrawalRequest)
-        fragment.startActivityForResult(confirmationIntent, requestCode)
+        source.startActivityForResult(confirmationIntent, requestCode)
     }
 
-    fun openWallet(fragment: Fragment, requestCode: Int, asset: String) {
-        fragment.startActivityForResult(
-                Intent(fragment.context, SingleFragmentActivity::class.java)
+    fun openWallet(requestCode: Int, asset: String) {
+        source.startActivityForResult(
+                Intent(source, SingleFragmentActivity::class.java)
                         .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
                         .putExtra(SingleFragmentActivity.SCREEN_ID, WalletFragment.ID)
                 , requestCode)
     }
 
-    fun openSend(fragment: Fragment, asset: String,
-                 requestCode: Int) {
-        val toSend = Intent(fragment.context, SingleFragmentActivity::class.java)
+    fun openSend(asset: String, requestCode: Int) {
+        val toSend = Intent(source, SingleFragmentActivity::class.java)
                 .putExtra(SingleFragmentActivity.SCREEN_ID, SendFragment.ID)
                 .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
 
-        fragment.startActivityForResult(toSend, requestCode)
+        source.startActivityForResult(toSend, requestCode)
     }
 
-    fun openAssetDetails(fragment: Fragment, requestCode: Int,
+    fun openAssetDetails(requestCode: Int,
                          asset: AssetRecord,
                          cardView: View? = null) {
-        val transitionBundle = createTransitionBundle(fragment.activity!!,
-                cardView to fragment.activity!!.getString(R.string.transition_asset_card)
+        val transitionBundle = createTransitionBundle(source,
+                cardView to source.getString(R.string.transition_asset_card)
         )
-        fragment.startActivityForResult(fragment.context!!.intentFor<AssetDetailsActivity>(
+        source.startActivityForResult(source.intentFor<AssetDetailsActivity>(
                 AssetDetailsActivity.ASSET_EXTRA to asset
         ), requestCode, transitionBundle)
     }
 
-    fun openPaymentConfirmation(fragment: Fragment, requestCode: Int,
-                                paymentRequest: PaymentRequest) {
-        val confirmationIntent = Intent(fragment.context, PaymentConfirmationActivity::class.java)
+    fun openPaymentConfirmation(requestCode: Int, paymentRequest: PaymentRequest) {
+        val confirmationIntent = Intent(source, PaymentConfirmationActivity::class.java)
                 .putExtra(PaymentConfirmationActivity.PAYMENT_REQUEST_EXTRA, paymentRequest)
-        fragment.startActivityForResult(confirmationIntent, requestCode)
+        source.startActivityForResult(confirmationIntent, requestCode)
     }
 
-    fun openOfferConfirmation(activity: Activity, requestCode: Int,
-                              offer: OfferRecord) {
-        activity.startActivityForResult(activity.intentFor<OfferConfirmationActivity>(
+    fun openOfferConfirmation(requestCode: Int, offer: OfferRecord) {
+        source.startActivityForResult(source.intentFor<OfferConfirmationActivity>(
                 OfferConfirmationActivity.OFFER_EXTRA to offer
         ), requestCode)
     }
 
-    fun openInvestmentConfirmation(fragment: Fragment,
-                                   requestCode: Int,
+    fun openInvestmentConfirmation(requestCode: Int,
                                    offer: OfferRecord,
                                    offerToCancel: OfferRecord? = null,
                                    displayToReceive: Boolean = true,
                                    saleName: String? = null) {
-        fragment.startActivityForResult(
-                Intent(fragment.requireContext(), InvestmentConfirmationActivity::class.java)
+        source.startActivityForResult(
+                Intent(source, InvestmentConfirmationActivity::class.java)
                         .putExtra(OfferConfirmationActivity.OFFER_EXTRA, offer)
                         .putExtra(OfferConfirmationActivity.OFFER_TO_CANCEL_EXTRA, offerToCancel)
                         .putExtra(InvestmentConfirmationActivity.DISPLAY_TO_RECEIVE, displayToReceive)
@@ -206,28 +204,26 @@ object Navigator {
         )
     }
 
-    fun openPendingOffers(fragment: Fragment, requestCode: Int = 0,
-                          onlyPrimary: Boolean = false) {
-        fragment.startActivityForResult(fragment.context?.intentFor<OffersActivity>(
+    fun openPendingOffers(requestCode: Int = 0, onlyPrimary: Boolean = false) {
+        source.startActivityForResult(source.intentFor<OffersActivity>(
                 OffersActivity.ONLY_PRIMARY_EXTRA to onlyPrimary
         ), requestCode)
     }
 
-    fun openSale(fragment: Fragment, requestCode: Int, sale: SaleRecord) {
-        fragment.startActivityForResult(fragment.requireContext().intentFor<SaleActivity>(
+    fun openSale(requestCode: Int, sale: SaleRecord) {
+        source.startActivityForResult(source.intentFor<SaleActivity>(
                 SaleActivity.SALE_EXTRA to sale
         ), requestCode)
     }
 
-    fun openAuthenticatorSignIn(activity: Activity, requestCode: Int) {
-        activity.startActivityForResult(
-                activity.intentFor<AuthenticatorSignInActivity>(),
+    fun openAuthenticatorSignIn(requestCode: Int) {
+        source.startActivityForResult(
+                source.intentFor<AuthenticatorSignInActivity>(),
                 requestCode
         )
     }
 
-    fun openBalanceChangeDetails(activity: Activity,
-                                 change: BalanceChange) {
+    fun openBalanceChangeDetails(change: BalanceChange) {
         val activityClass = when (change.cause) {
             is BalanceChangeCause.AmlAlert -> AmlAlertDetailsActivity::class.java
             is BalanceChangeCause.Investment -> InvestmentDetailsActivity::class.java
@@ -236,10 +232,7 @@ object Navigator {
             is BalanceChangeCause.Payment -> PaymentDetailsActivity::class.java
             is BalanceChangeCause.WithdrawalRequest -> WithdrawalDetailsActivity::class.java
             is BalanceChangeCause.Offer -> {
-                openPendingOfferDetails(
-                        activity,
-                        OfferRecord.fromBalanceChange(change)
-                )
+                openPendingOfferDetails(OfferRecord.fromBalanceChange(change))
                 return
             }
             is BalanceChangeCause.SaleCancellation -> SaleCancellationDetailsActivity::class.java
@@ -248,15 +241,14 @@ object Navigator {
             is BalanceChangeCause.Unknown -> UnknownDetailsActivity::class.java
         }
 
-        activity.startActivity(
-                Intent(activity, activityClass).apply {
+        source.startActivity(
+                Intent(source, activityClass).apply {
                     putExtra(BalanceChangeDetailsActivity.BALANCE_CHANGE_EXTRA, change)
                 }
         )
     }
 
-    fun openPendingOfferDetails(activity: Activity,
-                                offer: OfferRecord,
+    fun openPendingOfferDetails(offer: OfferRecord,
                                 requestCode: Int = 0) {
         val activityClass =
                 if (offer.isInvestment)
@@ -264,50 +256,49 @@ object Navigator {
                 else
                     PendingOfferDetailsActivity::class.java
 
-        activity.startActivityForResult(
-                Intent(activity, activityClass).apply {
+        source.startActivityForResult(
+                Intent(source, activityClass).apply {
                     putExtra(PendingOfferDetailsActivity.OFFER_EXTRA, offer)
                 },
                 requestCode
         )
     }
 
-    fun openTrade(fragment: Fragment,
-                  assetPair: AssetPairRecord) {
-        fragment.startActivity(
-                Intent(fragment.requireContext(), TradeActivity::class.java).apply {
+    fun openTrade(assetPair: AssetPairRecord) {
+        source.startActivity(
+                Intent(source, TradeActivity::class.java).apply {
                     putExtra(TradeActivity.ASSET_PAIR_EXTRA, assetPair)
                 }
         )
     }
 
-    fun openCreateOffer(fragment: Fragment, offer: OfferRecord) {
-        fragment.startActivity(
-                Intent(fragment.requireContext(), CreateOfferActivity::class.java).apply {
+    fun openCreateOffer(offer: OfferRecord) {
+        source.startActivity(
+                Intent(source, CreateOfferActivity::class.java).apply {
                     putExtra(CreateOfferActivity.EXTRA_OFFER, offer)
                 }
         )
     }
 
-    fun openLimits(fragment: Fragment) {
-        fragment.startActivity(Intent(fragment.requireContext(), LimitsActivity::class.java))
+    fun openLimits() {
+        source.startActivity(Intent(source, LimitsActivity::class.java))
     }
 
-    fun openFees(fragment: Fragment) {
-        fragment.startActivity(Intent(fragment.requireContext(), FeesActivity::class.java))
+    fun openFees() {
+        source.startActivity(Intent(source, FeesActivity::class.java))
     }
 
-    fun openDeposit(fragment: Fragment, requestCode: Int, asset: String) {
-        fragment.startActivityForResult(
-                Intent(fragment.context, SingleFragmentActivity::class.java)
+    fun openDeposit(requestCode: Int, asset: String) {
+        source.startActivityForResult(
+                Intent(source, SingleFragmentActivity::class.java)
                         .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
                         .putExtra(SingleFragmentActivity.SCREEN_ID, DepositFragment.ID)
                 , requestCode)
     }
 
-    fun openWithdraw(fragment: Fragment, requestCode: Int, asset: String) {
-        fragment.startActivityForResult(
-                Intent(fragment.context, SingleFragmentActivity::class.java)
+    fun openWithdraw(requestCode: Int, asset: String) {
+        source.startActivityForResult(
+                Intent(source, SingleFragmentActivity::class.java)
                         .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
                         .putExtra(SingleFragmentActivity.SCREEN_ID, WithdrawFragment.ID)
                 , requestCode)

@@ -60,7 +60,7 @@ class OffersFragment : BaseFragment() {
         adapter = PendingOffersAdapter(amountFormatter, false)
         adapter.onItemClick { _, item ->
             item.source?.also {
-                Navigator.openPendingOfferDetails(requireActivity(), it)
+                Navigator(this).openPendingOfferDetails(it)
             }
         }
 

@@ -353,7 +353,7 @@ class SaleInvestFragment : SaleFragment() {
                         }
                         .subscribeBy(
                                 onSuccess = { offer ->
-                                    Navigator.openInvestmentConfirmation(this,
+                                    Navigator(this).openInvestmentConfirmation(
                                             INVESTMENT_REQUEST,
                                             offer = offer,
                                             offerToCancel = existingOffers?.get(investAsset),
