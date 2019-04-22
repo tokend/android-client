@@ -3,27 +3,32 @@ package org.tokend.template.features.send
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SimpleItemAnimator
+import android.support.v7.widget.SwitchCompat
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.CompoundButton
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_details.*
+import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.send.logic.ConfirmPaymentRequestUseCase
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.InfoCard
+import org.tokend.template.view.details.DetailsItem
+import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.util.ProgressDialogFactory
 import java.math.BigDecimal
 
 class PaymentConfirmationActivity : BaseActivity() {
     private lateinit var request: PaymentRequest
-    private var switchClicked = false
+    private var switchEverChecked = false
+    private val adapter = DetailsItemsAdapter()
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_details)
+        setContentView(R.layout.activity_details_list)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -31,98 +36,161 @@ class PaymentConfirmationActivity : BaseActivity() {
                 (intent.getSerializableExtra(PAYMENT_REQUEST_EXTRA) as? PaymentRequest)
                         ?: return
 
+        details_list.layoutManager = LinearLayoutManager(this)
+        details_list.adapter = adapter
+        (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+
         displayDetails()
     }
 
     // region Display
     private fun displayDetails() {
-        cards_layout.removeAllViews()
-
         displayRecipient()
         displaySubjectIfNeeded()
-        displayAmount()
+        displayAmounts()
     }
 
     private fun displayRecipient() {
-        InfoCard(cards_layout)
-                .setHeading(R.string.tx_recipient, null)
-                .addRow(request.recipientNickname, null)
+        adapter.addData(
+                DetailsItem(
+                        text = request.recipientNickname,
+                        hint = getString(R.string.tx_recipient),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_account)
+                )
+        )
     }
 
     private fun displaySubjectIfNeeded() {
-        request.paymentSubject?.let { subject ->
-            InfoCard(cards_layout)
-                    .setHeading(R.string.payment_description, null)
-                    .addRow(subject, null)
+        val subject = request.paymentSubject
+                ?: return
+
+        adapter.addData(
+                DetailsItem(
+                        text = subject,
+                        hint = getString(R.string.payment_description),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_label_outline)
+                )
+        )
+    }
+
+    private fun displayAmounts() {
+        displayToPay()
+        displayToReceive()
+    }
+
+    private fun displayToPay() {
+        adapter.addOrUpdateItem(
+                DetailsItem(
+                        id = TO_PAY_AMOUNT_ITEM_ID,
+                        header = getString(R.string.to_pay),
+                        text = amountFormatter.formatAssetAmount(request.amount, request.asset),
+                        hint = getString(R.string.amount),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
+                )
+        )
+
+        val totalFee =
+                if (request.senderPaysRecipientFee)
+                    request.senderFee.total + request.recipientFee.total
+                else
+                    request.senderFee.total
+
+        val total = request.amount + totalFee
+
+        if (totalFee.signum() > 0) {
+            adapter.addOrUpdateItem(
+                    DetailsItem(
+                            id = SENDER_FEE_ITEM_ID,
+                            text = amountFormatter.formatAssetAmount(totalFee, request.asset),
+                            hint = getString(R.string.tx_fee)
+                    )
+            )
+
+            adapter.addOrUpdateItem(
+                    DetailsItem(
+                            id = SENDER_TOTAL_ITEM_ID,
+                            text = amountFormatter.formatAssetAmount(
+                                    total,
+                                    request.asset
+                            ),
+                            hint = getString(R.string.total_label)
+                    )
+            )
         }
     }
 
-    private fun displayAmount() {
-        val minDecimals = amountFormatter.getDecimalDigitsCount(request.asset)
-
-        val senderFeeTotal: BigDecimal
-        val senderFeeFixed: BigDecimal
-        val senderFeePercent: BigDecimal
-
-        val recipientFeeTotal: BigDecimal
-        val recipientFeeFixed: BigDecimal
-        val recipientFeePercent: BigDecimal
-
-        if (request.senderPaysRecipientFee) {
-            recipientFeeTotal = BigDecimal.ZERO
-            recipientFeeFixed = BigDecimal.ZERO
-            recipientFeePercent = BigDecimal.ZERO
-            senderFeeTotal = request.senderFee.total + request.recipientFee.total
-            senderFeeFixed = request.senderFee.fixed + request.recipientFee.fixed
-            senderFeePercent = request.senderFee.percent + request.recipientFee.percent
-        } else {
-            recipientFeeTotal = request.recipientFee.total
-            recipientFeeFixed = request.recipientFee.fixed
-            recipientFeePercent = request.recipientFee.percent
-            senderFeeTotal = request.senderFee.total
-            senderFeeFixed = request.senderFee.fixed
-            senderFeePercent = request.senderFee.percent
-        }
-
-        val toPay = request.amount + senderFeeTotal
-        InfoCard(cards_layout)
-                .setHeading(R.string.to_pay,
-                        amountFormatter.formatAssetAmount(toPay, request.asset, minDecimals))
-                .addRow(R.string.amount,
-                        "+${amountFormatter.formatAssetAmount(request.amount,
-                                request.asset, minDecimals)}")
-                .addRow(R.string.fixed_fee,
-                        "+${amountFormatter.formatAssetAmount(senderFeeFixed,
-                                request.asset, minDecimals)}")
-                .addRow(R.string.percent_fee,
-                        "+${amountFormatter.formatAssetAmount(senderFeePercent,
-                                request.asset, minDecimals)}")
-
-
-        val toReceive = request.amount - recipientFeeTotal
-        InfoCard(cards_layout)
-                .setHeading(R.string.to_receive,
-                        amountFormatter.formatAssetAmount(toReceive,
-                                request.asset, minDecimals))
-                .addRow(R.string.amount,
-                        "+${amountFormatter.formatAssetAmount(request.amount,
-                                request.asset, minDecimals)}")
-                .addRow(R.string.fixed_fee,
-                        "-${amountFormatter.formatAssetAmount(recipientFeeFixed,
-                                request.asset, minDecimals)}")
-                .addRow(R.string.percent_fee,
-                        "-${amountFormatter.formatAssetAmount(recipientFeePercent,
-                                request.asset, minDecimals)}")
-                .addSwitcherRow(R.string.pay_recipient_fee_action,
-                        CompoundButton.OnCheckedChangeListener { _, isChecked ->
-                            switchClicked = true
-                            request.senderPaysRecipientFee = isChecked
-                            displayDetails()
-                        },
-                        request.senderPaysRecipientFee,
-                        switchClicked
+    private fun displayToReceive() {
+        adapter.addOrUpdateItem(
+                DetailsItem(
+                        id = TO_RECEIVE_AMOUNT_ITEM_ID,
+                        header = getString(R.string.to_receive),
+                        text = amountFormatter.formatAssetAmount(request.amount, request.asset),
+                        hint = getString(R.string.amount),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
                 )
+        )
 
+        val totalFee = request.recipientFee.total
+
+        val totalActualFee =
+                if (request.senderPaysRecipientFee)
+                    BigDecimal.ZERO
+                else
+                    totalFee
+
+        val total = (request.amount - totalActualFee).takeIf { it.signum() >= 0 } ?: BigDecimal.ZERO
+
+        if (totalFee.signum() > 0) {
+            adapter.addOrUpdateItem(
+                    DetailsItem(
+                            id = RECIPIENT_FEE_ITEM_ID,
+                            text = amountFormatter.formatAssetAmount(totalFee, request.asset),
+                            hint = getString(R.string.tx_fee),
+                            isEnabled = !request.senderPaysRecipientFee
+                    )
+            )
+
+            adapter.addOrUpdateItem(
+                    DetailsItem(
+                            id = RECIPIENT_TOTAL_ITEM_ID,
+                            text = amountFormatter.formatAssetAmount(
+                                    total,
+                                    request.asset
+                            ),
+                            hint = getString(R.string.total_label)
+                    )
+            )
+
+            val payRecipientFeeSwitch = SwitchCompat(this)
+                    .apply {
+                        val setListener = {
+                            setOnCheckedChangeListener { _, isChecked ->
+                                switchEverChecked = true
+                                request.senderPaysRecipientFee = isChecked
+                                displayAmounts()
+                            }
+                        }
+
+                        if (switchEverChecked) {
+                            isChecked = !request.senderPaysRecipientFee
+
+                            post {
+                                isChecked = request.senderPaysRecipientFee
+                                setListener()
+                            }
+                        } else {
+                            setListener()
+                        }
+                    }
+
+            adapter.addOrUpdateItem(
+                    DetailsItem(
+                            id = PAY_RECIPIENT_FEE_ITEM_ID,
+                            text = getString(R.string.pay_recipient_fee_action),
+                            extraView = payRecipientFeeSwitch
+                    )
+            )
+        }
     }
     // endregion
 
@@ -175,5 +243,12 @@ class PaymentConfirmationActivity : BaseActivity() {
 
     companion object {
         const val PAYMENT_REQUEST_EXTRA = "payment_request"
+        private val SENDER_FEE_ITEM_ID = "sender_fee".hashCode().toLong()
+        private val RECIPIENT_FEE_ITEM_ID = "recipient_fee".hashCode().toLong()
+        private val SENDER_TOTAL_ITEM_ID = "sender_total".hashCode().toLong()
+        private val RECIPIENT_TOTAL_ITEM_ID = "recipient_total".hashCode().toLong()
+        private val TO_PAY_AMOUNT_ITEM_ID = "to_pay_amount".hashCode().toLong()
+        private val TO_RECEIVE_AMOUNT_ITEM_ID = "to_receive_amount".hashCode().toLong()
+        private val PAY_RECIPIENT_FEE_ITEM_ID = "pay_recipient_fee".hashCode().toLong()
     }
 }

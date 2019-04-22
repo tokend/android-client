@@ -59,7 +59,7 @@
     <string name="payment_description">Description</string>
     <string name="withdrawal_details_title">Withdrawal request details</string>
     <string name="amount">Amount</string>
-    <string name="template_withdrawal_fee_warning">Received amount may be lower due to %1$s network fees</string>
+    <string name="withdrawal_fee_warning">Received amount may be lower because of destination network fees</string>
     <string name="investment_details_title">Investment details</string>
     <string name="offer_match_details_title">Offer match details</string>
     <string name="sign_out_confirmation">Are you sure want to sign out?</string>
@@ -292,6 +292,7 @@
     <string name="invest_unavailable_sale_ended">Sale is ended, investing is not available</string>
     <string name="invest_unavailable">Investing is not available</string>
     <string name="sale_summary_title">Sale summary</string>
+    <string name="sale_title">Sale</string>
 
     <string name="tokend_network_hint">Network</string>
     <string name="not_specified">Not specified</string>

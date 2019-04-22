@@ -1,6 +1,7 @@
 package org.tokend.template.view.details
 
 import android.graphics.drawable.Drawable
+import android.view.View
 
 /**
  * Preference-like item to display entity details
@@ -14,6 +15,8 @@ class DetailsItem(
          */
         val header: String? = null,
         val singleLineText: Boolean = false,
+        val isEnabled: Boolean = true,
+        val extraView: View? = null,
         val id: Long = 0L
 ) {
     val hasHeader: Boolean = header != null

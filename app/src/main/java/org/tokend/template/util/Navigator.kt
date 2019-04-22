@@ -194,13 +194,13 @@ object Navigator {
                                    offer: OfferRecord,
                                    offerToCancel: OfferRecord? = null,
                                    displayToReceive: Boolean = true,
-                                   assetName: String? = null) {
+                                   saleName: String? = null) {
         fragment.startActivityForResult(
                 Intent(fragment.requireContext(), InvestmentConfirmationActivity::class.java)
                         .putExtra(OfferConfirmationActivity.OFFER_EXTRA, offer)
                         .putExtra(OfferConfirmationActivity.OFFER_TO_CANCEL_EXTRA, offerToCancel)
                         .putExtra(InvestmentConfirmationActivity.DISPLAY_TO_RECEIVE, displayToReceive)
-                        .putExtra(InvestmentConfirmationActivity.ASSET_NAME_EXTRA, assetName
+                        .putExtra(InvestmentConfirmationActivity.SALE_NAME_EXTRA, saleName
                         ),
                 requestCode
         )
