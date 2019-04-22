@@ -150,7 +150,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
             onClick {
                 val accountId = walletInfoProvider.getWalletInfo()?.accountId
                         ?: getString(R.string.error_try_again)
-                Navigator(this@MainActivity).openQrShare(
+                Navigator.from(this@MainActivity).openQrShare(
                         data = accountId,
                         title = getString(R.string.account_id_title),
                         shareLabel = getString(R.string.share_account_id)

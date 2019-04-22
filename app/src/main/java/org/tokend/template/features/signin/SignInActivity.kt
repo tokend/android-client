@@ -147,11 +147,11 @@ class SignInActivity : BaseActivity() {
         }
 
         sign_up_button.onClick {
-            Navigator(this).openSignUp()
+            Navigator.from(this).openSignUp()
         }
 
         recovery_button.onClick {
-            Navigator(this).openRecovery(email_edit_text.text.toString())
+            Navigator.from(this).openRecovery(email_edit_text.text.toString())
         }
 
         if (BuildConfig.ENABLE_AUTHENTICATOR_AUTH) {
@@ -192,7 +192,7 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun openAuthenticatorSignIn() {
-        Navigator(this).openAuthenticatorSignIn(SIGN_IN_WITH_AUTHENTICATOR_REQUEST)
+        Navigator.from(this).openAuthenticatorSignIn(SIGN_IN_WITH_AUTHENTICATOR_REQUEST)
     }
 
     private fun updateSignInAvailability() {
@@ -253,7 +253,7 @@ class SignInActivity : BaseActivity() {
                 .subscribeBy(
                         onComplete = {
                             canSignIn = false
-                            Navigator(this).toMainActivity()
+                            Navigator.from(this).toMainActivity()
                         },
                         onError = {
                             it.printStackTrace()

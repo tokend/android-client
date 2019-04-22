@@ -54,14 +54,59 @@ import org.tokend.template.features.withdraw.model.WithdrawalRequest
  * 'open-' will open related screen as a child.<p>
  * 'to-' will open related screen and finish current.
  */
-class Navigator(private val source: Activity) {
-
-    constructor(fragment: Fragment) : this(fragment.requireActivity())
+class Navigator {
+    private var activity: Activity? = null
+    private var fragment: Fragment? = null
+    private var context: Context? = null
 
     companion object {
         fun toSignIn(context: Context) {
             context.startActivity(context.intentFor<SignInActivity>()
                     .newTask())
+        }
+
+        fun from(activity: Activity): Navigator {
+            val navigator = Navigator()
+            navigator.activity = activity
+            navigator.context = activity
+            return navigator
+        }
+
+        fun from(fragment: Fragment): Navigator {
+            val navigator = Navigator()
+            navigator.fragment = fragment
+            navigator.context = fragment.requireContext()
+            return navigator
+        }
+
+        fun from(context: Context): Navigator {
+            val navigator = Navigator()
+            navigator.context = context
+            return navigator
+        }
+    }
+
+    private fun performIntent(intent: Intent?, requestCode: Int? = null, bundle: Bundle? = null) {
+        if (intent != null) {
+            activity?.let {
+                if (requestCode != null) {
+                    it.startActivityForResult(intent, requestCode, bundle ?: Bundle.EMPTY)
+                } else {
+                    it.startActivity(intent, bundle ?: Bundle.EMPTY)
+                }
+                return
+            }
+
+            fragment?.let {
+                if (requestCode != null) {
+                    it.startActivityForResult(intent, requestCode, bundle ?: Bundle.EMPTY)
+                } else {
+                    it.startActivity(intent, bundle ?: Bundle.EMPTY)
+                }
+                return
+            }
+
+            context?.startActivity(intent, bundle ?: Bundle.EMPTY)
         }
     }
 
@@ -71,8 +116,7 @@ class Navigator(private val source: Activity) {
         activity.finish()
     }
 
-    private fun createTransitionBundle(activity: Activity,
-                                       vararg pairs: Pair<View?, String>): Bundle {
+    private fun createTransitionBundle(activity: Activity, vararg pairs: Pair<View?, String>): Bundle {
         val sharedViews = arrayListOf<android.support.v4.util.Pair<View, String>>()
 
         pairs.forEach {
@@ -91,30 +135,36 @@ class Navigator(private val source: Activity) {
     }
 
     fun openSignUp() {
-        source.startActivity(source.intentFor<SignUpActivity>())
+        val intent = context?.intentFor<SignUpActivity>()
+        performIntent(intent)
     }
 
     fun openRecovery(email: String? = null) {
-        source.startActivity(source.intentFor<RecoveryActivity>(
+        val intent = context?.intentFor<RecoveryActivity>(
                 RecoveryActivity.EMAIL_EXTRA to email
-        ))
+        )
+        performIntent(intent)
     }
 
     fun toSignIn(finishAffinity: Boolean = false) {
-        source.startActivity(source.intentFor<SignInActivity>()
-                .singleTop()
-                .clearTop())
-        if (finishAffinity) {
-            source.setResult(Activity.RESULT_CANCELED, null)
-            ActivityCompat.finishAffinity(source)
-        } else {
-            source.finish()
+        val intent = context?.intentFor<SignInActivity>()
+                ?.singleTop()
+                ?.clearTop()
+        performIntent(intent)
+        activity?.let {
+            if (finishAffinity) {
+                it.setResult(Activity.RESULT_CANCELED, null)
+                ActivityCompat.finishAffinity(it)
+            } else {
+                it.finish()
+            }
         }
     }
 
     fun toMainActivity() {
-        source.startActivity(source.intentFor<MainActivity>())
-        fadeOut(source)
+        val intent = context?.intentFor<MainActivity>()
+        performIntent(intent)
+        activity?.let { fadeOut(it) }
     }
 
     fun openQrShare(title: String,
@@ -122,70 +172,83 @@ class Navigator(private val source: Activity) {
                     shareLabel: String,
                     shareText: String? = data,
                     topText: String? = null) {
-        source.startActivity(source.intentFor<ShareQrActivity>(
+
+        val intent = context?.intentFor<ShareQrActivity>(
                 ShareQrActivity.DATA_EXTRA to data,
                 ShareQrActivity.TITLE_EXTRA to title,
                 ShareQrActivity.SHARE_DIALOG_TEXT_EXTRA to shareLabel,
                 ShareQrActivity.TOP_TEXT_EXTRA to topText,
                 ShareQrActivity.SHARE_TEXT_EXTRA to shareText
-        ))
+        )
+        performIntent(intent)
     }
 
     fun openRecoverySeedSaving(requestCode: Int, seed: String) {
-        source.startActivityForResult(source.intentFor<RecoverySeedActivity>(
+        val intent = context?.intentFor<RecoverySeedActivity>(
                 RecoverySeedActivity.SEED_EXTRA to seed
-        ), requestCode)
+        )
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openPasswordChange(requestCode: Int) {
-        source.startActivityForResult(source.intentFor<ChangePasswordActivity>(),
-                requestCode)
+        val intent = context?.intentFor<ChangePasswordActivity>()
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openWithdrawalConfirmation(requestCode: Int,
                                    withdrawalRequest: WithdrawalRequest) {
-        val confirmationIntent = Intent(source, WithdrawalConfirmationActivity::class.java)
-                .putExtra(WithdrawalConfirmationActivity.WITHDRAWAL_REQUEST_EXTRA, withdrawalRequest)
-        source.startActivityForResult(confirmationIntent, requestCode)
+        val intent = context?.intentFor<WithdrawalConfirmationActivity>(
+                WithdrawalConfirmationActivity.WITHDRAWAL_REQUEST_EXTRA to withdrawalRequest
+        )
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openWallet(requestCode: Int, asset: String) {
-        source.startActivityForResult(
-                Intent(source, SingleFragmentActivity::class.java)
-                        .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
-                        .putExtra(SingleFragmentActivity.SCREEN_ID, WalletFragment.ID)
-                , requestCode)
+        val intent = context?.intentFor<SingleFragmentActivity>(
+                SingleFragmentActivity.ASSET_EXTRA to asset,
+                SingleFragmentActivity.SCREEN_ID to WalletFragment.ID
+        )
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openSend(asset: String, requestCode: Int) {
-        val toSend = Intent(source, SingleFragmentActivity::class.java)
-                .putExtra(SingleFragmentActivity.SCREEN_ID, SendFragment.ID)
-                .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
-
-        source.startActivityForResult(toSend, requestCode)
+        val intent = context?.intentFor<SingleFragmentActivity>(
+                SingleFragmentActivity.ASSET_EXTRA to asset,
+                SingleFragmentActivity.SCREEN_ID to SendFragment.ID
+        )
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openAssetDetails(requestCode: Int,
                          asset: AssetRecord,
                          cardView: View? = null) {
-        val transitionBundle = createTransitionBundle(source,
-                cardView to source.getString(R.string.transition_asset_card)
-        )
-        source.startActivityForResult(source.intentFor<AssetDetailsActivity>(
+        val transitionBundle = activity?.let {
+            createTransitionBundle(it,
+                    cardView to it.getString(R.string.transition_asset_card)
+            )
+        } ?: fragment?.let {
+            createTransitionBundle(it.requireActivity(),
+                    cardView to it.getString(R.string.transition_asset_card)
+            )
+        }
+        val intent = context?.intentFor<AssetDetailsActivity>(
                 AssetDetailsActivity.ASSET_EXTRA to asset
-        ), requestCode, transitionBundle)
+        )
+        performIntent(intent, requestCode, transitionBundle)
     }
 
     fun openPaymentConfirmation(requestCode: Int, paymentRequest: PaymentRequest) {
-        val confirmationIntent = Intent(source, PaymentConfirmationActivity::class.java)
-                .putExtra(PaymentConfirmationActivity.PAYMENT_REQUEST_EXTRA, paymentRequest)
-        source.startActivityForResult(confirmationIntent, requestCode)
+        val intent = context?.intentFor<PaymentConfirmationActivity>(
+                PaymentConfirmationActivity.PAYMENT_REQUEST_EXTRA to paymentRequest
+        )
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openOfferConfirmation(requestCode: Int, offer: OfferRecord) {
-        source.startActivityForResult(source.intentFor<OfferConfirmationActivity>(
+        val intent = context?.intentFor<OfferConfirmationActivity>(
                 OfferConfirmationActivity.OFFER_EXTRA to offer
-        ), requestCode)
+        )
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openInvestmentConfirmation(requestCode: Int,
@@ -193,34 +256,32 @@ class Navigator(private val source: Activity) {
                                    offerToCancel: OfferRecord? = null,
                                    displayToReceive: Boolean = true,
                                    saleName: String? = null) {
-        source.startActivityForResult(
-                Intent(source, InvestmentConfirmationActivity::class.java)
-                        .putExtra(OfferConfirmationActivity.OFFER_EXTRA, offer)
-                        .putExtra(OfferConfirmationActivity.OFFER_TO_CANCEL_EXTRA, offerToCancel)
-                        .putExtra(InvestmentConfirmationActivity.DISPLAY_TO_RECEIVE, displayToReceive)
-                        .putExtra(InvestmentConfirmationActivity.SALE_NAME_EXTRA, saleName
-                        ),
-                requestCode
+        val intent = context?.intentFor<InvestmentConfirmationActivity>(
+                OfferConfirmationActivity.OFFER_EXTRA to offer,
+                OfferConfirmationActivity.OFFER_TO_CANCEL_EXTRA to offerToCancel,
+                InvestmentConfirmationActivity.DISPLAY_TO_RECEIVE to displayToReceive,
+                InvestmentConfirmationActivity.SALE_NAME_EXTRA to saleName
         )
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openPendingOffers(requestCode: Int = 0, onlyPrimary: Boolean = false) {
-        source.startActivityForResult(source.intentFor<OffersActivity>(
+        val intent = context?.intentFor<OffersActivity>(
                 OffersActivity.ONLY_PRIMARY_EXTRA to onlyPrimary
-        ), requestCode)
+        )
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openSale(requestCode: Int, sale: SaleRecord) {
-        source.startActivityForResult(source.intentFor<SaleActivity>(
+        val intent = context?.intentFor<SaleActivity>(
                 SaleActivity.SALE_EXTRA to sale
-        ), requestCode)
+        )
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openAuthenticatorSignIn(requestCode: Int) {
-        source.startActivityForResult(
-                source.intentFor<AuthenticatorSignInActivity>(),
-                requestCode
-        )
+        val intent = context?.intentFor<AuthenticatorSignInActivity>()
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openBalanceChangeDetails(change: BalanceChange) {
@@ -241,11 +302,10 @@ class Navigator(private val source: Activity) {
             is BalanceChangeCause.Unknown -> UnknownDetailsActivity::class.java
         }
 
-        source.startActivity(
-                Intent(source, activityClass).apply {
-                    putExtra(BalanceChangeDetailsActivity.BALANCE_CHANGE_EXTRA, change)
-                }
-        )
+        val intent = Intent(context, activityClass).apply {
+            putExtra(BalanceChangeDetailsActivity.BALANCE_CHANGE_EXTRA, change)
+        }
+        performIntent(intent)
     }
 
     fun openPendingOfferDetails(offer: OfferRecord,
@@ -256,51 +316,49 @@ class Navigator(private val source: Activity) {
                 else
                     PendingOfferDetailsActivity::class.java
 
-        source.startActivityForResult(
-                Intent(source, activityClass).apply {
-                    putExtra(PendingOfferDetailsActivity.OFFER_EXTRA, offer)
-                },
-                requestCode
-        )
+        val intent = Intent(context, activityClass).apply {
+            putExtra(PendingOfferDetailsActivity.OFFER_EXTRA, offer)
+        }
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openTrade(assetPair: AssetPairRecord) {
-        source.startActivity(
-                Intent(source, TradeActivity::class.java).apply {
-                    putExtra(TradeActivity.ASSET_PAIR_EXTRA, assetPair)
-                }
+        val intent = context?.intentFor<TradeActivity>(
+                TradeActivity.ASSET_PAIR_EXTRA to assetPair
         )
+        performIntent(intent)
     }
 
     fun openCreateOffer(offer: OfferRecord) {
-        source.startActivity(
-                Intent(source, CreateOfferActivity::class.java).apply {
-                    putExtra(CreateOfferActivity.EXTRA_OFFER, offer)
-                }
+        val intent = context?.intentFor<CreateOfferActivity>(
+                CreateOfferActivity.EXTRA_OFFER to offer
         )
+        performIntent(intent)
     }
 
     fun openLimits() {
-        source.startActivity(Intent(source, LimitsActivity::class.java))
+        val intent = context?.intentFor<LimitsActivity>()
+        performIntent(intent)
     }
 
     fun openFees() {
-        source.startActivity(Intent(source, FeesActivity::class.java))
+        val intent = context?.intentFor<FeesActivity>()
+        performIntent(intent)
     }
 
     fun openDeposit(requestCode: Int, asset: String) {
-        source.startActivityForResult(
-                Intent(source, SingleFragmentActivity::class.java)
-                        .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
-                        .putExtra(SingleFragmentActivity.SCREEN_ID, DepositFragment.ID)
-                , requestCode)
+        val intent = context?.intentFor<SingleFragmentActivity>(
+                SingleFragmentActivity.ASSET_EXTRA to asset,
+                SingleFragmentActivity.SCREEN_ID to DepositFragment.ID
+        )
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openWithdraw(requestCode: Int, asset: String) {
-        source.startActivityForResult(
-                Intent(source, SingleFragmentActivity::class.java)
-                        .putExtra(SingleFragmentActivity.ASSET_EXTRA, asset)
-                        .putExtra(SingleFragmentActivity.SCREEN_ID, WithdrawFragment.ID)
-                , requestCode)
+        val intent = context?.intentFor<SingleFragmentActivity>(
+                SingleFragmentActivity.ASSET_EXTRA to asset,
+                SingleFragmentActivity.SCREEN_ID to WithdrawFragment.ID
+        )
+        performIntent(intent, requestCode = requestCode)
     }
 }

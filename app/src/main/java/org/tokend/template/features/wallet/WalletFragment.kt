@@ -92,7 +92,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initFabButtons() {
-        val navigator = Navigator(this)
+        val navigator = Navigator.from(this)
         send_fab.onClick {
             navigator.openSend(asset, SEND_REQUEST)
             menu_fab.close(false)
@@ -157,7 +157,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     private fun initHistory() {
         adapter = BalanceChangesAdapter(amountFormatter, false)
         adapter.onItemClick { _, item ->
-            item.source?.let { Navigator(this).openBalanceChangeDetails(it) }
+            item.source?.let { Navigator.from(this).openBalanceChangeDetails(it) }
             menu_fab.close(false)
         }
 

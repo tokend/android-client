@@ -356,7 +356,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun openQr() {
-        Navigator(this).openQrShare(
+        Navigator.from(this).openQrShare(
                 title =
                 "${getString(R.string.deposit_title)} ${asset_tab_layout.selectedItem?.text}",
                 data = address_text_view.text.toString(),

@@ -60,7 +60,7 @@ class PendingOffersCard(private val activity: Activity,
 
     fun initViewMoreButton(fragment: Fragment) {
         view.view_more_offers_button.onClick {
-            Navigator(fragment).openPendingOffers()
+            Navigator.from(fragment).openPendingOffers()
         }
     }
 
@@ -97,7 +97,7 @@ class PendingOffersCard(private val activity: Activity,
                 }
         )
         offersAdapter.onItemClick { _, item ->
-            item.source?.also { Navigator(activity).openPendingOfferDetails(it) }
+            item.source?.also { Navigator.from(activity).openPendingOfferDetails(it) }
         }
 
         view.offers_list.layoutManager = LinearLayoutManager(context)
