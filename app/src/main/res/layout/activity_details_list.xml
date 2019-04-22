@@ -5,6 +5,8 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/details_list"
-        style="@style/LimitedMatchParentWidthConstraint" />
+        style="@style/LimitedMatchParentWidthConstraint"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/standard_margin" />
 
 </android.support.constraint.ConstraintLayout>

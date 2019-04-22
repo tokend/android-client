@@ -1,5 +1,6 @@
 package org.tokend.template.view.details.adapter
 
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import org.jetbrains.anko.find
+import org.jetbrains.anko.textColor
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.details.DetailsItem
@@ -18,6 +20,10 @@ class DetailsItemViewHolder(view: View) : BaseViewHolder<DetailsItem>(view) {
     private val iconImageView: ImageView = view.find(android.R.id.icon)
     private val dividerView: View = view.find(R.id.divider_view)
     private val preferenceRoot: ViewGroup = view.find(R.id.preference_root_layout)
+    private val viewFrame: ViewGroup = view.find(android.R.id.widget_frame)
+
+    private val defaultTextColor = ContextCompat.getColor(view.context, R.color.primary_text)
+    private val disabledTextColor = ContextCompat.getColor(view.context, R.color.secondary_text)
 
     init {
         mainTextView.ellipsize = TextUtils.TruncateAt.MIDDLE
@@ -59,6 +65,12 @@ class DetailsItemViewHolder(view: View) : BaseViewHolder<DetailsItem>(view) {
         mainTextView.setSingleLine(item.singleLineText)
         mainTextView.text = item.text
 
+        mainTextView.textColor =
+                if (item.isEnabled)
+                    defaultTextColor
+                else
+                    disabledTextColor
+
         if (item.hint != null) {
             hintTextView.visibility = View.VISIBLE
             hintTextView.text = item.hint
@@ -67,5 +79,10 @@ class DetailsItemViewHolder(view: View) : BaseViewHolder<DetailsItem>(view) {
         }
 
         iconImageView.setImageDrawable(item.icon)
+
+        viewFrame.removeAllViews()
+        if (item.extraView != null) {
+            viewFrame.addView(item.extraView)
+        }
     }
 }
