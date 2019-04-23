@@ -54,17 +54,12 @@ import org.tokend.template.features.withdraw.model.WithdrawalRequest
  * 'open-' will open related screen as a child.<p>
  * 'to-' will open related screen and finish current.
  */
-class Navigator {
+class Navigator private constructor() {
     private var activity: Activity? = null
     private var fragment: Fragment? = null
     private var context: Context? = null
 
     companion object {
-        fun toSignIn(context: Context) {
-            context.startActivity(context.intentFor<SignInActivity>()
-                    .newTask())
-        }
-
         fun from(activity: Activity): Navigator {
             val navigator = Navigator()
             navigator.activity = activity
@@ -159,6 +154,11 @@ class Navigator {
                 it.finish()
             }
         }
+    }
+
+    fun toSignIn() {
+        val intent = context?.intentFor<SignInActivity>()?.newTask()
+        performIntent(intent)
     }
 
     fun toMainActivity() {
