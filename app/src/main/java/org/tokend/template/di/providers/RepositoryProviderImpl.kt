@@ -1,6 +1,7 @@
 package org.tokend.template.di.providers
 
 import android.content.Context
+import android.support.v4.util.LruCache
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
 import org.tokend.template.data.repository.*
@@ -17,9 +18,9 @@ import org.tokend.template.data.repository.orderbook.OrderBookRepository
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.data.repository.tradehistory.TradeHistoryRepository
+import org.tokend.template.extensions.getOrPut
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.send.repository.ContactsRepository
-import java.util.*
 
 /**
  * @param context if not specified then android-related repositories
@@ -53,11 +54,13 @@ class RepositoryProviderImpl(
     private val assetsRepository: AssetsRepository by lazy {
         AssetsRepository(apiProvider, urlConfigProvider, mapper, MemoryOnlyRepositoryCache())
     }
-    private val orderBookRepositories = mutableMapOf<String, OrderBookRepository>()
+    private val orderBookRepositories =
+            LruCache<String, OrderBookRepository>(MAX_SAME_REPOSITORIES_COUNT)
     private val assetPairsRepository: AssetPairsRepository by lazy {
         AssetPairsRepository(apiProvider, urlConfigProvider, mapper, MemoryOnlyRepositoryCache())
     }
-    private val offersRepositories = mutableMapOf<String, OffersRepository>()
+    private val offersRepositories =
+            LruCache<String, OffersRepository>(MAX_SAME_REPOSITORIES_COUNT)
     private val accountRepository: AccountRepository by lazy {
         AccountRepository(apiProvider, walletInfoProvider)
     }
@@ -83,11 +86,14 @@ class RepositoryProviderImpl(
         FeesRepository(apiProvider, walletInfoProvider)
     }
 
-    private val balanceChangesRepositoriesByBalanceId = mutableMapOf<String, BalanceChangesRepository>()
+    private val balanceChangesRepositoriesByBalanceId =
+            LruCache<String, BalanceChangesRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
-    private val tradesRepositoriesByAssetPair = mutableMapOf<String, TradeHistoryRepository>()
+    private val tradesRepositoriesByAssetPair =
+            LruCache<String, TradeHistoryRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
-    private val chartRepositoriesByCode = WeakHashMap<String, AssetChartRepository>()
+    private val chartRepositoriesByCode =
+            LruCache<String, AssetChartRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     override fun balances(): BalancesRepository {
         return balancesRepository
@@ -192,5 +198,9 @@ class RepositoryProviderImpl(
                     apiProvider
             )
         }
+    }
+
+    companion object {
+        private const val MAX_SAME_REPOSITORIES_COUNT = 10
     }
 }
