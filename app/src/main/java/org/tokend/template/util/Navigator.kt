@@ -101,7 +101,7 @@ class Navigator private constructor() {
                 return
             }
 
-            context?.startActivity(intent, bundle ?: Bundle.EMPTY)
+            context?.startActivity(intent.newTask(), bundle ?: Bundle.EMPTY)
         }
     }
 
@@ -154,11 +154,6 @@ class Navigator private constructor() {
                 it.finish()
             }
         }
-    }
-
-    fun toSignIn() {
-        val intent = context?.intentFor<SignInActivity>()?.newTask()
-        performIntent(intent)
     }
 
     fun toMainActivity() {
