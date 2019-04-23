@@ -92,8 +92,9 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initFabButtons() {
+        val navigator = Navigator.from(this)
         send_fab.onClick {
-            Navigator.openSend(this, asset, SEND_REQUEST)
+            navigator.openSend(asset, SEND_REQUEST)
             menu_fab.close(false)
         }
         send_fab.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_send_fab))
@@ -101,7 +102,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         receive_fab.onClick {
             val accountId = walletInfoProvider.getWalletInfo()?.accountId
                     ?: getString(R.string.error_try_again)
-            Navigator.openQrShare(requireActivity(),
+            navigator.openQrShare(
                     data = accountId,
                     title = getString(R.string.account_id_title),
                     shareLabel = getString(R.string.share_account_id)
@@ -111,13 +112,13 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         receive_fab.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_receive_fab))
 
         deposit_fab.onClick {
-            Navigator.openDeposit(this, SEND_REQUEST, asset)
+            navigator.openDeposit(SEND_REQUEST, asset)
             menu_fab.close(false)
         }
         deposit_fab.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_deposit_fab))
 
         withdraw_fab.onClick {
-            Navigator.openWithdraw(this, SEND_REQUEST, asset)
+            navigator.openWithdraw(SEND_REQUEST, asset)
             menu_fab.close(false)
         }
         withdraw_fab.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_withdraw_fab))
@@ -156,7 +157,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     private fun initHistory() {
         adapter = BalanceChangesAdapter(amountFormatter, false)
         adapter.onItemClick { _, item ->
-            item.source?.let { Navigator.openBalanceChangeDetails(this.requireActivity(), it) }
+            item.source?.let { Navigator.from(this).openBalanceChangeDetails(it) }
             menu_fab.close(false)
         }
 

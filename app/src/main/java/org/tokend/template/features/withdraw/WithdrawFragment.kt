@@ -289,8 +289,9 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                 }
                 .subscribeBy(
                         onSuccess = { request ->
-                            Navigator.openWithdrawalConfirmation(this,
-                                    WITHDRAWAL_CONFIRMATION_REQUEST, request)
+                            Navigator.from(this).openWithdrawalConfirmation(
+                                    WITHDRAWAL_CONFIRMATION_REQUEST, request
+                            )
 
                         },
                         onError = { errorHandlerFactory.getDefault().handle(it) }

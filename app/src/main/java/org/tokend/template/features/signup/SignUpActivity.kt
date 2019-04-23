@@ -127,7 +127,7 @@ class SignUpActivity : BaseActivity() {
         }
 
         sign_in_text_view.onClick {
-            Navigator.toSignIn(this, false)
+            Navigator.from(this).toSignIn(false)
         }
 
         terms_text_view.onClick {
@@ -197,8 +197,7 @@ class SignUpActivity : BaseActivity() {
                         onSuccess = { (_, _, recoveryAccount) ->
                             recoveryAccount.secretSeed.also { recoverySeed ->
                                 if (recoverySeed != null) {
-                                    Navigator.openRecoverySeedSaving(
-                                            this,
+                                    Navigator.from(this).openRecoverySeedSaving(
                                             SAVE_SEED_REQUEST,
                                             recoverySeed.joinToString("")
                                     )
@@ -244,6 +243,6 @@ class SignUpActivity : BaseActivity() {
 
     private fun onSuccessfulSignUp() {
         toastManager.long(R.string.check_your_email_to_verify_account)
-        Navigator.toSignIn(this, false)
+        Navigator.from(this).toSignIn(false)
     }
 }

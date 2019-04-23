@@ -343,7 +343,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 }
                 .subscribeBy(
                         onSuccess = { request ->
-                            Navigator.openPaymentConfirmation(this,
+                            Navigator.from(this).openPaymentConfirmation(
                                     PAYMENT_CONFIRMATION_REQUEST, request)
                         },
                         onError = {

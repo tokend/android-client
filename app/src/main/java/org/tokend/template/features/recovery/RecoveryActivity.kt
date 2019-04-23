@@ -26,7 +26,6 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
-import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -145,7 +144,7 @@ class RecoveryActivity : BaseActivity() {
         }
 
         sign_in_text_view.onClick {
-            Navigator.toSignIn(this, false)
+            Navigator.from(this).toSignIn(false)
         }
     }
     // endregion

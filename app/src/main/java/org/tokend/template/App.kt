@@ -226,7 +226,7 @@ class App : MultiDexApplication() {
             session.reset()
         }
 
-        Navigator.toSignIn(this)
+        Navigator.from(this).toSignIn()
 
         activity?.let {
             it.setResult(Activity.RESULT_CANCELED, null)

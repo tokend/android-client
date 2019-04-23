@@ -96,7 +96,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         error_empty_view.observeAdapter(salesAdapter, R.string.no_sales_found)
 
         salesAdapter.onItemClick { _, sale ->
-            Navigator.openSale(this, INVESTMENT_REQUEST, sale)
+            Navigator.from(this).openSale(INVESTMENT_REQUEST, sale)
         }
 
         sales_list.apply {
@@ -201,7 +201,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
                 })
 
         pendingOffersItem?.setOnMenuItemClickListener {
-            Navigator.openPendingOffers(this, CANCEL_OFFER_REQUEST, true)
+            Navigator.from(this).openPendingOffers(CANCEL_OFFER_REQUEST, true)
             true
         }
     }

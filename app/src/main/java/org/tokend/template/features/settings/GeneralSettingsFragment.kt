@@ -90,7 +90,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
             val accountId = walletInfoProvider.getWalletInfo()?.accountId
                     ?: getString(R.string.error_try_again)
             activity?.let { parentActivity ->
-                Navigator.openQrShare(parentActivity,
+                Navigator.from(parentActivity).openQrShare(
                         data = accountId,
                         title = getString(R.string.account_id_title),
                         shareLabel = getString(R.string.share_account_id)
@@ -169,7 +169,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         val changePasswordPreference = findPreference("change_password")
         changePasswordPreference?.setOnPreferenceClickListener {
             activity?.let { parentActivity ->
-                Navigator.openPasswordChange(parentActivity, 3597)
+                Navigator.from(parentActivity).openPasswordChange(3597)
             }
 
             true
@@ -254,7 +254,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun initLimitsItem() {
         val limitsPreference = findPreference("limits")
         limitsPreference?.setOnPreferenceClickListener {
-            Navigator.openLimits(this)
+            Navigator.from(this).openLimits()
             true
         }
         if(!BuildConfig.IS_LIMITS_ALLOWED) {
@@ -266,7 +266,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun initFeesItem() {
         val feesPreference = findPreference("fees")
         feesPreference?.setOnPreferenceClickListener {
-            Navigator.openFees(this)
+            Navigator.from(this).openFees()
             true
         }
         if(!BuildConfig.IS_FEES_ALLOWED) {

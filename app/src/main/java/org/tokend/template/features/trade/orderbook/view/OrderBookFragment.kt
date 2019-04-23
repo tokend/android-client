@@ -83,11 +83,11 @@ class OrderBookFragment : BaseFragment() {
         }
 
         buyAdapter.onItemClick { _, item ->
-            Navigator.openCreateOffer(this, item)
+            Navigator.from(this).openCreateOffer(item)
         }
 
         sellAdapter.onItemClick { _, item ->
-            Navigator.openCreateOffer(this, item)
+            Navigator.from(this).openCreateOffer(item)
         }
     }
 
@@ -215,7 +215,7 @@ class OrderBookFragment : BaseFragment() {
 
     // region Offer creation
     private fun createOffer() {
-        Navigator.openCreateOffer(this,
+        Navigator.from(this).openCreateOffer(
                 OfferRecord(
                         baseAssetCode = assetPair.base,
                         quoteAssetCode = assetPair.quote,

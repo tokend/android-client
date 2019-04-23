@@ -308,8 +308,9 @@ class CreateOfferActivity : BaseActivity() {
                 .doOnEvent { _, _ -> progress.hide() }
                 .subscribeBy(
                         onSuccess = { completedOffer ->
-                            Navigator.openOfferConfirmation(this,
-                                    CREATE_OFFER_REQUEST, completedOffer)
+                            Navigator.from(this).openOfferConfirmation(
+                                    CREATE_OFFER_REQUEST, completedOffer
+                            )
                         },
                         onError = { errorHandlerFactory.getDefault().handle(it) }
                 )

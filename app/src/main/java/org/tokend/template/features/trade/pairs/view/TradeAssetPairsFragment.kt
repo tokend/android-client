@@ -116,7 +116,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
         }
 
         menu.findItem(R.id.pending_offers)?.setOnMenuItemClickListener {
-            Navigator.openPendingOffers(this, 0, false)
+            Navigator.from(this).openPendingOffers(0, false)
             true
         }
     }
@@ -147,7 +147,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
         )
         pairsAdapter.onItemClick { _, item ->
             item.source?.let { assetPair ->
-                Navigator.openTrade(this, assetPair)
+                Navigator.from(this).openTrade(assetPair)
             }
         }
     }

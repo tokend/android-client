@@ -62,7 +62,7 @@ class ProcessLinkActivity : BaseActivity() {
                 .subscribeBy(
                         onComplete = {
                             toastManager.short(R.string.email_verified)
-                            Navigator.toSignIn(this)
+                            Navigator.from(this).toSignIn(true)
                         },
                         onError = {
                             errorHandlerFactory.getDefault().handle(it)
