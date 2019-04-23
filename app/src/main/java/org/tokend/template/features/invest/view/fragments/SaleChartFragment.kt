@@ -19,7 +19,7 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 class SaleChartFragment : SaleFragment() {
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { chart.isLoading = true },
-            hideLoading = { chart.isLoading = true }
+            hideLoading = { chart.isLoading = false }
     )
 
     private val chartRepository: AssetChartRepository

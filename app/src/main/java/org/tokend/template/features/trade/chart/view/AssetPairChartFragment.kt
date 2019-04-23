@@ -20,7 +20,7 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 class AssetPairChartFragment : BaseFragment() {
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { chart.isLoading = true },
-            hideLoading = { chart.isLoading = true }
+            hideLoading = { chart.isLoading = false }
     )
 
     private lateinit var assetPair: AssetPairRecord
