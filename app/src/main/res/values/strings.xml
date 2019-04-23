@@ -331,6 +331,7 @@
     <string name="payment">Payment</string>
     <string name="deposit">Deposit</string>
     <string name="no_limits_message">No limits</string>
+    <string name="no_limits_for_asset_message">No limits for asset</string>
 
     <string name="fees_title">Fees</string>
     <string name="no_fees">No fees available</string>
@@ -354,12 +355,12 @@
     <string name="lower_bound_fee">Lower bound</string>
     <string name="upper_bound_fee">Upper bound</string>
 
-    <string-array name="limit_types">
-        <item>Daily (left/total)</item>
-        <item>Weekly (left/total)</item>
-        <item>Monthly (left/total)</item>
-        <item>Annual (left/total)</item>
-    </string-array>
+    <string name="limit_period_daily">Daily</string>
+    <string name="limit_period_weekly">Weekly</string>
+    <string name="limit_period_monthly">Monthly</string>
+    <string name="limit_period_annual">Annual</string>
+    <string name="template_limit_total">%1$s\ntotal</string>
+    <string name="template_limit_left">%1$s\nleft</string>
 
     <string name="authenticator_hint">Use TokenD Authenticator to set up and access your account</string>
     <string name="open_authenticator_action">Open authenticator</string>
@@ -422,4 +423,6 @@
     <string name="template_lower_bound">From %1$s</string>
     <string name="template_upper_bound">to %1$s</string>
     <string name="fee_info_titles">Fixed\nPercent</string>
+    <string name="spend">Spend</string>
+    <string name="payout">Payout</string>
 </resources>

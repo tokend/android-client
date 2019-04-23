@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.repository.LimitsRepository
+import org.tokend.template.extensions.isMaxPossibleAmount
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
@@ -94,9 +95,20 @@ class LimitsActivity : BaseActivity() {
     private fun updateCards(asset: String) {
         limit_cards_holder.removeAllViews()
 
-        limitsRepository.item?.getAssetEntries(asset)?.let { entries ->
-            LimitCardsProvider(this, asset, entries, amountFormatter)
-                    .addTo(limit_cards_holder)
+        limitsRepository.item?.getAssetEntries(asset)
+                ?.filter {
+                    !it.limit.daily.isMaxPossibleAmount()
+                            || !it.limit.weekly.isMaxPossibleAmount()
+                            || !it.limit.monthly.isMaxPossibleAmount()
+                            || !it.limit.annual.isMaxPossibleAmount()
+                }
+                ?.let { entries ->
+                    LimitCardsProvider(this, asset, entries, amountFormatter)
+                            .addTo(limit_cards_holder)
+                }
+
+        if (limit_cards_holder.childCount == 0) {
+            error_empty_view.showEmpty(getString(R.string.no_limits_for_asset_message))
         }
     }
 

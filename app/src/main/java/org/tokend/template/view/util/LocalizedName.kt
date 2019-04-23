@@ -7,6 +7,7 @@ import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.fees.view.FeeItem
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.wallet.xdr.FeeType
+import org.tokend.wallet.xdr.StatsOpType
 
 /**
  * Holds localized name getters for enums
@@ -82,6 +83,16 @@ class LocalizedName(private val context: Context) {
             is BalanceChangeCause.AssetPairUpdate ->
                 context.getString(R.string.balance_change_cause_asset_pair_update)
             BalanceChangeCause.Unknown -> context.getString(R.string.balance_change_cause_unknown)
+        }
+    }
+
+    fun forLimitType(limitType: StatsOpType): String {
+        return when (limitType) {
+            StatsOpType.PAYMENT_OUT -> context.getString(R.string.payment)
+            StatsOpType.WITHDRAW -> context.getString(R.string.withdraw_title)
+            StatsOpType.DEPOSIT -> context.getString(R.string.deposit)
+            StatsOpType.SPEND -> context.getString(R.string.spend)
+            StatsOpType.PAYOUT -> context.getString(R.string.payout)
         }
     }
 }
