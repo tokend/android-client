@@ -26,7 +26,7 @@ import org.tokend.template.R
 import org.tokend.template.features.assets.adapter.AssetListItem
 import org.tokend.template.features.assets.adapter.AssetListItemViewHolder
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
-import org.tokend.template.features.assets.model.AssetRecord
+import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.FileDownloader

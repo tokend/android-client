@@ -4,6 +4,7 @@ import android.content.Context
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
 import org.tokend.template.data.repository.*
+import org.tokend.template.data.repository.assets.AssetChartRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
@@ -18,6 +19,7 @@ import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.data.repository.tradehistory.TradeHistoryRepository
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.send.repository.ContactsRepository
+import java.util.*
 
 /**
  * @param context if not specified then android-related repositories
@@ -84,6 +86,8 @@ class RepositoryProviderImpl(
     private val balanceChangesRepositoriesByBalanceId = mutableMapOf<String, BalanceChangesRepository>()
 
     private val tradesRepositoriesByAssetPair = mutableMapOf<String, TradeHistoryRepository>()
+
+    private val chartRepositoriesByCode = WeakHashMap<String, AssetChartRepository>()
 
     override fun balances(): BalancesRepository {
         return balancesRepository
@@ -167,6 +171,25 @@ class RepositoryProviderImpl(
                     quote,
                     apiProvider,
                     MemoryOnlyRepositoryCache()
+            )
+        }
+    }
+
+    override fun assetChart(asset: String): AssetChartRepository {
+        return chartRepositoriesByCode.getOrPut(asset) {
+            AssetChartRepository(
+                    asset,
+                    apiProvider
+            )
+        }
+    }
+
+    override fun assetChart(baseAsset: String, quoteAsset: String): AssetChartRepository {
+        return chartRepositoriesByCode.getOrPut("$baseAsset-$quoteAsset") {
+            AssetChartRepository(
+                    baseAsset,
+                    quoteAsset,
+                    apiProvider
             )
         }
     }

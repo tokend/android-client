@@ -254,6 +254,8 @@
     <string name="deployed_hint">deployed</string>
     <string name="asset_price_for_one_part">for 1 %1$s</string>
     <string name="peek_show_text">Price chart</string>
+    <string name="no_price_chart_yet">There is no price history yet</string>
+    <string name="no_sale_chart_yet">There is no progress history yet</string>
 
     <string name="template_sale_invested">%1$s\ninvested</string>
     <string name="template_sale_funded">%1$s\nfunded</string>

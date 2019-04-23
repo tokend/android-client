@@ -3,7 +3,7 @@ package org.tokend.template.features.assets
 import android.os.Bundle
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.features.assets.model.AssetRecord
+import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.fragments.FragmentFactory
 
 class AssetDetailsActivity : BaseActivity() {

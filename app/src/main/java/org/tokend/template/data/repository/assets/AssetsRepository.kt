@@ -12,7 +12,7 @@ import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.extensions.mapSuccessful
-import org.tokend.template.features.assets.model.AssetRecord
+import org.tokend.template.data.model.AssetRecord
 
 class AssetsRepository(
         private val apiProvider: ApiProvider,

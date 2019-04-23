@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.features.assets.AssetDetailsFragment
 import org.tokend.template.features.assets.ExploreAssetsFragment
-import org.tokend.template.features.assets.model.AssetRecord
+import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment

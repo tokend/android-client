@@ -5,7 +5,7 @@ import org.junit.Test
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
-import org.tokend.template.features.assets.model.AssetRecord
+import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.features.deposit.BindExternalAccountUseCase
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
