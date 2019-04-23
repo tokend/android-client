@@ -2,7 +2,6 @@ package org.tokend.template.data.model
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.sdk.api.generated.resources.AssetPairResource
-import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.util.PolicyChecker
 import org.tokend.wallet.xdr.AssetPairPolicy
 import java.io.Serializable

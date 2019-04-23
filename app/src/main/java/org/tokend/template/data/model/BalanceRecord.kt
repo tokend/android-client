@@ -2,7 +2,6 @@ package org.tokend.template.data.model
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.sdk.api.generated.resources.BalanceResource
-import org.tokend.template.features.assets.model.AssetRecord
 import java.io.Serializable
 import java.math.BigDecimal
 

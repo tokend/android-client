@@ -1,10 +1,9 @@
-package org.tokend.template.features.assets.model
+package org.tokend.template.data.model
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.NullNode
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.generated.resources.AssetResource
-import org.tokend.template.data.model.UrlConfig
 import org.tokend.template.util.PolicyChecker
 import java.io.Serializable
 import java.math.BigDecimal

@@ -24,7 +24,7 @@ import org.tokend.template.R
 import org.tokend.template.data.model.AccountRecord
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
-import org.tokend.template.features.assets.model.AssetRecord
+import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.transactions.TxManager
