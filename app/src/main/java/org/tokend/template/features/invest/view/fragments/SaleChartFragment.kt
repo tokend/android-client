@@ -6,15 +6,25 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.github.mikephil.charting.listener.BarLineChartTouchListener
-import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_asset_chart.*
+import kotlinx.android.synthetic.main.include_error_empty_view.*
+import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.dip
 import org.tokend.template.R
+import org.tokend.template.data.repository.assets.AssetChartRepository
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.LoadingIndicatorManager
 
 class SaleChartFragment : SaleFragment() {
+    private val loadingIndicator = LoadingIndicatorManager(
+            showLoading = { chart.isLoading = true },
+            hideLoading = { chart.isLoading = true }
+    )
+
+    private val chartRepository: AssetChartRepository
+        get() = repositoryProvider.assetChart(sale.baseAssetCode)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_asset_chart, container, false)
     }
@@ -23,7 +33,11 @@ class SaleChartFragment : SaleFragment() {
         super.onInitAllowed()
 
         initChart()
-        update()
+        subscribeToChartData()
+
+        error_empty_view.showEmpty(R.string.loading_data)
+
+        chartRepository.update()
     }
 
     private fun initChart() {
@@ -68,28 +82,32 @@ class SaleChartFragment : SaleFragment() {
         }
     }
 
-    private var chartDisposable: Disposable? = null
-
-    private fun update() {
-        chartDisposable?.dispose()
-
-        chartDisposable = investmentInfoRepository
-                .getChart(apiProvider.getApi())
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe {
-                    chart.isLoading = true
+    private fun subscribeToChartData() {
+        chartRepository
+                .itemSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    displayChartData()
                 }
-                .doOnEvent { _, _ ->
-                    chart.isLoading = false
-                }
-                .subscribeBy(
-                        onSuccess = { data ->
-                            chart.post {
-                                chart.data = data
-                            }
-                        },
-                        onError = { }
-                )
                 .addTo(compositeDisposable)
+
+        chartRepository
+                .loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { loadingIndicator.setLoading(it) }
+                .addTo(compositeDisposable)
+    }
+
+    private fun displayChartData() {
+        val data = chartRepository.item?.takeIf { !it.isEmpty }
+
+        if (data == null && !chartRepository.isNeverUpdated) {
+            error_empty_view.showEmpty(R.string.no_sale_chart_yet)
+        } else {
+            error_empty_view.hide()
+            chart.post {
+                chart.data = data
+            }
+        }
     }
 }

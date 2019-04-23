@@ -24,10 +24,10 @@ import com.github.mikephil.charting.utils.EntryXComparator
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
-import org.tokend.sdk.api.assets.model.AssetChartData
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.App
 import org.tokend.template.R
+import org.tokend.template.data.model.AssetChartData
 import org.tokend.template.view.ContentLoadingProgressBar
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.formatter.DateFormatter
@@ -217,8 +217,7 @@ class AssetChartCard : LinearLayout {
             val range = IntProgression.fromClosedRange(points.size - 1, 0, step)
             for (i in range) {
                 val point = points[i]
-                newChartData.add(Entry(0f, point.value?.toFloat() ?: 0f,
-                        point.date))
+                newChartData.add(Entry(0f, point.value.toFloat(), point.date))
             }
         }
 

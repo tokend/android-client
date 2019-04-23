@@ -3,10 +3,6 @@ package org.tokend.template.features.invest.repository
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import org.tokend.rx.extensions.toSingle
-import org.tokend.sdk.api.TokenDApi
-import org.tokend.sdk.api.assets.model.AssetChartData
-import org.tokend.sdk.utils.extentions.isNotFound
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
@@ -14,7 +10,6 @@ import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.data.repository.offers.OffersRepository
 import org.tokend.template.features.invest.model.InvestmentlInfo
 import org.tokend.template.features.invest.model.SaleRecord
-import retrofit2.HttpException
 import java.math.BigDecimal
 
 /**
@@ -105,21 +100,5 @@ class InvestmentInfoRepository(
      */
     fun getExistingInvestmentAmount(asset: String): BigDecimal {
         return item?.offersByAsset?.get(asset)?.quoteAmount ?: BigDecimal.ZERO
-    }
-
-    /**
-     * @return sale chart (amount of investments by time)
-     */
-    fun getChart(api: TokenDApi): Single<AssetChartData> {
-        return api
-                .assets
-                .getChart(sale.baseAssetCode)
-                .toSingle()
-                .onErrorReturn { error ->
-                    if (error is HttpException && error.isNotFound())
-                        AssetChartData()
-                    else
-                        throw error
-                }
     }
 }
