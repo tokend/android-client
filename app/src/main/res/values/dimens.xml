@@ -7,6 +7,7 @@
     <dimen name="text_size_order_book">13sp</dimen>
     <dimen name="text_size_heading">20sp</dimen>
     <dimen name="text_size_heading_large">28sp</dimen>
+    <dimen name="text_size_amount_input">36sp</dimen>
 
     <!-- General margins -->
     <dimen name="hepta_margin">96dp</dimen>

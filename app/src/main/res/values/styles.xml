@@ -66,6 +66,10 @@
         <item name="android:paddingEnd">@dimen/double_margin</item>
     </style>
 
+    <style name="PrimaryButton.NoBorders" parent="PrimaryButton">
+        <item name="android:background">@drawable/primary_button_no_borders_background</item>
+    </style>
+
     <style name="SecondaryButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/secondary_text</item>
     </style>
