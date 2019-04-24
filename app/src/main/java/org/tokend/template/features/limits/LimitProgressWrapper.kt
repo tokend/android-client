@@ -43,6 +43,7 @@ class LimitProgressWrapper(private val rootView: View,
 
         if(total.isMaxPossibleAmount()) {
             progressLayout.visibility = View.GONE
+            return
         }
 
         progressLayout.limit_period.text = context.getString(period)

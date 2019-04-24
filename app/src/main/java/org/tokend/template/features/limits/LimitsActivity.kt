@@ -9,6 +9,7 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_limits.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.tokend.sdk.api.accounts.model.limits.LimitEntry
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.repository.LimitsRepository
@@ -28,8 +29,16 @@ class LimitsActivity : BaseActivity() {
     private val limitsRepository: LimitsRepository
         get() = repositoryProvider.limits()
 
-    private val assets: Set<String>
-        get() = limitsRepository.item?.entriesByAssetMap?.keys ?: emptySet()
+    private val assets: Map<String, List<LimitEntry>>
+        get() = limitsRepository.item?.entriesByAssetMap
+                ?.filter {
+                    it.value.any { entry ->
+                        !entry.limit.daily.isMaxPossibleAmount()
+                                || !entry.limit.weekly.isMaxPossibleAmount()
+                                || !entry.limit.monthly.isMaxPossibleAmount()
+                                || !entry.limit.annual.isMaxPossibleAmount()
+                    }
+                } ?: emptyMap()
 
     private var asset: String = ""
         set(value) {
@@ -94,29 +103,18 @@ class LimitsActivity : BaseActivity() {
 
     private fun updateCards(asset: String) {
         limit_cards_holder.removeAllViews()
-
         limitsRepository.item?.getAssetEntries(asset)
-                ?.filter {
-                    !it.limit.daily.isMaxPossibleAmount()
-                            || !it.limit.weekly.isMaxPossibleAmount()
-                            || !it.limit.monthly.isMaxPossibleAmount()
-                            || !it.limit.annual.isMaxPossibleAmount()
-                }
                 ?.let { entries ->
                     LimitCardsProvider(this, asset, entries, amountFormatter)
                             .addTo(limit_cards_holder)
                 }
-
-        if (limit_cards_holder.childCount == 0) {
-            error_empty_view.showEmpty(getString(R.string.no_limits_for_asset_message))
-        }
     }
 
     private fun onLimitsUpdated() {
         if (assets.isNotEmpty()) {
             error_empty_view.hide()
             asset_tabs.visibility = View.VISIBLE
-            asset_tabs.setSimpleItems(assets)
+            asset_tabs.setSimpleItems(assets.keys)
             updateCards(asset)
         } else {
             asset_tabs.visibility = View.GONE

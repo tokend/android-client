@@ -331,7 +331,6 @@
     <string name="payment">Payment</string>
     <string name="deposit">Deposit</string>
     <string name="no_limits_message">No limits</string>
-    <string name="no_limits_for_asset_message">No limits for asset</string>
 
     <string name="fees_title">Fees</string>
     <string name="no_fees">No fees available</string>
