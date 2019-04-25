@@ -5,7 +5,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
-import org.tokend.template.features.send.logic.ContactsManager
+import org.tokend.template.features.send.recipient.logic.ContactsManager
 import org.tokend.template.features.send.recipient.model.Contact
 
 
