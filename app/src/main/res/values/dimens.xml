@@ -53,4 +53,6 @@
     <dimen name="max_content_width">640dp</dimen>
 
     <dimen name="tablet_drawer_width">320dp</dimen>
+
+    <dimen name="contact_photo_size">40dp</dimen>
 </resources>

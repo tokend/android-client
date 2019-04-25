@@ -13,10 +13,10 @@ object ElevationUtil {
         val animationDuration = scrollView.context.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
 
         scrollView.setOnScrollChangeListener { _: NestedScrollView?,
-                                                _: Int,
-                                                scrollY: Int,
-                                                _: Int,
-                                                _: Int ->
+                                               _: Int,
+                                               scrollY: Int,
+                                               _: Int,
+                                               _: Int ->
             val inScroll = scrollY > 0.01f
             if (inScroll != wasInScroll) {
                 if (inScroll) {
@@ -45,6 +45,14 @@ object ElevationUtil {
                 } else if (dy > 0 && onTop) {
                     AnimationUtil.fadeInView(elevationView, animationDuration)
                     onTop = false
+                } else if (dy == 0) {
+                    onTop = !recyclerView.canScrollVertically(-1)
+                    elevationView.clearAnimation()
+                    if (onTop) {
+                        elevationView.visibility = View.INVISIBLE
+                    } else {
+                        elevationView.visibility = View.VISIBLE
+                    }
                 }
             }
         })

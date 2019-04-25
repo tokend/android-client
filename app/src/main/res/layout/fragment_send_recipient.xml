@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        style="@style/LimitedMatchParentWidthConstraint"
+        app:layout_constraintBottom_toBottomOf="@null"
+        app:layout_constraintBottom_toTopOf="@id/continue_button">
+
+        <include
+            android:id="@+id/main_progress"
+            layout="@layout/layout_progress" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/recipient_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_progress"
+            android:padding="@dimen/standard_margin">
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/recipient_edit_text"
+                style="@style/EditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_padding"
+                android:hint="@string/recipient_label"
+                android:inputType="text|textEmailAddress"
+                android:paddingEnd="42dp"
+                android:paddingRight="42dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="@string/tx_recipient" />
+
+            <ImageView
+                android:id="@+id/scan_qr_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/half_standard_padding"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="@dimen/half_standard_margin"
+                android:scaleType="center"
+                app:layout_constraintEnd_toEndOf="@+id/recipient_edit_text"
+                app:layout_constraintTop_toTopOf="@+id/recipient_edit_text"
+                app:srcCompat="@drawable/ic_qr_code_scan" />
+        </android.support.constraint.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/contacts_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/continue_button"
+            android:layout_below="@id/recipient_layout"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/header_text_view"
+                style="@style/HintText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_margin"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:paddingBottom="@dimen/half_standard_margin"
+                android:text="@string/contacts"
+                android:textAllCaps="true" />
+
+            <include layout="@layout/layout_progress" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/half_standard_margin">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/contacts_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingBottom="@dimen/standard_margin" />
+
+                <TextView
+                    android:id="@+id/contacts_empty_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_margin"
+                    android:gravity="center"
+                    android:text="@string/no_contacts_message"
+                    android:textColor="@color/secondary_text"
+                    android:visibility="gone" />
+
+                <include layout="@layout/include_appbar_elevation" />
+
+            </FrameLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/continue_button"
+        style="@style/PrimaryButton.NoBorders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/continue_action"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</android.support.constraint.ConstraintLayout>

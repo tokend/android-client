@@ -21,6 +21,7 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
+import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.onClick
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
@@ -30,6 +31,7 @@ import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
+import org.tokend.template.features.send.view.SasActivity
 import org.tokend.template.features.settings.SettingsFragment
 import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
 import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
@@ -64,6 +66,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         initNavigation()
 
         navigationDrawer?.setSelection(DEFAULT_FRAGMENT_ID)
+
+        startActivity(intentFor<SasActivity>())
     }
 
     // region Init

@@ -18,6 +18,8 @@ class AccountDetailsRepository(
     /**
      * Loads account ID for given email.
      * Result will be cached.
+     *
+     * @see NoIdentityAvailableException
      */
     fun getAccountIdByEmail(email: String): Single<String> {
         val existing = identities.find { it.email == email }?.accountId
@@ -32,6 +34,8 @@ class AccountDetailsRepository(
     /**
      * Loads email for given account ID.
      * Result will be cached.
+     *
+     * @see NoIdentityAvailableException
      */
     fun getEmailByAccountId(accountId: String): Single<String> {
         val existing = identities.find { it.accountId == accountId }?.email

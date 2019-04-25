@@ -7,10 +7,10 @@
 
     <ImageView
         android:id="@+id/contact_icon_image_view"
-        android:layout_width="@dimen/double_margin"
-        android:layout_height="@dimen/double_margin"
+        android:layout_width="@dimen/contact_photo_size"
+        android:layout_height="@dimen/contact_photo_size"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/half_standard_margin"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:fontFamily="sans-serif"
+        android:textSize="@dimen/text_size_default"
         app:layout_constraintBottom_toBottomOf="@+id/contact_icon_image_view"
         app:layout_constraintStart_toEndOf="@+id/contact_icon_image_view"
         app:layout_constraintTop_toTopOf="@+id/contact_icon_image_view"

@@ -3,8 +3,8 @@ package org.tokend.template.features.send.logic
 import android.content.Context
 import android.provider.ContactsContract
 import io.reactivex.Single
-import org.tokend.template.features.send.model.Contact
-import org.tokend.template.features.send.model.ContactEmail
+import org.tokend.template.features.send.recipient.model.Contact
+import org.tokend.template.features.send.recipient.model.ContactEmail
 
 class ContactsManager {
     companion object {

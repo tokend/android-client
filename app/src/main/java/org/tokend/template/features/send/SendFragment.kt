@@ -32,12 +32,12 @@ import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.setErrorAndFocus
-import org.tokend.template.features.send.adapter.ContactsAdapter
+import org.tokend.template.features.send.recipient.view.adapter.ContactsAdapter
 import org.tokend.template.features.send.logic.CreatePaymentRequestUseCase
-import org.tokend.template.features.send.model.Contact
-import org.tokend.template.features.send.model.ContactEmail
+import org.tokend.template.features.send.recipient.model.Contact
+import org.tokend.template.features.send.recipient.model.ContactEmail
 import org.tokend.template.features.send.model.PaymentRequest
-import org.tokend.template.features.send.repository.ContactsRepository
+import org.tokend.template.features.send.recipient.repository.ContactsRepository
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.FeeManager
@@ -375,13 +375,12 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun updateContactsData(items: List<Contact>) {
-        contactsAdapter.addData(items)
         contacts_empty_view.visibility =
-                if (items.isEmpty() && !contactsRepository.isNeverUpdated) {
+                if (items.isEmpty() && !contactsRepository.isNeverUpdated)
                     View.VISIBLE
-                } else {
+                else
                     View.GONE
-                }
+
     }
 
     private fun initBottomSheet() {
