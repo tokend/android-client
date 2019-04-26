@@ -2,7 +2,7 @@ package org.tokend.template.features.send.recipient.logic
 
 import io.reactivex.Single
 import org.tokend.template.data.repository.AccountDetailsRepository
-import org.tokend.template.features.send.recipient.model.PaymentRecipient
+import org.tokend.template.features.send.model.PaymentRecipient
 import org.tokend.wallet.Base32Check
 
 /**

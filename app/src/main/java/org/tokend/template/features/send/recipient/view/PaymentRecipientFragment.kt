@@ -9,12 +9,12 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.reactivex.Single
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.subjects.SingleSubject
-import kotlinx.android.synthetic.main.fragment_send_recipient.*
+import io.reactivex.subjects.PublishSubject
+import kotlinx.android.synthetic.main.fragment_payment_recipient.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_progress.view.*
 import org.jetbrains.anko.enabled
@@ -24,7 +24,7 @@ import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.features.send.recipient.logic.PaymentRecipientLoader
 import org.tokend.template.features.send.recipient.model.Contact
 import org.tokend.template.features.send.recipient.model.ContactEmail
-import org.tokend.template.features.send.recipient.model.PaymentRecipient
+import org.tokend.template.features.send.model.PaymentRecipient
 import org.tokend.template.features.send.recipient.repository.ContactsRepository
 import org.tokend.template.features.send.recipient.view.adapter.ContactListItem
 import org.tokend.template.features.send.recipient.view.adapter.ContactsAdapter
@@ -40,7 +40,7 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.wallet.Base32Check
 
-class SendRecipientFragment : BaseFragment() {
+class PaymentRecipientFragment : BaseFragment() {
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { (main_progress as? ContentLoadingProgressBar)?.show() },
             hideLoading = { (main_progress as? ContentLoadingProgressBar)?.hide() }
@@ -65,11 +65,11 @@ class SendRecipientFragment : BaseFragment() {
             continue_button.enabled = value
         }
 
-    protected val resultSubject = SingleSubject.create<PaymentRecipient>()
-    val resultSingle: Single<PaymentRecipient> = resultSubject
+    protected val resultSubject = PublishSubject.create<PaymentRecipient>()
+    val resultObservable: Observable<PaymentRecipient> = resultSubject
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_send_recipient, container, false)
+        return inflater.inflate(R.layout.fragment_payment_recipient, container, false)
     }
 
     override fun onInitAllowed() {
@@ -130,6 +130,7 @@ class SendRecipientFragment : BaseFragment() {
                 item as ContactEmail
                 recipient_edit_text.setText(item.email)
                 recipient_edit_text.setSelection(item.email.length)
+                tryToLoadRecipient()
             }
         }
     }
@@ -238,7 +239,7 @@ class SendRecipientFragment : BaseFragment() {
             recipient_edit_text.error = getString(R.string.error_cannot_send_to_yourself)
             updateContinueAvailability()
         } else {
-            resultSubject.onSuccess(recipient)
+            resultSubject.onNext(recipient)
         }
     }
 

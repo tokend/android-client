@@ -4,12 +4,11 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toMaybe
 import org.tokend.template.data.model.history.SimpleFeeRecord
-import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.features.send.model.PaymentRecipient
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.logic.FeeManager
-import org.tokend.wallet.Base32Check
 import java.math.BigDecimal
 
 /**
@@ -18,30 +17,27 @@ import java.math.BigDecimal
  * loads sender's and recipient's fees
  */
 class CreatePaymentRequestUseCase(
-        private val recipient: String,
+        private val recipient: PaymentRecipient,
         private val amount: BigDecimal,
         private val asset: String,
         private val subject: String?,
         private val walletInfoProvider: WalletInfoProvider,
         private val feeManager: FeeManager,
-        private val balancesRepository: BalancesRepository,
-        private val accountDetailsRepository: AccountDetailsRepository?
+        private val balancesRepository: BalancesRepository
 ) {
     class SendToYourselfException : Exception()
 
     private lateinit var senderAccount: String
     private lateinit var senderBalance: String
-    private lateinit var recipientAccount: String
     private lateinit var senderFee: SimpleFeeRecord
     private lateinit var recipientFee: SimpleFeeRecord
 
     fun perform(): Single<PaymentRequest> {
-        return getAccounts()
-                .doOnSuccess { (senderAccount, recipientAccount) ->
+        return getSenderAccount()
+                .doOnSuccess { senderAccount ->
                     this.senderAccount = senderAccount
-                    this.recipientAccount = recipientAccount
 
-                    if (senderAccount == recipientAccount) {
+                    if (senderAccount == recipient.accountId) {
                         throw SendToYourselfException()
                     }
                 }
@@ -63,35 +59,12 @@ class CreatePaymentRequestUseCase(
                 }
     }
 
-    private fun getAccounts(): Single<Pair<String, String>> {
-        return Single.zip(
-                getSenderAccount(),
-                getRecipientAccount(),
-                BiFunction { senderAccount: String, recipientAccount: String ->
-                    senderAccount to recipientAccount
-                }
-        )
-    }
-
     private fun getSenderAccount(): Single<String> {
         return walletInfoProvider
                 .getWalletInfo()
                 ?.accountId
                 .toMaybe()
                 .switchIfEmpty(Single.error(IllegalStateException("Missing account ID")))
-    }
-
-    private fun getRecipientAccount(): Single<String> {
-        return if (Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID,
-                        recipient.toCharArray()))
-            Single.just(recipient)
-        else
-            accountDetailsRepository
-                    ?.getAccountIdByEmail(recipient)
-                    ?: Single.error(
-                            IllegalStateException("Account cause repository is required" +
-                                    " to get recipient's account ID")
-                    )
     }
 
     private fun getSenderBalance(): Single<String> {
@@ -119,7 +92,7 @@ class CreatePaymentRequestUseCase(
                         true
                 ),
                 feeManager.getPaymentFee(
-                        recipientAccount,
+                        recipient.accountId,
                         asset,
                         amount,
                         false
@@ -137,10 +110,9 @@ class CreatePaymentRequestUseCase(
                         asset = asset,
                         senderAccountId = senderAccount,
                         senderBalanceId = senderBalance,
+                        recipient = recipient,
                         senderFee = senderFee,
-                        recipientAccountId = recipientAccount,
                         recipientFee = recipientFee,
-                        recipientNickname = recipient,
                         paymentSubject = subject
                 )
         )

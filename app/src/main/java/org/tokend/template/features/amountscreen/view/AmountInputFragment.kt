@@ -1,35 +1,35 @@
-package org.tokend.template.features.amountscreen
+package org.tokend.template.features.amountscreen.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.reactivex.Single
+import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.SingleSubject
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.fragment_amount_input.*
 import org.tokend.template.R
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.features.amountscreen.model.AmountInputResult
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.balancepicker.BalancePickerBottomDialog
 import org.tokend.template.view.util.input.AmountEditTextWrapper
+import org.tokend.template.view.util.input.SoftInputUtil
 import java.math.BigDecimal
 
 open class AmountInputFragment : BaseFragment() {
-    class NoAssetsToDisplayException : Exception("There are no assets to display, screen can't operate")
-
     protected lateinit var amountWrapper: AmountEditTextWrapper
 
-    protected val resultSubject = SingleSubject.create<BigDecimal>()
+    protected open val resultSubject: Subject<in AmountInputResult> = PublishSubject.create<AmountInputResult>()
 
     /**
-     * Emits entered amount or error
-     *
-     * @see NoAssetsToDisplayException
+     * Emits entered amount as [AmountInputResult]
      */
-    val resultSingle: Single<BigDecimal> = resultSubject
+    open val resultObservable: Observable<in AmountInputResult>
+        get() = resultSubject
 
     protected val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
@@ -39,6 +39,13 @@ open class AmountInputFragment : BaseFragment() {
             field = value
             onAssetChanged()
         }
+
+    protected val balance: BigDecimal
+        get() = balancesRepository
+                .itemsList
+                .find { it.assetCode == asset }
+                ?.available
+                ?: BigDecimal.ZERO
 
     protected open val requestedAsset: String? by lazy {
         arguments?.getString(ASSET_EXTRA)
@@ -63,15 +70,17 @@ open class AmountInputFragment : BaseFragment() {
 
         subscribeToBalances()
 
-        setError("Ты пидор")
-
         updateActionButtonAvailability()
     }
 
     // region Init
     protected open fun initFields() {
         amountWrapper = AmountEditTextWrapper(amount_edit_text)
+        amountWrapper.onAmountChanged { _, _ ->
+            updateActionButtonAvailability()
+        }
         amount_edit_text.requestFocus()
+        SoftInputUtil.showSoftInputOnView(amount_edit_text)
     }
 
     protected open fun initButtons() {
@@ -83,9 +92,16 @@ open class AmountInputFragment : BaseFragment() {
         val picker = getBalancePicker()
 
         asset_code_text_view.setOnClickListener {
-            picker.show { result ->
-                asset = result.assetCode
-            }
+            SoftInputUtil.hideSoftInput(requireActivity())
+            picker.show(
+                    onItemPicked = { result ->
+                        asset = result.assetCode
+                    },
+                    onDismiss = {
+                        amount_edit_text.requestFocus()
+                        SoftInputUtil.showSoftInputOnView(amount_edit_text)
+                    }
+            )
         }
     }
 
@@ -95,7 +111,7 @@ open class AmountInputFragment : BaseFragment() {
 
     protected open fun initExtraView() {
         extra_view_frame.removeAllViews()
-        getExtraView()?.also { extra_view_frame.addView(it) }
+        getExtraView(extra_view_frame)?.also { extra_view_frame.addView(it) }
     }
     // endregion
 
@@ -119,13 +135,10 @@ open class AmountInputFragment : BaseFragment() {
     }
 
     // region Display
+    /**
+     * @see [balance]
+     */
     protected open fun displayBalance() {
-        val balance = balancesRepository
-                .itemsList
-                .find { it.assetCode == asset }
-                ?.available
-                ?: return
-
         balance_text_view.text = getString(
                 R.string.template_balance,
                 amountFormatter.formatAssetAmount(balance, asset)
@@ -136,7 +149,6 @@ open class AmountInputFragment : BaseFragment() {
         val assetsToDisplay = getAssetsToDisplay()
 
         if (assetsToDisplay.isEmpty()) {
-            postError(NoAssetsToDisplayException())
             return
         }
 
@@ -158,8 +170,6 @@ open class AmountInputFragment : BaseFragment() {
     protected open fun setError(message: String?) {
         errorMessage = message?.takeIf { it.isNotEmpty() }
         error_text_view.text = errorMessage
-
-        updateActionButtonAvailability()
     }
 
     protected open fun updateActionButtonAvailability() {
@@ -167,15 +177,14 @@ open class AmountInputFragment : BaseFragment() {
     }
     // endregion
 
-    // region Result
     protected open fun postResult() {
-        resultSubject.onSuccess(amountWrapper.scaledAmount)
+        resultSubject.onNext(
+                AmountInputResult(
+                        amount = amountWrapper.scaledAmount,
+                        assetCode = asset
+                )
+        )
     }
-
-    protected open fun postError(e: Throwable) {
-        resultSubject.onError(e)
-    }
-    // endregion
 
     /**
      * @return [BalancePickerBottomDialog] with required filter
@@ -186,14 +195,11 @@ open class AmountInputFragment : BaseFragment() {
                 amountFormatter,
                 assetComparator,
                 balancesRepository
-        ) { balance ->
-            balance.asset.isTransferable
-        }
+        )
     }
 
     /**
-     * @return collection of asset codes to display in picker,
-     * empty collection will trigger [NoAssetsToDisplayException] error
+     * @return collection of asset codes to display in picker
      */
     protected open fun getAssetsToDisplay(): Collection<String> {
         return balancesRepository
@@ -217,9 +223,11 @@ open class AmountInputFragment : BaseFragment() {
     }
 
     /**
+     * @param parent use for inflation but avoid automatic adding
+     *
      * @return view displayed above the action button
      */
-    protected open fun getExtraView(): View? {
+    protected open fun getExtraView(parent: ViewGroup): View? {
         return null
     }
 

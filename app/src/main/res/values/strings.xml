@@ -226,7 +226,7 @@
     <!-- withdraw -->
     <string name="amount_label">Amount</string>
     <string name="address_label">Destination address</string>
-    <string name="go_to_confirmation_btn_label">go to confirmation</string>
+    <string name="go_to_confirmation_btn_label">Go to confirmation</string>
     <string name="withdrawal_confirmation_title">Withdrawal confirmation</string>
 
     <!-- Deposit -->
