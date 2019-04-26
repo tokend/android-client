@@ -67,7 +67,7 @@ class DetailsItemViewHolder(view: View) : BaseViewHolder<DetailsItem>(view) {
 
         mainTextView.textColor =
                 if (item.isEnabled)
-                    defaultTextColor
+                    item.textColor ?: defaultTextColor
                 else
                     disabledTextColor
 

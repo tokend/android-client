@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/colorDefaultBackground"
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
@@ -38,182 +38,41 @@
 
             <include layout="@layout/include_error_empty_view" />
 
-            <android.support.v4.widget.NestedScrollView
-                android:id="@+id/deposit_content_layout"
+            <LinearLayout
+                android:id="@+id/no_address_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/no_address_text_view"
+                    style="@style/SecondaryText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    tools:text="@string/template_no_personal_asset_address" />
+
+                <Button
+                    android:id="@+id/get_address_button"
+                    style="@style/PrimaryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_padding"
+                    android:text="@string/get_personal_address_action" />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/details_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:overScrollMode="never">
+                android:overScrollMode="never"
+                android:paddingBottom="@dimen/standard_margin" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:paddingBottom="@dimen/standard_margin">
-
-                    <android.support.v7.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardUseCompatPadding="false"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent">
-
-                        <android.support.constraint.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:id="@+id/personal_address_heading_text_view"
-                                style="@style/HeadingText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/standard_margin"
-                                android:layout_marginTop="@dimen/standard_margin"
-                                android:layout_marginEnd="@dimen/standard_margin"
-                                android:text="@string/personal_address"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <LinearLayout
-                                android:id="@+id/no_address_layout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:visibility="gone"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/personal_address_heading_text_view">
-
-                                <TextView
-                                    android:id="@+id/no_address_text_view"
-                                    style="@style/SecondaryText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/double_margin"
-                                    android:layout_marginBottom="@dimen/double_margin"
-                                    android:gravity="center" />
-
-                                <Button
-                                    android:id="@+id/get_address_btn"
-                                    style="@style/PrimaryButton"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="end"
-                                    android:layout_marginEnd="16dp"
-                                    android:layout_marginBottom="16dp"
-                                    android:paddingStart="32dp"
-                                    android:paddingEnd="32dp"
-                                    android:text="@string/get_personal_address_action" />
-
-                            </LinearLayout>
-
-                            <android.support.constraint.ConstraintLayout
-                                android:id="@+id/deposit_address_layout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/standard_padding"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/personal_address_heading_text_view">
-
-                                <TextView
-                                    android:id="@+id/address_text_view"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="16dp"
-                                    android:layout_marginEnd="16dp"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    tools:text="s0mE0uT5taNd1nGAdDrEsS666" />
-
-                                <TextView
-                                    android:id="@+id/to_make_deposit_text_view"
-                                    style="@style/SecondaryText"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="16dp"
-                                    android:layout_marginTop="@dimen/quarter_standard_margin"
-                                    android:textSize="@dimen/text_size_hint"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/address_text_view"
-                                    tools:text="@string/to_make_deposit_send_asset" />
-
-                                <Button
-                                    android:id="@+id/share_btn"
-                                    style="@style/PrimaryButton"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/standard_padding"
-                                    android:layout_marginEnd="16dp"
-                                    android:layout_marginBottom="16dp"
-                                    android:paddingStart="32dp"
-                                    android:paddingEnd="32dp"
-                                    android:text="@string/share_label"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/to_make_deposit_text_view" />
-
-                                <TextView
-                                    android:id="@+id/show_qr_text_view"
-                                    style="@style/PrimaryActionTextView"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="16dp"
-                                    android:text="@string/show_qr_label"
-                                    app:layout_constraintBottom_toBottomOf="@+id/share_btn"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="@+id/share_btn" />
-                            </android.support.constraint.ConstraintLayout>
-                        </android.support.constraint.ConstraintLayout>
-                    </android.support.v7.widget.CardView>
-
-                    <android.support.v7.widget.CardView
-                        android:id="@+id/address_expiration_card"
-                        style="@style/InfoCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardUseCompatPadding="false">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                style="@style/HeadingText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/deposit_address_expiration_date" />
-
-                            <TextView
-                                android:id="@+id/address_expiration_text_view"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/standard_padding"
-                                tools:text="25 May 2018 14:00:00" />
-
-                            <Button
-                                android:id="@+id/renew_btn"
-                                style="@style/PrimaryButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="end"
-                                android:layout_marginTop="@dimen/standard_padding"
-                                android:paddingStart="32dp"
-                                android:paddingEnd="32dp"
-                                android:text="@string/renew_personal_address_action" />
-                        </LinearLayout>
-
-                    </android.support.v7.widget.CardView>
-
-                </LinearLayout>
-            </android.support.v4.widget.NestedScrollView>
         </LinearLayout>
     </org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>
