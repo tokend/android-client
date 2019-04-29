@@ -300,7 +300,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private fun displayAddress() {
         externalAccount?.address.let { address ->
             if (!assetsRepository.isNeverUpdated) {
-                adapter.setData(emptyList())
+                adapter.clearData()
                 val expirationDate = externalAccount?.expirationDate
                 val isExpired = expirationDate != null && expirationDate <= Date()
                 if (address != null && !isExpired) {
