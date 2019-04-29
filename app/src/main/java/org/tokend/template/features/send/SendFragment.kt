@@ -2,8 +2,10 @@ package org.tokend.template.features.send
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
@@ -16,8 +18,11 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_send.*
+import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
+import org.tokend.template.data.model.AssetRecord
+import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.features.send.amount.model.PaymentAmountAndDescription
 import org.tokend.template.features.send.amount.view.PaymentAmountAndDescriptionFragment
@@ -33,6 +38,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.util.input.SoftInputUtil
 import java.math.BigDecimal
 
 class SendFragment : BaseFragment(), ToolbarProvider {
@@ -54,6 +60,8 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     private var asset: String = ""
     private var description: String? = null
 
+    private var isWaitingForTransferableAssets: Boolean = true
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_send, container, false)
@@ -65,18 +73,24 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         toolbar.title = getString(R.string.send_title)
 
         initSwipeRefresh()
+        initErrorEmptyView()
 
         subscribeToBalances()
 
-        balancesRepository.updateIfNotFresh()
-
-        toRecipientScreen()
+        update()
     }
 
     // region Init
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
         swipe_refresh.setOnRefreshListener { balancesRepository.update() }
+    }
+
+    private fun initErrorEmptyView() {
+        error_empty_view.background = ColorDrawable(
+                ContextCompat.getColor(requireContext(), R.color.colorDefaultBackground)
+        )
+        error_empty_view.setEmptyDrawable(R.drawable.ic_send)
     }
     // endregion
 
@@ -92,12 +106,44 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                         },
                 balancesRepository.loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { loadingIndicator.setLoading(it, "balances") }
+                        .subscribe { loadingIndicator.setLoading(it, "balances") },
+                balancesRepository.errorsSubject
+                        .compose(ObservableTransformers.defaultSchedulers())
+                        .subscribe {
+                            if (isWaitingForTransferableAssets) {
+                                toErrorView(it)
+                            } else {
+                                errorHandlerFactory.getDefault().handle(it)
+                            }
+                        }
         ).also { it.addTo(compositeDisposable) }
     }
 
+    private fun update(force: Boolean = false) {
+        if (!force) {
+            balancesRepository.updateIfNotFresh()
+        } else {
+            balancesRepository.update()
+        }
+    }
 
     private fun onBalancesUpdated() {
+        val anyTransferableAssets = balancesRepository
+                .itemsList
+                .map(BalanceRecord::asset)
+                .any(AssetRecord::isTransferable)
+
+        if (anyTransferableAssets) {
+            if (isWaitingForTransferableAssets) {
+                isWaitingForTransferableAssets = false
+
+                hideErrorOrEmptyView()
+                toRecipientScreen()
+            }
+        } else {
+            isWaitingForTransferableAssets = true
+            toEmptyView()
+        }
     }
 
     private fun toRecipientScreen() {
@@ -209,8 +255,32 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 .commit()
     }
 
+    private fun clearScreensBackStack() {
+        childFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    // region Error/empty
+    private fun toEmptyView() {
+        clearScreensBackStack()
+        SoftInputUtil.hideSoftInput(requireActivity())
+        error_empty_view.showEmpty(R.string.error_no_transferable_assets)
+    }
+
+    private fun toErrorView(e: Throwable) {
+        clearScreensBackStack()
+        SoftInputUtil.hideSoftInput(requireActivity())
+        error_empty_view.showError(e, errorHandlerFactory.getDefault()) {
+            update(force = true)
+        }
+    }
+
+    private fun hideErrorOrEmptyView() {
+        error_empty_view.hide()
+    }
+    // endregion
+
     override fun onBackPressed(): Boolean {
-        return if (childFragmentManager.backStackEntryCount == 1) {
+        return if (childFragmentManager.backStackEntryCount <= 1) {
             true
         } else {
             childFragmentManager.popBackStackImmediate()
