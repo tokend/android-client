@@ -12,6 +12,7 @@ import org.tokend.template.di.providers.RepositoryProviderImpl
 import org.tokend.template.di.providers.WalletInfoProviderFactory
 import org.tokend.template.features.send.logic.ConfirmPaymentRequestUseCase
 import org.tokend.template.features.send.logic.CreatePaymentRequestUseCase
+import org.tokend.template.features.send.recipient.logic.PaymentRecipientLoader
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
@@ -42,7 +43,7 @@ class PaymentsTest {
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
-        val (_, recipientAccount, _) = Util.getVerifiedWallet(
+        val (_, _, _) = Util.getVerifiedWallet(
                 recipientEmail, password, apiProvider, session, null
         )
 
@@ -55,15 +56,18 @@ class PaymentsTest {
         Util.getSomeMoney(asset, emissionAmount,
                 repositoryProvider, session, txManager)
 
+        val recipient = PaymentRecipientLoader(repositoryProvider.accountDetails())
+                .load(recipientEmail)
+                .blockingGet()
+
         val useCase = CreatePaymentRequestUseCase(
-                recipientEmail,
+                recipient,
                 paymentAmount,
                 asset,
                 "Test payment",
                 session,
                 FeeManager(apiProvider),
-                repositoryProvider.balances(),
-                repositoryProvider.accountDetails()
+                repositoryProvider.balances()
         )
 
         val request = useCase.perform().blockingGet()
@@ -71,7 +75,7 @@ class PaymentsTest {
         Assert.assertEquals("Payment request amount must be equal to the requested amount",
                 paymentAmount, request.amount)
         Assert.assertTrue("Payment request recipient must be a valid account ID",
-                Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID, request.recipientAccountId.toCharArray()))
+                Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID, recipient.accountId.toCharArray()))
     }
 
     @Test
@@ -91,11 +95,9 @@ class PaymentsTest {
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
-        val (_, recipientAccount, _) = Util.getVerifiedWallet(
+        val (_, _, _) = Util.getVerifiedWallet(
                 recipientEmail, password, apiProvider, session, null
         )
-
-        val recipientAccountId = recipientAccount.accountId
 
         Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -107,15 +109,18 @@ class PaymentsTest {
         val initialBalance = Util.getSomeMoney(asset, emissionAmount,
                 repositoryProvider, session, txManager)
 
+        val recipient = PaymentRecipientLoader(repositoryProvider.accountDetails())
+                .load(recipientEmail)
+                .blockingGet()
+
         val request = CreatePaymentRequestUseCase(
-                recipientAccountId,
+                recipient,
                 paymentAmount,
                 asset,
                 "Test payment",
                 session,
                 FeeManager(apiProvider),
-                repositoryProvider.balances(),
-                repositoryProvider.accountDetails()
+                repositoryProvider.balances()
         ).perform().blockingGet()
 
         ConfirmPaymentRequestUseCase(
@@ -144,7 +149,7 @@ class PaymentsTest {
         Assert.assertTrue("First history entry must be a payment after the payment sending",
                 transactions.first().cause is BalanceChangeCause.Payment)
         Assert.assertEquals("Payment history entry must have a requested destination account id",
-                request.recipientAccountId,
+                request.recipient.accountId,
                 transactions
                         .first()
                         .cause
@@ -170,11 +175,9 @@ class PaymentsTest {
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
-        val (_, recipientAccount, _) = Util.getVerifiedWallet(
+        val (_, _, _) = Util.getVerifiedWallet(
                 recipientEmail, password, apiProvider, session, null
         )
-
-        val recipientAccountId = recipientAccount.accountId
 
         val (_, rootAccount, _) = Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
@@ -201,15 +204,18 @@ class PaymentsTest {
         val initialBalance = Util.getSomeMoney(asset, emissionAmount,
                 repositoryProvider, session, txManager)
 
+        val recipient = PaymentRecipientLoader(repositoryProvider.accountDetails())
+                .load(recipientEmail)
+                .blockingGet()
+
         val request = CreatePaymentRequestUseCase(
-                recipientAccountId,
+                recipient,
                 paymentAmount,
                 asset,
                 "Test payment with fee",
                 session,
                 FeeManager(apiProvider),
-                repositoryProvider.balances(),
-                repositoryProvider.accountDetails()
+                repositoryProvider.balances()
         ).perform().blockingGet()
 
         Assert.assertTrue("Payment request sender fee must greater than zero",
