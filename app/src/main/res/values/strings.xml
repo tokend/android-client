@@ -423,7 +423,7 @@
     <string name="template_fee_bounds_upto">Up to %1$s</string>
     <string name="template_fee_bounds_from">From %1$s</string>
     <string name="fee_bounds_default">Default</string>
-    <string name="fee_info_titles">fixed\npercent</string>
+    <string name="fee_info_titles">Fixed:\nPercent:</string>
     <string name="spend">Spend</string>
     <string name="payout">Payout</string>
 </resources>
