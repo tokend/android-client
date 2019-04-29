@@ -99,7 +99,9 @@ open class AmountInputFragment : BaseFragment() {
                     },
                     onDismiss = {
                         amount_edit_text.requestFocus()
-                        SoftInputUtil.showSoftInputOnView(amount_edit_text)
+                        amount_edit_text.postDelayed({
+                            SoftInputUtil.showSoftInputOnView(amount_edit_text)
+                        }, 100)
                     }
             )
         }
