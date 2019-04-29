@@ -4,6 +4,7 @@ import org.tokend.template.extensions.isMaxPossibleAmount
 import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.wallet.xdr.FeeType
+import java.math.BigDecimal
 
 class FeeItem(
         val type: FeeType,
@@ -25,16 +26,16 @@ class FeeItem(
 
             val subtype = Subtype.values().find { fee.subtype == it.value }!!
 
-            val fixed = amountFormatter.formatAssetAmount(fee.fixed, fee.asset, 1)
+            val fixed = amountFormatter.formatAssetAmount(fee.fixed, fee.asset, 0)
 
-            val percent = "${amountFormatter.formatAmount(fee.percent, 6, 1)}%"
+            val percent = "${amountFormatter.formatAmount(fee.percent, 6, 0)}%"
 
             val lowerBound =
                     if (fee.lowerBound.isMaxPossibleAmount())
                         ""
                     else
                         amountFormatter.formatAssetAmount(
-                                fee.lowerBound, fee.asset, 1,
+                                fee.lowerBound, fee.asset, 0,
                                 abbreviation = true,
                                 withAssetCode = false
                         )
@@ -44,7 +45,7 @@ class FeeItem(
                         ""
                     else
                         amountFormatter.formatAssetAmount(
-                                fee.upperBound, fee.asset, 1,
+                                fee.upperBound, fee.asset, 0,
                                 abbreviation = true,
                                 withAssetCode = false)
 
