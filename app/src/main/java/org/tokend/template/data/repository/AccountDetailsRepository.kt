@@ -22,12 +22,13 @@ class AccountDetailsRepository(
      * @see NoIdentityAvailableException
      */
     fun getAccountIdByEmail(email: String): Single<String> {
-        val existing = identities.find { it.email == email }?.accountId
+        val formattedEmail = email.toLowerCase()
+        val existing = identities.find { it.email == formattedEmail }?.accountId
         if (existing != null) {
             return Single.just(existing)
         }
 
-        return getIdentity(IdentitiesPageParams(email = email))
+        return getIdentity(IdentitiesPageParams(email = formattedEmail))
                 .map(IdentityRecord::accountId)
     }
 
