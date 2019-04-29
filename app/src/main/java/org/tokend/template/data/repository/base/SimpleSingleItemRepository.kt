@@ -24,7 +24,6 @@ abstract class SimpleSingleItemRepository<T : Any> : SingleItemRepository<T>() {
                 }
             }
 
-            item = null
             isLoading = true
 
             val storedItemObservable =

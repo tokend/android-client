@@ -83,6 +83,11 @@ abstract class BaseRecyclerAdapter<ItemType, ViewHolderType>
         addData(items.toList())
     }
 
+    open fun clearData() {
+        items.clear()
+        notifyDataSetChanged()
+    }
+
     /**
      * @returns true if adapter has data, false otherwise
      */

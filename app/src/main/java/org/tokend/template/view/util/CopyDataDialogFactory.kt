@@ -1,0 +1,34 @@
+package org.tokend.template.view.util
+
+import android.content.Context
+import android.support.v7.app.AlertDialog
+import android.widget.TextView
+import org.jetbrains.anko.clipboardManager
+import org.tokend.template.R
+import org.tokend.template.view.ToastManager
+
+object CopyDataDialogFactory {
+
+    fun getDialog(
+            context: Context,
+            content: String,
+            title: String?,
+            toastManager: ToastManager,
+            toastMessage: String
+    ): AlertDialog {
+        return AlertDialog.Builder(context, R.style.AlertDialogStyle)
+                .setTitle(title)
+                .setMessage(content)
+                .setPositiveButton(R.string.ok, null)
+                .setNeutralButton(R.string.copy_action, null)
+                .show()
+                .apply {
+                    findViewById<TextView>(android.R.id.message)?.setTextIsSelectable(true)
+
+                    getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+                        context.clipboardManager.text = content
+                        toastManager.short(toastMessage)
+                    }
+                }
+    }
+}

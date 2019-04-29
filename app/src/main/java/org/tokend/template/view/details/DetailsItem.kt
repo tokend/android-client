@@ -1,6 +1,7 @@
 package org.tokend.template.view.details
 
 import android.graphics.drawable.Drawable
+import android.support.annotation.ColorInt
 import android.view.View
 
 /**
@@ -10,6 +11,8 @@ class DetailsItem(
         val text: String,
         val hint: String? = null,
         val icon: Drawable? = null,
+        @ColorInt
+        val textColor: Int? = null,
         /**
          * Section header
          */

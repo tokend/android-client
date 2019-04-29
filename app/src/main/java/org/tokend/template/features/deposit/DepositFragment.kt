@@ -1,10 +1,13 @@
 package org.tokend.template.features.deposit
 
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SimpleItemAnimator
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +19,7 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_deposit.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.clipboardManager
 import org.jetbrains.anko.onClick
-import org.jetbrains.anko.onLongClick
 import org.jetbrains.anko.runOnUiThread
 import org.tokend.template.R
 import org.tokend.template.data.model.AccountRecord
@@ -30,7 +31,10 @@ import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.details.DetailsItem
+import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.picker.PickerItem
+import org.tokend.template.view.util.CopyDataDialogFactory
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
@@ -69,6 +73,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     private var requestedAssetSet = false
 
+    private val adapter = DetailsItemsAdapter()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_deposit, container, false)
     }
@@ -81,10 +87,11 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     override fun onInitAllowed() {
         initToolbar()
+        initList()
         initSwipeRefresh()
-        initButtons()
         initHorizontalSwipes()
         initEmptyView()
+        initActions()
 
         subscribeToAccount()
         subscribeToAssets()
@@ -150,26 +157,37 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         toolbar.title = getString(R.string.deposit_title)
     }
 
+    private fun initList() {
+        details_list.layoutManager = LinearLayoutManager(context)
+        details_list.adapter = adapter
+        (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+    }
+
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
         swipe_refresh.setOnRefreshListener { update(true) }
     }
 
-    private fun initButtons() {
-        show_qr_text_view.onClick {
-            openQr()
+    private fun initActions() {
+        adapter.onItemClick { _, item ->
+            when (item.id) {
+                EXISTING_ADDRESS_ITEM_ID -> {
+                    CopyDataDialogFactory.getDialog(
+                            requireContext(),
+                            item.text,
+                            getString(R.string.personal_address),
+                            toastManager,
+                            getString(R.string.deposit_address_copied)
+                    )
+                }
+                SHARE_ITEM__ID -> shareData()
+                QR_ITEM_ID -> openQr()
+                RENEW_ITEM_ID -> bindExternalAccount(true)
+            }
         }
 
-        share_btn.onClick {
-            shareData()
-        }
-
-        get_address_btn.onClick {
+        get_address_button.onClick {
             bindExternalAccount()
-        }
-
-        renew_btn.onClick {
-            bindExternalAccount(isRenewal = true)
         }
     }
 
@@ -177,8 +195,9 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         val depositableAssets = assets.filter { it.isBackedByExternalSystem }
 
         if (depositableAssets.isEmpty()) {
-            deposit_content_layout.visibility = View.GONE
             asset_tab_layout.visibility = View.GONE
+            details_list.visibility = View.GONE
+            no_address_layout.visibility = View.GONE
 
             if (!assetsRepository.isNeverUpdated) {
                 error_empty_view.showEmpty(R.string.error_deposit_unavailable)
@@ -186,7 +205,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             return
         } else {
             asset_tab_layout.visibility = View.VISIBLE
-            deposit_content_layout.visibility = View.VISIBLE
+            details_list.visibility = View.VISIBLE
             error_empty_view.hide()
         }
 
@@ -224,6 +243,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             gestureDetector.onTouchEvent(motionEvent)
             false
         }
+
     }
 
     private fun initEmptyView() {
@@ -279,58 +299,78 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     // region Address display
     private fun displayAddress() {
         externalAccount?.address.let { address ->
-            val expirationDate = externalAccount?.expirationDate
-            val isExpired = expirationDate != null && expirationDate <= Date()
-            if (address != null && !isExpired) {
-                displayExistingAddress(address, expirationDate)
-            } else {
-                displayAddressEmptyView()
+            if (!assetsRepository.isNeverUpdated) {
+                adapter.clearData()
+                val expirationDate = externalAccount?.expirationDate
+                val isExpired = expirationDate != null && expirationDate <= Date()
+                if (address != null && !isExpired) {
+                    displayExistingAddress(address, expirationDate)
+                } else {
+                    displayAddressEmptyView()
+                }
             }
         }
     }
 
     private fun displayExistingAddress(address: String, expirationDate: Date?) {
-        deposit_address_layout.visibility = View.VISIBLE
         no_address_layout.visibility = View.GONE
+        details_list.visibility = View.VISIBLE
+        adapter.addOrUpdateItem(
+                DetailsItem(
+                        id = EXISTING_ADDRESS_ITEM_ID,
+                        text = address,
+                        singleLineText = true,
+                        hint = getString(R.string.to_make_deposit_send_asset, currentAsset?.code),
+                        header = getString(R.string.personal_address),
+                        icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_forward)
+                )
+        )
 
-        address_text_view.onLongClick {
-            requireContext().clipboardManager.text = address
-            toastManager.short(R.string.deposit_address_copied)
+        val shareIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_share)
+        shareIcon?.setColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.icons), PorterDuff.Mode.SRC_ATOP)
 
-            true
-        }
+        adapter.addData(
+                DetailsItem(
+                        id = SHARE_ITEM__ID,
+                        singleLineText = true,
+                        text = getString(R.string.share),
+                        icon = shareIcon
+                )
+        )
 
-        address_text_view.text = address
-        to_make_deposit_text_view.text = getString(R.string.to_make_deposit_send_asset,
-                currentAsset?.code)
+        adapter.addData(
+                DetailsItem(
+                        id = QR_ITEM_ID,
+                        text = getString(R.string.show_qr_label),
+                        singleLineText = true,
+                        icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_qr_code_scan)
+                )
+        )
 
         if (expirationDate != null) {
-            address_expiration_card.visibility = View.VISIBLE
-            address_expiration_text_view.text =
-                    DateFormatter(requireActivity())
-                            .formatLong(expirationDate)
-            updateExpirationDateColor(expirationDate)
-        } else {
-            address_expiration_card.visibility = View.GONE
+            updateExpirationDate(expirationDate)
+
+            adapter.addData(
+                    DetailsItem(
+                            id = RENEW_ITEM_ID,
+                            text = getString(R.string.renew_personal_address_action),
+                            singleLineText = true,
+                            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_renew)
+                    )
+            )
         }
     }
 
     private fun displayAddressEmptyView() {
-        deposit_address_layout.visibility = View.GONE
-        address_expiration_card.visibility = View.GONE
+        details_list.visibility = View.GONE
         no_address_layout.visibility = View.VISIBLE
-
-        if (accountRepository.isNeverUpdated) {
-            no_address_text_view.text = getString(R.string.loading_data)
-            get_address_btn.visibility = View.GONE
-        } else {
-            no_address_text_view.text = getString(R.string.template_no_personal_asset_address,
-                    currentAsset?.code)
-            get_address_btn.visibility = View.VISIBLE
-        }
+        no_address_text_view.text = getString(
+                R.string.template_no_personal_asset_address, currentAsset?.code
+        )
     }
 
-    private fun updateExpirationDateColor(expirationDate: Date) {
+    private fun updateExpirationDate(expirationDate: Date) {
         val rest = expirationDate.time - System.currentTimeMillis()
         val colorId = when {
             rest < CRITICAL_EXPIRATION_WARNING_THRESHOLD -> R.color.error
@@ -338,8 +378,15 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             else -> R.color.primary_text
         }
 
-        address_expiration_text_view.setTextColor(
-                ContextCompat.getColor(requireContext(), colorId)
+        adapter.addOrUpdateItem(
+                DetailsItem(
+                        id = EXPIRATION_ITEM_ID,
+                        text = DateFormatter(requireActivity()).formatLong(expirationDate),
+                        singleLineText = true,
+                        textColor = ContextCompat.getColor(requireContext(), colorId),
+                        header = getString(R.string.deposit_address_expiration_date),
+                        icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_calendar)
+                )
         )
     }
 
@@ -347,21 +394,23 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         getAddressShareMessage()?.let { shareMessage ->
             val sharingIntent = Intent(Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"
-            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+            sharingIntent.putExtra(Intent.EXTRA_SUBJECT,
                     getString(R.string.app_name))
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage)
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
             startActivity(Intent.createChooser(sharingIntent,
                     getString(R.string.share_address_label)))
         }
     }
 
     private fun openQr() {
-        Navigator.from(this).openQrShare(
-                title =
-                "${getString(R.string.deposit_title)} ${asset_tab_layout.selectedItem?.text}",
-                data = address_text_view.text.toString(),
-                shareLabel = getString(R.string.share_address_label),
-                shareText = getAddressShareMessage())
+        externalAccount?.address?.let { address ->
+            Navigator.from(this).openQrShare(
+                    title =
+                    "${getString(R.string.deposit_title)} ${asset_tab_layout.selectedItem?.text}",
+                    data = address,
+                    shareLabel = getString(R.string.share_address_label),
+                    shareText = getAddressShareMessage())
+        }
     }
 
     private fun getAddressShareMessage(): String? {
@@ -432,6 +481,12 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         private const val EXPIRATION_WARNING_THRESHOLD = 6 * 60 * 60 * 1000L
         private const val CRITICAL_EXPIRATION_WARNING_THRESHOLD = 30 * 60 * 1000L
         private const val EXTRA_ASSET = "extra_asset"
+
+        private val EXISTING_ADDRESS_ITEM_ID = "existing_address".hashCode().toLong()
+        private val SHARE_ITEM__ID = "share".hashCode().toLong()
+        private val QR_ITEM_ID = "qr".hashCode().toLong()
+        private val EXPIRATION_ITEM_ID = "expiration_date".hashCode().toLong()
+        private val RENEW_ITEM_ID = "renew".hashCode().toLong()
 
         fun newInstance(asset: String?): DepositFragment {
             val fragment = DepositFragment()
