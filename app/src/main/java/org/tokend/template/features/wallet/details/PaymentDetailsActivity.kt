@@ -1,20 +1,17 @@
 package org.tokend.template.features.wallet.details
 
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
-import android.widget.TextView
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details_list.*
-import org.jetbrains.anko.clipboardManager
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
-import org.tokend.template.view.util.AddressDialogFactory
+import org.tokend.template.view.util.CopyDataDialogFactory
 import java.math.BigDecimal
 
 
@@ -58,11 +55,12 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
             if (item.id == COUNTERPARTY_ACCOUNT_ID_ITEM_ID) {
                 val content = item.text
 
-                AddressDialogFactory.getDialog(
+                CopyDataDialogFactory.getDialog(
                         this,
                         content,
                         item.hint,
-                        toastManager
+                        toastManager,
+                        getString(R.string.account_id_has_been_copied)
                 )
             }
         }

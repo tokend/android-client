@@ -7,13 +7,14 @@ import org.jetbrains.anko.clipboardManager
 import org.tokend.template.R
 import org.tokend.template.view.ToastManager
 
-object AddressDialogFactory {
+object CopyDataDialogFactory {
 
     fun getDialog(
             context: Context,
             content: String,
             title: String?,
-            toastManager: ToastManager
+            toastManager: ToastManager,
+            toastMessage: String
     ): AlertDialog {
         return AlertDialog.Builder(context, R.style.AlertDialogStyle)
                 .setTitle(title)
@@ -26,7 +27,7 @@ object AddressDialogFactory {
 
                     getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
                         context.clipboardManager.text = content
-                        toastManager.short(R.string.account_id_has_been_copied)
+                        toastManager.short(toastMessage)
                     }
                 }
     }

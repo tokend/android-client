@@ -34,7 +34,7 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.picker.PickerItem
-import org.tokend.template.view.util.AddressDialogFactory
+import org.tokend.template.view.util.CopyDataDialogFactory
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
@@ -72,12 +72,6 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     private var requestedAssetSet = false
-
-    private val allowDetailsUpdate: Boolean
-        get() = !accountRepository.isLoading
-                && !assetsRepository.isLoading
-                && !accountRepository.isNeverUpdated
-                && !assetsRepository.isNeverUpdated
 
     private val adapter = DetailsItemsAdapter()
 
@@ -178,11 +172,12 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         adapter.onItemClick { _, item ->
             when (item.id) {
                 EXISTING_ADDRESS_ITEM_ID -> {
-                    AddressDialogFactory.getDialog(
+                    CopyDataDialogFactory.getDialog(
                             requireContext(),
                             item.text,
                             getString(R.string.personal_address),
-                            toastManager
+                            toastManager,
+                            getString(R.string.deposit_address_copied)
                     )
                 }
                 SHARE_ITEM__ID -> shareData()
@@ -304,7 +299,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     // region Address display
     private fun displayAddress() {
         externalAccount?.address.let { address ->
-            if (allowDetailsUpdate) {
+            if (!assetsRepository.isNeverUpdated) {
                 adapter.setData(emptyList())
                 val expirationDate = externalAccount?.expirationDate
                 val isExpired = expirationDate != null && expirationDate <= Date()
