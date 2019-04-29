@@ -95,15 +95,6 @@ class PaymentAmountAndDescriptionFragment : AmountInputFragment() {
         )
     }
 
-    private fun checkAmount() {
-        when {
-            amountWrapper.scaledAmount > balance ->
-                setError(getString(R.string.error_insufficient_balance))
-            else ->
-                setError(null)
-        }
-    }
-
     override fun updateActionButtonAvailability() {
         checkAmount()
 

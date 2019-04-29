@@ -173,9 +173,21 @@ open class AmountInputFragment : BaseFragment() {
     }
 
     protected open fun updateActionButtonAvailability() {
+        checkAmount()
+
         action_button.isEnabled = !hasError
+                && amountWrapper.scaledAmount.signum() > 0
     }
     // endregion
+
+    protected open fun checkAmount() {
+        when {
+            amountWrapper.scaledAmount > balance ->
+                setError(getString(R.string.error_insufficient_balance))
+            else ->
+                setError(null)
+        }
+    }
 
     protected open fun postResult() {
         resultSubject.onNext(
