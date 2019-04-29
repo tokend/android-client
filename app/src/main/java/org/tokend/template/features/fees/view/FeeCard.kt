@@ -34,27 +34,26 @@ class FeeCard(private val context: Context,
     }
 
     private fun setFeeList() {
-        val highlightColor = ContextCompat.getColor(context, R.color.primary)
         fees.forEach { fee ->
             val feeFields = layoutInflater.inflate(R.layout.layout_fee_info, view, false)
 
-            val lowerBoundAmountString = fee.lowerBound
-            val lowerBoundString =
-                    context.getString(R.string.template_lower_bound, lowerBoundAmountString)
-            val lowerBoundSpannableString = SpannableString(lowerBoundString)
-            lowerBoundSpannableString.highlight(lowerBoundAmountString, highlightColor)
+            val lowerBound = fee.lowerBound
+            val upperBound = fee.upperBound
 
-            feeFields.from_text.text = lowerBoundSpannableString
+            val boundsString = when {
+                lowerBound == "0" && upperBound.isEmpty() ->
+                    context.getString(R.string.fee_bounds_default)
 
-            if (fee.upperBound.isNotEmpty()) {
-                val upperBoundAmountString = fee.upperBound
-                val upperBoundString =
-                        context.getString(R.string.template_upper_bound, upperBoundAmountString)
-                val upperBoundSpannableString = SpannableString(upperBoundString)
-                upperBoundSpannableString.highlight(upperBoundAmountString, highlightColor)
+                lowerBound == "0" && upperBound.isNotEmpty() ->
+                    context.getString(R.string.template_fee_bounds_upto, upperBound)
 
-                feeFields.to_text.text = upperBoundSpannableString
+                upperBound.isEmpty() ->
+                context.getString(R.string.template_fee_bounds_from, lowerBound)
+
+                else -> context.getString(R.string.template_fee_bounds, lowerBound, upperBound)
             }
+
+            feeFields.bounds_text.text = boundsString
 
             val valuesText = "${fee.fixed}\n${fee.percent}"
             feeFields.values_text.text = valuesText
