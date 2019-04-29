@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_divider" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/description_label_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/half_standard_padding"
+        android:layout_marginTop="@dimen/half_standard_padding"
+        app:srcCompat="@drawable/ic_label_outline"
+        app:tint="@color/secondary_text" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/payment_description_edit_text"
+        style="@style/EditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/half_standard_padding"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="@dimen/half_standard_padding"
+        android:layout_marginBottom="@dimen/half_standard_margin"
+        android:layout_toEndOf="@id/description_label_icon"
+        android:hint="@string/payment_description_label"
+        android:maxLines="2"
+        android:textSize="@dimen/text_size_default"
+        app:met_floatingLabel="none"
+        app:met_hideUnderline="true" />
+
+</RelativeLayout>

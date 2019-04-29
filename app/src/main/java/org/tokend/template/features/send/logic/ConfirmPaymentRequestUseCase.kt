@@ -47,7 +47,7 @@ class ConfirmPaymentRequestUseCase(
         return Single.defer {
             val operation = SimplePaymentOp(
                     sourceBalanceId = request.senderBalanceId,
-                    destAccountId = request.recipientAccountId,
+                    destAccountId = request.recipient.accountId,
                     amount = networkParams.amountToPrecised(request.amount),
                     subject = request.paymentSubject ?: "",
                     reference = request.reference,

@@ -20,7 +20,7 @@ import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.data.repository.tradehistory.TradeHistoryRepository
 import org.tokend.template.extensions.getOrPut
 import org.tokend.template.features.invest.repository.SalesRepository
-import org.tokend.template.features.send.repository.ContactsRepository
+import org.tokend.template.features.send.recipient.repository.ContactsRepository
 
 /**
  * @param context if not specified then android-related repositories

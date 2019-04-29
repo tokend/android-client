@@ -1,12 +1,11 @@
-package org.tokend.template.features.send.adapter
+package org.tokend.template.features.send.recipient.view.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
-import org.tokend.template.features.send.model.Contact
-import org.tokend.template.features.send.model.ContactEmail
+import org.tokend.template.features.send.recipient.model.ContactEmail
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.SimpleItemClickListener
 
@@ -21,7 +20,7 @@ class ContactsAdapter : RecyclerView.Adapter<BaseViewHolder<Any>>() {
     override fun onBindViewHolder(holder: BaseViewHolder<Any>, position: Int) {
         when (getItemViewType(position)) {
             TYPE_CONTACT -> (holder as ContactViewHolder)
-                    .bind(items[position] as Contact, onContactClickListener)
+                    .bind(items[position] as ContactListItem, onContactClickListener)
             else -> (holder as EmailViewHolder)
                     .bind(items[position] as ContactEmail, onEmailClickListener)
         }
@@ -37,7 +36,7 @@ class ContactsAdapter : RecyclerView.Adapter<BaseViewHolder<Any>>() {
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
-            is Contact -> TYPE_CONTACT
+            is ContactListItem -> TYPE_CONTACT
             else -> TYPE_EMAIL
         }
     }
@@ -47,16 +46,22 @@ class ContactsAdapter : RecyclerView.Adapter<BaseViewHolder<Any>>() {
         private const val TYPE_EMAIL = 141
     }
 
-    fun addData(data: Collection<Contact>?) {
+    fun addData(data: Collection<ContactListItem>?) {
         if (data != null) {
             items.addAll(data)
         }
         notifyDataSetChanged()
     }
 
+    fun setData(data: Collection<ContactListItem>) {
+        items.clear()
+        items.addAll(data)
+        notifyDataSetChanged()
+    }
+
     private val onContactClickListener = object : SimpleItemClickListener<Any> {
         override fun invoke(view: View?, item: Any) {
-            item as Contact
+            item as ContactListItem
             val emails = item.emails
             if (items.containsAll(emails)) {
                 notifyItemRangeRemoved(items.indexOf(emails[0]), emails.size)

@@ -29,7 +29,7 @@ class RecoverySeedActivity : BaseActivity() {
     private var canContinue: Boolean = false
         set(value) {
             field = value
-            continue_button.enabled = value
+            action_button.enabled = value
         }
 
     private var seedsMatch = false
@@ -75,7 +75,7 @@ class RecoverySeedActivity : BaseActivity() {
     }
 
     private fun initButtons() {
-        continue_button.onClick {
+        action_button.onClick {
             finishWithSuccess()
         }
 

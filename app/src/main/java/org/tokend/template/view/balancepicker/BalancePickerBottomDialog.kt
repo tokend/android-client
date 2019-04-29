@@ -65,7 +65,12 @@ open class BalancePickerBottomDialog(
             }
         }
 
-    open fun show(callback: (BalancePickerListItem) -> Unit) {
+    open fun show(onItemPicked: (BalancePickerListItem) -> Unit) {
+        show(onItemPicked, null)
+    }
+
+    open fun show(onItemPicked: (BalancePickerListItem) -> Unit,
+                  onDismiss: (() -> Unit)?) {
         compositeDisposable = CompositeDisposable()
         filter = null
 
@@ -73,7 +78,7 @@ open class BalancePickerBottomDialog(
                 context.layoutInflater.inflate(R.layout.dialog_balance_picker, null)
         val dialog = BottomSheetDialog(context, R.style.RoundedBottomSheetDialog)
 
-        initDialogView(dialog, dialogView, callback)
+        initDialogView(dialog, dialogView, onItemPicked)
         dialog.setContentView(dialogView)
 
         subscribeToBalances(
@@ -90,6 +95,7 @@ open class BalancePickerBottomDialog(
 
         dialog.setOnDismissListener {
             compositeDisposable.dispose()
+            onDismiss?.invoke()
         }
 
         dialog.show()

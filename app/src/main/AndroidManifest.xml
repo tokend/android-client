@@ -75,7 +75,8 @@
             android:name=".activities.MainActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar.NoBackground" />
+            android:theme="@style/AppTheme.NoActionBar.NoBackground"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".features.signup.RecoverySeedActivity"
             android:configChanges="orientation|screenSize"
@@ -142,7 +143,8 @@
         <activity
             android:name=".activities.SingleFragmentActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar.NoBackground" />
+            android:theme="@style/AppTheme.NoActionBar.NoBackground"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".features.invest.view.SaleActivity"
             android:configChanges="orientation|screenSize"

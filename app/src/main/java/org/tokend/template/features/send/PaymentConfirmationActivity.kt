@@ -53,7 +53,7 @@ class PaymentConfirmationActivity : BaseActivity() {
     private fun displayRecipient() {
         adapter.addData(
                 DetailsItem(
-                        text = request.recipientNickname,
+                        text = request.recipient.displayedValue,
                         hint = getString(R.string.tx_recipient),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_account)
                 )
