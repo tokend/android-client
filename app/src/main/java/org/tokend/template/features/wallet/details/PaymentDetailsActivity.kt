@@ -14,6 +14,7 @@ import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
+import org.tokend.template.view.util.AddressDialogFactory
 import java.math.BigDecimal
 
 
@@ -57,20 +58,12 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
             if (item.id == COUNTERPARTY_ACCOUNT_ID_ITEM_ID) {
                 val content = item.text
 
-                AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                        .setTitle(item.hint)
-                        .setMessage(content)
-                        .setPositiveButton(R.string.ok, null)
-                        .setNeutralButton(R.string.copy_action, null)
-                        .show()
-                        .apply {
-                            findViewById<TextView>(android.R.id.message)?.setTextIsSelectable(true)
-
-                            getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
-                                context.clipboardManager.text = content
-                                toastManager.short(R.string.account_id_has_been_copied)
-                            }
-                        }
+                AddressDialogFactory.getDialog(
+                        this,
+                        content,
+                        item.hint,
+                        toastManager
+                )
             }
         }
     }

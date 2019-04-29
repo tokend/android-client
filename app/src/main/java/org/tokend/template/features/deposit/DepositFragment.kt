@@ -19,7 +19,6 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_deposit.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.clipboardManager
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.runOnUiThread
 import org.tokend.template.R
@@ -35,6 +34,7 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.picker.PickerItem
+import org.tokend.template.view.util.AddressDialogFactory
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
@@ -72,6 +72,12 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     private var requestedAssetSet = false
+
+    private val allowDetailsUpdate: Boolean
+        get() = !accountRepository.isLoading
+                && !assetsRepository.isLoading
+                && !accountRepository.isNeverUpdated
+                && !assetsRepository.isNeverUpdated
 
     private val adapter = DetailsItemsAdapter()
 
@@ -172,8 +178,12 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         adapter.onItemClick { _, item ->
             when (item.id) {
                 EXISTING_ADDRESS_ITEM_ID -> {
-                    requireContext().clipboardManager.text = item.text
-                    toastManager.short(R.string.deposit_address_copied)
+                    AddressDialogFactory.getDialog(
+                            requireContext(),
+                            item.text,
+                            getString(R.string.personal_address),
+                            toastManager
+                    )
                 }
                 SHARE_ITEM__ID -> shareData()
                 QR_ITEM_ID -> openQr()
@@ -293,9 +303,9 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     // region Address display
     private fun displayAddress() {
-        adapter.setData(emptyList())
         externalAccount?.address.let { address ->
-            if (!assetsRepository.isNeverUpdated) {
+            if (allowDetailsUpdate) {
+                adapter.setData(emptyList())
                 val expirationDate = externalAccount?.expirationDate
                 val isExpired = expirationDate != null && expirationDate <= Date()
                 if (address != null && !isExpired) {
@@ -377,6 +387,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 DetailsItem(
                         id = EXPIRATION_ITEM_ID,
                         text = DateFormatter(requireActivity()).formatLong(expirationDate),
+                        singleLineText = true,
                         textColor = ContextCompat.getColor(requireContext(), colorId),
                         header = getString(R.string.deposit_address_expiration_date),
                         icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_calendar)
