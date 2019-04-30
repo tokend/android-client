@@ -11,8 +11,8 @@ import kotlinx.android.synthetic.main.fragment_trade_offers.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetPairRecord
-import org.tokend.template.data.model.OfferRecord
-import org.tokend.template.data.repository.offers.OffersRepository
+import org.tokend.template.features.offers.model.OfferRecord
+import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.offers.view.PendingOfferListItem
 import org.tokend.template.features.offers.view.PendingOffersAdapter
 import org.tokend.template.fragments.BaseFragment

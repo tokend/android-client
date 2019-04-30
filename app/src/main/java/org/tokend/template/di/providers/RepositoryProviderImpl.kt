@@ -11,16 +11,15 @@ import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
-import org.tokend.template.data.repository.offers.OffersCache
-import org.tokend.template.data.repository.offers.OffersRepository
-import org.tokend.template.data.repository.orderbook.OrderBookCache
-import org.tokend.template.data.repository.orderbook.OrderBookRepository
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.data.repository.tradehistory.TradeHistoryRepository
 import org.tokend.template.extensions.getOrPut
 import org.tokend.template.features.invest.repository.SalesRepository
+import org.tokend.template.features.offers.repository.OffersCache
+import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.send.recipient.repository.ContactsRepository
+import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
 
 /**
  * @param context if not specified then android-related repositories
@@ -120,11 +119,10 @@ class RepositoryProviderImpl(
     }
 
     override fun orderBook(baseAsset: String,
-                           quoteAsset: String,
-                           isBuy: Boolean): OrderBookRepository {
-        val key = "$baseAsset.$quoteAsset.$isBuy"
+                           quoteAsset: String): OrderBookRepository {
+        val key = "$baseAsset.$quoteAsset"
         return orderBookRepositories.getOrPut(key) {
-            OrderBookRepository(apiProvider, baseAsset, quoteAsset, isBuy, OrderBookCache(isBuy))
+            OrderBookRepository(apiProvider, baseAsset, quoteAsset)
         }
     }
 

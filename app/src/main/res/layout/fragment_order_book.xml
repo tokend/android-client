@@ -80,8 +80,8 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
-                    <org.tokend.template.view.PaginationRecyclerView
-                        android:id="@+id/buy_offers_recycler_view"
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/buy_entries_recycler_view"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -90,8 +90,8 @@
                         android:paddingStart="@dimen/half_standard_margin"
                         android:paddingBottom="62dp" />
 
-                    <org.tokend.template.view.PaginationRecyclerView
-                        android:id="@+id/sell_offers_recycler_view"
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/sell_entries_recycler_view"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"

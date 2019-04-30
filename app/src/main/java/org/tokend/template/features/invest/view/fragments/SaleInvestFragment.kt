@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.layout_progress.*
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.data.model.BalanceRecord
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.invest.view.InvestmentHelpDialog

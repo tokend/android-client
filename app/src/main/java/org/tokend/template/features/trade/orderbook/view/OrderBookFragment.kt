@@ -13,10 +13,12 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_order_book.*
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetPairRecord
-import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.data.repository.orderbook.OrderBookRepository
-import org.tokend.template.features.trade.orderbook.view.adapter.OrderBookAdapter
+import org.tokend.template.features.trade.orderbook.model.OrderBook
+import org.tokend.template.features.trade.orderbook.model.OrderBookEntryRecord
+import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
+import org.tokend.template.features.trade.orderbook.view.adapter.OrderBookEntriesAdapter
+import org.tokend.template.features.trade.orderbook.view.adapter.OrderBookEntryListItem
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -34,13 +36,15 @@ class OrderBookFragment : BaseFragment() {
 
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
-    private val buyRepository: OrderBookRepository
-        get() = repositoryProvider.orderBook(assetPair.base, assetPair.quote, true)
-    private val sellRepository: OrderBookRepository
-        get() = repositoryProvider.orderBook(assetPair.base, assetPair.quote, false)
 
-    private val buyAdapter = OrderBookAdapter(true)
-    private val sellAdapter = OrderBookAdapter(false)
+    private val orderBookRepository: OrderBookRepository
+        get() = repositoryProvider.orderBook(assetPair.base, assetPair.quote)
+
+    private val orderBook: OrderBook?
+        get() = orderBookRepository.item
+
+    private lateinit var buyAdapter: OrderBookEntriesAdapter
+    private lateinit var sellAdapter: OrderBookEntriesAdapter
 
     private var isBottomSheetExpanded = false
     private lateinit var bottomSheet: BottomSheetBehavior<LinearLayout>
@@ -69,25 +73,25 @@ class OrderBookFragment : BaseFragment() {
     // region Init
 
     private fun initLists() {
-        buyAdapter.amountFormatter = amountFormatter
-        sellAdapter.amountFormatter = amountFormatter
+        buyAdapter = OrderBookEntriesAdapter(true, amountFormatter)
+        sellAdapter = OrderBookEntriesAdapter(false, amountFormatter)
 
-        buy_offers_recycler_view.apply {
+        buy_entries_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = buyAdapter
         }
 
-        sell_offers_recycler_view.apply {
+        sell_entries_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = sellAdapter
         }
 
         buyAdapter.onItemClick { _, item ->
-            Navigator.from(this).openCreateOffer(item)
+            openOfferCreation(item.price)
         }
 
         sellAdapter.onItemClick { _, item ->
-            Navigator.from(this).openCreateOffer(item)
+            openOfferCreation(item.price)
         }
     }
 
@@ -98,7 +102,7 @@ class OrderBookFragment : BaseFragment() {
 
     private fun initFab() {
         add_offer_fab.setOnClickListener {
-            createOffer()
+            openOfferCreation()
         }
     }
     // endregion
@@ -125,74 +129,42 @@ class OrderBookFragment : BaseFragment() {
         ask_hint.text = getString(R.string.template_offer_ask_asset, assetPair.quote)
     }
 
-    private fun updateOrderBook(force: Boolean = false) {
-        if (force) {
-            buyRepository.update()
-            sellRepository.update()
-        } else {
-            buyRepository.updateIfNotFresh()
-            sellRepository.updateIfNotFresh()
-        }
-    }
-
     private var orderBookDisposable: CompositeDisposable? = null
     private fun subscribeToOrderBook() {
         orderBookDisposable?.dispose()
         orderBookDisposable = CompositeDisposable(
-                // region Items
-                buyRepository.itemsSubject
+                orderBookRepository
+                        .itemSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            displayBuyItems(it)
-                        },
-                sellRepository.itemsSubject
+                        .subscribe { displayOrderBook() },
+                orderBookRepository
+                        .loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            displaySellItems(it)
-                        },
-                // endregion
-
-                // region Loading
-                buyRepository.loadingSubject
+                        .subscribe { loadingIndicator.setLoading(it, "order_book") },
+                orderBookRepository
+                        .errorsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { isLoading ->
-                            //loadingIndicator.setLoading(it, "buy")
-
-                            if (isLoading) {
-                                bids_empty_view.visibility = View.INVISIBLE
-                                buyAdapter.showLoadingFooter()
-                            } else {
-                                buyAdapter.hideLoadingFooter()
-                            }
-                        },
-
-                sellRepository.loadingSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { isLoading ->
-                            //                            loadingIndicator.setLoading(it, "sell")
-                            if (isLoading) {
-                                asks_empty_view.visibility = View.INVISIBLE
-                                sellAdapter.showLoadingFooter()
-                            } else {
-                                sellAdapter.hideLoadingFooter()
-                            }
-                        }
-                // endregion
+                        .subscribe { errorHandlerFactory.getDefault().handle(it) }
         ).also { it.addTo(compositeDisposable) }
     }
 
-    private fun displayBuyItems(items: Collection<OfferRecord>) {
-        buyAdapter.setData(items)
-        if (items.isEmpty() && !buyRepository.isNeverUpdated) {
+    private fun displayOrderBook() {
+        displayBuyEntries(orderBook?.buyEntries ?: emptyList())
+        displaySellEntries(orderBook?.sellEntries ?: emptyList())
+    }
+
+    private fun displayBuyEntries(items: Collection<OrderBookEntryRecord>) {
+        buyAdapter.setData(items.map(::OrderBookEntryListItem))
+        if (items.isEmpty() && !orderBookRepository.isNeverUpdated) {
             bids_empty_view.visibility = View.VISIBLE
         } else {
             bids_empty_view.visibility = View.INVISIBLE
         }
     }
 
-    private fun displaySellItems(items: Collection<OfferRecord>) {
-        sellAdapter.setData(items)
-        if (items.isEmpty() && !sellRepository.isNeverUpdated) {
+    private fun displaySellEntries(items: Collection<OrderBookEntryRecord>) {
+        sellAdapter.setData(items.map(::OrderBookEntryListItem))
+        if (items.isEmpty() && !orderBookRepository.isNeverUpdated) {
             asks_empty_view.visibility = View.VISIBLE
         } else {
             asks_empty_view.visibility = View.INVISIBLE
@@ -202,7 +174,8 @@ class OrderBookFragment : BaseFragment() {
 
     private fun update(force: Boolean = false) {
         listOf(
-                balancesRepository
+                balancesRepository,
+                orderBookRepository
         ).forEach {
             if (!force) {
                 it.updateIfNotFresh()
@@ -210,20 +183,19 @@ class OrderBookFragment : BaseFragment() {
                 it.update()
             }
         }
-        updateOrderBook(force)
     }
 
     // region Offer creation
-    private fun createOffer() {
-        Navigator.from(this).openCreateOffer(
-                OfferRecord(
-                        baseAssetCode = assetPair.base,
-                        quoteAssetCode = assetPair.quote,
-                        baseAmount = BigDecimal.ZERO,
-                        price = assetPair.price,
-                        isBuy = false
+    private fun openOfferCreation(price: BigDecimal? = null) {
+        val orderBook = this.orderBook ?: return
+
+        Navigator
+                .from(this)
+                .openCreateOffer(
+                        baseAssetCode = orderBook.baseAssetCode,
+                        quoteAssetCode = orderBook.quoteAssetCode,
+                        requiredPrice = price
                 )
-        )
     }
     // endregion
 

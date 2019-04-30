@@ -5,7 +5,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.offers.logic.CancelOfferUseCase

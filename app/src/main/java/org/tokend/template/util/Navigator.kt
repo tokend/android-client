@@ -12,15 +12,15 @@ import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
+import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
 import org.tokend.template.data.model.AssetPairRecord
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.assets.AssetDetailsActivity
-import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.fees.FeesActivity
@@ -31,6 +31,7 @@ import org.tokend.template.features.limits.LimitsActivity
 import org.tokend.template.features.offers.CreateOfferActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.features.offers.view.details.PendingInvestmentDetailsActivity
 import org.tokend.template.features.offers.view.details.PendingOfferDetailsActivity
 import org.tokend.template.features.qr.ShareQrActivity
@@ -48,6 +49,7 @@ import org.tokend.template.features.wallet.details.*
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
+import java.math.BigDecimal
 
 /**
  * Performs transitions between screens.
@@ -324,9 +326,14 @@ class Navigator private constructor() {
         performIntent(intent)
     }
 
-    fun openCreateOffer(offer: OfferRecord) {
+    fun openCreateOffer(baseAssetCode: String,
+                        quoteAssetCode: String,
+                        requiredPrice: BigDecimal? = null) {
         val intent = context?.intentFor<CreateOfferActivity>(
-                CreateOfferActivity.EXTRA_OFFER to offer
+                CreateOfferActivity.BASE_ASSET_EXTRA to baseAssetCode,
+                CreateOfferActivity.QUOTE_ASSET_EXTRA to quoteAssetCode,
+                CreateOfferActivity.PRICE_STRING_EXTRA to requiredPrice
+                        ?.let(BigDecimalUtil::toPlainString)
         )
         performIntent(intent)
     }

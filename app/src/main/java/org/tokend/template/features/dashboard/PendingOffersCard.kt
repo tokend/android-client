@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.layout_progress.view.*
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.data.repository.base.MultipleItemsRepository
-import org.tokend.template.data.repository.offers.OffersRepository
+import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.features.offers.view.PendingOfferListItem
 import org.tokend.template.features.offers.view.PendingOffersAdapter

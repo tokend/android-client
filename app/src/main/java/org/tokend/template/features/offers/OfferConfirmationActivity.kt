@@ -10,7 +10,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.features.offers.logic.ConfirmOfferUseCase
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers

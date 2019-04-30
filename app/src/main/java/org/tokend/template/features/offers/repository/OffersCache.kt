@@ -1,21 +1,15 @@
-package org.tokend.template.data.repository.orderbook
+package org.tokend.template.features.offers.repository
 
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.repository.base.RepositoryCache
 
-class OrderBookCache(
-        private val isBuy: Boolean
-) : RepositoryCache<OfferRecord>() {
+class OffersCache : RepositoryCache<OfferRecord>() {
     override fun isContentSame(first: OfferRecord, second: OfferRecord): Boolean {
         return false
     }
 
     override fun sortItems() {
-        if (isBuy) {
-            mItems.sortByDescending { it.price }
-        } else {
-            mItems.sortBy { it.price }
-        }
+        mItems.sortByDescending { it.date }
     }
 
     override fun getAllFromDb() = emptyList<OfferRecord>()

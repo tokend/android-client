@@ -1,6 +1,6 @@
 package org.tokend.template.features.offers.view
 
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.util.DateProvider
 import java.math.BigDecimal
 import java.util.*

@@ -1,4 +1,4 @@
-package org.tokend.template.data.model
+package org.tokend.template.features.offers.model
 
 import org.tokend.sdk.api.generated.resources.OfferResource
 import org.tokend.sdk.api.generated.resources.OrderBookEntryResource
