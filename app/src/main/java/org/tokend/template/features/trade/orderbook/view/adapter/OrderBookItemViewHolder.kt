@@ -6,7 +6,7 @@ import android.widget.TextView
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
 import org.tokend.template.R
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.util.formatter.AmountFormatter
 

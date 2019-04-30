@@ -1,6 +1,6 @@
-package org.tokend.template.data.repository.offers
+package org.tokend.template.features.offers.repository
 
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.repository.base.RepositoryCache
 
 class OffersCache : RepositoryCache<OfferRecord>() {

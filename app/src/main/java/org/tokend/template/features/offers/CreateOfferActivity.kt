@@ -20,7 +20,7 @@ import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.BalanceRecord
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.isMaxPossibleAmount
@@ -56,7 +56,8 @@ class CreateOfferActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
-        currentOffer = intent.getSerializableExtra(EXTRA_OFFER) as? OfferRecord ?: return
+        currentOffer = intent.getSerializableExtra(EXTRA_OFFER) as? OfferRecord
+                ?: return
 
         baseScale = amountFormatter.getDecimalDigitsCount(currentOffer.baseAssetCode)
         quoteScale = amountFormatter.getDecimalDigitsCount(currentOffer.quoteAssetCode)

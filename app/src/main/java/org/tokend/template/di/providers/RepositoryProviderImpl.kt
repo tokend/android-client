@@ -11,8 +11,8 @@ import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
-import org.tokend.template.data.repository.offers.OffersCache
-import org.tokend.template.data.repository.offers.OffersRepository
+import org.tokend.template.features.offers.repository.OffersCache
+import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.data.repository.orderbook.OrderBookCache
 import org.tokend.template.data.repository.orderbook.OrderBookRepository
 import org.tokend.template.data.repository.pairs.AssetPairsRepository

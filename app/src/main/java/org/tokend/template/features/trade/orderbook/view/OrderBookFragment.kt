@@ -13,7 +13,7 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_order_book.*
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetPairRecord
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.orderbook.OrderBookRepository
 import org.tokend.template.features.trade.orderbook.view.adapter.OrderBookAdapter

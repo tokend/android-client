@@ -2,7 +2,7 @@ package org.tokend.template.features.offers.view.details
 
 import android.support.v4.content.ContextCompat
 import org.tokend.template.R
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.view.details.DetailsItem
 
 class PendingInvestmentDetailsActivity : PendingOfferDetailsActivity() {

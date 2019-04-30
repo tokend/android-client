@@ -1,6 +1,6 @@
 package org.tokend.template.data.repository.orderbook
 
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.repository.base.RepositoryCache
 
 class OrderBookCache(
