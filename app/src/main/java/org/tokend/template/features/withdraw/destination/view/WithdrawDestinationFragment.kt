@@ -32,6 +32,9 @@ class WithdrawDestinationFragment : BaseFragment() {
     protected val resultSubject = PublishSubject.create<String>()
     val resultObservable: Observable<String> = resultSubject
 
+    private val amountToSend: String?
+        get() = arguments?.getString(AMOUNT_EXTRA)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_withdraw_destination, container, false)
     }
@@ -54,6 +57,10 @@ class WithdrawDestinationFragment : BaseFragment() {
             tryToContinue()
         }
         destination_edit_text.requestFocus()
+
+        amountToSend?.let {
+            title_text_view.text = getString(R.string.template_to_withdraw, it)
+        }
     }
 
     private fun initButtons() {
@@ -86,7 +93,7 @@ class WithdrawDestinationFragment : BaseFragment() {
         checkDestination()
         updateContinueAvailability()
 
-        if(canContinue) {
+        if (canContinue) {
             val destination = destination_edit_text.text.toString()
             resultSubject.onNext(destination)
         }
@@ -113,5 +120,17 @@ class WithdrawDestinationFragment : BaseFragment() {
                                             grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
+    }
+
+    companion object {
+        private const val AMOUNT_EXTRA = "amount to withdraw"
+
+        fun newInstance(amountToWithdraw: String): WithdrawDestinationFragment {
+            val fragment = WithdrawDestinationFragment()
+            fragment.arguments = Bundle().apply {
+                putString(AMOUNT_EXTRA, amountToWithdraw)
+            }
+            return fragment
+        }
     }
 }
