@@ -2,12 +2,12 @@ package org.tokend.template.features.offers.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
+import org.tokend.template.features.offers.model.OfferRecord
+import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.logic.transactions.TxManager
 
 /**
@@ -131,12 +131,10 @@ class ConfirmOfferUseCase(
         if (!isPrimaryMarket) {
             listOf(repositoryProvider.orderBook(
                     offer.baseAssetCode,
-                    offer.quoteAssetCode,
-                    true
+                    offer.quoteAssetCode
             ), repositoryProvider.orderBook(
                     offer.baseAssetCode,
-                    offer.quoteAssetCode,
-                    false
+                    offer.quoteAssetCode
             )).forEach { it.updateIfEverUpdated() }
         }
         repositoryProvider.balances().updateIfEverUpdated()
