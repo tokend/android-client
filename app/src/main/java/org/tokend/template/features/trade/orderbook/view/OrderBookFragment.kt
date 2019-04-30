@@ -15,7 +15,7 @@ import org.tokend.template.R
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.data.repository.orderbook.OrderBookRepository
+import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
 import org.tokend.template.features.trade.orderbook.view.adapter.OrderBookAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.Navigator

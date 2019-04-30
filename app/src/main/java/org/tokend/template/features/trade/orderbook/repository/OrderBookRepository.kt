@@ -1,4 +1,4 @@
-package org.tokend.template.data.repository.orderbook
+package org.tokend.template.features.trade.orderbook.repository
 
 import io.reactivex.Single
 import org.tokend.sdk.api.base.model.DataPage

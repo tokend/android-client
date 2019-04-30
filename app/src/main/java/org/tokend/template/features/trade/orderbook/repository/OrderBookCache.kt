@@ -1,4 +1,4 @@
-package org.tokend.template.data.repository.orderbook
+package org.tokend.template.features.trade.orderbook.repository
 
 import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.repository.base.RepositoryCache
