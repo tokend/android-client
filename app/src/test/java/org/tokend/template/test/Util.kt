@@ -11,6 +11,7 @@ import org.tokend.sdk.utils.extentions.bitmask
 import org.tokend.sdk.utils.extentions.decodeHex
 import org.tokend.sdk.utils.extentions.encodeHexString
 import org.tokend.template.data.model.UrlConfig
+import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
 import org.tokend.template.features.signin.logic.PostSignInManager
@@ -56,6 +57,46 @@ object Util {
         ).perform().blockingAwait()
 
         return createResult
+    }
+
+    fun makeAccountGeneral(walletInfoProvider: WalletInfoProvider,
+                           apiProvider: ApiProvider,
+                           systemInfoRepository: SystemInfoRepository,
+                           txManager: TxManager) {
+        val accountId = walletInfoProvider.getWalletInfo()!!.accountId
+        val api = apiProvider.getApi()
+
+        val roleToSet = api
+                .v3
+                .keyValue
+                .getById("account_role:general")
+                .execute()
+                .get()
+                .value
+                .u32!!
+
+        val netParams = systemInfoRepository
+                .getNetworkParams()
+                .blockingGet()
+
+        val sourceAccount = Config.ADMIN_ACCOUNT
+
+        val op = CreateChangeRoleRequestOp(
+                requestID = 0,
+                destinationAccount = PublicKeyFactory.fromAccountId(accountId),
+                accountRoleToSet = roleToSet,
+                creatorDetails = "{}",
+                allTasks = 0,
+                ext = CreateChangeRoleRequestOp.CreateChangeRoleRequestOpExt.EmptyVersion()
+        )
+
+        val tx = TransactionBuilder(netParams, sourceAccount.accountId)
+                .addOperation(Operation.OperationBody.CreateChangeRoleRequest(op))
+                .build()
+
+        tx.addSignature(sourceAccount)
+
+        txManager.submit(tx).blockingGet()
     }
 
     fun getSomeMoney(asset: String,
