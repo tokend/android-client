@@ -9,6 +9,7 @@ import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.data.repository.tradehistory.TradeHistoryRepository
 import org.tokend.template.features.invest.repository.SalesRepository
+import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.send.recipient.repository.ContactsRepository
 import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
@@ -32,4 +33,5 @@ interface RepositoryProvider {
     fun tradeHistory(base: String, quote: String): TradeHistoryRepository
     fun assetChart(asset: String): AssetChartRepository
     fun assetChart(baseAsset: String, quoteAsset: String): AssetChartRepository
+    fun kycState(): KycStateRepository
 }

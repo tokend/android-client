@@ -16,6 +16,7 @@ import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.data.repository.tradehistory.TradeHistoryRepository
 import org.tokend.template.extensions.getOrPut
 import org.tokend.template.features.invest.repository.SalesRepository
+import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.offers.repository.OffersCache
 import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.send.recipient.repository.ContactsRepository
@@ -133,6 +134,10 @@ class RepositoryProviderImpl(
         }
     }
 
+    private val kycStateRepository: KycStateRepository by lazy {
+        KycStateRepository(apiProvider, walletInfoProvider)
+    }
+
     override fun account(): AccountRepository {
         return accountRepository
     }
@@ -196,6 +201,10 @@ class RepositoryProviderImpl(
                     apiProvider
             )
         }
+    }
+
+    override fun kycState(): KycStateRepository {
+        return kycStateRepository
     }
 
     companion object {
