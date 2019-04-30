@@ -24,8 +24,7 @@ import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.isMaxPossibleAmount
-import org.tokend.template.features.offers.logic.PrepareOfferUseCase
-import org.tokend.template.features.offers.model.OfferRecord
+import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -164,11 +163,11 @@ class CreateOfferActivity : BaseActivity() {
 
     private fun initButtons() {
         sell_btn.onClick {
-            goToOfferConfirmation(buildOffer(false))
+            goToOfferConfirmation(false)
         }
 
         buy_btn.onClick {
-            goToOfferConfirmation(buildOffer(true))
+            goToOfferConfirmation(true)
         }
 
         max_sell_text_view.onClick {
@@ -267,22 +266,6 @@ class CreateOfferActivity : BaseActivity() {
         }
     }
 
-    private fun buildOffer(isBuy: Boolean): OfferRecord {
-        val price = priceEditTextWrapper.rawAmount
-        val amount = amountEditTextWrapper.rawAmount
-        val total = BigDecimalUtil.scaleAmount(price * amount,
-                amountFormatter.getDecimalDigitsCount(quoteAssetCode))
-
-        return OfferRecord(
-                baseAssetCode = baseAssetCode,
-                quoteAssetCode = quoteAssetCode,
-                baseAmount = amount,
-                price = price,
-                quoteAmount = total,
-                isBuy = isBuy
-        )
-    }
-
     private fun updateActionsAvailability() {
         val isAvailable = !price_edit_text.text.isNullOrBlank()
                 && !amount_edit_text.text.isNullOrBlank()
@@ -294,31 +277,40 @@ class CreateOfferActivity : BaseActivity() {
         buy_btn.isEnabled = isAvailable
     }
 
-    private var offerPreparationDisposable: Disposable? = null
-    private fun goToOfferConfirmation(offer: OfferRecord) {
-        offerPreparationDisposable?.dispose()
+    private var offerCreationDisposable: Disposable? = null
+    private fun goToOfferConfirmation(isBuy: Boolean) {
+        offerCreationDisposable?.dispose()
+
+        val price = priceEditTextWrapper.scaledAmount
+        val amount = amountEditTextWrapper.scaledAmount
 
         val progress = ProgressDialogFactory.getTunedDialog(this).apply {
             setCanceledOnTouchOutside(true)
             setMessage(getString(R.string.loading_data))
             setOnCancelListener {
-                offerPreparationDisposable?.dispose()
+                offerCreationDisposable?.dispose()
             }
         }
 
-        offerPreparationDisposable = PrepareOfferUseCase(
-                offer,
-                walletInfoProvider,
-                FeeManager(apiProvider)
+        offerCreationDisposable = CreateOfferRequestUseCase(
+                baseAmount = amount,
+                isBuy = isBuy,
+                price = price,
+                orderBookId = 0,
+                baseAssetCode = baseAssetCode,
+                quoteAssetCode = quoteAssetCode,
+                offerToCancel = null,
+                walletInfoProvider = walletInfoProvider,
+                feeManager = FeeManager(apiProvider)
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe { progress.show() }
                 .doOnEvent { _, _ -> progress.hide() }
                 .subscribeBy(
-                        onSuccess = { completedOffer ->
+                        onSuccess = { offerRequest ->
                             Navigator.from(this).openOfferConfirmation(
-                                    CREATE_OFFER_REQUEST, completedOffer
+                                    CREATE_OFFER_REQUEST, offerRequest
                             )
                         },
                         onError = { errorHandlerFactory.getDefault().handle(it) }

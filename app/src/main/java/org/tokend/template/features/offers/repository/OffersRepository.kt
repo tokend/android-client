@@ -6,19 +6,20 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
-import org.tokend.template.features.offers.model.OfferRecord
+import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.v3.offers.params.OffersPageParamsV3
+import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.rx.extensions.toSingle
-import org.tokend.sdk.api.base.params.PagingParamsV2
-import org.tokend.sdk.api.v3.offers.params.OffersPageParamsV3
-import org.tokend.sdk.utils.SimplePagedResourceLoader
+import org.tokend.template.features.offers.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRequest
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.Account
 import org.tokend.wallet.NetworkParams
@@ -103,7 +104,9 @@ class OffersRepository(
     fun create(accountProvider: AccountProvider,
                systemInfoRepository: SystemInfoRepository,
                txManager: TxManager,
-               offer: OfferRecord,
+               baseBalanceId: String,
+               quoteBalanceId: String,
+               offerRequest: OfferRequest,
                offerToCancel: OfferRecord? = null): Completable {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Completable.error(IllegalStateException("No wallet info found"))
@@ -112,8 +115,11 @@ class OffersRepository(
 
         return systemInfoRepository.getNetworkParams()
                 .flatMap { netParams ->
-                    createOfferCreationTransaction(netParams, accountId, account,
-                            offer, offerToCancel)
+                    createOfferCreationTransaction(
+                            netParams, accountId, account,
+                            baseBalanceId, quoteBalanceId,
+                            offerRequest, offerToCancel
+                    )
                 }
                 .flatMap { transition ->
                     txManager.submit(transition)
@@ -133,7 +139,9 @@ class OffersRepository(
     private fun createOfferCreationTransaction(networkParams: NetworkParams,
                                                sourceAccountId: String,
                                                signer: Account,
-                                               offer: OfferRecord,
+                                               baseBalanceId: String,
+                                               quoteBalanceId: String,
+                                               offerRequest: OfferRequest,
                                                offerToCancel: OfferRecord?): Single<Transaction> {
         return offerToCancel
                 .toMaybe()
@@ -157,14 +165,14 @@ class OffersRepository(
                         Observable.just(
                                 ManageOfferOp(
                                         baseBalance =
-                                        PublicKeyFactory.fromBalanceId(offer.baseBalanceId),
+                                        PublicKeyFactory.fromBalanceId(baseBalanceId),
                                         quoteBalance =
-                                        PublicKeyFactory.fromBalanceId(offer.quoteBalanceId),
-                                        amount = networkParams.amountToPrecised(offer.baseAmount),
-                                        price = networkParams.amountToPrecised(offer.price),
-                                        fee = networkParams.amountToPrecised(offer.fee),
-                                        isBuy = offer.isBuy,
-                                        orderBookID = offer.orderBookId,
+                                        PublicKeyFactory.fromBalanceId(quoteBalanceId),
+                                        amount = networkParams.amountToPrecised(offerRequest.baseAmount),
+                                        price = networkParams.amountToPrecised(offerRequest.price),
+                                        fee = networkParams.amountToPrecised(offerRequest.fee.total),
+                                        isBuy = offerRequest.isBuy,
+                                        orderBookID = offerRequest.orderBookId,
                                         offerID = 0L,
                                         ext = ManageOfferOp.ManageOfferOpExt.EmptyVersion()
                                 )

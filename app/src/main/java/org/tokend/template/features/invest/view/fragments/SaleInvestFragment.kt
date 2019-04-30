@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -17,11 +16,11 @@ import kotlinx.android.synthetic.main.layout_progress.*
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.data.model.BalanceRecord
-import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.invest.view.InvestmentHelpDialog
-import org.tokend.template.features.offers.logic.PrepareOfferUseCase
+import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -305,43 +304,24 @@ class SaleInvestFragment : SaleFragment() {
         investDisposable?.dispose()
 
         val asset = investAsset
-        val amount = amountWrapper.scaledAmount
         val receiveAmount = receiveAmount
         val price = currentPrice
         val orderBookId = sale.id
-        val orderId = if (cancel) existingOffers?.get(asset)?.id ?: return else 0L
-
-        val getNewOffer =
-                if (cancel)
-                    Single.just(
-                            OfferRecord(
-                                    baseAssetCode = sale.baseAssetCode,
-                                    quoteAssetCode = asset,
-                                    baseAmount = BigDecimal.ZERO,
-                                    price = price,
-                                    isBuy = true,
-                                    orderBookId = orderBookId,
-                                    id = orderId
-                            )
-                    )
-                else
-                    PrepareOfferUseCase(
-                            OfferRecord(
-                                    baseAssetCode = sale.baseAssetCode,
-                                    baseAmount = receiveAmount,
-                                    quoteAssetCode = asset,
-                                    quoteAmount = amount,
-                                    price = price,
-                                    isBuy = true,
-                                    orderBookId = sale.id
-                            ),
-                            walletInfoProvider,
-                            FeeManager(apiProvider)
-                    )
-                            .perform()
+        val offerToCancel = existingOffers?.get(asset)
 
         investDisposable =
-                getNewOffer
+                CreateOfferRequestUseCase(
+                        baseAmount = if (cancel) BigDecimal.ZERO else receiveAmount,
+                        baseAssetCode = sale.baseAssetCode,
+                        quoteAssetCode = asset,
+                        price = price,
+                        isBuy = true,
+                        orderBookId = orderBookId,
+                        offerToCancel = offerToCancel,
+                        walletInfoProvider = walletInfoProvider,
+                        feeManager = FeeManager(apiProvider)
+                )
+                        .perform()
                         .compose(ObservableTransformers.defaultSchedulersSingle())
                         .doOnSubscribe {
                             investLoading.show()
@@ -352,11 +332,10 @@ class SaleInvestFragment : SaleFragment() {
                             updateInvestAvailability()
                         }
                         .subscribeBy(
-                                onSuccess = { offer ->
+                                onSuccess = { offerRequest ->
                                     Navigator.from(this).openInvestmentConfirmation(
                                             INVESTMENT_REQUEST,
-                                            offer = offer,
-                                            offerToCancel = existingOffers?.get(investAsset),
+                                            request = offerRequest,
                                             saleName = sale.name,
                                             displayToReceive =
                                             sale.type.value == SaleType.BASIC_SALE.value

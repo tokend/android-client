@@ -5,12 +5,12 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
-import org.tokend.template.features.offers.logic.ConfirmOfferUseCase
-import org.tokend.template.features.offers.logic.PrepareOfferUseCase
+import org.tokend.template.features.offers.logic.ConfirmOfferRequestUseCase
+import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
@@ -28,7 +28,7 @@ class OffersTest {
     private val emissionAmount = BigDecimal.TEN!!
 
     @Test
-    fun aPrepareOffer() {
+    fun aCreateOffer() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
@@ -49,23 +49,21 @@ class OffersTest {
 
         val quoteAsset = Util.createAsset(apiProvider, TxManager(apiProvider))
 
-        val offer = OfferRecord(
-                "ETH",
-                quoteAsset,
+        val useCase = CreateOfferRequestUseCase(
+                baseAssetCode = "ETH",
+                quoteAssetCode = quoteAsset,
                 isBuy = false,
                 baseAmount = baseAmount,
-                price = price
+                price = price,
+                orderBookId = 0,
+                offerToCancel = null,
+                walletInfoProvider = session,
+                feeManager = FeeManager(apiProvider)
         )
 
-        val useCase = PrepareOfferUseCase(
-                offer,
-                session,
-                FeeManager(apiProvider)
-        )
+        val request = useCase.perform().blockingGet()
 
-        val prepared = useCase.perform().blockingGet()
-
-        Assert.assertNotNull("Prepared offer must contain fee", prepared.fee)
+        Assert.assertNotNull("Prepared offer must contain fee", request.fee)
     }
 
     @Test
@@ -260,25 +258,22 @@ class OffersTest {
                                session: Session, apiProvider: ApiProvider,
                                repositoryProvider: RepositoryProvider,
                                offerToCancel: OfferRecord? = null) {
-        val offer = OfferRecord(
-                baseAsset,
-                quoteAsset,
+        val request = CreateOfferRequestUseCase(
+                baseAssetCode = baseAsset,
+                quoteAssetCode = quoteAsset,
                 isBuy = true,
                 baseAmount = baseAmount,
-                price = price
-        )
-
-        val prepared = PrepareOfferUseCase(
-                offer,
-                session,
-                FeeManager(apiProvider)
+                price = price,
+                orderBookId = 0,
+                offerToCancel = offerToCancel,
+                walletInfoProvider = session,
+                feeManager = FeeManager(apiProvider)
         ).perform().blockingGet()
 
-        val useCase = ConfirmOfferUseCase(
-                prepared,
-                offerToCancel,
-                repositoryProvider,
+        val useCase = ConfirmOfferRequestUseCase(
+                request,
                 session,
+                repositoryProvider,
                 TxManager(apiProvider)
         )
 

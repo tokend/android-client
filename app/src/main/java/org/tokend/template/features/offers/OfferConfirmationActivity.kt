@@ -10,8 +10,9 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.features.offers.logic.ConfirmOfferRequestUseCase
 import org.tokend.template.features.offers.model.OfferRecord
-import org.tokend.template.features.offers.logic.ConfirmOfferUseCase
+import org.tokend.template.features.offers.model.OfferRequest
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
@@ -20,39 +21,40 @@ import org.tokend.template.view.util.ProgressDialogFactory
 import java.math.BigDecimal
 
 open class OfferConfirmationActivity : BaseActivity() {
-    protected lateinit var offer: OfferRecord
-    protected var prevOffer: OfferRecord? = null
+    protected lateinit var request: OfferRequest
+    protected val offerToCancel: OfferRecord?
+        get() = request.offerToCancel
 
     protected val adapter = DetailsItemsAdapter()
 
     protected val payAsset: String
         get() =
-            if (offer.isBuy)
-                offer.quoteAssetCode
+            if (request.isBuy)
+                request.quoteAssetCode
             else
-                offer.baseAssetCode
+                request.baseAssetCode
     protected val toPayTotal: BigDecimal
         get() =
-            if (offer.isBuy)
-                offer.quoteAmount + offer.fee
+            if (request.isBuy)
+                request.quoteAmount + request.fee.total
             else
-                offer.baseAmount
+                request.baseAmount
 
     protected val receiveAsset: String
         get() =
-            if (!offer.isBuy)
-                offer.quoteAssetCode
+            if (!request.isBuy)
+                request.quoteAssetCode
             else
-                offer.baseAssetCode
+                request.baseAssetCode
     protected val toReceiveTotal: BigDecimal
         get() =
-            (if (!offer.isBuy)
-                offer.quoteAmount - offer.fee
+            (if (!request.isBuy)
+                request.quoteAmount - request.fee.total
             else
-                offer.baseAmount).takeIf { it.signum() > 0 } ?: BigDecimal.ZERO
+                request.baseAmount).takeIf { it.signum() > 0 } ?: BigDecimal.ZERO
 
     protected val cancellationOnly: Boolean
-        get() = offer.baseAmount.signum() == 0 && prevOffer != null
+        get() = request.baseAmount.signum() == 0 && offerToCancel != null
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details_list)
@@ -62,16 +64,11 @@ open class OfferConfirmationActivity : BaseActivity() {
         details_list.layoutManager = LinearLayoutManager(this)
         details_list.adapter = adapter
 
-        initData()
+        request =
+                (intent.getSerializableExtra(OFFER_REQUEST_EXTRA) as? OfferRequest)
+                        ?: return
 
         displayDetails()
-    }
-
-    protected open fun initData() {
-        offer =
-                (intent.getSerializableExtra(OFFER_EXTRA) as? OfferRecord)
-                        ?: return
-        prevOffer = intent.getSerializableExtra(OFFER_TO_CANCEL_EXTRA) as? OfferRecord
     }
 
     // region Display
@@ -84,8 +81,8 @@ open class OfferConfirmationActivity : BaseActivity() {
     protected open fun displayPrice() {
         adapter.addData(
                 DetailsItem(
-                        text = getString(R.string.template_price_one_equals, offer.baseAssetCode,
-                                amountFormatter.formatAssetAmount(offer.price, offer.quoteAssetCode)
+                        text = getString(R.string.template_price_one_equals, request.baseAssetCode,
+                                amountFormatter.formatAssetAmount(request.price, request.quoteAssetCode)
                         ),
                         hint = getString(R.string.price),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_price)
@@ -95,10 +92,10 @@ open class OfferConfirmationActivity : BaseActivity() {
 
     protected open fun displayToPay() {
         val payAmount =
-                if (offer.isBuy)
-                    offer.quoteAmount
+                if (request.isBuy)
+                    request.quoteAmount
                 else
-                    offer.baseAmount
+                    request.baseAmount
 
         adapter.addData(
                 DetailsItem(
@@ -109,10 +106,10 @@ open class OfferConfirmationActivity : BaseActivity() {
                 )
         )
 
-        if (offer.isBuy && offer.fee.signum() > 0) {
+        if (request.isBuy && request.fee.total.signum() > 0) {
             adapter.addData(
                     DetailsItem(
-                            text = amountFormatter.formatAssetAmount(offer.fee, payAsset),
+                            text = amountFormatter.formatAssetAmount(request.fee.total, payAsset),
                             hint = getString(R.string.tx_fee)
                     ),
                     DetailsItem(
@@ -128,10 +125,10 @@ open class OfferConfirmationActivity : BaseActivity() {
 
     protected open fun displayToReceive() {
         val receiveAmount =
-                if (!offer.isBuy)
-                    offer.quoteAmount
+                if (!request.isBuy)
+                    request.quoteAmount
                 else
-                    offer.baseAmount
+                    request.baseAmount
 
         adapter.addData(
                 DetailsItem(
@@ -142,10 +139,10 @@ open class OfferConfirmationActivity : BaseActivity() {
                 )
         )
 
-        if (!offer.isBuy && offer.fee.signum() > 0) {
+        if (!request.isBuy && request.fee.total.signum() > 0) {
             adapter.addData(
                     DetailsItem(
-                            text = amountFormatter.formatAssetAmount(offer.fee, receiveAsset),
+                            text = amountFormatter.formatAssetAmount(request.fee.total, receiveAsset),
                             hint = getString(R.string.tx_fee)
                     ),
                     DetailsItem(
@@ -175,11 +172,10 @@ open class OfferConfirmationActivity : BaseActivity() {
     private fun confirm() {
         val progress = ProgressDialogFactory.getTunedDialog(this)
 
-        ConfirmOfferUseCase(
-                offer,
-                prevOffer,
-                repositoryProvider,
+        ConfirmOfferRequestUseCase(
+                request,
                 accountProvider,
+                repositoryProvider,
                 TxManager(apiProvider)
         )
                 .perform()
@@ -208,7 +204,6 @@ open class OfferConfirmationActivity : BaseActivity() {
     }
 
     companion object {
-        const val OFFER_EXTRA = "offer"
-        const val OFFER_TO_CANCEL_EXTRA = "offer_to_cancel"
+        const val OFFER_REQUEST_EXTRA = "offer_request"
     }
 }

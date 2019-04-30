@@ -1,7 +1,6 @@
 package org.tokend.template.features.offers.model
 
 import org.tokend.sdk.api.generated.resources.OfferResource
-import org.tokend.sdk.api.generated.resources.OrderBookEntryResource
 import org.tokend.sdk.utils.ApiDateUtil
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
@@ -22,7 +21,7 @@ class OfferRecord(
         val date: Date = Date(),
         var baseBalanceId: String = EMPTY_BALANCE_ID,
         var quoteBalanceId: String = EMPTY_BALANCE_ID,
-        var fee: BigDecimal = BigDecimal.ZERO
+        val fee: BigDecimal = BigDecimal.ZERO
 ) : Serializable {
 
     val isInvestment: Boolean
@@ -58,19 +57,6 @@ class OfferRecord(
                     price = source.price,
                     baseBalanceId = source.baseBalance.id,
                     quoteBalanceId = source.quoteBalance.id
-            )
-        }
-
-        @JvmStatic
-        fun fromResource(source: OrderBookEntryResource): OfferRecord {
-            return OfferRecord(
-                    baseAmount = source.baseAmount,
-                    baseAssetCode = source.baseAsset.id,
-                    quoteAmount = source.quoteAmount,
-                    quoteAssetCode = source.quoteAsset.id,
-                    isBuy = source.isBuy,
-                    date = source.createdAt,
-                    price = source.price
             )
         }
 

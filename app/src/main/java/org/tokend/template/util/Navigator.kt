@@ -32,6 +32,7 @@ import org.tokend.template.features.offers.CreateOfferActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
 import org.tokend.template.features.offers.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRequest
 import org.tokend.template.features.offers.view.details.PendingInvestmentDetailsActivity
 import org.tokend.template.features.offers.view.details.PendingOfferDetailsActivity
 import org.tokend.template.features.qr.ShareQrActivity
@@ -241,21 +242,19 @@ class Navigator private constructor() {
         performIntent(intent, requestCode = requestCode)
     }
 
-    fun openOfferConfirmation(requestCode: Int, offer: OfferRecord) {
+    fun openOfferConfirmation(requestCode: Int, request: OfferRequest) {
         val intent = context?.intentFor<OfferConfirmationActivity>(
-                OfferConfirmationActivity.OFFER_EXTRA to offer
+                OfferConfirmationActivity.OFFER_REQUEST_EXTRA to request
         )
         performIntent(intent, requestCode = requestCode)
     }
 
     fun openInvestmentConfirmation(requestCode: Int,
-                                   offer: OfferRecord,
-                                   offerToCancel: OfferRecord? = null,
+                                   request: OfferRequest,
                                    displayToReceive: Boolean = true,
                                    saleName: String? = null) {
         val intent = context?.intentFor<InvestmentConfirmationActivity>(
-                OfferConfirmationActivity.OFFER_EXTRA to offer,
-                OfferConfirmationActivity.OFFER_TO_CANCEL_EXTRA to offerToCancel,
+                OfferConfirmationActivity.OFFER_REQUEST_EXTRA to request,
                 InvestmentConfirmationActivity.DISPLAY_TO_RECEIVE to displayToReceive,
                 InvestmentConfirmationActivity.SALE_NAME_EXTRA to saleName
         )
