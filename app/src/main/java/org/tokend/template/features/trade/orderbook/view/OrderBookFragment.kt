@@ -18,6 +18,7 @@ import org.tokend.template.features.trade.orderbook.model.OrderBook
 import org.tokend.template.features.trade.orderbook.model.OrderBookEntryRecord
 import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
 import org.tokend.template.features.trade.orderbook.view.adapter.OrderBookEntriesAdapter
+import org.tokend.template.features.trade.orderbook.view.adapter.OrderBookEntryListItem
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -153,7 +154,7 @@ class OrderBookFragment : BaseFragment() {
     }
 
     private fun displayBuyEntries(items: Collection<OrderBookEntryRecord>) {
-        buyAdapter.setData(items)
+        buyAdapter.setData(items.map(::OrderBookEntryListItem))
         if (items.isEmpty() && !orderBookRepository.isNeverUpdated) {
             bids_empty_view.visibility = View.VISIBLE
         } else {
@@ -162,7 +163,7 @@ class OrderBookFragment : BaseFragment() {
     }
 
     private fun displaySellEntries(items: Collection<OrderBookEntryRecord>) {
-        sellAdapter.setData(items)
+        sellAdapter.setData(items.map(::OrderBookEntryListItem))
         if (items.isEmpty() && !orderBookRepository.isNeverUpdated) {
             asks_empty_view.visibility = View.VISIBLE
         } else {

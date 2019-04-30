@@ -13,13 +13,13 @@ import org.tokend.template.view.util.formatter.AmountFormatter
 
 class OrderBookEntryViewHolder(view: View,
                                private val amountFormatter: AmountFormatter
-) : BaseViewHolder<OrderBookEntryRecord>(view) {
+) : BaseViewHolder<OrderBookEntryListItem>(view) {
     private val priceTextView = view.find<TextView>(R.id.price_text_view)
     private val volumeTextView = view.find<TextView>(R.id.volume_text_view)
 
     private var isBuy = false
 
-    override fun bind(item: OrderBookEntryRecord) {
+    override fun bind(item: OrderBookEntryListItem) {
         isBuy = item.isBuy
 
         volumeTextView.text = amountFormatter.formatAssetAmount(item.volume, item.baseAssetCode,
