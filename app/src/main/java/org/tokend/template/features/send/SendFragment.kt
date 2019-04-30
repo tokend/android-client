@@ -17,7 +17,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.android.synthetic.main.fragment_send.*
+import kotlinx.android.synthetic.main.fragment_user_flow.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
@@ -64,7 +64,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_send, container, false)
+        return inflater.inflate(R.layout.fragment_user_flow, container, false)
     }
 
     override fun onInitAllowed() {
