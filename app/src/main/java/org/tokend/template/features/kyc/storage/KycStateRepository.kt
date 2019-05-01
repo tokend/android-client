@@ -19,7 +19,9 @@ import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.invest.logic.BlobManager
 import org.tokend.template.features.kyc.model.KycState
-import org.tokend.template.features.kyc.model.form.KycFormWithAvatar
+import org.tokend.template.features.kyc.model.form.EmptyKycForm
+import org.tokend.template.features.kyc.model.form.KycForm
+import org.tokend.template.features.kyc.model.form.SimpleKycForm
 
 /**
  * Holds user's KYC data and it's state
@@ -33,7 +35,7 @@ class KycStateRepository(
     private data class KycRequestAttributes(
             val state: RequestState,
             val rejectReason: String,
-            val blobId: String
+            val blobId: String?
     )
 
     override fun getItem(): Observable<KycState> {
@@ -105,23 +107,28 @@ class KycStateRepository(
             val blobId = request.getTypedRequestDetails<ChangeRoleRequestDetailsResource>()
                     .creatorDetails
                     .get("blob_id")
-                    .asText()
+                    ?.asText()
             val rejectReason = request.rejectReason ?: ""
 
             KycRequestAttributes(state, rejectReason, blobId)
         } catch (e: Exception) {
+            e.printStackTrace()
             null
         }
     }
 
-    private fun loadKycFormFromBlob(blobId: String): Single<KycFormWithAvatar> {
+    private fun loadKycFormFromBlob(blobId: String?): Single<KycForm> {
+        if (blobId == null) {
+            return Single.just(EmptyKycForm())
+        }
+
         return BlobManager(apiProvider, walletInfoProvider)
                 .getPrivateBlob(blobId)
                 .map { blob ->
                     try {
-                        blob.getValue(KycFormWithAvatar::class.java)
+                        blob.getValue(SimpleKycForm::class.java)
                     } catch (e: Exception) {
-                        throw InvalidKycDataException()
+                        EmptyKycForm()
                     }
                 }
     }

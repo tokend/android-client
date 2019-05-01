@@ -1,6 +1,7 @@
 package org.tokend.template.features.signin.logic
 
 import io.reactivex.Completable
+import io.reactivex.rxkotlin.subscribeBy
 import org.tokend.template.di.providers.RepositoryProvider
 import retrofit2.HttpException
 import java.net.HttpURLConnection
@@ -36,7 +37,9 @@ class PostSignInManager(
         val performParallelActions = Completable.merge(parallelActions)
         val performSyncActions = Completable.concat(syncActions)
 
-        repositoryProvider.kycState().update()
+        repositoryProvider.kycState().update().subscribeBy(onError = {
+            it.printStackTrace()
+        })
 
         return performSyncActions
                 .andThen(performParallelActions)

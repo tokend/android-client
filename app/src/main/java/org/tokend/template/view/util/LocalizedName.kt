@@ -5,6 +5,7 @@ import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.fees.view.FeeItem
+import org.tokend.template.features.kyc.model.form.KycFormType
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.StatsOpType
@@ -93,6 +94,14 @@ class LocalizedName(private val context: Context) {
             StatsOpType.DEPOSIT -> context.getString(R.string.deposit)
             StatsOpType.SPEND -> context.getString(R.string.spend)
             StatsOpType.PAYOUT -> context.getString(R.string.payout)
+        }
+    }
+
+    fun forKycFormType(kycFormType: KycFormType): String {
+        return when (kycFormType) {
+            KycFormType.GENERAL -> context.getString(R.string.kyc_form_type_general)
+            KycFormType.CORPORATE -> context.getString(R.string.kyc_form_type_corporate)
+            KycFormType.UNKNOWN -> context.getString(R.string.kyc_form_type_unknown)
         }
     }
 }
