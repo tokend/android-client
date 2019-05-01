@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:paddingStart="@dimen/half_standard_margin"
+    android:paddingStart="@dimen/quarter_standard_margin"
     android:paddingTop="@dimen/half_standard_margin"
     android:paddingBottom="@dimen/half_standard_margin">
 
@@ -20,7 +20,10 @@
         android:requiresFadingEdge="horizontal"
         android:singleLine="true"
         android:textColor="@color/primary_text"
-        android:textSize="@dimen/text_size_order_book" />
+        android:textSize="@dimen/text_size_order_book"
+        android:paddingStart="@dimen/quarter_standard_margin"
+        android:paddingEnd="@dimen/quarter_standard_margin"
+        android:background="@drawable/clip_ask_volume_level"/>
 
     <TextView
         android:id="@+id/price_text_view"

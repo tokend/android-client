@@ -426,4 +426,5 @@
     <string name="fee_info_titles">Fixed:\nPercent:</string>
     <string name="spend">Spend</string>
     <string name="payout">Payout</string>
+    <string name="volume_label">Volume</string>
 </resources>
