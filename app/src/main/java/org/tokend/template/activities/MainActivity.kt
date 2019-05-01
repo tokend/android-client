@@ -87,7 +87,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         val placeholderValue = (email ?: getString(R.string.app_name)).toUpperCase()
         val placeholderSize =
                 resources.getDimensionPixelSize(R.dimen.material_drawer_item_profile_icon_width)
-        val placeholderBackground = ContextCompat.getColor(this, R.color.avatarPlaceholderBackground)
+        val placeholderBackground = ContextCompat.getColor(this, R.color.avatar_placeholder_background)
         val placeholderImage = LogoFactory(this)
                 .getForValue(
                         placeholderValue,
