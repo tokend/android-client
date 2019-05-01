@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorDefaultBackground">
+
+    <TextView
+        android:id="@+id/title_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/standard_margin"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="XXX to withdraw" />
+
+    <RelativeLayout
+        style="@style/LimitedMatchParentWidthConstraint"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        app:layout_constraintBottom_toTopOf="@id/continue_button">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/destination_edit_text"
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/tx_withdrawal_destination"
+            android:inputType="text|textNoSuggestions"
+            android:paddingEnd="42dp"
+            android:paddingRight="42dp" />
+
+        <ImageView
+            android:id="@+id/scan_qr_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/half_standard_padding"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="@dimen/half_standard_margin"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_qr_code_scan" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/continue_button"
+        style="@style/PrimaryButton.NoBorders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/go_to_confirmation_btn_label"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</android.support.constraint.ConstraintLayout>

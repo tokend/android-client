@@ -1,4 +1,4 @@
-package org.tokend.template.util
+package org.tokend.template.util.imagetransform
 
 import android.graphics.*
 import com.squareup.picasso.Transformation
