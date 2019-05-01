@@ -80,6 +80,10 @@ ext {
     //Warning - color of warning message
     color_warning = '#EF6C00'
 
+    // Avatar background - background color of the avatar placeholder
+    // (a circle with the first email letter inside)
+    color_avatar_placeholder_background = '#DADDE9'
+
     // ----------------------
 
     // ----- Security -----
@@ -127,9 +131,6 @@ ext {
     // ----------------------
 }
 
-
-
-
 ext.applyAppConfig = { buildConfig ->
     android {
         defaultConfig {
@@ -161,7 +162,6 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'ENABLE_ANALYTICS', "${enable_analytics}"
     b.buildConfigField 'Boolean', 'ENABLE_AUTHENTICATOR_AUTH', "${allow_authenticator_auth}"
 
-
     b.resValue "string", "app_host", "${app_host}"
     b.resValue "color", "primary", "${color_primary}"
     b.resValue "color", "primary_half", "${color_primary_half}"
@@ -178,4 +178,5 @@ ext.applyAppConfig = { buildConfig ->
     b.resValue "color", "received", "${color_received}"
     b.resValue "color", "sent", "${color_sent}"
     b.resValue "color", "warning", "${color_warning}"
+    b.resValue "color", "avatar_placeholder_background", "${color_avatar_placeholder_background}"
 }

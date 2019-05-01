@@ -173,6 +173,11 @@ class App : MultiDexApplication() {
                 Context.MODE_PRIVATE)
     }
 
+    private fun getKycStatePreferences(): SharedPreferences {
+        return getSharedPreferences("KycStatePersistence",
+                Context.MODE_PRIVATE)
+    }
+
     private fun initState() {
         sessionInfoStorage = SessionInfoStorage(defaultSharedPreferences)
         session = Session(
@@ -200,8 +205,9 @@ class App : MultiDexApplication() {
                         PersistentCookieJar(cookieCache, cookiePersistor)
                 ))
                 .persistenceModule(PersistenceModule(
-                        getCredentialsPreferences(),
-                        getNetworkPreferences()
+                        credentialsPreferences = getCredentialsPreferences(),
+                        networkPreferences = getNetworkPreferences(),
+                        kycStatePreferences = getKycStatePreferences()
                 ))
                 .sessionModule(SessionModule(session))
                 .build()
@@ -212,6 +218,7 @@ class App : MultiDexApplication() {
         cookieCache.clear()
         sessionInfoStorage.clear()
         getCredentialsPreferences().edit().clear().apply()
+        getKycStatePreferences().edit().clear().apply()
     }
 
     /**

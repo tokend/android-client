@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.item_contact.view.*
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.features.assets.LogoFactory
-import org.tokend.template.util.CircleTransform
+import org.tokend.template.util.imagetransform.CircleTransform
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.SimpleItemClickListener
 
