@@ -10,13 +10,10 @@ class InvestmentConfirmationActivity : OfferConfirmationActivity() {
     private var saleName: String? = null
     private var displayToReceive = false
 
-    override fun initData() {
-        super.initData()
+    override fun displayDetails() {
         saleName = intent.getNullableStringExtra(SALE_NAME_EXTRA)
         displayToReceive = intent.getBooleanExtra(DISPLAY_TO_RECEIVE, false)
-    }
 
-    override fun displayDetails() {
         displaySale()
         displayToPay()
 
@@ -41,7 +38,7 @@ class InvestmentConfirmationActivity : OfferConfirmationActivity() {
 
     private fun displayTitle() {
         if (!cancellationOnly) {
-            if (prevOffer != null)
+            if (offerToCancel != null)
                 setTitle(R.string.investment_updating_title)
             else
                 setTitle(R.string.investment_confirmation_title)
@@ -52,7 +49,7 @@ class InvestmentConfirmationActivity : OfferConfirmationActivity() {
 
     override fun getSuccessMessage(): String {
         return if (!cancellationOnly) {
-            if (prevOffer != null)
+            if (offerToCancel != null)
                 getString(R.string.investment_updated)
             else
                 getString(R.string.successfully_invested)

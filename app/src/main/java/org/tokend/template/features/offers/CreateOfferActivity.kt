@@ -20,11 +20,11 @@ import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.BalanceRecord
-import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.isMaxPossibleAmount
-import org.tokend.template.features.offers.logic.PrepareOfferUseCase
+import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -38,10 +38,13 @@ class CreateOfferActivity : BaseActivity() {
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
 
+    private lateinit var baseAssetCode: String
+    private lateinit var quoteAssetCode: String
+    private lateinit var requiredPrice: BigDecimal
+
     private lateinit var amountEditTextWrapper: AmountEditTextWrapper
     private lateinit var priceEditTextWrapper: AmountEditTextWrapper
     private lateinit var totalEditTextWrapper: AmountEditTextWrapper
-    private lateinit var currentOffer: OfferRecord
     private var arrow: Drawable? = null
 
     private var triggerOthers: Boolean = false
@@ -56,10 +59,15 @@ class CreateOfferActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
-        currentOffer = intent.getSerializableExtra(EXTRA_OFFER) as? OfferRecord ?: return
+        baseAssetCode = intent.getNullableStringExtra(BASE_ASSET_EXTRA)
+                ?: return
+        quoteAssetCode = intent.getNullableStringExtra(QUOTE_ASSET_EXTRA)
+                ?: return
+        requiredPrice = intent.getNullableStringExtra(PRICE_STRING_EXTRA)
+                .let { BigDecimalUtil.valueOf(it) }
 
-        baseScale = amountFormatter.getDecimalDigitsCount(currentOffer.baseAssetCode)
-        quoteScale = amountFormatter.getDecimalDigitsCount(currentOffer.quoteAssetCode)
+        baseScale = amountFormatter.getDecimalDigitsCount(baseAssetCode)
+        quoteScale = amountFormatter.getDecimalDigitsCount(quoteAssetCode)
 
         initViews()
         subscribeToBalances()
@@ -78,16 +86,16 @@ class CreateOfferActivity : BaseActivity() {
     private fun initTextFields() {
         initAmountWrappers()
 
-        price_edit_text.setAmount(currentOffer.price, quoteScale)
+        price_edit_text.setAmount(requiredPrice, quoteScale)
         price_edit_text.floatingLabelText =
                 getString(R.string.template_offer_creation_price,
-                        currentOffer.quoteAssetCode, currentOffer.baseAssetCode)
+                        quoteAssetCode, baseAssetCode)
 
         amount_edit_text.floatingLabelText =
-                getString(R.string.template_amount_hint, currentOffer.baseAssetCode)
+                getString(R.string.template_amount_hint, baseAssetCode)
 
         total_edit_text.floatingLabelText =
-                getString(R.string.template_total_hint, currentOffer.quoteAssetCode)
+                getString(R.string.template_total_hint, quoteAssetCode)
 
         amount_edit_text.requestFocus()
         triggerOthers = true
@@ -155,11 +163,11 @@ class CreateOfferActivity : BaseActivity() {
 
     private fun initButtons() {
         sell_btn.onClick {
-            goToOfferConfirmation(buildOffer(false))
+            goToOfferConfirmation(false)
         }
 
         buy_btn.onClick {
-            goToOfferConfirmation(buildOffer(true))
+            goToOfferConfirmation(true)
         }
 
         max_sell_text_view.onClick {
@@ -186,11 +194,11 @@ class CreateOfferActivity : BaseActivity() {
     private fun updateActionHints() {
         val amount = amountFormatter.formatAssetAmount(
                 amountEditTextWrapper.rawAmount,
-                currentOffer.baseAssetCode
+                baseAssetCode
         )
         val total = amountFormatter.formatAssetAmount(
                 totalEditTextWrapper.rawAmount,
-                currentOffer.quoteAssetCode
+                quoteAssetCode
         )
 
         sell_hint.text = getActionHintString(amount, total)
@@ -216,21 +224,21 @@ class CreateOfferActivity : BaseActivity() {
     }
 
     private fun updateAvailable(balances: List<BalanceRecord>) {
-        baseBalance = balances.find { it.assetCode == currentOffer.baseAssetCode }?.available
+        baseBalance = balances.find { it.assetCode == baseAssetCode }?.available
                 ?: BigDecimal.ZERO
-        quoteBalance = balances.find { it.assetCode == currentOffer.quoteAssetCode }?.available
+        quoteBalance = balances.find { it.assetCode == quoteAssetCode }?.available
                 ?: BigDecimal.ZERO
 
         amount_edit_text.setHelperText(
                 getString(R.string.template_available,
                         amountFormatter.formatAssetAmount(baseBalance,
-                                currentOffer.baseAssetCode, withAssetCode = false))
+                                baseAssetCode, withAssetCode = false))
         )
 
         total_edit_text.setHelperText(
                 getString(R.string.template_available,
                         amountFormatter.formatAssetAmount(quoteBalance,
-                                currentOffer.quoteAssetCode, withAssetCode = false))
+                                quoteAssetCode, withAssetCode = false))
         )
     }
 
@@ -258,22 +266,6 @@ class CreateOfferActivity : BaseActivity() {
         }
     }
 
-    private fun buildOffer(isBuy: Boolean): OfferRecord {
-        val price = priceEditTextWrapper.rawAmount
-        val amount = amountEditTextWrapper.rawAmount
-        val total = BigDecimalUtil.scaleAmount(price * amount,
-                amountFormatter.getDecimalDigitsCount(currentOffer.quoteAssetCode))
-
-        return OfferRecord(
-                baseAssetCode = currentOffer.baseAssetCode,
-                quoteAssetCode = currentOffer.quoteAssetCode,
-                baseAmount = amount,
-                price = price,
-                quoteAmount = total,
-                isBuy = isBuy
-        )
-    }
-
     private fun updateActionsAvailability() {
         val isAvailable = !price_edit_text.text.isNullOrBlank()
                 && !amount_edit_text.text.isNullOrBlank()
@@ -285,31 +277,40 @@ class CreateOfferActivity : BaseActivity() {
         buy_btn.isEnabled = isAvailable
     }
 
-    private var offerPreparationDisposable: Disposable? = null
-    private fun goToOfferConfirmation(offer: OfferRecord) {
-        offerPreparationDisposable?.dispose()
+    private var offerCreationDisposable: Disposable? = null
+    private fun goToOfferConfirmation(isBuy: Boolean) {
+        offerCreationDisposable?.dispose()
+
+        val price = priceEditTextWrapper.scaledAmount
+        val amount = amountEditTextWrapper.scaledAmount
 
         val progress = ProgressDialogFactory.getTunedDialog(this).apply {
             setCanceledOnTouchOutside(true)
             setMessage(getString(R.string.loading_data))
             setOnCancelListener {
-                offerPreparationDisposable?.dispose()
+                offerCreationDisposable?.dispose()
             }
         }
 
-        offerPreparationDisposable = PrepareOfferUseCase(
-                offer,
-                walletInfoProvider,
-                FeeManager(apiProvider)
+        offerCreationDisposable = CreateOfferRequestUseCase(
+                baseAmount = amount,
+                isBuy = isBuy,
+                price = price,
+                orderBookId = 0,
+                baseAssetCode = baseAssetCode,
+                quoteAssetCode = quoteAssetCode,
+                offerToCancel = null,
+                walletInfoProvider = walletInfoProvider,
+                feeManager = FeeManager(apiProvider)
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe { progress.show() }
                 .doOnEvent { _, _ -> progress.hide() }
                 .subscribeBy(
-                        onSuccess = { completedOffer ->
+                        onSuccess = { offerRequest ->
                             Navigator.from(this).openOfferConfirmation(
-                                    CREATE_OFFER_REQUEST, completedOffer
+                                    CREATE_OFFER_REQUEST, offerRequest
                             )
                         },
                         onError = { errorHandlerFactory.getDefault().handle(it) }
@@ -318,7 +319,7 @@ class CreateOfferActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == CREATE_OFFER_REQUEST && resultCode == Activity.RESULT_OK) {
+        if (requestCode == CREATE_OFFER_REQUEST && resultCode == Activity.RESULT_OK) {
             finish()
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -326,6 +327,9 @@ class CreateOfferActivity : BaseActivity() {
 
     companion object {
         private val CREATE_OFFER_REQUEST = "create_offer".hashCode() and 0xffff
-        const val EXTRA_OFFER = "extra_offer"
+
+        const val BASE_ASSET_EXTRA = "base_asset"
+        const val QUOTE_ASSET_EXTRA = "quote_asset"
+        const val PRICE_STRING_EXTRA = "price"
     }
 }

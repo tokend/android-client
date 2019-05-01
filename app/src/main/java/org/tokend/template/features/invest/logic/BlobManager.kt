@@ -22,4 +22,19 @@ class BlobManager(
                 )
                 .toSingle()
     }
+
+    fun getPrivateBlob(blobId: String): Single<Blob> {
+        val signedApi = apiProvider.getSignedApi()
+                ?: return Single.error(IllegalStateException("No signed API instance found"))
+        val accountId = walletInfoProvider.getWalletInfo()?.accountId
+                ?: return Single.error(IllegalStateException("No wallet info found"))
+
+        return signedApi
+                .blobs
+                .getAccountOwnedBlob(
+                        accountId,
+                        blobId
+                )
+                .toSingle()
+    }
 }

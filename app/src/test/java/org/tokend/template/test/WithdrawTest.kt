@@ -145,6 +145,8 @@ class WithdrawTest {
         Util.getSomeMoney(asset, amount * BigDecimal("2"),
                 repositoryProvider, session, TxManager(apiProvider))
 
+        Util.makeAccountGeneral(session, apiProvider, repositoryProvider.systemInfo(), txManager)
+
         val request = CreateWithdrawalRequestUseCase(
                 amount,
                 asset,
@@ -224,6 +226,8 @@ class WithdrawTest {
         )
 
         Assert.assertTrue("Withdrawal fee must be set", result)
+
+        Util.makeAccountGeneral(session, apiProvider, repositoryProvider.systemInfo(), txManager)
 
         val request = CreateWithdrawalRequestUseCase(
                 amount,

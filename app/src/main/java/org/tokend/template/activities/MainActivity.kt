@@ -1,6 +1,9 @@
 package org.tokend.template.activities
 
 import android.content.res.Configuration
+import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -8,7 +11,6 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.widget.ImageView
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
 import com.mikepenz.materialdrawer.Drawer
@@ -16,18 +18,21 @@ import com.mikepenz.materialdrawer.DrawerBuilder
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
+import com.mikepenz.materialdrawer.util.DrawerImageLoader
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.backgroundColor
-import org.jetbrains.anko.find
-import org.jetbrains.anko.onClick
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.features.assets.ExploreAssetsFragment
+import org.tokend.template.features.assets.LogoFactory
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
+import org.tokend.template.features.kyc.model.KycState
+import org.tokend.template.features.kyc.model.form.KycFormType
+import org.tokend.template.features.kyc.model.form.SimpleKycForm
+import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.settings.SettingsFragment
@@ -40,10 +45,13 @@ import org.tokend.template.fragments.FragmentFactory
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.wallet.WalletEventsListener
 import org.tokend.template.util.Navigator
+import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.LocalizedName
+import org.tokend.template.view.util.PicassoDrawerImageLoader
 
 class MainActivity : BaseActivity(), WalletEventsListener {
     companion object {
-        private val DEFAULT_FRAGMENT_ID = DashboardFragment.ID
+        private const val DEFAULT_FRAGMENT_ID = DashboardFragment.ID
     }
 
     private var navigationDrawer: Drawer? = null
@@ -55,13 +63,20 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
     private val orientation: Int
         get() = resources.configuration.orientation
+    private var accountHeader: AccountHeader? = null
+    private var landscapeAccountHeader: AccountHeader? = null
 
     private var toolbar: Toolbar? = null
+
+    private val kycStateRepository: KycStateRepository
+        get() = repositoryProvider.kycState()
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
 
         initNavigation()
+
+        subscribeToKycChanges()
 
         navigationDrawer?.setSelection(DEFAULT_FRAGMENT_ID)
     }
@@ -69,6 +84,23 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     // region Init
     private fun initNavigation() {
         val email = walletInfoProvider.getWalletInfo()?.email
+
+        val placeholderValue = (email ?: getString(R.string.app_name)).toUpperCase()
+        val placeholderSize =
+                resources.getDimensionPixelSize(R.dimen.material_drawer_item_profile_icon_width)
+        val placeholderBackground = ContextCompat.getColor(this, R.color.avatar_placeholder_background)
+        val placeholderImage = LogoFactory(this)
+                .getForValue(
+                        placeholderValue,
+                        placeholderSize,
+                        placeholderBackground,
+                        Color.WHITE
+                )
+        val placeholderDrawable = BitmapDrawable(resources, placeholderImage)
+        DrawerImageLoader.init(
+                PicassoDrawerImageLoader(this, placeholderDrawable, placeholderBackground)
+        )
+
         val items = HashMap<Long, PrimaryDrawerItem>()
 
         PrimaryDrawerItem()
@@ -128,38 +160,65 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withIcon(R.drawable.ic_settings)
                 .also { items[SettingsFragment.ID] = it }
 
-        navigationDrawer = initDrawerBuilder(items, getHeaderInstance(email)).build()
-        landscapeNavigationDrawer = initDrawerBuilder(items, getHeaderInstance(email)).buildView()
+        val accountHeader = getHeaderInstance(email)
+        val landscapeAccountHeader = getHeaderInstance(email)
+
+        navigationDrawer = initDrawerBuilder(items, accountHeader).build()
+        landscapeNavigationDrawer = initDrawerBuilder(items, landscapeAccountHeader).buildView()
         nav_tablet.addView(landscapeNavigationDrawer?.slider, 0)
+
+        this.accountHeader = accountHeader
+        this.landscapeAccountHeader = landscapeAccountHeader
     }
 
     private fun getHeaderInstance(email: String?): AccountHeader {
-        val profileHeader = AccountHeaderBuilder()
+        return AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackgroundScaleType(ImageView.ScaleType.FIT_START)
-                .withHeaderBackground(ContextCompat.getDrawable(this,
-                        R.drawable.navigation_header_background))
-                .withSelectionListEnabledForSingleProfile(false)
-                .withProfileImagesVisible(false)
-                .addProfiles(ProfileDrawerItem()
-                        .withEmail(email))
-                .build()
-
-        profileHeader.view.find<View>(R.id.material_drawer_account_header_background).apply {
-            backgroundColor = ContextCompat.getColor(this@MainActivity, R.color.primary)
-            onClick {
-                val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                        ?: getString(R.string.error_try_again)
-                Navigator.from(this@MainActivity).openQrShare(
-                        data = accountId,
-                        title = getString(R.string.account_id_title),
-                        shareLabel = getString(R.string.share_account_id)
+                .withHeaderBackground(
+                        ColorDrawable(ContextCompat.getColor(this, R.color.primary))
                 )
-                navigationDrawer?.closeDrawer()
-            }
-        }
+                .withSelectionListEnabledForSingleProfile(false)
+                .withProfileImagesVisible(true)
+                .withDividerBelowHeader(false)
+                .addProfiles(getProfileHeaderItem(email, null))
+                .withOnAccountHeaderListener { view, _, _ ->
+                    view.setOnClickListener { openAccountIdShare() }
+                    true
+                }
+                .build()
+                .apply {
+                    view.findViewById<View>(R.id.material_drawer_account_header)
+                            .setOnClickListener { openAccountIdShare() }
+                }
+    }
 
-        return profileHeader
+    private fun getProfileHeaderItem(email: String?,
+                                     kycState: KycState?): ProfileDrawerItem {
+        val submittedForm = (kycState as? KycState.Submitted<*>)?.formData
+        val approvedType = when (kycState) {
+            is KycState.Submitted.Approved<*> -> {
+                when (submittedForm) {
+                    is SimpleKycForm -> submittedForm.formType
+                    else -> KycFormType.UNKNOWN
+                }
+            }
+            else -> null
+        }
+        val avatar = (submittedForm as? SimpleKycForm)?.avatar
+
+        return ProfileDrawerItem()
+                .withIdentifier(1)
+                .withName(email)
+                .withEmail(
+                        when {
+                            kycState == null -> getString(R.string.loading_data)
+                            approvedType == null -> getString(R.string.unverified_account)
+                            else -> LocalizedName(this).forKycFormType(approvedType)
+                        }
+                )
+                .apply {
+                    avatar?.also { withIcon(it.getUrl(urlConfigProvider.getConfig().storage)) }
+                }
     }
 
     private fun initDrawerBuilder(items: Map<Long, PrimaryDrawerItem>,
@@ -208,6 +267,14 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
     // endregion
 
+    private fun subscribeToKycChanges() {
+        kycStateRepository
+                .itemSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { updateProfileHeader() }
+                .addTo(compositeDisposable)
+    }
+
     // region Navigation
     private fun onNavigationItemSelected(item: IDrawerItem<Any, RecyclerView.ViewHolder>)
             : Boolean {
@@ -240,6 +307,27 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         navigateTo(screenIdentifier, fragment)
     }
     // endregion
+
+    private fun updateProfileHeader() {
+        val email = walletInfoProvider.getWalletInfo()?.email
+        val kycState = kycStateRepository.item
+
+        val h = getProfileHeaderItem(email, kycState)
+        accountHeader?.updateProfile(h)
+        landscapeAccountHeader?.updateProfile(h)
+    }
+
+    private fun openAccountIdShare() {
+        val accountId = walletInfoProvider.getWalletInfo()?.accountId ?: return
+
+        Navigator.from(this@MainActivity).openQrShare(
+                data = accountId,
+                title = getString(R.string.account_id_title),
+                shareLabel = getString(R.string.share_account_id)
+        )
+
+        navigationDrawer?.closeDrawer()
+    }
 
     private var fragmentToolbarDisposable: Disposable? = null
     private fun displayFragment(fragment: Fragment) {

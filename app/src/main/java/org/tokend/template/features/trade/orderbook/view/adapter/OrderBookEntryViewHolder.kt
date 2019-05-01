@@ -6,22 +6,23 @@ import android.widget.TextView
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
 import org.tokend.template.R
-import org.tokend.template.data.model.OfferRecord
+import org.tokend.template.features.offers.model.OfferRecord
+import org.tokend.template.features.trade.orderbook.model.OrderBookEntryRecord
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.util.formatter.AmountFormatter
 
-class OrderBookItemViewHolder(view: View,
-                              private val amountFormatter: AmountFormatter
-) : BaseViewHolder<OfferRecord>(view) {
+class OrderBookEntryViewHolder(view: View,
+                               private val amountFormatter: AmountFormatter
+) : BaseViewHolder<OrderBookEntryListItem>(view) {
     private val priceTextView = view.find<TextView>(R.id.price_text_view)
     private val volumeTextView = view.find<TextView>(R.id.volume_text_view)
 
     private var isBuy = false
 
-    override fun bind(item: OfferRecord) {
+    override fun bind(item: OrderBookEntryListItem) {
         isBuy = item.isBuy
 
-        volumeTextView.text = amountFormatter.formatAssetAmount(item.baseAmount, item.baseAssetCode,
+        volumeTextView.text = amountFormatter.formatAssetAmount(item.volume, item.baseAssetCode,
                 withAssetCode = false)
         priceTextView.text = amountFormatter.formatAssetAmount(item.price, item.quoteAssetCode,
                 amountFormatter.getDecimalDigitsCount(item.quoteAssetCode),

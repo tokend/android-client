@@ -2,28 +2,30 @@ package org.tokend.template.features.offers.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.tokend.template.data.model.OfferRecord
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.data.repository.offers.OffersRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
+import org.tokend.template.features.offers.model.OfferRequest
+import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.logic.transactions.TxManager
 
 /**
- * Sends given offer.
- *
+ * Submits offer by given [OfferRequest].
+ * Creates balances if required.
  * Updates related repositories: order book, balances, offers
  */
-class ConfirmOfferUseCase(
-        private val offer: OfferRecord,
-        private val offerToCancel: OfferRecord?,
-        private val repositoryProvider: RepositoryProvider,
+class ConfirmOfferRequestUseCase(
+        private val request: OfferRequest,
         private val accountProvider: AccountProvider,
+        private val repositoryProvider: RepositoryProvider,
         private val txManager: TxManager
 ) {
-    private val cancellationOnly = offer.baseAmount.signum() == 0 && offerToCancel != null
-    private val isPrimaryMarket = offer.orderBookId != 0L
+    private val offerToCancel = request.offerToCancel
+
+    private val cancellationOnly = request.baseAmount.signum() == 0 && offerToCancel != null
+
+    private val isPrimaryMarket = request.orderBookId != 0L
 
     private val offersRepository: OffersRepository
         get() = repositoryProvider.offers(isPrimaryMarket)
@@ -34,16 +36,19 @@ class ConfirmOfferUseCase(
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
 
+    private lateinit var baseBalanceId: String
+    private lateinit var quoteBalanceId: String
+
     fun perform(): Completable {
         return updateBalances()
                 .flatMap {
                     getBalances()
                 }
                 .doOnSuccess { (baseBalanceId, quoteBalanceId) ->
-                    offer.baseBalanceId = baseBalanceId
-                    offerToCancel?.baseBalanceId = baseBalanceId
+                    this.baseBalanceId = baseBalanceId
+                    this.quoteBalanceId = quoteBalanceId
 
-                    offer.quoteBalanceId = quoteBalanceId
+                    offerToCancel?.baseBalanceId = baseBalanceId
                     offerToCancel?.quoteBalanceId = quoteBalanceId
                 }
                 .flatMap {
@@ -64,8 +69,8 @@ class ConfirmOfferUseCase(
     private fun getBalances(): Single<Pair<String, String>> {
         val balances = balancesRepository.itemsList
 
-        val baseAsset = offer.baseAssetCode
-        val quoteAsset = offer.quoteAssetCode
+        val baseAsset = request.baseAssetCode
+        val quoteAsset = request.quoteAssetCode
 
         val existingBase = balances.find { it.assetCode == baseAsset }
         val existingQuote = balances.find { it.assetCode == quoteAsset }
@@ -112,7 +117,7 @@ class ConfirmOfferUseCase(
                     .cancel(accountProvider,
                             systemInfoRepository,
                             txManager,
-                            offerToCancel!!
+                            request.offerToCancel!!
                     )
                     .toSingleDefault(true)
         else
@@ -121,7 +126,9 @@ class ConfirmOfferUseCase(
                             accountProvider,
                             systemInfoRepository,
                             txManager,
-                            offer,
+                            baseBalanceId,
+                            quoteBalanceId,
+                            request,
                             offerToCancel
                     )
                     .toSingleDefault(true)
@@ -129,22 +136,15 @@ class ConfirmOfferUseCase(
 
     private fun updateRepositories(): Single<Boolean> {
         if (!isPrimaryMarket) {
-            listOf(repositoryProvider.orderBook(
-                    offer.baseAssetCode,
-                    offer.quoteAssetCode,
-                    true
-            ), repositoryProvider.orderBook(
-                    offer.baseAssetCode,
-                    offer.quoteAssetCode,
-                    false
-            )).forEach { it.updateIfEverUpdated() }
+            repositoryProvider.orderBook(request.baseAssetCode, request.quoteAssetCode)
+                    .updateIfEverUpdated()
         }
         repositoryProvider.balances().updateIfEverUpdated()
 
-        if (offer.isBuy) {
-            repositoryProvider.balanceChanges(offer.quoteBalanceId).updateIfEverUpdated()
+        if (request.isBuy) {
+            repositoryProvider.balanceChanges(quoteBalanceId).updateIfEverUpdated()
         } else {
-            repositoryProvider.balanceChanges(offer.baseBalanceId).updateIfEverUpdated()
+            repositoryProvider.balanceChanges(baseBalanceId).updateIfEverUpdated()
         }
 
         return Single.just(true)

@@ -8,7 +8,7 @@ import com.squareup.picasso.Picasso
 import org.jetbrains.anko.find
 import org.tokend.template.R
 import org.tokend.template.features.assets.LogoFactory
-import org.tokend.template.util.CircleTransform
+import org.tokend.template.util.imagetransform.CircleTransform
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.util.formatter.AmountFormatter
 
