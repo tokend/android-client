@@ -24,6 +24,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import java.math.BigDecimal
+import kotlin.random.Random
 
 class OrderBookFragment : BaseFragment() {
 
@@ -154,6 +155,7 @@ class OrderBookFragment : BaseFragment() {
     }
 
     private fun displayBuyEntries(items: Collection<OrderBookEntryRecord>) {
+        buyAdapter.maxVolume = orderBook?.maxBuyVolume ?: BigDecimal.ZERO
         buyAdapter.setData(items.map(::OrderBookEntryListItem))
         if (items.isEmpty() && !orderBookRepository.isNeverUpdated) {
             bids_empty_view.visibility = View.VISIBLE
@@ -163,6 +165,7 @@ class OrderBookFragment : BaseFragment() {
     }
 
     private fun displaySellEntries(items: Collection<OrderBookEntryRecord>) {
+        sellAdapter.maxVolume = orderBook?.maxSellVolume ?: BigDecimal.ZERO
         sellAdapter.setData(items.map(::OrderBookEntryListItem))
         if (items.isEmpty() && !orderBookRepository.isNeverUpdated) {
             asks_empty_view.visibility = View.VISIBLE
