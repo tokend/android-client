@@ -64,6 +64,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     private val orientation: Int
         get() = resources.configuration.orientation
     private var accountHeader: AccountHeader? = null
+    private var landscapeAccountHeader: AccountHeader? = null
 
     private var toolbar: Toolbar? = null
 
@@ -160,11 +161,14 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .also { items[SettingsFragment.ID] = it }
 
         val accountHeader = getHeaderInstance(email)
+        val landscapeAccountHeader = getHeaderInstance(email)
+
         navigationDrawer = initDrawerBuilder(items, accountHeader).build()
-        landscapeNavigationDrawer = initDrawerBuilder(items, accountHeader).buildView()
+        landscapeNavigationDrawer = initDrawerBuilder(items, landscapeAccountHeader).buildView()
         nav_tablet.addView(landscapeNavigationDrawer?.slider, 0)
 
         this.accountHeader = accountHeader
+        this.landscapeAccountHeader = landscapeAccountHeader
     }
 
     private fun getHeaderInstance(email: String?): AccountHeader {
@@ -308,7 +312,9 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         val email = walletInfoProvider.getWalletInfo()?.email
         val kycState = kycStateRepository.item
 
-        accountHeader?.updateProfile(getProfileHeaderItem(email, kycState))
+        val h = getProfileHeaderItem(email, kycState)
+        accountHeader?.updateProfile(h)
+        landscapeAccountHeader?.updateProfile(h)
     }
 
     private fun openAccountIdShare() {
