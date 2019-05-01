@@ -36,23 +36,12 @@
 
             <include layout="@layout/include_error_empty_view" />
 
-            <android.support.v4.widget.NestedScrollView
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list_fees"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:overScrollMode="never">
-
-                <LinearLayout
-                    android:id="@+id/fee_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:paddingStart="@dimen/standard_margin"
-                    android:paddingTop="@dimen/half_standard_margin"
-                    android:paddingEnd="@dimen/standard_margin"
-                    android:paddingBottom="@dimen/half_standard_margin" />
-            </android.support.v4.widget.NestedScrollView>
+                android:overScrollMode="never"/>
         </LinearLayout>
     </org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>
