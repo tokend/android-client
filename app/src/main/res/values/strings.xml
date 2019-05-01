@@ -427,6 +427,8 @@
     <string name="spend">Spend</string>
     <string name="payout">Payout</string>
 
+    <string name="template_to_withdraw">%1$s to withdraw</string>
+
     <string name="kyc_form_type_general">General account</string>
     <string name="kyc_form_type_corporate">Corporate account</string>
     <string name="kyc_form_type_unknown">Verified account</string>

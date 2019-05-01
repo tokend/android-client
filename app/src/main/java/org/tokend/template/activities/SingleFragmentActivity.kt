@@ -20,6 +20,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
     private var asset: String? = null
     private var screenId: Long? = null
     private val factory = FragmentFactory()
+    private var onBackPressedListener: OnBackPressedListener? = null
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_single_fragment)
@@ -56,6 +57,10 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
                     }
                     .addTo(compositeDisposable)
         }
+
+        if (fragment is OnBackPressedListener) {
+            this.onBackPressedListener = fragment
+        }
     }
 
     override fun onPaymentRequestConfirmed(paymentRequest: PaymentRequest) {
@@ -65,13 +70,13 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
 
     override fun onWithdrawalRequestConfirmed(withdrawalRequest: WithdrawalRequest) {
         setResult(Activity.RESULT_OK)
+        finish()
     }
 
     override fun onBackPressed() {
-        if (screenId == SendFragment.ID) {
-            val fragment = supportFragmentManager.fragments.first() as SendFragment
-            if (fragment.onBackPressed()) super.onBackPressed()
-        } else super.onBackPressed()
+        if (onBackPressedListener?.onBackPressed() != false) {
+            super.onBackPressed()
+        }
     }
 
     companion object {
