@@ -3,12 +3,17 @@ package org.tokend.template.view.util
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.support.annotation.ColorInt
 import android.widget.ImageView
 import com.mikepenz.materialdrawer.util.DrawerImageLoader
 import com.squareup.picasso.Picasso
+import org.tokend.template.util.imagetransform.RemoveAlphaTransform
 
 class PicassoDrawerImageLoader(private val context: Context,
-                               private val placeholder: Drawable?): DrawerImageLoader.IDrawerImageLoader {
+                               private val placeholder: Drawable?,
+                               @ColorInt
+                               private val backgroundColor: Int
+) : DrawerImageLoader.IDrawerImageLoader {
     override fun placeholder(ctx: Context?): Drawable? {
         return placeholder
     }
@@ -21,6 +26,7 @@ class PicassoDrawerImageLoader(private val context: Context,
         Picasso
                 .with(context)
                 .load(uri)
+                .transform(RemoveAlphaTransform(backgroundColor))
                 .placeholder(placeholder)
                 .into(imageView)
     }
@@ -29,6 +35,7 @@ class PicassoDrawerImageLoader(private val context: Context,
         Picasso
                 .with(context)
                 .load(uri)
+                .transform(RemoveAlphaTransform(backgroundColor))
                 .placeholder(placeholder)
                 .tag(tag)
                 .into(imageView)

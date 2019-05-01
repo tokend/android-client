@@ -96,7 +96,9 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                         Color.WHITE
                 )
         val placeholderDrawable = BitmapDrawable(resources, placeholderImage)
-        DrawerImageLoader.init(PicassoDrawerImageLoader(this, placeholderDrawable))
+        DrawerImageLoader.init(
+                PicassoDrawerImageLoader(this, placeholderDrawable, placeholderBackground)
+        )
 
         val items = HashMap<Long, PrimaryDrawerItem>()
 
