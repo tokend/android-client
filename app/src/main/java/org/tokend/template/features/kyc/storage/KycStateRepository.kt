@@ -28,7 +28,8 @@ import org.tokend.template.features.kyc.model.form.SimpleKycForm
  */
 class KycStateRepository(
         private val apiProvider: ApiProvider,
-        private val walletInfoProvider: WalletInfoProvider
+        private val walletInfoProvider: WalletInfoProvider,
+        private val submittedStatePersistor: SubmittedKycStatePersistor?
 ) : SimpleSingleItemRepository<KycState>() {
     private class NoRequestFoundException : Exception()
 
@@ -37,6 +38,33 @@ class KycStateRepository(
             val rejectReason: String,
             val blobId: String?
     )
+
+    // region Persistence
+    override fun getStoredItem(): Observable<KycState> {
+        val accountId = walletInfoProvider.getWalletInfo()?.accountId
+                ?: return Observable.empty()
+
+        return Observable.defer {
+            val state = submittedStatePersistor?.loadState(accountId)
+
+            if (state != null)
+                Observable.just(state)
+            else
+                Observable.empty()
+        }
+    }
+
+    override fun storeItem(item: KycState) {
+        val accountId = walletInfoProvider.getWalletInfo()?.accountId ?: return
+
+        // Store only submitted states as the only valuable ones.
+        if (item !is KycState.Submitted<*>) {
+            return
+        }
+
+        submittedStatePersistor?.saveState(accountId, item)
+    }
+    // endregion
 
     override fun getItem(): Observable<KycState> {
         val signedApi = apiProvider.getSignedApi()
