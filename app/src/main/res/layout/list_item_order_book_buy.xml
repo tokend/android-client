@@ -3,7 +3,6 @@
     android:id="@+id/root_layout_buy"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
     android:paddingTop="@dimen/half_standard_margin"
     android:paddingEnd="@dimen/quarter_standard_margin"

@@ -5,7 +5,6 @@ import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseRecyclerAdapter
 import org.tokend.template.view.util.formatter.AmountFormatter
-import java.math.BigDecimal
 
 class OrderBookEntriesAdapter(
         private val isBuy: Boolean,
@@ -21,10 +20,4 @@ class OrderBookEntriesAdapter(
 
         return OrderBookEntryViewHolder(view, amountFormatter)
     }
-
-    override fun bindItemViewHolder(holder: OrderBookEntryViewHolder, position: Int) {
-        holder.bind(items[position], onItemClickListener, maxVolume)
-    }
-
-    var maxVolume: BigDecimal = BigDecimal.ZERO
 }

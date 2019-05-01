@@ -14,6 +14,8 @@ class OrderBook(
 
     val maxSellVolume: BigDecimal = sellEntries.lastOrNull()?.volume ?: BigDecimal.ZERO
 
+    val maxVolume: BigDecimal = maxBuyVolume.max(maxSellVolume)
+
     constructor(source: OrderBookResource) : this(
             id = source.id,
             buyEntries = source.buyEntries.map(::OrderBookEntryRecord),

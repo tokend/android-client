@@ -24,7 +24,6 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import java.math.BigDecimal
-import kotlin.random.Random
 
 class OrderBookFragment : BaseFragment() {
 
@@ -150,13 +149,14 @@ class OrderBookFragment : BaseFragment() {
     }
 
     private fun displayOrderBook() {
-        displayBuyEntries(orderBook?.buyEntries ?: emptyList())
-        displaySellEntries(orderBook?.sellEntries ?: emptyList())
+        val maxVolume = orderBook?.maxVolume ?: BigDecimal.ZERO
+        displayBuyEntries(orderBook?.buyEntries ?: emptyList(), maxVolume)
+        displaySellEntries(orderBook?.sellEntries ?: emptyList(), maxVolume)
     }
 
-    private fun displayBuyEntries(items: Collection<OrderBookEntryRecord>) {
-        buyAdapter.maxVolume = orderBook?.maxBuyVolume ?: BigDecimal.ZERO
-        buyAdapter.setData(items.map(::OrderBookEntryListItem))
+    private fun displayBuyEntries(items: Collection<OrderBookEntryRecord>,
+                                  maxVolume: BigDecimal) {
+        buyAdapter.setData(items.map { OrderBookEntryListItem(it, maxVolume) })
         if (items.isEmpty() && !orderBookRepository.isNeverUpdated) {
             bids_empty_view.visibility = View.VISIBLE
         } else {
@@ -164,9 +164,9 @@ class OrderBookFragment : BaseFragment() {
         }
     }
 
-    private fun displaySellEntries(items: Collection<OrderBookEntryRecord>) {
-        sellAdapter.maxVolume = orderBook?.maxSellVolume ?: BigDecimal.ZERO
-        sellAdapter.setData(items.map(::OrderBookEntryListItem))
+    private fun displaySellEntries(items: Collection<OrderBookEntryRecord>,
+                                   maxVolume: BigDecimal) {
+        sellAdapter.setData(items.map { OrderBookEntryListItem(it, maxVolume) })
         if (items.isEmpty() && !orderBookRepository.isNeverUpdated) {
             asks_empty_view.visibility = View.VISIBLE
         } else {

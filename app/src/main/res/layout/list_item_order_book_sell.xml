@@ -3,7 +3,6 @@
     android:id="@+id/root_layout_sell"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
     android:paddingStart="@dimen/quarter_standard_margin"
     android:paddingTop="@dimen/half_standard_margin"
@@ -14,16 +13,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@drawable/clip_ask_volume_level"
         android:ellipsize="none"
         android:fadingEdgeLength="@dimen/quarter_standard_margin"
         android:gravity="start"
+        android:paddingStart="@dimen/quarter_standard_margin"
+        android:paddingEnd="@dimen/quarter_standard_margin"
         android:requiresFadingEdge="horizontal"
         android:singleLine="true"
         android:textColor="@color/primary_text"
-        android:textSize="@dimen/text_size_order_book"
-        android:paddingStart="@dimen/quarter_standard_margin"
-        android:paddingEnd="@dimen/quarter_standard_margin"
-        android:background="@drawable/clip_ask_volume_level"/>
+        android:textSize="@dimen/text_size_order_book" />
 
     <TextView
         android:id="@+id/price_text_view"
