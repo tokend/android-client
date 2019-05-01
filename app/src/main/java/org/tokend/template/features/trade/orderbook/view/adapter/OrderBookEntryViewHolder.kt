@@ -13,6 +13,7 @@ import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.SimpleItemClickListener
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
+import java.math.MathContext
 import java.math.RoundingMode
 import kotlin.math.roundToInt
 
@@ -27,13 +28,8 @@ class OrderBookEntryViewHolder(view: View,
     fun bind(item: OrderBookEntryListItem, clickListener: SimpleItemClickListener<OrderBookEntryListItem>?, maxVolume: BigDecimal) {
         super.bind(item, clickListener)
 
-        val maxValue = BigDecimalUtil.scaleAmount(maxVolume,
-                0).toInt()
-
-        val itemValue = BigDecimalUtil.scaleAmount(item.volume,
-                0).toInt()
-
-        val factor = (itemValue * 100f / maxValue).roundToInt()
+        val factor =
+                (item.volume * BigDecimal(100)).divide(maxVolume, MathContext.DECIMAL128).toInt()
 
         volumeTextView.background.level = 100 * factor
     }
