@@ -53,8 +53,7 @@
         <LinearLayout
             android:id="@+id/contacts_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/continue_button"
+            android:layout_height="match_parent"
             android:layout_below="@id/recipient_layout"
             android:layout_marginTop="@dimen/standard_margin"
             android:orientation="vertical">
