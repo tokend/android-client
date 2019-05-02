@@ -17,10 +17,9 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.android.synthetic.main.fragment_withdraw.*
+import kotlinx.android.synthetic.main.fragment_user_flow.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
@@ -257,7 +256,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun clearScreensBackStack() {
-        childFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        childFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     // region Error/empty

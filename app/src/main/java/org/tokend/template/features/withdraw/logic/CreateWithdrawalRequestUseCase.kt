@@ -5,7 +5,6 @@ import io.reactivex.rxkotlin.toMaybe
 import org.tokend.template.data.model.history.SimpleFeeRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.logic.FeeManager
 import java.math.BigDecimal

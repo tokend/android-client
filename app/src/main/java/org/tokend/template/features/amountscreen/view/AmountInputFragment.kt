@@ -1,7 +1,6 @@
 package org.tokend.template.features.amountscreen.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -154,7 +153,7 @@ open class AmountInputFragment : BaseFragment() {
 
     protected open fun displayAssets() {
         val assetsToDisplay = getAssetsToDisplay()
-        Log.i("Oleg", "${assetsToDisplay.size} $asset $requestedAssetSet")
+
         if (assetsToDisplay.isEmpty()) {
             return
         }

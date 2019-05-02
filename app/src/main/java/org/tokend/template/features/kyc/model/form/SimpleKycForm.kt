@@ -12,7 +12,7 @@ class SimpleKycForm(documents: MutableMap<String, RemoteFile>,
                     val company: String?
 ) : KycForm(documents) {
     val avatar: RemoteFile?
-        get() = documents["kyc_avatar"]
+        get() = documents?.get("kyc_avatar")
 
     val formType: KycFormType
         get() = when {

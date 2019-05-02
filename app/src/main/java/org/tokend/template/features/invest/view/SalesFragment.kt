@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.support.v7.widget.Toolbar
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -25,9 +24,9 @@ import kotlinx.android.synthetic.main.layout_sales_search.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.dip
 import org.tokend.template.R
-import org.tokend.template.features.invest.view.adapter.SalesAdapter
 import org.tokend.template.features.invest.logic.SalesSubscriptionManager
 import org.tokend.template.features.invest.repository.SalesRepository
+import org.tokend.template.features.invest.view.adapter.SalesAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.Navigator
