@@ -10,6 +10,32 @@ for further information about branching and tagging conventions.
 ## [Unreleased]
 
 ### Added
+- Display user's avatar and account type in navigation header
+- User's avatar placeholder background color to the app config
+- Display volume indicators in order book
+- Repository and models for asset chart data
+- LRU cache to the default `RepositoryProvider` implementation
+
+### Changed
+- Account ID on payment details screen is now displayed truncated
+with ability to copy
+- Redesigned confirmation screens (payment, withdrawal, offer)
+- Redesigned limits display
+- Improved fees display
+- Redesigned send flow
+- Redesigned withdraw flow
+- Redesigned deposit screen
+- Changed amount in order book to a volume (cumulative amount)
+- Switched to new V3 order books API
+- Refactored offer creation and confirmation
+- Updated `Navigator` component structure
+
+### Fixed
+- Vertical scroll on fees screen
+- Password change and recovery
+- Withdrawal integration tests (added account verification)
+
+### Added
 - Important policies display on asset details screen
 
 ### Changed
