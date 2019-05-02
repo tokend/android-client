@@ -1,15 +1,12 @@
 package org.tokend.template.features.fees.view
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
-import android.text.SpannableString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.layout_fee_card.view.*
 import kotlinx.android.synthetic.main.layout_fee_info.view.*
 import org.tokend.template.R
-import org.tokend.template.extensions.highlight
 import org.tokend.template.view.util.LocalizedName
 
 class FeeCard(private val context: Context,

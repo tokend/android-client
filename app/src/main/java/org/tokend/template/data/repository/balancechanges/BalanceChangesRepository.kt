@@ -9,7 +9,6 @@ import org.tokend.sdk.api.v3.history.params.ParticipantEffectsPageParams
 import org.tokend.sdk.api.v3.history.params.ParticipantEffectsParams
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.converter.ParticipantEffectConverter
-import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.ApiProvider

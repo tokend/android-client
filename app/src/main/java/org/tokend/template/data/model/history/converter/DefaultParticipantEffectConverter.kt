@@ -101,7 +101,7 @@ class DefaultParticipantEffectConverter(
             }
 
             if (!operationDetails.isFilled) {
-                logError("Operation ${operationDetails.id} attributes are not fileld")
+                logError("Operation ${operationDetails.id} attributes are not filled")
                 return@forEach
             }
 

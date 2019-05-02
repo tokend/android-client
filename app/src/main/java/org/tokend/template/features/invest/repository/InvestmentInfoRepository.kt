@@ -8,7 +8,7 @@ import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.features.offers.repository.OffersRepository
-import org.tokend.template.features.invest.model.InvestmentlInfo
+import org.tokend.template.features.invest.model.InvestmentInfo
 import org.tokend.template.features.invest.model.SaleRecord
 import java.math.BigDecimal
 
@@ -19,13 +19,13 @@ class InvestmentInfoRepository(
         private val sale: SaleRecord,
         private val offersRepository: OffersRepository,
         private val salesRepository: SalesRepository
-) : SimpleSingleItemRepository<InvestmentlInfo>() {
-    override fun getItem(): Observable<InvestmentlInfo> {
+) : SimpleSingleItemRepository<InvestmentInfo>() {
+    override fun getItem(): Observable<InvestmentInfo> {
         return Single.zip(
                 getDetailedSaleIfNeeded(),
                 getOffersByAsset(),
                 BiFunction { detailedSale: SaleRecord, offers: Map<String, OfferRecord> ->
-                    InvestmentlInfo(
+                    InvestmentInfo(
                             offers,
                             detailedSale
                     )

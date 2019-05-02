@@ -9,7 +9,6 @@ import com.github.mikephil.charting.listener.BarLineChartTouchListener
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_asset_chart.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import kotlinx.android.synthetic.main.layout_progress.*
 import org.jetbrains.anko.dip
 import org.tokend.template.R
 import org.tokend.template.data.repository.assets.AssetChartRepository

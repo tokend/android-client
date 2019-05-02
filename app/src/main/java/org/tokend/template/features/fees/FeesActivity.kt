@@ -12,14 +12,12 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.repository.FeesRepository
-import org.tokend.template.features.fees.model.FeeRecord
-import org.tokend.template.features.fees.view.FeeItem
 import org.tokend.template.features.fees.view.FeeCard
+import org.tokend.template.features.fees.view.FeeItem
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import java.lang.ref.WeakReference
-import java.math.BigDecimal
 
 class FeesActivity : BaseActivity() {
 

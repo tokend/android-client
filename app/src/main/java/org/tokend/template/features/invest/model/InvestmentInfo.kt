@@ -2,7 +2,7 @@ package org.tokend.template.features.invest.model
 
 import org.tokend.template.features.offers.model.OfferRecord
 
-class InvestmentlInfo(
+class InvestmentInfo(
         /**
          * Pending offers by quote assets
          */

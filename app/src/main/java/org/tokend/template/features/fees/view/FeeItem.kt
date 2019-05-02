@@ -4,7 +4,6 @@ import org.tokend.template.extensions.isMaxPossibleAmount
 import org.tokend.template.features.fees.model.FeeRecord
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.wallet.xdr.FeeType
-import java.math.BigDecimal
 
 class FeeItem(
         val type: FeeType,
