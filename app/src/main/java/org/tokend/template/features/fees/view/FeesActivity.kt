@@ -1,8 +1,9 @@
-package org.tokend.template.features.fees
+package org.tokend.template.features.fees.view
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -12,8 +13,8 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.repository.FeesRepository
-import org.tokend.template.features.fees.view.FeeCard
-import org.tokend.template.features.fees.view.FeeItem
+import org.tokend.template.features.fees.adapter.FeeListItem
+import org.tokend.template.features.fees.adapter.FeesAdapter
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
@@ -38,6 +39,19 @@ class FeesActivity : BaseActivity() {
             updateFeeCards()
         }
 
+    private val requestedAssetCode: String? by lazy {
+        intent.getStringExtra(EXTRA_ASSET)
+    }
+
+    private val requestedType: Int by lazy {
+        intent.getIntExtra(EXTRA_TYPE, -1)
+    }
+
+    private var toRequestedAsset = true
+    private var toRequestedItems = false
+
+    private val feesAdapter = FeesAdapter()
+
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_fees)
         setSupportActionBar(toolbar)
@@ -50,9 +64,15 @@ class FeesActivity : BaseActivity() {
 
     private fun initViews() {
         initAssetTabs()
+        initList()
         initSwipeRefresh()
         initHorizontalSwipes()
         error_empty_view.setEmptyDrawable(R.drawable.ic_flash)
+    }
+
+    private fun initList() {
+        list_fees.layoutManager = LinearLayoutManager(this)
+        list_fees.adapter = feesAdapter
     }
 
     private fun initAssetTabs() {
@@ -118,28 +138,41 @@ class FeesActivity : BaseActivity() {
     }
 
     private fun onFeesUpdated() {
-        asset_tabs.setSimpleItems(assets.sortedWith(assetComparator))
         if (assets.isEmpty()) {
             asset_tabs.visibility = View.GONE
             error_empty_view.showEmpty(getString(R.string.no_fees))
+            return
         } else {
             asset_tabs.visibility = View.VISIBLE
             error_empty_view.hide()
-            updateFeeCards()
+        }
+
+        val sortedAssets = assets.sortedWith(assetComparator)
+        asset_tabs.setSimpleItems(sortedAssets, asset)
+        if (toRequestedAsset) {
+            toRequestedItems = true
+            asset_tabs.selectedItemIndex =
+                    sortedAssets.indexOfFirst { it == requestedAssetCode }
+            toRequestedAsset = false
         }
     }
 
     private fun updateFeeCards() {
-        fee_container.removeAllViews()
+        feesAdapter.clearData()
         feesRepository.item?.feesAssetMap?.get(asset)?.let { fees ->
             val data = fees.map { fee ->
-                FeeItem.fromFee(fee, amountFormatter)
+                FeeListItem.fromFee(fee, amountFormatter)
             }.groupBy { "${it.type}:${it.subtype}" }.values
 
             val sortedData = data.sortedWith(compareBy({ it.first().type }, { it.first().subtype }))
 
-            sortedData.forEach {
-                FeeCard(this, it).addTo(fee_container)
+            feesAdapter.setData(sortedData)
+
+            if (toRequestedItems) {
+                list_fees.scrollToPosition(
+                        sortedData.indexOfFirst { it.first().type.value == requestedType }
+                )
+                toRequestedItems = false
             }
         }
     }
@@ -150,5 +183,10 @@ class FeesActivity : BaseActivity() {
         } else {
             feesRepository.update()
         }
+    }
+
+    companion object {
+        const val EXTRA_ASSET = "extra_asset"
+        const val EXTRA_TYPE = "extra_type"
     }
 }

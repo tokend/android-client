@@ -223,7 +223,7 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/limits_title" />
         <activity
-            android:name=".features.fees.FeesActivity"
+            android:name=".features.fees.view.FeesActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/fees_title" />
     </application>

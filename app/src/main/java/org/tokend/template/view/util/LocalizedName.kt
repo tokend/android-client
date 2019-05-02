@@ -4,7 +4,7 @@ import android.content.Context
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.data.model.history.details.BalanceChangeCause
-import org.tokend.template.features.fees.view.FeeItem
+import org.tokend.template.features.fees.adapter.FeeListItem
 import org.tokend.template.features.kyc.model.form.KycFormType
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.wallet.xdr.FeeType
@@ -29,11 +29,11 @@ class LocalizedName(private val context: Context) {
         }
     }
 
-    fun forFeeSubtype(subtype: FeeItem.Subtype): String {
+    fun forFeeSubtype(subtype: FeeListItem.Subtype): String {
         return when (subtype) {
-            FeeItem.Subtype.INCOMING_OUTGOING -> context.getString(R.string.incoming_outgoing_fee)
-            FeeItem.Subtype.OUTGOING -> context.getString(R.string.outgoing_fee)
-            FeeItem.Subtype.INCOMING -> context.getString(R.string.incoming_fee)
+            FeeListItem.Subtype.INCOMING_OUTGOING -> context.getString(R.string.incoming_outgoing_fee)
+            FeeListItem.Subtype.OUTGOING -> context.getString(R.string.outgoing_fee)
+            FeeListItem.Subtype.INCOMING -> context.getString(R.string.incoming_fee)
         }
     }
 
