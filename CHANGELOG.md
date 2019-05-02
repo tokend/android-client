@@ -10,6 +10,7 @@ for further information about branching and tagging conventions.
 ## [Unreleased]
 
 ### Added
+- Display important asset policies on asset details screen
 - Display user's avatar and account type in navigation header
 - User's avatar placeholder background color to the app config
 - Display volume indicators in order book
@@ -17,6 +18,7 @@ for further information about branching and tagging conventions.
 - LRU cache to the default `RepositoryProvider` implementation
 
 ### Changed
+- Redesigned sale screen
 - Account ID on payment details screen is now displayed truncated
 with ability to copy
 - Redesigned confirmation screens (payment, withdrawal, offer)
