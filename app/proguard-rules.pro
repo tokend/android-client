@@ -72,3 +72,6 @@
 
 # Support library
 -keep class android.support.v7.widget.SearchView { *; }
+
+# KYC state storage
+-keepnames class org.tokend.template.features.kyc.** { *; }
