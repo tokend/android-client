@@ -7,11 +7,10 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.layout_fee_info.view.*
 import org.jetbrains.anko.find
 import org.tokend.template.R
-import org.tokend.template.features.fees.view.FeeItem
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.util.LocalizedName
 
-class FeesViewHolder(view: View) : BaseViewHolder<List<FeeItem>>(view) {
+class FeesViewHolder(view: View) : BaseViewHolder<List<FeeListItem>>(view) {
 
     private val localizedName = LocalizedName(view.context)
     private val feesInfoContainer: LinearLayout = view.find(R.id.fees_info_container)
@@ -19,14 +18,14 @@ class FeesViewHolder(view: View) : BaseViewHolder<List<FeeItem>>(view) {
     private val feeSubtypeText: TextView = view.find(R.id.fee_subtype)
 
 
-    override fun bind(item: List<FeeItem>) {
+    override fun bind(item: List<FeeListItem>) {
         val fee = item.first()
         feeTypeText.text = localizedName.forFeeType(fee.type)
         feeSubtypeText.text = localizedName.forFeeSubtype(fee.subtype)
         setFeeList(item)
     }
 
-    private fun setFeeList(fees: List<FeeItem>) {
+    private fun setFeeList(fees: List<FeeListItem>) {
         feesInfoContainer.removeAllViews()
         fees.forEach { fee ->
             val feeFields = LayoutInflater.from(view.context)

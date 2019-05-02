@@ -1,11 +1,10 @@
-package org.tokend.template.features.fees
+package org.tokend.template.features.fees.view
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
-import android.widget.LinearLayout
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_fees.*
@@ -14,15 +13,12 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.repository.FeesRepository
+import org.tokend.template.features.fees.adapter.FeeListItem
 import org.tokend.template.features.fees.adapter.FeesAdapter
-import org.tokend.template.features.fees.model.FeeRecord
-import org.tokend.template.features.fees.view.FeeItem
-import org.tokend.template.features.fees.view.FeeCard
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import java.lang.ref.WeakReference
-import java.math.BigDecimal
 
 class FeesActivity : BaseActivity() {
 
@@ -44,14 +40,15 @@ class FeesActivity : BaseActivity() {
         }
 
     private val requestedAssetCode: String? by lazy {
-        "USD"
+        intent.getStringExtra(EXTRA_ASSET)
     }
 
     private val requestedType: Int by lazy {
-        4
+        intent.getIntExtra(EXTRA_TYPE, -1)
     }
 
-    private var toRequestedItems = true
+    private var toRequestedAsset = true
+    private var toRequestedItems = false
 
     private val feesAdapter = FeesAdapter()
 
@@ -144,15 +141,19 @@ class FeesActivity : BaseActivity() {
         if (assets.isEmpty()) {
             asset_tabs.visibility = View.GONE
             error_empty_view.showEmpty(getString(R.string.no_fees))
+            return
         } else {
-            val sortedAssets = assets.sortedWith(assetComparator)
-            asset_tabs.setSimpleItems(sortedAssets, asset)
             asset_tabs.visibility = View.VISIBLE
             error_empty_view.hide()
-            if (toRequestedItems) {
-                asset_tabs.selectedItemIndex =
-                        sortedAssets.indexOfFirst { it == requestedAssetCode }
-            }
+        }
+
+        val sortedAssets = assets.sortedWith(assetComparator)
+        asset_tabs.setSimpleItems(sortedAssets, asset)
+        if (toRequestedAsset) {
+            toRequestedItems = true
+            asset_tabs.selectedItemIndex =
+                    sortedAssets.indexOfFirst { it == requestedAssetCode }
+            toRequestedAsset = false
         }
     }
 
@@ -160,7 +161,7 @@ class FeesActivity : BaseActivity() {
         feesAdapter.clearData()
         feesRepository.item?.feesAssetMap?.get(asset)?.let { fees ->
             val data = fees.map { fee ->
-                FeeItem.fromFee(fee, amountFormatter)
+                FeeListItem.fromFee(fee, amountFormatter)
             }.groupBy { "${it.type}:${it.subtype}" }.values
 
             val sortedData = data.sortedWith(compareBy({ it.first().type }, { it.first().subtype }))

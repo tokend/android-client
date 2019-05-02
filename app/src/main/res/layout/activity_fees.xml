@@ -41,7 +41,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:overScrollMode="never"/>
+                android:overScrollMode="never"
+                android:paddingBottom="@dimen/standard_margin" />
         </LinearLayout>
     </org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>

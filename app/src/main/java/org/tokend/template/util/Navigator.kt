@@ -23,7 +23,7 @@ import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.deposit.DepositFragment
-import org.tokend.template.features.fees.FeesActivity
+import org.tokend.template.features.fees.view.FeesActivity
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.view.SaleActivity
@@ -342,8 +342,11 @@ class Navigator private constructor() {
         performIntent(intent)
     }
 
-    fun openFees() {
-        val intent = context?.intentFor<FeesActivity>()
+    fun openFees(asset: String? = null, feeType: Int = -1) {
+        val intent = context?.intentFor<FeesActivity>(
+                FeesActivity.EXTRA_ASSET to asset,
+                FeesActivity.EXTRA_TYPE to feeType
+        )
         performIntent(intent)
     }
 
