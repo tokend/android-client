@@ -48,8 +48,7 @@ There are integration tests for use cases in `src/test/java/org/tokend/template/
 You can specify the environment to run tests on inside `Config.kt` file. 
 
 It is recommended to use local [TokenD Developer edition](https://github.com/tokend/developer-edition)
-for tests. To prepare it for tests run [init scripts](https://github.com/tokend/developer-edition#bootstraping-your-environment)
-after the first start.
+for tests because they create a lot of users, assets, asset pairs, etc.
 
 ## Credits
-⛏ <a href="https://distributedlab.com/" target="_blank">Distributed Lab</a>, 2018
+⛏ <a href="https://distributedlab.com/" target="_blank">Distributed Lab</a>, 2019
