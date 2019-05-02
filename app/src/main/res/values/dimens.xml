@@ -31,8 +31,6 @@
     <dimen name="divider_height">1dp</dimen>
     <dimen name="divider_with_icon_padding_left">72dp</dimen>
 
-    <dimen name="navigation_profile_header_top_margin">24dp</dimen>
-
     <dimen name="toolbar_expanded_height">180dp</dimen> <!-- 200dp for visible subtitle -->
     <dimen name="toolbar_title_size">28sp</dimen>
     <dimen name="toolbar_subtitle_size">20sp</dimen>
@@ -45,8 +43,6 @@
     <dimen name="tx_list_item_icon_size_small">24dp</dimen>
 
     <dimen name="tx_list_item_height">83dp</dimen>
-
-    <dimen name="spinner_arrow_align_margin">9dp</dimen>
 
     <dimen name="asset_list_item_logo_size">56dp</dimen>
 

@@ -4,9 +4,4 @@
         <item quantity="one">day</item>
         <item quantity="other">days</item>
     </plurals>
-
-    <plurals name="investor">
-        <item quantity="one">investor</item>
-        <item quantity="other">investors</item>
-    </plurals>
 </resources>

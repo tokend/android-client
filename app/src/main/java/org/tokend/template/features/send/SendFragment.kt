@@ -256,7 +256,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun clearScreensBackStack() {
-        childFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        childFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     // region Error/empty
