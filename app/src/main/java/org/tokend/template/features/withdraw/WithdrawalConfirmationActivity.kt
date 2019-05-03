@@ -14,10 +14,13 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
+import org.tokend.template.view.util.ExtraViewProvider
 import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.wallet.xdr.FeeType
 
 class WithdrawalConfirmationActivity : BaseActivity() {
     private lateinit var request: WithdrawalRequest
@@ -54,10 +57,15 @@ class WithdrawalConfirmationActivity : BaseActivity() {
         )
 
         if (request.fee.total.signum() > 0) {
+            val feeExtraView =
+                    ExtraViewProvider.getFeeView(this) {
+                        Navigator.from(this).openFees(request.asset, FeeType.WITHDRAWAL_FEE.value)
+                    }
             adapter.addData(
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(request.fee.total, asset),
-                            hint = getString(R.string.tx_fee)
+                            hint = getString(R.string.tx_fee),
+                            extraView = feeExtraView
                     )
             )
 

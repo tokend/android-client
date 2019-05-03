@@ -2,8 +2,10 @@ package org.tokend.template.features.send
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.support.v7.widget.SwitchCompat
@@ -11,15 +13,21 @@ import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details_list.*
+import org.jetbrains.anko.dimen
+import org.jetbrains.anko.onClick
+import org.jetbrains.anko.padding
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.send.logic.ConfirmPaymentRequestUseCase
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
+import org.tokend.template.view.util.ExtraViewProvider
 import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.wallet.xdr.FeeType
 import java.math.BigDecimal
 
 class PaymentConfirmationActivity : BaseActivity() {
@@ -98,11 +106,18 @@ class PaymentConfirmationActivity : BaseActivity() {
         val total = request.amount + totalFee
 
         if (totalFee.signum() > 0) {
+
+            val feeExtraView =
+                    ExtraViewProvider.getFeeView(this) {
+                        Navigator.from(this).openFees(request.asset, FeeType.PAYMENT_FEE.value)
+                    }
+
             adapter.addOrUpdateItem(
                     DetailsItem(
                             id = SENDER_FEE_ITEM_ID,
                             text = amountFormatter.formatAssetAmount(totalFee, request.asset),
-                            hint = getString(R.string.tx_fee)
+                            hint = getString(R.string.tx_fee),
+                            extraView = feeExtraView
                     )
             )
 

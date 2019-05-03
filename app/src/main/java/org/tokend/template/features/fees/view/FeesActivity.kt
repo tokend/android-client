@@ -149,12 +149,19 @@ class FeesActivity : BaseActivity() {
 
         val sortedAssets = assets.sortedWith(assetComparator)
         asset_tabs.setSimpleItems(sortedAssets, asset)
-        if (toRequestedAsset) {
+        if (toRequestedAsset && requestedAssetCode != null) {
             toRequestedItems = true
+
+            val forceUpdate = asset == requestedAssetCode
             asset_tabs.selectedItemIndex =
                     sortedAssets.indexOfFirst { it == requestedAssetCode }
+
+            if (forceUpdate) { updateFeeCards() }
+
             toRequestedAsset = false
+            return
         }
+        updateFeeCards()
     }
 
     private fun updateFeeCards() {
