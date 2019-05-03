@@ -22,8 +22,8 @@ class AssetChartData(
     constructor(source: org.tokend.sdk.api.assets.model.AssetChartData) : this(
             hour = source.hour?.map(::AssetChartPoint),
             day = source.day?.map(::AssetChartPoint),
-            month = source.day?.map(::AssetChartPoint),
-            year = source.day?.map(::AssetChartPoint)
+            month = source.month?.map(::AssetChartPoint),
+            year = source.year?.map(::AssetChartPoint)
     )
 
     val isEmpty: Boolean
