@@ -52,9 +52,9 @@ enum class AssetChartScale {
      */
     val pointsToDisplay: Int
         get() = when (this) {
-            HOUR -> 30
-            DAY -> 24
-            MONTH -> 31
-            YEAR -> 24
+            HOUR -> 60
+            DAY -> 72
+            MONTH -> 93
+            YEAR -> 120
         }
 }
