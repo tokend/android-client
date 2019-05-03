@@ -27,6 +27,7 @@ import org.tokend.template.features.fees.view.FeesActivity
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.view.SaleActivity
+import org.tokend.template.features.invest.view.SaleInvestActivity
 import org.tokend.template.features.limits.LimitsActivity
 import org.tokend.template.features.offers.CreateOfferActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
@@ -364,5 +365,12 @@ class Navigator private constructor() {
                 SingleFragmentActivity.SCREEN_ID to WithdrawFragment.ID
         )
         performIntent(intent, requestCode = requestCode)
+    }
+
+    fun openInvest(sale: SaleRecord) {
+        val intent = context?.intentFor<SaleInvestActivity>(
+                SaleInvestActivity.SALE_EXTRA to sale
+        )
+        performIntent(intent)
     }
 }

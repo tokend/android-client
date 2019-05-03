@@ -1,24 +1,24 @@
-package org.tokend.template.features.invest.view.fragments
+package org.tokend.template.features.invest.view
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.fragment_sale_invest.*
-import kotlinx.android.synthetic.main.include_error_empty_view.*
-import kotlinx.android.synthetic.main.layout_progress.*
+import kotlinx.android.synthetic.main.activity_sale_invest.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
+import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
-import org.tokend.template.features.invest.view.InvestmentHelpDialog
+import org.tokend.template.features.invest.logic.InvestmentInfoHolder
+import org.tokend.template.features.invest.model.SaleRecord
+import org.tokend.template.features.invest.repository.InvestmentInfoRepository
 import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.logic.FeeManager
@@ -27,16 +27,24 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.ContentLoadingProgressBar
 import org.tokend.template.view.balancepicker.BalancePickerBottomDialog
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.formatter.DateFormatter
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.wallet.xdr.SaleType
 import java.math.BigDecimal
 import java.math.MathContext
 
-class SaleInvestFragment : SaleFragment() {
+class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
+    private lateinit var mSale: SaleRecord
+
+    override val sale: SaleRecord
+        get() = mSale
+
+    override val investmentInfoRepository: InvestmentInfoRepository
+        get() = repositoryProvider.investmentInfo(sale)
+
+
     private val mainLoading = LoadingIndicatorManager(
-            showLoading = { progress.show() },
-            hideLoading = { progress.hide() }
+            showLoading = { swipe_refresh.isRefreshing = true },
+            hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private val investLoading = LoadingIndicatorManager(
@@ -85,21 +93,33 @@ class SaleInvestFragment : SaleFragment() {
             invest_button.isEnabled = value
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_sale_invest, container, false)
-    }
+    override fun onCreateAllowed(savedInstanceState: Bundle?) {
+        setContentView(R.layout.activity_sale_invest)
 
-    override fun onInitAllowed() {
-        super.onInitAllowed()
+        try {
+            mSale = intent.getSerializableExtra(SALE_EXTRA) as SaleRecord
+        } catch (e: Exception) {
+            finish()
+            return
+        }
 
+        initToolbar()
         initFields()
         initButtons()
         initAssetSelection()
+        initSwipeRefresh()
 
         subscribeToInvestmentInfo()
         subscribeToBalances()
 
         updateInvestAvailability()
+    }
+
+    private fun initToolbar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleAppearance)
+        toolbar.subtitle = sale.name
     }
 
     private fun initAssetSelection() {
@@ -109,7 +129,7 @@ class SaleInvestFragment : SaleFragment() {
                 .sortedWith(assetComparator)
 
         val picker = object : BalancePickerBottomDialog(
-                requireContext(),
+                this,
                 amountFormatter,
                 assetComparator,
                 repositoryProvider.balances(),
@@ -129,7 +149,7 @@ class SaleInvestFragment : SaleFragment() {
             }
         }
 
-        val dropDownArrow = ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_drop_down)
+        val dropDownArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_drop_down)
         asset_edit_text.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null,
                 dropDownArrow, null)
 
@@ -156,9 +176,13 @@ class SaleInvestFragment : SaleFragment() {
         }
 
         invest_help_button.setOnClickListener {
-            InvestmentHelpDialog(requireContext(), R.style.AlertDialogStyle)
-                    .show()
+            InvestmentHelpDialog(this, R.style.AlertDialogStyle).show()
         }
+    }
+
+    private fun initSwipeRefresh() {
+        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(this, R.color.accent))
+        swipe_refresh.setOnRefreshListener { update() }
     }
 
     private fun subscribeToInvestmentInfo() {
@@ -197,6 +221,11 @@ class SaleInvestFragment : SaleFragment() {
                     updateInvestAvailability()
                 }
                 .addTo(compositeDisposable)
+    }
+
+    private fun update() {
+        investmentInfoRepository.update()
+        balancesRepository.update()
     }
 
     private fun onInvestmentInfoUpdated() {
@@ -248,7 +277,6 @@ class SaleInvestFragment : SaleFragment() {
 
         updateInvestButton()
         updateCancelInvestmentButton()
-        updateUnavailableInvestMessageVisibility()
     }
 
     private fun updateInvestButton() {
@@ -264,27 +292,6 @@ class SaleInvestFragment : SaleFragment() {
             cancel_investment_button.visibility = View.VISIBLE
         } else {
             cancel_investment_button.visibility = View.GONE
-        }
-    }
-
-    private fun updateUnavailableInvestMessageVisibility() {
-        when {
-            sale.isAvailable -> error_empty_view.hide()
-            sale.isUpcoming -> {
-                error_empty_view.setEmptyDrawable(R.drawable.ic_time)
-                error_empty_view.showEmpty(getString(
-                        R.string.template_invest_unavailable_sale_upcoming_date,
-                        DateFormatter(requireContext()).formatLong(sale.startDate)
-                ))
-            }
-            sale.isEnded -> {
-                error_empty_view.setEmptyDrawable(R.drawable.ic_time)
-                error_empty_view.showEmpty(getString(R.string.invest_unavailable_sale_ended))
-            }
-            else -> {
-                error_empty_view.setEmptyDrawable(R.drawable.ic_error_outline)
-                error_empty_view.showEmpty(getString(R.string.invest_unavailable))
-            }
         }
     }
 
@@ -358,9 +365,10 @@ class SaleInvestFragment : SaleFragment() {
             }
         }
     }
-    // endregion
 
+    // endregion
     companion object {
         private val INVESTMENT_REQUEST = "invest".hashCode() and 0xffff
+        const val SALE_EXTRA = "sale"
     }
 }

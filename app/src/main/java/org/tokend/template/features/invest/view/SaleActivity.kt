@@ -10,6 +10,7 @@ import org.tokend.template.features.invest.logic.InvestmentInfoHolder
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.repository.InvestmentInfoRepository
 import org.tokend.template.features.invest.view.fragments.SalePagerAdapter
+import org.tokend.template.util.Navigator
 
 class SaleActivity : BaseActivity(), InvestmentInfoHolder {
     private lateinit var mSale: SaleRecord
@@ -64,7 +65,7 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
     }
 
     private fun openInvest() {
-
+        Navigator.from(this).openInvest(sale)
     }
 
     companion object {

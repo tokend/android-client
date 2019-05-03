@@ -2,15 +2,14 @@ package org.tokend.template.fragments
 
 import android.support.v4.app.Fragment
 import org.tokend.template.data.model.AssetPairRecord
+import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.features.assets.AssetDetailsFragment
 import org.tokend.template.features.assets.ExploreAssetsFragment
-import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.features.dashboard.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
 import org.tokend.template.features.invest.view.fragments.SaleChartFragment
 import org.tokend.template.features.invest.view.fragments.SaleDetailsFragment
-import org.tokend.template.features.invest.view.fragments.SaleInvestFragment
 import org.tokend.template.features.invest.view.fragments.SaleOverviewFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.settings.GeneralSettingsFragment
@@ -70,10 +69,6 @@ class FragmentFactory {
 
     fun getSaleOverviewFragment(): Fragment {
         return SaleOverviewFragment()
-    }
-
-    fun getSaleInvestFragment(): Fragment {
-        return SaleInvestFragment()
     }
 
     fun getSaleDetailsFragment(saleAssetCode: String): Fragment {
