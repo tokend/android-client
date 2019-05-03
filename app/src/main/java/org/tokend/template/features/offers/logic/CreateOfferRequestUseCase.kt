@@ -57,6 +57,7 @@ class CreateOfferRequestUseCase(
 
     private fun getFee(): Single<SimpleFeeRecord> {
         return feeManager.getOfferFee(
+                orderBookId,
                 accountId,
                 quoteAssetCode,
                 quoteAmount

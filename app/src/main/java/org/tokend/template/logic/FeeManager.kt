@@ -74,7 +74,11 @@ class FeeManager(
      *
      * @see getFee
      */
-    fun getOfferFee(accountId: String, asset: String, amount: BigDecimal): Single<SimpleFeeRecord> {
-        return getFee(FeeType.OFFER_FEE, 0, accountId, asset, amount)
+    fun getOfferFee(orderBookId: Long, accountId: String, asset: String, amount: BigDecimal): Single<SimpleFeeRecord> {
+        val feeType = if (orderBookId != 0L) {
+            FeeType.INVEST_FEE
+        } else FeeType.OFFER_FEE
+
+        return getFee(feeType, 0, accountId, asset, amount)
     }
 }
