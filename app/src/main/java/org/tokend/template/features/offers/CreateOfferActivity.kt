@@ -97,7 +97,12 @@ class CreateOfferActivity : BaseActivity() {
         total_edit_text.floatingLabelText =
                 getString(R.string.template_total_hint, quoteAssetCode)
 
-        amount_edit_text.requestFocus()
+        if (requiredPrice.signum() == 0) {
+            price_edit_text.requestFocus()
+        } else {
+            amount_edit_text.requestFocus()
+        }
+
         triggerOthers = true
     }
 
