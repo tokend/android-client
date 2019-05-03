@@ -1,4 +1,4 @@
-package org.tokend.template.view.util
+package org.tokend.template.view.details
 
 import android.content.Context
 import android.graphics.PorterDuff

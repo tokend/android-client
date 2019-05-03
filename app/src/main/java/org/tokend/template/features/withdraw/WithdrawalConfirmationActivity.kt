@@ -18,7 +18,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
-import org.tokend.template.view.util.ExtraViewProvider
+import org.tokend.template.view.details.ExtraViewProvider
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.wallet.xdr.FeeType
 
