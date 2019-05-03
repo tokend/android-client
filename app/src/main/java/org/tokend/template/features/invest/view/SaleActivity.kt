@@ -1,7 +1,8 @@
 package org.tokend.template.features.invest.view
 
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_multiple_fragments.*
+import android.view.View
+import kotlinx.android.synthetic.main.activity_sale.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
@@ -19,7 +20,7 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
         get() = repositoryProvider.investmentInfo(sale)
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_multiple_fragments)
+        setContentView(R.layout.activity_sale)
 
         try {
             mSale = intent.getSerializableExtra(SALE_EXTRA) as SaleRecord
@@ -34,6 +35,7 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
 
         initToolbar()
         initViewPager()
+        initInvestButton()
     }
 
     private fun initToolbar() {
@@ -47,6 +49,22 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
         pager.adapter = adapter
         pager.offscreenPageLimit = adapter.count
         toolbar_tabs.setupWithViewPager(pager)
+    }
+
+    private fun initInvestButton() {
+        invest_button.visibility =
+                if (sale.isAvailable)
+                    View.VISIBLE
+                else
+                    View.GONE
+
+        invest_button.setOnClickListener {
+            openInvest()
+        }
+    }
+
+    private fun openInvest() {
+
     }
 
     companion object {
