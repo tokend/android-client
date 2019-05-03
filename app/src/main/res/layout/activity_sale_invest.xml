@@ -77,15 +77,6 @@
                         android:text="@string/cancel_investment_action" />
 
                 </RelativeLayout>
-
-                <Button
-                    android:id="@+id/invest_help_button"
-                    style="@style/SecondaryButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/double_margin"
-                    android:text="@string/help" />
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>

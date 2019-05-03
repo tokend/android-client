@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -174,10 +176,6 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
         cancel_investment_button.setOnClickListener {
             tryToInvest(cancel = true)
         }
-
-        invest_help_button.setOnClickListener {
-            InvestmentHelpDialog(this, R.style.AlertDialogStyle).show()
-        }
     }
 
     private fun initSwipeRefresh() {
@@ -299,6 +297,25 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
         return investmentInfoRepository.getAvailableBalance(assetCode, balancesRepository)
     }
 
+    // region Help
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.invest, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.help -> openHelpDialog()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun openHelpDialog() {
+        InvestmentHelpDialog(this, R.style.AlertDialogStyle).show()
+    }
+    // endregion
+
+
     // region Proceed invest
     private fun tryToInvest(cancel: Boolean = false) {
         if (canInvest || cancel) {
@@ -365,8 +382,8 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
             }
         }
     }
-
     // endregion
+
     companion object {
         private val INVESTMENT_REQUEST = "invest".hashCode() and 0xffff
         const val SALE_EXTRA = "sale"
