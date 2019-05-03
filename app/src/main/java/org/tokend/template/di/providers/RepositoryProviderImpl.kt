@@ -15,6 +15,8 @@ import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
 import org.tokend.template.data.repository.tradehistory.TradeHistoryRepository
 import org.tokend.template.extensions.getOrPut
+import org.tokend.template.features.invest.model.SaleRecord
+import org.tokend.template.features.invest.repository.InvestmentInfoRepository
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistor
@@ -96,6 +98,9 @@ class RepositoryProviderImpl(
 
     private val chartRepositoriesByCode =
             LruCache<String, AssetChartRepository>(MAX_SAME_REPOSITORIES_COUNT)
+
+    private val investmentInfoRepositoriesBySaleId =
+            LruCache<Long, InvestmentInfoRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     override fun balances(): BalancesRepository {
         return balancesRepository
@@ -207,6 +212,12 @@ class RepositoryProviderImpl(
 
     override fun kycState(): KycStateRepository {
         return kycStateRepository
+    }
+
+    override fun investmentInfo(sale: SaleRecord): InvestmentInfoRepository {
+        return investmentInfoRepositoriesBySaleId.getOrPut(sale.id) {
+            InvestmentInfoRepository(sale, offers(), sales())
+        }
     }
 
     companion object {

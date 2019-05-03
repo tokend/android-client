@@ -15,9 +15,8 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
     override val sale: SaleRecord
         get() = mSale
 
-    private lateinit var mInvestmentInfoRepository: InvestmentInfoRepository
     override val investmentInfoRepository: InvestmentInfoRepository
-        get() = mInvestmentInfoRepository
+        get() = repositoryProvider.investmentInfo(sale)
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_multiple_fragments)
@@ -29,11 +28,7 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
             return
         }
 
-        mInvestmentInfoRepository = InvestmentInfoRepository(
-                sale,
-                repositoryProvider.offers(),
-                repositoryProvider.sales()
-        ).also { it.update() }
+        investmentInfoRepository.update()
 
         supportPostponeEnterTransition()
 
