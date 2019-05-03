@@ -26,7 +26,7 @@ class SaleRecord(
         val baseHardCap: BigDecimal,
         val currentCap: BigDecimal,
         val youtubeVideo: YoutubeVideo?,
-        val investorsCount: Int
+        val ownerAccountId: String
 ) : Serializable {
     constructor(source: SimpleSale,
                 urlConfig: UrlConfig?
@@ -61,7 +61,7 @@ class SaleRecord(
             } catch (_: Exception) {
                 null
             },
-            investorsCount = source.statistics.investors
+            ownerAccountId = source.ownerAccount
     )
 
     val isAvailable: Boolean
