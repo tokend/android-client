@@ -3,6 +3,7 @@ package org.tokend.template.features.offers
 import android.app.Activity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
@@ -14,10 +15,13 @@ import org.tokend.template.features.offers.logic.ConfirmOfferRequestUseCase
 import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.features.offers.model.OfferRequest
 import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
+import org.tokend.template.view.details.ExtraViewProvider
 import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.wallet.xdr.FeeType
 import java.math.BigDecimal
 
 open class OfferConfirmationActivity : BaseActivity() {
@@ -55,6 +59,14 @@ open class OfferConfirmationActivity : BaseActivity() {
 
     protected val cancellationOnly: Boolean
         get() = request.baseAmount.signum() == 0 && offerToCancel != null
+
+    protected open val feeType: Int = FeeType.OFFER_FEE.value
+
+    protected val feeExtraView: AppCompatImageView by lazy {
+        ExtraViewProvider.getFeeView(this) {
+            Navigator.from(this).openFees(request.quoteAssetCode, feeType)
+        }
+    }
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details_list)
@@ -110,7 +122,8 @@ open class OfferConfirmationActivity : BaseActivity() {
             adapter.addData(
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(request.fee.total, payAsset),
-                            hint = getString(R.string.tx_fee)
+                            hint = getString(R.string.tx_fee),
+                            extraView = feeExtraView
                     ),
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(
@@ -143,7 +156,8 @@ open class OfferConfirmationActivity : BaseActivity() {
             adapter.addData(
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(request.fee.total, receiveAsset),
-                            hint = getString(R.string.tx_fee)
+                            hint = getString(R.string.tx_fee),
+                            extraView = feeExtraView
                     ),
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(
