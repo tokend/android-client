@@ -62,7 +62,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
             android:maxLines="1"
             android:textSize="16sp"
             tools:text="Sent" />
@@ -84,7 +83,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_height"
         android:layout_alignStart="@id/tx_info_layout"
-        android:layout_alignParentEnd="true"
+        android:layout_alignEnd="@id/tx_amount_layout"
         android:layout_alignParentBottom="true"
         android:background="@color/material_drawer_divider" />
 

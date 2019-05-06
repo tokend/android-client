@@ -42,7 +42,7 @@
     <dimen name="tx_list_item_icon_size">24dp</dimen>
     <dimen name="tx_list_item_icon_size_small">24dp</dimen>
 
-    <dimen name="tx_list_item_height">83dp</dimen>
+    <dimen name="tx_list_item_height">78dp</dimen>
 
     <dimen name="asset_list_item_logo_size">56dp</dimen>
 
