@@ -7,9 +7,7 @@ import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.data.model.history.SimpleFeeRecord
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 
-class DefaultParticipantEffectConverter(
-        private val contextBalanceId: String
-) : ParticipantEffectConverter {
+class DefaultParticipantEffectConverter: ParticipantEffectConverter {
     override fun toBalanceChanges(participantEffects: Collection<ParticipantEffectResource>)
             : Collection<BalanceChange> {
         val result = ArrayList<BalanceChange>(participantEffects.size)
@@ -33,6 +31,13 @@ class DefaultParticipantEffectConverter(
 
             if (effect == null) {
                 logError("No related effect for participant effect ${participantEffect.id}")
+                return@forEach
+            }
+
+            val balanceId = participantEffect.balance?.id
+
+            if (balanceId == null) {
+                logError("No related balance for participant effect ${participantEffect.id}")
                 return@forEach
             }
 
@@ -65,7 +70,7 @@ class DefaultParticipantEffectConverter(
                 is EffectBalanceChangeResource ->
                     Triple(effect.amount, effect.fee, relatedAssetCode)
                 is EffectMatchedResource -> {
-                    when (contextBalanceId) {
+                    when (balanceId) {
                         effect.charged.balanceAddress ->
                             effect.charged.let {
                                 Triple(it.amount, it.fee, it.assetCode)
@@ -76,7 +81,7 @@ class DefaultParticipantEffectConverter(
                             }
                         else -> {
                             logError("Cannot choose 'funded' or 'charged' " +
-                                    "for balance $contextBalanceId and effect ${effect.id}")
+                                    "for balance $balanceId and effect ${effect.id}")
                             return@forEach
                         }
                     }
@@ -89,7 +94,7 @@ class DefaultParticipantEffectConverter(
 
             if (assetCode == null) {
                 logError("Failed to specify asset of participant effect ${participantEffect.id} " +
-                        "and balance $contextBalanceId")
+                        "and balance $balanceId")
                 return@forEach
             }
 
@@ -114,7 +119,7 @@ class DefaultParticipantEffectConverter(
                             amount = amount,
                             fee = SimpleFeeRecord(fee),
                             assetCode = assetCode,
-                            balanceId = contextBalanceId,
+                            balanceId = balanceId,
                             date = date,
                             cause = cause
                     )
