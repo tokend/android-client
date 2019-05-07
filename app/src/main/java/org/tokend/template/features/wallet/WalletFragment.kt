@@ -15,16 +15,17 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.collapsing_balance_appbar.*
+import kotlinx.android.synthetic.main.collapsing_balance_appbar.view.*
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
+import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.template.features.wallet.adapter.BalanceChangesAdapter
 import org.tokend.template.fragments.BaseFragment
@@ -282,6 +283,21 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
                 ?.let { balance ->
                     collapsing_toolbar.title =
                             amountFormatter.formatAssetAmount(balance.available, asset)
+
+                    val convertedBalanceTextView = collapsing_toolbar.converted_balance_text_view
+
+                    if (balance.conversionAssetCode != null
+                            && balance.conversionAssetCode != balance.assetCode
+                            && balance.convertedAmount != null) {
+                        convertedBalanceTextView.text =
+                                amountFormatter.formatAssetAmount(
+                                        balance.convertedAmount,
+                                        balance.conversionAssetCode
+                                )
+                        convertedBalanceTextView.visibility = View.VISIBLE
+                    } else {
+                        convertedBalanceTextView.visibility = View.GONE
+                    }
                 }
     }
 

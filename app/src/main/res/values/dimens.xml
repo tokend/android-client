@@ -34,7 +34,7 @@
     <dimen name="toolbar_expanded_height">180dp</dimen> <!-- 200dp for visible subtitle -->
     <dimen name="toolbar_title_size">28sp</dimen>
     <dimen name="toolbar_subtitle_size">20sp</dimen>
-    <dimen name="toolbar_text_padding_start">48dp</dimen>
+    <dimen name="toolbar_text_padding_start">56dp</dimen>
     <dimen name="toolbar_text_padding_end">32dp</dimen>
     <dimen name="toolbar_expanded_title_margin_top">72dp</dimen>
     <dimen name="toolbar_expanded_subtitle_margin_top">108dp</dimen>
