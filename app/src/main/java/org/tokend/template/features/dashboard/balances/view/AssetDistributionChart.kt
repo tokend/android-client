@@ -101,6 +101,8 @@ class AssetDistributionChart
 
             setCenterTextColor(ContextCompat.getColor(context, R.color.primary_text))
             setCenterTextSizePixels(context.resources.getDimensionPixelSize(R.dimen.text_size_default).toFloat())
+
+            isRotationEnabled = false
         }
 
         val percentFormatter = NumberFormat.getPercentInstance()
