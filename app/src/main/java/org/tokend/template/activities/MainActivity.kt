@@ -26,7 +26,7 @@ import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.assets.LogoFactory
-import org.tokend.template.features.dashboard.DashboardFragment
+import org.tokend.template.features.dashboard.view.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
 import org.tokend.template.features.kyc.model.KycState

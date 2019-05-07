@@ -5,7 +5,9 @@ import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.features.assets.AssetDetailsFragment
 import org.tokend.template.features.assets.ExploreAssetsFragment
-import org.tokend.template.features.dashboard.DashboardFragment
+import org.tokend.template.features.dashboard.balances.view.BalancesFragment
+import org.tokend.template.features.dashboard.movements.view.AccountMovementsFragment
+import org.tokend.template.features.dashboard.view.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
 import org.tokend.template.features.invest.view.fragments.SaleChartFragment
@@ -97,5 +99,13 @@ class FragmentFactory {
 
     fun getOffersFragment(onlyPrimary: Boolean): Fragment {
         return OffersFragment.newInstance(onlyPrimary)
+    }
+
+    fun getAccountMovementsFragment(): Fragment {
+        return AccountMovementsFragment()
+    }
+
+    fun getBalancesFragment(): Fragment {
+        return BalancesFragment()
     }
 }
