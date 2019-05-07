@@ -1,6 +1,5 @@
 package org.tokend.template.features.dashboard.balances.view.adapter
 
-import android.util.Log
 import android.view.View
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
@@ -14,7 +13,6 @@ class BalanceItemViewHolder(
 ) : BaseViewHolder<BalanceListItem>(view), BalanceItemView by BalanceItemViewImpl(view) {
 
     override fun bind(item: BalanceListItem) {
-        Log.i("Oleg", "Bind ${item.displayedName}")
         displayLogo(item.logoUrl, item.assetCode)
 
         nameTextView.text = item.displayedName

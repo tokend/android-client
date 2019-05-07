@@ -19,9 +19,8 @@ class BalanceListItem(
             available = source.available,
             logoUrl = source.asset.logoUrl,
             assetName = source.asset.name,
-            // TODO: Fill when converted amounts will be available
-            converted = null,
-            conversionAssetCode = null,
+            converted = source.convertedAmount,
+            conversionAssetCode = source.conversionAssetCode,
             source = source
     )
 
