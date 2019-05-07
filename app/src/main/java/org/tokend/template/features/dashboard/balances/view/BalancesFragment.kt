@@ -13,6 +13,7 @@ import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.features.dashboard.balances.view.adapter.BalanceItemsAdapter
 import org.tokend.template.features.dashboard.balances.view.adapter.BalanceListItem
 import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ScrollOnTopItemUpdateAdapterObserver
@@ -48,6 +49,9 @@ class BalancesFragment : BaseFragment() {
         balances_list.adapter = adapter
         balances_list.layoutManager = LinearLayoutManager(requireContext())
         adapter.registerAdapterDataObserver(ScrollOnTopItemUpdateAdapterObserver(balances_list))
+        adapter.onItemClick { _, item ->
+            item.source?.assetCode?.also { openWallet(it) }
+        }
     }
 
     private fun initSwipeRefresh() {
@@ -101,5 +105,9 @@ class BalancesFragment : BaseFragment() {
                     View.GONE
                 else
                     View.VISIBLE
+    }
+
+    private fun openWallet(assetCode: String) {
+        Navigator.from(this).openWallet(0, assetCode)
     }
 }
