@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieData
@@ -157,6 +158,14 @@ class AssetDistributionChart
         chart.apply {
             data = PieData(dataSet)
             invalidate()
+            val animationDuration =
+                    context.resources.getInteger(android.R.integer.config_longAnimTime)
+            animateXY(
+                    animationDuration,
+                    animationDuration,
+                    Easing.EasingOption.EaseInOutCubic,
+                    Easing.EasingOption.EaseInOutCubic
+            )
             highlightValue(0f, 0)
         }
 
