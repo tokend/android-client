@@ -3,11 +3,10 @@ package org.tokend.template.features.dashboard.balances.view
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_balances.*
+import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.features.dashboard.balances.view.adapter.BalanceItemsAdapter
@@ -32,6 +31,11 @@ class BalancesFragment : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_balances, container, false)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onInitAllowed() {
@@ -109,5 +113,25 @@ class BalancesFragment : BaseFragment() {
 
     private fun openWallet(assetCode: String) {
         Navigator.from(this).openWallet(0, assetCode)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.balances, menu)
+
+        val assetsExplorerItem = menu.findItem(R.id.add)
+
+        if (!BuildConfig.IS_EXPLORE_ALLOWED) {
+            assetsExplorerItem.isVisible = false
+            return
+        }
+
+        assetsExplorerItem.setOnMenuItemClickListener {
+            openAssetsExplorer()
+            true
+        }
+    }
+
+    private fun openAssetsExplorer() {
+        Navigator.from(this).openAssetsExplorer()
     }
 }

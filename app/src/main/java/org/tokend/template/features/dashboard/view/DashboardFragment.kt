@@ -1,8 +1,11 @@
 package org.tokend.template.features.dashboard.view
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewPager
+import android.support.v7.view.SupportMenuInflater
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -38,6 +41,24 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         pager.background = ColorDrawable(
                 ContextCompat.getColor(requireContext(), R.color.colorDefaultBackground)
         )
+
+        // Menu.
+        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            @SuppressLint("RestrictedApi")
+            override fun onPageSelected(position: Int) {
+                val fragment = adapter.getItem(position)
+                toolbar.menu.clear()
+                if (fragment == null || !fragment.hasOptionsMenu()) {
+                    return
+                }
+                fragment.onCreateOptionsMenu(toolbar.menu, SupportMenuInflater(requireContext()))
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+        })
+
         toolbar_tabs.setupWithViewPager(pager)
     }
     // endregion

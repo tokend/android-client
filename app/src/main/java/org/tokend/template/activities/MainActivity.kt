@@ -137,12 +137,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .also { items[SalesFragment.ID] = it }
 
         PrimaryDrawerItem()
-                .withName(R.string.explore_assets_title)
-                .withIdentifier(ExploreAssetsFragment.ID)
-                .withIcon(R.drawable.ic_coins)
-                .also { items[ExploreAssetsFragment.ID] = it }
-
-        PrimaryDrawerItem()
                 .withName(R.string.trade_title)
                 .withIdentifier(TradeAssetPairsFragment.ID)
                 .withIcon(R.drawable.ic_trade)
@@ -241,10 +235,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
                     if (BuildConfig.IS_INVEST_ALLOWED) {
                         addDrawerItems(items[SalesFragment.ID])
-                    }
-
-                    if (BuildConfig.IS_EXPLORE_ALLOWED) {
-                        addDrawerItems(items[ExploreAssetsFragment.ID])
                     }
 
                     if (BuildConfig.IS_TRADE_ALLOWED) {
