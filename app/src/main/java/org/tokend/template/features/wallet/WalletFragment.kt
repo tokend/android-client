@@ -399,6 +399,15 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
         history_list.clearOnScrollListeners()
     }
 
+    override fun onBackPressed(): Boolean {
+        return if (menu_fab.isOpened) {
+            menu_fab.close(true)
+            false
+        } else {
+            true
+        }
+    }
+
     companion object {
         private const val ASSET_EXTRA = "asset"
         private const val NEED_TABS_EXTRA = "need_tabs"

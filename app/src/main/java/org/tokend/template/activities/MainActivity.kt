@@ -110,12 +110,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .also { items[DashboardFragment.ID] = it }
 
         PrimaryDrawerItem()
-                .withName(R.string.wallet_title)
-                .withIdentifier(WalletFragment.ID)
-                .withIcon(R.drawable.ic_balance)
-                .also { items[WalletFragment.ID] = it }
-
-        PrimaryDrawerItem()
                 .withName(R.string.deposit_title)
                 .withIdentifier(DepositFragment.ID)
                 .withIcon(R.drawable.ic_deposit)
@@ -229,8 +223,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withHeaderDivider(false)
                 .withSliderBackgroundColorRes(R.color.material_drawer_background)
                 .addDrawerItems(
-                        items[DashboardFragment.ID],
-                        items[WalletFragment.ID]
+                        items[DashboardFragment.ID]
                 )
                 .apply {
 
