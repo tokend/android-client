@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.sdk.api.generated.resources.BalanceResource
 import java.io.Serializable
 import java.math.BigDecimal
+import java.math.MathContext
 
 class BalanceRecord(
         val id: String,
@@ -16,8 +17,9 @@ class BalanceRecord(
             id = source.id,
             available = source.state.available,
             asset = AssetRecord.fromResource(source.asset, urlConfig, mapper),
-            conversionAssetCode = null,
-            convertedAmount = null
+            // TODO: Change to real values
+            conversionAssetCode = "USD",
+            convertedAmount = source.state.available.multiply(BigDecimal("13.4"), MathContext.DECIMAL128)
     )
 
     val assetCode: String

@@ -4,6 +4,7 @@ import dagger.Component
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.di.providers.AppModule
 import org.tokend.template.di.providers.SessionModule
+import org.tokend.template.features.dashboard.balances.view.AssetDistributionChart
 import org.tokend.template.features.settings.SettingsFragment
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.view.assetchart.AssetChartCard
@@ -27,4 +28,5 @@ interface AppStateComponent {
     fun inject(baseFragment: BaseFragment)
     fun inject(settingsFragment: SettingsFragment)
     fun inject(assetChartCard: AssetChartCard)
+    fun inject(assetDistributionChart: AssetDistributionChart)
 }
