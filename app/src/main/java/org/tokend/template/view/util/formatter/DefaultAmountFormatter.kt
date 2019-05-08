@@ -25,7 +25,7 @@ class DefaultAmountFormatter : AmountFormatter {
             formatAmount(amount, getDecimalDigitsCount(asset), minDecimalDigits)
         }
 
-        return if(withAssetCode) {
+        return if (withAssetCode) {
             "$formattedAmount $asset"
         } else formattedAmount
     }
@@ -54,11 +54,28 @@ class DefaultAmountFormatter : AmountFormatter {
     override fun calculateAmountAbbreviation(amount: BigDecimal): AmountFormatter.Abbreviation {
         return when {
             amount >= BigDecimal(1000000000) ->
-                AmountFormatter.Abbreviation(amount.divide(BigDecimal(1000000000), MathContext.DECIMAL128), "G")
+                AmountFormatter.Abbreviation(
+                        BigDecimalUtil.scaleAmount(
+                                amount.divide(BigDecimal(1000000000), MathContext.DECIMAL128),
+                                2
+                        ),
+                        "B"
+                )
             amount >= BigDecimal(1000000) ->
-                AmountFormatter.Abbreviation(amount.divide(BigDecimal(1000000), MathContext.DECIMAL128), "M")
+                AmountFormatter.Abbreviation(
+                        BigDecimalUtil.scaleAmount(
+                                amount.divide(BigDecimal(1000000), MathContext.DECIMAL128),
+                                2
+                        ),
+                        "M"
+                )
             amount >= BigDecimal(1000) ->
-                AmountFormatter.Abbreviation(amount.divide(BigDecimal(1000), MathContext.DECIMAL128), "K")
+                AmountFormatter.Abbreviation(
+                        BigDecimalUtil.scaleAmount(
+                                amount.divide(BigDecimal(1000), MathContext.DECIMAL128),
+                                2),
+                        "K"
+                )
             else ->
                 AmountFormatter.Abbreviation(amount, "")
         }

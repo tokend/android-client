@@ -21,7 +21,7 @@ class WithdrawAmountFragment : AmountInputFragment() {
         return BalancePickerBottomDialog(
                 requireContext(),
                 amountFormatter,
-                assetComparator,
+                balanceComparator,
                 balancesRepository
         ) { balance ->
             balance.asset.isWithdrawable

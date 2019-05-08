@@ -169,12 +169,13 @@ class RepositoryProviderImpl(
         return feesRepository
     }
 
-    override fun balanceChanges(balanceId: String): BalanceChangesRepository {
-        return balanceChangesRepositoriesByBalanceId.getOrPut(balanceId) {
+    override fun balanceChanges(balanceId: String?): BalanceChangesRepository {
+        return balanceChangesRepositoriesByBalanceId.getOrPut(balanceId.toString()) {
             BalanceChangesRepository(
                     balanceId,
+                    walletInfoProvider.getWalletInfo()?.accountId,
                     apiProvider,
-                    DefaultParticipantEffectConverter(balanceId),
+                    DefaultParticipantEffectConverter(),
                     BalanceChangesCache()
             )
         }

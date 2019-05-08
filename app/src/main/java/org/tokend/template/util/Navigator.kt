@@ -21,6 +21,7 @@ import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.assets.AssetDetailsActivity
+import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.fees.view.FeesActivity
@@ -370,6 +371,13 @@ class Navigator private constructor() {
     fun openInvest(sale: SaleRecord) {
         val intent = context?.intentFor<SaleInvestActivity>(
                 SaleInvestActivity.SALE_EXTRA to sale
+        )
+        performIntent(intent)
+    }
+
+    fun openAssetsExplorer() {
+        val intent = context?.intentFor<SingleFragmentActivity>(
+                SingleFragmentActivity.SCREEN_ID to ExploreAssetsFragment.ID
         )
         performIntent(intent)
     }

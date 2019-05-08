@@ -26,7 +26,7 @@ import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.assets.LogoFactory
-import org.tokend.template.features.dashboard.DashboardFragment
+import org.tokend.template.features.dashboard.view.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
 import org.tokend.template.features.kyc.model.KycState
@@ -110,12 +110,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .also { items[DashboardFragment.ID] = it }
 
         PrimaryDrawerItem()
-                .withName(R.string.wallet_title)
-                .withIdentifier(WalletFragment.ID)
-                .withIcon(R.drawable.ic_balance)
-                .also { items[WalletFragment.ID] = it }
-
-        PrimaryDrawerItem()
                 .withName(R.string.deposit_title)
                 .withIdentifier(DepositFragment.ID)
                 .withIcon(R.drawable.ic_deposit)
@@ -141,12 +135,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withIdentifier(SalesFragment.ID)
                 .withIcon(R.drawable.ic_invest)
                 .also { items[SalesFragment.ID] = it }
-
-        PrimaryDrawerItem()
-                .withName(R.string.explore_assets_title)
-                .withIdentifier(ExploreAssetsFragment.ID)
-                .withIcon(R.drawable.ic_coins)
-                .also { items[ExploreAssetsFragment.ID] = it }
 
         PrimaryDrawerItem()
                 .withName(R.string.trade_title)
@@ -229,8 +217,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withHeaderDivider(false)
                 .withSliderBackgroundColorRes(R.color.material_drawer_background)
                 .addDrawerItems(
-                        items[DashboardFragment.ID],
-                        items[WalletFragment.ID]
+                        items[DashboardFragment.ID]
                 )
                 .apply {
 
@@ -248,10 +235,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
                     if (BuildConfig.IS_INVEST_ALLOWED) {
                         addDrawerItems(items[SalesFragment.ID])
-                    }
-
-                    if (BuildConfig.IS_EXPLORE_ALLOWED) {
-                        addDrawerItems(items[ExploreAssetsFragment.ID])
                     }
 
                     if (BuildConfig.IS_TRADE_ALLOWED) {

@@ -31,7 +31,7 @@ interface RepositoryProvider {
     fun contacts(): ContactsRepository
     fun limits(): LimitsRepository
     fun fees(): FeesRepository
-    fun balanceChanges(balanceId: String): BalanceChangesRepository
+    fun balanceChanges(balanceId: String?): BalanceChangesRepository
     fun tradeHistory(base: String, quote: String): TradeHistoryRepository
     fun assetChart(asset: String): AssetChartRepository
     fun assetChart(baseAsset: String, quoteAsset: String): AssetChartRepository
