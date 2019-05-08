@@ -283,6 +283,10 @@ class AssetDistributionChart
 
         val total = sortedAndFilteredByConverted.convertedTotal()
 
+        if (total.signum() == 0) {
+            return emptyList()
+        }
+
         val result = mutableListOf<AssetDistributionEntry>()
 
         // Display as many top assets as required or available.
