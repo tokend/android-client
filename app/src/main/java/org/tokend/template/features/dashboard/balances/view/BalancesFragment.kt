@@ -94,10 +94,8 @@ class BalancesFragment : BaseFragment() {
     private fun displayBalances() {
         val items = balancesRepository
                 .itemsList
+                .sortedWith(balanceComparator)
                 .map(::BalanceListItem)
-                .toMutableList()
-        items.addAll(items)
-        items.addAll(items)
 
         adapter.setData(items)
     }

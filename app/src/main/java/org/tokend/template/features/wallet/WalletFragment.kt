@@ -36,7 +36,6 @@ import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.LocalizedName
 import java.lang.ref.WeakReference
-import java.util.*
 
 class WalletFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -272,8 +271,11 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     // endregion
 
     // region Display
-    private fun displayAssetTabs(assets: List<String>) {
-        Collections.sort(assets, assetComparator)
+    private fun displayAssetTabs(balances: List<BalanceRecord>) {
+        val assets = balances
+                .sortedWith(balanceComparator)
+                .map(BalanceRecord::assetCode)
+
         asset_tabs.setSimpleItems(assets, asset)
     }
 
@@ -380,7 +382,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun onBalancesUpdated(balances: List<BalanceRecord>) {
-        displayAssetTabs(balances.map { it.assetCode })
+        displayAssetTabs(balances)
         displayBalance()
         updateFabMenuState()
     }

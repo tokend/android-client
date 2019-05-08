@@ -1,4 +1,4 @@
-package org.tokend.template.util
+package org.tokend.template.util.comparator
 
 /**
  * Default asset comparator.

@@ -214,7 +214,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                 asset,
                 address,
                 walletInfoProvider,
-                repositoryProvider.balances(),
+                balancesRepository,
                 FeeManager(apiProvider)
         )
                 .perform()

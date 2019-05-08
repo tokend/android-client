@@ -133,8 +133,8 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
         val picker = object : BalancePickerBottomDialog(
                 this,
                 amountFormatter,
-                assetComparator,
-                repositoryProvider.balances(),
+                balanceComparator,
+                balancesRepository,
                 quoteAssets,
                 { balance ->
                     quoteAssets.contains(balance.assetCode)

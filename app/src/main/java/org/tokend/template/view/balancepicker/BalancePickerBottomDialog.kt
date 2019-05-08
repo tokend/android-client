@@ -44,16 +44,12 @@ import kotlin.math.roundToInt
 open class BalancePickerBottomDialog(
         private val context: Context,
         private val amountFormatter: AmountFormatter,
-        private val assetComparator: Comparator<String>,
+        private val balancesComparator: Comparator<BalanceRecord>,
         private val balancesRepository: BalancesRepository,
         private val requiredAssets: Collection<String>? = null,
         private val balancesFilter: ((BalanceRecord) -> Boolean)? = null
 ) {
     protected lateinit var adapter: BalancePickerItemsAdapter
-
-    protected val comparator = Comparator<BalancePickerListItem> { first, second ->
-        assetComparator.compare(first.assetCode, second.assetCode)
-    }
 
     protected lateinit var compositeDisposable: CompositeDisposable
 
@@ -202,6 +198,7 @@ open class BalancePickerBottomDialog(
     protected open fun displayBalances() {
         val filteredBalances = balancesRepository
                 .itemsList
+                .sortedWith(balancesComparator)
                 .let { items ->
                     if (balancesFilter != null)
                         items.filter(balancesFilter)
@@ -244,7 +241,6 @@ open class BalancePickerBottomDialog(
                         }
                     } ?: items
                 }
-                .sortedWith(comparator)
 
         adapter.setData(items)
     }

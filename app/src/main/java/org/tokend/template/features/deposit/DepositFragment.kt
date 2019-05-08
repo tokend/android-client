@@ -23,9 +23,9 @@ import org.jetbrains.anko.onClick
 import org.jetbrains.anko.runOnUiThread
 import org.tokend.template.R
 import org.tokend.template.data.model.AccountRecord
+import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
-import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.transactions.TxManager
@@ -192,7 +192,11 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initAssets(assets: List<AssetRecord>) {
-        val depositableAssets = assets.filter { it.isBackedByExternalSystem }
+        val depositableAssets = assets
+                .filter { it.isBackedByExternalSystem }
+                .sortedWith(kotlin.Comparator { o1, o2 ->
+                    assetComparator.compare(o1.code, o2.code)
+                })
 
         if (depositableAssets.isEmpty()) {
             asset_tab_layout.visibility = View.GONE

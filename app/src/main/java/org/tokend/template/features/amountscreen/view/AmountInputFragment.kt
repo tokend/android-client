@@ -211,7 +211,7 @@ open class AmountInputFragment : BaseFragment() {
         return BalancePickerBottomDialog(
                 requireContext(),
                 amountFormatter,
-                assetComparator,
+                balanceComparator,
                 balancesRepository
         )
     }
@@ -222,8 +222,8 @@ open class AmountInputFragment : BaseFragment() {
     protected open fun getAssetsToDisplay(): Collection<String> {
         return balancesRepository
                 .itemsList
+                .sortedWith(balanceComparator)
                 .map(BalanceRecord::assetCode)
-                .sortedWith(assetComparator)
     }
 
     /**

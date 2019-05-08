@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import dagger.Module
 import dagger.Provides
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.template.util.AssetComparator
+import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.util.comparator.AssetComparator
+import org.tokend.template.util.comparator.BalancesByConvertedAmountComparator
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
@@ -30,6 +32,12 @@ class UtilModule {
     @Singleton
     fun assetComparator(): Comparator<String> {
         return AssetComparator()
+    }
+
+    @Provides
+    @Singleton
+    fun balanceComparator(): Comparator<BalanceRecord> {
+        return BalancesByConvertedAmountComparator(assetComparator())
     }
 
     @Provides

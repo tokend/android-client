@@ -57,7 +57,7 @@ class PaymentAmountAndDescriptionFragment : AmountInputFragment() {
         return BalancePickerBottomDialog(
                 requireContext(),
                 amountFormatter,
-                assetComparator,
+                balanceComparator,
                 balancesRepository
         ) { balance ->
             balance.asset.isTransferable

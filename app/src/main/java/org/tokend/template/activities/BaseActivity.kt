@@ -11,6 +11,7 @@ import org.tokend.sdk.tfa.TfaCallback
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.App
 import org.tokend.template.BuildConfig
+import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.tfa.view.TfaDialogFactory
 import org.tokend.template.logic.AppTfaCallback
@@ -45,6 +46,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var toastManager: ToastManager
     @Inject
     lateinit var assetComparator: Comparator<String>
+    @Inject
+    lateinit var balanceComparator: Comparator<BalanceRecord>
     @Inject
     lateinit var session: Session
     @Inject
