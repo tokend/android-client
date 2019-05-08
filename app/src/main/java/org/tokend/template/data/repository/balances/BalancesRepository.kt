@@ -5,6 +5,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.rx.extensions.toSingle
+import org.tokend.sdk.api.generated.resources.ConvertedBalancesCollectionResource
+import org.tokend.sdk.api.v3.balances.params.ConvertedBalancesParams
+import org.tokend.sdk.utils.extentions.isNotFound
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.base.RepositoryCache
@@ -18,6 +21,7 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.*
 import org.tokend.wallet.xdr.Operation
 import org.tokend.wallet.xdr.op_extensions.CreateBalanceOp
+import retrofit2.HttpException
 
 class BalancesRepository(
         private val apiProvider: ApiProvider,
@@ -35,12 +39,39 @@ class BalancesRepository(
 
         return signedApi
                 .v3
-                .accounts
-                .getBalances(accountId)
+                .balances
+                .getConvertedBalances(
+                        accountId = accountId,
+                        assetCode = "USD",
+                        params = ConvertedBalancesParams(
+                                include = listOf(
+                                        ConvertedBalancesParams.Includes.BALANCE_ASSET,
+                                        ConvertedBalancesParams.Includes.STATES
+                                )
+                        )
+                )
                 .toSingle()
+                .map(ConvertedBalancesCollectionResource::getStates)
                 .map { sourceList ->
                     sourceList.mapSuccessful {
                         BalanceRecord(it, urlConfigProvider.getConfig(), mapper)
+                    }
+                }
+                // TODO: Remove me before release
+                .onErrorResumeNext { error ->
+                    if (error is HttpException && error.isNotFound()) {
+                        signedApi
+                                .v3
+                                .accounts
+                                .getBalances(accountId)
+                                .toSingle()
+                                .map { sourceList ->
+                                    sourceList.mapSuccessful {
+                                        BalanceRecord(it, urlConfigProvider.getConfig(), mapper)
+                                    }
+                                }
+                    } else {
+                        Single.error(error)
                     }
                 }
     }
