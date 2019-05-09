@@ -53,7 +53,6 @@
                     style="@style/SecondaryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-condensed"
                     android:textSize="20sp"
                     tools:text="@string/template_no_personal_asset_address" />
 
