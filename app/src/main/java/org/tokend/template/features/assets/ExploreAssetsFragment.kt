@@ -185,7 +185,9 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                     )
                 }
                 .sortedWith(Comparator { o1, o2 ->
-                    return@Comparator assetComparator.compare(o1.code, o2.code)
+                    return@Comparator o1.balanceExists.compareTo(o2.balanceExists)
+                            .takeIf { it != 0 }
+                            ?: o1.code.compareTo(o2.code)
                 })
                 .toList()
                 .let { items ->

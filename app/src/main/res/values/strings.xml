@@ -406,9 +406,7 @@
     <string name="kyc_form_type_unknown">Verified account</string>
     <string name="unverified_account">Unverified account</string>
 
-    <string name="asset_distribution">Asset distribution</string>
-    <string name="balances_list_title">Balances</string>
-    <string name="template_balance_slash_converted">%1$s / %2$s</string>
+    <string name="template_amount_with_converted">%1$s ≈ %2$s</string>
     <string name="asset_distribution_other">Other</string>
     <string name="movements_screen_title">Movements</string>
     <string name="balances_screen_title">Balances</string>

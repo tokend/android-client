@@ -34,6 +34,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     }
 
     // region Init
+    @SuppressLint("RestrictedApi")
     private fun initViewPager() {
         val adapter = DashboardPagerAdapter(requireContext(), childFragmentManager)
         pager.adapter = adapter
@@ -43,15 +44,19 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         )
 
         // Menu.
+        val inflatePageMenu = { pagePosition: Int ->
+            toolbar.menu.clear()
+            adapter
+                    .getItem(pagePosition)
+                    ?.onCreateOptionsMenu(
+                            toolbar.menu,
+                            SupportMenuInflater(requireContext())
+                    )
+        }
+
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            @SuppressLint("RestrictedApi")
             override fun onPageSelected(position: Int) {
-                val fragment = adapter.getItem(position)
-                toolbar.menu.clear()
-                if (fragment == null || !fragment.hasOptionsMenu()) {
-                    return
-                }
-                fragment.onCreateOptionsMenu(toolbar.menu, SupportMenuInflater(requireContext()))
+                inflatePageMenu(position)
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
@@ -60,6 +65,8 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         })
 
         toolbar_tabs.setupWithViewPager(pager)
+
+        inflatePageMenu(0)
     }
     // endregion
 

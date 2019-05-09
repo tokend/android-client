@@ -13,10 +13,10 @@ class DashboardPagerAdapter(context: Context,
     private val fragmentFactory = FragmentFactory()
 
     private val pages = listOf(
-            fragmentFactory.getAccountMovementsFragment() to
-                    context.getString(R.string.movements_screen_title),
             fragmentFactory.getBalancesFragment() to
-                    context.getString(R.string.balances_screen_title)
+                    context.getString(R.string.balances_screen_title),
+            fragmentFactory.getAccountMovementsFragment() to
+                    context.getString(R.string.movements_screen_title)
     )
 
     override fun getItem(position: Int): Fragment? {

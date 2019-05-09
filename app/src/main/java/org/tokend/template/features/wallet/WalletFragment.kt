@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.collapsing_balance_appbar.*
 import kotlinx.android.synthetic.main.collapsing_balance_appbar.view.*
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
@@ -132,14 +131,14 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
         if (!needAssetTabs) {
             asset_tabs.visibility = View.GONE
+            collapsing_toolbar.layoutParams = collapsing_toolbar.layoutParams.apply {
+                height = resources.getDimensionPixelSize(R.dimen.toolbar_expanded_height)
+            }
         } else {
             asset_tabs.visibility = View.VISIBLE
-
-            val tabsOffset = requireContext().dip(24)
-            collapsing_toolbar.layoutParams =
-                    collapsing_toolbar.layoutParams.apply {
-                        height -= 2 * tabsOffset
-                    }
+            collapsing_toolbar.layoutParams = collapsing_toolbar.layoutParams.apply {
+                height = resources.getDimensionPixelSize(R.dimen.toolbar_expanded_height_with_tabs)
+            }
         }
     }
 
@@ -280,27 +279,31 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayBalance() {
-        balancesRepository.itemsList
+        val balance = balancesRepository.itemsList
                 .find { it.assetCode == asset }
-                ?.let { balance ->
-                    collapsing_toolbar.title =
-                            amountFormatter.formatAssetAmount(balance.available, asset)
+                ?: return
 
-                    val convertedBalanceTextView = collapsing_toolbar.converted_balance_text_view
+        collapsing_toolbar.title =
+                amountFormatter.formatAssetAmount(balance.available, asset)
 
-                    if (balance.conversionAssetCode != null
-                            && balance.conversionAssetCode != balance.assetCode
-                            && balance.convertedAmount != null) {
-                        convertedBalanceTextView.text =
-                                amountFormatter.formatAssetAmount(
-                                        balance.convertedAmount,
-                                        balance.conversionAssetCode
-                                )
-                        convertedBalanceTextView.visibility = View.VISIBLE
-                    } else {
-                        convertedBalanceTextView.visibility = View.GONE
-                    }
-                }
+        val convertedBalanceTextView = collapsing_toolbar.converted_balance_text_view
+
+        if (balance.conversionAssetCode != null
+                && balance.conversionAssetCode != balance.assetCode
+                && balance.convertedAmount != null) {
+            convertedBalanceTextView.text =
+                    amountFormatter.formatAssetAmount(
+                            balance.convertedAmount,
+                            balance.conversionAssetCode
+                    )
+            convertedBalanceTextView.visibility = View.VISIBLE
+            collapsing_toolbar.expandedTitleMarginTop =
+                    resources.getDimensionPixelSize(R.dimen.toolbar_expanded_title_margin_top)
+        } else {
+            convertedBalanceTextView.visibility = View.GONE
+            collapsing_toolbar.expandedTitleMarginTop =
+                    resources.getDimensionPixelSize(R.dimen.toolbar_expanded_title_single_margin_top)
+        }
     }
 
     private fun updateFabMenuState() {

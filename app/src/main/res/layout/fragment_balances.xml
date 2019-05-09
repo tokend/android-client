@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -32,38 +33,31 @@
             app:layout_scrollFlags="scroll">
 
             <LinearLayout
-                android:id="@+id/distribution_chart_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/standard_margin"
-                android:orientation="vertical">
+                android:layout_marginStart="@dimen/standard_margin"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/standard_margin"
+                android:paddingBottom="@dimen/half_standard_margin">
 
-                <TextView
-                    style="@style/HintText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif-medium"
+                <me.grantland.widget.AutofitTextView
+                    android:id="@+id/total_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:maxLines="1"
-                    android:text="@string/asset_distribution"
-                    android:textAllCaps="true" />
+                    android:paddingTop="@dimen/quarter_standard_margin"
+                    android:paddingBottom="@dimen/quarter_standard_margin"
+                    android:textSize="@dimen/text_size_heading_large"
+                    tools:text="14,221.5 USD" />
 
                 <org.tokend.template.features.dashboard.balances.view.AssetDistributionChart
                     android:id="@+id/distribution_chart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_margin" />
+                    android:layout_marginTop="@dimen/quarter_standard_margin" />
 
-                <TextView
-                    style="@style/HintText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_margin"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif-medium"
-                    android:maxLines="1"
-                    android:text="@string/balances_list_title"
-                    android:textAllCaps="true" />
             </LinearLayout>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

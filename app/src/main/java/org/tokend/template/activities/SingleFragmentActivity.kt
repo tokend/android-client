@@ -53,9 +53,8 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         if (fragment is ToolbarProvider) {
             fragment.toolbarSubject
                     .subscribe { fragmentToolbar ->
-                        setSupportActionBar(fragmentToolbar)
-                        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-                        supportActionBar!!.title = asset
+                        fragmentToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white)
+                        fragmentToolbar.setNavigationOnClickListener { onBackPressed() }
                     }
                     .addTo(compositeDisposable)
         }
