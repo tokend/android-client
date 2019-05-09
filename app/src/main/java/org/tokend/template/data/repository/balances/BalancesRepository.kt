@@ -6,6 +6,8 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.generated.resources.ConvertedBalancesCollectionResource
+import org.tokend.sdk.api.v3.accounts.AccountsApiV3
+import org.tokend.sdk.api.v3.balances.BalancesApi
 import org.tokend.sdk.api.v3.balances.params.ConvertedBalancesParams
 import org.tokend.sdk.utils.extentions.isNotFound
 import org.tokend.template.data.model.BalanceRecord
@@ -28,6 +30,7 @@ class BalancesRepository(
         private val walletInfoProvider: WalletInfoProvider,
         private val urlConfigProvider: UrlConfigProvider,
         private val mapper: ObjectMapper,
+        val conversionAssetCode: String?,
         itemsCache: RepositoryCache<BalanceRecord>
 ) : SimpleMultipleItemsRepository<BalanceRecord>(itemsCache) {
 
@@ -37,12 +40,44 @@ class BalancesRepository(
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
-        return signedApi
-                .v3
-                .balances
+        return if (conversionAssetCode != null)
+            getConvertedBalances(
+                    signedApi.v3.balances,
+                    accountId,
+                    urlConfigProvider,
+                    mapper,
+                    conversionAssetCode
+            )
+                    // TODO: Remove me before release
+                    .onErrorResumeNext { error ->
+                        if (error is HttpException && error.isNotFound())
+                            getBalances(
+                                    signedApi.v3.accounts,
+                                    accountId,
+                                    urlConfigProvider,
+                                    mapper
+                            )
+                        else
+                            Single.error(error)
+                    }
+        else
+            getBalances(
+                    signedApi.v3.accounts,
+                    accountId,
+                    urlConfigProvider,
+                    mapper
+            )
+    }
+
+    private fun getConvertedBalances(signedBalancesApi: BalancesApi,
+                                     accountId: String,
+                                     urlConfigProvider: UrlConfigProvider,
+                                     mapper: ObjectMapper,
+                                     conversionAssetCode: String): Single<List<BalanceRecord>> {
+        return signedBalancesApi
                 .getConvertedBalances(
                         accountId = accountId,
-                        assetCode = "USD",
+                        assetCode = conversionAssetCode,
                         params = ConvertedBalancesParams(
                                 include = listOf(
                                         ConvertedBalancesParams.Includes.BALANCE_ASSET,
@@ -54,24 +89,22 @@ class BalancesRepository(
                 .map(ConvertedBalancesCollectionResource::getStates)
                 .map { sourceList ->
                     sourceList.mapSuccessful {
-                        BalanceRecord(it, urlConfigProvider.getConfig(), mapper)
+                        BalanceRecord(it, urlConfigProvider.getConfig(),
+                                mapper, conversionAssetCode)
                     }
                 }
-                // TODO: Remove me before release
-                .onErrorResumeNext { error ->
-                    if (error is HttpException && error.isNotFound()) {
-                        signedApi
-                                .v3
-                                .accounts
-                                .getBalances(accountId)
-                                .toSingle()
-                                .map { sourceList ->
-                                    sourceList.mapSuccessful {
-                                        BalanceRecord(it, urlConfigProvider.getConfig(), mapper)
-                                    }
-                                }
-                    } else {
-                        Single.error(error)
+    }
+
+    private fun getBalances(signedAccountsApi: AccountsApiV3,
+                            accountId: String,
+                            urlConfigProvider: UrlConfigProvider,
+                            mapper: ObjectMapper): Single<List<BalanceRecord>> {
+        return signedAccountsApi
+                .getBalances(accountId)
+                .toSingle()
+                .map { sourceList ->
+                    sourceList.mapSuccessful {
+                        BalanceRecord(it, urlConfigProvider.getConfig(), mapper)
                     }
                 }
     }

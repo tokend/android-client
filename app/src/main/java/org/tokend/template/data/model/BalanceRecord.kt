@@ -5,7 +5,6 @@ import org.tokend.sdk.api.generated.resources.BalanceResource
 import org.tokend.sdk.api.generated.resources.ConvertedBalanceStateResource
 import java.io.Serializable
 import java.math.BigDecimal
-import java.math.MathContext
 
 class BalanceRecord(
         val id: String,
@@ -18,18 +17,18 @@ class BalanceRecord(
             id = source.id,
             available = source.state.available,
             asset = AssetRecord.fromResource(source.asset, urlConfig, mapper),
-            // TODO: Change to real values
-            conversionAssetCode = "USD",
-            convertedAmount = source.state.available.multiply(BigDecimal("13.4"), MathContext.DECIMAL128)
+            conversionAssetCode = null,
+            convertedAmount = null
     )
 
     constructor(source: ConvertedBalanceStateResource,
                 urlConfig: UrlConfig?,
-                mapper: ObjectMapper) : this(
+                mapper: ObjectMapper,
+                conversionAssetCode: String) : this(
             id = source.balance.id,
             available = source.initialAmounts.available,
             asset = AssetRecord.fromResource(source.asset, urlConfig, mapper),
-            conversionAssetCode = "USD",
+            conversionAssetCode = conversionAssetCode,
             convertedAmount =
             if (source.isConverted)
                 source.convertedAmounts.available

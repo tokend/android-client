@@ -101,9 +101,14 @@ class BalancesFragment : BaseFragment() {
     }
 
     private fun displayDistribution() {
-        distribution_chart.setData(balancesRepository.itemsList, "USD")
+        val conversionAssetCode = balancesRepository.conversionAssetCode
+
+        if (conversionAssetCode != null) {
+            distribution_chart.setData(balancesRepository.itemsList, conversionAssetCode)
+        }
+
         distribution_chart_layout.visibility =
-                if (distribution_chart.isEmpty)
+                if (conversionAssetCode == null || distribution_chart.isEmpty)
                     View.GONE
                 else
                     View.VISIBLE
