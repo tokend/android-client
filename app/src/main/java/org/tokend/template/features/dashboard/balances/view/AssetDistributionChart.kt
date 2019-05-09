@@ -183,15 +183,16 @@ class AssetDistributionChart
         val distributionMap = distribution
                 .associateBy(AssetDistributionEntry::assetCode)
 
-        chart.legend.entries.forEach { legendEntry ->
+        chart.legend.entries.forEachIndexed { i, legendEntry ->
             val distributionEntry = distributionMap[legendEntry.label]
-                    ?: return@forEach
+                    ?: return@forEachIndexed
 
-            legendLayout.addView(getLegendEntryView(distributionEntry, legendEntry.formColor))
+            legendLayout.addView(getLegendEntryView(i, distributionEntry, legendEntry.formColor))
         }
     }
 
-    private fun getLegendEntryView(distributionEntry: AssetDistributionEntry,
+    private fun getLegendEntryView(index: Int,
+                                   distributionEntry: AssetDistributionEntry,
                                    @ColorInt
                                    color: Int): View {
         return LinearLayout(context).apply {
@@ -201,7 +202,9 @@ class AssetDistributionChart
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply {
-                topMargin = context.resources.getDimensionPixelSize(R.dimen.quarter_standard_margin)
+                if (index != 0) {
+                    topMargin = context.resources.getDimensionPixelSize(R.dimen.quarter_standard_margin)
+                }
             }
 
             gravity = Gravity.CENTER_VERTICAL
