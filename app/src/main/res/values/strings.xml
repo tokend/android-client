@@ -43,7 +43,8 @@
     </string>
     <string name="resend_letter">Resend letter</string>
     <string name="paste">Paste</string>
-    <string name="no_transaction_history">No history</string>
+    <string name="no_transaction_history">No movements history</string>
+    <string name="no_trades_history">No trades history</string>
     <string name="date">Date</string>
     <string name="payment_details_title">Payment details</string>
     <string name="aml_alert_details_title">AML alert details</string>

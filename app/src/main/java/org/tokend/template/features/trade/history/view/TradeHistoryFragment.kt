@@ -71,7 +71,7 @@ class TradeHistoryFragment : BaseFragment() {
             tradeHistoryRepository.loadMore() || tradeHistoryRepository.noMoreItems
         }
 
-        error_empty_view.observeAdapter(adapter, R.string.no_transaction_history)
+        error_empty_view.observeAdapter(adapter, R.string.no_trades_history)
         error_empty_view.setEmptyViewDenial { tradeHistoryRepository.isNeverUpdated }
     }
 

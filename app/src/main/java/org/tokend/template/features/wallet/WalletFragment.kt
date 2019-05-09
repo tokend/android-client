@@ -160,7 +160,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             menu_fab.close(false)
         }
 
-        error_empty_view.setEmptyDrawable(R.drawable.ic_balance)
+        error_empty_view.setEmptyDrawable(R.drawable.empty_view_wallet)
         error_empty_view.setPadding(0, 0, 0,
                 resources.getDimensionPixelSize(R.dimen.quadra_margin))
         error_empty_view.observeAdapter(adapter, R.string.no_transaction_history)
