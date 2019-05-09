@@ -16,6 +16,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ScrollOnTopItemUpdateAdapterObserver
+import java.math.BigDecimal
 
 
 class BalancesFragment : BaseFragment() {
@@ -89,8 +90,10 @@ class BalancesFragment : BaseFragment() {
     private fun onBalancesUpdated() {
         displayBalances()
         displayDistribution()
+        displayTotal()
     }
 
+    // region Display
     private fun displayBalances() {
         val items = balancesRepository
                 .itemsList
@@ -107,12 +110,24 @@ class BalancesFragment : BaseFragment() {
             distribution_chart.setData(balancesRepository.itemsList, conversionAssetCode)
         }
 
-        distribution_chart_layout.visibility =
-                if (conversionAssetCode == null || distribution_chart.isEmpty)
-                    View.GONE
-                else
-                    View.VISIBLE
+        distribution_chart.apply {
+            setData(balancesRepository.itemsList, "USD")
+            visibility = if (isEmpty) View.GONE else View.VISIBLE
+        }
     }
+
+    private fun displayTotal() {
+        val total = balancesRepository
+                .itemsList
+                .fold(BigDecimal.ZERO) { sum, balance ->
+                    sum.add(balance.convertedAmount ?: BigDecimal.ZERO)
+                }
+        val conversionAssetCode = balancesRepository.conversionAssetCode
+                ?: return
+
+        total_text_view.text = amountFormatter.formatAssetAmount(total, conversionAssetCode)
+    }
+    // endregion
 
     private fun openWallet(assetCode: String) {
         Navigator.from(this).openWallet(0, assetCode)

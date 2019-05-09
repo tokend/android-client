@@ -3,6 +3,7 @@ package org.tokend.template.extensions
 import android.support.annotation.ColorInt
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 
 /**
@@ -12,4 +13,13 @@ fun SpannableString.highlight(toHighlight: String, @ColorInt color: Int) {
     val start = indexOf(toHighlight)
     val end = start + toHighlight.length
     setSpan(ForegroundColorSpan(color), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+}
+
+/**
+ * Changes font size of the first occurrence of given substring
+ */
+fun SpannableString.setFontSize(substring: String, fontSizePx: Int) {
+    val start = indexOf(substring)
+    val end = start + substring.length
+    setSpan(AbsoluteSizeSpan(fontSizePx), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 }

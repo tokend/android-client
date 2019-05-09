@@ -52,9 +52,9 @@ ext {
     color_background = '#e8e8e8'
 
     // Primary text - color of all text labels and fields
-    color_primary_text = '#3a4180'
+    color_primary_text = '#212121'
     // Secondary text - color of hints
-    color_secondary_text = '#979BB9'
+    color_secondary_text = '#8D8D8D'
 
     // Primary action - custom color for action controls,
     // same as Accent by default
@@ -64,7 +64,7 @@ ext {
     color_primary_action_disabled = '#977fff'
 
     // Icons - color of all icons in app except menus
-    color_icons = '#6E759F'
+    color_icons = '#757575'
 
     // Error - color of error messages,
     // usually a shade of red

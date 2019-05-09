@@ -102,7 +102,9 @@ class AssetDistributionChart
             setCenterTextColor(ContextCompat.getColor(context, R.color.primary_text))
             setCenterTextSizePixels(context.resources.getDimensionPixelSize(R.dimen.text_size_default).toFloat())
 
-            isRotationEnabled = false
+            isRotationEnabled = true
+
+            setNoDataText(null)
         }
 
         val percentFormatter = NumberFormat.getPercentInstance()
@@ -243,28 +245,11 @@ class AssetDistributionChart
                         // Amount.
                         addView(
                                 TextView(ContextThemeWrapper(context, R.style.HintText), null, R.style.HintText).apply {
-                                    if (distributionEntry.assetCode == null
-                                            || distributionEntry.assetCode == distributionEntry.conversionAssetCode) {
-                                        text = amountFormatter.formatAssetAmount(
-                                                distributionEntry.convertedAmount,
-                                                distributionEntry.conversionAssetCode,
-                                                abbreviation = true
-                                        )
-                                    } else {
-                                        text = context.getString(
-                                                R.string.template_balance_slash_converted,
-                                                amountFormatter.formatAssetAmount(
-                                                        distributionEntry.convertedAmount,
-                                                        distributionEntry.conversionAssetCode,
-                                                        abbreviation = true
-                                                ),
-                                                amountFormatter.formatAssetAmount(
-                                                        distributionEntry.amount,
-                                                        distributionEntry.assetCode,
-                                                        abbreviation = true
-                                                )
-                                        )
-                                    }
+                                    text = amountFormatter.formatAssetAmount(
+                                            distributionEntry.convertedAmount,
+                                            distributionEntry.conversionAssetCode,
+                                            abbreviation = true
+                                    )
                                 }
                         )
                     }

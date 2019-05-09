@@ -11,14 +11,13 @@
     <android.support.design.widget.CollapsingToolbarLayout
         android:id="@+id/collapsing_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_expanded_height"
+        android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         app:collapsedTitleTextAppearance="@style/CollapsedTitleAppearance"
         app:contentScrim="?attr/colorPrimary"
         app:expandedTitleGravity="top"
         app:expandedTitleMarginEnd="@dimen/toolbar_text_padding_end"
         app:expandedTitleMarginStart="@dimen/toolbar_text_padding_start"
-        app:expandedTitleMarginTop="@dimen/toolbar_expanded_title_margin_top"
         app:expandedTitleTextAppearance="@style/ExpandedTitleAppearance"
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
