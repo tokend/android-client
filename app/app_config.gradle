@@ -128,6 +128,13 @@ ext {
     enable_analytics = false
     // Allows TokenD Authenticator usage
     allow_authenticator_auth = false
+
+    // Controls balance amounts conversion
+    // into `balances_conversion_asset`
+    enable_balances_conversion = true
+
+    // Sets asset to convert balance amounts into
+    balances_conversion_asset = 'USD'
     // ----------------------
 }
 
@@ -161,6 +168,8 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'IS_NETWORK_SPECIFIED_BY_USER', "${network_specified_by_user}"
     b.buildConfigField 'Boolean', 'ENABLE_ANALYTICS', "${enable_analytics}"
     b.buildConfigField 'Boolean', 'ENABLE_AUTHENTICATOR_AUTH', "${allow_authenticator_auth}"
+    b.buildConfigField 'Boolean', 'ENABLE_BALANCES_CONVERSION', "${enable_balances_conversion}"
+    b.buildConfigField 'String', 'BALANCES_CONVERSION_ASSET', "\"${balances_conversion_asset}\""
 
     b.resValue "string", "app_host", "${app_host}"
     b.resValue "color", "primary", "${color_primary}"

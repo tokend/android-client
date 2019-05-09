@@ -20,6 +20,7 @@ class AssetPairsRepository(
         private val apiProvider: ApiProvider,
         private val urlConfigProvider: UrlConfigProvider,
         private val objectMapper: ObjectMapper,
+        private val defaultConversionAssetCode: String?,
         itemsCache: RepositoryCache<AssetPairRecord>
 ) : SimpleMultipleItemsRepository<AssetPairRecord>(itemsCache), AmountConverter {
 
@@ -81,7 +82,6 @@ class AssetPairsRepository(
         }
 
         val pairs = itemsCache.items
-        val conversionAsset = "USD"
 
         val mainPairPrice = pairs.find {
             it.quote == destAsset && it.base == sourceAsset
@@ -96,11 +96,13 @@ class AssetPairsRepository(
                 else
                     null
         val throughDefaultAssetPrice =
-                if (destAsset == conversionAsset || sourceAsset == conversionAsset)
+                if (defaultConversionAssetCode == null
+                        || destAsset == defaultConversionAssetCode
+                        || sourceAsset == defaultConversionAssetCode)
                     null
                 else
-                    getRateOrOne(sourceAsset, conversionAsset)
-                            .multiply(getRateOrOne(conversionAsset, destAsset))
+                    getRateOrOne(sourceAsset, defaultConversionAssetCode)
+                            .multiply(getRateOrOne(defaultConversionAssetCode, destAsset))
 
         return mainPairPrice ?: quotePairPrice ?: throughDefaultAssetPrice
     }
