@@ -99,8 +99,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                 DetailsItem(
                         id = COUNTERPARTY_EMAIL_ITEM_ID,
                         text = counterpartyEmail ?: getString(R.string.loading_data),
-                        hint = getString(emailHintStringRes),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_email)
+                        hint = getString(emailHintStringRes)
                 )
         )
     }
