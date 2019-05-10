@@ -106,25 +106,32 @@ class BalancesFragment : BaseFragment() {
     private fun displayDistribution() {
         val conversionAssetCode = balancesRepository.conversionAssetCode
 
-        if (conversionAssetCode != null) {
-            distribution_chart.setData(balancesRepository.itemsList, conversionAssetCode)
+        if (conversionAssetCode == null) {
+            distribution_chart.visibility = View.GONE
+            return
         }
 
         distribution_chart.apply {
-            setData(balancesRepository.itemsList, "USD")
+            setData(balancesRepository.itemsList, conversionAssetCode)
             visibility = if (isEmpty) View.GONE else View.VISIBLE
         }
     }
 
     private fun displayTotal() {
+        val conversionAssetCode = balancesRepository.conversionAssetCode
+
+        if (conversionAssetCode == null) {
+            total_text_view.visibility = View.GONE
+            return
+        }
+
         val total = balancesRepository
                 .itemsList
                 .fold(BigDecimal.ZERO) { sum, balance ->
                     sum.add(balance.convertedAmount ?: BigDecimal.ZERO)
                 }
-        val conversionAssetCode = balancesRepository.conversionAssetCode
-                ?: return
 
+        total_text_view.visibility = View.VISIBLE
         total_text_view.text = amountFormatter.formatAssetAmount(total, conversionAssetCode)
     }
     // endregion
