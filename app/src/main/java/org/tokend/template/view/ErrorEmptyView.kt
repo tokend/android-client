@@ -12,12 +12,11 @@ import android.support.v4.widget.ImageViewCompat
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
@@ -31,7 +30,7 @@ class ErrorEmptyView @JvmOverloads constructor(
         context: Context,
         attributeSet: AttributeSet? = null,
         defStyleAttr: Int = 0
-) : LinearLayout(context, attributeSet, defStyleAttr) {
+) : RelativeLayout(context, attributeSet, defStyleAttr) {
 
     private val messageTextView: TextView
     private val actionButton: Button
@@ -46,8 +45,6 @@ class ErrorEmptyView @JvmOverloads constructor(
     private var emptyViewDenial: () -> Boolean = { false }
 
     init {
-        orientation = VERTICAL
-        gravity = Gravity.CENTER
         visibility = View.GONE
 
         LayoutInflater.from(context).inflate(R.layout.layout_error_empty_view,

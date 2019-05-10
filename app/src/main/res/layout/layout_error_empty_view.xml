@@ -8,15 +8,18 @@
         android:id="@+id/icon_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@id/message_text_view"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/standard_padding"
-        android:visibility="gone"
-        android:scaleType="fitXY" />
+        android:scaleType="fitXY"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/message_text_view"
         style="@style/SecondaryText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_marginStart="@dimen/standard_margin"
         android:layout_marginEnd="@dimen/standard_margin"
         android:gravity="center"
@@ -29,6 +32,8 @@
         style="@style/SecondaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/message_text_view"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/standard_padding"
         android:text="@string/retry" />
 </merge>
