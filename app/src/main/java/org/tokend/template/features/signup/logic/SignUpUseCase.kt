@@ -4,6 +4,8 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.tokend.rx.extensions.randomSingle
 import org.tokend.rx.extensions.toSingle
+import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
+import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.wallet.Account
@@ -20,13 +22,35 @@ class SignUpUseCase(
     private lateinit var recoveryAccount: Account
 
     fun perform(): Single<WalletCreateResult> {
-        return getAccounts()
+        return ensureEmailIsFree()
+                .flatMap {
+                    getAccounts()
+                }
                 .doOnSuccess { (rootAccount, recoveryAccount) ->
                     this.rootAccount = rootAccount
                     this.recoveryAccount = recoveryAccount
                 }
                 .flatMap {
                     createAndSaveWallet()
+                }
+    }
+
+    private fun ensureEmailIsFree(): Single<Boolean> {
+        return keyServer
+                .getLoginParams(email)
+                .toSingle()
+                .map { false }
+                .onErrorResumeNext { error ->
+                    if (error is InvalidCredentialsException)
+                        Single.just(true)
+                    else
+                        Single.error(error)
+                }
+                .flatMap { isFree ->
+                    if (!isFree)
+                        Single.error(EmailAlreadyTakenException())
+                    else
+                        Single.just(isFree)
                 }
     }
 
