@@ -2,7 +2,6 @@ package org.tokend.template.features.signup
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.InputType
 import kotlinx.android.synthetic.main.activity_recovery_seed.*
@@ -39,6 +38,8 @@ class RecoverySeedActivity : BaseActivity() {
             finish()
             return
         }
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setContentView(R.layout.activity_recovery_seed)
 
@@ -104,24 +105,5 @@ class RecoverySeedActivity : BaseActivity() {
     private fun finishWithSuccess() {
         setResult(Activity.RESULT_OK)
         finish()
-    }
-
-    private fun displaySkipConfirmation() {
-        AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                .setTitle(R.string.are_you_sure)
-                .setMessage(R.string.seed_not_copied_confirmation)
-                .setPositiveButton(R.string.i_understand) { _, _ ->
-                    finishWithSuccess()
-                }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
-    }
-
-    override fun onBackPressed() {
-        if (seedsMatch || clipboardManager.text?.equals(seed) == true) {
-            finishWithSuccess()
-        } else {
-            displaySkipConfirmation()
-        }
     }
 }

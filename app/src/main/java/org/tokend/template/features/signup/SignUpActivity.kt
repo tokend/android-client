@@ -1,6 +1,7 @@
 package org.tokend.template.features.signup
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -27,6 +28,8 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
+import org.tokend.template.util.confirmation.AbstractConfirmationProvider
+import org.tokend.template.util.confirmation.ConfirmationProvider
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -183,7 +186,7 @@ class SignUpActivity : BaseActivity() {
                 email,
                 password,
                 apiProvider.getKeyServer(),
-                null
+                getRecoverySeedConfirmation()
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
@@ -195,35 +198,45 @@ class SignUpActivity : BaseActivity() {
                     password.fill('0')
                 }
                 .subscribeBy(
-                        onSuccess = { (_, _, recoveryAccount) ->
-                            recoveryAccount.secretSeed.also { recoverySeed ->
-                                if (recoverySeed != null) {
-                                    Navigator.from(this).openRecoverySeedSaving(
-                                            SAVE_SEED_REQUEST,
-                                            recoverySeed.joinToString("")
-                                    )
-                                } else {
-                                    onSuccessfulSignUp()
-                                }
-                            }
-                        },
-                        onError = {
-                            it.printStackTrace()
-                            handleSignUpError(it)
-                        }
+                        onSuccess = { onSuccessfulSignUp() },
+                        onError = this::handleSignUpError
                 )
                 .addTo(compositeDisposable)
     }
 
     private fun handleSignUpError(error: Throwable) {
+        error.printStackTrace()
+
         when (error) {
             is EmailAlreadyTakenException ->
                 email_edit_text.setErrorAndFocus(R.string.error_email_already_taken)
             else ->
                 errorHandlerFactory.getDefault().handle(error)
         }
+
         updateSignUpAvailability()
     }
+
+    // region Recovery seed confirmation
+    private lateinit var onRecoverySeedConfirmationResult: (Boolean) -> Unit
+
+    private fun getRecoverySeedConfirmation(): ConfirmationProvider<CharArray> {
+        return object : AbstractConfirmationProvider<CharArray>() {
+            override fun onConfirmationRequested(payload: CharArray,
+                                                 confirmationCallback: (Boolean) -> Unit) {
+                onRecoverySeedConfirmationResult = confirmationCallback
+                openRecoverySeedConfirmation(payload)
+            }
+        }
+    }
+
+    private fun openRecoverySeedConfirmation(seed: CharArray) {
+        Navigator.from(this).openRecoverySeedSaving(
+                SAVE_SEED_REQUEST,
+                seed.joinToString("")
+        )
+    }
+    // endregion
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -234,7 +247,7 @@ class SignUpActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == SAVE_SEED_REQUEST) {
-            onSuccessfulSignUp()
+            onRecoverySeedConfirmationResult(resultCode == Activity.RESULT_OK)
         } else {
             QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
                 urlConfigManager.setFromJson(it)
