@@ -15,7 +15,7 @@ class SignUpTest {
         val password = Config.DEFAULT_PASSWORD
         val keyStorage = ApiProviderFactory().createApiProvider(urlConfigProvider).getKeyServer()
 
-        val useCase = SignUpUseCase(email, password, keyStorage)
+        val useCase = SignUpUseCase(email, password, keyStorage, null)
 
         useCase.perform().blockingGet()
 
@@ -38,7 +38,7 @@ class SignUpTest {
         val password = Config.DEFAULT_PASSWORD
         val keyStorage = ApiProviderFactory().createApiProvider(urlConfigProvider).getKeyServer()
 
-        val useCase = SignUpUseCase(email, password, keyStorage)
+        val useCase = SignUpUseCase(email, password, keyStorage, null)
 
         try {
             useCase.perform().blockingGet()

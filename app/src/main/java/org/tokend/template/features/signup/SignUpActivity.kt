@@ -182,7 +182,8 @@ class SignUpActivity : BaseActivity() {
         SignUpUseCase(
                 email,
                 password,
-                apiProvider.getKeyServer()
+                apiProvider.getKeyServer(),
+                null
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
