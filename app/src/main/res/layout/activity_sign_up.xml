@@ -23,15 +23,23 @@
                 android:inputType="textEmailAddress"
                 app:met_floatingLabelText="@string/email" />
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/password_edit_text"
-                style="@style/EditText"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/standard_padding"
-                android:hint="@string/password"
-                android:inputType="textPassword"
-                app:met_floatingLabelText="@string/password" />
+                app:hintEnabled="false"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/icons">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/password_edit_text"
+                    style="@style/EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    app:met_floatingLabelText="@string/password" />
+            </android.support.design.widget.TextInputLayout>
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/confirm_password_edit_text"
