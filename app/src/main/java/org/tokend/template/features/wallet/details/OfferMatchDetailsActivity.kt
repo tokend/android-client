@@ -65,6 +65,13 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(charged.fee.total, charged.assetCode),
                             hint = getString(R.string.tx_fee)
+                    ),
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(
+                                    charged.amount + charged.fee.total,
+                                    charged.assetCode
+                            ),
+                            hint = getString(R.string.total_label)
                     )
             )
         }
@@ -87,6 +94,13 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(funded.fee.total, funded.assetCode),
                             hint = getString(R.string.tx_fee)
+                    ),
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(
+                                    funded.amount - funded.fee.total,
+                                    funded.assetCode
+                            ),
+                            hint = getString(R.string.total_label)
                     )
             )
         }

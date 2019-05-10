@@ -11,8 +11,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
+import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
@@ -71,6 +71,13 @@ open class PendingOfferDetailsActivity : BaseActivity() {
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(fee, asset),
                             hint = getString(R.string.tx_fee)
+                    ),
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(
+                                    amount + fee,
+                                    asset
+                            ),
+                            hint = getString(R.string.total_label)
                     )
             )
         }
@@ -95,6 +102,13 @@ open class PendingOfferDetailsActivity : BaseActivity() {
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(fee, asset),
                             hint = getString(R.string.tx_fee)
+                    ),
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(
+                                    amount - fee,
+                                    asset
+                            ),
+                            hint = getString(R.string.total_label)
                     )
             )
         }

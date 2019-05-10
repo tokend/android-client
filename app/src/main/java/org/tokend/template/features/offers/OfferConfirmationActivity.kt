@@ -162,7 +162,7 @@ open class OfferConfirmationActivity : BaseActivity() {
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(
                                     toReceiveTotal,
-                                    payAsset
+                                    receiveAsset
                             ),
                             hint = getString(R.string.total_label)
                     )

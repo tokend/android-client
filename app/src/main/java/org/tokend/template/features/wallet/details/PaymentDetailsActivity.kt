@@ -139,6 +139,13 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(paidFeeTotal, item.assetCode),
                             hint = getString(R.string.tx_fee)
+                    ),
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(
+                                    item.amount - paidFeeTotal,
+                                    item.assetCode
+                            ),
+                            hint = getString(R.string.total_label)
                     )
             )
         }
@@ -175,6 +182,13 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(paidFeeTotal, item.assetCode),
                             hint = getString(R.string.tx_fee)
+                    ),
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(
+                                    item.amount + paidFeeTotal,
+                                    item.assetCode
+                            ),
+                            hint = getString(R.string.total_label)
                     )
             )
 

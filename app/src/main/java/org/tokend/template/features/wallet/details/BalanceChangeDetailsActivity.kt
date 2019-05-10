@@ -6,6 +6,7 @@ import android.util.Log
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.history.BalanceChange
+import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.features.wallet.view.BalanceChangeIconFactory
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
@@ -66,10 +67,23 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
                 )
         )
         if (item.fee.total.signum() > 0) {
+            val total =
+                    if (item.isReceived == true && item.action != BalanceChangeAction.UNLOCKED)
+                        item.amount - item.fee.total
+                    else
+                        item.amount + item.fee.total
+
             adapter.addData(
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(item.fee.total, asset),
                             hint = getString(R.string.tx_fee)
+                    ),
+                    DetailsItem(
+                            text = amountFormatter.formatAssetAmount(
+                                    total,
+                                    asset
+                            ),
+                            hint = getString(R.string.total_label)
                     )
             )
         }
