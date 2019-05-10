@@ -16,7 +16,10 @@ class DetailsItemsAdapter : BaseRecyclerAdapter<DetailsItem, DetailsItemViewHold
         super.bindItemViewHolder(holder, position)
         val lastInGroup = position == itemCount - 1
                 || getItemAt(position + 1)?.hasHeader == true
-        holder.dividerIsVisible = !lastInGroup
+        val nextHasNoIcon = position == itemCount - 1
+                || getItemAt(position + 1)?.icon == null
+
+        holder.dividerIsVisible = !lastInGroup && !nextHasNoIcon
     }
 
     fun addOrUpdateItem(newItem: DetailsItem) {
