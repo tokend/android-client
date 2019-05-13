@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [Unreleased]
+## [1.8.0] 2019-05-13
 
 ### Added
 - Display important asset policies on asset details screen
@@ -36,16 +36,6 @@ with ability to copy
 - Vertical scroll on fees screen
 - Password change and recovery
 - Withdrawal integration tests (added account verification)
-
-### Added
-- Important policies display on asset details screen
-
-### Changed
-- Rearranged data on sale screen
-- Adjusted horizontal spacing of preference/details row
-
-### Fixed
-- Vertical scroll issue on fees screen
 
 ## [1.7.0] 2019-04-17
 
@@ -117,7 +107,8 @@ with ability to copy
 
 - Error on sign in when user has balances with unknown asset details
 
-[Unreleased]: https://github.com/tokend/android-client/compare/1.7.0(8)...HEAD
+[Unreleased]: https://github.com/tokend/android-client/compare/1.8.0(10)...HEAD
+[1.8.0]: https://github.com/tokend/android-client/compare/1.7.0(8)...1.8.0(10)
 [1.7.0]: https://github.com/tokend/android-client/compare/1.6.0(7)...1.7.0(8)
 [1.6.0]: https://github.com/tokend/android-client/compare/1.5.1(6)...1.6.0(7)
 [1.5.1]: https://github.com/tokend/android-client/compare/1.5.0(5)...1.5.1(6)
