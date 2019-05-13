@@ -31,7 +31,7 @@
         your seed</b> and it will never be shown again
     </string>
     <string name="validate_recovery_seed_explanation">Please validate the seed in the field below to ensure that you have copied it properly</string>
-    <string name="seed_copied">Seed is copied to the clipboard</string>
+    <string name="seed_copied">Seed has been copied to the clipboard</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
@@ -61,7 +61,7 @@
     <string name="offer_match_details_title">Order match details</string>
     <string name="sign_out_confirmation">Are you sure you want to sign out?</string>
     <string name="yes">Yes</string>
-    <string name="password_was_changed">Password was successfully changed</string>
+    <string name="password_was_changed">Password has been changed</string>
     <string name="change_password_action">Change</string>
     <string name="current_password">Current password</string>
     <string name="open_action">Open</string>
@@ -72,7 +72,7 @@
     <string name="to_receive">To receive</string>
     <string name="confirm_action">Confirm</string>
     <string name="processing_progress">Processing…</string>\
-    <string name="withdrawal_request_created">Withdrawal request created</string>
+    <string name="withdrawal_request_created">Withdrawal request has been created</string>
     <string name="details">Details</string>
     <string name="create_balance_action">Add to balances</string>
     <string name="view_asset_history_action">View history</string>
@@ -80,12 +80,12 @@
     <string name="asset_balance_exists">Balance exists</string>
     <string name="template_asset_details">%1$s details</string>
     <string name="template_file_download_location">File will be downloaded to the \"%1$s\" directory</string>
-    <string name="template_asset_balance_created">%1$s balance created</string>
+    <string name="template_asset_balance_created">%1$s balance has been created</string>
     <string name="search">Search</string>
     <string name="recipient_label">Recipient\'s email or account</string>
     <string name="payment_description_label">Description (optional)</string>
     <string name="payment_confirmation_title">Payment confirmation</string>
-    <string name="payment_successfully_sent">Successfully sent</string>
+    <string name="payment_successfully_sent">Payment has been sent</string>
     <string name="no_offers">No orders</string>
     <string name="template_offer_bid_asset">Bid (%1$s)</string>
     <string name="template_offer_ask_asset">Ask (%1$s)</string>
@@ -94,7 +94,7 @@
     <string name="buy_action">Buy</string>
     <string name="sell_action">Sell</string>
     <string name="offer_confirmation_title">Order confirmation</string>
-    <string name="offer_created">Order created</string>
+    <string name="offer_created">Order has been created</string>
     <string name="pending_offers_title">Pending orders</string>
     <string name="no_pending_offers">No pending orders</string>
     <string name="pending_offer_details_title">Pending order details</string>
@@ -259,7 +259,7 @@
     <string name="investment_cancellation_title">Investment cancellation</string>
     <string name="investment_updating_title">Investment update</string>
     <string name="sale_asset">Asset</string>
-    <string name="successfully_invested">Successfully invested</string>
+    <string name="successfully_invested">Investment has been placed</string>
     <string name="investment_canceled">Investment has been canceled</string>
     <string name="investment_updated">Investment has been updated</string>
     <string name="pending_investment_details_title">Pending investment details</string>
