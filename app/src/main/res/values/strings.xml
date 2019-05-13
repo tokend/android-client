@@ -59,7 +59,7 @@
     <string name="withdrawal_fee_warning">Receive amount may be lower due to additional fees</string>
     <string name="investment_details_title">Investment details</string>
     <string name="offer_match_details_title">Offer match details</string>
-    <string name="sign_out_confirmation">Are you sure want to sign out?</string>
+    <string name="sign_out_confirmation">Are you sure you want to sign out?</string>
     <string name="yes">Yes</string>
     <string name="password_was_changed">Password was successfully changed</string>
     <string name="change_password_action">Change</string>
@@ -102,7 +102,7 @@
     <string name="sell">Sell</string>
     <string name="template_price_one_equals">1 %1$s = %2$s</string>
     <string name="cancel_offer_action">Cancel offer</string>
-    <string name="cancel_offer_confirmation">Are you sure want to cancel this offer?</string>
+    <string name="cancel_offer_confirmation">Are you sure you want to cancel this offer?</string>
     <string name="offer_canceled">Offer has been canceled</string>
     <string name="email_verified">Email has been verified</string>
     <string name="touch_sensor">Touch the sensor</string>
@@ -214,7 +214,7 @@
     <string name="withdrawal_confirmation_title">Withdrawal confirmation</string>
 
     <!-- Deposit -->
-    <string name="create_balance_confirmation">Are you sure that you want to create %1s balance?</string>
+    <string name="create_balance_confirmation">Are you sure you want to create %1s balance?</string>
     <string name="personal_address">Personal address</string>
     <string name="to_make_deposit_send_asset">To make a deposit send %1$s to this address</string>
     <string name="show_qr_label">Show QR code</string>
@@ -263,7 +263,7 @@
     <string name="investment_canceled">Investment has been canceled</string>
     <string name="investment_updated">Investment has been updated</string>
     <string name="pending_investment_details_title">Pending investment details</string>
-    <string name="cancel_investment_confirmation">Are you sure want to cancel this investment?</string>
+    <string name="cancel_investment_confirmation">Are you sure you want to cancel this investment?</string>
     <string name="sale_details_title">Details</string>
     <string name="sale_overview_title">Overview</string>
     <string name="sale_chart_title">Chart</string>
