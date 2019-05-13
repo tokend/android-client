@@ -185,7 +185,7 @@
 
     <string name="error_tx_general">Transaction failed. Try again later</string>
     <string name="error_tx_bad_auth">Transaction signature is invalid</string>
-    <string name="error_tx_limits">Limits has been exceeded</string>
+    <string name="error_tx_limits">Transaction exceeds limits set to your account</string>
     <string name="error_tx_insufficient_balance">@string/error_insufficient_balance</string>
     <string name="error_tx_invalid_amount">Transaction amount is invalid</string>
     <string name="error_tx_malformed">Transaction is malformed</string>
@@ -216,7 +216,7 @@
     <!-- Deposit -->
     <string name="create_balance_confirmation">Are you sure you want to create %1s balance?</string>
     <string name="personal_address">Personal address</string>
-    <string name="to_make_deposit_send_asset">To make a deposit send %1$s to this address</string>
+    <string name="to_make_deposit_send_asset">To make a deposit, send %1$s to this address</string>
     <string name="show_qr_label">Show QR code</string>
     <string name="share_address_label">Share address</string>
     <string name="error_deposit_unavailable">Deposit is unavailable</string>
@@ -300,10 +300,10 @@
     <string name="investment_help_content">
         • You can make investments in this sale using proposed assets\n\n
         • You can have one investment per asset\n\n
-        • While the sale is active you can change amount of your investments or cancel them\n\n
-        • If you cancel your investment paid amount and fee will be returned\n\n
-        • If the sale has reached it\'s soft cap by it\'s end date you will receive
-        amount of the sale asset according to your investments, otherwise your investments will be returned
+        • While the sale is active, you can change the amount of your investment or cancel them\n\n
+        • If you cancel your investment, the paid amount and fee will be returned\n\n
+        • If the sale has reached it\s soft cap by it\s end date, you will receive the amount
+        of the sale asset according to your investments; otherwise, your investments will be returned.
     </string>
     <string name="limits_title">Limits</string>
     <string name="payment">Payment</string>
@@ -346,7 +346,9 @@
     <string name="sale_info_hard_cap">Hard cap</string>
     <string name="sale_info_to_sell_template">%1$s to sell</string>
 
-    <string name="seed_alert_dialog">"You are about to show sensitive data.\nAnyone who knows the secret seed can take possession of your account.\nDo you want to continue?"</string>
+    <string name="seed_alert_dialog">"You are about to show sensitive data.\nAnyone
+        who knows the secret seed can gain access to your account.\nDo
+        you want to continue?"</string>
 
     <string name="unknown_balance_change_details_title">Balance change details</string>
 
