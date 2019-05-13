@@ -50,7 +50,7 @@
     <string name="issuance_details_title">Issuance details</string>
     <string name="sale_cancellation_details_title">Sale cancellation details</string>
     <string name="asset_pair_update_details_title">Asset pair update details</string>
-    <string name="offer_cancellation_details_title">Offer cancellation details</string>
+    <string name="offer_cancellation_details_title">Order cancellation details</string>
     <string name="received">Received</string>
     <string name="price">Price</string>
     <string name="payment_description">Description</string>
@@ -58,7 +58,7 @@
     <string name="amount">Amount</string>
     <string name="withdrawal_fee_warning">Receive amount may be lower due to additional fees</string>
     <string name="investment_details_title">Investment details</string>
-    <string name="offer_match_details_title">Offer match details</string>
+    <string name="offer_match_details_title">Order match details</string>
     <string name="sign_out_confirmation">Are you sure you want to sign out?</string>
     <string name="yes">Yes</string>
     <string name="password_was_changed">Password was successfully changed</string>
@@ -86,24 +86,24 @@
     <string name="payment_description_label">Description (optional)</string>
     <string name="payment_confirmation_title">Payment confirmation</string>
     <string name="payment_successfully_sent">Successfully sent</string>
-    <string name="no_offers">No offers</string>
+    <string name="no_offers">No orders</string>
     <string name="template_offer_bid_asset">Bid (%1$s)</string>
     <string name="template_offer_ask_asset">Ask (%1$s)</string>
     <string name="template_asset_pair">%1$s/%2$s</string>
-    <string name="create_offer_title">Create offer</string>
+    <string name="create_offer_title">Create order</string>
     <string name="buy_action">Buy</string>
     <string name="sell_action">Sell</string>
-    <string name="offer_confirmation_title">Offer confirmation</string>
-    <string name="offer_created">Offer created</string>
-    <string name="pending_offers_title">Pending offers</string>
-    <string name="no_pending_offers">No pending offers</string>
-    <string name="pending_offer_details_title">Pending offer details</string>
+    <string name="offer_confirmation_title">Order confirmation</string>
+    <string name="offer_created">Order created</string>
+    <string name="pending_offers_title">Pending orders</string>
+    <string name="no_pending_offers">No pending orders</string>
+    <string name="pending_offer_details_title">Pending order details</string>
     <string name="buy">Buy</string>
     <string name="sell">Sell</string>
     <string name="template_price_one_equals">1 %1$s = %2$s</string>
-    <string name="cancel_offer_action">Cancel offer</string>
-    <string name="cancel_offer_confirmation">Are you sure you want to cancel this offer?</string>
-    <string name="offer_canceled">Offer has been canceled</string>
+    <string name="cancel_offer_action">Cancel order</string>
+    <string name="cancel_offer_confirmation">Are you sure you want to cancel this order?</string>
+    <string name="offer_canceled">Order has been canceled</string>
     <string name="email_verified">Email has been verified</string>
     <string name="touch_sensor">Touch the sensor</string>
     <string name="aml_alert_reason">Reason</string>
@@ -192,7 +192,7 @@
     <string name="error_tx_account_blocked">Your account is blocked</string>
     <string name="error_tx_invalid_fee">Transaction fee is invalid</string>
     <string name="error_tx_not_allowed">You are not allowed to perform this action</string>
-    <string name="error_tx_cross_self">Current offer crosses one of your existing offers</string>
+    <string name="error_tx_cross_self">Current order crosses one of your existing orders</string>
     <string name="error_tx_not_found">Requested entry not found</string>
 
     <string name="tfa_dialog_title">Two-factor authentication</string>
@@ -313,7 +313,7 @@
     <string name="fees_title">Fees</string>
     <string name="no_fees">No fees available</string>
     <string name="payment_fee">Payment</string>
-    <string name="offer_fee">Offer</string>
+    <string name="offer_fee">Order</string>
     <string name="withdrawal_fee">Withdrawal</string>
     <string name="issuance_fee">Issuance</string>
     <string name="invest_fee">Invest</string>
@@ -353,15 +353,15 @@
     <string name="balance_change_cause_unknown">Unknown</string>
     <string name="balance_change_cause_aml">AML alert</string>
     <string name="balance_change_cause_investment">Investment</string>
-    <string name="balance_change_cause_matched_offer">Offer</string>
+    <string name="balance_change_cause_matched_offer">Order</string>
     <string name="balance_change_cause_issuance">Issuance/deposit</string>
     <string name="balance_change_cause_payment">Payment</string>
     <string name="balance_change_cause_withdrawal_request">Withdrawal request</string>
-    <string name="balance_change_cause_pending_offer">Pending offer</string>
+    <string name="balance_change_cause_pending_offer">Pending order</string>
     <string name="balance_change_cause_pending_investment">Pending investment</string>
     <string name="balance_change_cause_sale_cancellation">Sale cancellation</string>
     <string name="balance_change_cause_asset_pair_update">Asset pair update</string>
-    <string name="balance_change_cause_offer_cancellation">Offer cancellation</string>
+    <string name="balance_change_cause_offer_cancellation">Order cancellation</string>
 
     <string name="asset_pair_title">Asset pair</string>
     <string name="asset_pair_code">Code</string>
@@ -381,7 +381,7 @@
     <string name="template_price_hint">Price (%1$s)</string>
     <string name="template_amount_hint">Amount (%1$s)</string>
     <string name="template_total_hint">Total (%1$s)</string>
-    <string name="trade_offers_title">Offers</string>
+    <string name="trade_offers_title">My orders</string>
     <string name="total_label">Total</string>
 
     <string name="zero">0</string>
