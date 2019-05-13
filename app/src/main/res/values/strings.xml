@@ -25,10 +25,12 @@
     <string name="save_recovery_seed">Save your recovery seed</string>
     <string name="continue_action">Continue</string>
     <string name="validate_recovery_seed">Validate recovery seed</string>
-    <string name="recovery_seed_explanation">Save this seed in a secure place.
-        In case you lose your password you will be able to recover access to your account
-        by using this seed</string>
-    <string name="validate_recovery_seed_explanation">Please validate this seed in the field below to ensure that you copied it properly</string>
+    <string name="recovery_seed_explanation">Save this seed to a safe place and
+        do not show it to anyone\n\nIt is used to recover account in case of password loss.
+        If you lose your password and seed, you will never access your account.\n\n<b>We do not know
+        your seed</b> and it will never be shown again
+    </string>
+    <string name="validate_recovery_seed_explanation">Please validate the seed in the field below to ensure that you have copied it properly</string>
     <string name="seed_copied">Seed is copied to the clipboard</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="cancel">Cancel</string>
