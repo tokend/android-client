@@ -74,7 +74,7 @@
     <string name="processing_progress">Processing…</string>\
     <string name="withdrawal_request_created">Withdrawal request created</string>
     <string name="details">Details</string>
-    <string name="create_balance_action">Create balance</string>
+    <string name="create_balance_action">Add to balances</string>
     <string name="view_asset_history_action">View history</string>
     <string name="no_assets_found">No assets found</string>
     <string name="asset_balance_exists">Balance exists</string>
