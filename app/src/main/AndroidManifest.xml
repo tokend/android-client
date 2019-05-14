@@ -235,7 +235,7 @@
         <activity
             android:name=".features.signin.UnlockAppActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/UnlockScreenTheme"/>
     </application>
 
 </manifest>

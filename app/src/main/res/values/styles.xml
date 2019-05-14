@@ -37,6 +37,13 @@
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
+    <style name="UnlockScreenTheme" parent="AppTheme.NoActionBar">
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent
+        </item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
+    </style>
+
     <style name="EditText">
         <item name="met_textColorHint">@color/secondary_text</item>
         <item name="met_primaryColor">@color/secondary_text</item>
