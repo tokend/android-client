@@ -23,7 +23,6 @@ class BalanceItemViewImpl(view: View) : BalanceItemView {
     override fun displayLogo(logoUrl: String?, assetCode: String) {
         if (logoUrl != null) {
             picasso.load(logoUrl)
-                    .placeholder(R.color.white)
                     .resize(logoSize, logoSize)
                     .centerInside()
                     .transform(CircleTransform())
