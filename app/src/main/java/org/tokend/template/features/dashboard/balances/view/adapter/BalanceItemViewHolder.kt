@@ -28,7 +28,8 @@ class BalanceItemViewHolder(
         val conversionAssetCode = item.conversionAssetCode
 
 
-        if (conversionAssetCode == null || item.assetCode == conversionAssetCode) {
+        if (conversionAssetCode == null || item.assetCode == conversionAssetCode
+                || item.converted == null) {
             amountTextView.text = amountFormatter.formatAssetAmount(
                     item.available,
                     item.assetCode
