@@ -48,6 +48,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.PicassoDrawerImageLoader
+import org.tokend.template.view.util.input.SoftInputUtil
 
 class MainActivity : BaseActivity(), WalletEventsListener {
     companion object {
@@ -268,6 +269,11 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     private fun navigateTo(screenIdentifier: Long, fragment: Fragment) {
         navigationDrawer?.setSelection(screenIdentifier, false)
         landscapeNavigationDrawer?.setSelection(screenIdentifier, false)
+
+        onBackPressedListener = fragment as? OnBackPressedListener
+
+        SoftInputUtil.hideSoftInput(this)
+
         displayFragment(fragment)
     }
 
@@ -286,7 +292,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     else -> return
                 }
 
-        onBackPressedListener = fragment as? OnBackPressedListener
         navigateTo(screenIdentifier, fragment)
     }
     // endregion
