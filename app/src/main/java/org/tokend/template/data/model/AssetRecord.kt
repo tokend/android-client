@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.NullNode
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.generated.resources.AssetResource
+import org.tokend.sdk.utils.HashCodes
 import org.tokend.template.util.PolicyChecker
 import java.io.Serializable
 import java.math.BigDecimal
@@ -31,10 +32,11 @@ class AssetRecord(
     override fun equals(other: Any?): Boolean {
         return other is AssetRecord
                 && other.code == this.code
+                && other.logoUrl == this.logoUrl
     }
 
     override fun hashCode(): Int {
-        return code.hashCode()
+        return HashCodes.ofMany(code, logoUrl)
     }
 
     companion object {
