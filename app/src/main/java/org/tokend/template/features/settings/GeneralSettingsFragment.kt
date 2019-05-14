@@ -29,6 +29,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.SecretSeedDialog
 import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.SignOutDialogFactory
 
 class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -125,13 +126,9 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun initSignOutItem() {
         val signOutPreference = findPreference("sign_out")
         signOutPreference?.setOnPreferenceClickListener {
-            AlertDialog.Builder(requireContext(), R.style.AlertDialogStyle)
-                    .setMessage(R.string.sign_out_confirmation)
-                    .setPositiveButton(R.string.yes) { _, _ ->
-                        (requireActivity().application as App).signOut(requireActivity())
-                    }
-                    .setNegativeButton(R.string.cancel, null)
-                    .show()
+            SignOutDialogFactory.getTunedDialog(requireContext()) {
+                (requireActivity().application as App).signOut(requireActivity())
+            }.show()
             true
         }
     }

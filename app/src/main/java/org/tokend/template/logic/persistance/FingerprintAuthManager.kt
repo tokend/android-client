@@ -8,7 +8,7 @@ import org.jetbrains.anko.defaultSharedPreferences
  * Manages fingerprint auth request to obtain saved credentials.
  */
 class FingerprintAuthManager(
-        private val applicationContext: Context,
+        applicationContext: Context,
         private val credentialsPersistor: CredentialsPersistor
 ) {
     private val fingerprintUtil = FingerprintUtil(applicationContext)
@@ -16,6 +16,12 @@ class FingerprintAuthManager(
 
     private var successCallback: ((String, CharArray) -> Unit)? = null
     private var errorCallback: ((String?) -> Unit)? = null
+
+    private val preferences = applicationContext.defaultSharedPreferences
+
+    val isAuthAvailable: Boolean
+            get() = fingerprintUtil.isFingerprintAvailable
+                    && preferences.getBoolean("fingerprint", true)
 
     /**
      * @param onAuthStart will be called when auth is available and started
@@ -30,7 +36,6 @@ class FingerprintAuthManager(
             return
         }
 
-        val preferences = applicationContext.defaultSharedPreferences
         if (!preferences.getBoolean("fingerprint", true)) {
             return
         }

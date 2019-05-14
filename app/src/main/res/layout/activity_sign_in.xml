@@ -39,17 +39,6 @@
                     android:inputType="textPassword"
                     app:met_floatingLabelText="@string/password" />
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/fingerprint_indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="@dimen/half_standard_padding"
-                    android:padding="@dimen/half_standard_margin"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_fingerprint" />
-
             </RelativeLayout>
 
             <include

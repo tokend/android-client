@@ -46,6 +46,7 @@ import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.wallet.WalletEventsListener
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.ProfileUtil
 import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.PicassoDrawerImageLoader
 import org.tokend.template.view.util.input.SoftInputUtil
@@ -193,7 +194,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
             }
             else -> null
         }
-        val avatar = (submittedForm as? SimpleKycForm)?.avatar
+        val avatarUrl = ProfileUtil.getAvatarUrl(kycState, urlConfigProvider)
 
         return ProfileDrawerItem()
                 .withIdentifier(1)
@@ -206,7 +207,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                         }
                 )
                 .apply {
-                    avatar?.also { withIcon(it.getUrl(urlConfigProvider.getConfig().storage)) }
+                    avatarUrl?.also { withIcon(it) }
                 }
     }
 

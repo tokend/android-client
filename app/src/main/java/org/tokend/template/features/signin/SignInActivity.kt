@@ -2,6 +2,7 @@ package org.tokend.template.features.signin
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -76,8 +77,6 @@ class SignInActivity : BaseActivity() {
         setTitle(R.string.sign_in)
 
         fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
-        fingerprintIndicatorManager =
-                FingerprintIndicatorManager(applicationContext, fingerprint_indicator, toastManager)
         urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistor)
         urlConfigManager.onConfigUpdated {
             initNetworkField()
@@ -97,6 +96,11 @@ class SignInActivity : BaseActivity() {
         if (session.lastSignInMethod == SignInMethod.AUTHENTICATOR
                 && BuildConfig.ENABLE_AUTHENTICATOR_AUTH) {
             openAuthenticatorSignIn()
+            return
+        }
+
+        credentialsPersistor.getSavedEmail()?.let {
+            Navigator.from(this).toUnlock()
         }
     }
 
@@ -107,11 +111,6 @@ class SignInActivity : BaseActivity() {
 
     private fun initFields() {
         initNetworkField()
-
-        credentialsPersistor.getSavedEmail()?.also { savedEmail ->
-            email_edit_text.setText(savedEmail)
-            password_edit_text.requestFocus()
-        }
 
         object : SimpleTextWatcher() {
             override fun afterTextChanged(p0: Editable?) {
@@ -164,27 +163,6 @@ class SignInActivity : BaseActivity() {
     }
     // endregion
 
-    // region Fingerprint
-    private fun requestFingerprintAuthIfAvailable() {
-        fingerprintIndicatorManager.hide()
-        fingerprintAuthManager.requestAuthIfAvailable(
-                onAuthStart = { fingerprintIndicatorManager.show() },
-                onSuccess = { email, password ->
-                    tryToSignInWithCredentials(email, password)
-                    password.fill('0')
-                },
-                onError = {
-                    toastManager.short(it)
-                    fingerprintIndicatorManager.error()
-                }
-        )
-    }
-
-    private fun cancelFingerprintAuth() {
-        fingerprintAuthManager.cancelAuth()
-    }
-    // endregion
-
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
             QrScannerUtil.openScanner(this)
@@ -215,16 +193,6 @@ class SignInActivity : BaseActivity() {
                 signIn()
             }
         }
-    }
-
-    private fun tryToSignInWithCredentials(email: String, password: CharArray) {
-        email_edit_text.setText(email)
-        password_edit_text.setText(password, 0, password.size)
-        password_edit_text.setSelection(password.size)
-
-        SoftInputUtil.hideSoftInput(this)
-
-        tryToSignIn()
     }
 
     private fun signIn() {
@@ -314,13 +282,7 @@ class SignInActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        requestFingerprintAuthIfAvailable()
         initNetworkField()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        cancelFingerprintAuth()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

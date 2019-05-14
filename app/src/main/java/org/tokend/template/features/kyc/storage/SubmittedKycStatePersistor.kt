@@ -88,6 +88,6 @@ class SubmittedKycStatePersistor(
     }
 
     companion object {
-        private const val KEY = "submitted_kyc"
+        const val KEY = "submitted_kyc"
     }
 }

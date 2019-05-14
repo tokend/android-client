@@ -25,6 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -229,7 +230,12 @@
         <activity
             android:name=".features.invest.view.SaleInvestActivity"
             android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
-            android:label="@string/sale_investing" />
+            android:label="@string/sale_investing"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
+        <activity
+            android:name=".features.signin.UnlockAppActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
+
 </manifest>
