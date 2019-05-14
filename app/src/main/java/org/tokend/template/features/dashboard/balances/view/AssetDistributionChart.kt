@@ -266,7 +266,10 @@ class AssetDistributionChart
     private fun getDistribution(balances: Collection<BalanceRecord>,
                                 conversionAssetCode: String): List<AssetDistributionEntry> {
         val sortedAndFilteredByConverted = balances
-                .filter { it.convertedAmount != null && it.conversionAssetCode == conversionAssetCode }
+                .filter { it.convertedAmount != null
+                        && it.conversionAssetCode == conversionAssetCode
+                        && it.convertedAmount.signum() > 0
+                }
                 .sortedByDescending { it.convertedAmount!! }
 
         val total = sortedAndFilteredByConverted.convertedTotal()
