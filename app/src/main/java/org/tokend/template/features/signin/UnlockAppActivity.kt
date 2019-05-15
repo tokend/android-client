@@ -1,20 +1,13 @@
 package org.tokend.template.features.signin
 
-import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.view.View
-import com.google.gson.JsonParser
-import com.squareup.picasso.Picasso
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_unlock_app.*
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
-import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.App
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
@@ -22,25 +15,25 @@ import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
-import org.tokend.template.features.assets.LogoFactory
-import org.tokend.template.features.kyc.model.form.SimpleKycForm
-import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistor
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.logic.persistance.FingerprintAuthManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.util.imagetransform.CircleTransform
+import org.tokend.template.util.ProfileUtil
+import org.tokend.template.view.FingerprintIndicatorManager
 import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.SignOutDialogFactory
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
+import org.tokend.wallet.Account
 
 class UnlockAppActivity : BaseActivity() {
     override val allowUnauthorized: Boolean = true
 
     private lateinit var fingerprintAuthManager: FingerprintAuthManager
+    private lateinit var fingerprintIndicatorManager: FingerprintIndicatorManager
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { updateFieldsLoadingState(true) },
@@ -60,6 +53,9 @@ class UnlockAppActivity : BaseActivity() {
         }
 
     private lateinit var email: String
+    private val animationDuration: Long by lazy {
+        this.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+    }
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_unlock_app)
@@ -67,6 +63,7 @@ class UnlockAppActivity : BaseActivity() {
         email = credentialsPersistor.getSavedEmail() ?: return
 
         fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
+        fingerprintIndicatorManager = FingerprintIndicatorManager(this, fingerprint_indicator)
 
         initViews()
         initDefaultState()
@@ -76,50 +73,8 @@ class UnlockAppActivity : BaseActivity() {
 
     private fun initViews() {
         user_email_text.text = email
-        initAccountLogo()
         initButtons()
-    }
-
-    private fun initAccountLogo() {
-        val placeholderImage = LogoFactory(this)
-                .getForValue(
-                        email.toUpperCase(),
-                        resources.getDimensionPixelSize(R.dimen.hepta_margin),
-                        ContextCompat.getColor(this, R.color.avatar_placeholder_background),
-                        Color.WHITE
-                )
-        val placeholderDrawable = BitmapDrawable(resources, placeholderImage)
-        user_logo.setImageDrawable(placeholderDrawable)
-
-        updateProfileImage(placeholderDrawable)
-    }
-
-    //Temporary solution
-    private fun updateProfileImage(placeHolder: BitmapDrawable) {
-        val prefs = getSharedPreferences("KycStatePersistence", Context.MODE_PRIVATE)
-
-        val gson = GsonFactory().getBaseGson()
-
-        val kycForm = prefs.getString(SubmittedKycStatePersistor.KEY, null)
-                ?.let {
-                    try {
-                        val remoteFileJson = JsonParser()
-                                .parse(it).asJsonObject.getAsJsonObject("state").get("formData")
-                        gson.fromJson(remoteFileJson, SimpleKycForm::class.java)
-                    } catch (e: Exception) {
-                        null
-                    }
-                }
-
-        kycForm?.avatar?.let {
-            Picasso.with(this)
-                    .load(it.getUrl(urlConfigProvider.getConfig().storage))
-                    .placeholder(placeHolder)
-                    .transform(CircleTransform())
-                    .fit()
-                    .centerCrop()
-                    .into(user_logo)
-        }
+        ProfileUtil.initAccountLogo(this, user_logo, email, urlConfigProvider, kycStatePersistor)
     }
 
     private fun initButtons() {
@@ -143,9 +98,11 @@ class UnlockAppActivity : BaseActivity() {
         }
 
         sign_out_button.onClick {
-            SignOutDialogFactory.getTunedDialog(this) {
-                (application as App).signOut(this)
-            }.show()
+            if (!loadingIndicator.isLoading) {
+                SignOutDialogFactory.getTunedDialog(this) {
+                    (application as App).signOut(this)
+                }.show()
+            }
         }
 
         recovery_button.onClick {
@@ -165,15 +122,15 @@ class UnlockAppActivity : BaseActivity() {
         password_edit_text.error = null
         if (usePassword) {
             cancelFingerprintAuth()
-            AnimationUtil.fadeOutView(fingerprint_layout, ANIMATION_DURATION) {
-                AnimationUtil.fadeInView(password_layout, ANIMATION_DURATION)
+            AnimationUtil.fadeOutView(fingerprint_layout, animationDuration) {
+                AnimationUtil.fadeInView(password_layout, animationDuration)
                 password_edit_text.requestFocus()
                 SoftInputUtil.showSoftInputOnView(password_edit_text)
                 fingerprint_layout.clearAnimation()
             }
         } else {
-            AnimationUtil.fadeOutView(password_layout, ANIMATION_DURATION) {
-                AnimationUtil.fadeInView(fingerprint_layout, ANIMATION_DURATION)
+            AnimationUtil.fadeOutView(password_layout, animationDuration) {
+                AnimationUtil.fadeInView(fingerprint_layout, animationDuration)
                 password_layout.clearAnimation()
             }
         }
@@ -196,7 +153,7 @@ class UnlockAppActivity : BaseActivity() {
                 else fingerprint_layout
 
         if (isLoading) {
-            AnimationUtil.fadeOutView(sign_out_button)
+            AnimationUtil.fadeOutView(sign_out_button, viewGone = false)
             AnimationUtil.fadeOutView(
                     view = animatedView,
                     viewGone = false)
@@ -205,6 +162,7 @@ class UnlockAppActivity : BaseActivity() {
             AnimationUtil.fadeInView(animatedView)
             AnimationUtil.fadeInView(sign_out_button)
             progress.hide()
+            if (!usePassword) requestFingerprintAuthIfAvailable()
         }
     }
 
@@ -216,6 +174,7 @@ class UnlockAppActivity : BaseActivity() {
                 },
                 onError = {
                     toastManager.short(it)
+                    fingerprintIndicatorManager.error()
                 }
         )
     }
@@ -293,9 +252,5 @@ class UnlockAppActivity : BaseActivity() {
         if (usePassword && fingerprintAuthManager.isAuthAvailable) {
             requestFingerprintAuthIfAvailable()
         } else super.onBackPressed()
-    }
-
-    companion object {
-        private const val ANIMATION_DURATION = 200L
     }
 }

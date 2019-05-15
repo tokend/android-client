@@ -41,11 +41,8 @@ class KycStateRepository(
 
     // region Persistence
     override fun getStoredItem(): Observable<KycState> {
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                ?: return Observable.empty()
-
         return Observable.defer {
-            val state = submittedStatePersistor?.loadState(accountId)
+            val state = submittedStatePersistor?.loadState()
 
             if (state != null)
                 Observable.just(state)
@@ -55,14 +52,12 @@ class KycStateRepository(
     }
 
     override fun storeItem(item: KycState) {
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId ?: return
-
         // Store only submitted states as the only valuable ones.
         if (item !is KycState.Submitted<*>) {
             return
         }
 
-        submittedStatePersistor?.saveState(accountId, item)
+        submittedStatePersistor?.saveState(item)
     }
     // endregion
 

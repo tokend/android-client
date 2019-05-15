@@ -55,7 +55,6 @@ class SignInActivity : BaseActivity() {
 
     private lateinit var fingerprintAuthManager: FingerprintAuthManager
     private lateinit var urlConfigManager: UrlConfigManager
-    private lateinit var fingerprintIndicatorManager: FingerprintIndicatorManager
 
     private var isLoading: Boolean = false
         set(value) {

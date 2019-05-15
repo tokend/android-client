@@ -13,6 +13,7 @@ import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.di.providers.*
+import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistor
 import org.tokend.template.features.tfa.view.TfaDialogFactory
 import org.tokend.template.logic.AppTfaCallback
 import org.tokend.template.logic.Session
@@ -52,6 +53,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var session: Session
     @Inject
     lateinit var amountFormatter: AmountFormatter
+    @Inject
+    lateinit var kycStatePersistor: SubmittedKycStatePersistor
 
     /**
      * If set to true the activity will be operational

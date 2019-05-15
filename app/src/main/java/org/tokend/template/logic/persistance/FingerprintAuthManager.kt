@@ -20,8 +20,9 @@ class FingerprintAuthManager(
     private val preferences = applicationContext.defaultSharedPreferences
 
     val isAuthAvailable: Boolean
-            get() = fingerprintUtil.isFingerprintAvailable
-                    && preferences.getBoolean("fingerprint", true)
+        get() = preferences.getBoolean("fingerprint", true)
+                && fingerprintUtil.isFingerprintAvailable
+                && credentialsPersistor.hasSavedPassword()
 
     /**
      * @param onAuthStart will be called when auth is available and started
