@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/balances"
+        android:icon="@drawable/ic_coins"
+        android:title="@string/balances_screen_title" />
+
+    <item
+        android:id="@+id/movements"
+        android:icon="@drawable/ic_trade"
+        android:title="@string/movements_screen_title" />
+</menu>

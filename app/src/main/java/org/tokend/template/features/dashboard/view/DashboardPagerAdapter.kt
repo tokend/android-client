@@ -13,10 +13,16 @@ class DashboardPagerAdapter(context: Context,
     private val fragmentFactory = FragmentFactory()
 
     private val pages = listOf(
-            fragmentFactory.getBalancesFragment() to
+            Triple(
+                    fragmentFactory.getBalancesFragment(),
                     context.getString(R.string.balances_screen_title),
-            fragmentFactory.getAccountMovementsFragment() to
-                    context.getString(R.string.movements_screen_title)
+                    R.id.balances.toLong()
+            ),
+            Triple(
+                    fragmentFactory.getAccountMovementsFragment(),
+                    context.getString(R.string.movements_screen_title),
+                    R.id.movements.toLong()
+            )
     )
 
     override fun getItem(position: Int): Fragment? {
@@ -27,5 +33,13 @@ class DashboardPagerAdapter(context: Context,
         return pages.getOrNull(position)?.second ?: ""
     }
 
+    override fun getItemId(position: Int): Long {
+        return pages[position].third
+    }
+
     override fun getCount(): Int = pages.size
+
+    fun getIndexOf(id: Long): Int {
+        return pages.indexOfFirst { it.third == id }
+    }
 }

@@ -1,9 +1,7 @@
 package org.tokend.template.features.dashboard.view
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.view.SupportMenuInflater
 import android.support.v7.widget.Toolbar
@@ -11,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.android.synthetic.main.activity_multiple_fragments.*
+import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.fragments.BaseFragment
@@ -20,9 +18,11 @@ import org.tokend.template.fragments.ToolbarProvider
 class DashboardFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
 
+    private lateinit var adapter: DashboardPagerAdapter
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.activity_multiple_fragments, container, false)
+        return inflater.inflate(R.layout.fragment_dashboard, container, false)
     }
 
     override fun onInitAllowed() {
@@ -31,17 +31,15 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         toolbar.title = getString(R.string.dashboard_title)
 
         initViewPager()
+        initTabs()
     }
 
     // region Init
     @SuppressLint("RestrictedApi")
     private fun initViewPager() {
-        val adapter = DashboardPagerAdapter(requireContext(), childFragmentManager)
+        adapter = DashboardPagerAdapter(requireContext(), childFragmentManager)
         pager.adapter = adapter
         pager.offscreenPageLimit = adapter.count
-        pager.background = ColorDrawable(
-                ContextCompat.getColor(requireContext(), R.color.colorDefaultBackground)
-        )
 
         // Menu.
         val inflatePageMenu = { pagePosition: Int ->
@@ -54,9 +52,14 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
                     )
         }
 
+        val onPageSelected = { pagePosition: Int ->
+            inflatePageMenu(pagePosition)
+            bottom_tabs.selectedItemId = adapter.getItemId(pagePosition).toInt()
+        }
+
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageSelected(position: Int) {
-                inflatePageMenu(position)
+                onPageSelected(position)
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
@@ -64,9 +67,19 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
         })
 
-        toolbar_tabs.setupWithViewPager(pager)
+        onPageSelected(0)
+    }
 
-        inflatePageMenu(0)
+    private fun initTabs() {
+        bottom_tabs.setOnNavigationItemSelectedListener {
+            val index = adapter.getIndexOf(it.itemId.toLong())
+            if (index >= 0) {
+                pager.currentItem = index
+                true
+            } else {
+                false
+            }
+        }
     }
     // endregion
 
