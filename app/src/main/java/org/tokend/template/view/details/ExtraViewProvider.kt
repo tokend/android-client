@@ -3,7 +3,9 @@ package org.tokend.template.view.details
 import android.content.Context
 import android.graphics.PorterDuff
 import android.support.v4.content.ContextCompat
+import android.support.v7.view.ContextThemeWrapper
 import android.support.v7.widget.AppCompatImageView
+import android.widget.Button
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.padding
@@ -22,6 +24,14 @@ object ExtraViewProvider {
                 setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
             }
             setImageDrawable(drawable)
+            onClick { action.invoke() }
+        }
+    }
+
+    fun getButton(context: Context, textRes: Int, action: () -> Unit): Button {
+        val newContext = ContextThemeWrapper(context, R.style.PrimaryButton)
+        return Button(newContext, null, R.style.PrimaryButton).apply {
+            text = context.getString(textRes)
             onClick { action.invoke() }
         }
     }

@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.app.AlertDialog
+import android.support.v7.view.ContextThemeWrapper
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -32,6 +34,7 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
+import org.tokend.template.view.details.ExtraViewProvider
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.picker.PickerItem
 import org.tokend.template.view.util.CopyDataDialogFactory
@@ -172,17 +175,16 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         adapter.onItemClick { _, item ->
             when (item.id) {
                 EXISTING_ADDRESS_ITEM_ID -> {
-                    CopyDataDialogFactory.getDialog(
-                            requireContext(),
-                            item.text,
-                            getString(R.string.personal_address),
-                            toastManager,
-                            getString(R.string.deposit_address_copied)
-                    )
+                    item.text?.let {
+                        CopyDataDialogFactory.getDialog(
+                                requireContext(),
+                                it,
+                                getString(R.string.personal_address),
+                                toastManager,
+                                getString(R.string.deposit_address_copied)
+                        )
+                    }
                 }
-                SHARE_ITEM__ID -> shareData()
-                QR_ITEM_ID -> openQr()
-                RENEW_ITEM_ID -> bindExternalAccount(true)
             }
         }
 
@@ -330,37 +332,31 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 )
         )
 
-        val shareIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_share)
-        shareIcon?.setColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.icons), PorterDuff.Mode.SRC_ATOP)
+        val shareButton = ExtraViewProvider.getButton(requireContext(), R.string.share) {
+            openQr()
+        }
 
         adapter.addData(
                 DetailsItem(
                         id = SHARE_ITEM__ID,
-                        singleLineText = true,
-                        text = getString(R.string.share),
-                        icon = shareIcon
-                )
-        )
-
-        adapter.addData(
-                DetailsItem(
-                        id = QR_ITEM_ID,
-                        text = getString(R.string.show_qr_label),
-                        singleLineText = true,
-                        icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_qr_code_scan)
+                        extraView = shareButton
                 )
         )
 
         if (expirationDate != null) {
             updateExpirationDate(expirationDate)
 
+            val renewButton =
+                    ExtraViewProvider.getButton(
+                            requireContext(),
+                            R.string.renew_personal_address_action) {
+                        bindExternalAccount(true)
+                    }
+
             adapter.addData(
                     DetailsItem(
                             id = RENEW_ITEM_ID,
-                            text = getString(R.string.renew_personal_address_action),
-                            singleLineText = true,
-                            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_renew)
+                            extraView = renewButton
                     )
             )
         }
@@ -392,18 +388,6 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                         icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_calendar)
                 )
         )
-    }
-
-    private fun shareData() {
-        getAddressShareMessage()?.let { shareMessage ->
-            val sharingIntent = Intent(Intent.ACTION_SEND)
-            sharingIntent.type = "text/plain"
-            sharingIntent.putExtra(Intent.EXTRA_SUBJECT,
-                    getString(R.string.app_name))
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
-            startActivity(Intent.createChooser(sharingIntent,
-                    getString(R.string.share_address_label)))
-        }
     }
 
     private fun openQr() {
@@ -488,7 +472,6 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
         private val EXISTING_ADDRESS_ITEM_ID = "existing_address".hashCode().toLong()
         private val SHARE_ITEM__ID = "share".hashCode().toLong()
-        private val QR_ITEM_ID = "qr".hashCode().toLong()
         private val EXPIRATION_ITEM_ID = "expiration_date".hashCode().toLong()
         private val RENEW_ITEM_ID = "renew".hashCode().toLong()
 
