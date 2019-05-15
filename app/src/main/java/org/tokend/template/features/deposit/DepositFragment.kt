@@ -175,13 +175,15 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         adapter.onItemClick { _, item ->
             when (item.id) {
                 EXISTING_ADDRESS_ITEM_ID -> {
-                    CopyDataDialogFactory.getDialog(
-                            requireContext(),
-                            item.text,
-                            getString(R.string.personal_address),
-                            toastManager,
-                            getString(R.string.deposit_address_copied)
-                    )
+                    item.text?.let {
+                        CopyDataDialogFactory.getDialog(
+                                requireContext(),
+                                it,
+                                getString(R.string.personal_address),
+                                toastManager,
+                                getString(R.string.deposit_address_copied)
+                        )
+                    }
                 }
             }
         }

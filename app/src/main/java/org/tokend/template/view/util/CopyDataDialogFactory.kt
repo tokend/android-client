@@ -11,7 +11,7 @@ object CopyDataDialogFactory {
 
     fun getDialog(
             context: Context,
-            content: String?,
+            content: String,
             title: String?,
             toastManager: ToastManager,
             toastMessage: String
