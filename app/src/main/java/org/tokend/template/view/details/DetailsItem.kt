@@ -8,7 +8,7 @@ import android.view.View
  * Preference-like item to display entity details
  */
 class DetailsItem(
-        val text: String,
+        val text: String? = null,
         val hint: String? = null,
         val icon: Drawable? = null,
         @ColorInt
