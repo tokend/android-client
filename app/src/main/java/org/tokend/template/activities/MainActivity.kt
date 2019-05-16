@@ -1,8 +1,6 @@
 package org.tokend.template.activities
 
 import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -25,7 +23,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.features.assets.ExploreAssetsFragment
-import org.tokend.template.features.assets.LogoFactory
 import org.tokend.template.features.dashboard.view.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
@@ -46,6 +43,7 @@ import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.wallet.WalletEventsListener
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.ProfileUtil
 import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.PicassoDrawerImageLoader
 import org.tokend.template.view.util.input.SoftInputUtil
@@ -89,15 +87,10 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         val placeholderValue = (email ?: getString(R.string.app_name)).toUpperCase()
         val placeholderSize =
                 resources.getDimensionPixelSize(R.dimen.material_drawer_item_profile_icon_width)
-        val placeholderBackground = ContextCompat.getColor(this, R.color.avatar_placeholder_background)
-        val placeholderImage = LogoFactory(this)
-                .getForValue(
-                        placeholderValue,
-                        placeholderSize,
-                        placeholderBackground,
-                        Color.WHITE
-                )
-        val placeholderDrawable = BitmapDrawable(resources, placeholderImage)
+        val placeholderBackground =
+                ContextCompat.getColor(this, R.color.avatar_placeholder_background)
+        val placeholderDrawable =
+                ProfileUtil.getAvatarPlaceholder(placeholderValue, this, placeholderSize)
         DrawerImageLoader.init(
                 PicassoDrawerImageLoader(this, placeholderDrawable, placeholderBackground)
         )
@@ -193,7 +186,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
             }
             else -> null
         }
-        val avatar = (submittedForm as? SimpleKycForm)?.avatar
+        val avatarUrl = ProfileUtil.getAvatarUrl(kycState, urlConfigProvider)
 
         return ProfileDrawerItem()
                 .withIdentifier(1)
@@ -206,7 +199,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                         }
                 )
                 .apply {
-                    avatar?.also { withIcon(it.getUrl(urlConfigProvider.getConfig().storage)) }
+                    avatarUrl?.also { withIcon(it) }
                 }
     }
 

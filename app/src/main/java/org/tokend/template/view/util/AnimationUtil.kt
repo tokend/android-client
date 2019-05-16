@@ -89,7 +89,10 @@ object AnimationUtil {
     /**
      * Animates view opacity from 1 to 0
      */
-    fun fadeOutView(view: View?, duration: Long = -1) {
+    fun fadeOutView(view: View?,
+                    duration: Long = -1,
+                    viewGone: Boolean = true,
+                    onEnd: (() -> Unit)? = null) {
         view ?: return
         if (view.visibility == View.GONE
                 || view.visibility == View.INVISIBLE
@@ -102,7 +105,8 @@ object AnimationUtil {
         val alphaAnimation = AlphaAnimation(1f, 0f)
         alphaAnimation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationEnd(animation: Animation?) {
-                view.visibility = View.GONE
+                if(viewGone)view.visibility = View.GONE
+                onEnd?.invoke()
             }
 
             override fun onAnimationRepeat(animation: Animation?) {}

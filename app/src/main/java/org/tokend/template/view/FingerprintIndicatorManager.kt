@@ -10,7 +10,7 @@ import org.tokend.template.view.util.AnimationUtil
 
 class FingerprintIndicatorManager(context: Context,
                                   private val fingerprintIndicator: AppCompatImageView,
-                                  private val toastManager: ToastManager?) {
+                                  private val toastManager: ToastManager? = null) {
 
     private val animation = AnimationUtils.loadAnimation(context, R.anim.shake)
 

@@ -15,8 +15,6 @@ class SubmittedKycStatePersistor(
         private val preferences: SharedPreferences
 ) {
     private class Container(
-            @SerializedName("account_id")
-            val accountId: String,
             @SerializedName("state")
             val serializedState: JsonElement,
             @SerializedName("form_class")
@@ -28,18 +26,15 @@ class SubmittedKycStatePersistor(
     private val gson = GsonFactory().getBaseGson()
 
     /**
-     * Saves given [state] for [accountId],
-     * rewrites the old value despite of [accountId]
+     * Saves given [state]
      */
-    fun saveState(accountId: String,
-                  state: KycState.Submitted<*>) {
+    fun saveState(state: KycState.Submitted<*>) {
         preferences
                 .edit()
                 .putString(
                         KEY,
                         gson.toJson(
                                 Container(
-                                        accountId = accountId,
                                         serializedState = gson.toJsonTree(state),
                                         formClassName = state.formData.javaClass.name,
                                         stateClassName = state.javaClass.name
@@ -50,19 +45,14 @@ class SubmittedKycStatePersistor(
     }
 
     /**
-     * @return saved state for given [accountId] or null
-     * if the stored state account ID does not match the given one
+     * @return saved state
      */
-    fun loadState(accountId: String): KycState.Submitted<*>? {
+    fun loadState(): KycState.Submitted<*>? {
         return preferences
                 .getString(KEY, null)
                 ?.let {
                     try {
                         val container = gson.fromJson(it, Container::class.java)
-
-                        if (container.accountId != accountId) {
-                            return@let null
-                        }
 
                         deserializeState(container)
                     } catch (e: Exception) {
