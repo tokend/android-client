@@ -237,7 +237,7 @@ class UnlockAppActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (!usePassword) {
+        if (!usePassword && !loadingIndicator.isLoading) {
             requestFingerprintAuthIfAvailable()
         }
     }
@@ -248,7 +248,7 @@ class UnlockAppActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if (usePassword && fingerprintAuthManager.isAuthAvailable) {
+        if (!loadingIndicator.isLoading && usePassword && fingerprintAuthManager.isAuthAvailable) {
             requestFingerprintAuthIfAvailable()
         } else super.onBackPressed()
     }
