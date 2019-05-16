@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## Unreleased
+
+### Added
+- Ability to open detailed fee information from payment confirmation
+- Balances conversion
+- Balances sort by converted amount
+- Eye toggle for password fields (on Sign up, Recovery and Password change)
+- Display total amount on balance change details screens if there are fees
+- Lock screen
+
+### Changed
+- Redesigned Dashboard
+- Moved sale investing form to the separate screen
+- Increased number of points to display on chart
+- Removed purple hue of the text and icons
+- Replaced condensed typeface with the regular one on empty views
+- Updated picture on wallet empty view
+- Recovery seed copy screen is now displayed before the account creation
+- Updated recovery seed confirmation screen text to match web client
+- Renamed 'Create balance' action on assets explorer to 'Add to balances'
+- Renamed 'Offer' to 'Order' in localization
+- Unified successful action result messages
+- Replaced deposit address action rows with the regular buttons
+- Simplified payment counterparty display: show only email, show both email and account ID on click
+- Replaced offer fee with a separate investment fee for investing offers
+
+### Removed
+- White placeholder for balance asset logo
+
+### Fixed
+- Wrong chart data for some periods
+- Wrong focus on offer creation screen when price is not specified
+- Vertical centering of error/empty view message
+- Typo in `op_no_entry` error message
+- 'Are you sure...' messages grammar
+- Stuck soft input after navigating to another screen through a navigation menu
+
 ## [1.8.0] 2019-05-13
 
 ### Added
