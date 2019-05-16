@@ -41,7 +41,6 @@ class BalanceChangesRepository(
         return signedApi
                 .v3
                 .history
-                // TODO: Change to 'getMovements' after Horizon 3.3 release
                 .get(
                         ParticipantEffectsPageParams.Builder()
                                 .withInclude(
