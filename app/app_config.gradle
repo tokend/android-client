@@ -4,10 +4,10 @@ ext {
     // Application ID - unique identifier of the app in Google Play and on user's device
     application_id = 'org.tokend.template'
     // Version Name - human-readable app version
-    version_name = '1.8.0'
+    version_name = '1.9.0-rc.0'
     // Version Code - code number for version,
     // must be incremented after each release
-    version_code = 10
+    version_code = 11
 
     // --------------------------
 
