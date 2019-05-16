@@ -144,8 +144,6 @@
     <string name="tx_action_matched">Matched</string>
     <string name="tx_sender">Sender</string>
     <string name="tx_recipient">Recipient</string>
-    <string name="tx_sender_email">Sender\'s email</string>
-    <string name="tx_recipient_email">Recipient\'s email</string>
     <string name="tx_fee">Fee</string>
     <string name="tx_cause">Cause</string>
     <string name="tx_reference">Reference</string>
@@ -153,7 +151,7 @@
     <string name="template_tx_in">In %1$s</string>
     <string name="pay_recipient_fee_action">Pay recipient\'s fee</string>
     <string name="tx_effect">Effect</string>
-    <string name="account_id_has_been_copied">Account ID has been copied to the clipboard</string>
+    <string name="data_has_been_copied">Data has been copied to the clipboard</string>
 
     <string name="settings_account_group">Account</string>
     <string name="settings_security_group">Security</string>

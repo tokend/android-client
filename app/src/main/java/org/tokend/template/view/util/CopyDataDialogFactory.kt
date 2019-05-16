@@ -14,7 +14,7 @@ object CopyDataDialogFactory {
             content: String,
             title: String?,
             toastManager: ToastManager,
-            toastMessage: String
+            toastMessage: String = context.getString(R.string.data_has_been_copied)
     ): AlertDialog {
         return AlertDialog.Builder(context, R.style.AlertDialogStyle)
                 .setTitle(title)

@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
+import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.util.CopyDataDialogFactory
@@ -17,6 +18,8 @@ import java.math.BigDecimal
 
 class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
     private val adapter = DetailsItemsAdapter()
+
+    private var counterpartyLoadingFinished: Boolean = false
 
     override fun displayDetails(item: BalanceChange) {
         setContentView(R.layout.activity_details_list)
@@ -39,7 +42,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         details_list.adapter = adapter
         (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
-        initAccountIdClick()
+        initCounterpartyClick(details, accountId)
 
         displayEffect(item, adapter)
         displayCounterparty(details, accountId)
@@ -50,17 +53,25 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         loadAndDisplayCounterpartyEmail(details, accountId)
     }
 
-    private fun initAccountIdClick() {
+    private fun initCounterpartyClick(cause: BalanceChangeCause.Payment,
+                                      accountId: String) {
         adapter.onItemClick { _, item ->
-            if (item.id == COUNTERPARTY_ACCOUNT_ID_ITEM_ID) {
-                val content = item.text
+            if (item.id == COUNTERPARTY_ITEM_ID) {
+                val counterpartyAccount = cause.getCounterpartyAccountId(accountId)
+                val counterpartyEmail = cause.getCounterpartyName(accountId)
+
+                val content =
+                        if (counterpartyLoadingFinished && counterpartyEmail != null)
+                            counterpartyEmail + "\n\n" + counterpartyAccount
+                        else
+                            counterpartyAccount
 
                 CopyDataDialogFactory.getDialog(
                         this,
                         content,
                         item.hint,
                         toastManager,
-                        getString(R.string.account_id_has_been_copied)
+                        getString(R.string.data_has_been_copied)
                 )
             }
         }
@@ -81,25 +92,15 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
         adapter.addOrUpdateItem(
                 DetailsItem(
-                        id = COUNTERPARTY_ACCOUNT_ID_ITEM_ID,
-                        text = counterpartyAccount,
+                        id = COUNTERPARTY_ITEM_ID,
+                        text =
+                        if (!counterpartyLoadingFinished)
+                            getString(R.string.loading_data)
+                        else
+                            counterpartyEmail ?: counterpartyAccount,
                         hint = getString(accountIdHintStringRes),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_account),
                         singleLineText = true
-                )
-        )
-
-        val emailHintStringRes =
-                if (isReceived)
-                    R.string.tx_sender_email
-                else
-                    R.string.tx_recipient_email
-
-        adapter.addOrUpdateItem(
-                DetailsItem(
-                        id = COUNTERPARTY_EMAIL_ITEM_ID,
-                        text = counterpartyEmail ?: getString(R.string.loading_data),
-                        hint = getString(emailHintStringRes)
                 )
         )
     }
@@ -222,10 +223,14 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         repositoryProvider
                 .accountDetails()
                 .getEmailByAccountId(counterpartyAccountId)
+                .compose(ObservableTransformers.defaultSchedulersSingle())
+                .doOnEvent { _, _ ->
+                    counterpartyLoadingFinished = true
+                    displayCounterparty(cause, accountId)
+                }
                 .subscribeBy(
                         onSuccess = { email ->
                             cause.setCounterpartyName(accountId, email)
-                            displayCounterparty(cause, accountId)
                         },
                         onError = {
                             // Not critical.
@@ -235,7 +240,6 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
     }
 
     companion object {
-        private const val COUNTERPARTY_ACCOUNT_ID_ITEM_ID = 1L
-        private const val COUNTERPARTY_EMAIL_ITEM_ID = 2L
+        private const val COUNTERPARTY_ITEM_ID = 1L
     }
 }
