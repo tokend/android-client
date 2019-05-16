@@ -27,7 +27,6 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.SignOutDialogFactory
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
-import org.tokend.wallet.Account
 
 class UnlockAppActivity : BaseActivity() {
     override val allowUnauthorized: Boolean = true
@@ -74,7 +73,7 @@ class UnlockAppActivity : BaseActivity() {
     private fun initViews() {
         user_email_text.text = email
         initButtons()
-        ProfileUtil.initAccountLogo(this, user_logo, email, urlConfigProvider, kycStatePersistor)
+        ProfileUtil.setAvatar(user_logo, email, urlConfigProvider, kycStatePersistor.loadState())
     }
 
     private fun initButtons() {
