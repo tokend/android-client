@@ -16,6 +16,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ScrollOnTopItemUpdateAdapterObserver
+import org.tokend.template.view.util.SwipeRefreshDependencyUtil
 import java.math.BigDecimal
 
 
@@ -62,6 +63,7 @@ class BalancesFragment : BaseFragment() {
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
         swipe_refresh.setOnRefreshListener { update(force = true) }
+        SwipeRefreshDependencyUtil.addDependency(swipe_refresh, app_bar)
     }
     // endregion
 
