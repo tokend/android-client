@@ -172,6 +172,8 @@ class BalanceDetailsActivity : BaseActivity() {
         history_list.listenBottomReach({ adapter.getDataItemCount() }) {
             balanceChangesRepository.loadMore() || balanceChangesRepository.noMoreItems
         }
+
+        date_text_switcher.init(history_list, adapter)
     }
 
     private fun initSwipeRefresh() {
@@ -292,15 +294,12 @@ class BalanceDetailsActivity : BaseActivity() {
     // endregion
 
     private fun adjustEmptyViewHeight() {
-        root_layout.apply {
-            measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-            post {
-                layoutParams = layoutParams.apply {
-                    height = Math.max(
-                            root_layout.measuredHeight - appbar.measuredHeight,
-                            dip(256)
-                    )
-                }
+        root_layout.post {
+            error_empty_view.layoutParams = error_empty_view.layoutParams.apply {
+                height = Math.max(
+                        root_layout.height - appbar.height,
+                        dip(256)
+                )
             }
         }
     }

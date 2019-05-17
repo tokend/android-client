@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:padding="@dimen/half_standard_margin"
-                    app:layout_scrollFlags="scroll|enterAlways">
+                    app:layout_scrollFlags="scroll">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
