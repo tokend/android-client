@@ -117,5 +117,36 @@
                 </android.support.design.widget.CollapsingToolbarLayout>
             </android.support.design.widget.AppBarLayout>
         </android.support.design.widget.CoordinatorLayout>
+
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/menu_fab"
+            style="@style/FloatingButton"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/standard_margin"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/send_fab"
+                style="@style/FloatingButtonMenuItem"
+                app:fab_label="@string/send_title" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/receive_fab"
+                style="@style/FloatingButtonMenuItem"
+                app:fab_label="Receive" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/deposit_fab"
+                style="@style/FloatingButtonMenuItem"
+                app:fab_label="@string/deposit" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/withdraw_fab"
+                style="@style/FloatingButtonMenuItem"
+                app:fab_label="@string/withdraw_title" />
+
+        </com.github.clans.fab.FloatingActionMenu>
     </FrameLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_balance_details.*
@@ -79,13 +80,82 @@ class BalanceDetailsActivity : BaseActivity() {
 
     private fun initButtons() {
         close_button.onClick { finish() }
+        initFab()
     }
+
+    private fun initFab() {
+        val asset = this.balance?.asset
+
+        val canWithdraw = asset?.isWithdrawable == true
+        val canDeposit = asset?.isBackedByExternalSystem == true
+        val canSend = asset?.isTransferable == true
+
+        if (!canWithdraw && !canDeposit && !canSend) {
+            menu_fab.visibility = View.GONE
+            menu_fab.isEnabled = false
+            return
+        } else {
+            menu_fab.visibility = View.VISIBLE
+            menu_fab.isEnabled = true
+
+            withdraw_fab.isEnabled = canWithdraw
+            deposit_fab.isEnabled = canDeposit
+            send_fab.isEnabled = canSend
+            receive_fab.isEnabled = canSend
+        }
+
+        val navigator = Navigator.from(this)
+
+        send_fab.onClick {
+            val assetCode = balance?.assetCode ?: return@onClick
+            navigator.openSend(assetCode, 0)
+            menu_fab.close(false)
+        }
+        send_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_send_fab))
+
+        receive_fab.onClick {
+            val accountId = walletInfoProvider.getWalletInfo()?.accountId
+                    ?: return@onClick
+            navigator.openQrShare(
+                    data = accountId,
+                    title = getString(R.string.account_id_title),
+                    shareLabel = getString(R.string.share_account_id)
+            )
+            menu_fab.close(false)
+        }
+        receive_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_receive_fab))
+
+        deposit_fab.onClick {
+            val assetCode = balance?.assetCode ?: return@onClick
+            navigator.openDeposit(0, assetCode)
+            menu_fab.close(false)
+        }
+        deposit_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_deposit_fab))
+
+        withdraw_fab.onClick {
+            val assetCode = balance?.assetCode ?: return@onClick
+            navigator.openWithdraw(0, assetCode)
+            menu_fab.close(false)
+        }
+        withdraw_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_withdraw_fab))
+    }
+
+    private val hideFabScrollListener =
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if (dy > 2) {
+                        menu_fab.hideMenuButton(true)
+                    } else if (dy < -2 && menu_fab.isEnabled) {
+                        menu_fab.showMenuButton(true)
+                    }
+                }
+            }
 
     private fun initHistory() {
         adapter = BalanceChangesAdapter(amountFormatter, false)
         adapter.onItemClick { _, item ->
             item.source?.let { Navigator.from(this).openBalanceChangeDetails(it) }
-//            menu_fab.close(false)
+            menu_fab.close(false)
         }
 
         error_empty_view.apply {
@@ -97,6 +167,7 @@ class BalanceDetailsActivity : BaseActivity() {
 
         history_list.adapter = adapter
         history_list.layoutManager = LinearLayoutManager(this)
+        history_list.addOnScrollListener(hideFabScrollListener)
 
         history_list.listenBottomReach({ adapter.getDataItemCount() }) {
             balanceChangesRepository.loadMore() || balanceChangesRepository.noMoreItems
@@ -107,7 +178,7 @@ class BalanceDetailsActivity : BaseActivity() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(this, R.color.accent))
         swipe_refresh.setOnRefreshListener {
             update(force = true)
-//            menu_fab.close(true)
+            menu_fab.close(true)
         }
         SwipeRefreshDependencyUtil.addDependency(swipe_refresh, appbar)
     }
@@ -237,6 +308,14 @@ class BalanceDetailsActivity : BaseActivity() {
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         adjustEmptyViewHeight()
+    }
+
+    override fun onBackPressed() {
+        if (menu_fab.isOpened) {
+            menu_fab.close(true)
+        } else {
+            super.onBackPressed()
+        }
     }
 
     companion object {
