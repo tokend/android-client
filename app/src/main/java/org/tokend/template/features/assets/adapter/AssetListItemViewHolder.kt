@@ -9,10 +9,9 @@ import com.squareup.picasso.Picasso
 import org.jetbrains.anko.find
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.features.assets.LogoFactory
-import org.tokend.template.util.imagetransform.CircleTransform
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.SimpleItemClickListener
+import org.tokend.template.view.util.AssetLogoUtil
 
 class AssetListItemViewHolder(view: View) : BaseViewHolder<AssetListItem>(view) {
     private val logoImageView: AppCompatImageView = view.find(R.id.asset_logo_image_view)
@@ -40,22 +39,7 @@ class AssetListItemViewHolder(view: View) : BaseViewHolder<AssetListItem>(view) 
     }
 
     override fun bind(item: AssetListItem) {
-        if (item.logoUrl != null) {
-            picasso.load(item.logoUrl)
-                    .placeholder(R.color.white)
-                    .resize(logoSize, logoSize)
-                    .centerInside()
-                    .transform(CircleTransform())
-                    .into(logoImageView)
-        } else {
-            picasso.cancelRequest(logoImageView)
-            logoImageView.setImageBitmap(
-                    LogoFactory(view.context).getWithAutoBackground(
-                            item.code,
-                            logoSize
-                    )
-            )
-        }
+        AssetLogoUtil.setAssetLogo(logoImageView, item.code, item.logoUrl, logoSize)
 
         codeTextView.text = item.code
 
