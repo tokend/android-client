@@ -412,4 +412,5 @@
     <string name="balances_screen_title">Balances</string>
     <string name="unlock_label">Unlock</string>
     <string name="use_password">Use password</string>
+    <string name="receive_title">Receive</string>
 </resources>

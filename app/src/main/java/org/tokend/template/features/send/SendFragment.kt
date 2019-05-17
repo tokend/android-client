@@ -17,7 +17,11 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.android.synthetic.main.activity_share_qr.*
+import kotlinx.android.synthetic.main.appbar.*
+import kotlinx.android.synthetic.main.fragment_balances.*
 import kotlinx.android.synthetic.main.fragment_user_flow.*
+import kotlinx.android.synthetic.main.fragment_user_flow.swipe_refresh
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
@@ -55,12 +59,17 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     private val requiredAsset: String?
         get() = arguments?.getString(ASSET_EXTRA)
 
+    private val allowToolbar: Boolean
+        get() = arguments?.getBoolean(ALLOW_TOOLBAR_EXTRA) ?: true
+
+
     private var recipient: PaymentRecipient? = null
     private var amount: BigDecimal = BigDecimal.ZERO
     private var asset: String = ""
     private var description: String? = null
 
     private var isWaitingForTransferableAssets: Boolean = true
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -69,8 +78,8 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     override fun onInitAllowed() {
         toolbarSubject.onNext(toolbar)
-
         toolbar.title = getString(R.string.send_title)
+        if (!allowToolbar) appbar.visibility = View.GONE
 
         initSwipeRefresh()
         initErrorEmptyView()
@@ -309,13 +318,15 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     companion object {
         private const val ASSET_EXTRA = "asset"
+        private const val ALLOW_TOOLBAR_EXTRA = "allow_toolbar"
         const val ID = 1118L
         val PAYMENT_CONFIRMATION_REQUEST = "confirm_payment".hashCode() and 0xffff
 
-        fun newInstance(asset: String? = null): SendFragment {
+        fun newInstance(asset: String? = null, allowToolbar: Boolean): SendFragment {
             val fragment = SendFragment()
             fragment.arguments = Bundle().apply {
                 putString(ASSET_EXTRA, asset)
+                putBoolean(ALLOW_TOOLBAR_EXTRA, allowToolbar)
             }
             return fragment
         }

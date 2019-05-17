@@ -28,6 +28,7 @@ import org.tokend.template.data.model.AccountRecord
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
+import org.tokend.template.features.qr.ShareQrFragment
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.transactions.TxManager
@@ -175,15 +176,14 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         adapter.onItemClick { _, item ->
             when (item.id) {
                 EXISTING_ADDRESS_ITEM_ID -> {
-                    item.text?.let {
-                        CopyDataDialogFactory.getDialog(
-                                requireContext(),
-                                it,
-                                getString(R.string.personal_address),
-                                toastManager,
-                                getString(R.string.deposit_address_copied)
-                        )
-                    }
+                    val content = item.text ?: return@onItemClick
+                    CopyDataDialogFactory.getDialog(
+                            requireContext(),
+                            content,
+                            getString(R.string.personal_address),
+                            toastManager,
+                            getString(R.string.deposit_address_copied)
+                    )
                 }
             }
         }
@@ -397,7 +397,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                     "${getString(R.string.deposit_title)} ${asset_tab_layout.selectedItem?.text}",
                     data = address,
                     shareLabel = getString(R.string.share_address_label),
-                    shareText = getAddressShareMessage())
+                    shareText = getAddressShareMessage(),
+                    requestCode = ShareQrFragment.SHARE_REQUEST)
         }
     }
 

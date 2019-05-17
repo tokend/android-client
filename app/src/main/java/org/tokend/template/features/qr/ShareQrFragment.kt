@@ -7,18 +7,19 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.content.FileProvider
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.support.v7.widget.Toolbar
+import android.view.*
 import android.widget.Toast
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.activity_share_qr.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.doAsync
 import org.tokend.template.R
-import org.tokend.template.activities.BaseActivity
-import org.tokend.template.extensions.getStringExtra
 import org.tokend.template.features.qr.logic.QrGenerator
+import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.AnimationUtil
 import java.io.File
@@ -26,33 +27,58 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-class ShareQrActivity : BaseActivity() {
+open class ShareQrFragment : BaseFragment(), ToolbarProvider {
     companion object {
+        val SHARE_REQUEST = "share".hashCode() and 0xffff
+        const val ID = 1119L
         const val TITLE_EXTRA = "title"
         const val DATA_EXTRA = "data"
         const val SHARE_DIALOG_TEXT_EXTRA = "share_dialog_text"
         const val SHARE_TEXT_EXTRA = "share_text"
         const val TOP_TEXT_EXTRA = "top_text"
+
+        fun newInstance(
+                title: String? = null,
+                data: String? = null,
+                shareDialogText: String? = null,
+                shareText: String? = null,
+                topText: String? = null
+        ): ShareQrFragment {
+            val fragment = ShareQrFragment()
+            fragment.arguments = Bundle().apply {
+                putString(TITLE_EXTRA, title)
+                putString(DATA_EXTRA, data)
+                putString(SHARE_DIALOG_TEXT_EXTRA, shareDialogText)
+                putString(SHARE_TEXT_EXTRA, shareText)
+                putString(TOP_TEXT_EXTRA, topText)
+            }
+            return fragment
+        }
     }
 
-    private val title: String
-        get() = intent.getStringExtra(TITLE_EXTRA, "")
-    private val data: String
-        get() = intent.getStringExtra(DATA_EXTRA, "")
-    private val shareDialogText: String
-        get() = intent.getStringExtra(SHARE_DIALOG_TEXT_EXTRA, "")
-    private val shareText: String
-        get() = intent.getStringExtra(SHARE_TEXT_EXTRA, data)
-    private val topText: String
-        get() = intent.getStringExtra(TOP_TEXT_EXTRA, "")
+    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
+
+    open val title: String
+        get() = arguments?.getString(TITLE_EXTRA) ?: ""
+    open val data: String
+        get() = arguments?.getString(DATA_EXTRA) ?: ""
+    open val shareDialogText: String
+        get() = arguments?.getString(SHARE_DIALOG_TEXT_EXTRA) ?: ""
+    open val shareText: String
+        get() = arguments?.getString(SHARE_TEXT_EXTRA) ?: data
+    open val topText: String
+        get() = arguments?.getString(TOP_TEXT_EXTRA) ?: ""
 
     private var savedQrUri: Uri? = null
 
-    override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_share_qr)
-        setTitle(title)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.activity_share_qr, container, false)
+    }
 
+    override fun onInitAllowed() {
+        toolbarSubject.onNext(toolbar)
+        toolbar.title = title
         displayData()
     }
 
@@ -61,7 +87,7 @@ class ShareQrActivity : BaseActivity() {
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
                     type = "text/plain"
-                    putExtra(android.content.Intent.EXTRA_SUBJECT,
+                    putExtra(Intent.EXTRA_SUBJECT,
                             getString(R.string.app_name))
                     putExtra(Intent.EXTRA_TEXT, shareText)
                 }
@@ -110,7 +136,7 @@ class ShareQrActivity : BaseActivity() {
                             saveQrCode(it)
                         },
                         onError = {
-                            Toast.makeText(this,
+                            Toast.makeText(requireContext(),
                                     R.string.error_try_again, Toast.LENGTH_SHORT)
                                     .show()
                         }
@@ -124,7 +150,7 @@ class ShareQrActivity : BaseActivity() {
 
     private fun saveQrCode(bitmap: Bitmap) {
         doAsync {
-            val imagesFolder = File(cacheDir, "shared")
+            val imagesFolder = File(requireContext().cacheDir, "shared")
             try {
                 val borderSize = resources.getDimensionPixelSize(R.dimen.standard_padding)
                 val borderedBitmap = Bitmap.createBitmap(
@@ -145,8 +171,8 @@ class ShareQrActivity : BaseActivity() {
                     it.flush()
                 }
 
-                savedQrUri = FileProvider.getUriForFile(this@ShareQrActivity,
-                        "$packageName.fileprovider", file)
+                savedQrUri = FileProvider.getUriForFile(requireContext(),
+                        "${requireActivity().packageName}.fileprovider", file)
 
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -154,15 +180,14 @@ class ShareQrActivity : BaseActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.share, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.share, menu)
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.share -> shareData()
+        menu.findItem(R.id.share).apply {
+            setOnMenuItemClickListener {
+                shareData()
+                true
+            }
         }
-        return super.onOptionsItemSelected(item)
     }
 }

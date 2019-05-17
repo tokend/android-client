@@ -9,4 +9,14 @@
         android:id="@+id/movements"
         android:icon="@drawable/ic_trade"
         android:title="@string/movements_screen_title" />
+
+    <item
+        android:id="@+id/send"
+        android:icon="@drawable/ic_send"
+        android:title="@string/send_title" />
+
+    <item
+        android:id="@+id/receive"
+        android:icon="@drawable/ic_receive_fab"
+        android:title="@string/receive_title" />
 </menu>

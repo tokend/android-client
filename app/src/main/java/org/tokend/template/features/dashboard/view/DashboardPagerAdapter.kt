@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.fragments.FragmentFactory
 
@@ -12,7 +13,7 @@ class DashboardPagerAdapter(context: Context,
 ) : FragmentPagerAdapter(fragmentManager) {
     private val fragmentFactory = FragmentFactory()
 
-    private val pages = listOf(
+    private val pages = arrayListOf(
             Triple(
                     fragmentFactory.getBalancesFragment(),
                     context.getString(R.string.balances_screen_title),
@@ -22,8 +23,25 @@ class DashboardPagerAdapter(context: Context,
                     fragmentFactory.getAccountMovementsFragment(),
                     context.getString(R.string.movements_screen_title),
                     R.id.movements.toLong()
+            ),
+            Triple(
+                    fragmentFactory.getShareAccountIdQrFragment(),
+                    context.getString(R.string.receive_title),
+                    R.id.receive.toLong()
             )
     )
+
+    init {
+        if (BuildConfig.IS_SEND_ALLOWED) {
+            pages.add(2,
+                    Triple(
+                            fragmentFactory.getSendFragment(allowToolbar = false),
+                            context.getString(R.string.send_title),
+                            R.id.send.toLong()
+                    )
+            )
+        }
+    }
 
     override fun getItem(position: Int): Fragment? {
         return pages.getOrNull(position)?.first

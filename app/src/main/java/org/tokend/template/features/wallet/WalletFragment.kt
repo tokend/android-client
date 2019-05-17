@@ -25,6 +25,7 @@ import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.features.qr.ShareQrFragment
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.template.features.wallet.adapter.BalanceChangesAdapter
 import org.tokend.template.fragments.BaseFragment
@@ -104,7 +105,8 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
             navigator.openQrShare(
                     data = accountId,
                     title = getString(R.string.account_id_title),
-                    shareLabel = getString(R.string.share_account_id)
+                    shareLabel = getString(R.string.share_account_id),
+                    requestCode = ShareQrFragment.SHARE_REQUEST
             )
             menu_fab.close(false)
         }

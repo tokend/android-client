@@ -37,7 +37,7 @@ import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.features.offers.model.OfferRequest
 import org.tokend.template.features.offers.view.details.PendingInvestmentDetailsActivity
 import org.tokend.template.features.offers.view.details.PendingOfferDetailsActivity
-import org.tokend.template.features.qr.ShareQrActivity
+import org.tokend.template.features.qr.ShareQrFragment
 import org.tokend.template.features.recovery.RecoveryActivity
 import org.tokend.template.features.send.PaymentConfirmationActivity
 import org.tokend.template.features.send.SendFragment
@@ -180,16 +180,18 @@ class Navigator private constructor() {
                     data: String,
                     shareLabel: String,
                     shareText: String? = data,
-                    topText: String? = null) {
+                    topText: String? = null,
+                    requestCode: Int) {
 
-        val intent = context?.intentFor<ShareQrActivity>(
-                ShareQrActivity.DATA_EXTRA to data,
-                ShareQrActivity.TITLE_EXTRA to title,
-                ShareQrActivity.SHARE_DIALOG_TEXT_EXTRA to shareLabel,
-                ShareQrActivity.TOP_TEXT_EXTRA to topText,
-                ShareQrActivity.SHARE_TEXT_EXTRA to shareText
+        val intent = context?.intentFor<SingleFragmentActivity>(
+                SingleFragmentActivity.DATA_EXTRA to data,
+                SingleFragmentActivity.TITLE_EXTRA to title,
+                SingleFragmentActivity.SHARE_DIALOG_TEXT_EXTRA to shareLabel,
+                SingleFragmentActivity.TOP_TEXT_EXTRA to topText,
+                SingleFragmentActivity.SHARE_TEXT_EXTRA to shareText,
+                SingleFragmentActivity.SCREEN_ID to ShareQrFragment.ID
         )
-        performIntent(intent)
+        performIntent(intent, requestCode = requestCode)
     }
 
     fun openRecoverySeedSaving(requestCode: Int, seed: String) {
@@ -220,7 +222,7 @@ class Navigator private constructor() {
         performIntent(intent, requestCode = requestCode)
     }
 
-    fun openSend(asset: String, requestCode: Int) {
+    fun openSend(asset: String? = null, requestCode: Int) {
         val intent = context?.intentFor<SingleFragmentActivity>(
                 SingleFragmentActivity.ASSET_EXTRA to asset,
                 SingleFragmentActivity.SCREEN_ID to SendFragment.ID

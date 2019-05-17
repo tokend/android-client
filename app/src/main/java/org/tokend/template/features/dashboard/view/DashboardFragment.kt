@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
@@ -71,6 +72,10 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initTabs() {
+        if (!BuildConfig.IS_SEND_ALLOWED) {
+            bottom_tabs.menu.removeItem(R.id.send)
+        }
+
         bottom_tabs.setOnNavigationItemSelectedListener {
             val index = adapter.getIndexOf(it.itemId.toLong())
             if (index >= 0) {

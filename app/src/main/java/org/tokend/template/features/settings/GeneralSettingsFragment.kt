@@ -18,6 +18,7 @@ import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.data.repository.tfa.TfaFactorsRepository
+import org.tokend.template.features.qr.ShareQrFragment
 import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
 import org.tokend.template.features.tfa.logic.EnableTfaUseCase
@@ -94,7 +95,8 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
                 Navigator.from(parentActivity).openQrShare(
                         data = accountId,
                         title = getString(R.string.account_id_title),
-                        shareLabel = getString(R.string.share_account_id)
+                        shareLabel = getString(R.string.share_account_id),
+                        requestCode = ShareQrFragment.SHARE_REQUEST
                 )
             }
 
