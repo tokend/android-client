@@ -25,6 +25,7 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.AssetLogoUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.LocalizedName
+import org.tokend.template.view.util.SwipeRefreshDependencyUtil
 
 class BalanceDetailsActivity : BaseActivity() {
     private val loadingIndicator = LoadingIndicatorManager(
@@ -108,6 +109,7 @@ class BalanceDetailsActivity : BaseActivity() {
             update(force = true)
 //            menu_fab.close(true)
         }
+        SwipeRefreshDependencyUtil.addDependency(swipe_refresh, appbar)
     }
     // endregion
 
@@ -204,12 +206,12 @@ class BalanceDetailsActivity : BaseActivity() {
     // endregion
 
     private fun adjustEmptyViewHeight() {
-        swipe_refresh.apply {
+        root_layout.apply {
             measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
             post {
                 layoutParams = layoutParams.apply {
                     height = Math.max(
-                            swipe_refresh.measuredHeight - appbar.measuredHeight,
+                            root_layout.measuredHeight - appbar.measuredHeight,
                             dip(256)
                     )
                 }
