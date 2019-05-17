@@ -29,7 +29,7 @@ class WithdrawDestinationFragment : BaseFragment() {
             continue_button.enabled = value
         }
 
-    protected val resultSubject = PublishSubject.create<String>()
+    private val resultSubject = PublishSubject.create<String>()
     val resultObservable: Observable<String> = resultSubject
 
     private val amountToSend: String?
@@ -101,7 +101,7 @@ class WithdrawDestinationFragment : BaseFragment() {
 
     private fun updateContinueAvailability() {
         canContinue = !destination_edit_text.hasError()
-                && !destination_edit_text.text.isBlank()
+                && !destination_edit_text.text.isNullOrBlank()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -109,7 +109,7 @@ class WithdrawDestinationFragment : BaseFragment() {
 
         QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
             destination_edit_text.setText(it)
-            destination_edit_text.setSelection(destination_edit_text.text.length)
+            destination_edit_text.setSelection(destination_edit_text.text?.length ?: 0)
             checkDestination()
             updateContinueAvailability()
         }

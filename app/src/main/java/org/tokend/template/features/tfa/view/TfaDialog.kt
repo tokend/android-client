@@ -15,6 +15,7 @@ import org.jetbrains.anko.uiThread
 import org.tokend.sdk.tfa.InvalidOtpException
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
+import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
@@ -66,7 +67,7 @@ abstract class TfaDialog(protected val context: Context,
     open fun show() {
         if (!dialog.isShowing) {
             beforeDialogShow()
-            dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+            dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
             dialog.show()
             afterDialogShown()
         }
@@ -106,9 +107,7 @@ abstract class TfaDialog(protected val context: Context,
         loadingIndicator.show()
 
         doAsync {
-            val inputLength = inputEditText.text.length
-            val input = CharArray(inputLength)
-            inputEditText.text.getChars(0, inputLength, input, 0)
+            val input = inputEditText.text.getChars()
             val otp = getOtp(input)
 
             uiThread {

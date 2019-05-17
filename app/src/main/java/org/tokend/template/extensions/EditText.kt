@@ -27,8 +27,10 @@ fun EditText.onEditorAction(callback: () -> Unit) {
     }
 }
 
-fun Editable.getChars(): CharArray {
-    val textLength = this.length
+fun Editable?.getChars(): CharArray {
+    val textLength = this?.length ?:
+            return CharArray(0)
+
     val chars = CharArray(textLength)
     this.getChars(0, textLength, chars, 0)
     return chars

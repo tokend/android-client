@@ -144,7 +144,7 @@ class WalletFragment : BaseFragment(), ToolbarProvider {
 
     private val hideFabScrollListener =
             object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     if (dy > 2) {
                         menu_fab.hideMenuButton(true)
                     } else if (dy < -2 && send_fab.isEnabled) {

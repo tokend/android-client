@@ -247,9 +247,9 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
 
         if (existingInvestmentAmount.signum() > 0) {
             amount_edit_text.setText(BigDecimalUtil.toPlainString(existingInvestmentAmount))
-            amount_edit_text.setSelection(amount_edit_text.text.length)
+            amount_edit_text.setSelection(amount_edit_text.text?.length ?: 0)
         } else {
-            amount_edit_text.text.clear()
+            amount_edit_text.text?.clear()
         }
     }
 

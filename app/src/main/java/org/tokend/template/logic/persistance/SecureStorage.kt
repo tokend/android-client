@@ -134,7 +134,7 @@ class SecureStorage(
 
     private fun loadKeychainData(key: String): KeychainData? {
         val json = preferences.getString(key, "")
-                .takeIf { it.isNotEmpty() }
+                ?.takeIf { it.isNotEmpty() }
                 ?: return null
         return try {
             KeychainData.fromJson(json)

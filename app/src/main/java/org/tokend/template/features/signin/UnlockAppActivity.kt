@@ -117,7 +117,7 @@ class UnlockAppActivity : BaseActivity() {
     }
 
     private fun updateSignInMethod() {
-        password_edit_text.text.clear()
+        password_edit_text.text?.clear()
         password_edit_text.error = null
         if (usePassword) {
             cancelFingerprintAuth()
@@ -137,7 +137,7 @@ class UnlockAppActivity : BaseActivity() {
     }
 
     private fun updateSignInAvailability() {
-        canSignIn = password_edit_text.text.isNotEmpty()
+        canSignIn = !password_edit_text.text.isNullOrEmpty()
                 && !password_edit_text.hasError()
                 && email.isNotEmpty()
     }
@@ -184,7 +184,7 @@ class UnlockAppActivity : BaseActivity() {
 
     private fun tryToSignIn() {
         when {
-            password_edit_text.text.isEmpty() ->
+            password_edit_text.text.isNullOrEmpty() ->
                 password_edit_text.setErrorAndFocus(R.string.error_cannot_be_empty)
             canSignIn -> {
                 SoftInputUtil.hideSoftInput(this)

@@ -174,8 +174,8 @@ class SignInActivity : BaseActivity() {
 
     private fun updateSignInAvailability() {
         canSignIn = !isLoading
-                && email_edit_text.text.isNotBlank()
-                && password_edit_text.text.isNotEmpty()
+                && !email_edit_text.text.isNullOrBlank()
+                && !password_edit_text.text.isNullOrEmpty()
                 && !password_edit_text.hasError()
                 && !email_edit_text.hasError()
                 && urlConfigProvider.hasConfig()
@@ -183,9 +183,9 @@ class SignInActivity : BaseActivity() {
 
     private fun tryToSignIn() {
         when {
-            email_edit_text.text.isBlank() ->
+            email_edit_text.text.isNullOrBlank() ->
                 email_edit_text.setErrorAndFocus(R.string.error_cannot_be_empty)
-            password_edit_text.text.isEmpty() ->
+            password_edit_text.text.isNullOrEmpty() ->
                 password_edit_text.setErrorAndFocus(R.string.error_cannot_be_empty)
             canSignIn -> {
                 SoftInputUtil.hideSoftInput(this)

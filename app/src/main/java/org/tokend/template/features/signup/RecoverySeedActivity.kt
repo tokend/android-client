@@ -91,7 +91,7 @@ class RecoverySeedActivity : BaseActivity() {
         seedsMatch = seed_edit_text.text.toString() ==
                 confirm_seed_edit_text.text.toString()
 
-        if (!seedsMatch && !confirm_seed_edit_text.text.isEmpty()) {
+        if (!seedsMatch && !confirm_seed_edit_text.text.isNullOrEmpty()) {
             confirm_seed_edit_text.error = getString(R.string.error_seed_mismatch)
         } else {
             confirm_seed_edit_text.error = null
