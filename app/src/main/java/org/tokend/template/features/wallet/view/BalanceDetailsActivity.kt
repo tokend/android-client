@@ -192,6 +192,21 @@ class BalanceDetailsActivity : BaseActivity() {
                 balance.asset,
                 resources.getDimensionPixelSize(R.dimen.asset_list_item_logo_size)
         )
+
+        if (balance.convertedAmount != null
+                && balance.conversionAssetCode != null
+                && balance.conversionAssetCode != balance.assetCode) {
+            balance_converted_text_view.visibility = View.VISIBLE
+            balance_converted_text_view.text = getString(
+                    R.string.template_converted_amount,
+                    amountFormatter.formatAssetAmount(
+                            balance.convertedAmount,
+                            balance.conversionAssetCode
+                    )
+            )
+        } else {
+            balance_converted_text_view.visibility = View.GONE
+        }
     }
 
     private fun displayHistory() {

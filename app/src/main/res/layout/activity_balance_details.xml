@@ -104,6 +104,15 @@
                             android:maxLines="1"
                             android:textSize="@dimen/text_size_heading_large"
                             tools:text="12.74 MAT" />
+
+                        <TextView
+                            android:id="@+id/balance_converted_text_view"
+                            style="@style/HintText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/quarter_standard_margin"
+                            android:gravity="center"
+                            tools:text="6.37 USD" />
                     </LinearLayout>
                 </android.support.design.widget.CollapsingToolbarLayout>
             </android.support.design.widget.AppBarLayout>
