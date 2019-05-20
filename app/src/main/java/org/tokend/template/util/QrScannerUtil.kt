@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.support.v4.app.Fragment
 import com.google.zxing.integration.android.IntentIntegrator
+import org.tokend.template.features.qr.CaptureActivityPortrait
 
 /**
  * Contains utilities to work with QR scanner
@@ -32,8 +33,9 @@ object QrScannerUtil {
     private fun IntentIntegrator.defaultSetup(): IntentIntegrator {
         return this
                 .setBeepEnabled(false)
-                .setOrientationLocked(false)
+                .setOrientationLocked(true)
                 .setPrompt("")
+                .setCaptureActivity(CaptureActivityPortrait::class.java)
     }
 
     /**
