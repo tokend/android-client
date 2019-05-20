@@ -163,8 +163,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withProfileImagesVisible(true)
                 .withDividerBelowHeader(false)
                 .addProfiles(getProfileHeaderItem(email, null))
-                .withOnAccountHeaderListener { view, _, _ ->
-                    view.setOnClickListener { openAccountIdShare() }
+                .withOnAccountHeaderListener { _, _, _ ->
+                    openAccountIdShare()
                     true
                 }
                 .build()
