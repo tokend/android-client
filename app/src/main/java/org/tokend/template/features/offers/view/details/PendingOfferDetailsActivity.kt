@@ -8,7 +8,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_details_list.*
+import kotlinx.android.synthetic.main.activity_details_list.details_list
+import kotlinx.android.synthetic.main.layout_details_list_white_toolbar.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
@@ -17,6 +19,7 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.formatter.DateFormatter
 import java.math.BigDecimal
@@ -27,8 +30,11 @@ open class PendingOfferDetailsActivity : BaseActivity() {
     protected lateinit var item: OfferRecord
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_details_list)
+        setContentView(R.layout.layout_details_list_white_toolbar)
+
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        ElevationUtil.initScrollElevation(details_list, appbar_elevation_view)
 
         val item = intent.getSerializableExtra(OFFER_EXTRA) as? OfferRecord
 

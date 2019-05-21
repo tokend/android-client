@@ -39,20 +39,12 @@ object ElevationUtil {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                if (dy < 0 && !recyclerView.canScrollVertically(-1)) {
+                if (dy <= 0 && !recyclerView.canScrollVertically(-1)) {
                     AnimationUtil.fadeOutView(elevationView, animationDuration)
                     onTop = true
                 } else if (dy > 0 && onTop) {
                     AnimationUtil.fadeInView(elevationView, animationDuration)
                     onTop = false
-                } else if (dy == 0) {
-                    onTop = !recyclerView.canScrollVertically(-1)
-                    elevationView.clearAnimation()
-                    if (onTop) {
-                        elevationView.visibility = View.INVISIBLE
-                    } else {
-                        elevationView.visibility = View.VISIBLE
-                    }
                 }
             }
         })

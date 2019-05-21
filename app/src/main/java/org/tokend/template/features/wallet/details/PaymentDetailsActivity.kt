@@ -1,29 +1,21 @@
 package org.tokend.template.features.wallet.details
 
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SimpleItemAnimator
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
-import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.util.CopyDataDialogFactory
 import java.math.BigDecimal
 
 
 class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
-    private val adapter = DetailsItemsAdapter()
-
     private var counterpartyLoadingFinished: Boolean = false
 
     override fun displayDetails(item: BalanceChange) {
-        setContentView(R.layout.activity_details_list)
-
         val details = item.cause as? BalanceChangeCause.Payment
 
         if (details == null) {
@@ -37,10 +29,6 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
             finish()
             return
         }
-
-        details_list.layoutManager = LinearLayoutManager(this)
-        details_list.adapter = adapter
-        (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
         initCounterpartyClick(details, accountId)
 
@@ -81,7 +69,6 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                                     accountId: String) {
         val counterpartyAccount = cause.getCounterpartyAccountId(accountId)
         val counterpartyEmail = cause.getCounterpartyName(accountId)
-
         val isReceived = cause.isReceived(accountId)
 
         val accountIdHintStringRes =
@@ -226,14 +213,15 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnEvent { _, _ ->
                     counterpartyLoadingFinished = true
-                    displayCounterparty(cause, accountId)
                 }
                 .subscribeBy(
                         onSuccess = { email ->
                             cause.setCounterpartyName(accountId, email)
+                            displayCounterparty(cause, accountId)
                         },
                         onError = {
                             // Not critical.
+                            displayCounterparty(cause, accountId)
                         }
                 )
                 .addTo(compositeDisposable)
