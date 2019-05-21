@@ -2,8 +2,7 @@ package org.tokend.template.features.dashboard.balances.view
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
+import android.graphics.drawable.GradientDrawable
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
 import android.support.v7.view.ContextThemeWrapper
@@ -46,6 +45,9 @@ class AssetDistributionChart
 ) : LinearLayout(context, attrs, defStyleAttr) {
     @Inject
     lateinit var amountFormatter: AmountFormatter
+
+    private val distribution = ArrayList<AssetDistributionEntry>()
+    private var selectedItemIndex = 0
 
     private inner class AssetDistributionEntry(
             val name: String,
@@ -118,6 +120,8 @@ class AssetDistributionChart
             override fun onValueSelected(e: Entry, h: Highlight) {
                 chart.centerText = percentFormatter.format(e.y / 100)
                 prevHighlightValue = h.x
+                selectedItemIndex = chart.data.dataSet.getEntryIndex((e as PieEntry))
+                displayLegend(distribution)
             }
         })
     }
@@ -133,6 +137,8 @@ class AssetDistributionChart
             return
         }
 
+        this.distribution.clear()
+        this.distribution.addAll(distribution)
         displayDistribution(distribution, animate)
     }
 
@@ -219,15 +225,18 @@ class AssetDistributionChart
             val circleSize = context.dip(12)
             addView(
                     View(context).apply {
+
                         layoutParams = ViewGroup.LayoutParams(
                                 circleSize,
                                 circleSize
                         )
 
-                        background = ShapeDrawable(OvalShape()).apply {
-                            intrinsicWidth = circleSize
-                            intrinsicHeight = circleSize
-                            paint.color = color
+                        background = GradientDrawable().apply {
+                            shape = GradientDrawable.OVAL
+                            if (index == selectedItemIndex) {
+                                setColor(color)
+                            }
+                            setStroke(4, color)
                         }
                     }
             )
