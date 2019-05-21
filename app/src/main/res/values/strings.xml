@@ -407,9 +407,11 @@
     <string name="unverified_account">Unverified account</string>
 
     <string name="template_amount_with_converted">%1$s ≈ %2$s</string>
+    <string name="template_converted_amount">≈ %1$s</string>
     <string name="asset_distribution_other">Other</string>
     <string name="movements_screen_title">Movements</string>
     <string name="balances_screen_title">Balances</string>
     <string name="unlock_label">Unlock</string>
     <string name="use_password">Use password</string>
+    <string name="receive_title">Receive</string>
 </resources>

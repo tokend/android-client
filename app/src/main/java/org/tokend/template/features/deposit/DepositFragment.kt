@@ -1,19 +1,15 @@
 package org.tokend.template.features.deposit
 
-import android.content.Intent
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.app.AlertDialog
-import android.support.v7.view.ContextThemeWrapper
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -175,15 +171,14 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         adapter.onItemClick { _, item ->
             when (item.id) {
                 EXISTING_ADDRESS_ITEM_ID -> {
-                    item.text?.let {
-                        CopyDataDialogFactory.getDialog(
-                                requireContext(),
-                                it,
-                                getString(R.string.personal_address),
-                                toastManager,
-                                getString(R.string.deposit_address_copied)
-                        )
-                    }
+                    val content = item.text ?: return@onItemClick
+                    CopyDataDialogFactory.getDialog(
+                            requireContext(),
+                            content,
+                            getString(R.string.personal_address),
+                            toastManager,
+                            getString(R.string.deposit_address_copied)
+                    )
                 }
             }
         }
@@ -397,7 +392,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                     "${getString(R.string.deposit_title)} ${asset_tab_layout.selectedItem?.text}",
                     data = address,
                     shareLabel = getString(R.string.share_address_label),
-                    shareText = getAddressShareMessage())
+                    shareText = getAddressShareMessage()
+            )
         }
     }
 

@@ -30,12 +30,10 @@ import org.tokend.template.features.kyc.model.KycState
 import org.tokend.template.features.kyc.model.form.KycFormType
 import org.tokend.template.features.kyc.model.form.SimpleKycForm
 import org.tokend.template.features.kyc.storage.KycStateRepository
-import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.settings.SettingsFragment
 import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
 import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
-import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.fragments.FragmentFactory
@@ -114,15 +112,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withIdentifier(WithdrawFragment.ID)
                 .withIcon(R.drawable.ic_withdraw)
                 .also { items[WithdrawFragment.ID] = it }
-
-        PrimaryDrawerItem()
-                .withName(R.string.send_title)
-                .withIdentifier(SendFragment.ID)
-                .withIcon(R.drawable.ic_send)
-                .withIconColorRes(R.color.icons)
-                .withSelectedIconColorRes(R.color.icons)
-                .withIconTintingEnabled(true)
-                .also { items[SendFragment.ID] = it }
 
         PrimaryDrawerItem()
                 .withName(R.string.explore_sales_title)
@@ -223,10 +212,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                         addDrawerItems(items[WithdrawFragment.ID])
                     }
 
-                    if (BuildConfig.IS_SEND_ALLOWED) {
-                        addDrawerItems(items[SendFragment.ID])
-                    }
-
                     if (BuildConfig.IS_INVEST_ALLOWED) {
                         addDrawerItems(items[SalesFragment.ID])
                     }
@@ -274,9 +259,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         val fragment =
                 when (screenIdentifier) {
                     DashboardFragment.ID -> factory.getDashboardFragment()
-                    WalletFragment.ID -> factory.getWalletFragment()
                     WithdrawFragment.ID -> factory.getWithdrawFragment()
-                    SendFragment.ID -> factory.getSendFragment()
                     ExploreAssetsFragment.ID -> factory.getExploreFragment()
                     SettingsFragment.ID -> factory.getSettingsFragment()
                     DepositFragment.ID -> factory.getDepositFragment()
@@ -358,7 +341,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
             navigationDrawer?.closeDrawer()
         } else {
             if (navigationDrawer?.currentSelection == DEFAULT_FRAGMENT_ID) {
-                moveTaskToBack(true)
+                if (onBackPressedListener?.onBackPressed() != false)
+                    moveTaskToBack(true)
             } else {
                 if (onBackPressedListener?.onBackPressed() != false)
                     navigateTo(DEFAULT_FRAGMENT_ID)
@@ -372,10 +356,10 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     override fun onPaymentRequestConfirmed(paymentRequest: PaymentRequest) {
-        navigateTo(WalletFragment.ID, factory.getWalletFragment(paymentRequest.asset))
+        navigateTo(DashboardFragment.ID)
     }
 
     override fun onWithdrawalRequestConfirmed(withdrawalRequest: WithdrawalRequest) {
-        navigateTo(WalletFragment.ID, factory.getWalletFragment(withdrawalRequest.asset))
+        navigateTo(DashboardFragment.ID)
     }
 }

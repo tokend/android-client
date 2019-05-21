@@ -56,7 +56,7 @@ class BalancesFragment : BaseFragment() {
         balances_list.layoutManager = LinearLayoutManager(requireContext())
         adapter.registerAdapterDataObserver(ScrollOnTopItemUpdateAdapterObserver(balances_list))
         adapter.onItemClick { _, item ->
-            item.source?.assetCode?.also { openWallet(it) }
+            item.source?.id?.also { openWallet(it) }
         }
     }
 
@@ -138,8 +138,8 @@ class BalancesFragment : BaseFragment() {
     }
     // endregion
 
-    private fun openWallet(assetCode: String) {
-        Navigator.from(this).openWallet(0, assetCode)
+    private fun openWallet(balanceId: String) {
+        Navigator.from(this).openBalanceDetails(balanceId)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

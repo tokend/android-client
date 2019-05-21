@@ -11,9 +11,13 @@ import android.view.ViewGroup
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.tokend.template.BuildConfig
 import org.tokend.template.R
+import org.tokend.template.activities.OnBackPressedListener
+import org.tokend.template.extensions.disableShifting
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.view.util.input.SoftInputUtil
 
 class DashboardFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -55,6 +59,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         val onPageSelected = { pagePosition: Int ->
             inflatePageMenu(pagePosition)
             bottom_tabs.selectedItemId = adapter.getItemId(pagePosition).toInt()
+            SoftInputUtil.hideSoftInput(requireActivity())
         }
 
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -71,6 +76,13 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initTabs() {
+        bottom_tabs.disableShifting()
+
+        if (!BuildConfig.IS_SEND_ALLOWED) {
+            bottom_tabs.menu.removeItem(R.id.send)
+            bottom_tabs.menu.removeItem(R.id.receive)
+        }
+
         bottom_tabs.setOnNavigationItemSelectedListener {
             val index = adapter.getIndexOf(it.itemId.toLong())
             if (index >= 0) {
@@ -82,6 +94,15 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         }
     }
     // endregion
+
+    override fun onBackPressed(): Boolean {
+        val currentPage = adapter.getItem(pager.currentItem)
+        return if (currentPage is OnBackPressedListener) {
+            currentPage.onBackPressed()
+        } else {
+            super.onBackPressed()
+        }
+    }
 
     companion object {
         const val ID = 1110L

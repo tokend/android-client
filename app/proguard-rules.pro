@@ -75,3 +75,8 @@
 
 # KYC state storage
 -keepnames class org.tokend.template.features.kyc.** { *; }
+
+# BottomNavigationView shifting hack
+-keepclassmembers class android.support.design.internal.BottomNavigationMenuView {
+    boolean mShiftingMode;
+}

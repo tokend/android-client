@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.fragment_explore.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
+import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.features.assets.adapter.AssetListItem
@@ -175,19 +176,22 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayAssets() {
-        val balances = balancesRepository.itemsList
+        val balancesMap = balancesRepository
+                .itemsList
+                .associateBy(BalanceRecord::assetCode)
+
         val items = assetsRepository.itemsList
                 .asSequence()
                 .map { asset ->
                     AssetListItem(
                             asset,
-                            balances.find { it.assetCode == asset.code } != null
+                            balancesMap[asset.code]?.id
                     )
                 }
                 .sortedWith(Comparator { o1, o2 ->
                     return@Comparator o1.balanceExists.compareTo(o2.balanceExists)
                             .takeIf { it != 0 }
-                            ?: o1.code.compareTo(o2.code)
+                            ?: assetComparator.compare(o1.code, o2.code)
                 })
                 .toList()
                 .let { items ->
@@ -221,8 +225,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     private fun performPrimaryAssetAction(item: AssetListItem) {
         if (!item.balanceExists) {
             createBalanceWithConfirmation(item.code)
-        } else {
-            Navigator.from(this).openWallet(0, item.code)
+        } else if (item.balanceId != null) {
+            Navigator.from(this).openBalanceDetails(item.balanceId)
         }
     }
 
