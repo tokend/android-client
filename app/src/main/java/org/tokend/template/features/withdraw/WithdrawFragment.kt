@@ -2,7 +2,6 @@ package org.tokend.template.features.withdraw
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -86,9 +85,6 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initErrorEmptyView() {
-        error_empty_view.background = ColorDrawable(
-                ContextCompat.getColor(requireContext(), R.color.colorDefaultBackground)
-        )
         error_empty_view.setEmptyDrawable(R.drawable.ic_withdraw)
     }
     // endregion

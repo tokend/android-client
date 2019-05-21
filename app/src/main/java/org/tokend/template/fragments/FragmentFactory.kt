@@ -7,12 +7,14 @@ import org.tokend.template.features.assets.AssetDetailsFragment
 import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.dashboard.balances.view.BalancesFragment
 import org.tokend.template.features.dashboard.movements.view.AccountMovementsFragment
+import org.tokend.template.features.dashboard.receive.view.ShareAccountIdQrFragment
 import org.tokend.template.features.dashboard.view.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
 import org.tokend.template.features.invest.view.fragments.SaleChartFragment
 import org.tokend.template.features.invest.view.fragments.SaleDetailsFragment
 import org.tokend.template.features.invest.view.fragments.SaleOverviewFragment
+import org.tokend.template.features.qr.ShareQrFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.settings.GeneralSettingsFragment
 import org.tokend.template.features.trade.chart.view.AssetPairChartFragment
@@ -48,8 +50,8 @@ class FragmentFactory {
         return WithdrawFragment.newInstance(asset)
     }
 
-    fun getSendFragment(asset: String? = null): Fragment {
-        return SendFragment.newInstance(asset)
+    fun getSendFragment(asset: String? = null, allowToolbar: Boolean = true): Fragment {
+        return SendFragment.newInstance(asset, allowToolbar)
     }
 
     fun getExploreFragment(): Fragment {
@@ -102,5 +104,17 @@ class FragmentFactory {
 
     fun getBalancesFragment(): Fragment {
         return BalancesFragment()
+    }
+
+    fun getShareQrFragment(title: String? = null,
+                           data: String? = null,
+                           shareDialogText: String? = null,
+                           shareText: String? = null,
+                           topText: String? = null): Fragment {
+        return ShareQrFragment.newInstance(title, data, shareDialogText, shareText, topText)
+    }
+
+    fun getShareAccountIdQrFragment(): Fragment {
+        return ShareAccountIdQrFragment()
     }
 }
