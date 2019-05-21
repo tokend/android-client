@@ -31,6 +31,8 @@ class BalancesFragment : BaseFragment() {
 
     private lateinit var adapter: BalanceItemsAdapter
 
+    private var chartEverAnimated = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_balances, container, false)
     }
@@ -114,7 +116,12 @@ class BalancesFragment : BaseFragment() {
         }
 
         distribution_chart.apply {
-            setData(balancesRepository.itemsList, conversionAssetCode)
+            setData(
+                    balancesRepository.itemsList,
+                    conversionAssetCode,
+                    !chartEverAnimated
+            )
+            chartEverAnimated = true
             visibility = if (isEmpty) View.GONE else View.VISIBLE
         }
     }

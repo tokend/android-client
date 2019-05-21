@@ -124,7 +124,8 @@ class AssetDistributionChart
     // endregion
 
     fun setData(balances: Collection<BalanceRecord>,
-                conversionAssetCode: String) {
+                conversionAssetCode: String,
+                animate: Boolean = false) {
         val distribution = getDistribution(balances, conversionAssetCode)
 
         if (distribution.isEmpty()) {
@@ -132,7 +133,7 @@ class AssetDistributionChart
             return
         }
 
-        displayDistribution(distribution)
+        displayDistribution(distribution, animate)
     }
 
     // region Display
@@ -140,7 +141,8 @@ class AssetDistributionChart
         emptyView.showEmpty(R.string.no_data)
     }
 
-    private fun displayDistribution(distribution: List<AssetDistributionEntry>) {
+    private fun displayDistribution(distribution: List<AssetDistributionEntry>,
+                                    animate: Boolean) {
         val entries = distribution
                 .map { PieEntry(it.percentOfTotal, it.assetCode) }
 
@@ -162,14 +164,18 @@ class AssetDistributionChart
         chart.apply {
             data = PieData(dataSet)
             invalidate()
-            val animationDuration =
-                    context.resources.getInteger(android.R.integer.config_longAnimTime)
-            animateXY(
-                    animationDuration,
-                    animationDuration,
-                    Easing.EasingOption.EaseInOutCubic,
-                    Easing.EasingOption.EaseInOutCubic
-            )
+
+            if (animate) {
+                val animationDuration =
+                        context.resources.getInteger(android.R.integer.config_longAnimTime)
+                animateXY(
+                        animationDuration,
+                        animationDuration,
+                        Easing.EasingOption.EaseInOutCubic,
+                        Easing.EasingOption.EaseInOutCubic
+                )
+            }
+
             highlightValue(0f, 0)
         }
 
@@ -266,9 +272,10 @@ class AssetDistributionChart
     private fun getDistribution(balances: Collection<BalanceRecord>,
                                 conversionAssetCode: String): List<AssetDistributionEntry> {
         val sortedAndFilteredByConverted = balances
-                .filter { it.convertedAmount != null
-                        && it.conversionAssetCode == conversionAssetCode
-                        && it.convertedAmount.signum() > 0
+                .filter {
+                    it.convertedAmount != null
+                            && it.conversionAssetCode == conversionAssetCode
+                            && it.convertedAmount.signum() > 0
                 }
                 .sortedByDescending { it.convertedAmount!! }
 
