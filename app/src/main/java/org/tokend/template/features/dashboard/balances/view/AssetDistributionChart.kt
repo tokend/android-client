@@ -47,7 +47,6 @@ class AssetDistributionChart
     lateinit var amountFormatter: AmountFormatter
 
     private val distribution = ArrayList<AssetDistributionEntry>()
-    private var selectedItemIndex = 0
 
     private inner class AssetDistributionEntry(
             val name: String,
@@ -120,8 +119,7 @@ class AssetDistributionChart
             override fun onValueSelected(e: Entry, h: Highlight) {
                 chart.centerText = percentFormatter.format(e.y / 100)
                 prevHighlightValue = h.x
-                selectedItemIndex = chart.data.dataSet.getEntryIndex((e as PieEntry))
-                displayLegend(distribution)
+                displayLegend(distribution, h.x.toInt())
             }
         })
     }
@@ -185,11 +183,11 @@ class AssetDistributionChart
             highlightValue(0f, 0)
         }
 
-        displayLegend(distribution)
+        displayLegend(distribution, 0)
     }
 
     // region Legend
-    private fun displayLegend(distribution: List<AssetDistributionEntry>) {
+    private fun displayLegend(distribution: List<AssetDistributionEntry>, selectedIndex: Int) {
         legendLayout.removeAllViews()
 
         val distributionMap = distribution
@@ -199,14 +197,17 @@ class AssetDistributionChart
             val distributionEntry = distributionMap[legendEntry.label]
                     ?: return@forEachIndexed
 
-            legendLayout.addView(getLegendEntryView(i, distributionEntry, legendEntry.formColor))
+            legendLayout.addView(
+                    getLegendEntryView(i, distributionEntry, legendEntry.formColor, selectedIndex)
+            )
         }
     }
 
     private fun getLegendEntryView(index: Int,
                                    distributionEntry: AssetDistributionEntry,
                                    @ColorInt
-                                   color: Int): View {
+                                   color: Int,
+                                   selectedIndex: Int): View {
         return LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
 
@@ -233,7 +234,7 @@ class AssetDistributionChart
 
                         background = GradientDrawable().apply {
                             shape = GradientDrawable.OVAL
-                            if (index == selectedItemIndex) {
+                            if (index == selectedIndex) {
                                 setColor(color)
                             }
                             setStroke(4, color)
