@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details_list.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
@@ -27,7 +28,9 @@ open class PendingOfferDetailsActivity : BaseActivity() {
     protected lateinit var item: OfferRecord
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_details_list)
+        setContentView(R.layout.layout_details_list_white_toolbar)
+
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val item = intent.getSerializableExtra(OFFER_EXTRA) as? OfferRecord
