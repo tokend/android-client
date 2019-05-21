@@ -10,7 +10,6 @@ import org.tokend.template.features.dashboard.view.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
-import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.fragments.FragmentFactory
@@ -35,7 +34,6 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
 
     private fun getFragment(): Fragment? {
         return when (screenId) {
-            WalletFragment.ID -> factory.getWalletFragment(asset, false)
             SendFragment.ID -> factory.getSendFragment(asset)
             DepositFragment.ID -> factory.getDepositFragment(asset)
             WithdrawFragment.ID -> factory.getWithdrawFragment(asset)

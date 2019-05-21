@@ -35,7 +35,6 @@ import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.settings.SettingsFragment
 import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
 import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
-import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.fragments.FragmentFactory
@@ -274,7 +273,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         val fragment =
                 when (screenIdentifier) {
                     DashboardFragment.ID -> factory.getDashboardFragment()
-                    WalletFragment.ID -> factory.getWalletFragment()
                     WithdrawFragment.ID -> factory.getWithdrawFragment()
                     SendFragment.ID -> factory.getSendFragment()
                     ExploreAssetsFragment.ID -> factory.getExploreFragment()
@@ -372,10 +370,10 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     override fun onPaymentRequestConfirmed(paymentRequest: PaymentRequest) {
-        navigateTo(WalletFragment.ID, factory.getWalletFragment(paymentRequest.asset))
+        navigateTo(DashboardFragment.ID)
     }
 
     override fun onWithdrawalRequestConfirmed(withdrawalRequest: WithdrawalRequest) {
-        navigateTo(WalletFragment.ID, factory.getWalletFragment(withdrawalRequest.asset))
+        navigateTo(DashboardFragment.ID)
     }
 }

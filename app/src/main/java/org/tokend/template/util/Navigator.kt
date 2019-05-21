@@ -48,7 +48,6 @@ import org.tokend.template.features.signin.UnlockAppActivity
 import org.tokend.template.features.signup.RecoverySeedActivity
 import org.tokend.template.features.signup.SignUpActivity
 import org.tokend.template.features.trade.TradeActivity
-import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.wallet.details.*
 import org.tokend.template.features.wallet.view.BalanceDetailsActivity
 import org.tokend.template.features.withdraw.WithdrawFragment
@@ -209,14 +208,6 @@ class Navigator private constructor() {
                                    withdrawalRequest: WithdrawalRequest) {
         val intent = context?.intentFor<WithdrawalConfirmationActivity>(
                 WithdrawalConfirmationActivity.WITHDRAWAL_REQUEST_EXTRA to withdrawalRequest
-        )
-        performIntent(intent, requestCode = requestCode)
-    }
-
-    fun openWallet(requestCode: Int, asset: String) {
-        val intent = context?.intentFor<SingleFragmentActivity>(
-                SingleFragmentActivity.ASSET_EXTRA to asset,
-                SingleFragmentActivity.SCREEN_ID to WalletFragment.ID
         )
         performIntent(intent, requestCode = requestCode)
     }
