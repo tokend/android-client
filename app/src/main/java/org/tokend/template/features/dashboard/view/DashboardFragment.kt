@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
+import org.tokend.template.activities.OnBackPressedListener
 import org.tokend.template.extensions.disableShifting
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
@@ -93,6 +94,15 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         }
     }
     // endregion
+
+    override fun onBackPressed(): Boolean {
+        val currentPage = adapter.getItem(pager.currentItem)
+        return if (currentPage is OnBackPressedListener) {
+            currentPage.onBackPressed()
+        } else {
+            super.onBackPressed()
+        }
+    }
 
     companion object {
         const val ID = 1110L

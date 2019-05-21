@@ -24,6 +24,6 @@ fun BottomNavigationView.disableShifting() {
                     menuItem.setChecked(menuItem.itemData.isChecked)
                 }
     } catch (e: Exception) {
-        e.printStackTrace()
+        // Ok, never mind.
     }
 }

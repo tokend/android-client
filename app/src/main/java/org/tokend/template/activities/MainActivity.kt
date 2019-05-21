@@ -341,7 +341,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
             navigationDrawer?.closeDrawer()
         } else {
             if (navigationDrawer?.currentSelection == DEFAULT_FRAGMENT_ID) {
-                moveTaskToBack(true)
+                if (onBackPressedListener?.onBackPressed() != false)
+                    moveTaskToBack(true)
             } else {
                 if (onBackPressedListener?.onBackPressed() != false)
                     navigateTo(DEFAULT_FRAGMENT_ID)

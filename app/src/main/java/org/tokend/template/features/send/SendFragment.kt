@@ -2,7 +2,6 @@ package org.tokend.template.features.send
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -17,11 +16,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.android.synthetic.main.activity_share_qr.*
 import kotlinx.android.synthetic.main.appbar.*
-import kotlinx.android.synthetic.main.fragment_balances.*
 import kotlinx.android.synthetic.main.fragment_user_flow.*
-import kotlinx.android.synthetic.main.fragment_user_flow.swipe_refresh
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
@@ -96,9 +92,6 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initErrorEmptyView() {
-        error_empty_view.background = ColorDrawable(
-                ContextCompat.getColor(requireContext(), R.color.colorDefaultBackground)
-        )
         error_empty_view.setEmptyDrawable(R.drawable.ic_send)
     }
     // endregion
