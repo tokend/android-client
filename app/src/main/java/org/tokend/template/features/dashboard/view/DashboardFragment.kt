@@ -79,6 +79,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
 
         if (!BuildConfig.IS_SEND_ALLOWED) {
             bottom_tabs.menu.removeItem(R.id.send)
+            bottom_tabs.menu.removeItem(R.id.receive)
         }
 
         bottom_tabs.setOnNavigationItemSelectedListener {

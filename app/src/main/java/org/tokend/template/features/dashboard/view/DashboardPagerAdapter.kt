@@ -23,21 +23,23 @@ class DashboardPagerAdapter(context: Context,
                     fragmentFactory.getAccountMovementsFragment(),
                     context.getString(R.string.movements_screen_title),
                     R.id.movements.toLong()
-            ),
-            Triple(
-                    fragmentFactory.getShareAccountIdQrFragment(),
-                    context.getString(R.string.receive_title),
-                    R.id.receive.toLong()
             )
     )
 
     init {
         if (BuildConfig.IS_SEND_ALLOWED) {
-            pages.add(2,
+            pages.add(
                     Triple(
                             fragmentFactory.getSendFragment(allowToolbar = false),
                             context.getString(R.string.send_title),
                             R.id.send.toLong()
+                    )
+            )
+            pages.add(
+                    Triple(
+                            fragmentFactory.getShareAccountIdQrFragment(),
+                            context.getString(R.string.receive_title),
+                            R.id.receive.toLong()
                     )
             )
         }
