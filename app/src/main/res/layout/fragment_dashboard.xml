@@ -29,5 +29,6 @@
         android:background="@color/white"
         app:itemIconTint="@color/color_bottom_tabs_item"
         app:itemTextColor="@color/color_bottom_tabs_item"
+        app:labelVisibilityMode="labeled"
         app:menu="@menu/dashboard" />
 </RelativeLayout>
