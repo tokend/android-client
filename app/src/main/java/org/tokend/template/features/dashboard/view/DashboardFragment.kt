@@ -16,6 +16,7 @@ import org.tokend.template.R
 import org.tokend.template.extensions.disableShifting
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.view.util.input.SoftInputUtil
 
 class DashboardFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -57,6 +58,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         val onPageSelected = { pagePosition: Int ->
             inflatePageMenu(pagePosition)
             bottom_tabs.selectedItemId = adapter.getItemId(pagePosition).toInt()
+            SoftInputUtil.hideSoftInput(requireActivity())
         }
 
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
