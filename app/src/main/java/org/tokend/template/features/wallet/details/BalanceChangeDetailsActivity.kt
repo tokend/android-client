@@ -2,7 +2,11 @@ package org.tokend.template.features.wallet.details
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SimpleItemAnimator
 import android.util.Log
+import kotlinx.android.synthetic.main.layout_details_list_white_toolbar.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.history.BalanceChange
@@ -10,12 +14,18 @@ import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.features.wallet.view.BalanceChangeIconFactory
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.formatter.DateFormatter
 
 abstract class BalanceChangeDetailsActivity : BaseActivity() {
+    protected val adapter = DetailsItemsAdapter()
+
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setContentView(R.layout.layout_details_list_white_toolbar)
+
+        initToolbar()
+        initList()
 
         val intentItem = intent.getSerializableExtra(BALANCE_CHANGE_EXTRA)
                 as? BalanceChange
@@ -27,6 +37,19 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
             finish()
             return
         }
+    }
+
+    protected open fun initToolbar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    protected open fun initList() {
+        details_list.layoutManager = LinearLayoutManager(this)
+        details_list.adapter = adapter
+        (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+
+        ElevationUtil.initScrollElevation(details_list, appbar_elevation_view)
     }
 
     protected abstract fun displayDetails(item: BalanceChange)

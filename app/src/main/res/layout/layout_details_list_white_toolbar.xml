@@ -8,6 +8,16 @@
         android:id="@+id/appbar"
         layout="@layout/appbar_white" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/appbar">
+
+        <include
+            android:id="@+id/appbar_elevation_view"
+            layout="@layout/include_appbar_elevation" />
+    </FrameLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/details_list"
         style="@style/LimitedMatchParentWidthConstraint"

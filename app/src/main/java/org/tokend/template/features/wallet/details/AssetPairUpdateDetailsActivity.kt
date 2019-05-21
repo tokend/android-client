@@ -10,11 +10,7 @@ import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 
 class AssetPairUpdateDetailsActivity : BalanceChangeDetailsActivity() {
-    private val adapter = DetailsItemsAdapter()
-
     override fun displayDetails(item: BalanceChange) {
-        setContentView(R.layout.activity_details_list)
-
         val details = item.cause as? BalanceChangeCause.AssetPairUpdate
 
         if (details == null) {
