@@ -12,6 +12,7 @@ import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
+import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
@@ -390,5 +391,14 @@ class Navigator private constructor() {
                 BalanceDetailsActivity.BALANCE_ID_EXTRA to balanceId
         )
         performIntent(intent)
+    }
+
+    fun openAccountQrShare(walletInfo: WalletInfo) {
+        val accountId = walletInfo.accountId
+        openQrShare(
+                data = accountId,
+                title = context!!.getString(R.string.account_id_title),
+                shareLabel = context!!.getString(R.string.share_account_id)
+        )
     }
 }

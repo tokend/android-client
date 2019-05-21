@@ -282,13 +282,9 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     private fun openAccountIdShare() {
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId ?: return
+        val walletInfo = walletInfoProvider.getWalletInfo() ?: return
 
-        Navigator.from(this@MainActivity).openQrShare(
-                data = accountId,
-                title = getString(R.string.account_id_title),
-                shareLabel = getString(R.string.share_account_id)
-        )
+        Navigator.from(this@MainActivity).openAccountQrShare(walletInfo)
 
         navigationDrawer?.closeDrawer()
     }

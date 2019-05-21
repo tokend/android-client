@@ -17,6 +17,7 @@ import org.tokend.template.activities.OnBackPressedListener
 import org.tokend.template.extensions.disableShifting
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.util.Navigator
 import org.tokend.template.view.util.input.SoftInputUtil
 
 class DashboardFragment : BaseFragment(), ToolbarProvider {
@@ -44,6 +45,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         adapter = DashboardPagerAdapter(requireContext(), childFragmentManager)
         pager.adapter = adapter
         pager.offscreenPageLimit = adapter.count
+        pager.swipesEnabled = false
 
         // Menu.
         val inflatePageMenu = { pagePosition: Int ->
@@ -84,14 +86,42 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
         }
 
         bottom_tabs.setOnNavigationItemSelectedListener {
-            val index = adapter.getIndexOf(it.itemId.toLong())
-            if (index >= 0) {
-                pager.currentItem = index
-                true
-            } else {
+            navigateToPage(it.itemId)
+        }
+    }
+    // endregion
+
+    // region Navigation
+    private fun navigateToPage(pageId: Int): Boolean {
+        return when (pageId) {
+            R.id.send -> {
+                openSend()
                 false
             }
+            R.id.receive -> {
+                openReceive()
+                false
+            }
+            else -> {
+                val index = adapter.getIndexOf(pageId.toLong())
+                if (index >= 0) {
+                    pager.currentItem = index
+                    true
+                } else {
+                    false
+                }
+            }
         }
+    }
+
+    private fun openSend() {
+        Navigator.from(this).openSend(requestCode = 0)
+    }
+
+    private fun openReceive() {
+        val walletInfo = walletInfoProvider.getWalletInfo()
+                ?: return
+        Navigator.from(this).openAccountQrShare(walletInfo)
     }
     // endregion
 

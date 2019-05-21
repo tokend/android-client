@@ -7,7 +7,6 @@ import org.tokend.template.features.assets.AssetDetailsFragment
 import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.dashboard.balances.view.BalancesFragment
 import org.tokend.template.features.dashboard.movements.view.AccountMovementsFragment
-import org.tokend.template.features.dashboard.receive.view.ShareAccountIdQrFragment
 import org.tokend.template.features.dashboard.view.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
@@ -112,9 +111,5 @@ class FragmentFactory {
                            shareText: String? = null,
                            topText: String? = null): Fragment {
         return ShareQrFragment.newInstance(title, data, shareDialogText, shareText, topText)
-    }
-
-    fun getShareAccountIdQrFragment(): Fragment {
-        return ShareAccountIdQrFragment()
     }
 }

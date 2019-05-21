@@ -7,7 +7,7 @@
 
     <include layout="@layout/appbar" />
 
-    <android.support.v4.view.ViewPager
+    <org.tokend.template.features.dashboard.view.SwipeTogglingViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

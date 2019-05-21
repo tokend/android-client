@@ -4,7 +4,6 @@ import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.fragments.FragmentFactory
 
@@ -25,25 +24,6 @@ class DashboardPagerAdapter(context: Context,
                     R.id.movements.toLong()
             )
     )
-
-    init {
-        if (BuildConfig.IS_SEND_ALLOWED) {
-            pages.add(
-                    Triple(
-                            fragmentFactory.getSendFragment(allowToolbar = false),
-                            context.getString(R.string.send_title),
-                            R.id.send.toLong()
-                    )
-            )
-            pages.add(
-                    Triple(
-                            fragmentFactory.getShareAccountIdQrFragment(),
-                            context.getString(R.string.receive_title),
-                            R.id.receive.toLong()
-                    )
-            )
-        }
-    }
 
     override fun getItem(position: Int): Fragment? {
         return pages.getOrNull(position)?.first

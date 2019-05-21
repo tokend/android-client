@@ -87,14 +87,11 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun initAccountIdItem() {
         val accountIdPreference = findPreference("account_id")
         accountIdPreference?.setOnPreferenceClickListener {
-            val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                    ?: getString(R.string.error_try_again)
+            val walletInfo = walletInfoProvider.getWalletInfo()
+                    ?: return@setOnPreferenceClickListener false
+
             activity?.let { parentActivity ->
-                Navigator.from(parentActivity).openQrShare(
-                        data = accountId,
-                        title = getString(R.string.account_id_title),
-                        shareLabel = getString(R.string.share_account_id)
-                )
+                Navigator.from(parentActivity).openAccountQrShare(walletInfo)
             }
 
             true
@@ -253,7 +250,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
             Navigator.from(this).openLimits()
             true
         }
-        if(!BuildConfig.IS_LIMITS_ALLOWED) {
+        if (!BuildConfig.IS_LIMITS_ALLOWED) {
             (findPreference("info") as? PreferenceCategory)
                     ?.removePreference(limitsPreference)
         }
@@ -265,7 +262,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
             Navigator.from(this).openFees()
             true
         }
-        if(!BuildConfig.IS_FEES_ALLOWED) {
+        if (!BuildConfig.IS_FEES_ALLOWED) {
             (findPreference("info") as? PreferenceCategory)
                     ?.removePreference(feesPreference)
         }

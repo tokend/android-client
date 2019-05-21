@@ -114,13 +114,9 @@ class BalanceDetailsActivity : BaseActivity() {
         send_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_send_fab))
 
         receive_fab.onClick {
-            val accountId = walletInfoProvider.getWalletInfo()?.accountId
+            val walletInfo = walletInfoProvider.getWalletInfo()
                     ?: return@onClick
-            navigator.openQrShare(
-                    data = accountId,
-                    title = getString(R.string.account_id_title),
-                    shareLabel = getString(R.string.share_account_id)
-            )
+            navigator.openAccountQrShare(walletInfo)
             menu_fab.close(false)
         }
         receive_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_receive_fab))
