@@ -235,7 +235,11 @@
         <activity
             android:name=".features.signin.UnlockAppActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/UnlockScreenTheme"/>
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"/>
+        <activity
+            android:name=".features.wallet.view.BalanceDetailsActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"/>
     </application>
 
 </manifest>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/root_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <org.tokend.template.view.PaginationRecyclerView
+                    android:id="@+id/history_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never"
+                    android:paddingStart="@dimen/quarter_standard_margin"
+                    android:paddingEnd="@dimen/quarter_standard_margin"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+                <org.tokend.template.view.TxDateTextSwitcher
+                    android:id="@+id/date_text_switcher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/tx_date_text_switcher_background"
+                    android:measureAllChildren="true"
+                    android:visibility="invisible" />
+
+                <include layout="@layout/include_error_empty_view" />
+
+            </RelativeLayout>
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                app:elevation="0dp">
+
+                <android.support.design.widget.CollapsingToolbarLayout
+                    android:id="@+id/collapsing_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:padding="@dimen/half_standard_margin"
+                    app:layout_scrollFlags="scroll">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/close_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:padding="@dimen/half_standard_margin"
+                            app:srcCompat="@drawable/ic_arrow_back_white"
+                            app:tint="@color/icons" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/half_standard_margin"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/half_standard_margin">
+
+                        <ImageView
+                            android:id="@+id/asset_logo_image_view"
+                            android:layout_width="@dimen/asset_list_item_logo_size"
+                            android:layout_height="@dimen/asset_list_item_logo_size"
+                            tools:background="@color/md_pink_200" />
+
+                        <TextView
+                            android:id="@+id/asset_name_text_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/standard_margin"
+                            tools:text="My Awesome Token" />
+
+                        <me.grantland.widget.AutofitTextView
+                            android:id="@+id/balance_available_text_view"
+                            style="@style/HeadingText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/half_standard_margin"
+                            android:maxLines="1"
+                            android:textSize="@dimen/text_size_heading_large"
+                            tools:text="12.74 MAT" />
+
+                        <TextView
+                            android:id="@+id/balance_converted_text_view"
+                            style="@style/HintText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/quarter_standard_margin"
+                            android:gravity="center"
+                            tools:text="6.37 USD" />
+                    </LinearLayout>
+                </android.support.design.widget.CollapsingToolbarLayout>
+            </android.support.design.widget.AppBarLayout>
+        </android.support.design.widget.CoordinatorLayout>
+
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/menu_fab"
+            style="@style/FloatingButton"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/standard_margin"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/send_fab"
+                style="@style/FloatingButtonMenuItem"
+                app:fab_label="@string/send_title" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/receive_fab"
+                style="@style/FloatingButtonMenuItem"
+                app:fab_label="Receive" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/deposit_fab"
+                style="@style/FloatingButtonMenuItem"
+                app:fab_label="@string/deposit" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/withdraw_fab"
+                style="@style/FloatingButtonMenuItem"
+                app:fab_label="@string/withdraw_title" />
+
+        </com.github.clans.fab.FloatingActionMenu>
+    </FrameLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

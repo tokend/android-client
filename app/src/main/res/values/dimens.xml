@@ -31,15 +31,7 @@
     <dimen name="divider_height">1dp</dimen>
     <dimen name="divider_with_icon_padding_left">72dp</dimen>
 
-    <dimen name="toolbar_expanded_height">160dp</dimen>
-    <dimen name="toolbar_expanded_height_with_tabs">136dp</dimen>
-    <dimen name="toolbar_title_size">28sp</dimen>
     <dimen name="toolbar_subtitle_size">20sp</dimen>
-    <dimen name="toolbar_text_padding_start">56dp</dimen>
-    <dimen name="toolbar_text_padding_end">32dp</dimen>
-    <dimen name="toolbar_expanded_title_margin_top">60dp</dimen>
-    <dimen name="toolbar_expanded_title_single_margin_top">72dp</dimen>
-    <dimen name="toolbar_expanded_subtitle_margin_top">92dp</dimen>
 
     <dimen name="tx_list_item_icon_size">24dp</dimen>
     <dimen name="tx_list_item_icon_size_small">24dp</dimen>
