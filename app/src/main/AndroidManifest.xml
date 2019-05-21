@@ -65,9 +65,6 @@
             android:label="@string/recover_account"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".features.qr.ShareQrActivity"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".activities.MainActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
