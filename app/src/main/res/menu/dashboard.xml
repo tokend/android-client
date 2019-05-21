@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/send"
-        android:icon="@drawable/ic_send"
+        android:icon="@drawable/ic_send_fab"
         android:title="@string/send_title" />
 
     <item
