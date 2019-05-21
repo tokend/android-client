@@ -29,8 +29,7 @@ import java.util.concurrent.TimeUnit
 
 open class ShareQrFragment : BaseFragment(), ToolbarProvider {
     companion object {
-        val SHARE_REQUEST = "share".hashCode() and 0xffff
-        const val ID = 1119L
+        val ID = "share_qr".hashCode().toLong() and 0xffff
         const val TITLE_EXTRA = "title"
         const val DATA_EXTRA = "data"
         const val SHARE_DIALOG_TEXT_EXTRA = "share_dialog_text"

@@ -190,7 +190,7 @@ class CreateOfferActivity : BaseActivity() {
         if (amount.signum() > 0) {
             val value = BigDecimalUtil.scaleAmount(amount, scale)
             setText(BigDecimalUtil.toPlainString(value))
-            setSelection(text.length)
+            setSelection(text?.length ?: 0)
         } else {
             setText("")
         }
@@ -219,12 +219,15 @@ class CreateOfferActivity : BaseActivity() {
 
     private fun getActionHintString(from: String, to: String): SpannableString {
         val template = SpannableString("$from * $to")
-        template.setSpan(
-                ImageSpan(arrow, DynamicDrawableSpan.ALIGN_BASELINE),
-                from.length + 1,
-                from.length + 2,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        arrow?.also {
+            template.setSpan(
+                    ImageSpan(it, DynamicDrawableSpan.ALIGN_BASELINE),
+                    from.length + 1,
+                    from.length + 2,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
         return template
     }
 

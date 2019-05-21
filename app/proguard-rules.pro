@@ -59,7 +59,7 @@
 -optimizations !method/removal/parameter
 
 # Markdown
--dontwarn com.caverock.androidsvg.SVGImageView
+-dontwarn com.caverock.androidsvg.**
 
 # Kotlin issue
 # https://youtrack.jetbrains.com/issue/KT-24986

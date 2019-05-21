@@ -30,12 +30,10 @@ import org.tokend.template.features.kyc.model.KycState
 import org.tokend.template.features.kyc.model.form.KycFormType
 import org.tokend.template.features.kyc.model.form.SimpleKycForm
 import org.tokend.template.features.kyc.storage.KycStateRepository
-import org.tokend.template.features.qr.ShareQrFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.settings.SettingsFragment
 import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
 import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
-import org.tokend.template.features.wallet.WalletFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.fragments.FragmentFactory
@@ -261,7 +259,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         val fragment =
                 when (screenIdentifier) {
                     DashboardFragment.ID -> factory.getDashboardFragment()
-                    WalletFragment.ID -> factory.getWalletFragment()
                     WithdrawFragment.ID -> factory.getWithdrawFragment()
                     ExploreAssetsFragment.ID -> factory.getExploreFragment()
                     SettingsFragment.ID -> factory.getSettingsFragment()
@@ -290,8 +287,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         Navigator.from(this@MainActivity).openQrShare(
                 data = accountId,
                 title = getString(R.string.account_id_title),
-                shareLabel = getString(R.string.share_account_id),
-                requestCode = ShareQrFragment.SHARE_REQUEST
+                shareLabel = getString(R.string.share_account_id)
         )
 
         navigationDrawer?.closeDrawer()
@@ -359,10 +355,10 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     override fun onPaymentRequestConfirmed(paymentRequest: PaymentRequest) {
-        navigateTo(WalletFragment.ID, factory.getWalletFragment(paymentRequest.asset))
+        navigateTo(DashboardFragment.ID)
     }
 
     override fun onWithdrawalRequestConfirmed(withdrawalRequest: WithdrawalRequest) {
-        navigateTo(WalletFragment.ID, factory.getWalletFragment(withdrawalRequest.asset))
+        navigateTo(DashboardFragment.ID)
     }
 }

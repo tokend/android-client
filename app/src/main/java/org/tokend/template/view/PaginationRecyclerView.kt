@@ -20,7 +20,7 @@ open class PaginationRecyclerView : RecyclerView {
     protected var countProvider: (() -> Int)? = null
     protected var onBottomReachedListener: (() -> Boolean)? = null
 
-    protected var paginationScrollListener: OnScrollListener? = null
+    private var paginationScrollListener: OnScrollListener? = null
     private var bottomReachHandled = false
 
     override fun setLayoutManager(layoutManager: LayoutManager?) {
@@ -32,20 +32,17 @@ open class PaginationRecyclerView : RecyclerView {
     }
 
     private fun enablePagination(linearLayoutManager: LinearLayoutManager) {
-        if (paginationScrollListener != null) {
-            removeOnScrollListener(paginationScrollListener)
-        }
-
+        paginationScrollListener?.also { removeOnScrollListener(it) }
         paginationScrollListener = getPaginationScrollListener(linearLayoutManager)
-        addOnScrollListener(paginationScrollListener)
+                .also { addOnScrollListener(it) }
     }
 
-    protected fun getPaginationScrollListener(linearLayoutManager: LinearLayoutManager)
+    private fun getPaginationScrollListener(linearLayoutManager: LinearLayoutManager)
             : OnScrollListener {
         return object : RecyclerView.OnScrollListener() {
             private var scrollingDown = true
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
                 if (dy > 2) {

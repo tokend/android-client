@@ -151,8 +151,8 @@ class SignUpActivity : BaseActivity() {
 
     private fun updateSignUpAvailability() {
         canSignUp = !isLoading
-                && !email_edit_text.text.isBlank()
-                && passwordsMatch && !password_edit_text.text.isEmpty()
+                && !email_edit_text.text.isNullOrBlank()
+                && passwordsMatch && !password_edit_text.text.isNullOrEmpty()
                 && !email_edit_text.hasError()
                 && !password_edit_text.hasError()
                 && terms_of_service_checkbox.isChecked
@@ -163,7 +163,7 @@ class SignUpActivity : BaseActivity() {
         passwordsMatch = password_edit_text.text.toString() ==
                 confirm_password_edit_text.text.toString()
 
-        if (!passwordsMatch && !confirm_password_edit_text.text.isEmpty()) {
+        if (!passwordsMatch && !confirm_password_edit_text.text.isNullOrEmpty()) {
             confirm_password_edit_text.error = getString(R.string.error_passwords_mismatch)
         } else {
             confirm_password_edit_text.error = null

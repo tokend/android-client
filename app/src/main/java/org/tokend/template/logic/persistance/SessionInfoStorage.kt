@@ -16,7 +16,7 @@ class SessionInfoStorage(
     fun loadLastSignInMethod(): SignInMethod? {
         return sharedPreferences
                 .getString(LAST_SIGN_IN_METHOD_KEY, "")
-                .takeIf { it.isNotEmpty() }
+                ?.takeIf { it.isNotEmpty() }
                 ?.let { SignInMethod.valueOf(it) }
     }
 

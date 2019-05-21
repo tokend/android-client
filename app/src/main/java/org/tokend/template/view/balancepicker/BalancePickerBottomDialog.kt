@@ -109,7 +109,7 @@ open class BalancePickerBottomDialog(
     protected open fun adjustDialogHeight(dialog: Dialog,
                                           dialogView: View) {
         val displayMetrics = DisplayMetrics()
-        dialog.window.windowManager.defaultDisplay.getMetrics(displayMetrics)
+        dialog.window?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
         val displayHeight = displayMetrics.heightPixels
 
         dialogView.minimumHeight = (displayHeight * 0.3).roundToInt()
@@ -176,7 +176,7 @@ open class BalancePickerBottomDialog(
                 .addTo(compositeDisposable)
 
         cancelSearchButton.setOnClickListener {
-            searchEditText.text.clear()
+            searchEditText.text?.clear()
             SoftInputUtil.hideSoftInput(searchEditText)
         }
     }

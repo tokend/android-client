@@ -103,8 +103,6 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
             adapter = salesAdapter
 
             setItemViewCacheSize(20)
-            isDrawingCacheEnabled = true
-            drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
             (sales_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         }
     }

@@ -57,7 +57,7 @@ class TxDateTextSwitcher : TextSwitcher {
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         private var scrollState: Int = 0
 
-        override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
 
             updateScrollState(scrollState)
@@ -67,12 +67,12 @@ class TxDateTextSwitcher : TextSwitcher {
             updateFirstVisibleTx(firstVisibleItem)
         }
 
-        override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
 
             scrollState = newState
             if (newState != RecyclerView.SCROLL_STATE_IDLE
-                    && recyclerView!!.computeVerticalScrollOffset() == 0) {
+                    && recyclerView.computeVerticalScrollOffset() == 0) {
                 return
             }
             updateScrollState(scrollState)

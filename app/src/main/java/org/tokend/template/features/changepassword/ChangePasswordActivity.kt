@@ -130,7 +130,7 @@ class ChangePasswordActivity : BaseActivity() {
         passwordChars.fill('0')
         confirmationChars.fill('0')
 
-        if (!passwordsMatch && !confirm_password_edit_text.text.isEmpty()) {
+        if (!passwordsMatch && !confirm_password_edit_text.text.isNullOrEmpty()) {
             confirm_password_edit_text.error = getString(R.string.error_passwords_mismatch)
         } else {
             confirm_password_edit_text.error = null
@@ -143,7 +143,7 @@ class ChangePasswordActivity : BaseActivity() {
         canChange = !isLoading
                 && !current_password_edit_text.hasError()
                 && passwordsMatch
-                && !new_password_edit_text.text.isEmpty()
+                && !new_password_edit_text.text.isNullOrEmpty()
                 && !new_password_edit_text.hasError()
                 && !confirm_password_edit_text.hasError()
     }

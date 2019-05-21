@@ -42,13 +42,13 @@ open class AssetDetailsFragment : BaseFragment() {
         arguments?.getString(ASSET_CODE_EXTRA)
     }
 
-    protected val isBalanceCreationEnabled: Boolean by lazy {
+    private val isBalanceCreationEnabled: Boolean by lazy {
         arguments?.getBoolean(BALANCE_CREATION_EXTRA) ?: true
     }
 
-    protected val balanceExists: Boolean
+    protected val balanceId: String?
         get() = repositoryProvider.balances().itemsList
-                .find { it.assetCode == asset.code } != null
+                .find { it.assetCode == asset.code }?.id
 
     private lateinit var fileDownloader: FileDownloader
 
@@ -111,7 +111,7 @@ open class AssetDetailsFragment : BaseFragment() {
 
     private fun displayLogoAndName() {
         AssetListItemViewHolder(asset_card).bind(
-                AssetListItem(asset, balanceExists)
+                AssetListItem(asset, balanceId)
         )
     }
 
@@ -179,7 +179,7 @@ open class AssetDetailsFragment : BaseFragment() {
     private fun initButtons() {
         asset_details_button.visibility = View.GONE
 
-        if (!balanceExists && isBalanceCreationEnabled) {
+        if (balanceId == null && isBalanceCreationEnabled) {
             asset_primary_action_button.visibility = View.VISIBLE
             asset_primary_action_button.text = getString(R.string.create_balance_action)
             asset_primary_action_button.onClick {

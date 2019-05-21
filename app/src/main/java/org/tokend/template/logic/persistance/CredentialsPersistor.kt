@@ -46,7 +46,7 @@ class CredentialsPersistor(
      */
     fun getSavedEmail(): String? {
         return preferences.getString(EMAIL_KEY, "")
-                .takeIf { it.isNotEmpty() }
+                ?.takeIf { it.isNotEmpty() }
     }
 
     /**

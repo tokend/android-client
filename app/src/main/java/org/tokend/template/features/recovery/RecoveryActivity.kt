@@ -89,7 +89,7 @@ class RecoveryActivity : BaseActivity() {
 
         EditTextHelper.initPasswordEditText(password_edit_text)
 
-        if (!email.isEmpty()) {
+        if (email.isNotEmpty()) {
             email_edit_text.setText(email)
             email_edit_text.setSelection(email.length)
         }
@@ -164,7 +164,7 @@ class RecoveryActivity : BaseActivity() {
         passwordChars.fill('0')
         confirmationChars.fill('0')
 
-        if (!passwordsMatch && !confirm_password_edit_text.text.isEmpty()) {
+        if (!passwordsMatch && confirm_password_edit_text.text.isNullOrEmpty()) {
             confirm_password_edit_text.error = getString(R.string.error_passwords_mismatch)
         } else {
             confirm_password_edit_text.error = null
@@ -183,10 +183,10 @@ class RecoveryActivity : BaseActivity() {
 
     private fun updateRecoveryAvailability() {
         canRecover = !isLoading
-                && !email_edit_text.text.isBlank()
-                && !seed_edit_text.text.isBlank()
+                && !email_edit_text.text.isNullOrBlank()
+                && !seed_edit_text.text.isNullOrBlank()
                 && passwordsMatch
-                && !password_edit_text.text.isEmpty()
+                && !password_edit_text.text.isNullOrEmpty()
                 && !email_edit_text.hasError()
                 && !password_edit_text.hasError()
                 && !seed_edit_text.hasError()

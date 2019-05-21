@@ -16,6 +16,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ScrollOnTopItemUpdateAdapterObserver
+import org.tokend.template.view.util.SwipeRefreshDependencyUtil
 import java.math.BigDecimal
 
 
@@ -55,13 +56,14 @@ class BalancesFragment : BaseFragment() {
         balances_list.layoutManager = LinearLayoutManager(requireContext())
         adapter.registerAdapterDataObserver(ScrollOnTopItemUpdateAdapterObserver(balances_list))
         adapter.onItemClick { _, item ->
-            item.source?.assetCode?.also { openWallet(it) }
+            item.source?.id?.also { openWallet(it) }
         }
     }
 
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
         swipe_refresh.setOnRefreshListener { update(force = true) }
+        SwipeRefreshDependencyUtil.addDependency(swipe_refresh, app_bar)
     }
     // endregion
 
@@ -136,8 +138,8 @@ class BalancesFragment : BaseFragment() {
     }
     // endregion
 
-    private fun openWallet(assetCode: String) {
-        Navigator.from(this).openWallet(0, assetCode)
+    private fun openWallet(balanceId: String) {
+        Navigator.from(this).openBalanceDetails(balanceId)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

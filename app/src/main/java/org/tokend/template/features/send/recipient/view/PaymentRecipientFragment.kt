@@ -195,7 +195,7 @@ class PaymentRecipientFragment : BaseFragment() {
 
     private fun updateContinueAvailability() {
         canContinue = !recipient_edit_text.hasError()
-                && !recipient_edit_text.text.isBlank()
+                && !recipient_edit_text.text.isNullOrBlank()
                 && !loadingIndicator.isLoading
     }
 
@@ -258,7 +258,7 @@ class PaymentRecipientFragment : BaseFragment() {
 
         QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
             recipient_edit_text.setText(it)
-            recipient_edit_text.setSelection(recipient_edit_text.text.length)
+            recipient_edit_text.setSelection(recipient_edit_text.text?.length ?: 0)
             checkRecipient()
             updateContinueAvailability()
         }
