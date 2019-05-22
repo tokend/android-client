@@ -90,6 +90,7 @@ class SignUpActivity : BaseActivity() {
         EditTextHelper.initEmailEditText(email_edit_text)
         EditTextHelper.initPasswordEditText(password_edit_text)
 
+        email_edit_text.requestFocus()
         email_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
                 updateSignUpAvailability()

@@ -92,6 +92,9 @@ class RecoveryActivity : BaseActivity() {
         if (email.isNotEmpty()) {
             email_edit_text.setText(email)
             email_edit_text.setSelection(email.length)
+            seed_edit_text.requestFocus()
+        } else {
+            email_edit_text.requestFocus()
         }
 
         email_edit_text.addTextChangedListener(object : SimpleTextWatcher() {

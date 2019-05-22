@@ -2,7 +2,6 @@ package org.tokend.template.features.signin
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -37,7 +36,6 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
-import org.tokend.template.view.FingerprintIndicatorManager
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
@@ -111,6 +109,7 @@ class SignInActivity : BaseActivity() {
     private fun initFields() {
         initNetworkField()
 
+        email_edit_text.requestFocus()
         object : SimpleTextWatcher() {
             override fun afterTextChanged(p0: Editable?) {
                 password_edit_text.error = null
