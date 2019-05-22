@@ -70,6 +70,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
+        window.setBackgroundDrawable(null)
 
         initNavigation()
 
