@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/asset_card"
-    style="@style/InfoCard"
+    style="@style/ImpressiveCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/half_standard_margin"
     android:layout_marginTop="@dimen/quarter_standard_margin"
     android:layout_marginEnd="@dimen/half_standard_margin"
-    android:layout_marginBottom="@dimen/quarter_standard_margin"
     app:contentPadding="0dp"
     tools:ignore="UnusedAttribute">
 
