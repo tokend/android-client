@@ -15,7 +15,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_trade_asset_pairs.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.repository.pairs.AssetPairsRepository

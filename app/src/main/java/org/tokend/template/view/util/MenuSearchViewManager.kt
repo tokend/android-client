@@ -36,8 +36,8 @@ class MenuSearchViewManager(
     init {
         (searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text) as? EditText)
                 ?.apply {
-                    setHintTextColor(ContextCompat.getColor(context!!, R.color.white_almost))
-                    setTextColor(ContextCompat.getColor(context!!, R.color.white))
+                    setHintTextColor(ContextCompat.getColor(context!!, R.color.secondary_text))
+                    setTextColor(ContextCompat.getColor(context!!, R.color.primary_text))
                 }
 
         searchView.setOnQueryTextFocusChangeListener { _, focused ->

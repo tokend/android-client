@@ -19,9 +19,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_sales.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_sales_search.view.*
-import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.jetbrains.anko.dip
 import org.tokend.template.R
 import org.tokend.template.features.invest.logic.SalesSubscriptionManager
@@ -32,6 +33,7 @@ import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.Navigator
 import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.ColumnCalculator
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SoftInputUtil
 import java.util.concurrent.TimeUnit
@@ -105,6 +107,8 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
             setItemViewCacheSize(20)
             (sales_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         }
+
+        ElevationUtil.initScrollElevation(sales_list, appbar_elevation_view)
     }
 
     private fun initSubscriptionManager() {
@@ -129,10 +133,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         val searchLayout = searchItem?.actionView as? LinearLayout ?: return
 
         val nameEditText = searchLayout.search_name_edit_text
-        nameEditText.setMetTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-
         val tokenEditText = searchLayout.search_token_edit_text
-        tokenEditText.setMetTextColor(ContextCompat.getColor(requireContext(), R.color.white))
 
         val updateFilter = {
             val prevNameQuery = nameQuery

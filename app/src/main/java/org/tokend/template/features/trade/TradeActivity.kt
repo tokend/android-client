@@ -2,7 +2,9 @@ package org.tokend.template.features.trade
 
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_multiple_fragments.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.dip
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.AssetPairRecord
@@ -35,6 +37,9 @@ class TradeActivity : BaseActivity() {
         toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleAppearance)
         toolbar.subtitle = getString(R.string.template_price_one_equals, assetPair.base,
                 amountFormatter.formatAssetAmount(assetPair.price, assetPair.quote))
+        appbar_elevation_view.layoutParams = appbar_elevation_view.layoutParams.apply {
+            height = dip(3)
+        }
     }
 
     private fun initViewPager() {

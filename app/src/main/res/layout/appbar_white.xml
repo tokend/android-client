@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/appbar"
+    style="@style/AppbarTheme.White"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-    app:elevation="0dp">
+    android:layout_height="wrap_content">
 
     <include layout="@layout/toolbar_white" />
 

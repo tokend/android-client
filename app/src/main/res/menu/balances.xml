@@ -6,6 +6,7 @@
         android:id="@+id/add"
         android:icon="@drawable/ic_plus_white"
         android:title="@string/explore_assets_title"
+        app:iconTint="@color/icons"
         app:showAsAction="always" />
 
 </menu>

@@ -31,6 +31,8 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_single_fragment)
+        window.setBackgroundDrawable(null)
+
         asset = intent.getStringExtra(ASSET_EXTRA)
         screenId = intent.getLongExtra(SCREEN_ID, DashboardFragment.ID)
         title = intent.getStringExtra(TITLE_EXTRA, "")
@@ -69,7 +71,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         if (fragment is ToolbarProvider) {
             fragment.toolbarSubject
                     .subscribe { fragmentToolbar ->
-                        fragmentToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white)
+                        fragmentToolbar.setNavigationIcon(R.drawable.ic_arrow_back)
                         fragmentToolbar.setNavigationOnClickListener { onBackPressed() }
                         fragment.onCreateOptionsMenu(fragmentToolbar.menu, menuInflater)
                     }

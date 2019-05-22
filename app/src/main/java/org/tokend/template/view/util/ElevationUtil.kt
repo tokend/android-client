@@ -1,5 +1,6 @@
 package org.tokend.template.view.util
 
+import android.support.design.widget.AppBarLayout
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -48,5 +49,25 @@ object ElevationUtil {
                 }
             }
         })
+    }
+
+    fun initScrollElevation(movingAppbar: AppBarLayout, elevationView: View) {
+        elevationView.visibility = View.GONE
+
+        var onZeroOffset = true
+        val animationDuration =
+                movingAppbar.context.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+
+        movingAppbar.addOnOffsetChangedListener(
+                AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                    if (verticalOffset < 0 && onZeroOffset) {
+                        AnimationUtil.fadeInView(elevationView, animationDuration)
+                        onZeroOffset = false
+                    } else if (verticalOffset == 0 && !onZeroOffset) {
+                        AnimationUtil.fadeOutView(elevationView, animationDuration)
+                        onZeroOffset = true
+                    }
+                }
+        )
     }
 }

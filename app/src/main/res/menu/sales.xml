@@ -6,10 +6,12 @@
         android:icon="@drawable/ic_search"
         android:title="@string/search"
         app:actionLayout="@layout/layout_sales_search"
+        app:iconTint="@color/icons"
         app:showAsAction="always|collapseActionView" />
     <item
         android:id="@+id/pending_offers"
         android:icon="@drawable/ic_pending"
         android:title="@string/pending_investments_title"
+        app:iconTint="@color/icons"
         app:showAsAction="always|collapseActionView" />
 </menu>

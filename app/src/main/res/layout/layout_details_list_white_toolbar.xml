@@ -13,9 +13,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/appbar">
 
-        <include
-            android:id="@+id/appbar_elevation_view"
-            layout="@layout/include_appbar_elevation" />
+        <include layout="@layout/include_appbar_elevation" />
     </FrameLayout>
 
     <android.support.v7.widget.RecyclerView

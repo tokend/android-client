@@ -68,7 +68,7 @@
             android:name=".activities.MainActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar.NoBackground"
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".features.signup.RecoverySeedActivity"
@@ -136,7 +136,7 @@
         <activity
             android:name=".activities.SingleFragmentActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar.NoBackground"
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".features.invest.view.SaleActivity"
@@ -205,7 +205,8 @@
         <activity
             android:name=".features.trade.TradeActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/trade_title" />
+            android:label="@string/trade_title"
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"/>
         <activity
             android:name=".features.offers.CreateOfferActivity"
             android:configChanges="orientation|screenSize"

@@ -8,8 +8,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_details_list.details_list
-import kotlinx.android.synthetic.main.layout_details_list_white_toolbar.*
+import kotlinx.android.synthetic.main.activity_details_list.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.toolbar_white.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
