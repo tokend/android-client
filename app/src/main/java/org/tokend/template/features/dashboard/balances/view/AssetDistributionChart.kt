@@ -2,8 +2,7 @@ package org.tokend.template.features.dashboard.balances.view
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
+import android.graphics.drawable.GradientDrawable
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
 import android.support.v7.view.ContextThemeWrapper
@@ -46,6 +45,8 @@ class AssetDistributionChart
 ) : LinearLayout(context, attrs, defStyleAttr) {
     @Inject
     lateinit var amountFormatter: AmountFormatter
+
+    private val distribution = ArrayList<AssetDistributionEntry>()
 
     private inner class AssetDistributionEntry(
             val name: String,
@@ -118,6 +119,7 @@ class AssetDistributionChart
             override fun onValueSelected(e: Entry, h: Highlight) {
                 chart.centerText = percentFormatter.format(e.y / 100)
                 prevHighlightValue = h.x
+                displayLegend(distribution, h.x.toInt())
             }
         })
     }
@@ -133,6 +135,8 @@ class AssetDistributionChart
             return
         }
 
+        this.distribution.clear()
+        this.distribution.addAll(distribution)
         displayDistribution(distribution, animate)
     }
 
@@ -179,11 +183,11 @@ class AssetDistributionChart
             highlightValue(0f, 0)
         }
 
-        displayLegend(distribution)
+        displayLegend(distribution, 0)
     }
 
     // region Legend
-    private fun displayLegend(distribution: List<AssetDistributionEntry>) {
+    private fun displayLegend(distribution: List<AssetDistributionEntry>, selectedIndex: Int) {
         legendLayout.removeAllViews()
 
         val distributionMap = distribution
@@ -193,14 +197,17 @@ class AssetDistributionChart
             val distributionEntry = distributionMap[legendEntry.label]
                     ?: return@forEachIndexed
 
-            legendLayout.addView(getLegendEntryView(i, distributionEntry, legendEntry.formColor))
+            legendLayout.addView(
+                    getLegendEntryView(i, distributionEntry, legendEntry.formColor, selectedIndex)
+            )
         }
     }
 
     private fun getLegendEntryView(index: Int,
                                    distributionEntry: AssetDistributionEntry,
                                    @ColorInt
-                                   color: Int): View {
+                                   color: Int,
+                                   selectedIndex: Int): View {
         return LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
 
@@ -219,15 +226,18 @@ class AssetDistributionChart
             val circleSize = context.dip(12)
             addView(
                     View(context).apply {
+
                         layoutParams = ViewGroup.LayoutParams(
                                 circleSize,
                                 circleSize
                         )
 
-                        background = ShapeDrawable(OvalShape()).apply {
-                            intrinsicWidth = circleSize
-                            intrinsicHeight = circleSize
-                            paint.color = color
+                        background = GradientDrawable().apply {
+                            shape = GradientDrawable.OVAL
+                            if (index == selectedIndex) {
+                                setColor(color)
+                            }
+                            setStroke(4, color)
                         }
                     }
             )
