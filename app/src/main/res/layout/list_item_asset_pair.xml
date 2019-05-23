@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/asset_card"
-    style="@style/InfoCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/half_standard_margin"
-    android:layout_marginTop="@dimen/quarter_standard_margin"
-    android:layout_marginEnd="@dimen/half_standard_margin"
-    android:layout_marginBottom="@dimen/quarter_standard_margin"
-    app:contentPadding="0dp"
-    tools:ignore="UnusedAttribute">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/standard_margin">
+        android:background="?attr/selectableItemBackground"
+        android:paddingTop="@dimen/standard_margin"
+        android:paddingBottom="@dimen/standard_margin">
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/base_asset_logo_image_view"
             android:layout_width="@dimen/asset_list_item_logo_size"
             android:layout_height="@dimen/asset_list_item_logo_size"
             android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/standard_margin"
             tools:background="#ff0000" />
 
         <LinearLayout
@@ -72,4 +67,11 @@
         </LinearLayout>
     </RelativeLayout>
 
-</android.support.v7.widget.CardView>
+    <View
+        android:id="@+id/divider_view"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginStart="88dp"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:background="@drawable/line_divider" />
+</LinearLayout>

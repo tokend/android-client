@@ -3,14 +3,17 @@ package org.tokend.template.features.settings
 import android.os.Bundle
 import android.support.v7.preference.PreferenceCategory
 import android.support.v7.preference.SwitchPreferenceCompat
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.android.synthetic.main.include_appbar_elevation.view.*
 import kotlinx.android.synthetic.main.layout_progress.*
-import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.jetbrains.anko.browse
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.App
@@ -27,6 +30,7 @@ import org.tokend.template.logic.persistance.FingerprintUtil
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.SecretSeedDialog
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.SignOutDialogFactory
 
@@ -57,7 +61,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
         // Include toolbar and progress.
         if (view is LinearLayout) {
-            val appbar = layoutInflater.inflate(R.layout.appbar, view, false)
+            val appbar = layoutInflater.inflate(R.layout.appbar_white, view, false)
             view.addView(appbar, 0)
 
             toolbar.title = getString(R.string.settings_title)
@@ -65,6 +69,21 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
             val progress = layoutInflater.inflate(R.layout.layout_progress, view, false)
             view.addView(progress, 1)
+        }
+
+        // Include toolbar elevation
+        try {
+            val listContainer = view.findViewById<FrameLayout>(android.R.id.list_container)
+            // Because of <merge> root
+            val dummyContainer = FrameLayout(requireContext())
+            layoutInflater.inflate(R.layout.include_appbar_elevation, dummyContainer, true)
+            val elevationView = dummyContainer.appbar_elevation_view
+            dummyContainer.removeAllViews()
+            listContainer.addView(elevationView)
+            val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
+            ElevationUtil.initScrollElevation(recyclerView, elevationView)
+        } catch (e: Exception) {
+            // Ok, no elevation, not a big problem...
         }
     }
 

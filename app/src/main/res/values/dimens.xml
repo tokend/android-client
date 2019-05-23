@@ -27,6 +27,7 @@
     <!-- Elevations -->
     <dimen name="card_elevation">2dp</dimen>
     <dimen name="appbar_elevation">3dp</dimen>
+    <dimen name="impressive_card_elevation">6dp</dimen>
 
     <dimen name="divider_height">1dp</dimen>
     <dimen name="divider_with_icon_padding_left">72dp</dimen>
@@ -47,4 +48,6 @@
     <dimen name="contact_photo_size">40dp</dimen>
 
     <dimen name="unlock_logo_size">96dp</dimen>
+
+    <dimen name="modern_card_corner_radius">8dp</dimen>
 </resources>

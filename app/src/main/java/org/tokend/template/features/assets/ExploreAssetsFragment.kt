@@ -21,8 +21,9 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_explore.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.tokend.template.R
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.assets.AssetsRepository
@@ -36,10 +37,7 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SearchUtil
-import org.tokend.template.view.util.ColumnCalculator
-import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.MenuSearchViewManager
-import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.util.*
 
 class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -112,6 +110,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 openAssetDetails(view, item)
             }
         }
+
+        ElevationUtil.initScrollElevation(assets_recycler_view, appbar_elevation_view)
     }
 
     private fun initMenu() {

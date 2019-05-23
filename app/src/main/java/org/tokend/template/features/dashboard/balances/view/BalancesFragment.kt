@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_balances.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.data.repository.balances.BalancesRepository
@@ -14,6 +15,7 @@ import org.tokend.template.features.dashboard.balances.view.adapter.BalanceListI
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ScrollOnTopItemUpdateAdapterObserver
 import org.tokend.template.view.util.SwipeRefreshDependencyUtil
@@ -45,6 +47,7 @@ class BalancesFragment : BaseFragment() {
     override fun onInitAllowed() {
         initList()
         initSwipeRefresh()
+        initToolbarElevation()
 
         subscribeToBalances()
 
@@ -66,6 +69,10 @@ class BalancesFragment : BaseFragment() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
         swipe_refresh.setOnRefreshListener { update(force = true) }
         SwipeRefreshDependencyUtil.addDependency(swipe_refresh, app_bar)
+    }
+
+    private fun initToolbarElevation() {
+        ElevationUtil.initScrollElevation(app_bar, appbar_elevation_view)
     }
     // endregion
 

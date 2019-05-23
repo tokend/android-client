@@ -2,34 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/appbar" />
+    <include layout="@layout/appbar_white" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <include layout="@layout/include_error_empty_view" />
-
-            <org.tokend.template.view.PaginationRecyclerView
-                android:id="@+id/sales_list"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:overScrollMode="never"
-                android:paddingStart="6dp"
-                android:paddingTop="@dimen/half_standard_margin"
-                android:paddingEnd="6dp"
-                android:paddingBottom="@dimen/half_standard_margin" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        </LinearLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
+                <include layout="@layout/include_error_empty_view" />
+
+                <org.tokend.template.view.PaginationRecyclerView
+                    android:id="@+id/sales_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingStart="@dimen/quarter_standard_margin"
+                    android:paddingTop="@dimen/half_standard_margin"
+                    android:paddingEnd="@dimen/quarter_standard_margin"
+                    android:paddingBottom="@dimen/standard_margin" />
+
+            </LinearLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <include layout="@layout/include_appbar_elevation" />
+    </FrameLayout>
 </LinearLayout>

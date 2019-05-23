@@ -167,7 +167,7 @@ open class AssetDetailsFragment : BaseFragment() {
 
         val fileIconImageView = fileLayout.find<ImageView>(R.id.file_icon_image_view)
         fileIconImageView.setImageDrawable(
-                ContextCompat.getDrawable(this.requireContext(), R.drawable.ic_file)
+                ContextCompat.getDrawable(this.requireContext(), R.drawable.ic_file_download_outline)
         )
 
         InfoCard(cards_layout)

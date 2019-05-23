@@ -70,6 +70,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
+        window.setBackgroundDrawable(null)
 
         initNavigation()
 
@@ -146,11 +147,12 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         return AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(
-                        ColorDrawable(ContextCompat.getColor(this, R.color.primary))
+                        ColorDrawable(ContextCompat.getColor(this, R.color.white))
                 )
+                .withTextColor(ContextCompat.getColor(this, R.color.primary_text))
                 .withSelectionListEnabledForSingleProfile(false)
                 .withProfileImagesVisible(true)
-                .withDividerBelowHeader(false)
+                .withDividerBelowHeader(true)
                 .addProfiles(getProfileHeaderItem(email, null))
                 .withOnAccountHeaderListener { _, _, _ ->
                     openAccountIdShare()
@@ -198,6 +200,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withActivity(this)
                 .withAccountHeader(profileHeader)
                 .withHeaderDivider(false)
+                .withTranslucentStatusBar(false)
                 .withSliderBackgroundColorRes(R.color.material_drawer_background)
                 .addDrawerItems(
                         items[DashboardFragment.ID]

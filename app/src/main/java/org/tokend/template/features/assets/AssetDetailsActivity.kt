@@ -1,6 +1,7 @@
 package org.tokend.template.features.assets
 
 import android.os.Bundle
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.AssetRecord
@@ -12,6 +13,8 @@ class AssetDetailsActivity : BaseActivity() {
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_asset_details)
+
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         asset = (intent.getSerializableExtra(ASSET_EXTRA) as? AssetRecord)

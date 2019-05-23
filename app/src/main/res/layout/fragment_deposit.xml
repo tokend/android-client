@@ -4,26 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorDefaultBackground"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
+        style="@style/AppbarTheme.White"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+        android:layout_height="wrap_content">
 
-        <include layout="@layout/toolbar" />
+        <include layout="@layout/toolbar_white" />
 
         <org.tokend.template.view.picker.PickerTabLayout
             android:id="@+id/asset_tab_layout"
-            style="@style/TabPicker.Inverse"
+            style="@style/TabPicker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:tabGravity="fill" />
 
     </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/appbar">
+
+        <include layout="@layout/include_appbar_elevation" />
+    </FrameLayout>
 
     <org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout
         android:id="@+id/swipe_refresh"
@@ -42,10 +50,10 @@
                 android:id="@+id/no_address_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
                 android:clickable="true"
                 android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
                 android:visibility="visible">
 
                 <TextView

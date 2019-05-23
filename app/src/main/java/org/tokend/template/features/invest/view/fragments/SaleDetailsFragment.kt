@@ -22,7 +22,7 @@ class SaleDetailsFragment : AssetDetailsFragment() {
                 ?: throw IllegalStateException("Parent activity must hold SaleRecord")
 
         view?.background =
-                ColorDrawable(ContextCompat.getColor(requireContext(), R.color.background))
+                ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white))
     }
 
     override fun displaySummary() {

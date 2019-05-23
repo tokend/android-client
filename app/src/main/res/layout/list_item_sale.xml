@@ -2,14 +2,13 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/InfoCard"
+    style="@style/ImpressiveCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/half_standard_margin"
-    android:layout_marginTop="@dimen/quarter_standard_margin"
     android:layout_marginEnd="@dimen/half_standard_margin"
-    android:layout_marginBottom="@dimen/quarter_standard_margin"
-    app:cardPreventCornerOverlap="false"
+    android:clipChildren="true"
+    app:cardPreventCornerOverlap="true"
     app:contentPadding="0dp">
 
     <LinearLayout

@@ -15,6 +15,11 @@ class AssetPairItemsAdapter(
         return AssetPairItemViewHolder(view, amountFormatter)
     }
 
+    override fun bindItemViewHolder(holder: AssetPairItemViewHolder, position: Int) {
+        super.bindItemViewHolder(holder, position)
+        holder.dividerIsVisible = position < itemCount - 1
+    }
+
     override fun getDiffCallback(newItems: List<AssetPairListItem>): DiffUtil.Callback? {
         return object : DiffUtil.Callback() {
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -30,6 +35,12 @@ class AssetPairItemsAdapter(
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                // Divider.
+                if (oldItemPosition == items.size - 1 && newItemPosition != newItems.size - 1
+                        || oldItemPosition != items.size - 1 && newItemPosition == newItems.size - 1) {
+                    return false
+                }
+
                 val first = items[oldItemPosition]
                 val second = newItems[newItemPosition]
 

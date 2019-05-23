@@ -38,8 +38,7 @@
     </style>
 
     <style name="AppTheme.NoActionBar.LightStatusBar" parent="AppTheme.NoActionBar">
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent
-        </item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/white</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
         <item name="android:windowBackground">@color/white</item>
@@ -113,6 +112,13 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="AppbarTheme" parent="ThemeOverlay.AppCompat.ActionBar" />
+
+    <style name="AppbarTheme.White" parent="AppbarTheme">
+        <item name="elevation">0dp</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
     <style name="TabPicker">
         <item name="tabGravity">fill</item>
         <item name="tabMode">scrollable</item>
@@ -146,6 +152,20 @@
         <item name="contentPadding">@dimen/standard_margin</item>
         <item name="cardUseCompatPadding">true</item>
         <item name="android:layout_marginTop">@dimen/half_standard_margin</item>
+    </style>
+
+    <style name="ImpressiveCard" parent="InfoCard">
+        <item name="cardElevation">@dimen/impressive_card_elevation</item>
+        <item name="cardCornerRadius">8dp</item>
+    </style>
+
+    <style name="StrokedCard">
+        <item name="android:background">@drawable/rounded_stroke_card_background</item>
+        <item name="android:paddingBottom">@dimen/half_standard_padding</item>
+        <item name="android:paddingTop">@dimen/standard_margin</item>
+        <item name="android:paddingStart">@dimen/standard_margin</item>
+        <item name="android:paddingEnd">@dimen/standard_margin</item>
+        <item name="android:layout_marginTop">@dimen/standard_margin</item>
     </style>
 
     <style name="HeadingText">

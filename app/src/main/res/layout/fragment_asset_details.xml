@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.assets.AssetDetailsActivity"
     tools:ignore="UnusedAttribute">
 
     <ScrollView style="@style/LimitedMatchParentWidthConstraint">
@@ -12,9 +11,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="5dp"
+            android:paddingStart="@dimen/quarter_standard_margin"
             android:paddingTop="@dimen/half_standard_margin"
-            android:paddingEnd="5dp">
+            android:paddingEnd="@dimen/quarter_standard_margin">
 
             <include layout="@layout/layout_progress" />
 
@@ -24,12 +23,11 @@
                 android:id="@+id/cards_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/half_standard_margin"
-                android:layout_marginTop="-5dp"
-                android:layout_marginEnd="@dimen/half_standard_margin"
+                android:layout_marginStart="@dimen/standard_margin"
+                android:layout_marginEnd="@dimen/standard_margin"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/standard_margin" />
+                android:paddingBottom="@dimen/standard_padding" />
 
         </LinearLayout>
 

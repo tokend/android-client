@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_dashboard.*
-import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.activities.OnBackPressedListener

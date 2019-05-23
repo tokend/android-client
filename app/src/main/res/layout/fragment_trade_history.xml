@@ -54,8 +54,8 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@drawable/below_shadow" />
+                android:layout_height="1dp"
+                android:background="@color/material_drawer_divider" />
 
             <include layout="@layout/include_error_empty_view" />
 
