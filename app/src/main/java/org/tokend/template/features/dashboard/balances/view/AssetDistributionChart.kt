@@ -51,14 +51,12 @@ class AssetDistributionChart
     private inner class AssetDistributionEntry(
             val name: String,
             val assetCode: String?,
-            val amount: BigDecimal,
             val conversionAssetCode: String,
             val convertedAmount: BigDecimal,
             val percentOfTotal: Float
     ) {
         constructor(balance: BalanceRecord, total: BigDecimal) : this(
                 name = balance.asset.name ?: balance.assetCode,
-                amount = balance.available,
                 assetCode = balance.assetCode,
                 convertedAmount = balance.convertedAmount!!,
                 conversionAssetCode = balance.conversionAssetCode!!,
@@ -78,7 +76,7 @@ class AssetDistributionChart
         (context.applicationContext as App).stateComponent.inject(this)
 
         isBaselineAligned = false
-        orientation = LinearLayout.HORIZONTAL
+        orientation = HORIZONTAL
         context.layoutInflater.inflate(R.layout.layout_asset_distribution_chart,
                 this, true)
 
@@ -118,8 +116,9 @@ class AssetDistributionChart
 
             override fun onValueSelected(e: Entry, h: Highlight) {
                 chart.centerText = percentFormatter.format(e.y / 100)
+                setLegendEntryHighlight(prevHighlightValue.toInt(), false)
+                setLegendEntryHighlight(h.x.toInt(), true)
                 prevHighlightValue = h.x
-                displayLegend(distribution, h.x.toInt())
             }
         })
     }
@@ -183,11 +182,12 @@ class AssetDistributionChart
             highlightValue(0f, 0)
         }
 
-        displayLegend(distribution, 0)
+        displayLegend(distribution)
+        setLegendEntryHighlight(0, true)
     }
 
     // region Legend
-    private fun displayLegend(distribution: List<AssetDistributionEntry>, selectedIndex: Int) {
+    private fun displayLegend(distribution: List<AssetDistributionEntry>) {
         legendLayout.removeAllViews()
 
         val distributionMap = distribution
@@ -198,7 +198,7 @@ class AssetDistributionChart
                     ?: return@forEachIndexed
 
             legendLayout.addView(
-                    getLegendEntryView(i, distributionEntry, legendEntry.formColor, selectedIndex)
+                    getLegendEntryView(i, distributionEntry, legendEntry.formColor)
             )
         }
     }
@@ -206,12 +206,11 @@ class AssetDistributionChart
     private fun getLegendEntryView(index: Int,
                                    distributionEntry: AssetDistributionEntry,
                                    @ColorInt
-                                   color: Int,
-                                   selectedIndex: Int): View {
+                                   color: Int): View {
         return LinearLayout(context).apply {
-            orientation = LinearLayout.HORIZONTAL
+            orientation = HORIZONTAL
 
-            layoutParams = LinearLayout.LayoutParams(
+            layoutParams = LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply {
@@ -226,6 +225,7 @@ class AssetDistributionChart
             val circleSize = context.dip(12)
             addView(
                     View(context).apply {
+                        id = getLegendEntryIndicatorId(index)
 
                         layoutParams = ViewGroup.LayoutParams(
                                 circleSize,
@@ -234,25 +234,23 @@ class AssetDistributionChart
 
                         background = GradientDrawable().apply {
                             shape = GradientDrawable.OVAL
-                            if (index == selectedIndex) {
-                                setColor(color)
-                            }
-                            setStroke(4, color)
+                            setStroke(dip(1), color)
                         }
+                        tag = color
                     }
             )
 
             // Text.
             addView(
                     LinearLayout(context).apply {
-                        layoutParams = LinearLayout.LayoutParams(
+                        layoutParams = LayoutParams(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT
                         ).apply {
                             marginStart = context.resources.getDimensionPixelSize(R.dimen.half_standard_margin)
                         }
 
-                        orientation = LinearLayout.VERTICAL
+                        orientation = VERTICAL
 
                         // Name.
                         addView(
@@ -278,6 +276,25 @@ class AssetDistributionChart
                 chart.highlightValue(index.toFloat(), 0)
             }
         }
+    }
+
+    private fun setLegendEntryHighlight(index: Int, highlight: Boolean) {
+        val view = legendLayout.findViewById<View>(getLegendEntryIndicatorId(index))
+                ?: return
+        val background = (view.background as? GradientDrawable)
+                ?: return
+        val color = view.tag as? Int
+                ?: return
+
+        if (highlight) {
+            background.setColor(color)
+        } else {
+            background.setColor(Color.TRANSPARENT)
+        }
+    }
+
+    private fun getLegendEntryIndicatorId(index: Int): Int {
+        return 7 + index
     }
     // endregion
     // endregion
@@ -319,7 +336,6 @@ class AssetDistributionChart
             result.add(
                     AssetDistributionEntry(
                             name = context.getString(R.string.asset_distribution_other),
-                            amount = BigDecimal.ZERO,
                             assetCode = null,
                             convertedAmount = otherTotal,
                             conversionAssetCode = conversionAssetCode,
