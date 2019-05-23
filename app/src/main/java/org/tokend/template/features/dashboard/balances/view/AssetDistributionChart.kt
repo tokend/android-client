@@ -234,7 +234,7 @@ class AssetDistributionChart
 
                         background = GradientDrawable().apply {
                             shape = GradientDrawable.OVAL
-                            setStroke(dip(1), color)
+                            setStroke(dip(2), color)
                         }
                         tag = color
                     }
