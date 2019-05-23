@@ -10,6 +10,7 @@ import org.tokend.sdk.api.accounts.model.limits.LimitEntry
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.extensions.highlight
+import org.tokend.template.extensions.highlightLast
 import org.tokend.template.extensions.isMaxPossibleAmount
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
@@ -40,30 +41,28 @@ class LimitProgressWrapper(private val rootView: View,
                             asset: String,
                             @StringRes
                             period: Int) {
-
-        if(total.isMaxPossibleAmount()) {
-            progressLayout.visibility = View.GONE
-            return
-        }
-
         progressLayout.limit_period.text = context.getString(period)
 
         val leftTextView = progressLayout.limit_left
-        val totalTextView = progressLayout.limit_total
+        val progress = progressLayout.limit_progress
+
+        if (total.isMaxPossibleAmount()) {
+            progress.visibility = View.GONE
+            leftTextView.text = context.getString(R.string.limit_unlimited)
+            return
+        }
 
         val left = amountFormatter.formatAssetAmount(total - used, asset,
-                abbreviation = true, withAssetCode = true)
-        val leftString = context.getString(R.string.template_limit_left, left)
-        leftTextView.text = SpannableString(leftString)
-                .apply { highlight(left, highlightColor) }
-
+                abbreviation = true, withAssetCode = false)
         val max = amountFormatter.formatAssetAmount(total, asset,
                 abbreviation = true, withAssetCode = true)
-        val maxString = context.getString(R.string.template_limit_total, max)
-        totalTextView.text = SpannableString(maxString)
-                .apply { highlight(max, highlightColor) }
+        val leftString = context.getString(R.string.template_limit_left_of_total, left, max)
+        leftTextView.text = SpannableString(leftString)
+                .apply {
+                    highlight(left, highlightColor)
+                    highlightLast(max, highlightColor)
+                }
 
-        val progress = progressLayout.limit_progress
         val scaledTotalCap = BigDecimalUtil.scaleAmount(total, 0).toInt()
         val scaledLeftCap = BigDecimalUtil.scaleAmount(total - used, 0).toInt()
         progress.max = scaledTotalCap
