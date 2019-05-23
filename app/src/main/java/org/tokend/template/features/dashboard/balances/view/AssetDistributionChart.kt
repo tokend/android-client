@@ -273,6 +273,10 @@ class AssetDistributionChart
                         )
                     }
             )
+
+            setOnClickListener {
+                chart.highlightValue(index.toFloat(), 0)
+            }
         }
     }
     // endregion
