@@ -48,4 +48,6 @@
     <dimen name="contact_photo_size">40dp</dimen>
 
     <dimen name="unlock_logo_size">96dp</dimen>
+
+    <dimen name="modern_card_corner_radius">8dp</dimen>
 </resources>
