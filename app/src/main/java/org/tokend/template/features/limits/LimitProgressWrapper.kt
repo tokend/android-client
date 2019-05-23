@@ -65,8 +65,8 @@ class LimitProgressWrapper(private val rootView: View,
 
         val progress = progressLayout.limit_progress
         val scaledTotalCap = BigDecimalUtil.scaleAmount(total, 0).toInt()
-        val scaledUsedCap = BigDecimalUtil.scaleAmount(used, 0).toInt()
+        val scaledLeftCap = BigDecimalUtil.scaleAmount(total - used, 0).toInt()
         progress.max = scaledTotalCap
-        progress.progress = scaledUsedCap
+        progress.progress = scaledLeftCap
     }
 }
