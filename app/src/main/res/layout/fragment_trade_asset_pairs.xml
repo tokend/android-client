@@ -43,11 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:overScrollMode="never"
-                android:paddingStart="@dimen/quarter_standard_margin"
-                android:paddingTop="@dimen/half_standard_margin"
-                android:paddingEnd="@dimen/quarter_standard_margin"
-                android:paddingBottom="@dimen/standard_margin" />
+                android:overScrollMode="never" />
         </LinearLayout>
 
     </org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
