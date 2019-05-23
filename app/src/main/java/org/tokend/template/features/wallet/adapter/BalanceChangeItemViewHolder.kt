@@ -44,11 +44,18 @@ class BalanceChangeItemViewHolder(view: View,
             actionDetailsTextView.visibility = View.VISIBLE
 
             if (counterparty != null && item.isReceived != null) {
+                val formatted = try {
+                    "${counterparty.substring(0..3)}…" +
+                            counterparty.substring(counterparty.length - 4 until counterparty.length)
+                } catch (e: StringIndexOutOfBoundsException) {
+                    counterparty
+                }
+
                 actionDetailsTextView.text =
                         if (item.isReceived)
-                            view.context.getString(R.string.template_tx_from, counterparty)
+                            view.context.getString(R.string.template_tx_from, formatted)
                         else
-                            view.context.getString(R.string.template_tx_to, counterparty)
+                            view.context.getString(R.string.template_tx_to, formatted)
             } else {
                 actionDetailsTextView.text = cause
             }
