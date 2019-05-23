@@ -1,5 +1,6 @@
 package org.tokend.template.features.settings
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v7.preference.PreferenceCategory
 import android.support.v7.preference.SwitchPreferenceCompat
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
@@ -56,6 +58,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
             hideLoading = { progress?.hide() }
     )
 
+    @SuppressLint("InlinedApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -71,7 +74,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
             view.addView(progress, 1)
         }
 
-        // Include toolbar elevation
+        // Include toolbar elevation.
         try {
             val listContainer = view.findViewById<FrameLayout>(android.R.id.list_container)
             // Because of <merge> root
@@ -84,6 +87,14 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
             ElevationUtil.initScrollElevation(recyclerView, elevationView)
         } catch (e: Exception) {
             // Ok, no elevation, not a big problem...
+        }
+
+        // Disable list overscroll.
+        try {
+            view.findViewById<RecyclerView>(R.id.recycler_view).overScrollMode =
+                    ScrollView.OVER_SCROLL_NEVER
+        } catch (e: Exception) {
+            // 🙈
         }
     }
 
