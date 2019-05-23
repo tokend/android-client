@@ -27,7 +27,7 @@
                 android:layout_marginEnd="@dimen/standard_margin"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/standard_margin" />
+                android:paddingBottom="@dimen/standard_padding" />
 
         </LinearLayout>
 
