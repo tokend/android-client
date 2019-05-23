@@ -328,8 +328,8 @@
     <string name="limit_period_weekly">Weekly</string>
     <string name="limit_period_monthly">Monthly</string>
     <string name="limit_period_annual">Annual</string>
-    <string name="template_limit_total">%1$s\ntotal</string>
-    <string name="template_limit_left">%1$s\nleft</string>
+    <string name="template_limit_left_of_total">%1$s left of %2$s</string>
+    <string name="limit_unlimited">Unlimited</string>
 
     <string name="authenticator_hint">Use TokenD Authenticator to set up and access your account</string>
     <string name="open_authenticator_action">Open authenticator</string>
