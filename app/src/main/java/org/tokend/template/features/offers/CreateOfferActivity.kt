@@ -15,6 +15,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_create_offer.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
@@ -28,6 +30,7 @@ import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import java.math.BigDecimal
@@ -56,6 +59,8 @@ class CreateOfferActivity : BaseActivity() {
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_create_offer)
+        setSupportActionBar(toolbar)
+        setTitle(R.string.create_offer_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
@@ -73,6 +78,7 @@ class CreateOfferActivity : BaseActivity() {
         subscribeToBalances()
         updateActionsAvailability()
         updateActionHints()
+        ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
         update()
     }
 

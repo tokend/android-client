@@ -53,17 +53,17 @@
         <activity
             android:name=".features.signin.AuthenticatorSignInActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.signup.SignUpActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/sign_up"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.recovery.RecoveryActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/recover_account"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".activities.MainActivity"
             android:configChanges="orientation|screenSize"
@@ -74,18 +74,18 @@
             android:name=".features.signup.RecoverySeedActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/save_recovery_seed"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme.NoActionBar.NoBackground"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".features.changepassword.ChangePasswordActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/change_password_title"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.withdraw.WithdrawalConfirmationActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/withdrawal_confirmation_title"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.assets.AssetDetailsActivity"
             android:configChanges="orientation|screenSize"
@@ -94,22 +94,22 @@
             android:name=".features.send.PaymentConfirmationActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/payment_confirmation_title"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.offers.OfferConfirmationActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/offer_confirmation_title"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.invest.view.InvestmentConfirmationActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/investment_confirmation_title"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.offers.OffersActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/pending_offers_title"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.links.ProcessLinkActivity"
             android:configChanges="orientation|screenSize"
@@ -141,7 +141,7 @@
         <activity
             android:name=".features.invest.view.SaleActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.wallet.details.AmlAlertDetailsActivity"
             android:configChanges="orientation|screenSize"
@@ -211,20 +211,23 @@
             android:name=".features.offers.CreateOfferActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/create_offer_title"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.limits.LimitsActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/limits_title" />
+            android:label="@string/limits_title"
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"/>
         <activity
             android:name=".features.fees.view.FeesActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/fees_title" />
+            android:label="@string/fees_title"
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"/>
         <activity
             android:name=".features.invest.view.SaleInvestActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/sale_investing"
-            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"/>
         <activity
             android:name=".features.signin.UnlockAppActivity"
             android:configChanges="orientation|screenSize"

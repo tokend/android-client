@@ -9,6 +9,8 @@ import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details_list.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
@@ -19,6 +21,7 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.details.ExtraViewProvider
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.wallet.xdr.FeeType
 
@@ -28,6 +31,8 @@ class WithdrawalConfirmationActivity : BaseActivity() {
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_details_list)
+        setSupportActionBar(toolbar)
+        setTitle(R.string.withdrawal_confirmation_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         request =
@@ -38,6 +43,8 @@ class WithdrawalConfirmationActivity : BaseActivity() {
         details_list.adapter = adapter
 
         displayDetails()
+
+        ElevationUtil.initScrollElevation(details_list, appbar_elevation_view)
     }
 
     private fun displayDetails() {

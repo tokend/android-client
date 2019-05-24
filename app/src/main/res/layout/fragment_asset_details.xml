@@ -3,9 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="UnusedAttribute">
 
-    <ScrollView style="@style/LimitedMatchParentWidthConstraint">
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        style="@style/LimitedMatchParentWidthConstraint">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,6 +34,14 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include layout="@layout/include_appbar_elevation" />
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

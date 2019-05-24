@@ -11,6 +11,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sale_invest.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
@@ -28,6 +29,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.ContentLoadingProgressBar
 import org.tokend.template.view.balancepicker.BalancePickerBottomDialog
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.wallet.xdr.SaleType
@@ -110,6 +112,7 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
         initButtons()
         initAssetSelection()
         initSwipeRefresh()
+        ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
 
         subscribeToInvestmentInfo()
         subscribeToBalances()

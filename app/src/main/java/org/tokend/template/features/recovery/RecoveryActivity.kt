@@ -9,8 +9,10 @@ import android.view.View
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_recovery.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_network_field.*
 import kotlinx.android.synthetic.main.layout_progress.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.wallets.model.EmailNotVerifiedException
@@ -26,6 +28,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -66,6 +69,9 @@ class RecoveryActivity : BaseActivity() {
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_recovery)
+        setSupportActionBar(toolbar)
+        setTitle(R.string.recover_account)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistor)
         urlConfigManager.onConfigUpdated {
@@ -79,6 +85,7 @@ class RecoveryActivity : BaseActivity() {
 
         initFields()
         initButtons()
+        ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
 
         canRecover = false
     }

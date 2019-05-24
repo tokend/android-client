@@ -6,7 +6,9 @@ import android.text.Editable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_change_password.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_progress.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
@@ -24,6 +26,7 @@ import org.tokend.template.logic.persistance.FingerprintAuthManager
 import org.tokend.template.logic.wallet.WalletUpdateManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.FingerprintIndicatorManager
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -54,10 +57,13 @@ class ChangePasswordActivity : BaseActivity() {
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_change_password)
+        setSupportActionBar(toolbar)
+        setTitle(R.string.change_password_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initFields()
         initButtons()
+        ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
 
         fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
         fingerprintIndicatorManager =

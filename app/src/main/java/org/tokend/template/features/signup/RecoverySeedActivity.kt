@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import kotlinx.android.synthetic.main.activity_recovery_seed.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.jetbrains.anko.clipboardManager
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.enabled
@@ -13,6 +15,7 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.onEditorAction
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.input.SimpleTextWatcher
 
 class RecoverySeedActivity : BaseActivity() {
@@ -39,12 +42,16 @@ class RecoverySeedActivity : BaseActivity() {
             return
         }
 
+        setSupportActionBar(toolbar)
+        setTitle(R.string.save_recovery_seed)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setContentView(R.layout.activity_recovery_seed)
 
         initFields()
         initButtons()
+
+        ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
 
         canContinue = false
     }

@@ -1,6 +1,7 @@
 package org.tokend.template.features.offers
 
 import android.os.Bundle
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.fragments.FragmentFactory
@@ -11,6 +12,7 @@ class OffersActivity : BaseActivity() {
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_offers)
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (onlyPrimary) {
