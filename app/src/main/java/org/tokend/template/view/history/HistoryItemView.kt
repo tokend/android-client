@@ -17,7 +17,7 @@ interface HistoryItemView {
 
     val incomingColor: Int
     val outgoingColor: Int
-    val secondaryTextColor: Int
+    val defaultAmountColor: Int
 
     var dividerIsVisible: Boolean
 }
