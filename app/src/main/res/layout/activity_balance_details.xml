@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RelativeLayout
+            <android.support.constraint.ConstraintLayout
                 android:id="@+id/root_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -22,29 +22,29 @@
 
                 <org.tokend.template.view.PaginationRecyclerView
                     android:id="@+id/history_list"
-                    android:layout_width="match_parent"
+                    style="@style/LimitedMatchParentWidthConstraint"
                     android:layout_height="match_parent"
                     android:overScrollMode="never"
                     android:paddingStart="@dimen/quarter_standard_margin"
-                    android:paddingEnd="@dimen/quarter_standard_margin"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                    android:paddingEnd="@dimen/quarter_standard_margin" />
 
                 <org.tokend.template.view.TxDateTextSwitcher
                     android:id="@+id/date_text_switcher"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
                     android:layout_margin="8dp"
                     android:background="@drawable/tx_date_text_switcher_background"
                     android:measureAllChildren="true"
-                    android:visibility="invisible" />
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/history_list" />
 
                 <include layout="@layout/include_error_empty_view" />
 
                 <include layout="@layout/include_appbar_elevation" />
 
-            </RelativeLayout>
+            </android.support.constraint.ConstraintLayout>
 
             <android.support.design.widget.AppBarLayout
                 android:id="@+id/appbar"

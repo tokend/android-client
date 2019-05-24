@@ -127,11 +127,9 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initList() {
-        val columns = ColumnCalculator.getColumnCount(requireActivity())
-
-        layoutManager = GridLayoutManager(requireContext(), columns)
-
+        layoutManager = GridLayoutManager(requireContext(), 1)
         pairsAdapter = AssetPairItemsAdapter(amountFormatter)
+        updateListColumnsCount()
 
         asset_pairs_recycler_view.layoutManager = layoutManager
         asset_pairs_recycler_view.adapter = pairsAdapter
@@ -261,7 +259,12 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
+        updateListColumnsCount()
+    }
+
+    private fun updateListColumnsCount() {
         layoutManager.spanCount = ColumnCalculator.getColumnCount(requireActivity())
+        pairsAdapter.drawDividers = layoutManager.spanCount == 1
     }
 
     override fun onBackPressed(): Boolean {
