@@ -72,11 +72,16 @@ class BalanceChangeListItem(
             return when (details) {
                 is BalanceChangeCause.Payment ->
                     details.getCounterpartyName(accountId)
-                            ?: details.getCounterpartyAccountId(accountId)
+                            ?: formatAccountId(details.getCounterpartyAccountId(accountId))
                 is BalanceChangeCause.WithdrawalRequest ->
                     details.destinationAddress
                 else -> null
             }
+        }
+
+        private fun formatAccountId(accountId: String): String {
+            return "${accountId.substring(0..3)}…" +
+                        accountId.substring(accountId.length - 4 until accountId.length)
         }
 
         private fun getCauseName(cause: BalanceChangeCause, localizedName: LocalizedName): String? {
