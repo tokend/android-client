@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -96,7 +97,7 @@ open class BalancePickerBottomDialog(
 
         dialog.show()
 
-        adjustDialogHeight(dialog, dialogView)
+        adjustDialogSize(dialog, dialogView)
     }
 
     protected open fun initDialogView(dialog: Dialog,
@@ -106,13 +107,19 @@ open class BalancePickerBottomDialog(
         initList(dialog, dialogView, callback)
     }
 
-    protected open fun adjustDialogHeight(dialog: Dialog,
-                                          dialogView: View) {
+    protected open fun adjustDialogSize(dialog: Dialog,
+                                        dialogView: View) {
         val displayMetrics = DisplayMetrics()
         dialog.window?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
         val displayHeight = displayMetrics.heightPixels
+        val displayWidth = displayMetrics.widthPixels
 
         dialogView.minimumHeight = (displayHeight * 0.3).roundToInt()
+
+        val maxWidth = dialog.context.resources.getDimensionPixelSize(R.dimen.max_content_width)
+        if (displayWidth > maxWidth) {
+            dialog.window?.setLayout(maxWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
     }
 
     protected open fun initList(dialog: Dialog,
