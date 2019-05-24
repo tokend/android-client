@@ -35,6 +35,7 @@
 
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/primary</item>
     </style>
 
     <style name="AppTheme.NoActionBar.LightStatusBar" parent="AppTheme.NoActionBar">

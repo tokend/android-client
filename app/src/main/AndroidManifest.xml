@@ -41,8 +41,8 @@
             android:value="${fabricApiKey}" />
 
         <activity
-            android:name=".features.signin.SignInActivity"
-            android:configChanges="orientation|screenSize"
+            android:name=".features.signin.SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,6 +50,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".features.signin.SignInActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"/>
         <activity
             android:name=".features.signin.AuthenticatorSignInActivity"
             android:configChanges="orientation|screenSize"
@@ -206,7 +210,7 @@
             android:name=".features.trade.TradeActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/trade_title"
-            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"/>
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.offers.CreateOfferActivity"
             android:configChanges="orientation|screenSize"
@@ -216,18 +220,18 @@
             android:name=".features.limits.LimitsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/limits_title"
-            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"/>
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.fees.view.FeesActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/fees_title"
-            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"/>
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar" />
         <activity
             android:name=".features.invest.view.SaleInvestActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/sale_investing"
-            android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
-            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"/>
+            android:theme="@style/AppTheme.NoActionBar.LightStatusBar"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".features.signin.UnlockAppActivity"
             android:configChanges="orientation|screenSize"

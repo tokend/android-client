@@ -12,8 +12,15 @@ import android.view.View
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sign_in.*
+import kotlinx.android.synthetic.main.activity_sign_in.email_edit_text
+import kotlinx.android.synthetic.main.activity_sign_in.password_edit_text
+import kotlinx.android.synthetic.main.activity_sign_in.scroll_view
+import kotlinx.android.synthetic.main.activity_sign_in.sign_up_button
+import kotlinx.android.synthetic.main.activity_sign_up.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_network_field.*
 import kotlinx.android.synthetic.main.layout_progress.*
+import kotlinx.android.synthetic.main.toolbar_white.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
@@ -36,6 +43,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
@@ -71,6 +79,7 @@ class SignInActivity : BaseActivity() {
         setContentView(R.layout.activity_sign_in)
         window.setBackgroundDrawable(
                 ColorDrawable(ContextCompat.getColor(this, R.color.white)))
+        setSupportActionBar(toolbar)
         setTitle(R.string.sign_in)
 
         fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
@@ -84,6 +93,8 @@ class SignInActivity : BaseActivity() {
         initVersion()
         initFields()
         initButtons()
+
+        ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
 
         canSignIn = false
 
