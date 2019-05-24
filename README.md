@@ -50,5 +50,8 @@ You can specify the environment to run tests on inside `Config.kt` file.
 It is recommended to use local [TokenD Developer edition](https://github.com/tokend/developer-edition)
 for tests because they create a lot of users, assets, asset pairs, etc.
 
+## Connecting to Developer edition
+In order to connect the wallet to your [TokenD Developer edition](https://github.com/tokend/developer-edition) instance follow [this guide](https://mobile-qr.tokend.services/).
+
 ## Credits
 ⛏ <a href="https://distributedlab.com/" target="_blank">Distributed Lab</a>, 2019
