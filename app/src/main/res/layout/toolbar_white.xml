@@ -6,4 +6,5 @@
     android:layout_height="wrap_content"
     android:minHeight="?attr/actionBarSize"
     android:theme="@style/ToolbarStyle.White"
+    app:layout_collapseMode="pin"
     app:popupTheme="@style/ToolbarStyle.White" />

@@ -42,6 +42,8 @@
 
                 <include layout="@layout/include_error_empty_view" />
 
+                <include layout="@layout/include_appbar_elevation" />
+
             </RelativeLayout>
 
             <android.support.design.widget.AppBarLayout
@@ -51,36 +53,25 @@
                 android:background="@android:color/transparent"
                 app:elevation="0dp">
 
-                <android.support.design.widget.CollapsingToolbarLayout
+                <org.tokend.template.features.wallet.view.ScrimCallbackCollapsingToolbarLayout
                     android:id="@+id/collapsing_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:padding="@dimen/half_standard_margin"
-                    app:layout_scrollFlags="scroll">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <android.support.v7.widget.AppCompatImageView
-                            android:id="@+id/close_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:padding="@dimen/half_standard_margin"
-                            app:srcCompat="@drawable/ic_arrow_back"
-                            app:tint="@color/icons" />
-
-                    </RelativeLayout>
+                    app:contentScrim="@color/white"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                    app:scrimAnimationDuration="@android:integer/config_shortAnimTime"
+                    app:titleEnabled="false">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/half_standard_margin"
+                        android:layout_marginStart="@dimen/standard_margin"
+                        android:layout_marginEnd="@dimen/standard_margin"
                         android:gravity="center_horizontal"
                         android:orientation="vertical"
-                        android:paddingTop="@dimen/half_standard_margin">
+                        android:paddingTop="@dimen/standard_padding"
+                        android:paddingBottom="@dimen/standard_margin">
 
                         <ImageView
                             android:id="@+id/asset_logo_image_view"
@@ -107,14 +98,17 @@
 
                         <TextView
                             android:id="@+id/balance_converted_text_view"
-                            style="@style/HintText"
+                            style="@style/SecondaryText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/quarter_standard_margin"
                             android:gravity="center"
                             tools:text="6.37 USD" />
                     </LinearLayout>
-                </android.support.design.widget.CollapsingToolbarLayout>
+
+                    <include layout="@layout/toolbar_white" />
+
+                </org.tokend.template.features.wallet.view.ScrimCallbackCollapsingToolbarLayout>
             </android.support.design.widget.AppBarLayout>
         </android.support.design.widget.CoordinatorLayout>
 
