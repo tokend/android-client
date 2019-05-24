@@ -87,7 +87,7 @@ class BalanceDetailsActivity : BaseActivity() {
     private fun initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener { finish() }
-        toolbar.setSubtitleTextAppearance(this, R.style.HintText)
+        toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleAppearance)
 
         initToolbarAnimations()
     }
