@@ -1,8 +1,9 @@
 package org.tokend.template.features.dashboard.balances.view
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import android.view.*
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_balances.*
@@ -15,10 +16,7 @@ import org.tokend.template.features.dashboard.balances.view.adapter.BalanceListI
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.util.ElevationUtil
-import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.ScrollOnTopItemUpdateAdapterObserver
-import org.tokend.template.view.util.SwipeRefreshDependencyUtil
+import org.tokend.template.view.util.*
 import java.math.BigDecimal
 
 
@@ -32,6 +30,7 @@ class BalancesFragment : BaseFragment() {
         get() = repositoryProvider.balances()
 
     private lateinit var adapter: BalanceItemsAdapter
+    private lateinit var layoutManager: GridLayoutManager
 
     private var chartEverAnimated = false
 
@@ -56,9 +55,11 @@ class BalancesFragment : BaseFragment() {
 
     // region Init
     private fun initList() {
+        layoutManager = GridLayoutManager(requireContext(), 1)
         adapter = BalanceItemsAdapter(amountFormatter)
+        updateListColumnsCount()
         balances_list.adapter = adapter
-        balances_list.layoutManager = LinearLayoutManager(requireContext())
+        balances_list.layoutManager = layoutManager
         adapter.registerAdapterDataObserver(ScrollOnTopItemUpdateAdapterObserver(balances_list))
         adapter.onItemClick { _, item ->
             item.source?.id?.also { openWallet(it) }
@@ -170,6 +171,16 @@ class BalancesFragment : BaseFragment() {
             openAssetsExplorer()
             true
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        updateListColumnsCount()
+    }
+
+    private fun updateListColumnsCount() {
+        layoutManager.spanCount = ColumnCalculator.getColumnCount(requireActivity())
+        adapter.drawDividers = layoutManager.spanCount == 1
     }
 
     private fun openAssetsExplorer() {

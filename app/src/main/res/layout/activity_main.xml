@@ -14,10 +14,10 @@
 
     <View
         android:id="@+id/side_shadow_view"
-        android:layout_width="@dimen/quarter_standard_margin"
+        android:layout_width="1dp"
         android:layout_height="match_parent"
         android:layout_alignEnd="@id/nav_tablet"
-        android:background="@drawable/side_shadow"
+        android:background="@color/material_drawer_divider"
         android:visibility="gone" />
 
     <FrameLayout

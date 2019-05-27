@@ -9,9 +9,13 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.TextView
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_balance_details.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
+import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.childrenSequence
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
@@ -23,10 +27,7 @@ import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.template.features.wallet.adapter.BalanceChangesAdapter
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.util.AssetLogoUtil
-import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.LocalizedName
-import org.tokend.template.view.util.SwipeRefreshDependencyUtil
+import org.tokend.template.view.util.*
 
 class BalanceDetailsActivity : BaseActivity() {
     private val loadingIndicator = LoadingIndicatorManager(
@@ -59,6 +60,7 @@ class BalanceDetailsActivity : BaseActivity() {
 
         this.balanceId = balanceId
 
+        initToolbar()
         initBackground()
         initButtons()
         initHistory()
@@ -79,8 +81,42 @@ class BalanceDetailsActivity : BaseActivity() {
     }
 
     private fun initButtons() {
-        close_button.onClick { finish() }
         initFab()
+    }
+
+    private fun initToolbar() {
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        toolbar.setNavigationOnClickListener { finish() }
+        toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleAppearance)
+
+        initToolbarAnimations()
+    }
+
+    private fun initToolbarAnimations() {
+        // Force toolbar to create title and subtitle views.
+        toolbar.title = "*"
+        toolbar.subtitle = "*"
+
+        val fadingToolbarViews = toolbar
+                .childrenSequence()
+                .filter { it is TextView }
+
+        val fadeInDuration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+        val fadeOutDuration = collapsing_toolbar.scrimAnimationDuration
+
+        fadingToolbarViews.forEach {
+            it.visibility = View.INVISIBLE
+        }
+
+        collapsing_toolbar.scrimCallback = { scrimShown ->
+            fadingToolbarViews.forEach {
+                if (scrimShown) {
+                    AnimationUtil.fadeInView(it, fadeInDuration)
+                } else {
+                    AnimationUtil.fadeOutView(it, fadeOutDuration)
+                }
+            }
+        }
     }
 
     private fun initFab() {
@@ -170,6 +206,8 @@ class BalanceDetailsActivity : BaseActivity() {
         }
 
         date_text_switcher.init(history_list, adapter)
+
+        ElevationUtil.initScrollElevation(history_list, appbar_elevation_view)
     }
 
     private fun initSwipeRefresh() {
@@ -178,6 +216,14 @@ class BalanceDetailsActivity : BaseActivity() {
             update(force = true)
             menu_fab.close(true)
         }
+
+        val offset = -dip(32)
+        swipe_refresh.setProgressViewOffset(
+                false,
+                swipe_refresh.progressViewStartOffset + offset,
+                swipe_refresh.progressViewEndOffset + offset
+        )
+
         SwipeRefreshDependencyUtil.addDependency(swipe_refresh, appbar)
     }
     // endregion
@@ -248,11 +294,13 @@ class BalanceDetailsActivity : BaseActivity() {
         val balance = this.balance
                 ?: return
 
-        balance_available_text_view.text =
+        val availableString =
                 amountFormatter.formatAssetAmount(
                         balance.available,
                         balance.assetCode
                 )
+        balance_available_text_view.text = availableString
+        toolbar.title = availableString
 
         asset_name_text_view.text = balance.asset.name ?: balance.assetCode
 
@@ -265,16 +313,20 @@ class BalanceDetailsActivity : BaseActivity() {
         if (balance.convertedAmount != null
                 && balance.conversionAssetCode != null
                 && balance.conversionAssetCode != balance.assetCode) {
-            balance_converted_text_view.visibility = View.VISIBLE
-            balance_converted_text_view.text = getString(
-                    R.string.template_converted_amount,
-                    amountFormatter.formatAssetAmount(
-                            balance.convertedAmount,
-                            balance.conversionAssetCode
+            val convertedString =
+                    getString(
+                            R.string.template_converted_amount,
+                            amountFormatter.formatAssetAmount(
+                                    balance.convertedAmount,
+                                    balance.conversionAssetCode
+                            )
                     )
-            )
+            balance_converted_text_view.visibility = View.VISIBLE
+            balance_converted_text_view.text = convertedString
+            toolbar.subtitle = convertedString
         } else {
             balance_converted_text_view.visibility = View.GONE
+            toolbar.subtitle = null
         }
     }
 

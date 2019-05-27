@@ -60,10 +60,9 @@ class BalanceChangeItemViewHolder(view: View,
     private fun displayAmount(item: BalanceChangeListItem) {
         val color =
                 when {
-                    item.action == BalanceChangeListItem.Action.LOCKED -> secondaryTextColor
                     item.isReceived == true -> incomingColor
                     item.isReceived == false -> outgoingColor
-                    else -> secondaryTextColor
+                    else -> defaultAmountColor
                 }
 
         amountTextView.setTextColor(color)

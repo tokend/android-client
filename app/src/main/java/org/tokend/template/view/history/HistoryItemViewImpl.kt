@@ -20,12 +20,12 @@ class HistoryItemViewImpl(val view: View,
         ContextCompat.getColor(view.context, R.color.received)
     }
 
-    override val outgoingColor: Int by lazy {
-        ContextCompat.getColor(view.context, R.color.sent)
+    override val defaultAmountColor: Int by lazy {
+        ContextCompat.getColor(view.context, R.color.primary_text)
     }
 
-    override val secondaryTextColor: Int by lazy {
-        ContextCompat.getColor(view.context, R.color.secondary_text)
+    override val outgoingColor: Int by lazy {
+        ContextCompat.getColor(view.context, R.color.sent)
     }
 
     override val iconSize: Int by lazy {
