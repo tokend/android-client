@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v7.preference.PreferenceCategory
 import android.support.v7.preference.SwitchPreferenceCompat
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.FrameLayout
@@ -40,8 +39,6 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
 
     override fun getScreenKey(): String? = null
-
-    private val TFA_FACTOR_TYPE = TfaFactor.Type.TOTP
 
     private var fingerprintPreference: SwitchPreferenceCompat? = null
 
@@ -83,19 +80,13 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
             val elevationView = dummyContainer.appbar_elevation_view
             dummyContainer.removeAllViews()
             listContainer.addView(elevationView)
-            val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
-            ElevationUtil.initScrollElevation(recyclerView, elevationView)
+            ElevationUtil.initScrollElevation(listView, elevationView)
         } catch (e: Exception) {
             // Ok, no elevation, not a big problem...
         }
 
         // Disable list overscroll.
-        try {
-            view.findViewById<RecyclerView>(R.id.recycler_view).overScrollMode =
-                    ScrollView.OVER_SCROLL_NEVER
-        } catch (e: Exception) {
-            // 🙈
-        }
+        listView.overScrollMode = ScrollView.OVER_SCROLL_NEVER
     }
 
     override fun reloadPreferences() {
@@ -315,4 +306,8 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         }
     }
 // endregion
+
+    companion object {
+        private val TFA_FACTOR_TYPE = TfaFactor.Type.TOTP
+    }
 }
