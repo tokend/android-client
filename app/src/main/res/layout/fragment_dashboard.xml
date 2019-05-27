@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:background="@color/background"
         app:itemIconTint="@color/color_bottom_tabs_item"
         app:itemTextColor="@color/color_bottom_tabs_item"
         app:labelVisibilityMode="labeled"

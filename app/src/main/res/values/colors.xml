@@ -3,8 +3,6 @@
     <color name="colorPrimary">@color/primary</color>
     <color name="colorPrimaryDark">@color/primary_dark</color>
     <color name="colorAccent">@color/accent</color>
-    <color name="colorDefaultBackground">#fafafa</color>
-    <color name="colorBackground">@color/background</color>
     <color name="transparentFloatingViewBackground">#3e000000</color>
     <color name="saleImagePlaceholder">#bcbcbc</color>
     <color name="mainActionButtonDisabled">#bcbcbc</color>
@@ -17,5 +15,5 @@
     <color name="material_drawer_primary_text">@color/primary_text</color>
     <color name="material_drawer_selected_text">@color/primary_text</color>
     <color name="material_drawer_background">@color/white</color>
-    <color name="material_drawer_selected">#EFEFFF</color>
+    <color name="material_drawer_selected">@color/accent_highlight</color>
 </resources>

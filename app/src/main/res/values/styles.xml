@@ -9,6 +9,7 @@
         <item name="preferenceTheme">@style/PreferenceTheme</item>
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
         <item name="android:windowAnimationStyle">@style/AppAnimationStyle</item>
+        <item name="android:windowBackground">@color/background</item>
     </style>
 
     <style name="AppAnimationStyle" parent="@android:style/Animation.Activity">
@@ -30,7 +31,6 @@
         <item name="android:statusBarColor" tools:targetApi="lollipop">@color/white</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
-        <item name="android:windowBackground">@color/white</item>
     </style>
 
     <style name="EditText">
@@ -57,7 +57,7 @@
 
     <style name="PrimaryButton" parent="Base.Widget.AppCompat.Button.Colored">
         <item name="android:theme">@style/PrimaryButton.Overlay</item>
-        <item name="android:textColor">@color/md_white_1000</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:paddingStart">@dimen/double_margin</item>
         <item name="android:paddingEnd">@dimen/double_margin</item>
     </style>

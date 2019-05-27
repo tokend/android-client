@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/half_standard_margin"
-    android:background="@color/colorBackground">
+    android:background="@color/cards_container_background">
 
     <View
         android:layout_width="match_parent"

@@ -1,8 +1,6 @@
 package org.tokend.template.features.invest.view.fragments
 
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import kotlinx.android.synthetic.main.fragment_asset_details.*
 import org.tokend.template.R
 import org.tokend.template.features.assets.AssetDetailsFragment
@@ -20,9 +18,6 @@ class SaleDetailsFragment : AssetDetailsFragment() {
         sale = (requireActivity() as? InvestmentInfoHolder)
                 ?.sale
                 ?: throw IllegalStateException("Parent activity must hold SaleRecord")
-
-        view?.background =
-                ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white))
     }
 
     override fun displaySummary() {
