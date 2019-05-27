@@ -6,6 +6,7 @@
         android:id="@+id/confirm"
         android:icon="@drawable/ic_check"
         android:title="@string/confirm_action"
+        app:iconTint="@color/icons"
         app:showAsAction="always" />
 
 </menu>
