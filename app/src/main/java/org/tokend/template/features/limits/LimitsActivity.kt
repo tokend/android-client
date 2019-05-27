@@ -7,8 +7,7 @@ import android.view.View
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_limits.*
-import kotlinx.android.synthetic.main.activity_limits.swipe_refresh
-import kotlinx.android.synthetic.main.appbar_white_asset_tab.*
+import kotlinx.android.synthetic.main.appbar_with_tabs.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.sdk.api.accounts.model.limits.LimitEntry
@@ -62,9 +61,10 @@ class LimitsActivity : BaseActivity() {
     }
 
     private fun initTabs() {
-        asset_tab_layout.onItemSelected { item ->
+        appbar_tabs.onItemSelected { item ->
             asset = item.text
         }
+        appbar_tabs.visibility = View.GONE
     }
 
     private fun initEmptyErrorView() {
@@ -79,7 +79,7 @@ class LimitsActivity : BaseActivity() {
 
     private fun initHorizontalSwipes() {
 
-        val weakTabs = WeakReference(asset_tab_layout)
+        val weakTabs = WeakReference(appbar_tabs)
 
         val gestureDetector = GestureDetectorCompat(this, HorizontalSwipesGestureDetector(
                 onSwipeToLeft = {
@@ -115,11 +115,11 @@ class LimitsActivity : BaseActivity() {
     private fun onLimitsUpdated() {
         if (assets.isNotEmpty()) {
             error_empty_view.hide()
-            asset_tab_layout.visibility = View.VISIBLE
-            asset_tab_layout.setSimpleItems(assets.keys)
+            appbar_tabs.visibility = View.VISIBLE
+            appbar_tabs.setSimpleItems(assets.keys)
             updateCards(asset)
         } else {
-            asset_tab_layout.visibility = View.GONE
+            appbar_tabs.visibility = View.GONE
             error_empty_view.showEmpty(getString(R.string.no_limits_message))
         }
     }

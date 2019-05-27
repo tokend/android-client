@@ -3,8 +3,8 @@ package org.tokend.template.features.invest.view
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.activity_sale.*
-import kotlinx.android.synthetic.main.appbar_white_asset_tab.*
-import kotlinx.android.synthetic.main.toolbar_white.*
+import kotlinx.android.synthetic.main.appbar_with_tabs.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.invest.logic.InvestmentInfoHolder
@@ -50,8 +50,8 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
         val adapter = SalePagerAdapter(sale, this, supportFragmentManager)
         pager.adapter = adapter
         pager.offscreenPageLimit = adapter.count
-        asset_tab_layout.visibility = View.VISIBLE
-        asset_tab_layout.setupWithViewPager(pager)
+        appbar_tabs.visibility = View.VISIBLE
+        appbar_tabs.setupWithViewPager(pager)
     }
 
     private fun initInvestButton() {

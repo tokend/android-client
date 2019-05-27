@@ -6,7 +6,7 @@ import android.text.Editable
 import android.text.InputType
 import kotlinx.android.synthetic.main.activity_recovery_seed.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
-import kotlinx.android.synthetic.main.toolbar_white.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.clipboardManager
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.enabled
@@ -42,12 +42,9 @@ class RecoverySeedActivity : BaseActivity() {
             return
         }
 
-        setSupportActionBar(toolbar)
-        setTitle(R.string.save_recovery_seed)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         setContentView(R.layout.activity_recovery_seed)
 
+        initToolbar()
         initFields()
         initButtons()
 
@@ -57,6 +54,12 @@ class RecoverySeedActivity : BaseActivity() {
     }
 
     // region Init
+    private fun initToolbar() {
+        setSupportActionBar(toolbar)
+        setTitle(R.string.save_recovery_seed)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
     private fun initFields() {
         seed_edit_text.apply {
             setText(seed)

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/appbar_white" />
+    <include layout="@layout/appbar" />
 
     <org.tokend.template.features.dashboard.view.SwipeTogglingViewPager
         android:id="@+id/pager"

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context=".features.assets.AssetDetailsActivity">
 
-    <include layout="@layout/appbar_white" />
+    <include layout="@layout/appbar" />
 
     <FrameLayout
         android:id="@+id/fragment_container"

@@ -8,7 +8,7 @@
     android:animateLayoutChanges="true"
     tools:context=".features.signin.AuthenticatorSignInActivity">
 
-    <include layout="@layout/appbar_white" />
+    <include layout="@layout/appbar" />
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scroll_view"

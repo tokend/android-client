@@ -1,7 +1,8 @@
 package org.tokend.template.features.trade
 
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_multiple_fragments.*
+import kotlinx.android.synthetic.main.activity_trade.*
+import kotlinx.android.synthetic.main.appbar_with_tabs.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.dip
@@ -45,7 +46,7 @@ class TradeActivity : BaseActivity() {
     private fun initViewPager() {
         val adapter = TradePagerAdapter(assetPair, this, supportFragmentManager)
         pager.adapter = adapter
-        toolbar_tabs.setupWithViewPager(pager)
+        appbar_tabs.setupWithViewPager(pager)
         pager.offscreenPageLimit = adapter.count
     }
 

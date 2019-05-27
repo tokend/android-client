@@ -1,7 +1,7 @@
 package org.tokend.template.features.offers
 
 import android.os.Bundle
-import kotlinx.android.synthetic.main.toolbar_white.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.fragments.FragmentFactory

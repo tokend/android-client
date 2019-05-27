@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_authenticator_sign_in.*
 import kotlinx.android.synthetic.main.activity_authenticator_sign_in.scroll_view
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
-import kotlinx.android.synthetic.main.toolbar_white.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.authenticator.model.AuthRequest

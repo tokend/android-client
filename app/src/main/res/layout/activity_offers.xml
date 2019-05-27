@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/appbar"
-        layout="@layout/appbar_white"/>
+        layout="@layout/appbar"/>
 
     <FrameLayout
         android:id="@+id/container"

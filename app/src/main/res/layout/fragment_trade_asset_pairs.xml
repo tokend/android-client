@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/toolbar_white" />
+        <include layout="@layout/toolbar" />
 
         <org.tokend.template.view.picker.PickerTabLayout
             android:id="@+id/pairs_tabs"

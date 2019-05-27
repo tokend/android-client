@@ -15,7 +15,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.include_appbar_elevation.view.*
 import kotlinx.android.synthetic.main.layout_progress.*
-import kotlinx.android.synthetic.main.toolbar_white.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.browse
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.App
@@ -64,7 +64,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
         // Include toolbar and progress.
         if (view is LinearLayout) {
-            val appbar = layoutInflater.inflate(R.layout.appbar_white, view, false)
+            val appbar = layoutInflater.inflate(R.layout.appbar, view, false)
             view.addView(appbar, 0)
 
             toolbar.title = getString(R.string.settings_title)

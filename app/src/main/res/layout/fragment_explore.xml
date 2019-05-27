@@ -5,7 +5,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/appbar_white" />
+    <include layout="@layout/appbar" />
 
     <FrameLayout
         android:layout_width="match_parent"
