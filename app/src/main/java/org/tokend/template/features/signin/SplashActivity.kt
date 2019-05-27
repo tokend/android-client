@@ -1,7 +1,7 @@
 package org.tokend.template.features.signin
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import org.tokend.template.R
 import org.tokend.template.util.Navigator
 
