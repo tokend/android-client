@@ -7,7 +7,7 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.util.Log
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_details_list_white_toolbar.*
-import kotlinx.android.synthetic.main.toolbar_white.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.history.BalanceChange

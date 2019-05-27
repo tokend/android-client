@@ -8,7 +8,13 @@
     android:animateLayoutChanges="true"
     tools:context=".features.signin.AuthenticatorSignInActivity">
 
-    <ScrollView style="@style/LimitedMatchParentWidthConstraint">
+    <include layout="@layout/appbar" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        style="@style/LimitedMatchParentWidthConstraint"
+        app:layout_constraintTop_toBottomOf="@id/appbar"
+        app:layout_constraintTop_toTopOf="@null">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -99,5 +105,14 @@
 
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/appbar">
+
+        <include layout="@layout/include_appbar_elevation" />
+    </FrameLayout>
+
 </android.support.constraint.ConstraintLayout>

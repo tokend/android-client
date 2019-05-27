@@ -4,25 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:background="@color/cards_container_background"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
-
-        <include layout="@layout/toolbar" />
-
-        <org.tokend.template.view.picker.PickerTabLayout
-            android:id="@+id/asset_tabs"
-            style="@style/TabPicker.Inverse"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabIndicatorColor="@color/white" />
-
-    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/appbar_with_tabs"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
@@ -61,4 +46,13 @@
 
         </org.tokend.template.view.touchintercepting.TouchInterceptingLinearLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/appbar">
+
+        <include layout="@layout/include_appbar_elevation" />
+    </FrameLayout>
+
 </android.support.constraint.ConstraintLayout>

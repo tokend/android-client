@@ -38,18 +38,24 @@ ext {
 
     // ----- Appearance -----
 
-    // Primary color - color of app toolbar
+    // Primary color of the brand,
+    // can be used as a color of app toolbar
     color_primary = '#48446a'
-    // Primary dark - color of status bar above toolbar
+    // Primary dark color - darker version of primary color,
+    // can be used as a color of app status bar
     color_primary_dark = '#323051'
 
-    // Primary-half color - color of asset charts
-    color_primary_half = '#C1C2DB'
-    // Accent color - color of actions and controls by default
-    color_accent = '#6454ee'
+    // Background color - used as a background color for screens
+    color_background = '#ffffff'
+    // Cards container background color - used as a background color
+    // for elevated cards container
+    color_cards_container_background = '#ffffff'
 
-    // Background color - used as a background color on screens with cards
-    color_background = '#e8e8e8'
+    // Accent color - color of the most valuable labels and controls
+    color_accent = '#6454ee'
+    // Accent highlight color - light, semi-white version of accent color
+    // used for highlights
+    color_accent_highlight = '#EFEFFF'
 
     // Primary text - color of all text labels and fields
     color_primary_text = '#212121'
@@ -173,10 +179,11 @@ ext.applyAppConfig = { buildConfig ->
 
     b.resValue "string", "app_host", "${app_host}"
     b.resValue "color", "primary", "${color_primary}"
-    b.resValue "color", "primary_half", "${color_primary_half}"
     b.resValue "color", "primary_dark", "${color_primary_dark}"
-    b.resValue "color", "accent", "${color_accent}"
     b.resValue "color", "background", "${color_background}"
+    b.resValue "color", "cards_container_background", "${color_cards_container_background}"
+    b.resValue "color", "accent", "${color_accent}"
+    b.resValue "color", "accent_highlight", "${color_accent_highlight}"
     b.resValue "color", "primary_text", "${color_primary_text}"
     b.resValue "color", "secondary_text", "${color_secondary_text}"
     b.resValue "color", "primary_action", "${color_primary_action}"

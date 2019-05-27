@@ -12,6 +12,10 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toSingle
 import kotlinx.android.synthetic.main.activity_authenticator_sign_in.*
+import kotlinx.android.synthetic.main.activity_authenticator_sign_in.scroll_view
+import kotlinx.android.synthetic.main.activity_sign_up.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.authenticator.model.AuthRequest
@@ -24,6 +28,7 @@ import org.tokend.template.features.signin.logic.SignInWithAccountUseCase
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.AnimationUtil
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.wallet.Account
 import java.util.concurrent.TimeUnit
 
@@ -35,13 +40,15 @@ class AuthenticatorSignInActivity : BaseActivity() {
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_authenticator_sign_in)
-
+        setSupportActionBar(toolbar)
         setTitle(R.string.sign_in)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         showLoading()
 
         generateNewAccount()
+
+        ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
     }
 
     private fun generateNewAccount() {

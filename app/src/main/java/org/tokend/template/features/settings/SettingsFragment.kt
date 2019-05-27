@@ -81,6 +81,8 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
                         R.drawable.line_divider, R.dimen.divider_height)
                         .setPaddingLeft(resources
                                 .getDimensionPixelSize(R.dimen.divider_with_icon_padding_left))
+                        .setPaddingRignt(resources
+                                .getDimensionPixelSize(R.dimen.standard_margin))
                         .drawBetweenItems(true)
                         .drawTop(false)
                         .drawBottom(false)

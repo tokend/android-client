@@ -5,5 +5,5 @@
         android:centerColor="#fff"
         android:centerY="0.9"
         android:endColor="#fff"
-        android:startColor="@color/primary_half" />
+        android:startColor="@color/accent_highlight" />
 </shape>

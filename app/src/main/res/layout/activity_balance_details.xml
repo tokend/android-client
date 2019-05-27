@@ -106,7 +106,7 @@
                             tools:text="6.37 USD" />
                     </LinearLayout>
 
-                    <include layout="@layout/toolbar_white" />
+                    <include layout="@layout/toolbar" />
 
                 </org.tokend.template.features.wallet.view.ScrimCallbackCollapsingToolbarLayout>
             </android.support.design.widget.AppBarLayout>

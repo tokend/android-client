@@ -14,7 +14,7 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_balance_details.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import kotlinx.android.synthetic.main.toolbar_white.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.childrenSequence
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick

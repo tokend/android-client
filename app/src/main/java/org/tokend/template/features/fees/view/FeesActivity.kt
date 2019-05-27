@@ -8,6 +8,7 @@ import android.view.View
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_fees.*
+import kotlinx.android.synthetic.main.appbar_with_tabs.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
@@ -76,15 +77,15 @@ class FeesActivity : BaseActivity() {
     }
 
     private fun initAssetTabs() {
-        asset_tabs.onItemSelected {
+        appbar_tabs.onItemSelected {
             asset = it.text
         }
-        asset_tabs.visibility = View.GONE
+        appbar_tabs.visibility = View.GONE
     }
 
     private fun initHorizontalSwipes() {
 
-        val weakTabs = WeakReference(asset_tabs)
+        val weakTabs = WeakReference(appbar_tabs)
 
         val gestureDetector = GestureDetectorCompat(this, HorizontalSwipesGestureDetector(
                 onSwipeToLeft = {
@@ -139,21 +140,21 @@ class FeesActivity : BaseActivity() {
 
     private fun onFeesUpdated() {
         if (assets.isEmpty()) {
-            asset_tabs.visibility = View.GONE
+            appbar_tabs.visibility = View.GONE
             error_empty_view.showEmpty(getString(R.string.no_fees))
             return
         } else {
-            asset_tabs.visibility = View.VISIBLE
+            appbar_tabs.visibility = View.VISIBLE
             error_empty_view.hide()
         }
 
         val sortedAssets = assets.sortedWith(assetComparator)
-        asset_tabs.setSimpleItems(sortedAssets, asset)
+        appbar_tabs.setSimpleItems(sortedAssets, asset)
         if (toRequestedAsset && requestedAssetCode != null) {
             toRequestedItems = true
 
             val forceUpdate = asset == requestedAssetCode
-            asset_tabs.selectedItemIndex =
+            appbar_tabs.selectedItemIndex =
                     sortedAssets.indexOfFirst { it == requestedAssetCode }
 
             if (forceUpdate) { updateFeeCards() }

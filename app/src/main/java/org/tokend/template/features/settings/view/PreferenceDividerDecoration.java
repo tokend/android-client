@@ -28,6 +28,7 @@ public class PreferenceDividerDecoration extends RecyclerView.ItemDecoration {
     private boolean mDrawBetweenItems = true;
     private boolean mDrawBetweenCategories = true;
     private int mPaddingLeft;
+    private int mPaddingRight;
 
     public PreferenceDividerDecoration(Drawable divider, int dividerHeight) {
         mDivider = divider;
@@ -92,11 +93,16 @@ public class PreferenceDividerDecoration extends RecyclerView.ItemDecoration {
         return this;
     }
 
+    public PreferenceDividerDecoration setPaddingRignt(int paddingRignt) {
+        this.mPaddingRight = paddingRignt;
+        return this;
+    }
+
     @Override
     @SuppressLint("RestrictedApi")
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         int left = parent.getPaddingLeft() + mPaddingLeft;
-        int right = parent.getWidth() - parent.getPaddingRight();
+        int right = parent.getWidth() - parent.getPaddingRight() - mPaddingRight;
 
         final PreferenceGroupAdapter adapter = (PreferenceGroupAdapter) parent.getAdapter();
         final int adapterCount = adapter.getItemCount();

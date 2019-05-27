@@ -14,6 +14,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.android.synthetic.main.appbar_with_tabs.*
 import kotlinx.android.synthetic.main.fragment_deposit.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -196,7 +197,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 })
 
         if (depositableAssets.isEmpty()) {
-            asset_tab_layout.visibility = View.GONE
+            appbar_tabs.visibility = View.GONE
             details_list.visibility = View.GONE
             no_address_layout.visibility = View.GONE
 
@@ -205,16 +206,16 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             }
             return
         } else {
-            asset_tab_layout.visibility = View.VISIBLE
+            appbar_tabs.visibility = View.VISIBLE
             details_list.visibility = View.VISIBLE
             error_empty_view.hide()
         }
 
-        asset_tab_layout.onItemSelected {
+        appbar_tabs.onItemSelected {
             (it.tag as? AssetRecord)?.let { currentAsset = it }
         }
 
-        asset_tab_layout.setItems(
+        appbar_tabs.setItems(
                 depositableAssets.map {
                     PickerItem(it.code, it)
                 },
@@ -222,14 +223,14 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         )
 
         if (!requestedAssetSet) {
-            asset_tab_layout.selectedItemIndex =
+            appbar_tabs.selectedItemIndex =
                     depositableAssets.indexOfFirst { it.code == requestedAssetCode }
             requestedAssetSet = true
         }
     }
 
     private fun initHorizontalSwipes() {
-        val weakTabs = WeakReference(asset_tab_layout)
+        val weakTabs = WeakReference(appbar_tabs)
 
         val gestureDetector = GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
                 onSwipeToLeft = {
@@ -389,7 +390,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         externalAccount?.address?.let { address ->
             Navigator.from(this).openQrShare(
                     title =
-                    "${getString(R.string.deposit_title)} ${asset_tab_layout.selectedItem?.text}",
+                    "${getString(R.string.deposit_title)} ${appbar_tabs.selectedItem?.text}",
                     data = address,
                     shareLabel = getString(R.string.share_address_label),
                     shareText = getAddressShareMessage()

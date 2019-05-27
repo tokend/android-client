@@ -14,6 +14,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.activity_share_qr.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.doAsync
 import org.tokend.template.R
@@ -22,6 +23,7 @@ import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.AnimationUtil
+import org.tokend.template.view.util.ElevationUtil
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -79,6 +81,7 @@ open class ShareQrFragment : BaseFragment(), ToolbarProvider {
         toolbarSubject.onNext(toolbar)
         toolbar.title = title
         displayData()
+        ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
     }
 
     private fun shareData() {

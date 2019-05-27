@@ -23,7 +23,7 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_explore.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import kotlinx.android.synthetic.main.toolbar_white.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.assets.AssetsRepository

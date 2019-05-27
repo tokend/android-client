@@ -9,8 +9,10 @@ import android.view.View
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_network_field.*
 import kotlinx.android.synthetic.main.layout_progress.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onCheckedChange
@@ -30,6 +32,7 @@ import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.util.confirmation.AbstractConfirmationProvider
 import org.tokend.template.util.confirmation.ConfirmationProvider
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -66,6 +69,9 @@ class SignUpActivity : BaseActivity() {
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_sign_up)
+        setSupportActionBar(toolbar)
+        setTitle(R.string.sign_up)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistor)
         urlConfigManager.onConfigUpdated {
@@ -79,6 +85,7 @@ class SignUpActivity : BaseActivity() {
 
         initFields()
         initButtons()
+        ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
 
         canSignUp = false
     }
