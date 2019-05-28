@@ -90,7 +90,7 @@ class LimitsActivity : BaseActivity() {
                 }
         ))
 
-        touch_capture_layout.setTouchEventInterceptor(gestureDetector::onTouchEvent)
+        swipe_refresh.setTouchEventInterceptor(gestureDetector::onTouchEvent)
         swipe_refresh.setOnTouchListener { _, event ->
             if (error_empty_view.visibility == View.VISIBLE)
                 gestureDetector.onTouchEvent(event)

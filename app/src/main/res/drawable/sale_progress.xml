@@ -3,7 +3,7 @@
         <shape>
             <solid
                 android:width="1dp"
-                android:color="@color/background" />
+                android:color="@color/accent_highlight" />
         </shape>
     </item>
 

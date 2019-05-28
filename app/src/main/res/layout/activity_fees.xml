@@ -6,7 +6,7 @@
     android:background="@color/cards_container_background"
     android:orientation="vertical">
 
-    <include layout="@layout/appbar_with_tabs"/>
+    <include layout="@layout/appbar_with_tabs" />
 
     <org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout
         android:id="@+id/swipe_refresh"
@@ -27,7 +27,6 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:overScrollMode="never"
-                android:paddingTop="@dimen/half_standard_margin"
                 android:paddingBottom="@dimen/standard_margin" />
         </LinearLayout>
     </org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
