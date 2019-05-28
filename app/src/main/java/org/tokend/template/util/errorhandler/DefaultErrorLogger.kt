@@ -6,8 +6,9 @@ import org.tokend.template.BuildConfig
 class DefaultErrorLogger : ErrorLogger {
 
     override fun log(error: Throwable) {
-        if (!BuildConfig.ENABLE_ANALYTICS) return
-        Crashlytics.logException(error)
+        if (BuildConfig.ENABLE_ANALYTICS) {
+            Crashlytics.logException(error)
+        }
         error.printStackTrace()
     }
 }
