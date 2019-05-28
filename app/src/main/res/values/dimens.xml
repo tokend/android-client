@@ -8,6 +8,7 @@
     <dimen name="text_size_heading">20sp</dimen>
     <dimen name="text_size_heading_large">28sp</dimen>
     <dimen name="text_size_amount_input">36sp</dimen>
+    <dimen name="text_size_amount_input_small">22sp</dimen>
 
     <!-- General margins -->
     <dimen name="hepta_margin">96dp</dimen>
@@ -50,4 +51,7 @@
     <dimen name="unlock_logo_size">96dp</dimen>
 
     <dimen name="modern_card_corner_radius">8dp</dimen>
+
+    <dimen name="amount_input_height_threshold">240dp</dimen>
+    <dimen name="amount_input_min_height">220dp</dimen>
 </resources>

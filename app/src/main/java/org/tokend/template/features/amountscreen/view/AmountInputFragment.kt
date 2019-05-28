@@ -1,6 +1,8 @@
 package org.tokend.template.features.amountscreen.view
 
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,6 +83,62 @@ open class AmountInputFragment : BaseFragment() {
         }
         amount_edit_text.requestFocus()
         SoftInputUtil.showSoftInputOnView(amount_edit_text)
+
+        initAdaptiveTextSize()
+    }
+
+    /**
+     * Sets up input field and asset code text size change depending
+     * on [R.dimen.amount_input_height_threshold]
+     */
+    protected open fun initAdaptiveTextSize() {
+        val minHeight =
+                requireContext().resources.getDimensionPixelSize(R.dimen.amount_input_height_threshold)
+        var isSmallSize: Boolean? = null
+
+        val resources = requireContext().resources
+
+        val defaultInputSize = resources.getDimensionPixelSize(R.dimen.text_size_amount_input)
+                .toFloat()
+        val defaultAssetCodeSize = resources.getDimensionPixelSize(R.dimen.text_size_heading)
+                .toFloat()
+        val defaultTitleMargin = resources.getDimensionPixelSize(R.dimen.standard_margin)
+
+        val smallInputSize = resources.getDimensionPixelSize(R.dimen.text_size_amount_input_small)
+                .toFloat()
+        val smallAssetCodeSize = resources.getDimensionPixelSize(R.dimen.text_size_default)
+                .toFloat()
+        val smallTitleMargin = 0
+
+        root_layout.viewTreeObserver.addOnGlobalLayoutListener {
+            val height = root_layout?.height ?: return@addOnGlobalLayoutListener
+            val useSmallSize = height <= minHeight
+
+            if (useSmallSize == isSmallSize) {
+                return@addOnGlobalLayoutListener
+            }
+
+            isSmallSize = useSmallSize
+
+            val inputSize = if (useSmallSize) smallInputSize else defaultInputSize
+            val assetCodeSize = if (useSmallSize) smallAssetCodeSize else defaultAssetCodeSize
+            val titleMargin = if (useSmallSize) smallTitleMargin else defaultTitleMargin
+
+            amount_edit_text.setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    inputSize
+            )
+            asset_code_text_view.setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    assetCodeSize
+            )
+            title_text_view.layoutParams =
+                    (title_text_view.layoutParams as ConstraintLayout.LayoutParams)
+                            .apply {
+                                setMargins(titleMargin, titleMargin,
+                                        titleMargin, titleMargin)
+                            }
+        }
     }
 
     protected open fun initButtons() {
