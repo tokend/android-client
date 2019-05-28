@@ -13,12 +13,9 @@ import java.util.concurrent.CancellationException
 
 open class DefaultErrorHandler(
         private val context: Context,
-        private val toastManager: ToastManager
+        private val toastManager: ToastManager,
+        private val errorLogger: ErrorLogger? = null
 ) : ErrorHandler {
-
-    private val errorLogger: ErrorLogger by lazy {
-        DefaultErrorLogger()
-    }
 
     /**
      * Handles given [Throwable]
@@ -51,11 +48,11 @@ open class DefaultErrorHandler(
             error is IOException ->
                 context.getString(R.string.error_connection_try_again)
             error is TransactionFailedException -> {
-                errorLogger.log(error)
+                errorLogger?.log(error)
                 getTransactionFailedMessage(error)
             }
             else -> {
-                errorLogger.log(error)
+                errorLogger?.log(error)
                 context.getString(R.string.error_try_again)
             }
         }

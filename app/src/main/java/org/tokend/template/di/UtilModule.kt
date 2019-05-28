@@ -8,7 +8,9 @@ import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.util.comparator.AssetComparator
 import org.tokend.template.util.comparator.BalancesByConvertedAmountComparator
+import org.tokend.template.util.errorhandler.DefaultErrorLogger
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
+import org.tokend.template.util.errorhandler.ErrorLogger
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.formatter.DefaultAmountFormatter
@@ -18,8 +20,10 @@ import javax.inject.Singleton
 class UtilModule {
     @Provides
     @Singleton
-    fun errorHandlerFactory(context: Context, toastManager: ToastManager): ErrorHandlerFactory {
-        return ErrorHandlerFactory(context, toastManager)
+    fun errorHandlerFactory(context: Context,
+                            toastManager: ToastManager,
+                            errorLogger: ErrorLogger): ErrorHandlerFactory {
+        return ErrorHandlerFactory(context, toastManager, errorLogger)
     }
 
     @Provides
@@ -50,5 +54,11 @@ class UtilModule {
     @Singleton
     fun objectMapper(): ObjectMapper {
         return JsonApiToolsProvider.getObjectMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun errorLogger(): ErrorLogger {
+        return DefaultErrorLogger()
     }
 }
