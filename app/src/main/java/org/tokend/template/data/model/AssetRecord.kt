@@ -54,7 +54,10 @@ class AssetRecord(
             }
 
             val externalSystemType =
-                    source.details.get("external_system_type")?.takeIf { it !is NullNode }?.asInt()
+                    source.details.get("external_system_type")
+                            ?.asText("")
+                            ?.takeIf { it.isNotEmpty() }
+                            ?.toIntOrNull()
 
             return AssetRecord(
                     code = source.id,
