@@ -47,10 +47,10 @@ class PaymentAmountAndDescriptionFragment : AmountInputFragment() {
     override fun getAssetsToDisplay(): Collection<String> {
         return balancesRepository
                 .itemsList
+                .sortedWith(balanceComparator)
                 .map(BalanceRecord::asset)
                 .filter(AssetRecord::isTransferable)
                 .map(AssetRecord::code)
-                .sortedWith(assetComparator)
     }
 
     override fun getBalancePicker(): BalancePickerBottomDialog {

@@ -11,10 +11,10 @@ class WithdrawAmountFragment : AmountInputFragment() {
     override fun getAssetsToDisplay(): Collection<String> {
         return balancesRepository
                 .itemsList
+                .sortedWith(balanceComparator)
                 .map(BalanceRecord::asset)
                 .filter(AssetRecord::isWithdrawable)
                 .map(AssetRecord::code)
-                .sortedWith(assetComparator)
     }
 
     override fun getBalancePicker(): BalancePickerBottomDialog {
