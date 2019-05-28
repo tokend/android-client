@@ -34,7 +34,7 @@ class PendingOfferItemViewHolder(
     }
 
     private fun displayIcon(item: PendingOfferListItem) {
-        val icon = if (item.isBuy) incomingIcon else outgoingIcon
+        val icon = if (item.isInvestment || !item.isBuy) outgoingIcon else incomingIcon
         iconImageView.setImageDrawable(icon)
     }
 
