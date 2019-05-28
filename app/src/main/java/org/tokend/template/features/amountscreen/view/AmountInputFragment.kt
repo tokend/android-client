@@ -196,6 +196,7 @@ open class AmountInputFragment : BaseFragment() {
     protected open fun onBalancesUpdated() {
         displayAssets()
         displayBalance()
+        updateActionButtonAvailability()
     }
 
     // region Display
