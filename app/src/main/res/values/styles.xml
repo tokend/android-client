@@ -163,7 +163,7 @@
     </style>
 
     <style name="SaleProgressBar" parent="@android:style/Widget.ProgressBar.Horizontal">
-        <item name="android:layout_height">4dp</item>
+        <item name="android:layout_height">6dp</item>
         <item name="android:progressDrawable">@drawable/sale_progress</item>
     </style>
 
