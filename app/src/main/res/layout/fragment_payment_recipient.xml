@@ -102,6 +102,11 @@
         </LinearLayout>
     </RelativeLayout>
 
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/snackbar_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <Button
         android:id="@+id/continue_button"
         style="@style/PrimaryButton.NoBorders"

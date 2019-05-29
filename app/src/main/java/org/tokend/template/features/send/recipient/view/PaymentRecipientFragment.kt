@@ -1,14 +1,20 @@
 package org.tokend.template.features.send.recipient.view
 
 import android.Manifest
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -17,7 +23,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_payment_recipient.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_progress.view.*
-import org.jetbrains.anko.enabled
+import org.jetbrains.anko.*
 import org.tokend.template.R
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
@@ -58,6 +64,8 @@ class PaymentRecipientFragment : BaseFragment() {
         get() = repositoryProvider.contacts()
 
     private val contactsAdapter = ContactsAdapter()
+
+    private var prevClipboardString: String = ""
 
     private var canContinue: Boolean = false
         set(value) {
@@ -251,6 +259,57 @@ class PaymentRecipientFragment : BaseFragment() {
                 errorHandlerFactory.getDefault().handle(e)
         }
         updateContinueAvailability()
+    }
+
+    private fun checkClipboard() {
+        val clipboard = requireContext().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        if (clipboard.primaryClip == null
+                || clipboard.primaryClip!!.itemCount == 0
+                || clipboard.primaryClip!!.getItemAt(0).text == null) {
+            return
+        }
+        val clipboardString = clipboard.primaryClip!!.getItemAt(0).text.toString()
+        if (clipboardString.isEmpty() || clipboardString == prevClipboardString) {
+            return
+        }
+
+        prevClipboardString = clipboardString
+
+        val validAccountId = Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID,
+                clipboardString.toCharArray())
+        val validEmail = EmailValidator.isValid(clipboardString)
+
+        if (!validAccountId && !validEmail) return
+
+        val message = if (validAccountId) {
+            getString(R.string.message_clipboard_accountid)
+        } else {
+            getString(R.string.message_clipboard_email)
+        }
+
+        Snackbar.make(snackbar_holder, message, Snackbar.LENGTH_INDEFINITE).apply {
+            view.layoutParams = (view.layoutParams as CoordinatorLayout.LayoutParams).apply {
+                val bottom = requireContext().dimen(R.dimen.triple_margin)
+                setMargins(leftMargin, topMargin, rightMargin, bottom)
+            }
+
+            view.find<TextView>(android.support.design.R.id.snackbar_text)
+                    .setTextColor(Color.WHITE)
+
+            view.onClick { dismiss() }
+
+            setAction(getString(R.string.paste)) {
+                recipient_edit_text.apply {
+                    setText(clipboardString)
+                    setSelection(clipboardString.length)
+                }
+            }
+        }.show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkClipboard()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
