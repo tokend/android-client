@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_padding"
+        android:layout_marginBottom="@dimen/standard_padding">
+
+        <TextView
+            android:id="@+id/operation_name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/details_operation_name_height"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/half_standard_margin"
+            android:layout_marginEnd="@dimen/half_standard_margin"
+            android:background="@drawable/rounded_stroke_text_background"
+            android:paddingStart="@dimen/standard_padding"
+            android:paddingEnd="@dimen/standard_padding"
+            tools:text="@string/balance_change_cause_payment" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/operation_name_text_view"
+            android:background="@color/material_drawer_divider" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/operation_name_text_view"
+            android:background="@color/material_drawer_divider" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/top_info_text_view"
+        style="@style/SecondaryText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="28 May 2019 12:59" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/half_standard_margin"
+        android:gravity="center_horizontal|bottom"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/amount_text_view"
+            style="@style/HeadingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_heading_large"
+            tools:text="-101.4" />
+
+        <TextView
+            android:id="@+id/asset_code_text_view"
+            style="@style/HeadingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/half_standard_margin"
+            tools:text="USD" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/bottom_info_text_view"
+        style="@style/SecondaryText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="Fee: 12 USD" />
+</LinearLayout>
