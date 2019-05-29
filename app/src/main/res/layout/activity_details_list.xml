@@ -11,8 +11,20 @@
         style="@style/LimitedMatchParentWidthConstraint"
         app:layout_constraintTop_toBottomOf="@+id/appbar"
         app:layout_constraintTop_toTopOf="@null"
+        app:layout_constraintBottom_toBottomOf="@null"
+        app:layout_constraintBottom_toTopOf="@id/confirm_button"
         android:clipToPadding="false"
         android:paddingBottom="@dimen/standard_margin" />
+
+    <Button
+        android:id="@+id/confirm_button"
+        style="@style/PrimaryButton.NoBorders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm_action"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textAllCaps="false"
+        android:visibility="visible" />
 
     <FrameLayout
         android:layout_width="match_parent"

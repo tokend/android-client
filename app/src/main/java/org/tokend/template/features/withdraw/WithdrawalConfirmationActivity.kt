@@ -5,12 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.view.Menu
-import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_details_list.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
@@ -43,7 +42,7 @@ class WithdrawalConfirmationActivity : BaseActivity() {
         details_list.adapter = adapter
 
         displayDetails()
-
+        initConfirmButton()
         ElevationUtil.initScrollElevation(details_list, appbar_elevation_view)
     }
 
@@ -104,16 +103,8 @@ class WithdrawalConfirmationActivity : BaseActivity() {
         )
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.confirmation, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.confirm -> confirm()
-        }
-        return super.onOptionsItemSelected(item)
+    private fun initConfirmButton() {
+        confirm_button.onClick { confirm() }
     }
 
     private fun confirm() {
