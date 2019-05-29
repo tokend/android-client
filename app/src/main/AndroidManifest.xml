@@ -25,6 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar.LightStatusBar"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".SasActivity"></activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
