@@ -1,16 +1,15 @@
 package org.tokend.template.features.wallet.details
 
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_details_list.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.view.details.DetailsItem
-import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 
 class AssetPairUpdateDetailsActivity : BalanceChangeDetailsActivity() {
     override fun displayDetails(item: BalanceChange) {
+        super.displayDetails(item)
+
         val details = item.cause as? BalanceChangeCause.AssetPairUpdate
 
         if (details == null) {
@@ -18,12 +17,6 @@ class AssetPairUpdateDetailsActivity : BalanceChangeDetailsActivity() {
             return
         }
 
-        details_list.layoutManager = LinearLayoutManager(this)
-        details_list.adapter = adapter
-
-        displayEffect(item, adapter)
-        displayBalanceChange(item, adapter)
-        displayDate(item, adapter)
         displayAssetPairDetails(details)
     }
 

@@ -3,19 +3,21 @@ package org.tokend.template.features.wallet.details
 import android.support.v4.content.ContextCompat
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.android.synthetic.main.layout_balance_change_main_data.*
 import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.util.CopyDataDialogFactory
-import java.math.BigDecimal
 
 
 class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
     private var counterpartyLoadingFinished: Boolean = false
 
     override fun displayDetails(item: BalanceChange) {
+        super.displayDetails(item)
+
         val details = item.cause as? BalanceChangeCause.Payment
 
         if (details == null) {
@@ -32,13 +34,20 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
         initCounterpartyClick(details, accountId)
 
-        displayEffect(item, adapter)
         displayCounterparty(details, accountId)
-        displayPaidOrReceived(item, details, accountId)
         displaySubject(details)
-        displayDate(item, adapter)
+        displayFeePaidBySenderIfNeeded(item, details)
 
         loadAndDisplayCounterpartyEmail(details, accountId)
+    }
+
+    private fun displayFeePaidBySenderIfNeeded(item: BalanceChange,
+                                               details: BalanceChangeCause.Payment) {
+        if (item.isReceived == true
+                && details.destFee.total.signum() > 0
+                && details.isDestFeePaidBySource) {
+            bottom_info_text_view.text = getString(R.string.fee_paid_by_sender)
+        }
     }
 
     private fun initCounterpartyClick(cause: BalanceChangeCause.Payment,
@@ -90,104 +99,6 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                         singleLineText = true
                 )
         )
-    }
-
-    private fun displayPaidOrReceived(item: BalanceChange,
-                                      cause: BalanceChangeCause.Payment,
-                                      accountId: String) {
-        val isReceived = cause.isReceived(accountId)
-
-        if (isReceived) {
-            displayReceived(item, cause)
-        } else {
-            displayPaid(item, cause)
-        }
-    }
-
-    private fun displayReceived(item: BalanceChange,
-                                cause: BalanceChangeCause.Payment) {
-        val feePaidBySender = cause.isDestFeePaidBySource
-
-        val paidFeeTotal =
-                if (feePaidBySender)
-                    BigDecimal.ZERO
-                else
-                    cause.destFee.total
-
-        adapter.addData(
-                DetailsItem(
-                        text = amountFormatter.formatAssetAmount(item.amount, item.assetCode),
-                        hint = getString(R.string.amount),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
-                )
-        )
-
-        if (paidFeeTotal.signum() > 0) {
-            adapter.addData(
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(paidFeeTotal, item.assetCode),
-                            hint = getString(R.string.tx_fee)
-                    ),
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(
-                                    item.amount - paidFeeTotal,
-                                    item.assetCode
-                            ),
-                            hint = getString(R.string.total_label)
-                    )
-            )
-        }
-
-        if (feePaidBySender && cause.destFee.total.signum() > 0) {
-            adapter.addData(
-                    DetailsItem(
-                            text = getString(R.string.fee_paid_by_sender_explanation)
-                    )
-            )
-        }
-    }
-
-    private fun displayPaid(item: BalanceChange,
-                            cause: BalanceChangeCause.Payment) {
-        val feePaidBySender = cause.isDestFeePaidBySource
-
-        val paidFeeTotal =
-                if (feePaidBySender)
-                    cause.sourceFee.total + cause.destFee.total
-                else
-                    cause.sourceFee.total
-
-        adapter.addData(
-                DetailsItem(
-                        text = amountFormatter.formatAssetAmount(item.amount, item.assetCode),
-                        hint = getString(R.string.amount),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
-                )
-        )
-
-        if (paidFeeTotal.signum() > 0) {
-            adapter.addData(
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(paidFeeTotal, item.assetCode),
-                            hint = getString(R.string.tx_fee)
-                    ),
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(
-                                    item.amount + paidFeeTotal,
-                                    item.assetCode
-                            ),
-                            hint = getString(R.string.total_label)
-                    )
-            )
-
-            if (feePaidBySender) {
-                adapter.addData(
-                        DetailsItem(
-                                text = getString(R.string.fee_paid_by_sender_explanation)
-                        )
-                )
-            }
-        }
     }
 
     private fun displaySubject(cause: BalanceChangeCause.Payment) {

@@ -58,7 +58,7 @@
     <string name="amount">Amount</string>
     <string name="withdrawal_fee_warning">Receive amount may be lower due to additional fees</string>
     <string name="investment_details_title">Investment details</string>
-    <string name="offer_match_details_title">Order match details</string>
+    <string name="offer_match">Order match</string>
     <string name="sign_out_confirmation">Are you sure you want to sign out?</string>
     <string name="yes">Yes</string>
     <string name="password_was_changed">Password has been changed</string>
@@ -97,7 +97,6 @@
     <string name="offer_created">Order has been created</string>
     <string name="pending_offers_title">Pending orders</string>
     <string name="no_pending_offers">No pending orders</string>
-    <string name="pending_offer_details_title">Pending order details</string>
     <string name="buy">Buy</string>
     <string name="sell">Sell</string>
     <string name="template_price_one_equals">1 %1$s = %2$s</string>
@@ -109,8 +108,10 @@
     <string name="aml_alert_reason">Reason</string>
     <string name="aml_alert_reason_unknown">Unknown</string>
     <string name="charged">Charged</string>
-    <string name="fee_paid_by_sender_explanation">Recipient\'s fee has been paid by the sender</string>
+    <string name="fee_paid_by_sender">Fee paid by sender</string>
+    <string name="no_fee_charged">No fee charged</string>
     <string name="no_balances_found">No balances found</string>
+    <string name="template_fee">Fee: %1$s</string>
 
     <string name="asset_summary_title">Asset summary</string>
     <string name="asset_available">Available</string>
@@ -348,7 +349,7 @@
         who knows the secret seed can gain access to your account.\nDo
         you want to continue?"</string>
 
-    <string name="unknown_balance_change_details_title">Balance change details</string>
+    <string name="unknown_balance_change">Balance change</string>
 
     <string name="balance_change_cause_unknown">Unknown</string>
     <string name="balance_change_cause_aml">AML alert</string>

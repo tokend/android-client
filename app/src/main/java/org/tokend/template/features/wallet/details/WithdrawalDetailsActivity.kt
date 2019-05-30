@@ -8,6 +8,8 @@ import org.tokend.template.view.details.DetailsItem
 
 class WithdrawalDetailsActivity : BalanceChangeDetailsActivity() {
     override fun displayDetails(item: BalanceChange) {
+        super.displayDetails(item)
+
         val details = item.cause as? BalanceChangeCause.WithdrawalRequest
 
         if (details == null) {
@@ -15,10 +17,7 @@ class WithdrawalDetailsActivity : BalanceChangeDetailsActivity() {
             return
         }
 
-        displayEffect(item, adapter)
-        displayBalanceChange(item, adapter)
         displayDestination(details)
-        displayDate(item, adapter)
     }
 
     private fun displayDestination(cause: BalanceChangeCause.WithdrawalRequest) {

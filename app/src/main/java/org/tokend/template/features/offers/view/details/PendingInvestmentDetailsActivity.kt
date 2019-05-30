@@ -8,9 +8,12 @@ import org.tokend.template.view.details.DetailsItem
 class PendingInvestmentDetailsActivity : PendingOfferDetailsActivity() {
     override fun displayDetails(item: OfferRecord) {
         displayToken(item)
-        displayDate(item)
-        displayToPay(item)
+        super.displayDetails(item)
     }
+
+    override fun displayPrice(item: OfferRecord) {}
+
+    override fun displayToReceive(item: OfferRecord) {}
 
     private fun displayToken(item: OfferRecord) {
         adapter.addData(
@@ -20,6 +23,10 @@ class PendingInvestmentDetailsActivity : PendingOfferDetailsActivity() {
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_token)
                 )
         )
+    }
+
+    override fun displayOperationName() {
+        mainDataView.displayOperationName(getString(R.string.balance_change_cause_pending_investment))
     }
 
     override fun getOfferCancellationMessage(): String {
