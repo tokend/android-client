@@ -15,8 +15,6 @@
             android:layout_height="@dimen/details_operation_name_height"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:layout_marginStart="@dimen/half_standard_margin"
-            android:layout_marginEnd="@dimen/half_standard_margin"
             android:background="@drawable/rounded_stroke_text_background"
             android:paddingStart="@dimen/standard_padding"
             android:paddingEnd="@dimen/standard_padding"

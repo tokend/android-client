@@ -43,6 +43,7 @@
     <dimen name="asset_list_item_logo_size">56dp</dimen>
 
     <dimen name="max_content_width">640dp</dimen>
+    <dimen name="max_balance_change_details_content_width">368dp</dimen>
 
     <dimen name="tablet_drawer_width">320dp</dimen>
 

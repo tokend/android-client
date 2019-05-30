@@ -8,6 +8,8 @@ import org.tokend.template.view.details.DetailsItem
 
 class AmlAlertDetailsActivity : BalanceChangeDetailsActivity() {
     override fun displayDetails(item: BalanceChange) {
+        super.displayDetails(item)
+
         val details = item.cause as? BalanceChangeCause.AmlAlert
 
         if (details == null) {
@@ -15,9 +17,7 @@ class AmlAlertDetailsActivity : BalanceChangeDetailsActivity() {
             return
         }
 
-        displayEffect(item, adapter)
         displayReason(details)
-        displayDate(item, adapter)
     }
 
     private fun displayReason(cause: BalanceChangeCause.AmlAlert) {

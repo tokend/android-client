@@ -16,13 +16,11 @@ import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.enabled
-import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.wallets.model.EmailNotVerifiedException
 import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
-import org.tokend.template.SasActivity
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
@@ -93,9 +91,6 @@ class SignInActivity : BaseActivity() {
 
         // Does nothing but EC engine warm up.
         doAsync { Account.random() }
-
-        startActivity(intentFor<SasActivity>())
-        return
 
         if (session.lastSignInMethod == SignInMethod.AUTHENTICATOR
                 && BuildConfig.ENABLE_AUTHENTICATOR_AUTH) {

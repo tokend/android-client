@@ -8,6 +8,8 @@ import org.tokend.template.view.details.DetailsItem
 
 class IssuanceDetailsActivity : BalanceChangeDetailsActivity() {
     override fun displayDetails(item: BalanceChange) {
+        super.displayDetails(item)
+
         val details = item.cause as? BalanceChangeCause.Issuance
 
         if (details == null) {
@@ -15,10 +17,7 @@ class IssuanceDetailsActivity : BalanceChangeDetailsActivity() {
             return
         }
 
-        displayEffect(item, adapter)
-        displayBalanceChange(item, adapter)
         displayReferenceAndCause(details)
-        displayDate(item, adapter)
     }
 
     private fun displayReferenceAndCause(details: BalanceChangeCause.Issuance) {

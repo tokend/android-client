@@ -8,6 +8,8 @@ import org.tokend.template.view.details.DetailsItem
 
 open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
     override fun displayDetails(item: BalanceChange) {
+        super.displayDetails(item)
+
         val details = item.cause as? BalanceChangeCause.MatchedOffer
 
         if (details == null) {
@@ -15,11 +17,9 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
             return
         }
 
-        displayEffect(item, adapter)
+        displayOperationName(getString(R.string.offer_match))
         displayPrice(details)
-        displayDate(item, adapter)
-        displayCharged(details)
-        displayFunded(details)
+        displayChargedOrFunded(item, details)
     }
 
     protected open fun displayPrice(cause: BalanceChangeCause.MatchedOffer) {
@@ -38,59 +38,35 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
         )
     }
 
-    protected open fun displayCharged(cause: BalanceChangeCause.MatchedOffer) {
-        val charged = cause.charged
+    protected open fun displayChargedOrFunded(item: BalanceChange,
+                                              cause: BalanceChangeCause.MatchedOffer) {
+        val (total, fee, assetCode) =
+                if (item.isReceived == true)
+                    cause.charged.let {
+                        Triple(it.amount + it.fee.total, it.fee, it.assetCode)
+                    }
+                else
+                    cause.funded.let {
+                        Triple(it.amount - it.fee.total, it.fee, it.assetCode)
+                    }
 
         adapter.addData(
                 DetailsItem(
-                        header = getString(R.string.charged),
-                        text = amountFormatter.formatAssetAmount(charged.amount, charged.assetCode),
-                        hint = getString(R.string.amount),
+                        text = amountFormatter.formatAssetAmount(total, assetCode),
+                        hint =
+                        if (item.isReceived == true)
+                            getString(R.string.charged)
+                        else
+                            getString(R.string.received),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
                 )
         )
 
-        if (charged.fee.total.signum() > 0) {
+        if (fee.total.signum() > 0) {
             adapter.addData(
                     DetailsItem(
-                            text = amountFormatter.formatAssetAmount(charged.fee.total, charged.assetCode),
+                            text = amountFormatter.formatAssetAmount(fee.total, assetCode),
                             hint = getString(R.string.tx_fee)
-                    ),
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(
-                                    charged.amount + charged.fee.total,
-                                    charged.assetCode
-                            ),
-                            hint = getString(R.string.total_label)
-                    )
-            )
-        }
-    }
-
-    protected open fun displayFunded(cause: BalanceChangeCause.MatchedOffer) {
-        val funded = cause.funded
-
-        adapter.addData(
-                DetailsItem(
-                        header = getString(R.string.received),
-                        text = amountFormatter.formatAssetAmount(funded.amount, funded.assetCode),
-                        hint = getString(R.string.amount),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
-                )
-        )
-
-        if (funded.fee.total.signum() > 0) {
-            adapter.addData(
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(funded.fee.total, funded.assetCode),
-                            hint = getString(R.string.tx_fee)
-                    ),
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(
-                                    funded.amount - funded.fee.total,
-                                    funded.assetCode
-                            ),
-                            hint = getString(R.string.total_label)
                     )
             )
         }

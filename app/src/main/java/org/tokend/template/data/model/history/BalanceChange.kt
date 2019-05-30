@@ -35,4 +35,13 @@ open class BalanceChange(
         BalanceChangeAction.ISSUED -> true
         BalanceChangeAction.FUNDED -> true
     }
+
+    /**
+     * Amount including fee
+     */
+    val totalAmount =
+            if (isReceived == true && action != BalanceChangeAction.UNLOCKED)
+                amount - fee.total
+            else
+                amount + fee.total
 }

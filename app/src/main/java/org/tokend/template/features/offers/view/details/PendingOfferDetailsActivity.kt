@@ -1,6 +1,8 @@
 package org.tokend.template.features.offers.view.details
 
 import android.app.Activity
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -8,8 +10,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_details_list.*
-import kotlinx.android.synthetic.main.include_appbar_elevation.*
+import kotlinx.android.synthetic.main.activity_balance_change_details.*
+import kotlinx.android.synthetic.main.activity_details_list.details_list
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
@@ -17,24 +19,23 @@ import org.tokend.template.features.offers.logic.CancelOfferUseCase
 import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.balancechange.BalanceChangeMainDataView
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
-import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.template.view.util.formatter.DateFormatter
 import java.math.BigDecimal
 
 open class PendingOfferDetailsActivity : BaseActivity() {
     protected val adapter = DetailsItemsAdapter()
+    protected lateinit var mainDataView: BalanceChangeMainDataView
 
     protected lateinit var item: OfferRecord
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        setContentView(R.layout.layout_details_list_white_toolbar)
+        setContentView(R.layout.activity_balance_change_details)
 
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        ElevationUtil.initScrollElevation(details_list, appbar_elevation_view)
+        initToolbar()
+        initMainDataView()
 
         val item = intent.getSerializableExtra(OFFER_EXTRA) as? OfferRecord
 
@@ -51,54 +52,48 @@ open class PendingOfferDetailsActivity : BaseActivity() {
         displayDetails(item)
     }
 
+    private fun initToolbar() {
+        toolbar.background = ColorDrawable(Color.WHITE)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        toolbar.setNavigationOnClickListener { finish() }
+    }
+
+    private fun initMainDataView() {
+        mainDataView = BalanceChangeMainDataView(appbar, amountFormatter)
+    }
+
     protected open fun displayDetails(item: OfferRecord) {
-        displayPrice(item)
+        displayOperationName()
         displayDate(item)
+        displayPrice(item)
         displayToPay(item)
         displayToReceive(item)
+    }
+
+    protected open fun displayOperationName() {
+        mainDataView.displayOperationName(getString(R.string.balance_change_cause_pending_offer))
     }
 
     protected open fun displayToPay(item: OfferRecord) {
         val asset = if (item.isBuy) item.quoteAssetCode else item.baseAssetCode
         val amount = if (item.isBuy) item.quoteAmount else item.baseAmount
         val fee = if (item.isBuy && item.isCancellable) item.fee else BigDecimal.ZERO
+        val total = amount + fee
 
-        adapter.addData(
-                DetailsItem(
-                        header = getString(R.string.to_pay),
-                        text = amountFormatter.formatAssetAmount(amount, asset),
-                        hint = getString(R.string.amount),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
-                )
-        )
-
-        if (fee.signum() > 0) {
-            adapter.addData(
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(fee, asset),
-                            hint = getString(R.string.tx_fee)
-                    ),
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(
-                                    amount + fee,
-                                    asset
-                            ),
-                            hint = getString(R.string.total_label)
-                    )
-            )
-        }
+        mainDataView.displayAmount(total, asset, false)
+        mainDataView.displayNonZeroFee(fee, asset)
     }
 
     protected open fun displayToReceive(item: OfferRecord) {
         val asset = if (item.isBuy) item.baseAssetCode else item.quoteAssetCode
         val amount = if (item.isBuy) item.baseAmount else item.quoteAmount
         val fee = if (item.isBuy || !item.isCancellable) BigDecimal.ZERO else item.fee
+        val total = amount - fee
 
         adapter.addData(
                 DetailsItem(
-                        header = getString(R.string.to_receive),
-                        text = amountFormatter.formatAssetAmount(amount, asset),
-                        hint = getString(R.string.amount),
+                        text = amountFormatter.formatAssetAmount(total, asset),
+                        hint = getString(R.string.to_receive),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
                 )
         )
@@ -108,13 +103,6 @@ open class PendingOfferDetailsActivity : BaseActivity() {
                     DetailsItem(
                             text = amountFormatter.formatAssetAmount(fee, asset),
                             hint = getString(R.string.tx_fee)
-                    ),
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(
-                                    amount - fee,
-                                    asset
-                            ),
-                            hint = getString(R.string.total_label)
                     )
             )
         }
@@ -137,19 +125,14 @@ open class PendingOfferDetailsActivity : BaseActivity() {
     }
 
     protected open fun displayDate(item: OfferRecord) {
-        adapter.addData(
-                DetailsItem(
-                        text = DateFormatter(this).formatLong(item.date),
-                        hint = getString(R.string.date),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_date)
-                )
-        )
+        mainDataView.displayDate(item.date)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.offer_details, menu)
+        toolbar.inflateMenu(R.menu.offer_details)
+        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected)
 
-        val cancelOption = menu?.findItem(R.id.cancel_offer)
+        val cancelOption = toolbar.menu?.findItem(R.id.cancel_offer)
         cancelOption?.isVisible = item.isCancellable
 
         return super.onCreateOptionsMenu(menu)
