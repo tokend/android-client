@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_amount_input.*
 import kotlinx.android.synthetic.main.layout_payment_description.*
 import kotlinx.android.synthetic.main.layout_payment_description.view.*
+import kotlinx.android.synthetic.main.layout_payment_fee.view.*
 import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetRecord
@@ -19,6 +20,9 @@ import org.tokend.wallet.Base32Check
 class PaymentAmountAndDescriptionFragment : AmountInputFragment() {
     private val recipient: String?
         get() = arguments?.getString(RECIPIENT_EXTRA)
+
+    private var isFeeLoaded = true
+    private var feeIsLoading: Boolean = false
 
     private var canContinue: Boolean = false
         set(value) {
@@ -75,6 +79,18 @@ class PaymentAmountAndDescriptionFragment : AmountInputFragment() {
         return view
     }
 
+    override fun getExtraAmountView(parent: ViewGroup): View? {
+        val view = requireContext().layoutInflater
+                .inflate(R.layout.layout_payment_fee, parent, false)
+
+        view.sender_fee_text_view.text = getString(
+                R.string.template_fee,
+                "4 USD"
+        )
+
+        return view
+    }
+
     override fun postResult() {
         if (!canContinue) {
             return
@@ -100,6 +116,8 @@ class PaymentAmountAndDescriptionFragment : AmountInputFragment() {
 
         canContinue = !hasError
                 && amountWrapper.scaledAmount.signum() > 0
+                && isFeeLoaded
+                && !feeIsLoading
     }
 
     companion object {
