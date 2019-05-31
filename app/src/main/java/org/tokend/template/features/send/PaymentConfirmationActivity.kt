@@ -2,14 +2,19 @@ package org.tokend.template.features.send
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.support.v7.widget.SwitchCompat
+import android.widget.LinearLayout
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_details_list.*
+import kotlinx.android.synthetic.main.activity_balance_change_confirmation.*
+import kotlinx.android.synthetic.main.appbar_with_balance_change_main_data.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
+import kotlinx.android.synthetic.main.layout_balance_change_main_data.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
@@ -17,31 +22,30 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.send.logic.ConfirmPaymentRequestUseCase
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.logic.transactions.TxManager
-import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.balancechange.BalanceChangeMainDataView
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
-import org.tokend.template.view.details.ExtraViewProvider
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.wallet.xdr.FeeType
 import java.math.BigDecimal
 
 class PaymentConfirmationActivity : BaseActivity() {
     private lateinit var request: PaymentRequest
     private var switchEverChecked = false
     private val adapter = DetailsItemsAdapter()
+    private lateinit var mainDataView: BalanceChangeMainDataView
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_details_list)
+        setContentView(R.layout.activity_balance_change_confirmation)
 
-        setSupportActionBar(toolbar)
-        setTitle(R.string.payment_confirmation_title)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        initToolbar()
 
         request =
                 (intent.getSerializableExtra(PAYMENT_REQUEST_EXTRA) as? PaymentRequest)
                         ?: return
+
+        mainDataView = BalanceChangeMainDataView(appbar, amountFormatter)
 
         details_list.layoutManager = LinearLayoutManager(this)
         details_list.adapter = adapter
@@ -52,8 +56,20 @@ class PaymentConfirmationActivity : BaseActivity() {
         ElevationUtil.initScrollElevation(details_list, appbar_elevation_view)
     }
 
+    private fun initToolbar() {
+        toolbar.background = ColorDrawable(Color.WHITE)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        toolbar.setNavigationOnClickListener { finish() }
+    }
+
     // region Display
     private fun displayDetails() {
+        (top_info_text_view.layoutParams as? LinearLayout.LayoutParams)?.also {
+            it.topMargin = 0
+            top_info_text_view.layoutParams = it
+        }
+
+        mainDataView.displayOperationName(getString(R.string.balance_change_cause_payment))
         displayRecipient()
         displaySubjectIfNeeded()
         displayAmounts()
@@ -88,16 +104,6 @@ class PaymentConfirmationActivity : BaseActivity() {
     }
 
     private fun displayToPay() {
-        adapter.addOrUpdateItem(
-                DetailsItem(
-                        id = TO_PAY_AMOUNT_ITEM_ID,
-                        header = getString(R.string.to_pay),
-                        text = amountFormatter.formatAssetAmount(request.amount, request.asset),
-                        hint = getString(R.string.amount),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
-                )
-        )
-
         val totalFee =
                 if (request.senderPaysRecipientFee)
                     request.senderFee.total + request.recipientFee.total
@@ -106,46 +112,11 @@ class PaymentConfirmationActivity : BaseActivity() {
 
         val total = request.amount + totalFee
 
-        if (totalFee.signum() > 0) {
-
-            val feeExtraView =
-                    ExtraViewProvider.getFeeView(this) {
-                        Navigator.from(this).openFees(request.asset, FeeType.PAYMENT_FEE.value)
-                    }
-
-            adapter.addOrUpdateItem(
-                    DetailsItem(
-                            id = SENDER_FEE_ITEM_ID,
-                            text = amountFormatter.formatAssetAmount(totalFee, request.asset),
-                            hint = getString(R.string.tx_fee),
-                            extraView = feeExtraView
-                    )
-            )
-
-            adapter.addOrUpdateItem(
-                    DetailsItem(
-                            id = SENDER_TOTAL_ITEM_ID,
-                            text = amountFormatter.formatAssetAmount(
-                                    total,
-                                    request.asset
-                            ),
-                            hint = getString(R.string.total_label)
-                    )
-            )
-        }
+        mainDataView.displayAmount(total, request.asset, false)
+        mainDataView.displayNonZeroFee(totalFee, request.asset)
     }
 
     private fun displayToReceive() {
-        adapter.addOrUpdateItem(
-                DetailsItem(
-                        id = TO_RECEIVE_AMOUNT_ITEM_ID,
-                        header = getString(R.string.to_receive),
-                        text = amountFormatter.formatAssetAmount(request.amount, request.asset),
-                        hint = getString(R.string.amount),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
-                )
-        )
-
         val totalFee = request.recipientFee.total
 
         val totalActualFee =
@@ -156,6 +127,16 @@ class PaymentConfirmationActivity : BaseActivity() {
 
         val total = (request.amount - totalActualFee).takeIf { it.signum() >= 0 } ?: BigDecimal.ZERO
 
+        adapter.addOrUpdateItem(
+                DetailsItem(
+                        id = TO_RECEIVE_AMOUNT_ITEM_ID,
+                        text = amountFormatter.formatAssetAmount(total, request.asset),
+                        hint = getString(R.string.to_receive),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
+                )
+        )
+
+
         if (totalFee.signum() > 0) {
             adapter.addOrUpdateItem(
                     DetailsItem(
@@ -163,17 +144,6 @@ class PaymentConfirmationActivity : BaseActivity() {
                             text = amountFormatter.formatAssetAmount(totalFee, request.asset),
                             hint = getString(R.string.tx_fee),
                             isEnabled = !request.senderPaysRecipientFee
-                    )
-            )
-
-            adapter.addOrUpdateItem(
-                    DetailsItem(
-                            id = RECIPIENT_TOTAL_ITEM_ID,
-                            text = amountFormatter.formatAssetAmount(
-                                    total,
-                                    request.asset
-                            ),
-                            hint = getString(R.string.total_label)
                     )
             )
 

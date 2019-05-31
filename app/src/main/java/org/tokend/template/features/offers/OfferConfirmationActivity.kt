@@ -1,13 +1,18 @@
 package org.tokend.template.features.offers
 
 import android.app.Activity
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.LinearLayoutManager
+import android.widget.LinearLayout
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_details_list.*
+import kotlinx.android.synthetic.main.activity_balance_change_confirmation.*
+import kotlinx.android.synthetic.main.appbar_with_balance_change_main_data.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
+import kotlinx.android.synthetic.main.layout_balance_change_main_data.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
@@ -18,9 +23,10 @@ import org.tokend.template.features.offers.model.OfferRequest
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.balancechange.BalanceChangeMainDataView
 import org.tokend.template.view.details.DetailsItem
-import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.details.ExtraViewProvider
+import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.wallet.xdr.FeeType
@@ -32,6 +38,7 @@ open class OfferConfirmationActivity : BaseActivity() {
         get() = request.offerToCancel
 
     protected val adapter = DetailsItemsAdapter()
+    private lateinit var mainDataView: BalanceChangeMainDataView
 
     protected val payAsset: String
         get() =
@@ -71,11 +78,11 @@ open class OfferConfirmationActivity : BaseActivity() {
     }
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_details_list)
+        setContentView(R.layout.activity_balance_change_confirmation)
 
-        setSupportActionBar(toolbar)
-        setTitle(R.string.offer_confirmation_title)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        initToolbar()
+
+        mainDataView = BalanceChangeMainDataView(appbar, amountFormatter)
 
         details_list.layoutManager = LinearLayoutManager(this)
         details_list.adapter = adapter
@@ -89,11 +96,23 @@ open class OfferConfirmationActivity : BaseActivity() {
         ElevationUtil.initScrollElevation(details_list, appbar_elevation_view)
     }
 
+    private fun initToolbar() {
+        toolbar.background = ColorDrawable(Color.WHITE)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        toolbar.setNavigationOnClickListener { finish() }
+    }
+
     // region Display
     protected open fun displayDetails() {
-        displayPrice()
+        (top_info_text_view.layoutParams as? LinearLayout.LayoutParams)?.also {
+            it.topMargin = 0
+            top_info_text_view.layoutParams = it
+        }
+
+        mainDataView.displayOperationName(getString(R.string.offer_confirmation_title))
         displayToPay()
         displayToReceive()
+        displayPrice()
     }
 
     protected open fun displayPrice() {
@@ -109,51 +128,21 @@ open class OfferConfirmationActivity : BaseActivity() {
     }
 
     protected open fun displayToPay() {
-        val payAmount =
+        val fee =
                 if (request.isBuy)
-                    request.quoteAmount
+                    request.fee.total
                 else
-                    request.baseAmount
+                    BigDecimal.ZERO
 
-        adapter.addData(
-                DetailsItem(
-                        header = getString(R.string.to_pay),
-                        text = amountFormatter.formatAssetAmount(payAmount, payAsset),
-                        hint = getString(R.string.amount),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
-                )
-        )
-
-        if (request.isBuy && request.fee.total.signum() > 0) {
-            adapter.addData(
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(request.fee.total, payAsset),
-                            hint = getString(R.string.tx_fee),
-                            extraView = feeExtraView
-                    ),
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(
-                                    toPayTotal,
-                                    payAsset
-                            ),
-                            hint = getString(R.string.total_label)
-                    )
-            )
-        }
+        mainDataView.displayAmount(toPayTotal, payAsset, false)
+        mainDataView.displayNonZeroFee(fee, payAsset)
     }
 
     protected open fun displayToReceive() {
-        val receiveAmount =
-                if (!request.isBuy)
-                    request.quoteAmount
-                else
-                    request.baseAmount
-
         adapter.addData(
                 DetailsItem(
-                        header = getString(R.string.to_receive),
-                        text = amountFormatter.formatAssetAmount(receiveAmount, receiveAsset),
-                        hint = getString(R.string.amount),
+                        text = amountFormatter.formatAssetAmount(toReceiveTotal, receiveAsset),
+                        hint = getString(R.string.to_receive),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
                 )
         )
@@ -164,13 +153,6 @@ open class OfferConfirmationActivity : BaseActivity() {
                             text = amountFormatter.formatAssetAmount(request.fee.total, receiveAsset),
                             hint = getString(R.string.tx_fee),
                             extraView = feeExtraView
-                    ),
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(
-                                    toReceiveTotal,
-                                    receiveAsset
-                            ),
-                            hint = getString(R.string.total_label)
                     )
             )
         }

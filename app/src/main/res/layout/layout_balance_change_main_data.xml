@@ -55,11 +55,14 @@
         android:gravity="center_horizontal|bottom"
         android:orientation="horizontal">
 
-        <TextView
+        <me.grantland.widget.AutofitTextView
             android:id="@+id/amount_text_view"
             style="@style/HeadingText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:maxLines="1"
             android:textSize="@dimen/text_size_heading_large"
             tools:text="-101.4 USD" />
 

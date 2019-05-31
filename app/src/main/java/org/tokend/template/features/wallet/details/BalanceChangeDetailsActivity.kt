@@ -3,22 +3,18 @@ package org.tokend.template.features.wallet.details
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.util.Log
 import kotlinx.android.synthetic.main.activity_balance_change_details.*
+import kotlinx.android.synthetic.main.appbar_with_balance_change_main_data.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.BalanceChangeAction
-import org.tokend.template.features.wallet.view.BalanceChangeIconFactory
 import org.tokend.template.view.balancechange.BalanceChangeMainDataView
-import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.util.LocalizedName
-import org.tokend.template.view.util.formatter.DateFormatter
 
 abstract class BalanceChangeDetailsActivity : BaseActivity() {
     protected val adapter = DetailsItemsAdapter()
@@ -63,64 +59,6 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
         displayOperationName(item)
         displayAmountAndFee(item)
         displayDate(item)
-    }
-
-    protected open fun displayDate(item: BalanceChange,
-                                   adapter: DetailsItemsAdapter) {
-        adapter.addData(
-                DetailsItem(
-                        text = DateFormatter(this).formatLong(item.date),
-                        hint = getString(R.string.date),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_date)
-                )
-        )
-    }
-
-    protected open fun displayEffect(item: BalanceChange,
-                                     adapter: DetailsItemsAdapter) {
-        val iconFactory = BalanceChangeIconFactory(this)
-
-        adapter.addData(
-                DetailsItem(
-                        text = LocalizedName(this).forBalanceChangeAction(item.action),
-                        hint = getString(R.string.tx_effect),
-                        icon = iconFactory.get(item)
-                )
-        )
-    }
-
-    protected open fun displayBalanceChange(item: BalanceChange,
-                                            adapter: DetailsItemsAdapter) {
-        val asset = item.assetCode
-
-        adapter.addData(
-                DetailsItem(
-                        text = amountFormatter.formatAssetAmount(item.amount, asset),
-                        hint = getString(R.string.amount),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_coins)
-                )
-        )
-        if (item.fee.total.signum() > 0) {
-            val total =
-                    if (item.isReceived == true && item.action != BalanceChangeAction.UNLOCKED)
-                        item.amount - item.fee.total
-                    else
-                        item.amount + item.fee.total
-
-            adapter.addData(
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(item.fee.total, asset),
-                            hint = getString(R.string.tx_fee)
-                    ),
-                    DetailsItem(
-                            text = amountFormatter.formatAssetAmount(
-                                    total,
-                                    asset
-                            ),
-                            hint = getString(R.string.total_label)
-                    )
-            )
-        }
     }
 
     protected open fun displayOperationName(item: BalanceChange) {

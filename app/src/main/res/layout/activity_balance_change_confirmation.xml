@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/confirm_button">
+
+        <include layout="@layout/appbar_with_balance_change_main_data" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/details_list"
+                style="@style/LimitedMatchParentWidthConstraint"
+                android:clipToPadding="false"
+                android:paddingEnd="@dimen/half_standard_margin"
+                android:paddingBottom="@dimen/standard_margin" />
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.design.widget.CoordinatorLayout>
+
+    <Button
+        android:id="@+id/confirm_button"
+        style="@style/PrimaryButton.NoBorders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/confirm_action"
+        android:textAllCaps="false"
+        android:visibility="visible" />
+</RelativeLayout>

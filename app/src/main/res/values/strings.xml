@@ -93,7 +93,7 @@
     <string name="create_offer_title">Create order</string>
     <string name="buy_action">Buy</string>
     <string name="sell_action">Sell</string>
-    <string name="offer_confirmation_title">Order confirmation</string>
+    <string name="offer_confirmation_title">Order</string>
     <string name="offer_created">Order has been created</string>
     <string name="pending_offers_title">Pending orders</string>
     <string name="no_pending_offers">No pending orders</string>

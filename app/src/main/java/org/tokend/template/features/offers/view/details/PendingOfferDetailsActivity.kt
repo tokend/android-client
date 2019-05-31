@@ -7,11 +7,10 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
-import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_balance_change_details.*
-import kotlinx.android.synthetic.main.activity_details_list.details_list
+import kotlinx.android.synthetic.main.activity_balance_change_confirmation.*
+import kotlinx.android.synthetic.main.activity_balance_details.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
@@ -34,9 +33,6 @@ open class PendingOfferDetailsActivity : BaseActivity() {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_balance_change_details)
 
-        initToolbar()
-        initMainDataView()
-
         val item = intent.getSerializableExtra(OFFER_EXTRA) as? OfferRecord
 
         if (item == null) {
@@ -45,6 +41,9 @@ open class PendingOfferDetailsActivity : BaseActivity() {
         }
 
         this.item = item
+
+        initToolbar()
+        initMainDataView()
 
         details_list.layoutManager = LinearLayoutManager(this)
         details_list.adapter = adapter
@@ -56,6 +55,12 @@ open class PendingOfferDetailsActivity : BaseActivity() {
         toolbar.background = ColorDrawable(Color.WHITE)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener { finish() }
+
+        toolbar.inflateMenu(R.menu.offer_details)
+        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected)
+
+        val cancelOption = toolbar.menu?.findItem(R.id.cancel_offer)
+        cancelOption?.isVisible = item.isCancellable
     }
 
     private fun initMainDataView() {
@@ -126,16 +131,6 @@ open class PendingOfferDetailsActivity : BaseActivity() {
 
     protected open fun displayDate(item: OfferRecord) {
         mainDataView.displayDate(item.date)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        toolbar.inflateMenu(R.menu.offer_details)
-        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected)
-
-        val cancelOption = toolbar.menu?.findItem(R.id.cancel_offer)
-        cancelOption?.isVisible = item.isCancellable
-
-        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
