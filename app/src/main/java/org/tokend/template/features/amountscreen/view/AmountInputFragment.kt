@@ -235,6 +235,11 @@ open class AmountInputFragment : BaseFragment() {
     protected open fun setError(message: String?) {
         errorMessage = message?.takeIf { it.isNotEmpty() }
         error_text_view.text = errorMessage
+        error_text_view.visibility =
+                if (errorMessage != null)
+                    View.VISIBLE
+                else
+                    View.GONE
     }
 
     protected open fun updateActionButtonAvailability() {
