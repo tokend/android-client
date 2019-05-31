@@ -27,7 +27,7 @@ class BalanceRecord(
                 conversionAssetCode: String) : this(
             id = source.balance.id,
             available = source.initialAmounts.available,
-            asset = AssetRecord.fromResource(source.asset, urlConfig, mapper),
+            asset = AssetRecord.fromResource(source.balance.asset, urlConfig, mapper),
             conversionAssetCode = conversionAssetCode,
             convertedAmount =
             if (source.isConverted)
