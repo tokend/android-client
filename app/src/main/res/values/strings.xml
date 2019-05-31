@@ -17,7 +17,6 @@
     <string name="recover_account">Recover account</string>
     <string name="sign_out">Sign out</string>
     <string name="loading_data">Loading data…</string>
-    <string name="view_more">View more</string>
     <string name="retry">Retry</string>
     <string name="share">Share</string>
     <string name="share_account_id">Share Account ID</string>
@@ -32,7 +31,6 @@
     </string>
     <string name="validate_recovery_seed_explanation">Please validate the seed in the field below to ensure that you have copied it properly</string>
     <string name="seed_copied">Seed has been copied to the clipboard</string>
-    <string name="are_you_sure">Are you sure?</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="no">No</string>
@@ -44,20 +42,11 @@
     <string name="paste">Paste</string>
     <string name="no_transaction_history">No movements history</string>
     <string name="no_trades_history">No trades history</string>
-    <string name="date">Date</string>
-    <string name="payment_details_title">Payment details</string>
-    <string name="aml_alert_details_title">AML alert details</string>
-    <string name="issuance_details_title">Issuance details</string>
-    <string name="sale_cancellation_details_title">Sale cancellation details</string>
-    <string name="asset_pair_update_details_title">Asset pair update details</string>
-    <string name="offer_cancellation_details_title">Order cancellation details</string>
     <string name="received">Received</string>
     <string name="price">Price</string>
     <string name="payment_description">Description</string>
-    <string name="withdrawal_details_title">Withdrawal request details</string>
     <string name="amount">Amount</string>
     <string name="withdrawal_fee_warning">Receive amount may be lower due to additional fees</string>
-    <string name="investment_details_title">Investment details</string>
     <string name="offer_match">Order match</string>
     <string name="sign_out_confirmation">Are you sure you want to sign out?</string>
     <string name="yes">Yes</string>
@@ -68,7 +57,6 @@
     <string name="copy_action">Copy</string>
     <string name="template_balance">Balance: %1$s</string>
     <string name="template_available">%1$s available</string>
-    <string name="to_pay">To pay</string>
     <string name="to_receive">To receive</string>
     <string name="confirm_action">Confirm</string>
     <string name="processing_progress">Processing…</string>\
@@ -84,7 +72,6 @@
     <string name="search">Search</string>
     <string name="recipient_label">Recipient\'s email or account</string>
     <string name="payment_description_label">Description (optional)</string>
-    <string name="payment_confirmation_title">Payment confirmation</string>
     <string name="payment_successfully_sent">Payment has been sent</string>
     <string name="no_offers">No orders</string>
     <string name="template_offer_bid_asset">Bid (%1$s)</string>
@@ -124,7 +111,6 @@
     <string name="asset_can_not_be_withdrawn">Can\'t be withdrawn</string>
 
     <string name="dashboard_title">Dashboard</string>
-    <string name="wallet_title">Wallet</string>
     <string name="deposit_title">Deposit</string>
     <string name="withdraw_title">Withdraw</string>
     <string name="explore_assets_title">Explore assets</string>
@@ -151,7 +137,6 @@
     <string name="tx_withdrawal_destination">Destination address</string>
     <string name="template_tx_in">In %1$s</string>
     <string name="pay_recipient_fee_action">Pay recipient\'s fee</string>
-    <string name="tx_effect">Effect</string>
     <string name="data_has_been_copied">Data has been copied to the clipboard</string>
 
     <string name="settings_account_group">Account</string>
@@ -210,7 +195,6 @@
     <!-- withdraw -->
     <string name="amount_label">Amount</string>
     <string name="go_to_confirmation_btn_label">Go to confirmation</string>
-    <string name="withdrawal_confirmation_title">Withdrawal confirmation</string>
 
     <!-- Deposit -->
     <string name="create_balance_confirmation">Are you sure you want to create %1s balance?</string>
@@ -261,26 +245,17 @@
     <string name="successfully_invested">Investment has been placed</string>
     <string name="investment_canceled">Investment has been canceled</string>
     <string name="investment_updated">Investment has been updated</string>
-    <string name="pending_investment_details_title">Pending investment details</string>
     <string name="cancel_investment_confirmation">Are you sure you want to cancel this investment?</string>
     <string name="sale_details_title">Details</string>
     <string name="sale_overview_title">Overview</string>
     <string name="sale_chart_title">Chart</string>
     <string name="invest_asset_hint">Asset</string>
-    <string name="template_invest_unavailable_sale_upcoming_date">Sale is upcoming, investing
-        will be available from %1$s</string>
-    <string name="invest_unavailable_sale_ended">Sale is ended, investing is not available</string>
-    <string name="invest_unavailable">Investing is not available</string>
     <string name="sale_summary_title">Sale summary</string>
     <string name="sale_title">Sale</string>
 
     <string name="tokend_network_hint">Network</string>
     <string name="not_specified">Not specified</string>
     <string name="error_network_not_specified">Network is not specified</string>
-
-    <string name="verification_required">Verification required</string>
-    <string name="sale_verifictaion_required_details">Please verify your account to participate in this sale</string>
-    <string name="go_to_verification">Go to Verification</string>
 
     <string name="open_source_licenses_title">Open source licenses</string>
     <string name="settings_information_group">Information</string>
@@ -383,7 +358,6 @@
     <string name="template_amount_hint">Amount (%1$s)</string>
     <string name="template_total_hint">Total (%1$s)</string>
     <string name="trade_offers_title">My orders</string>
-    <string name="total_label">Total</string>
 
     <string name="zero">0</string>
     <string name="max_sell_hint">Max Sell</string>
