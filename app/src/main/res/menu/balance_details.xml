@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/asset_details"
-        android:icon="@drawable/ic_error_outline"
+        android:icon="@drawable/ic_information"
         android:title="@string/asset_details"
         app:showAsAction="always" />
 
