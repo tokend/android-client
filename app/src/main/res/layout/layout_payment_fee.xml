@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/fees_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/sender_fee_text_view"
+            style="@style/HintText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/template_fee" />
+
+        <LinearLayout
+            android:id="@+id/recipient_fee_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-6dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Space
+                android:id="@+id/switch_extra_space"
+                android:layout_width="@dimen/standard_margin"
+                android:layout_height="0dp" />
+
+            <TextView
+                style="@style/HintText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pay_recipient_fee_action" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/pay_recipient_fee_switch"
+                style="@style/Widget.AppCompat.CompoundButton.Switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleX="0.7"
+                android:scaleY="0.7" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/fees_loading_progress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="@dimen/standard_padding"
+        android:layout_height="@dimen/standard_padding"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
+</merge>

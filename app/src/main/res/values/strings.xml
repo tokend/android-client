@@ -97,8 +97,10 @@
     <string name="charged">Charged</string>
     <string name="fee_paid_by_sender">Fee paid by sender</string>
     <string name="no_fee_charged">No fee charged</string>
+    <string name="no_fee">No fee</string>
     <string name="no_balances_found">No balances found</string>
     <string name="template_fee">Fee: %1$s</string>
+    <string name="template_recipients_fee">Recipient\'s fee: %1$s</string>
 
     <string name="asset_summary_title">Asset summary</string>
     <string name="asset_available">Available</string>

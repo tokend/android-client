@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
+    <!-- Min height is applied programmatically -->
     <android.support.constraint.ConstraintLayout
         android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background"
-        android:minHeight="@dimen/amount_input_min_height">
+        android:background="@color/background">
 
         <TextView
             android:id="@+id/title_text_view"
@@ -27,8 +27,7 @@
             style="@style/LimitedMatchParentWidthConstraint"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@null"
-            app:layout_constraintBottom_toTopOf="@id/extra_view_frame"
-            app:layout_constraintVertical_bias="0.54">
+            app:layout_constraintBottom_toTopOf="@id/extra_view_frame">
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/amount_edit_text"
@@ -85,6 +84,14 @@
             android:textColor="@color/error"
             app:layout_constraintTop_toBottomOf="@id/amount_edit_text_container"
             tools:text="Insufficient balance" />
+
+        <FrameLayout
+            android:id="@+id/extra_amount_view_frame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/error_text_view" />
 
         <FrameLayout
             android:id="@+id/extra_view_frame"
