@@ -89,6 +89,14 @@ class BalanceDetailsActivity : BaseActivity() {
         toolbar.setNavigationOnClickListener { finish() }
         toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleAppearance)
 
+        toolbar.inflateMenu(R.menu.balance_details)
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.asset_details -> openAssetDetails()
+            }
+            true
+        }
+
         initToolbarAnimations()
     }
 
@@ -352,6 +360,12 @@ class BalanceDetailsActivity : BaseActivity() {
         }
     }
 
+    private fun openAssetDetails() {
+        val asset = balance?.asset ?: return
+        menu_fab.close(false)
+        Navigator.from(this).openAssetDetails(ASSET_DETAILS_REQUEST, asset)
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         adjustEmptyViewHeight()
@@ -367,5 +381,6 @@ class BalanceDetailsActivity : BaseActivity() {
 
     companion object {
         const val BALANCE_ID_EXTRA = "balance_id"
+        const val ASSET_DETAILS_REQUEST = 1132
     }
 }

@@ -389,4 +389,5 @@
     <string name="unlock_label">Unlock</string>
     <string name="use_password">Use password</string>
     <string name="receive_title">Receive</string>
+    <string name="asset_details">Asset details</string>
 </resources>
