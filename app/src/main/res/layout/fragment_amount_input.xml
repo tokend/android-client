@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
+    <!-- Min height is applied programmatically -->
     <android.support.constraint.ConstraintLayout
         android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background"
-        android:minHeight="@dimen/amount_input_min_height">
+        android:background="@color/background">
 
         <TextView
             android:id="@+id/title_text_view"

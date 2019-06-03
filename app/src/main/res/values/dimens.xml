@@ -53,7 +53,7 @@
 
     <dimen name="modern_card_corner_radius">8dp</dimen>
 
-    <dimen name="amount_input_height_threshold">240dp</dimen>
+    <dimen name="amount_input_height_threshold">260dp</dimen>
     <dimen name="amount_input_min_height">220dp</dimen>
 
     <dimen name="details_operation_name_height">22sp</dimen>

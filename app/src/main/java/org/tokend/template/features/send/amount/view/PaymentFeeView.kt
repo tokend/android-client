@@ -29,8 +29,10 @@ constructor(
     private val payRecipientFeeSwitch: SwitchCompat
     private val loadingProgress: View
 
+    private var senderFee: BigDecimal = BigDecimal.ZERO
     private var recipientFee: BigDecimal = BigDecimal.ZERO
-    private var senderFeeTotal: BigDecimal = BigDecimal.ZERO
+    private val senderFeeTotal: BigDecimal
+        get() = if (!isPayingRecipientFee) senderFee else senderFee + recipientFee
     private var assetCode: String = ""
     private var amountFormatter: AmountFormatter? = null
 
@@ -47,7 +49,7 @@ constructor(
         loadingProgress.visibility = View.GONE
 
         payRecipientFeeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            onPayRecipientFeeChanged?.invoke(isChecked)
+            payRecipientFeeChangedListener?.invoke(isChecked)
             displayData()
         }
     }
@@ -68,13 +70,17 @@ constructor(
     val isPayingRecipientFee: Boolean
         get() = payRecipientFeeSwitch.isChecked
 
-    var onPayRecipientFeeChanged: ((Boolean) -> Unit)? = null
+    private var payRecipientFeeChangedListener: ((Boolean) -> Unit)? = null
+
+    fun onPayRecipientFeeChanged(listener: (Boolean) -> Unit) {
+        this.payRecipientFeeChangedListener = listener
+    }
 
     fun setFees(sender: BigDecimal,
                 recipient: BigDecimal,
                 assetCode: String,
                 amountFormatter: AmountFormatter) {
-        this.senderFeeTotal = if (!isPayingRecipientFee) sender else sender + recipient
+        this.senderFee = sender
         this.recipientFee = recipient
         this.assetCode = assetCode
         this.amountFormatter = amountFormatter

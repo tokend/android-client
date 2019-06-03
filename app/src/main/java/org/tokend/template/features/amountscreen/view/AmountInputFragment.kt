@@ -53,7 +53,7 @@ open class AmountInputFragment : BaseFragment() {
         arguments?.getString(ASSET_EXTRA)
     }
 
-    protected var requestedAssetSet = false
+    private var requestedAssetSet = false
 
     private var errorMessage: String? = null
     protected open val hasError: Boolean
@@ -64,6 +64,7 @@ open class AmountInputFragment : BaseFragment() {
     }
 
     override fun onInitAllowed() {
+        initLayout()
         initTitle()
         initFields()
         initButtons()
@@ -76,6 +77,10 @@ open class AmountInputFragment : BaseFragment() {
     }
 
     // region Init
+    protected open fun initLayout() {
+        root_layout.minHeight = getMinLayoutHeight()
+    }
+
     protected open fun initFields() {
         amountWrapper = AmountEditTextWrapper(amount_edit_text)
         amountWrapper.onAmountChanged { _, _ ->
@@ -255,11 +260,15 @@ open class AmountInputFragment : BaseFragment() {
 
     protected open fun checkAmount() {
         when {
-            amountWrapper.scaledAmount > balance ->
+            !isEnoughBalance() ->
                 setError(getString(R.string.error_insufficient_balance))
             else ->
                 setError(null)
         }
+    }
+
+    protected open fun isEnoughBalance(): Boolean {
+        return amountWrapper.scaledAmount <= balance
     }
 
     protected open fun postResult() {
@@ -323,6 +332,14 @@ open class AmountInputFragment : BaseFragment() {
      */
     protected open fun getExtraAmountView(parent: ViewGroup): View? {
         return null
+    }
+
+    /**
+     * @return minimal allowed height of the layout before scrolling appears
+     * in px
+     */
+    protected open fun getMinLayoutHeight(): Int {
+        return requireContext().resources.getDimensionPixelSize(R.dimen.amount_input_min_height)
     }
 
     companion object {

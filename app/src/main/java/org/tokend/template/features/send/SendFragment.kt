@@ -169,9 +169,13 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun toAmountScreen() {
-        val recipient = recipient?.displayedValue!!
+        val recipientNickname = recipient?.displayedValue
+                ?: return
+        val recipientAccount = recipient?.accountId
+                ?: return
 
-        val fragment = PaymentAmountAndDescriptionFragment.newInstance(recipient, requiredAsset)
+        val fragment = PaymentAmountAndDescriptionFragment
+                .newInstance(recipientNickname, recipientAccount, requiredAsset)
 
         fragment
                 .resultObservable
