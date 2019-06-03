@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_account_movements.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.template.R
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
@@ -16,6 +17,7 @@ import org.tokend.template.features.wallet.adapter.BalanceChangesAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.LocalizedName
 
@@ -37,6 +39,7 @@ class AccountMovementsFragment : BaseFragment() {
     override fun onInitAllowed() {
         initSwipeRefresh()
         initHistory()
+        ElevationUtil.initScrollElevation(history_list, appbar_elevation_view)
 
         subscribeToHistory()
 

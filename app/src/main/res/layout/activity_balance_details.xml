@@ -23,7 +23,6 @@
                 <org.tokend.template.view.PaginationRecyclerView
                     android:id="@+id/history_list"
                     style="@style/LimitedMatchParentWidthConstraint"
-                    android:layout_height="match_parent"
                     android:overScrollMode="never"
                     android:paddingStart="@dimen/quarter_standard_margin"
                     android:paddingEnd="@dimen/quarter_standard_margin" />

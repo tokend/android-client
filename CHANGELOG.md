@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [Unreleased]
+## [1.9.0] 2019-05-31
 
 ### Added
 - Ability to open detailed fee information from payment confirmation
@@ -144,7 +144,8 @@ with ability to copy
 
 - Error on sign in when user has balances with unknown asset details
 
-[Unreleased]: https://github.com/tokend/android-client/compare/1.8.0(10)...HEAD
+[Unreleased]: https://github.com/tokend/android-client/compare/1.9.0(12)...HEAD
+[1.9.0]: https://github.com/tokend/android-client/compare/1.8.0(10)...1.9.0(12)
 [1.8.0]: https://github.com/tokend/android-client/compare/1.7.0(8)...1.8.0(10)
 [1.7.0]: https://github.com/tokend/android-client/compare/1.6.0(7)...1.7.0(8)
 [1.6.0]: https://github.com/tokend/android-client/compare/1.5.1(6)...1.6.0(7)

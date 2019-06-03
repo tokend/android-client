@@ -33,7 +33,7 @@ class BalanceChangeListItem(
                 accountId: String,
                 localizedName: LocalizedName) : this(
             action = getAction(balanceChange),
-            amount = balanceChange.amount,
+            amount = balanceChange.totalAmount,
             assetCode = balanceChange.assetCode,
             isReceived = balanceChange.isReceived,
             date = balanceChange.date,
