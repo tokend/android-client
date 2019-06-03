@@ -52,9 +52,9 @@ class ConfirmPaymentRequestUseCase(
                     subject = request.paymentSubject ?: "",
                     reference = request.reference,
                     feeData = PaymentFeeData(
-                            sourceFee = request.senderFee.toXdrFee(networkParams),
-                            destinationFee = request.recipientFee.toXdrFee(networkParams),
-                            sourcePaysForDest = request.senderPaysRecipientFee,
+                            sourceFee = request.fee.senderFee.toXdrFee(networkParams),
+                            destinationFee = request.fee.recipientFee.toXdrFee(networkParams),
+                            sourcePaysForDest = request.fee.senderPaysForRecipient,
                             ext = PaymentFeeData.PaymentFeeDataExt.EmptyVersion()
                     )
             )

@@ -24,20 +24,19 @@ import org.tokend.template.R
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.features.send.amount.model.PaymentAmountAndDescription
-import org.tokend.template.features.send.amount.view.PaymentAmountAndDescriptionFragment
+import org.tokend.template.features.send.amount.model.PaymentAmountData
+import org.tokend.template.features.send.amount.view.PaymentAmountFragment
 import org.tokend.template.features.send.logic.CreatePaymentRequestUseCase
+import org.tokend.template.features.send.model.PaymentFee
 import org.tokend.template.features.send.model.PaymentRecipient
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.send.recipient.view.PaymentRecipientFragment
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.logic.FeeManager
 import org.tokend.template.logic.wallet.WalletEventsListener
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.input.SoftInputUtil
 import java.math.BigDecimal
 
@@ -63,6 +62,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     private var amount: BigDecimal = BigDecimal.ZERO
     private var asset: String = ""
     private var description: String? = null
+    private var fee: PaymentFee? = null
 
     private var isWaitingForTransferableAssets: Boolean = true
 
@@ -174,12 +174,12 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         val recipientAccount = recipient?.accountId
                 ?: return
 
-        val fragment = PaymentAmountAndDescriptionFragment
+        val fragment = PaymentAmountFragment
                 .newInstance(recipientNickname, recipientAccount, requiredAsset)
 
         fragment
                 .resultObservable
-                .map { it as PaymentAmountAndDescription }
+                .map { it as PaymentAmountData }
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribeBy(
                         onNext = this::onAmountEntered,
@@ -189,10 +189,11 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         displayFragment(fragment, "amount", true)
     }
 
-    private fun onAmountEntered(result: PaymentAmountAndDescription) {
+    private fun onAmountEntered(result: PaymentAmountData) {
         this.amount = result.amount
         this.asset = result.assetCode
         this.description = result.description
+        this.fee = result.fee
 
         createAndConfirmPaymentRequest()
     }
@@ -200,14 +201,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     private var paymentRequestDisposable: Disposable? = null
     private fun createAndConfirmPaymentRequest() {
         val recipient = recipient ?: return
-
-        val progress = ProgressDialogFactory.getTunedDialog(requireContext()).apply {
-            setCanceledOnTouchOutside(true)
-            setOnCancelListener {
-                paymentRequestDisposable?.dispose()
-            }
-            setMessage(getString(R.string.loading_data))
-        }
+        val fee = fee ?: return
 
         paymentRequestDisposable?.dispose()
         paymentRequestDisposable = CreatePaymentRequestUseCase(
@@ -215,18 +209,12 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 amount,
                 asset,
                 description,
+                fee,
                 walletInfoProvider,
-                FeeManager(apiProvider),
                 balancesRepository
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe {
-                    progress.show()
-                }
-                .doOnEvent { _, _ ->
-                    progress.hide()
-                }
                 .subscribeBy(
                         onSuccess = this::onPaymentRequestCreated,
                         onError = { errorHandlerFactory.getDefault().handle(it) }

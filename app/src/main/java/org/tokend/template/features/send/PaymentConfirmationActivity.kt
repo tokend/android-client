@@ -7,8 +7,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SimpleItemAnimator
-import android.support.v7.widget.SwitchCompat
 import android.widget.LinearLayout
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_balance_change_confirmation.*
@@ -16,6 +14,7 @@ import kotlinx.android.synthetic.main.appbar_with_balance_change_main_data.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_balance_change_main_data.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
@@ -32,7 +31,6 @@ import java.math.BigDecimal
 
 class PaymentConfirmationActivity : BaseActivity() {
     private lateinit var request: PaymentRequest
-    private var switchEverChecked = false
     private val adapter = DetailsItemsAdapter()
     private lateinit var mainDataView: BalanceChangeMainDataView
 
@@ -49,7 +47,6 @@ class PaymentConfirmationActivity : BaseActivity() {
 
         details_list.layoutManager = LinearLayoutManager(this)
         details_list.adapter = adapter
-        (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
         displayDetails()
         initConfirmButton()
@@ -104,12 +101,7 @@ class PaymentConfirmationActivity : BaseActivity() {
     }
 
     private fun displayToPay() {
-        val totalFee =
-                if (request.senderPaysRecipientFee)
-                    request.senderFee.total + request.recipientFee.total
-                else
-                    request.senderFee.total
-
+        val totalFee = request.fee.totalSenderFee
         val total = request.amount + totalFee
 
         mainDataView.displayAmount(total, request.asset, false)
@@ -117,10 +109,10 @@ class PaymentConfirmationActivity : BaseActivity() {
     }
 
     private fun displayToReceive() {
-        val totalFee = request.recipientFee.total
+        val totalFee = request.fee.recipientFee.total
 
         val totalActualFee =
-                if (request.senderPaysRecipientFee)
+                if (request.fee.senderPaysForRecipient)
                     BigDecimal.ZERO
                 else
                     totalFee
@@ -136,44 +128,12 @@ class PaymentConfirmationActivity : BaseActivity() {
                 )
         )
 
-
-        if (totalFee.signum() > 0) {
+        if (totalActualFee.signum() > 0) {
             adapter.addOrUpdateItem(
                     DetailsItem(
                             id = RECIPIENT_FEE_ITEM_ID,
                             text = amountFormatter.formatAssetAmount(totalFee, request.asset),
-                            hint = getString(R.string.tx_fee),
-                            isEnabled = !request.senderPaysRecipientFee
-                    )
-            )
-
-            val payRecipientFeeSwitch = SwitchCompat(this)
-                    .apply {
-                        val setListener = {
-                            setOnCheckedChangeListener { _, isChecked ->
-                                switchEverChecked = true
-                                request.senderPaysRecipientFee = isChecked
-                                displayAmounts()
-                            }
-                        }
-
-                        if (switchEverChecked) {
-                            isChecked = !request.senderPaysRecipientFee
-
-                            post {
-                                isChecked = request.senderPaysRecipientFee
-                                setListener()
-                            }
-                        } else {
-                            setListener()
-                        }
-                    }
-
-            adapter.addOrUpdateItem(
-                    DetailsItem(
-                            id = PAY_RECIPIENT_FEE_ITEM_ID,
-                            text = getString(R.string.pay_recipient_fee_action),
-                            extraView = payRecipientFeeSwitch
+                            hint = getString(R.string.tx_fee)
                     )
             )
         }
@@ -181,7 +141,17 @@ class PaymentConfirmationActivity : BaseActivity() {
     // endregion
 
     private fun initConfirmButton() {
-        confirm_button.onClick { confirm() }
+        confirm_button.apply {
+            onClick { confirm() }
+
+            // Prevent accidental click.
+            enabled = false
+            postDelayed({
+                if (!isFinishing) {
+                    enabled = true
+                }
+            }, 1500)
+        }
     }
 
     private fun confirm() {
@@ -221,12 +191,7 @@ class PaymentConfirmationActivity : BaseActivity() {
 
     companion object {
         const val PAYMENT_REQUEST_EXTRA = "payment_request"
-        private val SENDER_FEE_ITEM_ID = "sender_fee".hashCode().toLong()
         private val RECIPIENT_FEE_ITEM_ID = "recipient_fee".hashCode().toLong()
-        private val SENDER_TOTAL_ITEM_ID = "sender_total".hashCode().toLong()
-        private val RECIPIENT_TOTAL_ITEM_ID = "recipient_total".hashCode().toLong()
-        private val TO_PAY_AMOUNT_ITEM_ID = "to_pay_amount".hashCode().toLong()
         private val TO_RECEIVE_AMOUNT_ITEM_ID = "to_receive_amount".hashCode().toLong()
-        private val PAY_RECIPIENT_FEE_ITEM_ID = "pay_recipient_fee".hashCode().toLong()
     }
 }

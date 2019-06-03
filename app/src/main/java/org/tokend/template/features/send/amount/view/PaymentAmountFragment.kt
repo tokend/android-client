@@ -18,7 +18,7 @@ import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.features.amountscreen.view.AmountInputFragment
 import org.tokend.template.features.send.amount.logic.PaymentFeeLoader
-import org.tokend.template.features.send.amount.model.PaymentAmountAndDescription
+import org.tokend.template.features.send.amount.model.PaymentAmountData
 import org.tokend.template.features.send.model.PaymentFee
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.util.ObservableTransformers
@@ -27,7 +27,7 @@ import org.tokend.wallet.Base32Check
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 
-class PaymentAmountAndDescriptionFragment : AmountInputFragment() {
+class PaymentAmountFragment : AmountInputFragment() {
     private val recipient: String?
         get() = arguments?.getString(RECIPIENT_EXTRA)
 
@@ -139,12 +139,15 @@ class PaymentAmountAndDescriptionFragment : AmountInputFragment() {
                 .toString()
                 .trim()
                 .takeIf { it.isNotEmpty() }
+        val fee = this.fee
+                ?: return
 
         resultSubject.onNext(
-                PaymentAmountAndDescription(
+                PaymentAmountData(
                         amount = amount,
                         assetCode = asset,
-                        description = description
+                        description = description,
+                        fee = fee
                 )
         )
     }
@@ -239,8 +242,8 @@ class PaymentAmountAndDescriptionFragment : AmountInputFragment() {
 
         fun newInstance(recipient: String,
                         recipientAccount: String,
-                        requiredAsset: String? = null): PaymentAmountAndDescriptionFragment {
-            val fragment = PaymentAmountAndDescriptionFragment()
+                        requiredAsset: String? = null): PaymentAmountFragment {
+            val fragment = PaymentAmountFragment()
             fragment.arguments = Bundle().apply {
                 putString(ASSET_EXTRA, requiredAsset)
                 putString(RECIPIENT_EXTRA, recipient)
