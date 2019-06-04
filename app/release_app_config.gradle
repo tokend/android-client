@@ -4,4 +4,5 @@ ext {
     enable_analytics = true
     allow_authenticator_auth = false
     logs_enabled = false
+    allow_trade = false
 }
