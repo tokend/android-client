@@ -86,5 +86,6 @@ class ConfirmWithdrawalRequestUseCase(
     private fun updateRepositories() {
         repositoryProvider.balances().updateIfEverUpdated()
         repositoryProvider.balanceChanges(request.balanceId).updateIfEverUpdated()
+        repositoryProvider.balanceChanges(null).updateIfEverUpdated()
     }
 }
