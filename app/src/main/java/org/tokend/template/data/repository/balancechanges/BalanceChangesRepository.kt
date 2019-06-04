@@ -41,7 +41,7 @@ class BalanceChangesRepository(
         return signedApi
                 .v3
                 .history
-                .get(
+                .getMovements(
                         ParticipantEffectsPageParams.Builder()
                                 .withInclude(
                                         ParticipantEffectsParams.Includes.EFFECT,
