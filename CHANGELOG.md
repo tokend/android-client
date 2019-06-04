@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [1.10.0] 2019-06-04
+
+### Added
+- Send and Receive actions to Dashboard
+- Highlight of selected legend entry on assets distribution chart
+- Grid layout for balances and asset pairs for large-width screen
+- Error logger into error handler
+- Fees loading on payment amount screen
+- Ability to open asset details screen from balance details screen
+
+### Changed
+- Applied clean white theme
+- Redesigned balance details screen
+- Redesigned cards
+- Redesigned balance change details screens
+- Redesigned confirmation screens
+- Account ID in history is displayed truncated
+- Replaced tablet navigation shadow with stroke
+- Adapted Send and Withdraw amount screens for small screen size
+- Made sale progress bar rounded and thicker
+- Moved sale video below the progress
+- Total amount is now displayed in balance changes history
+
+### Fixed
+- QR scanner screen rotation
+- First click on avatar did nothing
+- Default input focus on sign in screen
+- Incorrect movements list width after device rotation
+- Missing overall movements update after balance change
+- Wrong icon for items on pending investments screen
+- Asset order on withdraw and payment screens
+
 ## [1.9.0] 2019-05-31
 
 ### Added
@@ -144,7 +176,8 @@ with ability to copy
 
 - Error on sign in when user has balances with unknown asset details
 
-[Unreleased]: https://github.com/tokend/android-client/compare/1.9.0(12)...HEAD
+[Unreleased]: https://github.com/tokend/android-client/compare/1.10.0(13)...HEAD
+[1.10.0]: https://github.com/tokend/android-client/compare/1.9.0(12)...1.10.0(13)
 [1.9.0]: https://github.com/tokend/android-client/compare/1.8.0(10)...1.9.0(12)
 [1.8.0]: https://github.com/tokend/android-client/compare/1.7.0(8)...1.8.0(10)
 [1.7.0]: https://github.com/tokend/android-client/compare/1.6.0(7)...1.7.0(8)
