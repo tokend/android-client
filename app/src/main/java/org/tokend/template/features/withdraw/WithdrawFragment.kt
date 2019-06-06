@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.fragment_user_flow.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
@@ -56,7 +57,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
     private var destinationAddress: String? = null
     private var amount: BigDecimal = BigDecimal.ZERO
-    private var asset: String = ""
+    private var asset: Asset? = null
 
     private var isWaitingForWithdrawableAssets: Boolean = true
 
@@ -153,7 +154,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
     private fun onAmountEntered(result: AmountInputResult) {
         this.amount = result.amount
-        this.asset = result.assetCode
+        this.asset = result.asset
 
         toDestinationScreen()
     }
@@ -189,6 +190,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     private var withdrawRequestDisposable: Disposable? = null
     private fun createAndConfirmWithdrawRequest() {
         val destination = this.destinationAddress ?: return
+        val asset = this.asset ?: return
         val address = destination
                 .trim()
                 .let {

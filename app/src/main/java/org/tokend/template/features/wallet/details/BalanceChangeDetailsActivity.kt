@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.appbar_with_balance_change_main_data.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.view.balancechange.BalanceChangeMainDataView
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
@@ -75,11 +76,11 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
     }
 
     protected open fun displayAmount(item: BalanceChange) {
-        mainDataView.displayAmount(item.totalAmount, item.assetCode, item.isReceived)
+        mainDataView.displayAmount(item.totalAmount, SimpleAsset(item.assetCode), item.isReceived)
     }
 
     protected open fun displayFee(item: BalanceChange) {
-        mainDataView.displayNonZeroFee(item.fee.total, item.assetCode)
+        mainDataView.displayNonZeroFee(item.fee.total, SimpleAsset(item.assetCode))
     }
 
     protected open fun displayDate(item: BalanceChange) {

@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_user_flow.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
@@ -60,7 +61,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private var recipient: PaymentRecipient? = null
     private var amount: BigDecimal = BigDecimal.ZERO
-    private var asset: String = ""
+    private var asset: Asset? = null
     private var description: String? = null
     private var fee: PaymentFee? = null
 
@@ -191,7 +192,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private fun onAmountEntered(result: PaymentAmountData) {
         this.amount = result.amount
-        this.asset = result.assetCode
+        this.asset = result.asset
         this.description = result.description
         this.fee = result.fee
 

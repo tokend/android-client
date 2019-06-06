@@ -2,6 +2,7 @@ package org.tokend.template.features.offers.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.history.SimpleFeeRecord
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.offers.model.OfferRecord
@@ -15,8 +16,8 @@ import java.math.BigDecimal
 class CreateOfferRequestUseCase(
         private val baseAmount: BigDecimal,
         private val price: BigDecimal,
-        private val baseAssetCode: String,
-        private val quoteAssetCode: String,
+        private val baseAsset: Asset,
+        private val quoteAsset: Asset,
         private val orderBookId: Long,
         private val isBuy: Boolean,
         private val offerToCancel: OfferRecord?,
@@ -59,7 +60,7 @@ class CreateOfferRequestUseCase(
         return feeManager.getOfferFee(
                 orderBookId,
                 accountId,
-                quoteAssetCode,
+                quoteAsset.code,
                 quoteAmount
         )
     }
@@ -68,8 +69,8 @@ class CreateOfferRequestUseCase(
         return Single.just(
                 OfferRequest(
                         orderBookId = orderBookId,
-                        quoteAssetCode = quoteAssetCode,
-                        baseAssetCode = baseAssetCode,
+                        quoteAsset = quoteAsset,
+                        baseAsset = baseAsset,
                         price = price,
                         isBuy = isBuy,
                         fee = fee,

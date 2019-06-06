@@ -145,7 +145,7 @@ class PaymentAmountFragment : AmountInputFragment() {
         resultSubject.onNext(
                 PaymentAmountData(
                         amount = amount,
-                        assetCode = asset,
+                        asset = balance?.asset,
                         description = description,
                         fee = fee
                 )
@@ -211,7 +211,7 @@ class PaymentAmountFragment : AmountInputFragment() {
 
     private fun updateFeeView() {
         fee?.apply {
-            feeView.setFees(senderFee.total, recipientFee.total, asset, amountFormatter)
+            feeView.setFees(senderFee.total, recipientFee.total, balance?.asset, amountFormatter)
         }
     }
     // endregion
@@ -219,7 +219,7 @@ class PaymentAmountFragment : AmountInputFragment() {
     override fun isEnoughBalance(): Boolean {
         val toPayAmount = amountWrapper.scaledAmount +
                 (fee?.totalSenderFee?.takeIf { !feeIsLoading } ?: BigDecimal.ZERO)
-        return toPayAmount <= balance
+        return toPayAmount <= balance?.available
     }
 
     override fun updateActionButtonAvailability() {

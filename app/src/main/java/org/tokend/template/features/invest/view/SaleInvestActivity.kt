@@ -17,6 +17,7 @@ import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.invest.logic.InvestmentInfoHolder
@@ -87,7 +88,7 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
             val quoteAmount = amountWrapper.scaledAmount
             return BigDecimalUtil.scaleAmount(
                     quoteAmount.divide(currentPrice, MathContext.DECIMAL128),
-                    amountFormatter.getDecimalDigitsCount(sale.baseAssetCode)
+                    sale.baseAsset.trailingDigits
             )
         }
 
@@ -246,7 +247,7 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
         val existingInvestmentAmount =
                 investmentInfoRepository.getExistingInvestmentAmount(investAsset)
 
-        amountWrapper.maxPlacesAfterComa = amountFormatter.getDecimalDigitsCount(investAsset)
+        amountWrapper.maxPlacesAfterComa = SimpleAsset(investAsset).trailingDigits
 
         if (existingInvestmentAmount.signum() > 0) {
             amount_edit_text.setText(BigDecimalUtil.toPlainString(existingInvestmentAmount))
@@ -257,14 +258,15 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
     }
 
     private fun updateInvestHelperAndError() {
+        val asset = SimpleAsset(investAsset)
         if (amountWrapper.scaledAmount > maxInvestAmount) {
             amount_edit_text.error = getString(R.string.template_sale_max_investment,
-                    amountFormatter.formatAssetAmount(maxInvestAmount, investAsset))
+                    amountFormatter.formatAssetAmount(maxInvestAmount, asset))
         } else {
             amount_edit_text.error = null
             amount_edit_text.setHelperText(
                     getString(R.string.template_available,
-                            amountFormatter.formatAssetAmount(getAvailableBalance(investAsset), investAsset))
+                            amountFormatter.formatAssetAmount(getAvailableBalance(investAsset), asset))
             )
         }
     }
@@ -339,8 +341,8 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
         investDisposable =
                 CreateOfferRequestUseCase(
                         baseAmount = if (cancel) BigDecimal.ZERO else receiveAmount,
-                        baseAssetCode = sale.baseAssetCode,
-                        quoteAssetCode = asset,
+                        baseAsset = sale.baseAsset,
+                        quoteAsset = SimpleAsset(asset),
                         price = price,
                         isBuy = true,
                         orderBookId = orderBookId,

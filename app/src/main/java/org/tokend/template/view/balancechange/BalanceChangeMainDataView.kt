@@ -8,6 +8,7 @@ import android.widget.TextView
 import org.jetbrains.anko.childrenSequence
 import org.jetbrains.anko.dip
 import org.tokend.template.R
+import org.tokend.template.data.model.Asset
 import org.tokend.template.features.wallet.view.ScrimCallbackCollapsingToolbarLayout
 import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.formatter.AmountFormatter
@@ -84,7 +85,7 @@ class BalanceChangeMainDataView(
     }
 
     fun displayAmount(amount: BigDecimal,
-                      assetCode: String,
+                      asset: Asset?,
                       isReceived: Boolean?) {
         val sign =
                 if (isReceived == false)
@@ -98,7 +99,7 @@ class BalanceChangeMainDataView(
             else -> null
         }
 
-        val amountString = sign + amountFormatter.formatAssetAmount(amount, assetCode)
+        val amountString = sign + amountFormatter.formatAssetAmount(amount, asset)
         toolbar.title = amountString
         amountTextView.text = amountString
 
@@ -117,11 +118,11 @@ class BalanceChangeMainDataView(
     }
 
     fun displayNonZeroFee(fee: BigDecimal,
-                          assetCode: String) {
+                          asset: Asset?) {
         if (fee.signum() > 0) {
             bottomInfoTextView.text = context.getString(
                     R.string.template_fee,
-                    amountFormatter.formatAssetAmount(fee, assetCode)
+                    amountFormatter.formatAssetAmount(fee, asset)
             )
         } else {
             bottomInfoTextView.text = context.getString(R.string.no_fee_charged)

@@ -2,6 +2,8 @@ package org.tokend.template.features.invest.model
 
 import org.tokend.sdk.api.sales.model.SaleState
 import org.tokend.sdk.api.sales.model.SimpleSale
+import org.tokend.template.data.model.Asset
+import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.model.UrlConfig
 import org.tokend.wallet.xdr.SaleType
 import java.io.Serializable
@@ -11,9 +13,9 @@ import java.util.*
 class SaleRecord(
         val id: Long,
         val name: String,
-        val baseAssetCode: String,
+        val baseAsset: Asset,
         val quoteAssets: List<QuoteAsset>,
-        val defaultQuoteAsset: String,
+        val defaultQuoteAsset: Asset,
         val shortDescription: String,
         val fullDescriptionBlob: String,
         val logoUrl: String?,
@@ -33,8 +35,8 @@ class SaleRecord(
     ) : this(
             id = source.id,
             name = source.details.name,
-            baseAssetCode = source.baseAsset,
-            defaultQuoteAsset = source.defaultQuoteAsset,
+            baseAsset = SimpleAsset(source.baseAsset),
+            defaultQuoteAsset = SimpleAsset(source.defaultQuoteAsset),
             quoteAssets = source.quoteAssets.map {
                 QuoteAsset(
                         code = it.code,

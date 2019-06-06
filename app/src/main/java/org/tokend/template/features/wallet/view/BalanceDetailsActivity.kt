@@ -305,7 +305,7 @@ class BalanceDetailsActivity : BaseActivity() {
         val availableString =
                 amountFormatter.formatAssetAmount(
                         balance.available,
-                        balance.assetCode
+                        balance.asset
                 )
         balance_available_text_view.text = availableString
         toolbar.title = availableString
@@ -319,14 +319,14 @@ class BalanceDetailsActivity : BaseActivity() {
         )
 
         if (balance.convertedAmount != null
-                && balance.conversionAssetCode != null
-                && balance.conversionAssetCode != balance.assetCode) {
+                && balance.conversionAsset != null
+                && balance.conversionAsset.code != balance.assetCode) {
             val convertedString =
                     getString(
                             R.string.template_converted_amount,
                             amountFormatter.formatAssetAmount(
                                     balance.convertedAmount,
-                                    balance.conversionAssetCode
+                                    balance.conversionAsset
                             )
                     )
             balance_converted_text_view.visibility = View.VISIBLE

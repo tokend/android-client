@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.fragment_trade_asset_pairs.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.features.trade.pairs.view.adapter.AssetPairItemsAdapter
@@ -47,7 +48,11 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
     private lateinit var layoutManager: GridLayoutManager
 
     private val comparator = Comparator<AssetPairListItem> { o1, o2 ->
-        assetComparator.compare(o1.baseAssetCode, o2.baseAssetCode)
+        assetComparator.compare(o1.baseAsset.code, o2.baseAsset.code)
+    }
+
+    private val simpleAssetComparator = Comparator<Asset> { o1, o2 ->
+        assetComparator.compare(o1.code, o2.code)
     }
 
     private var filter: String? = null
@@ -214,7 +219,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
     private fun displayPairs() {
         val items = assetPairsRepository
                 .itemsList
-                .filter { it.isTradeable() && it.quote == quoteAsset }
+                .filter { it.isTradeable() && it.quote.code == quoteAsset }
                 .map(::AssetPairListItem)
                 .sortedWith(comparator)
                 .let { items ->
@@ -222,7 +227,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
                         items.filter { item ->
                             SearchUtil.isMatchGeneralCondition(
                                     it,
-                                    item.baseAssetCode
+                                    item.baseAsset.code
                             )
                         }
                     } ?: items
@@ -237,7 +242,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
                 .filter { it.isTradeable() }
                 .map(AssetPairRecord::quote)
                 .distinct()
-                .sortedWith(assetComparator)
+                .sortedWith(simpleAssetComparator)
 
         if (quotes.isEmpty()) {
             pairs_tabs.visibility = View.GONE
@@ -245,7 +250,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
             pairs_tabs.visibility = View.VISIBLE
         }
 
-        pairs_tabs.setItems(quotes.map { PickerItem(it, it) })
+        pairs_tabs.setItems(quotes.map { PickerItem(it.code, it) })
         displayPairs()
     }
 

@@ -84,11 +84,11 @@ class AssetPairsRepository(
         val pairs = itemsCache.items
 
         val mainPairPrice = pairs.find {
-            it.quote == destAsset && it.base == sourceAsset
+            it.quote.code == destAsset && it.base.code == sourceAsset
         }?.price
 
         val quotePair = pairs.find {
-            it.quote == sourceAsset && it.base == destAsset
+            it.quote.code == sourceAsset && it.base.code == destAsset
         }
         val quotePairPrice =
                 if (quotePair?.price != null)

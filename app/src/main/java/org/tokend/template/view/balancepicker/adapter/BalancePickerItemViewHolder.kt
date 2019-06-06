@@ -3,6 +3,7 @@ package org.tokend.template.view.balancepicker.adapter
 import android.support.v4.content.ContextCompat
 import android.view.View
 import org.tokend.template.R
+import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.balances.BalanceItemView
 import org.tokend.template.view.balances.BalanceItemViewImpl
@@ -25,7 +26,7 @@ class BalancePickerItemViewHolder(
                 R.string.template_available,
                 amountFormatter.formatAssetAmount(
                         item.available,
-                        item.assetCode,
+                        SimpleAsset(item.assetCode),
                         withAssetCode = false
                 )
         )

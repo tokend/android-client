@@ -38,7 +38,7 @@ class OrderBookFragment : BaseFragment() {
         get() = repositoryProvider.balances()
 
     private val orderBookRepository: OrderBookRepository
-        get() = repositoryProvider.orderBook(assetPair.base, assetPair.quote)
+        get() = repositoryProvider.orderBook(assetPair.base.code, assetPair.quote.code)
 
     private val orderBook: OrderBook?
         get() = orderBookRepository.item
@@ -195,8 +195,8 @@ class OrderBookFragment : BaseFragment() {
         Navigator
                 .from(this)
                 .openCreateOffer(
-                        baseAssetCode = orderBook.baseAssetCode,
-                        quoteAssetCode = orderBook.quoteAssetCode,
+                        baseAsset = orderBook.baseAsset,
+                        quoteAsset = orderBook.quoteAsset,
                         requiredPrice = price
                 )
     }

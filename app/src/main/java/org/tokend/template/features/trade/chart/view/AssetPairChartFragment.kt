@@ -26,7 +26,7 @@ class AssetPairChartFragment : BaseFragment() {
     private lateinit var assetPair: AssetPairRecord
 
     private val chartRepository: AssetChartRepository
-        get() = repositoryProvider.assetChart(assetPair.base, assetPair.quote)
+        get() = repositoryProvider.assetChart(assetPair.base.code, assetPair.quote.code)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_asset_chart, container, false)

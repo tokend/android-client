@@ -22,7 +22,7 @@ class SaleChartFragment : SaleFragment() {
     )
 
     private val chartRepository: AssetChartRepository
-        get() = repositoryProvider.assetChart(sale.baseAssetCode)
+        get() = repositoryProvider.assetChart(sale.baseAsset.code)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_asset_chart, container, false)

@@ -2,6 +2,7 @@ package org.tokend.template.features.send.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.send.model.PaymentFee
@@ -17,7 +18,7 @@ import java.math.BigDecimal
 class CreatePaymentRequestUseCase(
         private val recipient: PaymentRecipient,
         private val amount: BigDecimal,
-        private val asset: String,
+        private val asset: Asset?,
         private val subject: String?,
         private val fee: PaymentFee,
         private val walletInfoProvider: WalletInfoProvider,
@@ -63,7 +64,7 @@ class CreatePaymentRequestUseCase(
                 .flatMapMaybe {
                     balancesRepository
                             .itemsList
-                            .find { it.assetCode == asset }
+                            .find { it.assetCode == asset?.code }
                             ?.id
                             .toMaybe()
                 }

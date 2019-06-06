@@ -80,7 +80,7 @@ open class PendingOfferDetailsActivity : BaseActivity() {
     }
 
     protected open fun displayToPay(item: OfferRecord) {
-        val asset = if (item.isBuy) item.quoteAssetCode else item.baseAssetCode
+        val asset = if (item.isBuy) item.quoteAsset else item.baseAsset
         val amount = if (item.isBuy) item.quoteAmount else item.baseAmount
         val fee = if (item.isBuy && item.isCancellable) item.fee else BigDecimal.ZERO
         val total = amount + fee
@@ -90,7 +90,7 @@ open class PendingOfferDetailsActivity : BaseActivity() {
     }
 
     protected open fun displayToReceive(item: OfferRecord) {
-        val asset = if (item.isBuy) item.baseAssetCode else item.quoteAssetCode
+        val asset = if (item.isBuy) item.baseAsset else item.quoteAsset
         val amount = if (item.isBuy) item.baseAmount else item.quoteAmount
         val fee = if (item.isBuy || !item.isCancellable) BigDecimal.ZERO else item.fee
         val total = amount - fee
@@ -115,10 +115,10 @@ open class PendingOfferDetailsActivity : BaseActivity() {
 
     protected open fun displayPrice(item: OfferRecord) {
         val formattedPrice = amountFormatter
-                .formatAssetAmount(item.price, item.quoteAssetCode)
+                .formatAssetAmount(item.price, item.quoteAsset)
 
         val priceString = getString(R.string.template_price_one_equals,
-                item.baseAssetCode, formattedPrice)
+                item.baseAsset.code, formattedPrice)
 
         adapter.addData(
                 DetailsItem(

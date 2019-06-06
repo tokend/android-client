@@ -42,8 +42,8 @@ class CancelOfferUseCase(
     private fun updateRepositories(): Single<Boolean> {
         if (!isPrimaryMarket) {
             repositoryProvider.orderBook(
-                    offer.baseAssetCode,
-                    offer.quoteAssetCode
+                    offer.baseAsset.code,
+                    offer.quoteAsset.code
             ).updateIfEverUpdated()
         }
         repositoryProvider.balances().updateIfEverUpdated()

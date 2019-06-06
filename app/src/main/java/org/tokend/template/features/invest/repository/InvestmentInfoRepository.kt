@@ -39,7 +39,7 @@ class InvestmentInfoRepository(
                 .getForSale(sale.id)
                 .map {
                     it.associateBy { offer ->
-                        offer.quoteAssetCode
+                        offer.quoteAsset.code
                     }
                 }
     }

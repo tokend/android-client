@@ -1,5 +1,6 @@
 package org.tokend.template.features.trade.orderbook.view.adapter
 
+import org.tokend.template.data.model.Asset
 import org.tokend.template.features.trade.orderbook.model.OrderBookEntryRecord
 import java.math.BigDecimal
 import java.math.MathContext
@@ -8,8 +9,8 @@ class OrderBookEntryListItem(
         val isBuy: Boolean,
         val price: BigDecimal,
         val volume: BigDecimal,
-        val baseAssetCode: String,
-        val quoteAssetCode: String,
+        val baseAsset: Asset,
+        val quoteAsset: Asset,
         val maxVolume: BigDecimal
 ) {
     val volumePercentsOfMax =
@@ -21,7 +22,7 @@ class OrderBookEntryListItem(
             price = record.price,
             volume = record.volume,
             maxVolume = maxVolume,
-            baseAssetCode = record.baseAssetCode,
-            quoteAssetCode = record.quoteAssetCode
+            baseAsset = record.baseAsset,
+            quoteAsset = record.quoteAsset
     )
 }

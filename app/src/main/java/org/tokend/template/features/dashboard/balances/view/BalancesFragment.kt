@@ -116,9 +116,9 @@ class BalancesFragment : BaseFragment() {
     }
 
     private fun displayDistribution() {
-        val conversionAssetCode = balancesRepository.conversionAssetCode
+        val conversionAsset = balancesRepository.conversionAsset
 
-        if (conversionAssetCode == null) {
+        if (conversionAsset == null) {
             distribution_chart.visibility = View.GONE
             return
         }
@@ -126,7 +126,7 @@ class BalancesFragment : BaseFragment() {
         distribution_chart.apply {
             setData(
                     balancesRepository.itemsList,
-                    conversionAssetCode,
+                    conversionAsset,
                     !chartEverAnimated
             )
             chartEverAnimated = true
@@ -135,7 +135,7 @@ class BalancesFragment : BaseFragment() {
     }
 
     private fun displayTotal() {
-        val conversionAssetCode = balancesRepository.conversionAssetCode
+        val conversionAssetCode = balancesRepository.conversionAsset
 
         if (conversionAssetCode == null) {
             total_text_view.visibility = View.GONE

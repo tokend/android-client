@@ -1,6 +1,7 @@
 package org.tokend.template.view.util.formatter
 
 import org.tokend.sdk.utils.BigDecimalUtil
+import org.tokend.template.data.model.Asset
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
@@ -12,6 +13,7 @@ class DefaultAmountFormatter : AmountFormatter {
 
     override fun formatAssetAmount(amount: BigDecimal?,
                                    asset: String,
+                                   maxDecimalDigits: Int,
                                    minDecimalDigits: Int,
                                    abbreviation: Boolean,
                                    withAssetCode: Boolean): String {
@@ -20,9 +22,9 @@ class DefaultAmountFormatter : AmountFormatter {
 
         val formattedAmount = if (abbreviation) {
             val (newAmount, letter) = calculateAmountAbbreviation(amount)
-            formatAmount(newAmount, getDecimalDigitsCount(asset), minDecimalDigits) + letter
+            formatAmount(newAmount, maxDecimalDigits, minDecimalDigits) + letter
         } else {
-            formatAmount(amount, getDecimalDigitsCount(asset), minDecimalDigits)
+            formatAmount(amount, maxDecimalDigits, minDecimalDigits)
         }
 
         return if (withAssetCode) {
@@ -32,12 +34,35 @@ class DefaultAmountFormatter : AmountFormatter {
 
     override fun formatAssetAmount(amount: String?,
                                    asset: String,
+                                   maxDecimalDigits: Int,
                                    minDecimalDigits: Int,
                                    abbreviation: Boolean,
                                    withAssetCode: Boolean): String {
 
         val amount = if (amount.isNullOrBlank()) "0" else amount
-        return formatAssetAmount(BigDecimal(amount), asset, minDecimalDigits, abbreviation, withAssetCode)
+        return formatAssetAmount(BigDecimal(amount), asset, maxDecimalDigits, minDecimalDigits, abbreviation, withAssetCode)
+    }
+
+    override fun formatAssetAmount(amount: BigDecimal?,
+                                   asset: Asset?,
+                                   minDecimalDigits: Int,
+                                   abbreviation: Boolean,
+                                   withAssetCode: Boolean): String {
+        val code = asset?.code ?: ""
+        val digits = asset?.trailingDigits ?: 0
+
+        return formatAssetAmount(amount, code, digits, minDecimalDigits, abbreviation, withAssetCode)
+    }
+
+    override fun formatAssetAmount(amount: String?,
+                                   asset: Asset?,
+                                   minDecimalDigits: Int,
+                                   abbreviation: Boolean,
+                                   withAssetCode: Boolean): String {
+        val code = asset?.code ?: ""
+        val digits = asset?.trailingDigits ?: 0
+
+        return formatAssetAmount(BigDecimal(amount), code, digits, minDecimalDigits, abbreviation, withAssetCode)
     }
 
     override fun formatAmount(amount: BigDecimal?,
@@ -79,10 +104,6 @@ class DefaultAmountFormatter : AmountFormatter {
             else ->
                 AmountFormatter.Abbreviation(amount, "")
         }
-    }
-
-    override fun getDecimalDigitsCount(asset: String?): Int {
-        return AmountFormatter.DEFAULT_ASSET_DECIMAL_DIGITS
     }
 
     private fun buildDecimalFormatter(maxZerosCount: Int, minZerosCount: Int): NumberFormat {

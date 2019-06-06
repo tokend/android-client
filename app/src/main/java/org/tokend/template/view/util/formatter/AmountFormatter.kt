@@ -1,5 +1,6 @@
 package org.tokend.template.view.util.formatter
 
+import org.tokend.template.data.model.Asset
 import java.math.BigDecimal
 
 interface AmountFormatter {
@@ -20,6 +21,7 @@ interface AmountFormatter {
      */
     fun formatAssetAmount(amount: BigDecimal?,
                           asset: String,
+                          maxDecimalDigits: Int,
                           minDecimalDigits: Int = 0,
                           abbreviation: Boolean = false,
                           withAssetCode: Boolean = true): String
@@ -31,6 +33,29 @@ interface AmountFormatter {
      */
     fun formatAssetAmount(amount: String?,
                           asset: String,
+                          maxDecimalDigits: Int,
+                          minDecimalDigits: Int = 0,
+                          abbreviation: Boolean = false,
+                          withAssetCode: Boolean = true): String
+
+    /**
+     * Formats amount of given [Asset]
+     *
+     * @see formatAssetAmount
+     */
+    fun formatAssetAmount(amount: String?,
+                          asset: Asset?,
+                          minDecimalDigits: Int = 0,
+                          abbreviation: Boolean = false,
+                          withAssetCode: Boolean = true): String
+
+    /**
+     * Formats amount of given [Asset]
+     *
+     * @see formatAssetAmount
+     */
+    fun formatAssetAmount(amount: BigDecimal?,
+                          asset: Asset?,
                           minDecimalDigits: Int = 0,
                           abbreviation: Boolean = false,
                           withAssetCode: Boolean = true): String
@@ -45,11 +70,6 @@ interface AmountFormatter {
     fun formatAmount(amount: BigDecimal?,
                      maxDecimalDigits: Int,
                      minDecimalDigits: Int = 0): String
-
-    /**
-     * @return maximal decimal digits count for the asset
-     */
-    fun getDecimalDigitsCount(asset: String?): Int
 
     data class Abbreviation(val amount: BigDecimal, val letter: String)
 

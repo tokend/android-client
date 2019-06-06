@@ -28,8 +28,8 @@ class AssetPairUpdateDetailsActivity : BalanceChangeDetailsActivity() {
                         header = getString(R.string.asset_pair_title),
                         text = getString(
                                 R.string.template_asset_pair,
-                                details.baseAssetCode,
-                                details.quoteAssetCode
+                                details.baseAsset.code,
+                                details.quoteAsset.code
                         ),
                         hint = getString(R.string.asset_pair_code),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_asset_pair)
@@ -37,10 +37,10 @@ class AssetPairUpdateDetailsActivity : BalanceChangeDetailsActivity() {
                 DetailsItem(
                         text = getString(
                                 R.string.template_price_one_equals,
-                                details.baseAssetCode,
+                                details.baseAsset,
                                 amountFormatter.formatAssetAmount(
                                         details.physicalPrice,
-                                        details.quoteAssetCode
+                                        details.quoteAsset
                                 )
                         ),
                         hint = getString(R.string.asset_pair_physical_price)
