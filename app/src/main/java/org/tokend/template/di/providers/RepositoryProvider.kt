@@ -13,6 +13,7 @@ import org.tokend.template.features.invest.repository.InvestmentInfoRepository
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.offers.repository.OffersRepository
+import org.tokend.template.features.polls.repository.PollsRepository
 import org.tokend.template.features.send.recipient.repository.ContactsRepository
 import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
 
@@ -37,4 +38,5 @@ interface RepositoryProvider {
     fun assetChart(baseAsset: String, quoteAsset: String): AssetChartRepository
     fun kycState(): KycStateRepository
     fun investmentInfo(sale: SaleRecord): InvestmentInfoRepository
+    fun polls(ownerAccountId: String): PollsRepository
 }

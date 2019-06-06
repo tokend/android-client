@@ -23,6 +23,7 @@ import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistor
 import org.tokend.template.features.offers.repository.OffersCache
 import org.tokend.template.features.offers.repository.OffersRepository
+import org.tokend.template.features.polls.repository.PollsRepository
 import org.tokend.template.features.send.recipient.repository.ContactsRepository
 import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
 
@@ -110,6 +111,9 @@ class RepositoryProviderImpl(
 
     private val investmentInfoRepositoriesBySaleId =
             LruCache<Long, InvestmentInfoRepository>(MAX_SAME_REPOSITORIES_COUNT)
+
+    private val pollsRepositoriesByOwnerAccountId =
+            LruCache<String, PollsRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     override fun balances(): BalancesRepository {
         return balancesRepository
@@ -227,6 +231,13 @@ class RepositoryProviderImpl(
     override fun investmentInfo(sale: SaleRecord): InvestmentInfoRepository {
         return investmentInfoRepositoriesBySaleId.getOrPut(sale.id) {
             InvestmentInfoRepository(sale, offers(), sales())
+        }
+    }
+
+    override fun polls(ownerAccountId: String): PollsRepository {
+        return pollsRepositoriesByOwnerAccountId.getOrPut(ownerAccountId) {
+            PollsRepository(ownerAccountId, apiProvider, walletInfoProvider,
+                    MemoryOnlyRepositoryCache())
         }
     }
 
