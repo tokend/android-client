@@ -75,7 +75,7 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
     }
 
     protected open fun displayAmount(item: BalanceChange) {
-        mainDataView.displayAmount(item.amount, item.assetCode, item.isReceived)
+        mainDataView.displayAmount(item.totalAmount, item.assetCode, item.isReceived)
     }
 
     protected open fun displayFee(item: BalanceChange) {
