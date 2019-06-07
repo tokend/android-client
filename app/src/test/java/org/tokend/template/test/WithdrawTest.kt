@@ -6,6 +6,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.ApiProviderFactory
@@ -99,7 +100,7 @@ class WithdrawTest {
 
         val useCase = CreateWithdrawalRequestUseCase(
                 amount,
-                asset,
+                SimpleAsset(asset),
                 destAddress,
                 session,
                 repositoryProvider.balances(),
@@ -149,7 +150,7 @@ class WithdrawTest {
 
         val request = CreateWithdrawalRequestUseCase(
                 amount,
-                asset,
+                SimpleAsset(asset),
                 destAddress,
                 session,
                 repositoryProvider.balances(),
@@ -231,7 +232,7 @@ class WithdrawTest {
 
         val request = CreateWithdrawalRequestUseCase(
                 amount,
-                asset,
+                SimpleAsset(asset),
                 destAddress,
                 session,
                 repositoryProvider.balances(),

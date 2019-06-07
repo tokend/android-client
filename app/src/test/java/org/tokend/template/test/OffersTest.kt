@@ -5,6 +5,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
@@ -50,8 +51,8 @@ class OffersTest {
         val quoteAsset = Util.createAsset(apiProvider, TxManager(apiProvider))
 
         val useCase = CreateOfferRequestUseCase(
-                baseAssetCode = "ETH",
-                quoteAssetCode = quoteAsset,
+                baseAsset = SimpleAsset("ETH"),
+                quoteAsset = SimpleAsset(quoteAsset),
                 isBuy = false,
                 baseAmount = baseAmount,
                 price = price,
@@ -259,8 +260,8 @@ class OffersTest {
                                repositoryProvider: RepositoryProvider,
                                offerToCancel: OfferRecord? = null) {
         val request = CreateOfferRequestUseCase(
-                baseAssetCode = baseAsset,
-                quoteAssetCode = quoteAsset,
+                baseAsset = SimpleAsset(baseAsset),
+                quoteAsset = SimpleAsset(quoteAsset),
                 isBuy = true,
                 baseAmount = baseAmount,
                 price = price,

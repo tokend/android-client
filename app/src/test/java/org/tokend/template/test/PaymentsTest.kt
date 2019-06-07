@@ -5,6 +5,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.ApiProviderFactory
@@ -68,7 +69,7 @@ class PaymentsTest {
         val useCase = CreatePaymentRequestUseCase(
                 recipient,
                 paymentAmount,
-                asset,
+                SimpleAsset(asset),
                 "Test payment",
                 fee,
                 session,
@@ -125,7 +126,7 @@ class PaymentsTest {
         val request = CreatePaymentRequestUseCase(
                 recipient,
                 paymentAmount,
-                asset,
+                SimpleAsset(asset),
                 "Test payment",
                 fee,
                 session,
@@ -224,7 +225,7 @@ class PaymentsTest {
         val request = CreatePaymentRequestUseCase(
                 recipient,
                 paymentAmount,
-                asset,
+                SimpleAsset(asset),
                 "Test payment with fee",
                 fee,
                 session,
