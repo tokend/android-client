@@ -5,18 +5,18 @@ import java.math.BigDecimal
 
 class BalancePickerListItem(
         val assetCode: String,
-        val available: BigDecimal,
+        val available: BigDecimal?,
         val isEnough: Boolean,
         val assetName: String?,
         val logoUrl: String?,
         val source: BalanceRecord?
 ) {
     constructor(source: BalanceRecord,
-                available: BigDecimal = source.available,
+                available: BigDecimal? = source.available,
                 required: BigDecimal = BigDecimal.ZERO) : this(
             assetCode = source.assetCode,
             available = available,
-            isEnough = available >= required,
+            isEnough = available == null || available >= required,
             logoUrl = source.asset.logoUrl,
             assetName = source.asset.name,
             source = source

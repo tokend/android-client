@@ -48,19 +48,21 @@ class PollsRepository(
                             .map { poll ->
                                 getCurrentChoice(poll.id)
                                         .doOnSuccess { currentChoice ->
-                                            if (currentChoice > 0) {
-                                                poll.currentChoice = currentChoice
-                                            }
+                                            poll.currentChoice = currentChoice
+                                                    .takeIf { it >= 0 }
                                         }
                             }
                             .let { choiceLoadingSingles ->
-                                Single.zip(choiceLoadingSingles) { pollsPage }
+                                if (choiceLoadingSingles.isNotEmpty())
+                                    Single.zip(choiceLoadingSingles) { pollsPage }
+                                else
+                                    Single.just(pollsPage)
                             }
                 }
     }
 
     /**
-     * @return current choice in poll or 0 if it's missing
+     * @return current choice in poll or -1 if it's missing
      */
     private fun getCurrentChoice(pollId: String): Single<Int> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
@@ -77,8 +79,8 @@ class PollsRepository(
                         null
                 )
                 .toSingle()
-                .map { it.voteData.singleChoice?.toInt() ?: 0 }
-                .onErrorReturnItem(0)
+                .map { it.voteData.singleChoice?.toInt() ?: -1 }
+                .onErrorReturnItem(-1)
     }
 
     companion object {

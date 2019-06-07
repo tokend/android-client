@@ -119,6 +119,7 @@
     <string name="send_title">Send</string>
     <string name="trade_title">Trade</string>
     <string name="settings_title">Settings</string>
+    <string name="polls_title">Polls</string>
 
     <string name="template_tx_from">From %1$s</string>
     <string name="template_tx_to">To %1$s</string>
@@ -392,4 +393,5 @@
     <string name="use_password">Use password</string>
     <string name="receive_title">Receive</string>
     <string name="asset_details">Asset details</string>
+    <string name="template_asset">Asset: %1$s</string>
 </resources>

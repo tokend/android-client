@@ -30,6 +30,7 @@ import org.tokend.template.features.kyc.model.KycState
 import org.tokend.template.features.kyc.model.form.KycFormType
 import org.tokend.template.features.kyc.model.form.SimpleKycForm
 import org.tokend.template.features.kyc.storage.KycStateRepository
+import org.tokend.template.features.polls.view.PollsFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.settings.SettingsFragment
 import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
@@ -127,6 +128,12 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .also { items[OrderBookFragment.ID] = it }
 
         PrimaryDrawerItem()
+                .withName(R.string.polls_title)
+                .withIdentifier(PollsFragment.ID)
+                .withIcon(R.drawable.ic_poll)
+                .also { items[PollsFragment.ID] = it }
+
+        PrimaryDrawerItem()
                 .withName(R.string.settings_title)
                 .withIdentifier(SettingsFragment.ID)
                 .withIcon(R.drawable.ic_settings)
@@ -222,6 +229,10 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     if (BuildConfig.IS_TRADE_ALLOWED) {
                         addDrawerItems(items[OrderBookFragment.ID])
                     }
+
+                    if (BuildConfig.ARE_POLLS_ALLOWED) {
+                        addDrawerItems(items[PollsFragment.ID])
+                    }
                 }
                 .addDrawerItems(
                         items[SettingsFragment.ID]
@@ -268,6 +279,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     DepositFragment.ID -> factory.getDepositFragment()
                     SalesFragment.ID -> factory.getSalesFragment()
                     TradeAssetPairsFragment.ID -> factory.getTradeAssetPairsFragment()
+                    PollsFragment.ID -> factory.getPollsFragment()
                     else -> return
                 }
 

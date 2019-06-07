@@ -320,7 +320,7 @@ class CreateOfferActivity : BaseActivity() {
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe { progress.show() }
-                .doOnEvent { _, _ -> progress.hide() }
+                .doOnEvent { _, _ -> progress.cancel() }
                 .subscribeBy(
                         onSuccess = { offerRequest ->
                             Navigator.from(this).openOfferConfirmation(

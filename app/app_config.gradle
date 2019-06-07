@@ -134,6 +134,8 @@ ext {
     enable_analytics = false
     // Allows TokenD Authenticator usage
     allow_authenticator_auth = false
+    // Allows voting in polls
+    allow_polls = true
 
     // Controls balance amounts conversion
     // into `balances_conversion_asset`
@@ -172,6 +174,7 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'IS_INVEST_ALLOWED', "${allow_invest}"
     b.buildConfigField 'Boolean', 'IS_FEES_ALLOWED', "${allow_fees}"
     b.buildConfigField 'Boolean', 'IS_NETWORK_SPECIFIED_BY_USER', "${network_specified_by_user}"
+    b.buildConfigField 'Boolean', 'ARE_POLLS_ALLOWED', "${allow_polls}"
     b.buildConfigField 'Boolean', 'ENABLE_ANALYTICS', "${enable_analytics}"
     b.buildConfigField 'Boolean', 'ENABLE_AUTHENTICATOR_AUTH', "${allow_authenticator_auth}"
     b.buildConfigField 'Boolean', 'ENABLE_BALANCES_CONVERSION', "${enable_balances_conversion}"
