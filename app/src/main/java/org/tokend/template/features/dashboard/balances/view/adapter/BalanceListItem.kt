@@ -1,26 +1,27 @@
 package org.tokend.template.features.dashboard.balances.view.adapter
 
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
 import java.math.BigDecimal
 
 class BalanceListItem(
-        val assetCode: String,
+        val asset: Asset,
         val available: BigDecimal,
         val converted: BigDecimal?,
-        val conversionAssetCode: String?,
+        val conversionAsset: Asset?,
         val assetName: String?,
         val logoUrl: String?,
         val source: BalanceRecord?
 ) {
-    val displayedName: String = assetName ?: assetCode
+    val displayedName: String = assetName ?: asset.code
 
     constructor(source: BalanceRecord) : this(
-            assetCode = source.assetCode,
+            asset = source.asset,
             available = source.available,
             logoUrl = source.asset.logoUrl,
             assetName = source.asset.name,
             converted = source.convertedAmount,
-            conversionAssetCode = source.conversionAssetCode,
+            conversionAsset = source.conversionAsset,
             source = source
     )
 
@@ -28,10 +29,10 @@ class BalanceListItem(
         if (this === other) return true
         if (other !is BalanceListItem) return false
 
-        if (assetCode != other.assetCode) return false
+        if (asset != other.asset) return false
         if (available != other.available) return false
         if (converted != other.converted) return false
-        if (conversionAssetCode != other.conversionAssetCode) return false
+        if (conversionAsset != other.conversionAsset) return false
         if (assetName != other.assetName) return false
         if (logoUrl != other.logoUrl) return false
         if (displayedName != other.displayedName) return false
@@ -40,10 +41,10 @@ class BalanceListItem(
     }
 
     override fun hashCode(): Int {
-        var result = assetCode.hashCode()
+        var result = asset.hashCode()
         result = 31 * result + available.hashCode()
         result = 31 * result + (converted?.hashCode() ?: 0)
-        result = 31 * result + (conversionAssetCode?.hashCode() ?: 0)
+        result = 31 * result + (conversionAsset?.hashCode() ?: 0)
         result = 31 * result + (assetName?.hashCode() ?: 0)
         result = 31 * result + (logoUrl?.hashCode() ?: 0)
         result = 31 * result + displayedName.hashCode()

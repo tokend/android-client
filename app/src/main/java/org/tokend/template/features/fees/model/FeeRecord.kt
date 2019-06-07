@@ -1,13 +1,15 @@
 package org.tokend.template.features.fees.model
 
 import org.tokend.sdk.api.generated.resources.FeeResource
+import org.tokend.template.data.model.Asset
+import org.tokend.template.data.model.SimpleAsset
 import java.io.Serializable
 import java.math.BigDecimal
 
 class FeeRecord(
         val feeType: Int,
         val subtype: Int,
-        val asset: String,
+        val asset: Asset,
         val fixed: BigDecimal,
         val percent: BigDecimal,
         val lowerBound: BigDecimal = BigDecimal.ZERO,
@@ -16,7 +18,7 @@ class FeeRecord(
     constructor(source: FeeResource) : this(
             feeType = source.appliedTo.feeType,
             subtype = source.appliedTo.subtype.toInt(),
-            asset = source.appliedTo.asset,
+            asset = SimpleAsset(source.appliedTo.asset),
             fixed = source.fixed,
             percent = source.percent,
             lowerBound = source.appliedTo.lowerBound,

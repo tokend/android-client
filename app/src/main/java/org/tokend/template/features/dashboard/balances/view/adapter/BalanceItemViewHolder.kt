@@ -21,23 +21,22 @@ class BalanceItemViewHolder(
             view.context.resources.getDimensionPixelSize(R.dimen.text_size_hint)
 
     override fun bind(item: BalanceListItem) {
-        displayLogo(item.logoUrl, item.assetCode)
+        displayLogo(item.logoUrl, item.asset.code)
 
         nameTextView.text = item.displayedName
 
-        val conversionAssetCode = item.conversionAssetCode
+        val conversionAsset = item.conversionAsset
 
-
-        if (conversionAssetCode == null || item.assetCode == conversionAssetCode
+        if (conversionAsset == null || item.asset == conversionAsset
                 || item.converted == null) {
             amountTextView.text = amountFormatter.formatAssetAmount(
                     item.available,
-                    item.assetCode
+                    item.asset
             )
         } else {
             val availableString = amountFormatter.formatAssetAmount(
                     item.available,
-                    item.assetCode
+                    item.asset
             )
 
             val balanceString = view.context.getString(
@@ -45,7 +44,7 @@ class BalanceItemViewHolder(
                     availableString,
                     amountFormatter.formatAssetAmount(
                             item.converted,
-                            item.conversionAssetCode
+                            item.conversionAsset
                     )
             )
 

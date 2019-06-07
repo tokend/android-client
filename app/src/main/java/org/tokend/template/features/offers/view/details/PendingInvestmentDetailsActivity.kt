@@ -18,7 +18,7 @@ class PendingInvestmentDetailsActivity : PendingOfferDetailsActivity() {
     private fun displayToken(item: OfferRecord) {
         adapter.addData(
                 DetailsItem(
-                        text = item.baseAssetCode,
+                        text = item.baseAsset.code,
                         hint = getString(R.string.sale_asset),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_token)
                 )

@@ -6,6 +6,7 @@ import android.view.View
 import io.reactivex.disposables.CompositeDisposable
 import org.tokend.template.App
 import org.tokend.template.activities.OnBackPressedListener
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.di.providers.*
 import org.tokend.template.logic.AppTfaCallback
@@ -32,7 +33,9 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
     @Inject
     lateinit var toastManager: ToastManager
     @Inject
-    lateinit var assetComparator: Comparator<String>
+    lateinit var assetCodeComparator: Comparator<String>
+    @Inject
+    lateinit var assetComparator: Comparator<Asset>
     @Inject
     lateinit var balanceComparator: Comparator<BalanceRecord>
     @Inject

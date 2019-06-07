@@ -127,8 +127,8 @@ class OffersFragment : BaseFragment() {
                 items
                         .filter { item ->
                             assetPair?.let {
-                                item.baseAssetCode == it.base
-                                        && item.quoteAssetCode == it.quote
+                                item.baseAsset.code == it.base.code
+                                        && item.quoteAsset.code == it.quote.code
                             } ?: true
                         }
                         .map {

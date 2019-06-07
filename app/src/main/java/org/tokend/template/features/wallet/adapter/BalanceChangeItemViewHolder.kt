@@ -68,7 +68,7 @@ class BalanceChangeItemViewHolder(view: View,
         amountTextView.setTextColor(color)
 
         var formattedAmount = amountFormatter.formatAssetAmount(
-                item.amount, item.assetCode, abbreviation = true
+                item.amount, item.asset, abbreviation = true
         )
 
         if (item.isReceived == false) {

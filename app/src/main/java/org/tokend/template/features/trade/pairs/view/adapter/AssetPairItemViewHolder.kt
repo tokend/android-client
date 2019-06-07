@@ -29,21 +29,21 @@ class AssetPairItemViewHolder(
         }
 
     override fun bind(item: AssetPairListItem) {
-        baseCodeTextView.text = item.baseAssetCode
+        baseCodeTextView.text = item.baseAsset.code
         restCodeTextView.text = view.context.getString(
                 R.string.template_asset_pair,
                 "",
-                item.quoteAssetCode
+                item.quoteAsset.code
         )
 
         priceTextView.text = amountFormatter.formatAssetAmount(
                 item.price,
-                item.quoteAssetCode,
+                item.quoteAsset,
                 withAssetCode = false,
-                minDecimalDigits = amountFormatter.getDecimalDigitsCount(item.quoteAssetCode)
+                minDecimalDigits = item.quoteAsset.trailingDigits
         )
 
-        AssetLogoUtil.setAssetLogo(baseLogoImageView, item.baseAssetCode,
+        AssetLogoUtil.setAssetLogo(baseLogoImageView, item.baseAsset.code,
                 item.baseAssetLogoUrl, baseLogoSize)
     }
 }

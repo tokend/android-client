@@ -47,7 +47,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
     private lateinit var layoutManager: GridLayoutManager
 
     private val comparator = Comparator<AssetPairListItem> { o1, o2 ->
-        assetComparator.compare(o1.baseAssetCode, o2.baseAssetCode)
+        assetCodeComparator.compare(o1.baseAsset.code, o2.baseAsset.code)
     }
 
     private var filter: String? = null
@@ -214,7 +214,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
     private fun displayPairs() {
         val items = assetPairsRepository
                 .itemsList
-                .filter { it.isTradeable() && it.quote == quoteAsset }
+                .filter { it.isTradeable() && it.quote.code == quoteAsset }
                 .map(::AssetPairListItem)
                 .sortedWith(comparator)
                 .let { items ->
@@ -222,7 +222,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
                         items.filter { item ->
                             SearchUtil.isMatchGeneralCondition(
                                     it,
-                                    item.baseAssetCode
+                                    item.baseAsset.code
                             )
                         }
                     } ?: items
@@ -245,7 +245,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
             pairs_tabs.visibility = View.VISIBLE
         }
 
-        pairs_tabs.setItems(quotes.map { PickerItem(it, it) })
+        pairs_tabs.setItems(quotes.map { PickerItem(it.code, it.code) })
         displayPairs()
     }
 

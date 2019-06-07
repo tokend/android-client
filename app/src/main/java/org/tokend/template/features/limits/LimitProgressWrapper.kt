@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.layout_limit_progress.view.*
 import org.tokend.sdk.api.accounts.model.limits.LimitEntry
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
+import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.extensions.highlight
 import org.tokend.template.extensions.highlightLast
 import org.tokend.template.extensions.isMaxPossibleAmount
@@ -52,9 +53,11 @@ class LimitProgressWrapper(private val rootView: View,
             return
         }
 
-        val left = amountFormatter.formatAssetAmount(total - used, asset,
+        val simpleAsset = SimpleAsset(asset)
+
+        val left = amountFormatter.formatAssetAmount(total - used, simpleAsset,
                 abbreviation = true, withAssetCode = false)
-        val max = amountFormatter.formatAssetAmount(total, asset,
+        val max = amountFormatter.formatAssetAmount(total, simpleAsset,
                 abbreviation = true, withAssetCode = true)
         val leftString = context.getString(R.string.template_limit_left_of_total, left, max)
         leftTextView.text = SpannableString(leftString)

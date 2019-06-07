@@ -1,6 +1,8 @@
 package org.tokend.template.data.model.history.details
 
 import org.tokend.sdk.api.generated.resources.*
+import org.tokend.template.data.model.Asset
+import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.model.history.SimpleFeeRecord
 import org.tokend.template.util.PolicyChecker
 import org.tokend.wallet.xdr.AssetPairPolicy
@@ -218,15 +220,15 @@ sealed class BalanceChangeCause : Serializable {
 
     // ------- Physical/current price restriction or policy update for asset pair ------ //
     class AssetPairUpdate(
-            val baseAssetCode: String,
-            val quoteAssetCode: String,
+            val baseAsset: Asset,
+            val quoteAsset: Asset,
             val physicalPrice: BigDecimal,
             private val policies: Int
     ) : BalanceChangeCause(), PolicyChecker {
 
         constructor(op: OpManageAssetPairDetailsResource): this(
-                baseAssetCode = op.baseAsset.id,
-                quoteAssetCode = op.quoteAsset.id,
+                baseAsset = SimpleAsset(op.baseAsset),
+                quoteAsset = SimpleAsset(op.quoteAsset),
                 physicalPrice = op.physicalPrice,
                 policies = op.policies.value
         )

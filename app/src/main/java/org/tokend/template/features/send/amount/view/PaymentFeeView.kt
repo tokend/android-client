@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.data.model.Asset
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
 
@@ -33,7 +34,7 @@ constructor(
     private var recipientFee: BigDecimal = BigDecimal.ZERO
     private val senderFeeTotal: BigDecimal
         get() = if (!isPayingRecipientFee) senderFee else senderFee + recipientFee
-    private var assetCode: String = ""
+    private var asset: Asset? = null
     private var amountFormatter: AmountFormatter? = null
 
     init {
@@ -78,11 +79,11 @@ constructor(
 
     fun setFees(sender: BigDecimal,
                 recipient: BigDecimal,
-                assetCode: String,
+                asset: Asset,
                 amountFormatter: AmountFormatter) {
         this.senderFee = sender
         this.recipientFee = recipient
-        this.assetCode = assetCode
+        this.asset = asset
         this.amountFormatter = amountFormatter
 
         displayData()
@@ -90,6 +91,8 @@ constructor(
 
     private fun displayData() {
         val amountFormatter = this.amountFormatter
+                ?: return
+        val asset = this.asset
                 ?: return
 
         if (senderFeeTotal.signum() == 0 && recipientFee.signum() == 0) {
@@ -101,7 +104,7 @@ constructor(
                     R.string.template_recipients_fee,
                     amountFormatter.formatAssetAmount(
                             recipientFee,
-                            assetCode
+                            asset
                     )
             )
             recipientFeeLayout.visibility = View.VISIBLE
@@ -110,7 +113,7 @@ constructor(
                     R.string.template_fee,
                     amountFormatter.formatAssetAmount(
                             senderFeeTotal,
-                            assetCode
+                            asset
                     )
             )
             recipientFeeLayout.visibility = View.GONE
@@ -119,7 +122,7 @@ constructor(
                     R.string.template_fee,
                     amountFormatter.formatAssetAmount(
                             senderFeeTotal,
-                            assetCode
+                            asset
                     )
             )
             recipientFeeLayout.visibility = View.VISIBLE

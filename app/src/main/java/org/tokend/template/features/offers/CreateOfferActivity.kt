@@ -21,6 +21,7 @@ import org.jetbrains.anko.onClick
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.extensions.getNullableStringExtra
@@ -41,9 +42,14 @@ class CreateOfferActivity : BaseActivity() {
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
 
-    private lateinit var baseAssetCode: String
-    private lateinit var quoteAssetCode: String
+    private lateinit var baseAsset: Asset
+    private lateinit var quoteAsset: Asset
     private lateinit var requiredPrice: BigDecimal
+
+    private val baseScale: Int
+        get() = baseAsset.trailingDigits
+    private val quoteScale: Int
+        get() = quoteAsset.trailingDigits
 
     private lateinit var amountEditTextWrapper: AmountEditTextWrapper
     private lateinit var priceEditTextWrapper: AmountEditTextWrapper
@@ -52,8 +58,6 @@ class CreateOfferActivity : BaseActivity() {
 
     private var triggerOthers: Boolean = false
 
-    private var baseScale: Int = 0
-    private var quoteScale: Int = 0
     private var baseBalance: BigDecimal = BigDecimal.ZERO
     private var quoteBalance: BigDecimal = BigDecimal.ZERO
 
@@ -64,15 +68,12 @@ class CreateOfferActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
-        baseAssetCode = intent.getNullableStringExtra(BASE_ASSET_EXTRA)
+        baseAsset = intent.getSerializableExtra(BASE_ASSET_EXTRA) as? Asset
                 ?: return
-        quoteAssetCode = intent.getNullableStringExtra(QUOTE_ASSET_EXTRA)
+        quoteAsset = intent.getSerializableExtra(QUOTE_ASSET_EXTRA) as? Asset
                 ?: return
         requiredPrice = intent.getNullableStringExtra(PRICE_STRING_EXTRA)
                 .let { BigDecimalUtil.valueOf(it) }
-
-        baseScale = amountFormatter.getDecimalDigitsCount(baseAssetCode)
-        quoteScale = amountFormatter.getDecimalDigitsCount(quoteAssetCode)
 
         initViews()
         subscribeToBalances()
@@ -95,13 +96,13 @@ class CreateOfferActivity : BaseActivity() {
         price_edit_text.setAmount(requiredPrice, quoteScale)
         price_edit_text.floatingLabelText =
                 getString(R.string.template_offer_creation_price,
-                        quoteAssetCode, baseAssetCode)
+                        quoteAsset.code, baseAsset.code)
 
         amount_edit_text.floatingLabelText =
-                getString(R.string.template_amount_hint, baseAssetCode)
+                getString(R.string.template_amount_hint, baseAsset.code)
 
         total_edit_text.floatingLabelText =
-                getString(R.string.template_total_hint, quoteAssetCode)
+                getString(R.string.template_total_hint, quoteAsset.code)
 
         if (requiredPrice.signum() == 0) {
             price_edit_text.requestFocus()
@@ -205,11 +206,11 @@ class CreateOfferActivity : BaseActivity() {
     private fun updateActionHints() {
         val amount = amountFormatter.formatAssetAmount(
                 amountEditTextWrapper.rawAmount,
-                baseAssetCode
+                baseAsset
         )
         val total = amountFormatter.formatAssetAmount(
                 totalEditTextWrapper.rawAmount,
-                quoteAssetCode
+                quoteAsset
         )
 
         sell_hint.text = getActionHintString(amount, total)
@@ -238,21 +239,21 @@ class CreateOfferActivity : BaseActivity() {
     }
 
     private fun updateAvailable(balances: List<BalanceRecord>) {
-        baseBalance = balances.find { it.assetCode == baseAssetCode }?.available
+        baseBalance = balances.find { it.assetCode == baseAsset.code }?.available
                 ?: BigDecimal.ZERO
-        quoteBalance = balances.find { it.assetCode == quoteAssetCode }?.available
+        quoteBalance = balances.find { it.assetCode == quoteAsset.code }?.available
                 ?: BigDecimal.ZERO
 
         amount_edit_text.setHelperText(
                 getString(R.string.template_available,
                         amountFormatter.formatAssetAmount(baseBalance,
-                                baseAssetCode, withAssetCode = false))
+                                baseAsset, withAssetCode = false))
         )
 
         total_edit_text.setHelperText(
                 getString(R.string.template_available,
                         amountFormatter.formatAssetAmount(quoteBalance,
-                                quoteAssetCode, withAssetCode = false))
+                                quoteAsset, withAssetCode = false))
         )
     }
 
@@ -311,8 +312,8 @@ class CreateOfferActivity : BaseActivity() {
                 isBuy = isBuy,
                 price = price,
                 orderBookId = 0,
-                baseAssetCode = baseAssetCode,
-                quoteAssetCode = quoteAssetCode,
+                baseAsset = baseAsset,
+                quoteAsset = quoteAsset,
                 offerToCancel = null,
                 walletInfoProvider = walletInfoProvider,
                 feeManager = FeeManager(apiProvider)

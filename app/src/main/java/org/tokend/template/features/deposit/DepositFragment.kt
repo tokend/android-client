@@ -192,9 +192,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private fun initAssets(assets: List<AssetRecord>) {
         val depositableAssets = assets
                 .filter { it.isBackedByExternalSystem }
-                .sortedWith(kotlin.Comparator { o1, o2 ->
-                    assetComparator.compare(o1.code, o2.code)
-                })
+                .sortedWith(assetComparator)
 
         if (depositableAssets.isEmpty()) {
             appbar_tabs.visibility = View.GONE

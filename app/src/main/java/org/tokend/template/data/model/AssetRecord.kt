@@ -10,17 +10,18 @@ import java.io.Serializable
 import java.math.BigDecimal
 
 class AssetRecord(
-        val code: String,
+        override val code: String,
         val policy: Int,
-        val name: String?,
+        override val name: String?,
         val logoUrl: String?,
         val terms: RemoteFile?,
         val externalSystemType: Int?,
         val issued: BigDecimal?,
         val available: BigDecimal?,
         val maximum: BigDecimal,
-        val ownerAccountId: String
-) : Serializable, PolicyChecker {
+        val ownerAccountId: String,
+        override val trailingDigits: Int
+) : Serializable, PolicyChecker, Asset {
     val isBackedByExternalSystem: Boolean
         get() = externalSystemType != null
 
@@ -38,6 +39,10 @@ class AssetRecord(
 
     override fun hashCode(): Int {
         return HashCodes.ofMany(code, logoUrl)
+    }
+
+    override fun toString(): String {
+        return code
     }
 
     companion object {
@@ -70,7 +75,8 @@ class AssetRecord(
                     issued = source.issued,
                     available = source.availableForIssuance,
                     maximum = source.maxIssuanceAmount,
-                    ownerAccountId = source.owner.id
+                    ownerAccountId = source.owner.id,
+                    trailingDigits = source.trailingDigits.toInt()
             )
         }
     }

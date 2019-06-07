@@ -10,7 +10,9 @@ import org.tokend.sdk.api.v3.accounts.AccountsApiV3
 import org.tokend.sdk.api.v3.balances.BalancesApi
 import org.tokend.sdk.api.v3.balances.params.ConvertedBalancesParams
 import org.tokend.sdk.utils.extentions.isNotFound
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
@@ -30,9 +32,11 @@ class BalancesRepository(
         private val walletInfoProvider: WalletInfoProvider,
         private val urlConfigProvider: UrlConfigProvider,
         private val mapper: ObjectMapper,
-        val conversionAssetCode: String?,
+        private val conversionAssetCode: String?,
         itemsCache: RepositoryCache<BalanceRecord>
 ) : SimpleMultipleItemsRepository<BalanceRecord>(itemsCache) {
+
+    var conversionAsset: Asset? = null
 
     override fun getItems(): Single<List<BalanceRecord>> {
         val signedApi = apiProvider.getSignedApi()
@@ -81,16 +85,17 @@ class BalancesRepository(
                         params = ConvertedBalancesParams(
                                 include = listOf(
                                         ConvertedBalancesParams.Includes.BALANCE_ASSET,
-                                        ConvertedBalancesParams.Includes.STATES
+                                        ConvertedBalancesParams.Includes.STATES,
+                                        ConvertedBalancesParams.Includes.ASSET
                                 )
                         )
                 )
                 .toSingle()
-                .map(ConvertedBalancesCollectionResource::getStates)
-                .map { sourceList ->
-                    sourceList.mapSuccessful {
+                .map { convertedBalances ->
+                    conversionAsset = SimpleAsset(convertedBalances.asset)
+                    convertedBalances.states.mapSuccessful {
                         BalanceRecord(it, urlConfigProvider.getConfig(),
-                                mapper, conversionAssetCode)
+                                mapper, conversionAsset)
                     }
                 }
     }

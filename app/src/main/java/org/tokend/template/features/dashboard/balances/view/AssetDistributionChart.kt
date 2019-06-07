@@ -25,6 +25,7 @@ import org.jetbrains.anko.layoutInflater
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.App
 import org.tokend.template.R
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.view.ErrorEmptyView
 import org.tokend.template.view.util.formatter.AmountFormatter
@@ -51,7 +52,7 @@ class AssetDistributionChart
     private inner class AssetDistributionEntry(
             val name: String,
             val assetCode: String?,
-            val conversionAssetCode: String,
+            val conversionAsset: Asset,
             val convertedAmount: BigDecimal,
             val percentOfTotal: Float
     ) {
@@ -59,7 +60,7 @@ class AssetDistributionChart
                 name = balance.asset.name ?: balance.assetCode,
                 assetCode = balance.assetCode,
                 convertedAmount = balance.convertedAmount!!,
-                conversionAssetCode = balance.conversionAssetCode!!,
+                conversionAsset = balance.conversionAsset!!,
                 percentOfTotal = balance.convertedAmount.percentOf(total)
         )
     }
@@ -125,9 +126,9 @@ class AssetDistributionChart
     // endregion
 
     fun setData(balances: Collection<BalanceRecord>,
-                conversionAssetCode: String,
+                conversionAsset: Asset,
                 animate: Boolean = false) {
-        val distribution = getDistribution(balances, conversionAssetCode)
+        val distribution = getDistribution(balances, conversionAsset)
 
         if (distribution.isEmpty()) {
             showEmpty()
@@ -264,7 +265,7 @@ class AssetDistributionChart
                                 TextView(ContextThemeWrapper(context, R.style.HintText), null, R.style.HintText).apply {
                                     text = amountFormatter.formatAssetAmount(
                                             distributionEntry.convertedAmount,
-                                            distributionEntry.conversionAssetCode,
+                                            distributionEntry.conversionAsset,
                                             abbreviation = true
                                     )
                                 }
@@ -301,11 +302,11 @@ class AssetDistributionChart
 
     // region Calculation
     private fun getDistribution(balances: Collection<BalanceRecord>,
-                                conversionAssetCode: String): List<AssetDistributionEntry> {
+                                conversionAsset: Asset): List<AssetDistributionEntry> {
         val sortedAndFilteredByConverted = balances
                 .filter {
                     it.convertedAmount != null
-                            && it.conversionAssetCode == conversionAssetCode
+                            && it.conversionAsset == conversionAsset
                             && it.convertedAmount.signum() > 0
                 }
                 .sortedByDescending { it.convertedAmount!! }
@@ -338,7 +339,7 @@ class AssetDistributionChart
                             name = context.getString(R.string.asset_distribution_other),
                             assetCode = null,
                             convertedAmount = otherTotal,
-                            conversionAssetCode = conversionAssetCode,
+                            conversionAsset = conversionAsset,
                             percentOfTotal = otherTotal.percentOf(total)
                     )
             )

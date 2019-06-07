@@ -17,6 +17,7 @@ import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.history.BalanceChange
@@ -331,12 +332,12 @@ class Navigator private constructor() {
         performIntent(intent)
     }
 
-    fun openCreateOffer(baseAssetCode: String,
-                        quoteAssetCode: String,
+    fun openCreateOffer(baseAsset: Asset,
+                        quoteAsset: Asset,
                         requiredPrice: BigDecimal? = null) {
         val intent = context?.intentFor<CreateOfferActivity>(
-                CreateOfferActivity.BASE_ASSET_EXTRA to baseAssetCode,
-                CreateOfferActivity.QUOTE_ASSET_EXTRA to quoteAssetCode,
+                CreateOfferActivity.BASE_ASSET_EXTRA to baseAsset,
+                CreateOfferActivity.QUOTE_ASSET_EXTRA to quoteAsset,
                 CreateOfferActivity.PRICE_STRING_EXTRA to requiredPrice
                         ?.let(BigDecimalUtil::toPlainString)
         )
