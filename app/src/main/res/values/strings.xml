@@ -394,4 +394,6 @@
     <string name="receive_title">Receive</string>
     <string name="asset_details">Asset details</string>
     <string name="template_asset">Asset: %1$s</string>
+    <string name="unvote_title">Unvote</string>
+    <string name="vote_title">Vote</string>
 </resources>
