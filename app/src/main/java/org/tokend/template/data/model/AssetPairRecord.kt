@@ -8,8 +8,8 @@ import java.io.Serializable
 import java.math.BigDecimal
 
 class AssetPairRecord(
-        val base: String,
-        val quote: String,
+        val base: Asset,
+        val quote: Asset,
         val price: BigDecimal,
         val policy: Int = 0,
         val baseAssetLogoUrl: String?
@@ -34,8 +34,8 @@ class AssetPairRecord(
                          urlConfig: UrlConfig?,
                          objectMapper: ObjectMapper): AssetPairRecord {
             return AssetPairRecord(
-                    base = resource.baseAsset.id,
-                    quote = resource.quoteAsset.id,
+                    base = SimpleAsset(resource.baseAsset),
+                    quote = SimpleAsset(resource.quoteAsset),
                     price = resource.price,
                     policy = resource.policies.value,
                     baseAssetLogoUrl =

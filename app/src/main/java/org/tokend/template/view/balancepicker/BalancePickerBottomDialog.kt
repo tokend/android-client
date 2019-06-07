@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.include_error_empty_view.view.*
 import kotlinx.android.synthetic.main.layout_progress.view.*
 import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.util.ObservableTransformers
@@ -47,7 +48,7 @@ open class BalancePickerBottomDialog(
         private val amountFormatter: AmountFormatter,
         private val balancesComparator: Comparator<BalanceRecord>,
         private val balancesRepository: BalancesRepository,
-        private val requiredAssets: Collection<String>? = null,
+        private val requiredAssets: Collection<Asset>? = null,
         private val balancesFilter: ((BalanceRecord) -> Boolean)? = null
 ) {
     protected lateinit var adapter: BalancePickerItemsAdapter
@@ -216,20 +217,19 @@ open class BalancePickerBottomDialog(
         val unfilteredItems =
                 requiredAssets?.map { requiredAsset ->
                     val balance =
-                            filteredBalances.find { it.assetCode == requiredAsset }
+                            filteredBalances.find { it.assetCode == requiredAsset.code }
 
                     if (balance != null)
                         BalancePickerListItem(
                                 source = balance,
-                                available = getAvailableAmount(requiredAsset, balance)
+                                available = getAvailableAmount(requiredAsset.code, balance)
                         )
                     else
                         BalancePickerListItem(
-                                assetCode = requiredAsset,
-                                available = getAvailableAmount(requiredAsset, null),
+                                asset = requiredAsset,
+                                available = getAvailableAmount(requiredAsset.code, null),
                                 isEnough = true,
                                 logoUrl = null,
-                                assetName = null,
                                 source = null
                         )
                 } ?: filteredBalances.map {
@@ -244,7 +244,8 @@ open class BalancePickerBottomDialog(
                 .let { items ->
                     filter?.let { filter ->
                         items.filter { item ->
-                            SearchUtil.isMatchGeneralCondition(filter, item.assetCode, item.assetName)
+                            SearchUtil.isMatchGeneralCondition(filter,
+                                    item.asset.code, item.asset.name)
                         }
                     } ?: items
                 }

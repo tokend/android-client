@@ -9,8 +9,8 @@ import java.util.*
 
 class TradeHistoryRecord(
         val id: Long,
-        val baseAsset: String,
-        val quoteAsset: String,
+        val baseAsset: Asset,
+        val quoteAsset: Asset,
         val baseAmount: BigDecimal,
         val quoteAmount: BigDecimal,
         val price: BigDecimal,
@@ -33,8 +33,8 @@ class TradeHistoryRecord(
         fun fromMatchedOrder(source: MatchedOrder): TradeHistoryRecord {
             return TradeHistoryRecord(
                     id = source.id.toLong(),
-                    baseAsset = source.baseAsset,
-                    quoteAsset = source.quoteAsset,
+                    baseAsset = SimpleAsset(source.baseAsset),
+                    quoteAsset = SimpleAsset(source.quoteAsset),
                     baseAmount = BigDecimalUtil.valueOf(source.baseAmount),
                     quoteAmount = BigDecimalUtil.valueOf(source.quoteAmount),
                     price = BigDecimalUtil.valueOf(source.price),

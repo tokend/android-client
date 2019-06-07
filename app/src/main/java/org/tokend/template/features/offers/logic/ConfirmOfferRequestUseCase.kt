@@ -69,18 +69,18 @@ class ConfirmOfferRequestUseCase(
     private fun getBalances(): Single<Pair<String, String>> {
         val balances = balancesRepository.itemsList
 
-        val baseAsset = request.baseAssetCode
-        val quoteAsset = request.quoteAssetCode
+        val baseAsset = request.baseAsset
+        val quoteAsset = request.quoteAsset
 
-        val existingBase = balances.find { it.assetCode == baseAsset }
-        val existingQuote = balances.find { it.assetCode == quoteAsset }
+        val existingBase = balances.find { it.assetCode == baseAsset.code }
+        val existingQuote = balances.find { it.assetCode == quoteAsset.code }
 
         val toCreate = mutableListOf<String>()
         if (existingBase == null) {
-            toCreate.add(baseAsset)
+            toCreate.add(baseAsset.code)
         }
         if (existingQuote == null) {
-            toCreate.add(quoteAsset)
+            toCreate.add(quoteAsset.code)
         }
 
         val createMissingBalances =
@@ -94,13 +94,13 @@ class ConfirmOfferRequestUseCase(
                 .andThen(
                         Single.defer {
                             val base = balancesRepository.itemsList
-                                    .find { it.assetCode == baseAsset }
+                                    .find { it.assetCode == baseAsset.code }
                                     ?.id
                                     ?: throw IllegalStateException(
                                             "Unable to create balance for $baseAsset"
                                     )
                             val quote = balancesRepository.itemsList
-                                    .find { it.assetCode == quoteAsset }
+                                    .find { it.assetCode == quoteAsset.code }
                                     ?.id
                                     ?: throw IllegalStateException(
                                             "Unable to create balance for $quoteAsset"
@@ -136,7 +136,7 @@ class ConfirmOfferRequestUseCase(
 
     private fun updateRepositories(): Single<Boolean> {
         if (!isPrimaryMarket) {
-            repositoryProvider.orderBook(request.baseAssetCode, request.quoteAssetCode)
+            repositoryProvider.orderBook(request.baseAsset.code, request.quoteAsset.code)
                     .updateIfEverUpdated()
         }
         repositoryProvider.balances().updateIfEverUpdated()

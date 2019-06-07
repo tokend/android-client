@@ -24,7 +24,7 @@ class TradeHistoryFragment : BaseFragment() {
 
 
     private val tradeHistoryRepository: TradeHistoryRepository
-        get() = repositoryProvider.tradeHistory(assetPair.base, assetPair.quote)
+        get() = repositoryProvider.tradeHistory(assetPair.base.code, assetPair.quote.code)
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },

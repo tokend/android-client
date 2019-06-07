@@ -2,6 +2,7 @@ package org.tokend.template.features.withdraw.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.history.SimpleFeeRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.di.providers.WalletInfoProvider
@@ -15,7 +16,7 @@ import java.math.BigDecimal
  */
 class CreateWithdrawalRequestUseCase(
         private val amount: BigDecimal,
-        private val asset: String,
+        private val asset: Asset,
         private val destinationAddress: String,
         private val walletInfoProvider: WalletInfoProvider,
         private val balancesRepository: BalancesRepository,
@@ -60,7 +61,7 @@ class CreateWithdrawalRequestUseCase(
         return feeManager
                 .getWithdrawalFee(
                         account,
-                        asset,
+                        asset.code,
                         amount
                 )
     }
@@ -71,7 +72,7 @@ class CreateWithdrawalRequestUseCase(
                 .toSingleDefault(true)
                 .map {
                     balancesRepository.itemsList.find {
-                        it.assetCode == asset
+                        it.assetCode == asset.code
                     }?.id ?: throw IllegalStateException("No balance found for $asset")
                 }
     }

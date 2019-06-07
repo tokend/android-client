@@ -33,8 +33,8 @@ class SaleDetailsFragment : AssetDetailsFragment() {
                         amountFormatter.formatAssetAmount(sale.softCap, sale.defaultQuoteAsset))
                 .addRow(getString(R.string.sale_info_hard_cap),
                         amountFormatter.formatAssetAmount(sale.hardCap, sale.defaultQuoteAsset))
-                .addRow(getString(R.string.sale_info_to_sell_template, sale.baseAssetCode),
-                        amountFormatter.formatAssetAmount(sale.baseHardCap, sale.baseAssetCode,
+                .addRow(getString(R.string.sale_info_to_sell_template, sale.baseAsset.code),
+                        amountFormatter.formatAssetAmount(sale.baseHardCap, sale.baseAsset,
                                 withAssetCode = false))
 
         super.displaySummary()

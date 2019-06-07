@@ -2,6 +2,7 @@ package org.tokend.template.features.wallet.details
 
 import android.support.v4.content.ContextCompat
 import org.tokend.template.R
+import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.view.details.DetailsItem
@@ -24,7 +25,7 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
 
     protected open fun displayPrice(cause: BalanceChangeCause.MatchedOffer) {
         val formattedPrice = amountFormatter
-                .formatAssetAmount(cause.price, cause.quoteAssetCode)
+                .formatAssetAmount(cause.price, SimpleAsset(cause.quoteAssetCode))
 
         val priceString = getString(R.string.template_price_one_equals,
                 cause.baseAssetCode, formattedPrice)
@@ -50,9 +51,11 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
                         Triple(it.amount - it.fee.total, it.fee, it.assetCode)
                     }
 
+        val asset = SimpleAsset(assetCode)
+
         adapter.addData(
                 DetailsItem(
-                        text = amountFormatter.formatAssetAmount(total, assetCode),
+                        text = amountFormatter.formatAssetAmount(total, asset),
                         hint =
                         if (item.isReceived == true)
                             getString(R.string.charged)
@@ -65,7 +68,7 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
         if (fee.total.signum() > 0) {
             adapter.addData(
                     DetailsItem(
-                            text = amountFormatter.formatAssetAmount(fee.total, assetCode),
+                            text = amountFormatter.formatAssetAmount(fee.total, asset),
                             hint = getString(R.string.tx_fee)
                     )
             )

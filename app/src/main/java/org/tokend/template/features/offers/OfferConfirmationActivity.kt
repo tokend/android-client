@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.data.model.Asset
 import org.tokend.template.features.offers.logic.ConfirmOfferRequestUseCase
 import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.features.offers.model.OfferRequest
@@ -40,12 +41,12 @@ open class OfferConfirmationActivity : BaseActivity() {
     protected val adapter = DetailsItemsAdapter()
     private lateinit var mainDataView: BalanceChangeMainDataView
 
-    protected val payAsset: String
+    protected val payAsset: Asset
         get() =
             if (request.isBuy)
-                request.quoteAssetCode
+                request.quoteAsset
             else
-                request.baseAssetCode
+                request.baseAsset
     protected val toPayTotal: BigDecimal
         get() =
             if (request.isBuy)
@@ -53,12 +54,12 @@ open class OfferConfirmationActivity : BaseActivity() {
             else
                 request.baseAmount
 
-    protected val receiveAsset: String
+    protected val receiveAsset: Asset
         get() =
             if (!request.isBuy)
-                request.quoteAssetCode
+                request.quoteAsset
             else
-                request.baseAssetCode
+                request.baseAsset
     protected val toReceiveTotal: BigDecimal
         get() =
             (if (!request.isBuy)
@@ -73,7 +74,7 @@ open class OfferConfirmationActivity : BaseActivity() {
 
     protected val feeExtraView: AppCompatImageView by lazy {
         ExtraViewProvider.getFeeView(this) {
-            Navigator.from(this).openFees(request.quoteAssetCode, feeType)
+            Navigator.from(this).openFees(request.quoteAsset.code, feeType)
         }
     }
 
@@ -118,8 +119,8 @@ open class OfferConfirmationActivity : BaseActivity() {
     protected open fun displayPrice() {
         adapter.addData(
                 DetailsItem(
-                        text = getString(R.string.template_price_one_equals, request.baseAssetCode,
-                                amountFormatter.formatAssetAmount(request.price, request.quoteAssetCode)
+                        text = getString(R.string.template_price_one_equals, request.baseAsset.code,
+                                amountFormatter.formatAssetAmount(request.price, request.quoteAsset)
                         ),
                         hint = getString(R.string.price),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_price)

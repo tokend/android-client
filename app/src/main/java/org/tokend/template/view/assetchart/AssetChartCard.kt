@@ -27,6 +27,7 @@ import org.jetbrains.anko.textColor
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.App
 import org.tokend.template.R
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AssetChartData
 import org.tokend.template.view.ContentLoadingProgressBar
 import org.tokend.template.view.util.formatter.AmountFormatter
@@ -309,6 +310,7 @@ class AssetChartCard : LinearLayout {
     }
 
     private fun displayTotalValue() {
+        val asset = this.asset ?: return
         valueTextView.text =
                 amountFormatter.formatAssetAmount(total, asset)
         valueHintTextView.text = valueHint
@@ -318,10 +320,12 @@ class AssetChartCard : LinearLayout {
         val amount =
                 BigDecimalUtil.stripTrailingZeros(
                         BigDecimal(count.toDouble()).setScale(
-                                amountFormatter.getDecimalDigitsCount(asset),
+                                asset?.trailingDigits ?: 0,
                                 RoundingMode.HALF_UP
                         )
                 )
+        val asset = this.asset ?: return
+
         valueTextView.text =
                 amountFormatter.formatAssetAmount(amount, asset)
         valueHintTextView.text =
@@ -330,6 +334,8 @@ class AssetChartCard : LinearLayout {
     }
 
     private fun displayGrowth(growth: BigDecimal, percent: BigDecimal?) {
+        val asset = this.asset ?: return
+
         if (growth.signum() != 0) {
             val sign = if (growth.signum() < 0) "" else "+"
             val color =
@@ -396,7 +402,7 @@ class AssetChartCard : LinearLayout {
     /**
      * Label of the main value
      */
-    var asset: String = ""
+    var asset: Asset? = null
         set(value) {
             field = value
             displayTotalValue()

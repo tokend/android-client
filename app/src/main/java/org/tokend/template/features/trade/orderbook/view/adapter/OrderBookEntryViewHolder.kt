@@ -16,9 +16,9 @@ class OrderBookEntryViewHolder(view: View,
     private val volumeTextView = view.find<TextView>(R.id.volume_text_view)
 
     override fun bind(item: OrderBookEntryListItem) {
-        volumeTextView.text = amountFormatter.formatAssetAmount(item.volume, item.baseAssetCode,
+        volumeTextView.text = amountFormatter.formatAssetAmount(item.volume, item.baseAsset,
                 withAssetCode = false)
-        priceTextView.text = amountFormatter.formatAssetAmount(item.price, item.quoteAssetCode,
+        priceTextView.text = amountFormatter.formatAssetAmount(item.price, item.quoteAsset,
                 withAssetCode = false)
 
         volumeTextView.background.level = 100 * item.volumePercentsOfMax

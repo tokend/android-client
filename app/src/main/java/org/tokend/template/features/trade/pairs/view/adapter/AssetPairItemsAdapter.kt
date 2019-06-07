@@ -56,8 +56,8 @@ class AssetPairItemsAdapter(
             val first = items[oldItemPosition]
             val second = newItems[newItemPosition]
 
-            return first.baseAssetCode == second.baseAssetCode
-                    && first.quoteAssetCode == second.quoteAssetCode
+            return first.baseAsset.code == second.baseAsset.code
+                    && first.quoteAsset.code == second.quoteAsset.code
                     && first.price == second.price
                     && first.baseAssetLogoUrl == second.baseAssetLogoUrl
         }

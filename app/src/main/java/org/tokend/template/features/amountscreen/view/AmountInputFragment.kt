@@ -42,12 +42,10 @@ open class AmountInputFragment : BaseFragment() {
             onAssetChanged()
         }
 
-    protected val balance: BigDecimal
+    protected val balance: BalanceRecord?
         get() = balancesRepository
                 .itemsList
                 .find { it.assetCode == asset }
-                ?.available
-                ?: BigDecimal.ZERO
 
     protected open val requestedAsset: String? by lazy {
         arguments?.getString(ASSET_EXTRA)
@@ -158,7 +156,7 @@ open class AmountInputFragment : BaseFragment() {
             SoftInputUtil.hideSoftInput(requireActivity())
             picker.show(
                     onItemPicked = { result ->
-                        asset = result.assetCode
+                        asset = result.asset.code
                     },
                     onDismiss = {
                         amount_edit_text.requestFocus()
@@ -197,7 +195,7 @@ open class AmountInputFragment : BaseFragment() {
 
     protected open fun onAssetChanged() {
         displayBalance()
-        amountWrapper.maxPlacesAfterComa = amountFormatter.getDecimalDigitsCount(asset)
+        amountWrapper.maxPlacesAfterComa = balance?.asset?.trailingDigits ?: 0
         asset_code_text_view.text = asset
     }
 
@@ -212,9 +210,11 @@ open class AmountInputFragment : BaseFragment() {
      * @see [balance]
      */
     protected open fun displayBalance() {
+        val available = balance?.available ?: BigDecimal.ZERO
+        val asset = balance?.asset ?: return
         balance_text_view.text = getString(
                 R.string.template_balance,
-                amountFormatter.formatAssetAmount(balance, asset)
+                amountFormatter.formatAssetAmount(available, asset)
         )
     }
 
@@ -268,14 +268,17 @@ open class AmountInputFragment : BaseFragment() {
     }
 
     protected open fun isEnoughBalance(): Boolean {
-        return amountWrapper.scaledAmount <= balance
+        return amountWrapper.scaledAmount <= (balance?.available ?: BigDecimal.ZERO)
     }
 
     protected open fun postResult() {
+        val asset = balance?.asset
+                ?: return
+
         resultSubject.onNext(
                 AmountInputResult(
                         amount = amountWrapper.scaledAmount,
-                        assetCode = asset
+                        asset = asset
                 )
         )
     }

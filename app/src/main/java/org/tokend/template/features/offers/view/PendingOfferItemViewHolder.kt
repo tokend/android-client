@@ -51,12 +51,12 @@ class PendingOfferItemViewHolder(
     private fun displayCounterparty(item: PendingOfferListItem) {
         val counterpartyString =
                 if (item.isInvestment)
-                    view.context.getString(R.string.template_tx_in, item.counterpartyAssetCode)
+                    view.context.getString(R.string.template_tx_in, item.counterpartyAsset.code)
                 else
                     view.context.getString(
                             R.string.template_price_one_equals,
-                            item.assetCode,
-                            amountFormatter.formatAssetAmount(item.price, item.counterpartyAssetCode))
+                            item.asset.code,
+                            amountFormatter.formatAssetAmount(item.price, item.counterpartyAsset))
 
         actionDetailsTextView.visibility = View.VISIBLE
         actionDetailsTextView.text = counterpartyString
@@ -64,7 +64,7 @@ class PendingOfferItemViewHolder(
     }
 
     private fun displayAmount(item: PendingOfferListItem) {
-        var amountString = amountFormatter.formatAssetAmount(item.amount, item.assetCode)
+        var amountString = amountFormatter.formatAssetAmount(item.amount, item.asset)
         var amountColor = incomingColor
 
         if (item.isInvestment || !item.isBuy) {

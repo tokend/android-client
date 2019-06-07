@@ -31,7 +31,10 @@ class AssetPairsRepository(
                 { nextCursor ->
                     apiProvider.getApi().v3.assetPairs.get(
                             AssetPairsPageParams(
-                                    include = listOf(AssetPairParams.Includes.BASE_ASSET),
+                                    include = listOf(
+                                            AssetPairParams.Includes.BASE_ASSET,
+                                            AssetPairParams.Includes.QUOTE_ASSET
+                                    ),
                                     pagingParams = PagingParamsV2(
                                             limit = PAGE_LIMIT,
                                             page = nextCursor
@@ -84,11 +87,11 @@ class AssetPairsRepository(
         val pairs = itemsCache.items
 
         val mainPairPrice = pairs.find {
-            it.quote == destAsset && it.base == sourceAsset
+            it.quote.code == destAsset && it.base.code == sourceAsset
         }?.price
 
         val quotePair = pairs.find {
-            it.quote == sourceAsset && it.base == destAsset
+            it.quote.code == sourceAsset && it.base.code == destAsset
         }
         val quotePairPrice =
                 if (quotePair?.price != null)

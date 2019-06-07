@@ -1,5 +1,6 @@
 package org.tokend.template.util.comparator
 
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
 import java.math.BigDecimal
 
@@ -12,7 +13,7 @@ import java.math.BigDecimal
  * for balances with equal converted amount
  */
 class BalancesByConvertedAmountComparator(
-        private val fallbackAssetComparator: Comparator<String>?
+        private val fallbackAssetComparator: Comparator<Asset>?
 ) : Comparator<BalanceRecord> {
     override fun compare(o1: BalanceRecord, o2: BalanceRecord): Int {
         val converted1 = o1.convertedAmount ?: BigDecimal.ZERO
@@ -20,7 +21,7 @@ class BalancesByConvertedAmountComparator(
 
         val result = converted2.compareTo(converted1)
         return if (result == 0 && fallbackAssetComparator != null)
-            fallbackAssetComparator.compare(o1.assetCode, o2.assetCode)
+            fallbackAssetComparator.compare(o1.asset, o2.asset)
         else
             result
     }

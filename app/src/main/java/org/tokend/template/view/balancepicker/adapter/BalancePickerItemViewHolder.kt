@@ -17,15 +17,15 @@ class BalancePickerItemViewHolder(
     private val colorError = ContextCompat.getColor(view.context, R.color.error)
 
     override fun bind(item: BalancePickerListItem) {
-        displayLogo(item.logoUrl, item.assetCode)
+        displayLogo(item.logoUrl, item.asset.code)
 
-        nameTextView.text = item.assetCode
+        nameTextView.text = item.asset.code
 
         amountTextView.text = view.context.getString(
                 R.string.template_available,
                 amountFormatter.formatAssetAmount(
                         item.available,
-                        item.assetCode,
+                        item.asset,
                         withAssetCode = false
                 )
         )
