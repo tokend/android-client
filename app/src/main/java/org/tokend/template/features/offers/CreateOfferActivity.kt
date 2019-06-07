@@ -66,7 +66,6 @@ class CreateOfferActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         setTitle(R.string.create_offer_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
         baseAsset = intent.getSerializableExtra(BASE_ASSET_EXTRA) as? Asset
                 ?: return

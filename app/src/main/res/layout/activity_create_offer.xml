@@ -151,6 +151,10 @@
 
             </LinearLayout>
 
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="@dimen/standard_padding" />
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

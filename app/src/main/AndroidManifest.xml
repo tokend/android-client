@@ -174,6 +174,7 @@
         <activity
             android:name=".features.offers.CreateOfferActivity"
             android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
             android:label="@string/create_offer_title" />
         <activity
             android:name=".features.limits.LimitsActivity"
