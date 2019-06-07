@@ -227,8 +227,14 @@ class UnlockAppActivity : BaseActivity() {
 
     private fun handleUnlockError(error: Throwable) {
         when (error) {
-            is InvalidCredentialsException ->
-                password_edit_text.setErrorAndFocus(R.string.error_invalid_password)
+            is InvalidCredentialsException -> {
+                if (usePassword) {
+                    password_edit_text.setErrorAndFocus(R.string.error_invalid_password)
+                } else {
+                    usePassword = true
+                    toastManager.long(R.string.error_password_changed)
+                }
+            }
             else ->
                 errorHandlerFactory.getDefault().handle(error)
         }

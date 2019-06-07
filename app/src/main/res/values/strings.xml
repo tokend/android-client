@@ -168,6 +168,7 @@
     <string name="error_cannot_send_to_yourself">Send to yourself is not allowed</string>
     <string name="error_fingerprint_locked">Too many failed attempts. Try again later</string>
     <string name="error_payment_amount_less_than_fee">Payment amount is less than recipient\'s fee</string>
+    <string name="error_password_changed">Password has been changed, enter your new password to continue</string>
 
     <string name="error_tx_general">Transaction failed. Try again later</string>
     <string name="error_tx_bad_auth">Transaction signature is invalid</string>
