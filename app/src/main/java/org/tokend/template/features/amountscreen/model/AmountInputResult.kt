@@ -5,5 +5,5 @@ import java.math.BigDecimal
 
 open class AmountInputResult(
         val amount: BigDecimal,
-        val asset: Asset?
+        val asset: Asset
 )

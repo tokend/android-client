@@ -1,5 +1,6 @@
 package org.tokend.template.data.model.history
 
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import java.io.Serializable
 import java.math.BigDecimal
@@ -9,7 +10,7 @@ open class BalanceChange(
         val id: String,
         val action: BalanceChangeAction,
         val amount: BigDecimal,
-        val assetCode: String,
+        val asset: Asset,
         val balanceId: String,
         val fee: SimpleFeeRecord,
         val date: Date,
@@ -22,6 +23,8 @@ open class BalanceChange(
     override fun hashCode(): Int {
         return id.hashCode()
     }
+
+    val assetCode: String = asset.code
 
     val isReceived: Boolean? = when (action) {
         BalanceChangeAction.LOCKED -> false

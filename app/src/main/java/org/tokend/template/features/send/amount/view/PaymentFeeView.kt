@@ -79,7 +79,7 @@ constructor(
 
     fun setFees(sender: BigDecimal,
                 recipient: BigDecimal,
-                asset: Asset?,
+                asset: Asset,
                 amountFormatter: AmountFormatter) {
         this.senderFee = sender
         this.recipientFee = recipient
@@ -91,6 +91,8 @@ constructor(
 
     private fun displayData() {
         val amountFormatter = this.amountFormatter
+                ?: return
+        val asset = this.asset
                 ?: return
 
         if (senderFeeTotal.signum() == 0 && recipientFee.signum() == 0) {

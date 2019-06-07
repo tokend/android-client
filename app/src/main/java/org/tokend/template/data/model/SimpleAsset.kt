@@ -21,4 +21,16 @@ class SimpleAsset(
             trailingDigits = 6,
             name = null
     )
+
+    override fun equals(other: Any?): Boolean {
+        return other is SimpleAsset && other.code == this.code
+    }
+
+    override fun hashCode(): Int {
+        return code.hashCode()
+    }
+
+    override fun toString(): String {
+        return code
+    }
 }

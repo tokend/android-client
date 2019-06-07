@@ -40,6 +40,10 @@ class AssetRecord(
         return HashCodes.ofMany(code, logoUrl)
     }
 
+    override fun toString(): String {
+        return code
+    }
+
     companion object {
         @JvmStatic
         fun fromResource(source: AssetResource, urlConfig: UrlConfig?, mapper: ObjectMapper): AssetRecord {

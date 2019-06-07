@@ -203,6 +203,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     private fun createAndConfirmPaymentRequest() {
         val recipient = recipient ?: return
         val fee = fee ?: return
+        val asset = asset ?: return
 
         paymentRequestDisposable?.dispose()
         paymentRequestDisposable = CreatePaymentRequestUseCase(

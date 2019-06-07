@@ -160,6 +160,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun toDestinationScreen() {
+        val asset = this.asset ?: return
         val amountToWithdraw = amountFormatter.formatAssetAmount(amount, asset)
         val fragment = WithdrawDestinationFragment.newInstance(amountToWithdraw)
 

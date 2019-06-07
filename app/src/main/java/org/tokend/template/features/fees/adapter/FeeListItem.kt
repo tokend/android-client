@@ -25,16 +25,16 @@ class FeeListItem(
 
             val subtype = Subtype.values().find { fee.subtype == it.value }!!
 
-            val fixed = amountFormatter.formatAssetAmount(fee.fixed, fee.asset, 0)
+            val fixed = amountFormatter.formatAssetAmount(fee.fixed, fee.asset)
 
-            val percent = "${amountFormatter.formatAmount(fee.percent, 6, 0)}%"
+            val percent = "${amountFormatter.formatAmount(fee.percent, 2)}%"
 
             val lowerBound =
                     if (fee.lowerBound.isMaxPossibleAmount())
                         ""
                     else
                         amountFormatter.formatAssetAmount(
-                                fee.lowerBound, fee.asset, 0,
+                                fee.lowerBound, fee.asset,
                                 abbreviation = true,
                                 withAssetCode = false
                         )
@@ -44,7 +44,7 @@ class FeeListItem(
                         ""
                     else
                         amountFormatter.formatAssetAmount(
-                                fee.upperBound, fee.asset, 0,
+                                fee.upperBound, fee.asset,
                                 abbreviation = true,
                                 withAssetCode = false)
 

@@ -1,5 +1,6 @@
 package org.tokend.template.features.wallet.adapter
 
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.data.model.history.details.BalanceChangeCause
@@ -11,7 +12,7 @@ import java.util.*
 class BalanceChangeListItem(
         val action: Action,
         val amount: BigDecimal,
-        val assetCode: String,
+        val asset: Asset,
         val isReceived: Boolean?,
         override val date: Date,
         val counterparty: String?,
@@ -34,7 +35,7 @@ class BalanceChangeListItem(
                 localizedName: LocalizedName) : this(
             action = getAction(balanceChange),
             amount = balanceChange.totalAmount,
-            assetCode = balanceChange.assetCode,
+            asset = balanceChange.asset,
             isReceived = balanceChange.isReceived,
             date = balanceChange.date,
             counterparty = getCounterparty(balanceChange, accountId),

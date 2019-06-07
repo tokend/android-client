@@ -148,7 +148,7 @@ class FeesActivity : BaseActivity() {
             error_empty_view.hide()
         }
 
-        val sortedAssets = assets.sortedWith(assetComparator)
+        val sortedAssets = assets.sortedWith(assetCodeComparator)
         appbar_tabs.setSimpleItems(sortedAssets, asset)
         if (toRequestedAsset && requestedAssetCode != null) {
             toRequestedItems = true

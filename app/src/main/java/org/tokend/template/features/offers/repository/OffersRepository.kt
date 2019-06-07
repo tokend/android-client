@@ -10,6 +10,7 @@ import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.v3.offers.params.OfferParamsV3
 import org.tokend.sdk.api.v3.offers.params.OffersPageParamsV3
 import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.data.repository.SystemInfoRepository
@@ -49,6 +50,10 @@ class OffersRepository(
                 pagingParams = PagingParamsV2(
                         page = nextCursor,
                         order = PagingOrder.DESC
+                ),
+                include = listOf(
+                        OfferParamsV3.Includes.BASE_ASSET,
+                        OfferParamsV3.Includes.QUOTE_ASSET
                 )
         )
 
@@ -84,7 +89,11 @@ class OffersRepository(
                     OffersPageParamsV3(
                             ownerAccount = accountId,
                             orderBook = saleId,
-                            pagingParams = PagingParamsV2(page = nextCursor)
+                            pagingParams = PagingParamsV2(page = nextCursor),
+                            include = listOf(
+                                    OfferParamsV3.Includes.BASE_ASSET,
+                                    OfferParamsV3.Includes.QUOTE_ASSET
+                            )
                     )
             )
         })

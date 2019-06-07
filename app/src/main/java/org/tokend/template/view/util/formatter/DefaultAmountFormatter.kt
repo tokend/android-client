@@ -12,13 +12,12 @@ import java.text.NumberFormat
 class DefaultAmountFormatter : AmountFormatter {
 
     override fun formatAssetAmount(amount: BigDecimal?,
-                                   asset: String,
-                                   maxDecimalDigits: Int,
+                                   asset: Asset,
                                    minDecimalDigits: Int,
                                    abbreviation: Boolean,
                                    withAssetCode: Boolean): String {
-
         val amount = amount ?: BigDecimal.ZERO
+        val maxDecimalDigits = asset.trailingDigits
 
         val formattedAmount = if (abbreviation) {
             val (newAmount, letter) = calculateAmountAbbreviation(amount)
@@ -28,41 +27,8 @@ class DefaultAmountFormatter : AmountFormatter {
         }
 
         return if (withAssetCode) {
-            "$formattedAmount $asset"
+            "$formattedAmount ${asset.code}"
         } else formattedAmount
-    }
-
-    override fun formatAssetAmount(amount: String?,
-                                   asset: String,
-                                   maxDecimalDigits: Int,
-                                   minDecimalDigits: Int,
-                                   abbreviation: Boolean,
-                                   withAssetCode: Boolean): String {
-
-        val amount = if (amount.isNullOrBlank()) "0" else amount
-        return formatAssetAmount(BigDecimal(amount), asset, maxDecimalDigits, minDecimalDigits, abbreviation, withAssetCode)
-    }
-
-    override fun formatAssetAmount(amount: BigDecimal?,
-                                   asset: Asset?,
-                                   minDecimalDigits: Int,
-                                   abbreviation: Boolean,
-                                   withAssetCode: Boolean): String {
-        val code = asset?.code ?: ""
-        val digits = asset?.trailingDigits ?: 0
-
-        return formatAssetAmount(amount, code, digits, minDecimalDigits, abbreviation, withAssetCode)
-    }
-
-    override fun formatAssetAmount(amount: String?,
-                                   asset: Asset?,
-                                   minDecimalDigits: Int,
-                                   abbreviation: Boolean,
-                                   withAssetCode: Boolean): String {
-        val code = asset?.code ?: ""
-        val digits = asset?.trailingDigits ?: 0
-
-        return formatAssetAmount(BigDecimal(amount), code, digits, minDecimalDigits, abbreviation, withAssetCode)
     }
 
     override fun formatAmount(amount: BigDecimal?,

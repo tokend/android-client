@@ -46,6 +46,11 @@ class CreateOfferActivity : BaseActivity() {
     private lateinit var quoteAsset: Asset
     private lateinit var requiredPrice: BigDecimal
 
+    private val baseScale: Int
+        get() = baseAsset.trailingDigits
+    private val quoteScale: Int
+        get() = quoteAsset.trailingDigits
+
     private lateinit var amountEditTextWrapper: AmountEditTextWrapper
     private lateinit var priceEditTextWrapper: AmountEditTextWrapper
     private lateinit var totalEditTextWrapper: AmountEditTextWrapper
@@ -53,8 +58,6 @@ class CreateOfferActivity : BaseActivity() {
 
     private var triggerOthers: Boolean = false
 
-    private var baseScale: Int = 0
-    private var quoteScale: Int = 0
     private var baseBalance: BigDecimal = BigDecimal.ZERO
     private var quoteBalance: BigDecimal = BigDecimal.ZERO
 

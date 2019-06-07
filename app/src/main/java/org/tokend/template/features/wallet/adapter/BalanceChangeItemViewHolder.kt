@@ -2,7 +2,6 @@ package org.tokend.template.features.wallet.adapter
 
 import android.view.View
 import org.tokend.template.R
-import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.features.wallet.view.BalanceChangeIconFactory
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.history.HistoryItemView
@@ -69,7 +68,7 @@ class BalanceChangeItemViewHolder(view: View,
         amountTextView.setTextColor(color)
 
         var formattedAmount = amountFormatter.formatAssetAmount(
-                item.amount, SimpleAsset(item.assetCode), abbreviation = true
+                item.amount, item.asset, abbreviation = true
         )
 
         if (item.isReceived == false) {

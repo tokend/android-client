@@ -3,7 +3,6 @@ package org.tokend.template.view.balancepicker.adapter
 import android.support.v4.content.ContextCompat
 import android.view.View
 import org.tokend.template.R
-import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.balances.BalanceItemView
 import org.tokend.template.view.balances.BalanceItemViewImpl
@@ -18,15 +17,15 @@ class BalancePickerItemViewHolder(
     private val colorError = ContextCompat.getColor(view.context, R.color.error)
 
     override fun bind(item: BalancePickerListItem) {
-        displayLogo(item.logoUrl, item.assetCode)
+        displayLogo(item.logoUrl, item.asset.code)
 
-        nameTextView.text = item.assetCode
+        nameTextView.text = item.asset.code
 
         amountTextView.text = view.context.getString(
                 R.string.template_available,
                 amountFormatter.formatAssetAmount(
                         item.available,
-                        SimpleAsset(item.assetCode),
+                        item.asset,
                         withAssetCode = false
                 )
         )

@@ -18,7 +18,7 @@ import java.math.BigDecimal
 class CreatePaymentRequestUseCase(
         private val recipient: PaymentRecipient,
         private val amount: BigDecimal,
-        private val asset: Asset?,
+        private val asset: Asset,
         private val subject: String?,
         private val fee: PaymentFee,
         private val walletInfoProvider: WalletInfoProvider,
@@ -64,7 +64,7 @@ class CreatePaymentRequestUseCase(
                 .flatMapMaybe {
                     balancesRepository
                             .itemsList
-                            .find { it.assetCode == asset?.code }
+                            .find { it.assetCode == asset.code }
                             ?.id
                             .toMaybe()
                 }

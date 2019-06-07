@@ -7,7 +7,7 @@ import java.math.BigDecimal
 
 class PaymentAmountData(
         amount: BigDecimal,
-        asset: Asset?,
+        asset: Asset,
         val description: String?,
         val fee: PaymentFee
 ) : AmountInputResult(amount, asset)

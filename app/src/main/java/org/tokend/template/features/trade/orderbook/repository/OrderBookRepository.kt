@@ -20,7 +20,9 @@ class OrderBookRepository
                 .withMaxEntries(25)
                 .withInclude(
                         OrderBookParamsV3.Includes.BUY_ENTRIES,
-                        OrderBookParamsV3.Includes.SELL_ENTRIES
+                        OrderBookParamsV3.Includes.SELL_ENTRIES,
+                        OrderBookParamsV3.Includes.BASE_ASSET,
+                        OrderBookParamsV3.Includes.QUOTE_ASSET
                 )
                 .build()
 

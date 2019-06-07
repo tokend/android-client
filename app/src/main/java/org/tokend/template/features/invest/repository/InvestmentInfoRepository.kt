@@ -4,12 +4,12 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.tokend.template.data.model.BalanceRecord
-import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.data.repository.base.SimpleSingleItemRepository
-import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.invest.model.InvestmentInfo
 import org.tokend.template.features.invest.model.SaleRecord
+import org.tokend.template.features.offers.model.OfferRecord
+import org.tokend.template.features.offers.repository.OffersRepository
 import java.math.BigDecimal
 
 /**

@@ -7,7 +7,6 @@ interface AmountFormatter {
 
     companion object {
         const val DEFAULT_ASSET_DECIMAL_DIGITS = 6
-        const val DEFAULT_FIAT_DECIMAL_DIGITS = 2
     }
 
     /**
@@ -20,42 +19,7 @@ interface AmountFormatter {
      * @param withAssetCode add or not asset code
      */
     fun formatAssetAmount(amount: BigDecimal?,
-                          asset: String,
-                          maxDecimalDigits: Int,
-                          minDecimalDigits: Int = 0,
-                          abbreviation: Boolean = false,
-                          withAssetCode: Boolean = true): String
-
-    /**
-     * Formats amount of given asset
-     *
-     * @see formatAssetAmount
-     */
-    fun formatAssetAmount(amount: String?,
-                          asset: String,
-                          maxDecimalDigits: Int,
-                          minDecimalDigits: Int = 0,
-                          abbreviation: Boolean = false,
-                          withAssetCode: Boolean = true): String
-
-    /**
-     * Formats amount of given [Asset]
-     *
-     * @see formatAssetAmount
-     */
-    fun formatAssetAmount(amount: String?,
-                          asset: Asset?,
-                          minDecimalDigits: Int = 0,
-                          abbreviation: Boolean = false,
-                          withAssetCode: Boolean = true): String
-
-    /**
-     * Formats amount of given [Asset]
-     *
-     * @see formatAssetAmount
-     */
-    fun formatAssetAmount(amount: BigDecimal?,
-                          asset: Asset?,
+                          asset: Asset,
                           minDecimalDigits: Int = 0,
                           abbreviation: Boolean = false,
                           withAssetCode: Boolean = true): String

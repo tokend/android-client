@@ -32,7 +32,7 @@ class FeesRepository(private val apiProvider: ApiProvider,
                     resourceList
                             .filter { (it.fixed + it.percent).signum() > 0 }
                             .map(::FeeRecord)
-                            .groupBy(FeeRecord::asset)
+                            .groupBy { it.asset.code }
                             .let(::FeesRecords)
                 }
     }

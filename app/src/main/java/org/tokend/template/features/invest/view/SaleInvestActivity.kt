@@ -131,7 +131,6 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
     private fun initAssetSelection() {
         val quoteAssets = sale
                 .quoteAssets
-                .map { it.code }
                 .sortedWith(assetComparator)
 
         val picker = object : BalancePickerBottomDialog(
@@ -141,7 +140,7 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
                 balancesRepository,
                 quoteAssets,
                 { balance ->
-                    quoteAssets.contains(balance.assetCode)
+                    quoteAssets.any { it.code == balance.assetCode }
                 }
         ) {
             override fun getAvailableAmount(assetCode: String, balance: BalanceRecord?): BigDecimal {
@@ -151,7 +150,7 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
 
         asset_edit_text.setOnClickListener {
             picker.show { result ->
-                investAsset = result.assetCode
+                investAsset = result.asset.code
             }
         }
 
@@ -159,7 +158,7 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
         asset_edit_text.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null,
                 dropDownArrow, null)
 
-        investAsset = quoteAssets.first()
+        investAsset = quoteAssets.first().code
     }
 
     private fun initFields() {

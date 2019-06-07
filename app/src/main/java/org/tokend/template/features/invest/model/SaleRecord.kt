@@ -41,6 +41,8 @@ class SaleRecord(
                 QuoteAsset(
                         code = it.code,
                         price = it.price,
+                        // TODO: Resolve this
+                        trailingDigits = 6,
                         hardCap = it.hardCap,
                         totalCurrentCap = it.totalCurrentCap
                 )
@@ -90,11 +92,14 @@ class SaleRecord(
     }
 
     class QuoteAsset(
-            val code: String,
+            override val code: String,
+            override val trailingDigits: Int,
             val price: BigDecimal,
             val hardCap: BigDecimal,
             val totalCurrentCap: BigDecimal
-    ) : Serializable
+    ) : Asset {
+        override val name: String? = null
+    }
 
     class YoutubeVideo(
             val url: String,

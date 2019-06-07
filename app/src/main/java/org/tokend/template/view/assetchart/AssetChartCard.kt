@@ -310,6 +310,7 @@ class AssetChartCard : LinearLayout {
     }
 
     private fun displayTotalValue() {
+        val asset = this.asset ?: return
         valueTextView.text =
                 amountFormatter.formatAssetAmount(total, asset)
         valueHintTextView.text = valueHint
@@ -323,6 +324,8 @@ class AssetChartCard : LinearLayout {
                                 RoundingMode.HALF_UP
                         )
                 )
+        val asset = this.asset ?: return
+
         valueTextView.text =
                 amountFormatter.formatAssetAmount(amount, asset)
         valueHintTextView.text =
@@ -331,6 +334,8 @@ class AssetChartCard : LinearLayout {
     }
 
     private fun displayGrowth(growth: BigDecimal, percent: BigDecimal?) {
+        val asset = this.asset ?: return
+
         if (growth.signum() != 0) {
             val sign = if (growth.signum() < 0) "" else "+"
             val color =

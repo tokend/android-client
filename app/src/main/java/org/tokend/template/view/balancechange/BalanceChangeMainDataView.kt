@@ -85,7 +85,7 @@ class BalanceChangeMainDataView(
     }
 
     fun displayAmount(amount: BigDecimal,
-                      asset: Asset?,
+                      asset: Asset,
                       isReceived: Boolean?) {
         val sign =
                 if (isReceived == false)
@@ -118,7 +118,7 @@ class BalanceChangeMainDataView(
     }
 
     fun displayNonZeroFee(fee: BigDecimal,
-                          asset: Asset?) {
+                          asset: Asset) {
         if (fee.signum() > 0) {
             bottomInfoTextView.text = context.getString(
                     R.string.template_fee,

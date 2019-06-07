@@ -2,6 +2,7 @@ package org.tokend.template.data.model.history.converter
 
 import android.util.Log
 import org.tokend.sdk.api.generated.resources.*
+import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.data.model.history.SimpleFeeRecord
@@ -118,7 +119,7 @@ class DefaultParticipantEffectConverter: ParticipantEffectConverter {
                             action = action,
                             amount = amount,
                             fee = SimpleFeeRecord(fee),
-                            assetCode = assetCode,
+                            asset = SimpleAsset(assetCode),
                             balanceId = balanceId,
                             date = date,
                             cause = cause

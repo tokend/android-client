@@ -31,7 +31,10 @@ class AssetPairsRepository(
                 { nextCursor ->
                     apiProvider.getApi().v3.assetPairs.get(
                             AssetPairsPageParams(
-                                    include = listOf(AssetPairParams.Includes.BASE_ASSET),
+                                    include = listOf(
+                                            AssetPairParams.Includes.BASE_ASSET,
+                                            AssetPairParams.Includes.QUOTE_ASSET
+                                    ),
                                     pagingParams = PagingParamsV2(
                                             limit = PAGE_LIMIT,
                                             page = nextCursor
