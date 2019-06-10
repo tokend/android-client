@@ -79,8 +79,19 @@ class PollsRepository(
                         null
                 )
                 .toSingle()
-                .map { it.voteData.singleChoice?.toInt() ?: -1 }
+                // Core choices are counted from 1 so transform the index.
+                .map { (it.voteData.singleChoice?.toInt() ?: 0) - 1 }
                 .onErrorReturnItem(-1)
+    }
+
+    fun updatePollChoiceLocally(pollId: String,
+                                choice: Int?) {
+        itemsList
+                .find { it.id == pollId }
+                ?.also { pollToUpdate ->
+                    pollToUpdate.currentChoice = choice
+                    broadcast()
+                }
     }
 
     companion object {

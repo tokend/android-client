@@ -4,12 +4,14 @@ import org.tokend.sdk.api.generated.resources.PollResource
 
 class PollRecord(
         val id: String,
+        val ownerAccountId: String,
         val subject: String,
         val choices: List<String>,
         var currentChoice: Int?
 ) {
     constructor(source: PollResource): this(
             id = source.id,
+            ownerAccountId = source.owner.id,
             subject = "Example question",
             choices = (1..source.numberOfChoices).map { "Choice #$it" },
             currentChoice = null
