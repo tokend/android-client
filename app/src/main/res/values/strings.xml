@@ -394,6 +394,9 @@
     <string name="receive_title">Receive</string>
     <string name="asset_details">Asset details</string>
     <string name="template_asset">Asset: %1$s</string>
-    <string name="unvote_title">Unvote</string>
-    <string name="vote_title">Vote</string>
+    <string name="remove_vote_action">Remove vote</string>
+    <string name="vote_action">Submit vote</string>
+    <string name="no_polls_found">No polls found</string>
+    <string name="vote_has_been_submitted">Your vote has been submitted</string>
+    <string name="vote_has_been_removed">Your vote has been removed</string>
 </resources>

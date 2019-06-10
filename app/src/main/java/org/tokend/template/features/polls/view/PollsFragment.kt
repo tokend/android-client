@@ -2,6 +2,7 @@ package org.tokend.template.features.polls.view
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.appbar.*
 import kotlinx.android.synthetic.main.fragment_polls.*
@@ -19,14 +22,19 @@ import org.tokend.template.R
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.features.polls.logic.AddVoteUseCase
 import org.tokend.template.features.polls.model.PollRecord
 import org.tokend.template.features.polls.repository.PollsRepository
+import org.tokend.template.features.polls.view.adapter.PollListItem
+import org.tokend.template.features.polls.view.adapter.PollsAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.balancepicker.BalancePickerBottomDialog
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.ProgressDialogFactory
 import java.math.BigDecimal
 
 class PollsFragment : BaseFragment(), ToolbarProvider {
@@ -42,7 +50,7 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private val requiredOwnerAccountId: String? by lazy {
-        arguments?.getString(ALLOW_TOOLBAR_EXTRA)
+        arguments?.getString(OWNER_ACCOUNT_ID_EXTRA)
     }
 
     private val balancesRepository: BalancesRepository
@@ -59,6 +67,8 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
                 ?.ownerAccountId
                 ?.let { repositoryProvider.polls(it) }
 
+    private val adapter = PollsAdapter()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_polls, container, false)
     }
@@ -67,6 +77,7 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
         initToolbar()
         initAssetSelection()
         initSwipeRefresh()
+        initList()
     }
 
     // region Init
@@ -125,6 +136,29 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
         swipe_refresh.setOnRefreshListener { update(force = true) }
 
     }
+
+    private fun initList() {
+        adapter.onPollAction { item, choice ->
+            item.source?.also { poll ->
+                if (choice != null) {
+                    submitVote(poll, choice)
+                } else {
+                    removeVote(poll)
+                }
+            }
+        }
+
+        polls_list.adapter = adapter
+        polls_list.layoutManager = LinearLayoutManager(requireContext())
+
+        error_empty_view.setEmptyDrawable(R.drawable.ic_pending)
+        error_empty_view.observeAdapter(adapter, R.string.no_polls_found)
+        error_empty_view.setEmptyViewDenial { pollsRepository?.isNeverUpdated == true }
+
+        polls_list.listenBottomReach({ adapter.getDataItemCount() }) {
+            pollsRepository?.loadMore() == true || pollsRepository?.noMoreItems == true
+        }
+    }
     // endregion
 
     private fun openAssetPicker() {
@@ -172,20 +206,80 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
                 repository
                         .loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { loadingIndicator.setLoading(it, "polls") },
+                        .subscribe { loading ->
+                            if (loading) {
+                                if (pollsRepository?.isOnFirstPage == true) {
+                                    loadingIndicator.show("polls")
+                                } else {
+                                    adapter.showLoadingFooter()
+                                }
+                            } else {
+                                loadingIndicator.hide("polls")
+                                adapter.hideLoadingFooter()
+                            }
+                        },
                 repository
                         .errorsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            // TODO: Implement me
-                            errorHandlerFactory.getDefault().handle(it)
+                        .subscribe { error ->
+                            if (!adapter.hasData) {
+                                error_empty_view.showError(error,
+                                        errorHandlerFactory.getDefault()) {
+                                    update(true)
+                                }
+                            } else {
+                                errorHandlerFactory.getDefault().handle(error)
+                            }
                         }
         )
     }
 
     private fun displayPolls(polls: List<PollRecord>) {
+        polls_list.resetBottomReachHandled()
+        adapter.setData(polls.map(::PollListItem))
+    }
+
+    // region Voting
+    private fun submitVote(poll: PollRecord,
+                           choice: Int) {
+        var disposable: Disposable? = null
+
+        val progress = ProgressDialogFactory.getTunedDialog(requireContext())
+        progress.setCancelable(true)
+        progress.setOnCancelListener { disposable?.dispose() }
+
+        disposable = AddVoteUseCase(
+                pollId = poll.id,
+                pollOwnerAccountId = poll.ownerAccountId,
+                choiceIndex = choice,
+                accountProvider = accountProvider,
+                walletInfoProvider = walletInfoProvider,
+                repositoryProvider = repositoryProvider,
+                txManager = TxManager(apiProvider)
+        )
+                .perform()
+                .compose(ObservableTransformers.defaultSchedulersCompletable())
+                .doOnSubscribe {
+                    progress.show()
+                }
+                .doOnTerminate {
+                    progress.dismiss()
+                }
+                .subscribeBy(
+                        onComplete = {
+                            toastManager.short(R.string.vote_has_been_submitted)
+                        },
+                        onError = {
+                            errorHandlerFactory.getDefault().handle(it)
+                        }
+                )
+                .addTo(compositeDisposable)
+    }
+
+    private fun removeVote(poll: PollRecord) {
 
     }
+    // endregion
 
     companion object {
         val ID = "polls".hashCode().toLong() and 0xffff
