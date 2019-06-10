@@ -41,32 +41,4 @@ class PollsAdapter : PaginationRecyclerAdapter<PollListItem, BaseViewHolder<Poll
     }
 
     override fun bindFooterViewHolder(holder: BaseViewHolder<PollListItem>) {}
-
-//    override fun getDiffCallback(newItems: List<PollListItem>): DiffUtil.Callback? {
-//        return object : DiffUtil.Callback() {
-//            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-//                return items[oldItemPosition] == newItems[newItemPosition]
-//            }
-//
-//            override fun getOldListSize(): Int {
-//                return items.size
-//            }
-//
-//            override fun getNewListSize(): Int {
-//                return newItems.size
-//            }
-//
-//            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-//                val new = newItems[newItemPosition]
-//                val old = items[oldItemPosition]
-//                return new.subject == old.subject
-//                        && new.currentChoice == old.currentChoice
-//                        && new.choices.size == old.choices.size
-//                        &&
-//                        (0 until new.choices.size).fold(true) { acc, i ->
-//                            acc && new.choices[i] == old.choices[i]
-//                        }
-//            }
-//        }
-//    }
 }

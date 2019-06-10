@@ -23,6 +23,7 @@ import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.features.polls.logic.AddVoteUseCase
+import org.tokend.template.features.polls.logic.RemoveVoteUseCase
 import org.tokend.template.features.polls.model.PollRecord
 import org.tokend.template.features.polls.repository.PollsRepository
 import org.tokend.template.features.polls.view.adapter.PollListItem
@@ -245,6 +246,7 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
         var disposable: Disposable? = null
 
         val progress = ProgressDialogFactory.getTunedDialog(requireContext())
+        progress.setMessage(getString(R.string.processing_progress))
         progress.setCancelable(true)
         progress.setOnCancelListener { disposable?.dispose() }
 
@@ -277,7 +279,38 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun removeVote(poll: PollRecord) {
+        var disposable: Disposable? = null
 
+        val progress = ProgressDialogFactory.getTunedDialog(requireContext())
+        progress.setMessage(getString(R.string.processing_progress))
+        progress.setCancelable(true)
+        progress.setOnCancelListener { disposable?.dispose() }
+
+        disposable = RemoveVoteUseCase(
+                pollId = poll.id,
+                pollOwnerAccountId = poll.ownerAccountId,
+                accountProvider = accountProvider,
+                walletInfoProvider = walletInfoProvider,
+                repositoryProvider = repositoryProvider,
+                txManager = TxManager(apiProvider)
+        )
+                .perform()
+                .compose(ObservableTransformers.defaultSchedulersCompletable())
+                .doOnSubscribe {
+                    progress.show()
+                }
+                .doOnTerminate {
+                    progress.dismiss()
+                }
+                .subscribeBy(
+                        onComplete = {
+                            toastManager.short(R.string.vote_has_been_removed)
+                        },
+                        onError = {
+                            errorHandlerFactory.getDefault().handle(it)
+                        }
+                )
+                .addTo(compositeDisposable)
     }
     // endregion
 
