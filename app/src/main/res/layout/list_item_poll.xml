@@ -28,7 +28,14 @@
             android:id="@+id/choices_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
             android:orientation="vertical" />
+
+        <Space
+            android:id="@+id/button_placeholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/standard_margin" />
 
         <Button
             android:id="@+id/vote_button"

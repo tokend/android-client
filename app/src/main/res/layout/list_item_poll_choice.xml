@@ -4,7 +4,5 @@
     style="@style/StrokedCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/standard_margin"
-    android:layout_marginEnd="@dimen/standard_margin"
     android:paddingBottom="@dimen/standard_margin"
     tools:text="Variant #1" />

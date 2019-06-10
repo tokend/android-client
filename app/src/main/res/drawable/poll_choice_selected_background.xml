@@ -1,0 +1,21 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <scale android:scaleWidth="100%">
+            <shape>
+                <solid android:color="@color/accent_highlight" />
+                <corners
+                    android:bottomLeftRadius="@dimen/modern_card_corner_radius"
+                    android:topLeftRadius="@dimen/modern_card_corner_radius" />
+            </shape>
+        </scale>
+    </item>
+
+    <item>
+        <shape>
+            <corners android:radius="@dimen/modern_card_corner_radius" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/accent" />
+        </shape>
+    </item>
+</layer-list>
