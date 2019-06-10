@@ -68,7 +68,7 @@ class VotingTest {
     }
 
     @Test
-    fun unvoteInPoll() {
+    fun bUnvoteInPoll() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
