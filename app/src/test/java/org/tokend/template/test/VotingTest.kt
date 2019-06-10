@@ -5,6 +5,7 @@ import org.junit.Test
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.polls.logic.AddVoteUseCase
+import org.tokend.template.features.polls.logic.RemoveVoteUseCase
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.PublicKeyFactory
@@ -64,6 +65,70 @@ class VotingTest {
 
         Assert.assertEquals("Remote poll choice must be the same as submitted one",
                 choice, repo.itemsList.first().currentChoice)
+    }
+
+    @Test
+    fun unvoteInPoll() {
+        val urlConfigProvider = Util.getUrlConfigProvider()
+        val session = Session(
+                WalletInfoProviderFactory().createWalletInfoProvider(),
+                AccountProviderFactory().createAccountProvider()
+        )
+
+        val email = Util.getEmail()
+        val password = Config.DEFAULT_PASSWORD
+
+        val apiProvider =
+                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
+
+        val (_, rootAccount, _) =
+                Util.getVerifiedWallet(email, password, apiProvider, session, repositoryProvider)
+
+        createPoll(repositoryProvider, apiProvider, session)
+
+        val pollOwner = rootAccount.accountId
+
+        val repo = repositoryProvider.polls(pollOwner)
+
+        repo.updateDeferred().blockingAwait()
+
+        val poll = repo.itemsList.first()
+        val choice = 0
+
+        val voteUseCase = AddVoteUseCase(
+                pollId = poll.id,
+                pollOwnerAccountId = poll.ownerAccountId,
+                accountProvider = session,
+                walletInfoProvider = session,
+                choiceIndex = choice,
+                repositoryProvider = repositoryProvider,
+                txManager = TxManager(apiProvider)
+        )
+
+        voteUseCase.perform().blockingAwait()
+
+        repo.updateDeferred().blockingAwait()
+
+        val unvoteUseCase = RemoveVoteUseCase(
+                pollId = poll.id,
+                pollOwnerAccountId = poll.ownerAccountId,
+                accountProvider = session,
+                walletInfoProvider = session,
+                repositoryProvider = repositoryProvider,
+                txManager = TxManager(apiProvider)
+        )
+
+        unvoteUseCase.perform().blockingAwait()
+
+        Assert.assertNull("Poll choice must be updated locally in repository and should be null",
+                repo.itemsList.first().currentChoice)
+
+        repo.updateDeferred().blockingAwait()
+
+        Assert.assertNull("Remote poll choice also must be null",
+                repo.itemsList.first().currentChoice)
     }
 
     private fun createPoll(repositoryProvider: RepositoryProvider,
