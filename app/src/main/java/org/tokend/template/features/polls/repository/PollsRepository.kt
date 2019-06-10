@@ -39,10 +39,11 @@ class PollsRepository(
                     DataPage(
                             isLast = pollsPage.isLast,
                             nextCursor = pollsPage.nextCursor,
-                            items = pollsPage.items.map(::PollRecord)
+                            items = pollsPage.items.map(PollRecord.Companion::fromResource)
                     )
                 }
                 .flatMap { pollsPage ->
+                    // TODO: Use specialized endpoint
                     pollsPage
                             .items
                             .map { poll ->

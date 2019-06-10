@@ -9,19 +9,30 @@ class PollRecord(
         val choices: List<String>,
         var currentChoice: Int?
 ) {
-    constructor(source: PollResource): this(
-            id = source.id,
-            ownerAccountId = source.owner.id,
-            subject = "Example question",
-            choices = (1..source.numberOfChoices).map { "Choice #$it" },
-            currentChoice = null
-    )
-
     override fun hashCode(): Int {
         return id.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
         return other is PollRecord && other.id == this.id
+    }
+
+    companion object {
+        fun fromResource(source: PollResource): PollRecord {
+            val details = source.creatorDetails
+
+            val subject = details.get("subject").asText()
+
+            // TODO: Resolve
+            val choices = (1..source.numberOfChoices).map { "Choice #$it" }
+
+            return PollRecord(
+                    id = source.id,
+                    ownerAccountId = source.owner.id,
+                    subject = subject,
+                    choices = choices,
+                    currentChoice = null
+            )
+        }
     }
 }
