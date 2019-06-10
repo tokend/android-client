@@ -17,7 +17,6 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
 import kotlinx.android.synthetic.main.fragment_asset_details.*
-import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.list_item_asset.*
 import kotlinx.android.synthetic.main.list_item_asset.view.*
@@ -33,7 +32,6 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.FileDownloader
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 
@@ -93,7 +91,6 @@ open class AssetDetailsFragment : BaseFragment() {
                         }
                 )
                 .addTo(compositeDisposable)
-        ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
     }
 
     private fun getAsset(): Single<AssetRecord> {
