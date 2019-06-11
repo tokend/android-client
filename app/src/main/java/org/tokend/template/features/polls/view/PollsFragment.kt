@@ -152,7 +152,7 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
         polls_list.adapter = adapter
         polls_list.layoutManager = LinearLayoutManager(requireContext())
 
-        error_empty_view.setEmptyDrawable(R.drawable.ic_pending)
+        error_empty_view.setEmptyDrawable(R.drawable.ic_poll)
         error_empty_view.observeAdapter(adapter, R.string.no_polls_found)
         error_empty_view.setEmptyViewDenial { pollsRepository?.isNeverUpdated == true }
 
