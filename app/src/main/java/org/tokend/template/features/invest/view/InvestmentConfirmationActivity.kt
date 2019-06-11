@@ -1,6 +1,8 @@
 package org.tokend.template.features.invest.view
 
 import android.support.v4.content.ContextCompat
+import android.widget.LinearLayout
+import kotlinx.android.synthetic.main.layout_balance_change_main_data.*
 import org.tokend.template.R
 import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.features.offers.OfferConfirmationActivity
@@ -17,6 +19,11 @@ class InvestmentConfirmationActivity : OfferConfirmationActivity() {
     override fun displayDetails() {
         saleName = intent.getNullableStringExtra(SALE_NAME_EXTRA)
         displayToReceive = intent.getBooleanExtra(DISPLAY_TO_RECEIVE, false)
+
+        (top_info_text_view.layoutParams as? LinearLayout.LayoutParams)?.also {
+            it.topMargin = 0
+            top_info_text_view.layoutParams = it
+        }
 
         displaySale()
         displayToPay()
