@@ -108,6 +108,7 @@ class AssetDistributionChart
         }
 
         val percentFormatter = NumberFormat.getPercentInstance()
+        percentFormatter.maximumFractionDigits = 1
         var prevHighlightValue = 0f
 
         chart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
@@ -116,7 +117,9 @@ class AssetDistributionChart
             }
 
             override fun onValueSelected(e: Entry, h: Highlight) {
-                chart.centerText = percentFormatter.format(e.y / 100)
+                chart.centerText =
+                        if (e.y < 0.1) "< 0.1%"
+                        else percentFormatter.format(e.y / 100)
                 setLegendEntryHighlight(prevHighlightValue.toInt(), false)
                 setLegendEntryHighlight(h.x.toInt(), true)
                 prevHighlightValue = h.x
