@@ -41,14 +41,15 @@ class InvestmentConfirmationActivity : OfferConfirmationActivity() {
     }
 
     private fun displayTitle() {
-        if (!cancellationOnly) {
+        val titleId = if (!cancellationOnly) {
             if (offerToCancel != null)
-                setTitle(R.string.investment_updating_title)
+                R.string.investment_updating_title
             else
-                setTitle(R.string.investment_confirmation_title)
+                R.string.investment_confirmation_title
         } else {
-            setTitle(R.string.investment_cancellation_title)
+           R.string.investment_cancellation_title
         }
+        mainDataView.displayOperationName(getString(titleId))
     }
 
     override fun getSuccessMessage(): String {

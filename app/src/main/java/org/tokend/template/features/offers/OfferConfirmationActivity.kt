@@ -39,7 +39,7 @@ open class OfferConfirmationActivity : BaseActivity() {
         get() = request.offerToCancel
 
     protected val adapter = DetailsItemsAdapter()
-    private lateinit var mainDataView: BalanceChangeMainDataView
+    protected lateinit var mainDataView: BalanceChangeMainDataView
 
     protected val payAsset: Asset
         get() =
