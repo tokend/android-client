@@ -5,11 +5,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.rx.extensions.toSingle
-import org.tokend.sdk.api.generated.resources.ConvertedBalancesCollectionResource
 import org.tokend.sdk.api.v3.accounts.AccountsApiV3
 import org.tokend.sdk.api.v3.balances.BalancesApi
 import org.tokend.sdk.api.v3.balances.params.ConvertedBalancesParams
-import org.tokend.sdk.utils.extentions.isNotFound
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.SimpleAsset
@@ -25,7 +23,6 @@ import org.tokend.template.logic.transactions.TxManager
 import org.tokend.wallet.*
 import org.tokend.wallet.xdr.Operation
 import org.tokend.wallet.xdr.op_extensions.CreateBalanceOp
-import retrofit2.HttpException
 
 class BalancesRepository(
         private val apiProvider: ApiProvider,
@@ -52,18 +49,6 @@ class BalancesRepository(
                     mapper,
                     conversionAssetCode
             )
-                    // TODO: Remove me before release
-                    .onErrorResumeNext { error ->
-                        if (error is HttpException && error.isNotFound())
-                            getBalances(
-                                    signedApi.v3.accounts,
-                                    accountId,
-                                    urlConfigProvider,
-                                    mapper
-                            )
-                        else
-                            Single.error(error)
-                    }
         else
             getBalances(
                     signedApi.v3.accounts,
