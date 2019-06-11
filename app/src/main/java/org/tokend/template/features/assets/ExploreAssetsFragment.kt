@@ -94,7 +94,6 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         val columns = ColumnCalculator.getColumnCount(requireActivity())
 
         layoutManager = GridLayoutManager(context, columns)
-
         assets_recycler_view.layoutManager = layoutManager
 
         assets_recycler_view.adapter = assetsAdapter
@@ -110,6 +109,10 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                 openAssetDetails(view, item)
             }
         }
+
+        assetsAdapter.registerAdapterDataObserver(
+                ScrollOnTopItemUpdateAdapterObserver(assets_recycler_view)
+        )
 
         ElevationUtil.initScrollElevation(assets_recycler_view, appbar_elevation_view)
     }

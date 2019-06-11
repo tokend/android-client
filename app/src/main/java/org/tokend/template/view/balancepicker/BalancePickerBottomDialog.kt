@@ -28,6 +28,7 @@ import org.tokend.template.view.balancepicker.adapter.BalancePickerItemsAdapter
 import org.tokend.template.view.balancepicker.adapter.BalancePickerListItem
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.ScrollOnTopItemUpdateAdapterObserver
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
@@ -136,6 +137,10 @@ open class BalancePickerBottomDialog(
             callback(item)
             dialog.dismiss()
         }
+
+        adapter.registerAdapterDataObserver(
+                ScrollOnTopItemUpdateAdapterObserver(balancesList)
+        )
 
         val errorEmptyView = dialogView.error_empty_view
         errorEmptyView

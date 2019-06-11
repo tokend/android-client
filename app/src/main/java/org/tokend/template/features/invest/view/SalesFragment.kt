@@ -31,10 +31,7 @@ import org.tokend.template.features.invest.view.adapter.SalesAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.Navigator
-import org.tokend.template.view.util.AnimationUtil
-import org.tokend.template.view.util.ColumnCalculator
-import org.tokend.template.view.util.ElevationUtil
-import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.*
 import org.tokend.template.view.util.input.SoftInputUtil
 import java.util.concurrent.TimeUnit
 
@@ -108,6 +105,10 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
             (sales_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         }
 
+        salesAdapter.registerAdapterDataObserver(
+                ScrollOnTopItemUpdateAdapterObserver(sales_list)
+        )
+
         ElevationUtil.initScrollElevation(sales_list, appbar_elevation_view)
     }
 
@@ -140,8 +141,6 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
             nameQuery = nameEditText.text.toString()
             val prevTokenQuery = tokenQuery
             tokenQuery = tokenEditText.text.toString()
-
-            sales_list?.scrollToPosition(0)
 
             if (prevNameQuery != nameQuery && nameQuery.isNotEmpty()
                     || prevTokenQuery != tokenQuery && tokenQuery.isNotEmpty()) {
