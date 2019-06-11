@@ -5,19 +5,19 @@ import org.tokend.template.data.model.BalanceRecord
 import java.math.BigDecimal
 
 class BalancePickerListItem(
-        val available: BigDecimal,
+        val available: BigDecimal?,
         val asset: Asset,
         val logoUrl: String?,
         val isEnough: Boolean,
         val source: BalanceRecord?
 ) {
     constructor(source: BalanceRecord,
-                available: BigDecimal = source.available,
+                available: BigDecimal? = source.available,
                 required: BigDecimal = BigDecimal.ZERO) : this(
             asset = source.asset,
             logoUrl = source.asset.logoUrl,
             available = available,
-            isEnough = available >= required,
+            isEnough = available == null || available >= required,
             source = source
     )
 

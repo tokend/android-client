@@ -13,6 +13,7 @@ import org.tokend.template.features.invest.view.SalesFragment
 import org.tokend.template.features.invest.view.fragments.SaleChartFragment
 import org.tokend.template.features.invest.view.fragments.SaleDetailsFragment
 import org.tokend.template.features.invest.view.fragments.SaleOverviewFragment
+import org.tokend.template.features.polls.view.PollsFragment
 import org.tokend.template.features.qr.ShareQrFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.settings.GeneralSettingsFragment
@@ -111,5 +112,12 @@ class FragmentFactory {
                            shareText: String? = null,
                            topText: String? = null): Fragment {
         return ShareQrFragment.newInstance(title, data, shareDialogText, shareText, topText)
+    }
+
+    fun getPollsFragment(ownerAccountId: String? = null): Fragment {
+        return PollsFragment.newInstance(
+                allowToolbar = ownerAccountId == null,
+                ownerAccountId = ownerAccountId
+        )
     }
 }

@@ -4,4 +4,10 @@
         <item quantity="one">day</item>
         <item quantity="other">days</item>
     </plurals>
+
+    <plurals name="vote_with_percent">
+        <item quantity="zero">No votes</item>
+        <item quantity="one">%1$d vote – %2$.1f%%</item>
+        <item quantity="other">%1$d votes – %2$.1f%%</item>
+    </plurals>
 </resources>

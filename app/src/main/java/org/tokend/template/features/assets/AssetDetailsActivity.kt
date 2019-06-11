@@ -1,11 +1,12 @@
 package org.tokend.template.features.assets
 
 import android.os.Bundle
+import kotlinx.android.synthetic.main.activity_asset_details.*
+import kotlinx.android.synthetic.main.appbar_with_tabs.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.AssetRecord
-import org.tokend.template.fragments.FragmentFactory
 
 class AssetDetailsActivity : BaseActivity() {
 
@@ -20,17 +21,23 @@ class AssetDetailsActivity : BaseActivity() {
         asset = (intent.getSerializableExtra(ASSET_EXTRA) as? AssetRecord)
                 ?: return
 
-        title = getString(R.string.template_asset_details, asset.code)
+        title = getString(R.string.asset_details_title)
 
         supportPostponeEnterTransition()
-        startFragment()
+        initViewPager()
     }
 
-    private fun startFragment() {
-        val fragment = FragmentFactory().getAssetDetailsFragment(asset)
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit()
+    private fun initViewPager() {
+        val adapter = AssetDetailsPagerAdapter(asset, this, supportFragmentManager)
+        pager.adapter = adapter
+        appbar_tabs.setupWithViewPager(pager)
+        pager.offscreenPageLimit = adapter.count
+    }
+
+    override fun onBackPressed() {
+        if (pager.currentItem == AssetDetailsPagerAdapter.DETAILS_PAGE_POSITION) {
+            super.onBackPressed()
+        } else finish()
     }
 
     companion object {

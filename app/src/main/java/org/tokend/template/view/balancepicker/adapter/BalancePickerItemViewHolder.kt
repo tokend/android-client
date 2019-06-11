@@ -21,14 +21,19 @@ class BalancePickerItemViewHolder(
 
         nameTextView.text = item.asset.code
 
-        amountTextView.text = view.context.getString(
-                R.string.template_available,
-                amountFormatter.formatAssetAmount(
-                        item.available,
-                        item.asset,
-                        withAssetCode = false
-                )
-        )
+        if (item.available != null) {
+            amountTextView.text = view.context.getString(
+                    R.string.template_available,
+                    amountFormatter.formatAssetAmount(
+                            item.available,
+                            item.asset,
+                            withAssetCode = false
+                    )
+            )
+            amountTextView.visibility = View.VISIBLE
+        } else {
+            amountTextView.visibility = View.GONE
+        }
 
         if (item.isEnough) {
             amountTextView.setTextColor(colorDefaultText)

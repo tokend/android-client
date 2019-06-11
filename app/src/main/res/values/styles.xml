@@ -66,12 +66,13 @@
         <item name="android:background">@drawable/primary_button_no_borders_background</item>
     </style>
 
-    <style name="SecondaryButton" parent="Widget.AppCompat.Button.Borderless">
+    <style name="SecondaryButton" parent="Base.Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/secondary_text</item>
     </style>
 
     <style name="DialogButton" parent="SecondaryButton">
-        <item name="android:textColor">@color/primary_action</item>
+        <item name="android:theme">@style/PrimaryButton.Overlay</item>
+        <item name="android:textColor">@color/color_dialog_button_text</item>
     </style>
 
     <style name="PrimaryActionTextView">

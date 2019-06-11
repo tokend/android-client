@@ -258,7 +258,7 @@ open class BalancePickerBottomDialog(
     }
 
     protected open fun getAvailableAmount(assetCode: String,
-                                          balance: BalanceRecord?): BigDecimal {
+                                          balance: BalanceRecord?): BigDecimal? {
         return balance?.available ?: BigDecimal.ZERO
     }
 }

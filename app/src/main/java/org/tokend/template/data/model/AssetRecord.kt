@@ -19,6 +19,7 @@ class AssetRecord(
         val issued: BigDecimal?,
         val available: BigDecimal?,
         val maximum: BigDecimal,
+        val ownerAccountId: String,
         override val trailingDigits: Int
 ) : Serializable, PolicyChecker, Asset {
     val isBackedByExternalSystem: Boolean
@@ -74,6 +75,7 @@ class AssetRecord(
                     issued = source.issued,
                     available = source.availableForIssuance,
                     maximum = source.maxIssuanceAmount,
+                    ownerAccountId = source.owner.id,
                     trailingDigits = source.trailingDigits.toInt()
             )
         }
