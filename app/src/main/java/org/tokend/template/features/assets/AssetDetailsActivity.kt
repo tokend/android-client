@@ -21,7 +21,7 @@ class AssetDetailsActivity : BaseActivity() {
         asset = (intent.getSerializableExtra(ASSET_EXTRA) as? AssetRecord)
                 ?: return
 
-        title = asset.code
+        title = getString(R.string.asset_details_title)
 
         supportPostponeEnterTransition()
         initViewPager()

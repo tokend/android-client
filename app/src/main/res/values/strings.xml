@@ -66,7 +66,8 @@
     <string name="view_asset_history_action">View history</string>
     <string name="no_assets_found">No assets found</string>
     <string name="asset_balance_exists">Balance exists</string>
-    <string name="template_asset_details">%1$s details</string>
+    <string name="asset_details_title">Asset details</string>
+    <string name="asset_overview">Overview</string>
     <string name="template_file_download_location">File will be downloaded to the \"%1$s\" directory</string>
     <string name="template_asset_balance_created">%1$s balance has been created</string>
     <string name="search">Search</string>
