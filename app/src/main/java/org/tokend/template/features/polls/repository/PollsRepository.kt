@@ -1,13 +1,16 @@
 package org.tokend.template.features.polls.repository
 
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.v3.polls.params.PollsPageParams
+import org.tokend.sdk.api.v3.polls.params.VotesPageParams
+import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.data.repository.base.pagination.PagedDataRepository
+import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.mapSuccessful
@@ -18,72 +21,82 @@ class PollsRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
         itemsCache: RepositoryCache<PollRecord>
-) : PagedDataRepository<PollRecord>(itemsCache) {
-
-    override fun getPage(nextCursor: String?): Single<DataPage<PollRecord>> {
-        return apiProvider
-                .getApi()
-                .v3
-                .polls
-                .getPolls(
-                        PollsPageParams(
-                                owner = ownerAccountId,
-                                pagingParams = PagingParamsV2(
-                                        order = PagingOrder.DESC,
-                                        limit = LIMIT,
-                                        page = nextCursor
-                                )
-                        )
-                )
-                .toSingle()
-                .map { pollsPage ->
-                    DataPage(
-                            isLast = pollsPage.isLast,
-                            nextCursor = pollsPage.nextCursor,
-                            items = pollsPage.items.mapSuccessful(PollRecord.Companion::fromResource)
-                    )
+) : SimpleMultipleItemsRepository<PollRecord>(itemsCache) {
+    override fun getItems(): Single<List<PollRecord>> {
+        return Single.zip(
+                getPolls(),
+                getVotes(),
+                BiFunction { polls: List<PollRecord>, votes: Map<String, Int> ->
+                    polls.forEach {
+                        it.currentChoice = votes[it.id]
+                    }
+                    polls
                 }
-                .flatMap { pollsPage ->
-                    // TODO: Use specialized endpoint
-                    pollsPage
-                            .items
-                            .map { poll ->
-                                getCurrentChoice(poll.id)
-                                        .doOnSuccess { currentChoice ->
-                                            poll.currentChoice = currentChoice
-                                                    .takeIf { it >= 0 }
-                                        }
-                            }
-                            .let { choiceLoadingSingles ->
-                                if (choiceLoadingSingles.isNotEmpty())
-                                    Single.zip(choiceLoadingSingles) { pollsPage }
-                                else
-                                    Single.just(pollsPage)
-                            }
-                }
+        )
     }
 
-    /**
-     * @return current choice in poll or -1 if it's missing
-     */
-    private fun getCurrentChoice(pollId: String): Single<Int> {
+    private fun getPolls(): Single<List<PollRecord>> {
+        val loader = SimplePagedResourceLoader({ nextCursor ->
+            apiProvider
+                    .getApi()
+                    .v3
+                    .polls
+                    .getPolls(
+                            PollsPageParams(
+                                    owner = ownerAccountId,
+                                    pagingParams = PagingParamsV2(
+                                            order = PagingOrder.DESC,
+                                            page = nextCursor
+                                    )
+                            )
+                    )
+                    .map { pollsPage ->
+                        DataPage(
+                                isLast = pollsPage.isLast,
+                                nextCursor = pollsPage.nextCursor,
+                                items = pollsPage.items.mapSuccessful(PollRecord.Companion::fromResource)
+                        )
+                    }
+        })
+
+        return loader
+                .loadAll()
+                .toSingle()
+    }
+
+    private fun getVotes(): Single<Map<String, Int>> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
-        return signedApi
-                .v3
-                .polls
-                .getVoteById(
-                        pollId,
-                        accountId,
-                        null
-                )
+        val loader = SimplePagedResourceLoader({ nextCursor ->
+            signedApi
+                    .v3
+                    .polls
+                    .getVotesByVoter(
+                            accountId,
+                            VotesPageParams(
+                                    pagingParams = PagingParamsV2(page = nextCursor)
+                            )
+                    )
+        })
+
+        return loader
+                .loadAll()
                 .toSingle()
-                // Core choices are counted from 1 so transform the index.
-                .map { (it.voteData.singleChoice?.toInt() ?: 0) - 1 }
-                .onErrorReturnItem(-1)
+                .map { votesList ->
+                    votesList
+                            .associateBy(
+                                    keySelector = {
+                                        it.poll.id
+                                    },
+                                    valueTransform = {
+                                        (it.voteData.singleChoice?.toInt() ?: 0) - 1
+                                    }
+                            )
+                            .filterValues { it >= 0 }
+                }
     }
 
     fun updatePollChoiceLocally(pollId: String,
@@ -94,9 +107,5 @@ class PollsRepository(
                     pollToUpdate.currentChoice = choice
                     broadcast()
                 }
-    }
-
-    companion object {
-        private const val LIMIT = 10
     }
 }

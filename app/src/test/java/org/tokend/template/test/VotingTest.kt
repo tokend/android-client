@@ -1,7 +1,9 @@
 package org.tokend.template.test
 
 import org.junit.Assert
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.polls.logic.AddVoteUseCase
@@ -15,6 +17,7 @@ import org.tokend.wallet.xdr.utils.XdrDataOutputStream
 import org.tokend.wallet.xdr.utils.toXdr
 import java.util.*
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class VotingTest {
     @Test
     fun aVoteInPoll() {
