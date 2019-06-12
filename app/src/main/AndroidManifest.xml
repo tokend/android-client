@@ -24,7 +24,9 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar.LightStatusBar"
-        tools:ignore="GoogleAppIndexingWarning">
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:targetApi="m">
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -174,8 +176,8 @@
         <activity
             android:name=".features.offers.CreateOfferActivity"
             android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
-            android:label="@string/create_offer_title" />
+            android:label="@string/create_offer_title"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".features.limits.LimitsActivity"
             android:configChanges="orientation|screenSize"
