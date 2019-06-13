@@ -105,6 +105,7 @@
 
     <string name="asset_summary_title">Asset summary</string>
     <string name="asset_available">Available</string>
+    <string name="asset_available_lowercase">available</string>
     <string name="asset_issued">Issued</string>
     <string name="asset_maximum">Maximum</string>
     <string name="asset_terms_of_use">Terms of Use</string>
@@ -401,4 +402,6 @@
     <string name="no_polls_found">No polls found</string>
     <string name="vote_has_been_submitted">Your vote has been submitted</string>
     <string name="vote_has_been_removed">Your vote has been removed</string>
+    <string name="template_with_one_asset_for">With 1 %1$s for</string>
+    <string name="asset_atomic_swaps_tab_title">Buy</string>
 </resources>

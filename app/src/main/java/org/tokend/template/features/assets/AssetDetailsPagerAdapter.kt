@@ -15,12 +15,21 @@ class AssetDetailsPagerAdapter(asset: AssetRecord,
 
     private val fragmentFactory = FragmentFactory()
 
-    private val pages = listOf(
+    private val pages = mutableListOf(
             fragmentFactory.getAssetDetailsFragment(asset) to
                     context.getString(R.string.asset_overview),
             fragmentFactory.getPollsFragment(asset.ownerAccountId) to
                     context.getString(R.string.polls_title)
     )
+
+    init {
+        if (asset.canBeBaseForAtomicSwap) {
+            pages.add(
+                    fragmentFactory.getAtomicSwapAsksFragment(asset.code) to
+                            context.getString(R.string.asset_atomic_swaps_tab_title)
+            )
+        }
+    }
 
     override fun getItem(position: Int): Fragment? {
         return pages.getOrNull(position)?.first

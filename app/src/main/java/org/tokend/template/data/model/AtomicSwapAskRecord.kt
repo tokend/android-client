@@ -6,7 +6,7 @@ import java.math.BigDecimal
 
 class AtomicSwapAskRecord(
         val id: String,
-        val asset: SimpleAsset,
+        val asset: Asset,
         val amount: BigDecimal,
         val isCanceled: Boolean,
         val quoteAssets: List<QuoteAsset>
