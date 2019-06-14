@@ -174,8 +174,8 @@
         <activity
             android:name=".features.offers.CreateOfferActivity"
             android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
-            android:label="@string/create_offer_title" />
+            android:label="@string/create_offer_title"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".features.limits.LimitsActivity"
             android:configChanges="orientation|screenSize"
@@ -201,6 +201,10 @@
         <activity
             android:name=".features.wallet.view.BalanceDetailsActivity"
             android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".features.assets.buy.BuyWithAtomicSwapActivity"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
     </application>
 
 </manifest>

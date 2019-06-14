@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        style="@style/LimitedMatchParentWidthConstraint"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_padding"
+        android:layout_marginEnd="@dimen/standard_padding"
+        android:orientation="vertical"
+        app:layout_constraintVertical_bias="0.4">
+
+        <TextView
+            android:id="@+id/amount_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_heading"
+            tools:text="Buy 10 BCUA" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/double_padding">
+
+            <org.tokend.template.features.assets.buy.view.quoteasset.picker.AtomicSwapQuoteAssetPickerSpinner
+                android:id="@+id/quote_assets_spinner"
+                style="@style/Widget.AppCompat.Spinner.DropDown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:background="@drawable/rounded_stroke_field_background"
+                android:popupBackground="@drawable/spinner_dropdown_background" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginTop="6sp"
+                android:layout_marginEnd="@dimen/half_standard_margin"
+                app:srcCompat="@drawable/ic_arrow_drop_down" />
+
+            <TextView
+                style="@style/HintText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/half_standard_margin"
+                android:background="@color/background"
+                android:paddingStart="@dimen/quarter_standard_margin"
+                android:paddingEnd="@dimen/quarter_standard_margin"
+                android:text="@string/atomic_swap_payment_method"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/continue_button"
+        style="@style/PrimaryButton.NoBorders"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/continue_action"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

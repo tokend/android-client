@@ -111,6 +111,7 @@ dependencies {
     implementation 'com.google.zxing:core:3.2.1'
     implementation 'me.grantland:autofittextview:0.2.1'
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+    implementation 'org.apmem.tools:layouts:1.10@aar'
 
     implementation 'com.google.dagger:dagger:2.16'
     kapt 'com.google.dagger:dagger-compiler:2.13'

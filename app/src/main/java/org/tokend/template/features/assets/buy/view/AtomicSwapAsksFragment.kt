@@ -15,6 +15,7 @@ import org.tokend.template.data.repository.AtomicSwapRequestsRepository
 import org.tokend.template.features.assets.buy.view.adapter.AtomicSwapAskListItem
 import org.tokend.template.features.assets.buy.view.adapter.AtomicSwapAsksAdapter
 import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 
@@ -50,6 +51,9 @@ class AtomicSwapAsksFragment : BaseFragment() {
     // region Init
     private fun initList() {
         adapter = AtomicSwapAsksAdapter(amountFormatter)
+        adapter.onItemClick { _, item ->
+            item.source?.also(this::openBuy)
+        }
 
         asks_recycler_view.layoutManager = LinearLayoutManager(requireContext())
         asks_recycler_view.adapter = adapter
@@ -110,6 +114,13 @@ class AtomicSwapAsksFragment : BaseFragment() {
                 .filterNot(AtomicSwapAskRecord::isCanceled)
                 .map(::AtomicSwapAskListItem)
         adapter.setData(items)
+    }
+
+    private fun openBuy(ask: AtomicSwapAskRecord) {
+        Navigator.from(this).openAtomicSwapBuy(
+                ask.asset.code,
+                ask.id
+        )
     }
 
     companion object {
