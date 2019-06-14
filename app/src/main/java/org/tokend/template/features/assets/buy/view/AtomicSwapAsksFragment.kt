@@ -18,6 +18,7 @@ import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.SwipeRefreshDependencyUtil
 
 class AtomicSwapAsksFragment : BaseFragment() {
     private val loadingIndicator = LoadingIndicatorManager(
@@ -42,6 +43,7 @@ class AtomicSwapAsksFragment : BaseFragment() {
     override fun onInitAllowed() {
         initList()
         initSwipeRefresh()
+        initHint()
 
         subscribeToAsks()
 
@@ -66,6 +68,14 @@ class AtomicSwapAsksFragment : BaseFragment() {
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(requireContext(), R.color.accent))
         swipe_refresh.setOnRefreshListener { update(force = true) }
+        SwipeRefreshDependencyUtil.addDependency(swipe_refresh, hint_appbar)
+    }
+
+    private fun initHint() {
+        atomic_swap_hint_text_view.text = getString(
+                R.string.template_atomic_swaps_hint,
+                assetCode
+        )
     }
     // endregion
 

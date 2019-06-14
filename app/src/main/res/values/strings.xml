@@ -409,4 +409,6 @@
     <string name="error_too_big_amount">Amount is too big</string>
     <string name="atomic_swap_payment_method">Payment method</string>
     <string name="template_amount_to_pay">%1$s to pay</string>
+    <string name="template_atomic_swaps_hint">This orders allow you to buy %1$s
+    for external system assets directly, without the need of deposit</string>
 </resources>
