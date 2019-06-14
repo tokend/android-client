@@ -3,6 +3,7 @@ package org.tokend.template.features.assets.buy
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
+import android.view.MenuItem
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -134,6 +135,14 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
                 .replace(R.id.fragment_container_layout, fragment)
                 .addToBackStack(tag)
                 .commit()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {
