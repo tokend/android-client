@@ -407,4 +407,6 @@
     <string name="template_buy_asset_code">Buy %1$s</string>
     <string name="template_amount_available_for_buy">Available for buy: %1$s</string>
     <string name="error_too_big_amount">Amount is too big</string>
+    <string name="atomic_swap_payment_method">Payment method</string>
+    <string name="template_amount_to_pay">%1$s to pay</string>
 </resources>

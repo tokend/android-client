@@ -7,7 +7,7 @@ import android.util.AttributeSet
 /**
  * Simple value picker based on [TabLayout]
  */
-class PickerTabLayout : TabLayout, Picker {
+class PickerTabLayout : TabLayout, SimplePicker {
     constructor(context: Context, attributeSet: AttributeSet?) :
             super(context, attributeSet)
 
@@ -38,7 +38,7 @@ class PickerTabLayout : TabLayout, Picker {
         }
 
     init {
-        addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabReselected(tab: Tab?) {}
 
             override fun onTabUnselected(tab: Tab?) {}
