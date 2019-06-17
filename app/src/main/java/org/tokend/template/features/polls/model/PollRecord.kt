@@ -1,7 +1,9 @@
 package org.tokend.template.features.polls.model
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.tokend.sdk.api.generated.resources.PollResource
-import kotlin.random.Random
+import org.tokend.sdk.factory.JsonApiToolsProvider
 
 class PollRecord(
         val id: String,
@@ -10,6 +12,15 @@ class PollRecord(
         val choices: List<Choice>,
         var currentChoice: Int?
 ) {
+    private class ChoiceData
+    @JsonCreator
+    constructor(
+            @JsonProperty("number")
+            val number: Int,
+            @JsonProperty("description")
+            val description: String
+    )
+
     class Choice(
             val name: String,
             val result: Result?
@@ -44,24 +55,19 @@ class PollRecord(
         fun fromResource(source: PollResource): PollRecord {
             val details = source.creatorDetails
 
-            val subject = details.get("subject").asText()
+            val subject = details.get("question").asText()
 
-            // TODO: Resolve
-            val choicesNames = (1..source.numberOfChoices).map { "Choice #$it" }
-            val votesCounts = (1..source.numberOfChoices)
-                    .map { (Random.nextInt() and 0xffff).toLong() }
-            val totalVotes = votesCounts.sum()
+            val mapper = JsonApiToolsProvider.getObjectMapper()
+            val choicesData = details
+                    .withArray("choices")
+                    .map { mapper.treeToValue(it, ChoiceData::class.java) }
+                    .sortedBy(ChoiceData::number)
 
-            val choices = (0 until source.numberOfChoices)
-                    .map { it.toInt() }
+            val choices = choicesData
                     .map {
-                        val votesCount = votesCounts[it].toInt()
                         Choice(
-                                choicesNames[it],
-                                Choice.Result(
-                                        votesCount = votesCount,
-                                        totalVotes = totalVotes
-                                )
+                                name = it.description,
+                                result = null
                         )
                     }
 

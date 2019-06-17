@@ -147,11 +147,13 @@ class VotingTest {
         val accountId = session.getWalletInfo()!!.accountId
         val account = session.getAccount()!!
 
+        val choices = "[{\"number\":1,\"description\":\"Yes\"},{\"number\":2,\"description\":\"No\"}]"
         val request = CreatePollRequest(
                 0,
                 2,
                 PollData.SingleChoice(EmptyExt.EmptyVersion()),
-                "{\"subject\":\"Would you like us to do something?\"}",
+                "{\"question\":\"Would you like us to do something?\"," +
+                        "\"choices\":$choices}",
                 Date().time / 1000L,
                 (Date().time / 1000L) + 3600,
                 PublicKeyFactory.fromAccountId(accountId),
