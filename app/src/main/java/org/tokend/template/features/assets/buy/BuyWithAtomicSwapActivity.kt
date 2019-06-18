@@ -18,6 +18,7 @@ import org.tokend.template.features.assets.buy.model.AtomicSwapInvoice
 import org.tokend.template.features.assets.buy.view.AtomicSwapAmountFragment
 import org.tokend.template.features.assets.buy.view.quoteasset.AtomicSwapQuoteAssetFragment
 import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.ProgressDialogFactory
 import java.math.BigDecimal
@@ -136,7 +137,15 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
     }
 
     private fun onBidSubmitted(invoice: AtomicSwapInvoice) {
-
+        val asset = this.asset ?: return
+        val amount = amountFormatter.formatAssetAmount(invoice.amount, asset)
+        Navigator.from(this).openQrShare(
+                title = "",
+                shareLabel = getString(R.string.share_address_label),
+                data = invoice.address,
+                shareText = invoice.address,
+                topText = getString(R.string.template_send_to_address, amount)
+        )
     }
 
     private fun displayFragment(
