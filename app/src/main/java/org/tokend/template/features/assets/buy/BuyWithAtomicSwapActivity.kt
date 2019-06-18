@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.view.MenuItem
-import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -14,8 +13,11 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AtomicSwapAskRecord
 import org.tokend.template.features.amountscreen.model.AmountInputResult
+import org.tokend.template.features.assets.buy.logic.CreateAtomicSwapBidUseCase
+import org.tokend.template.features.assets.buy.model.AtomicSwapInvoice
 import org.tokend.template.features.assets.buy.view.AtomicSwapAmountFragment
 import org.tokend.template.features.assets.buy.view.quoteasset.AtomicSwapQuoteAssetFragment
+import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.ProgressDialogFactory
 import java.math.BigDecimal
@@ -99,24 +101,42 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
 
     private fun onQuoteAssetSelected(asset: Asset) {
         this.asset = asset
-        toastManager.short("Buy $amount ${ask.asset} for ${asset.code}")
         submitBid()
     }
 
     private fun submitBid() {
+        val assetCode = asset?.code
+                ?: return
+
         var disposable: Disposable? = null
 
         val progress = ProgressDialogFactory.getTunedDialog(this)
         progress.setCancelable(true)
         progress.setOnCancelListener { disposable?.dispose() }
 
-        disposable = Single
-                .never<Boolean>()
+        disposable = CreateAtomicSwapBidUseCase(
+                amount = amount,
+                quoteAssetCode = assetCode,
+                askId = ask.id,
+                repositoryProvider = repositoryProvider,
+                walletInfoProvider = walletInfoProvider,
+                accountProvider = accountProvider,
+                apiProvider = apiProvider,
+                txManager = TxManager(apiProvider)
+        )
+                .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe { progress.show() }
                 .doOnEvent { _, _ -> progress.dismiss() }
-                .subscribe()
+                .subscribeBy(
+                        onSuccess = this::onBidSubmitted,
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
+                )
                 .addTo(compositeDisposable)
+    }
+
+    private fun onBidSubmitted(invoice: AtomicSwapInvoice) {
+
     }
 
     private fun displayFragment(
