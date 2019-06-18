@@ -138,14 +138,23 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
 
     private fun onBidSubmitted(invoice: AtomicSwapInvoice) {
         val asset = this.asset ?: return
-        val amount = amountFormatter.formatAssetAmount(invoice.amount, asset)
+        val sendAmountString = amountFormatter.formatAssetAmount(invoice.amount, asset)
+        val receiveAmountString = amountFormatter.formatAssetAmount(amount, ask.asset)
+
         Navigator.from(this).openQrShare(
-                title = "",
+                title = this.title.toString(),
                 shareLabel = getString(R.string.share_address_label),
                 data = invoice.address,
-                shareText = invoice.address,
-                topText = getString(R.string.template_send_to_address, amount)
+                shareText = getString(
+                        R.string.template_atomic_swap_invoice_share_text,
+                        sendAmountString,
+                        receiveAmountString,
+                        invoice.address
+                ),
+                topText = getString(R.string.template_send_to_address, sendAmountString)
         )
+
+        finish()
     }
 
     private fun displayFragment(
