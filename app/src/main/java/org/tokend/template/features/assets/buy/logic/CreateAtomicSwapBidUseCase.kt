@@ -1,6 +1,7 @@
 package org.tokend.template.features.assets.buy.logic
 
 import android.util.Log
+import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
@@ -9,7 +10,7 @@ import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
-import org.tokend.sdk.api.generated.resources.AtomicSwapRequestDetailsResource
+import org.tokend.sdk.api.generated.resources.AtomicSwapBidRequestDetailsResource
 import org.tokend.sdk.api.generated.resources.ReviewableRequestResource
 import org.tokend.sdk.api.v3.requests.params.RequestParamsV3
 import org.tokend.sdk.api.v3.requests.params.RequestsPageParamsV3
@@ -29,6 +30,7 @@ import org.tokend.wallet.xdr.Operation
 import org.tokend.wallet.xdr.ReviewableRequestType
 import java.math.BigDecimal
 import java.security.SecureRandom
+import java.util.concurrent.TimeUnit
 
 /**
  * Submits [CreateAtomicSwapBidRequestOp] and waits
@@ -138,7 +140,7 @@ class CreateAtomicSwapBidUseCase(
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
-        class NoRequestYetException: Exception()
+        class NoRequestYetException : Exception()
 
         val getRequestWithReference = {
             signedApi
@@ -161,7 +163,7 @@ class CreateAtomicSwapBidUseCase(
                         recentRequests
                                 .find { request ->
                                     val details = request.requestDetails
-                                    details is AtomicSwapRequestDetailsResource
+                                    details is AtomicSwapBidRequestDetailsResource
                                             && details.creatorDetails
                                             .get(REFERENCE_KEY).asText() == reference
                                 }
@@ -172,13 +174,15 @@ class CreateAtomicSwapBidUseCase(
 
         // Wait for request to appear.
         return Single.defer(getRequestWithReference)
-                .retry { error ->
-                    if (error is NoRequestYetException) {
-                        Log.i(LOG_TAG, "No request yet, retry...")
-                        Thread.sleep(POLL_INTERVAL_MS)
-                        true
-                    } else {
-                        false
+                .retryWhen { errors ->
+                    errors.flatMap { error ->
+                        if (error is NoRequestYetException) {
+                            Log.i(LOG_TAG, "No request yet, retry...")
+                            Flowable.just(true)
+                                    .delay(POLL_INTERVAL_MS, TimeUnit.MILLISECONDS)
+                        } else {
+                            Flowable.error(error)
+                        }
                     }
                 }
     }
@@ -187,7 +191,7 @@ class CreateAtomicSwapBidUseCase(
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
-        class NoInvoiceYetException: Exception()
+        class NoInvoiceYetException : Exception()
 
         val getInvoiceFromRequest = {
             signedApi
@@ -208,13 +212,15 @@ class CreateAtomicSwapBidUseCase(
 
         // Wait for invoice to appear in the request.
         return Single.defer(getInvoiceFromRequest)
-                .retry { error ->
-                    if (error is NoInvoiceYetException) {
-                        Log.i(LOG_TAG, "No invoice yet, retry...")
-                        Thread.sleep(POLL_INTERVAL_MS)
-                        true
-                    } else {
-                        false
+                .retryWhen { errors ->
+                    errors.flatMap { error ->
+                        if (error is NoInvoiceYetException) {
+                            Log.i(LOG_TAG, "No invoice yet, retry...")
+                            Flowable.just(true)
+                                    .delay(POLL_INTERVAL_MS, TimeUnit.MILLISECONDS)
+                        } else {
+                            Flowable.error(error)
+                        }
                     }
                 }
     }
