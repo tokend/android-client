@@ -2,6 +2,7 @@ package org.tokend.template.data.repository
 
 import io.reactivex.Single
 import org.tokend.rx.extensions.toSingle
+import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.v3.atomicswap.params.AtomicSwapAskParams
 import org.tokend.sdk.api.v3.atomicswap.params.AtomicSwapAsksPageParams
@@ -30,10 +31,13 @@ class AtomicSwapRequestsRepository(
                                     AtomicSwapAskParams.Includes.QUOTE_ASSETS,
                                     AtomicSwapAskParams.Includes.BASE_ASSET
                             ),
-                            pagingParams = PagingParamsV2(page = nextCursor)
+                            pagingParams = PagingParamsV2(
+                                    page = nextCursor,
+                                    order = PagingOrder.DESC
+                            )
                     )
             )
-        })
+        }, distinct = true)
 
         return loader.loadAll()
                 .toSingle()

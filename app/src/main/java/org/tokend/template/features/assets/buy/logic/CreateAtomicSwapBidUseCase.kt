@@ -12,6 +12,7 @@ import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.generated.resources.AtomicSwapBidRequestDetailsResource
 import org.tokend.sdk.api.generated.resources.ReviewableRequestResource
+import org.tokend.sdk.api.requests.model.base.RequestState
 import org.tokend.sdk.api.v3.requests.params.RequestParamsV3
 import org.tokend.sdk.api.v3.requests.params.RequestsPageParamsV3
 import org.tokend.sdk.factory.JsonApiToolsProvider
@@ -192,6 +193,8 @@ class CreateAtomicSwapBidUseCase(
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         class NoInvoiceYetException : Exception()
+        class RequestRejectedException : Exception()
+        class InvoiceParsingException(cause: Exception) : Exception(cause)
 
         val getInvoiceFromRequest = {
             signedApi
@@ -202,11 +205,23 @@ class CreateAtomicSwapBidUseCase(
                     )
                     .toSingle()
                     .map { request ->
-                        request.externalDetails?.get(INVOICE_KEY)
+                        if (request.stateI == RequestState.PERMANENTLY_REJECTED.i
+                                || request.stateI == RequestState.REJECTED.i) {
+                            throw RequestRejectedException()
+                        }
+
+                        request.externalDetails
+                                ?.withArray(REQUEST_DATA_ARRAY_KEY)
+                                ?.get(0)
+                                ?.get(INVOICE_KEY)
                                 ?: throw NoInvoiceYetException()
                     }
                     .map { invoiceJson ->
-                        objectMapper.treeToValue(invoiceJson, AtomicSwapInvoice::class.java)
+                        try {
+                            objectMapper.treeToValue(invoiceJson, AtomicSwapInvoice::class.java)
+                        } catch (e: Exception) {
+                            throw InvoiceParsingException(e)
+                        }
                     }
         }
 
@@ -227,6 +242,7 @@ class CreateAtomicSwapBidUseCase(
 
     companion object {
         private const val REFERENCE_KEY = "reference"
+        private const val REQUEST_DATA_ARRAY_KEY = "data"
         private const val INVOICE_KEY = "invoice"
         private const val POLL_INTERVAL_MS = 2000L
         private const val LOG_TAG = "BidCreation"

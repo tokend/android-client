@@ -83,7 +83,7 @@ class LocalizedName(private val context: Context) {
                 context.getString(R.string.balance_change_cause_offer_cancellation)
             is BalanceChangeCause.AssetPairUpdate ->
                 context.getString(R.string.balance_change_cause_asset_pair_update)
-            BalanceChangeCause.Unknown -> context.getString(R.string.balance_change_cause_unknown)
+            is BalanceChangeCause.Unknown -> context.getString(R.string.balance_change_cause_unknown)
         }
     }
 
