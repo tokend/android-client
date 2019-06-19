@@ -25,6 +25,7 @@ import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.assets.AssetDetailsActivity
 import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.assets.buy.BuyWithAtomicSwapActivity
+import org.tokend.template.features.assets.buy.view.AtomicSwapAsksFragment
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.fees.view.FeesActivity
@@ -409,6 +410,14 @@ class Navigator private constructor() {
         val intent = context?.intentFor<BuyWithAtomicSwapActivity>(
                 BuyWithAtomicSwapActivity.ASK_ID_EXTRA to askId,
                 BuyWithAtomicSwapActivity.ASSET_CODE_EXTRA to assetCode
+        )
+        performIntent(intent)
+    }
+
+    fun openAtomicSwapsAsks(assetCode: String) {
+        val intent = context?.intentFor<SingleFragmentActivity>(
+                SingleFragmentActivity.ASSET_EXTRA to assetCode,
+                SingleFragmentActivity.SCREEN_ID to AtomicSwapAsksFragment.ID
         )
         performIntent(intent)
     }

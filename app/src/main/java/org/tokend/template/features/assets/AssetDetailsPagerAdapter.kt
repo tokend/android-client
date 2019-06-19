@@ -22,15 +22,6 @@ class AssetDetailsPagerAdapter(asset: AssetRecord,
                     context.getString(R.string.polls_title)
     )
 
-    init {
-        if (asset.canBeBaseForAtomicSwap) {
-            pages.add(
-                    fragmentFactory.getAtomicSwapAsksFragment(asset.code) to
-                            context.getString(R.string.asset_atomic_swaps_tab_title)
-            )
-        }
-    }
-
     override fun getItem(position: Int): Fragment? {
         return pages.getOrNull(position)?.first
     }

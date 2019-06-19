@@ -3,28 +3,34 @@ package org.tokend.template.features.assets.buy.view
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_atomic_swap_asks.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.data.model.AtomicSwapAskRecord
 import org.tokend.template.data.repository.AtomicSwapRequestsRepository
 import org.tokend.template.features.assets.buy.view.adapter.AtomicSwapAskListItem
 import org.tokend.template.features.assets.buy.view.adapter.AtomicSwapAsksAdapter
 import org.tokend.template.fragments.BaseFragment
+import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.SwipeRefreshDependencyUtil
 
-class AtomicSwapAsksFragment : BaseFragment() {
+class AtomicSwapAsksFragment : BaseFragment(), ToolbarProvider {
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },
             hideLoading = { swipe_refresh.isRefreshing = false }
     )
+
+    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
 
     private val assetCode: String by lazy {
         arguments?.getString(ASSET_CODE_EXTRA)
@@ -41,6 +47,9 @@ class AtomicSwapAsksFragment : BaseFragment() {
     }
 
     override fun onInitAllowed() {
+        toolbarSubject.onNext(toolbar)
+        toolbar.title = getString(R.string.asset_atomic_swaps_title)
+
         initList()
         initSwipeRefresh()
         initHint()
@@ -134,9 +143,10 @@ class AtomicSwapAsksFragment : BaseFragment() {
     }
 
     companion object {
+        val ID = "aswap_asks".hashCode().toLong() and 0xffff
         private const val ASSET_CODE_EXTRA = "asset_code"
 
-        fun newInstance(assetCode: String): AtomicSwapAsksFragment {
+        fun newInstance(assetCode: String?): AtomicSwapAsksFragment {
             val fragment = AtomicSwapAsksFragment()
             fragment.arguments = Bundle().apply {
                 putString(ASSET_CODE_EXTRA, assetCode)

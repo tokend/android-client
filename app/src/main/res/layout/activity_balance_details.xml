@@ -140,6 +140,11 @@
                 style="@style/FloatingButtonMenuItem"
                 app:fab_label="@string/withdraw_title" />
 
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/buy_fab"
+                style="@style/FloatingButtonMenuItem"
+                app:fab_label="@string/buy" />
+
         </com.github.clans.fab.FloatingActionMenu>
     </FrameLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

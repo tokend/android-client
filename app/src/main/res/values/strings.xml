@@ -403,7 +403,7 @@
     <string name="vote_has_been_submitted">Your vote has been submitted</string>
     <string name="vote_has_been_removed">Your vote has been removed</string>
     <string name="template_with_one_asset_for">With 1 %1$s for</string>
-    <string name="asset_atomic_swaps_tab_title">Buy</string>
+    <string name="asset_atomic_swaps_title">Buy</string>
     <string name="template_buy_asset_code">Buy %1$s</string>
     <string name="template_amount_available_for_buy">Available for buy: %1$s</string>
     <string name="error_too_big_amount">Amount is too big</string>

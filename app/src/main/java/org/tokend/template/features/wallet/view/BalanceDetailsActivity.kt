@@ -133,8 +133,9 @@ class BalanceDetailsActivity : BaseActivity() {
         val canWithdraw = asset?.isWithdrawable == true
         val canDeposit = asset?.isBackedByExternalSystem == true
         val canSend = asset?.isTransferable == true
+        val canBuy = asset?.canBeBaseForAtomicSwap == true
 
-        if (!canWithdraw && !canDeposit && !canSend) {
+        if (!canWithdraw && !canDeposit && !canSend && !canBuy) {
             menu_fab.visibility = View.GONE
             menu_fab.isEnabled = false
             return
@@ -146,6 +147,7 @@ class BalanceDetailsActivity : BaseActivity() {
             deposit_fab.isEnabled = canDeposit
             send_fab.isEnabled = canSend
             receive_fab.isEnabled = canSend
+            buy_fab.isEnabled = canBuy
         }
 
         val navigator = Navigator.from(this)
@@ -178,6 +180,13 @@ class BalanceDetailsActivity : BaseActivity() {
             menu_fab.close(false)
         }
         withdraw_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_withdraw_fab))
+
+        buy_fab.onClick {
+            val assetCode = balance?.assetCode ?: return@onClick
+            navigator.openAtomicSwapsAsks(assetCode)
+            menu_fab.close(false)
+        }
+        buy_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_buy_fab))
     }
 
     private val hideFabScrollListener =

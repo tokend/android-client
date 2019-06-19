@@ -122,7 +122,7 @@ class FragmentFactory {
         )
     }
 
-    fun getAtomicSwapAsksFragment(assetCode: String): Fragment {
+    fun getAtomicSwapAsksFragment(assetCode: String? = null): Fragment {
         return AtomicSwapAsksFragment.newInstance(assetCode)
     }
 }
