@@ -7,6 +7,7 @@ import io.reactivex.rxkotlin.addTo
 import org.tokend.template.R
 import org.tokend.template.extensions.getStringExtra
 import org.tokend.template.features.assets.ExploreAssetsFragment
+import org.tokend.template.features.assets.buy.view.AtomicSwapAsksFragment
 import org.tokend.template.features.dashboard.view.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.qr.ShareQrFragment
@@ -58,6 +59,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
                     shareText,
                     topText
             )
+            AtomicSwapAsksFragment.ID -> factory.getAtomicSwapAsksFragment(asset)
             else -> null
         }
     }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <include layout="@layout/appbar" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        style="@style/LimitedMatchParentWidthConstraint"
+        app:layout_constraintTop_toBottomOf="@id/appbar"
+        app:layout_constraintTop_toTopOf="@null">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/include_error_empty_view" />
+
+            <android.support.design.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <android.support.design.widget.AppBarLayout
+                    android:id="@+id/hint_appbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    app:elevation="0dp">
+
+                    <android.support.design.widget.CollapsingToolbarLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                        <RelativeLayout
+                            android:id="@+id/hint_card"
+                            style="@style/StrokedCard"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="@dimen/standard_padding"
+                            android:layout_marginEnd="20dp">
+
+                            <ImageView
+                                android:id="@+id/info_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                app:srcCompat="@drawable/ic_information" />
+
+                            <TextView
+                                android:id="@+id/atomic_swap_hint_text_view"
+                                style="@style/SecondaryText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginStart="@dimen/standard_margin"
+                                android:layout_toEndOf="@id/info_icon"
+                                android:paddingBottom="@dimen/quarter_standard_margin"
+                                android:text="@string/template_atomic_swaps_hint" />
+                        </RelativeLayout>
+                    </android.support.design.widget.CollapsingToolbarLayout>
+                </android.support.design.widget.AppBarLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/asks_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingStart="@dimen/quarter_standard_margin"
+                    android:paddingTop="@dimen/half_standard_margin"
+                    android:paddingEnd="@dimen/quarter_standard_margin"
+                    android:paddingBottom="@dimen/standard_margin"
+                    app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior" />
+            </android.support.design.widget.CoordinatorLayout>
+        </LinearLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</android.support.constraint.ConstraintLayout>

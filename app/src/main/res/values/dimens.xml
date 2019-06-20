@@ -56,6 +56,6 @@
     <dimen name="amount_input_height_threshold">260dp</dimen>
     <dimen name="amount_input_min_height">220dp</dimen>
 
-    <dimen name="details_operation_name_height">22sp</dimen>
-    <dimen name="details_operation_name_corner_radius">11sp</dimen>
+    <dimen name="badge_text_height">22sp</dimen>
+    <dimen name="badge_text_corner_radius">11sp</dimen>
 </resources>

@@ -111,12 +111,13 @@ dependencies {
     implementation 'com.google.zxing:core:3.2.1'
     implementation 'me.grantland:autofittextview:0.2.1'
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+    implementation 'org.apmem.tools:layouts:1.10@aar'
 
     implementation 'com.google.dagger:dagger:2.16'
     kapt 'com.google.dagger:dagger-compiler:2.13'
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
-    implementation "org.tokend:sdk:2.5.0-x.3"
+    implementation "org.tokend:sdk:2.5.0-x.5"
     implementation "org.tokend:rx-sdk:2.0.0"
 
     implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'

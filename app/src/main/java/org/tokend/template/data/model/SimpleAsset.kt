@@ -15,6 +15,12 @@ class SimpleAsset(
             name = source.details.get("name")?.takeIf { it !is NullNode }?.asText()
     )
 
+    constructor(source: Asset): this(
+            code = source.code,
+            trailingDigits = source.trailingDigits,
+            name = source.name
+    )
+
     @Deprecated("Going to be removed. Right now used because of some issues")
     constructor(asset: String) : this(
             code = asset,

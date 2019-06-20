@@ -11,11 +11,9 @@
 
         <TextView
             android:id="@+id/operation_name_text_view"
+            style="@style/StrokedBadgeText"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/details_operation_name_height"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:background="@drawable/rounded_stroke_text_background"
             android:paddingStart="@dimen/standard_padding"
             android:paddingEnd="@dimen/standard_padding"
             tools:text="@string/balance_change_cause_payment" />

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ImpressiveCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/half_standard_margin"
+    android:layout_marginEnd="@dimen/half_standard_margin"
+    app:contentPadding="0dp"
+    tools:ignore="UnusedAttribute">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/standard_margin"
+            android:paddingTop="@dimen/standard_margin"
+            android:paddingEnd="@dimen/standard_margin">
+
+            <LinearLayout
+                android:id="@+id/available_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/available_text_view"
+                    style="@style/HeadingText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_heading_large"
+                    tools:text="500" />
+
+                <TextView
+                    style="@style/HintText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/asset_available_lowercase" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/prices_hint_text_view"
+                    style="@style/HintText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/quarter_standard_margin"
+                    tools:text="With 1 BCUA for" />
+
+                <org.apmem.tools.layouts.FlowLayout
+                    android:id="@+id/prices_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buy_btn"
+            style="@style/DialogButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/half_standard_margin"
+            android:layout_marginTop="@dimen/half_standard_margin"
+            android:layout_marginEnd="@dimen/half_standard_margin"
+            android:layout_marginBottom="@dimen/quarter_standard_margin"
+            android:minWidth="0dp"
+            android:text="@string/buy_action" />
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

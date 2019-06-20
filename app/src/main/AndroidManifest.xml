@@ -203,6 +203,10 @@
         <activity
             android:name=".features.wallet.view.BalanceDetailsActivity"
             android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".features.assets.buy.BuyWithAtomicSwapActivity"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
     </application>
 
 </manifest>

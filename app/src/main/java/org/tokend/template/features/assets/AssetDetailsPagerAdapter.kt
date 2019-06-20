@@ -15,7 +15,7 @@ class AssetDetailsPagerAdapter(asset: AssetRecord,
 
     private val fragmentFactory = FragmentFactory()
 
-    private val pages = listOf(
+    private val pages = mutableListOf(
             fragmentFactory.getAssetDetailsFragment(asset) to
                     context.getString(R.string.asset_overview),
             fragmentFactory.getPollsFragment(asset.ownerAccountId) to

@@ -11,7 +11,7 @@ import org.tokend.template.R
 /**
  * Simple value picker based on [AppCompatSpinner]
  */
-class PickerSpinner : AppCompatSpinner, Picker {
+class PickerSpinner : AppCompatSpinner, SimplePicker {
     constructor(context: Context, attributeSet: AttributeSet?) :
             super(context, attributeSet)
 
@@ -38,7 +38,7 @@ class PickerSpinner : AppCompatSpinner, Picker {
 
     init {
         adapter = itemsAdapter
-        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?,

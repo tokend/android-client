@@ -121,6 +121,11 @@
             tools:visibility="visible">
 
             <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/buy_fab"
+                style="@style/FloatingButtonMenuItem"
+                app:fab_label="@string/buy" />
+
+            <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/send_fab"
                 style="@style/FloatingButtonMenuItem"
                 app:fab_label="@string/send_title" />

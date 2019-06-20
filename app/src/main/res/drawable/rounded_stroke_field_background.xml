@@ -6,6 +6,6 @@
         android:width="1dp"
         android:color="@color/material_drawer_divider" />
 
-    <corners android:radius="@dimen/details_operation_name_corner_radius" />
+    <corners android:radius="4dp" />
 
 </shape>
