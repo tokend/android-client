@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [Unreleased]
+
+### Added
+- Partial support of custom asset trailing digits count
+- Polls
+- Direct asset buy (atomic swap)
+- Forcing Android to allow cleartext communication
+
+### Changed
+- Increased percents display accuracy on distribution chart
+
+### Fixed
+- Display raw amount instead of total on balance change details screens
+- Password change handling on fingerprint app unlock
+- Missing keyboard resize on order creation screen
+- Missing data on investment confirmation screen
+
 ## [1.10.0] 2019-06-04
 
 ### Added
