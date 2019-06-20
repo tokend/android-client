@@ -155,10 +155,6 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
         error_empty_view.setEmptyDrawable(R.drawable.ic_poll)
         error_empty_view.observeAdapter(adapter, R.string.no_polls_found)
         error_empty_view.setEmptyViewDenial { pollsRepository?.isNeverUpdated == true }
-
-        polls_list.listenBottomReach({ adapter.getDataItemCount() }) {
-            pollsRepository?.loadMore() == true || pollsRepository?.noMoreItems == true
-        }
     }
     // endregion
 
@@ -207,18 +203,7 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
                 repository
                         .loadingSubject
                         .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { loading ->
-                            if (loading) {
-                                if (pollsRepository?.isOnFirstPage == true) {
-                                    loadingIndicator.show("polls")
-                                } else {
-                                    adapter.showLoadingFooter()
-                                }
-                            } else {
-                                loadingIndicator.hide("polls")
-                                adapter.hideLoadingFooter()
-                            }
-                        },
+                        .subscribe { loadingIndicator.setLoading(it, "polls") },
                 repository
                         .errorsSubject
                         .compose(ObservableTransformers.defaultSchedulers())
@@ -236,7 +221,6 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayPolls(polls: List<PollRecord>) {
-        polls_list.resetBottomReachHandled()
         adapter.setData(polls.map(::PollListItem))
     }
 

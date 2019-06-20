@@ -1,7 +1,9 @@
 package org.tokend.template.test
 
 import org.junit.Assert
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.polls.logic.AddVoteUseCase
@@ -15,6 +17,7 @@ import org.tokend.wallet.xdr.utils.XdrDataOutputStream
 import org.tokend.wallet.xdr.utils.toXdr
 import java.util.*
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class VotingTest {
     @Test
     fun aVoteInPoll() {
@@ -144,11 +147,13 @@ class VotingTest {
         val accountId = session.getWalletInfo()!!.accountId
         val account = session.getAccount()!!
 
+        val choices = "[{\"number\":1,\"description\":\"Yes\"},{\"number\":2,\"description\":\"No\"}]"
         val request = CreatePollRequest(
                 0,
                 2,
                 PollData.SingleChoice(EmptyExt.EmptyVersion()),
-                "{\"subject\":\"Would you like us to do something?\"}",
+                "{\"question\":\"Would you like us to do something?\"," +
+                        "\"choices\":$choices}",
                 Date().time / 1000L,
                 (Date().time / 1000L) + 3600,
                 PublicKeyFactory.fromAccountId(accountId),
