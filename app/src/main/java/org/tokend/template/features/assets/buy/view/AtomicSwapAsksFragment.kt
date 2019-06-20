@@ -48,7 +48,7 @@ class AtomicSwapAsksFragment : BaseFragment(), ToolbarProvider {
 
     override fun onInitAllowed() {
         toolbarSubject.onNext(toolbar)
-        toolbar.title = getString(R.string.asset_atomic_swaps_title)
+        toolbar.title = getString(R.string.template_buy_asset_code, assetCode)
 
         initList()
         initSwipeRefresh()
@@ -133,6 +133,8 @@ class AtomicSwapAsksFragment : BaseFragment(), ToolbarProvider {
                 .filterNot(AtomicSwapAskRecord::isCanceled)
                 .map(::AtomicSwapAskListItem)
         adapter.setData(items)
+
+        hint_appbar.visibility = if (items.isEmpty()) View.GONE else View.VISIBLE
     }
 
     private fun openBuy(ask: AtomicSwapAskRecord) {
