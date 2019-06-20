@@ -23,6 +23,7 @@ for further information about branching and tagging conventions.
 - Password change handling on fingerprint app unlock
 - Missing keyboard resize on order creation screen
 - Missing data on investment confirmation screen
+- Visible balance change actions when they are disabled in config
 
 ## [1.10.0] 2019-06-04
 

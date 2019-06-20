@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.childrenSequence
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.onClick
+import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.BalanceRecord
@@ -158,6 +159,9 @@ class BalanceDetailsActivity : BaseActivity() {
             menu_fab.close(false)
         }
         send_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_send_fab))
+        if (!BuildConfig.IS_SEND_ALLOWED) {
+            menu_fab.removeMenuButton(send_fab)
+        }
 
         receive_fab.onClick {
             val walletInfo = walletInfoProvider.getWalletInfo()
@@ -166,6 +170,9 @@ class BalanceDetailsActivity : BaseActivity() {
             menu_fab.close(false)
         }
         receive_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_receive_fab))
+        if (!BuildConfig.IS_SEND_ALLOWED) {
+            menu_fab.removeMenuButton(receive_fab)
+        }
 
         deposit_fab.onClick {
             val assetCode = balance?.assetCode ?: return@onClick
@@ -173,6 +180,9 @@ class BalanceDetailsActivity : BaseActivity() {
             menu_fab.close(false)
         }
         deposit_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_deposit_fab))
+        if (!BuildConfig.IS_DEPOSIT_ALLOWED) {
+            menu_fab.removeMenuButton(deposit_fab)
+        }
 
         withdraw_fab.onClick {
             val assetCode = balance?.assetCode ?: return@onClick
@@ -180,6 +190,9 @@ class BalanceDetailsActivity : BaseActivity() {
             menu_fab.close(false)
         }
         withdraw_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_withdraw_fab))
+        if (!BuildConfig.IS_WITHDRAW_ALLOWED) {
+            menu_fab.removeMenuButton(withdraw_fab)
+        }
 
         buy_fab.onClick {
             val assetCode = balance?.assetCode ?: return@onClick
