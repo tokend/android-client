@@ -301,18 +301,20 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         externalAccount?.address.let { address ->
             if (!assetsRepository.isNeverUpdated) {
                 adapter.clearData()
+                val payload = externalAccount?.payload
                 val expirationDate = externalAccount?.expirationDate
                 val isExpired = expirationDate != null && expirationDate <= Date()
                 if (address != null && !isExpired) {
-                    displayExistingAddress(address, expirationDate)
+                    displayExistingAddress(address, payload, expirationDate)
                 } else {
                     displayAddressEmptyView()
                 }
+
             }
         }
     }
 
-    private fun displayExistingAddress(address: String, expirationDate: Date?) {
+    private fun displayExistingAddress(address: String, payload: String?, expirationDate: Date?) {
         no_address_layout.visibility = View.GONE
         details_list.visibility = View.VISIBLE
         adapter.addOrUpdateItem(
@@ -326,10 +328,21 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 )
         )
 
+        if (payload != null) {
+            adapter.addOrUpdateItem(
+                    DetailsItem(
+                            id = PAYLOAD_ITEM_ID,
+                            text = payload,
+                            singleLineText = true,
+                            hint = getString(R.string.address_payload),
+                            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_package)
+                    )
+            )
+        }
+
         val shareButton = ExtraViewProvider.getButton(requireContext(), R.string.share) {
             openQr()
         }
-
         adapter.addData(
                 DetailsItem(
                         id = SHARE_ITEM__ID,
@@ -398,13 +411,20 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     private fun getAddressShareMessage(): String? {
         return externalAccount?.let { externalAccount ->
-            externalAccount.expirationDate?.let { expirationDate ->
-                getString(R.string.template_deposit_address_with_expiration,
-                        currentAsset?.code, externalAccount.address,
-                        DateFormatter(requireActivity()).formatCompact(expirationDate)
-                )
-            } ?: getString(R.string.template_deposit_address,
+
+            val address = getString(R.string.template_deposit_address,
                     currentAsset?.code, externalAccount.address)
+
+            val payload = externalAccount.payload?.let {
+                getString(R.string.template_deposit_payload, it)
+            } ?: ""
+
+            val expire = externalAccount.expirationDate?.let {
+                getString(R.string.template_deposit_expiration,
+                        DateFormatter(requireActivity()).formatCompact(it))
+            } ?: ""
+
+            address + payload + expire
         }
     }
     // endregion
@@ -466,6 +486,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         private const val EXTRA_ASSET = "extra_asset"
 
         private val EXISTING_ADDRESS_ITEM_ID = "existing_address".hashCode().toLong()
+        private val PAYLOAD_ITEM_ID = "payload".hashCode().toLong()
         private val SHARE_ITEM__ID = "share".hashCode().toLong()
         private val EXPIRATION_ITEM_ID = "expiration_date".hashCode().toLong()
         private val RENEW_ITEM_ID = "renew".hashCode().toLong()

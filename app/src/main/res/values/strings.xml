@@ -216,8 +216,9 @@
     <string name="no_addresses_in_pool_title">No available addresses</string>
     <string name="no_addresses_in_pool_explanation">No addresses are currently available
         for this asset. Try again later or contact support</string>
-    <string name="template_deposit_address_with_expiration">Deposit %1$s:\n%2$s\nExpires at %3$s</string>
     <string name="template_deposit_address">Deposit %1$s:\n%2$s</string>
+    <string name="template_deposit_payload">\nPayload: %1$s</string>
+    <string name="template_deposit_expiration">\nExpires at %1$s</string>
 
     <string name="chart_highlight_at_hint">%1$s at %2$s</string>
     <string name="since_last_time_hint">since last %1$s</string>
@@ -412,4 +413,5 @@
     for external system assets directly, without the need of deposit</string>
     <string name="template_send_to_address">Send %1$s to this address</string>
     <string name="template_atomic_swap_invoice_share_text">Send %1$s to this address to buy %2$s:\n%3$s</string>
+    <string name="address_payload">Payload of current address</string>
 </resources>
