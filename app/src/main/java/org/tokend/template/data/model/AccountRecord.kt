@@ -31,12 +31,13 @@ class AccountRecord(
             private const val FIELD_TYPE = "type"
             private const val FIELD_PAYLOAD = "payload"
             private const val FIELD_ADDRESS = "address"
+            private const val FIELD_DATA = "data"
 
             fun fromResource(source: ExternalSystemIdResource): DepositAccount {
                 var payload: String? = null
 
                 val address = try {
-                    val data = JSONObject(source.data)
+                    val data = JSONObject(source.data).getJSONObject(FIELD_DATA)
 
                     if (data.getString(FIELD_TYPE) == TYPE_ADDRESS_WITH_PAYLOAD) {
                         payload = data.getString(FIELD_PAYLOAD)
