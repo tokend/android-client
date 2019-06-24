@@ -399,13 +399,18 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     private fun openQr() {
         externalAccount?.let {
+
+            val payload = it.payload?.let { payload ->
+                getString(R.string.template_deposit_payload, payload)
+            }
+
             Navigator.from(this).openQrShare(
                     title =
                     "${getString(R.string.deposit_title)} ${appbar_tabs.selectedItem?.text}",
                     data = it.address,
                     shareLabel = getString(R.string.share_address_label),
                     shareText = getAddressShareMessage(),
-                    bottomText = getString(R.string.template_deposit_payload, it.payload)
+                    bottomText = payload
             )
         }
     }
