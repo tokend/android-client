@@ -27,6 +27,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
     private var shareDialogText: String? = null
     private var shareText: String? = null
     private var topText: String? = null
+    private var bottomText: String? = null
     private val factory = FragmentFactory()
     private var onBackPressedListener: OnBackPressedListener? = null
 
@@ -41,6 +42,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         shareDialogText = intent.getStringExtra(SHARE_DIALOG_TEXT_EXTRA, "")
         shareText = intent.getStringExtra(SHARE_TEXT_EXTRA, data ?: "")
         topText = intent.getStringExtra(TOP_TEXT_EXTRA, "")
+        bottomText = intent.getStringExtra(BOTTOM_TEXT_EXTRA, "")
 
         getFragment()?.also { displayFragment(it) }
                 ?: finish()
@@ -57,7 +59,8 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
                     data,
                     shareDialogText,
                     shareText,
-                    topText
+                    topText,
+                    bottomText
             )
             AtomicSwapAsksFragment.ID -> factory.getAtomicSwapAsksFragment(asset)
             else -> null
@@ -109,6 +112,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         const val SHARE_DIALOG_TEXT_EXTRA = "share_dialog_text"
         const val SHARE_TEXT_EXTRA = "share_text"
         const val TOP_TEXT_EXTRA = "top_text"
+        const val BOTTOM_TEXT_EXTRA = "bottom_text"
     }
 }
 

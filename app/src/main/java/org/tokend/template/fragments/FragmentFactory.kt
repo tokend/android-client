@@ -111,8 +111,9 @@ class FragmentFactory {
                            data: String? = null,
                            shareDialogText: String? = null,
                            shareText: String? = null,
-                           topText: String? = null): Fragment {
-        return ShareQrFragment.newInstance(title, data, shareDialogText, shareText, topText)
+                           topText: String? = null,
+                           bottomText: String? = null): Fragment {
+        return ShareQrFragment.newInstance(title, data, shareDialogText, shareText, topText, bottomText)
     }
 
     fun getPollsFragment(ownerAccountId: String? = null): Fragment {

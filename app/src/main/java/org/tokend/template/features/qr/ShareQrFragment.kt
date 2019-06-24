@@ -37,13 +37,15 @@ open class ShareQrFragment : BaseFragment(), ToolbarProvider {
         const val SHARE_DIALOG_TEXT_EXTRA = "share_dialog_text"
         const val SHARE_TEXT_EXTRA = "share_text"
         const val TOP_TEXT_EXTRA = "top_text"
+        const val BOTTOM_TEXT_EXTRA = "bottom_text"
 
         fun newInstance(
                 title: String? = null,
                 data: String? = null,
                 shareDialogText: String? = null,
                 shareText: String? = null,
-                topText: String? = null
+                topText: String? = null,
+                bottomText: String? = null
         ): ShareQrFragment {
             val fragment = ShareQrFragment()
             fragment.arguments = Bundle().apply {
@@ -52,6 +54,7 @@ open class ShareQrFragment : BaseFragment(), ToolbarProvider {
                 putString(SHARE_DIALOG_TEXT_EXTRA, shareDialogText)
                 putString(SHARE_TEXT_EXTRA, shareText)
                 putString(TOP_TEXT_EXTRA, topText)
+                putString(BOTTOM_TEXT_EXTRA, bottomText)
             }
             return fragment
         }
@@ -69,6 +72,8 @@ open class ShareQrFragment : BaseFragment(), ToolbarProvider {
         get() = arguments?.getString(SHARE_TEXT_EXTRA) ?: data
     open val topText: String
         get() = arguments?.getString(TOP_TEXT_EXTRA) ?: ""
+    open val bottomText: String
+        get() = arguments?.getString(BOTTOM_TEXT_EXTRA) ?: ""
 
     private var savedQrUri: Uri? = null
 
@@ -121,6 +126,14 @@ open class ShareQrFragment : BaseFragment(), ToolbarProvider {
             top_text_view.text = topText
         } else {
             top_text_view.visibility = View.GONE
+        }
+
+        if (bottomText.isNotBlank()) {
+            bottom_text_view.visibility = View.VISIBLE
+            bottom_text_view.text = bottomText
+            bottom_text_view.setSizeToFit()
+        } else {
+            bottom_text_view.visibility = View.GONE
         }
     }
 

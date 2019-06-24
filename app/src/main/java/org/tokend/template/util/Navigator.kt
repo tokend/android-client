@@ -185,6 +185,7 @@ class Navigator private constructor() {
                     shareLabel: String,
                     shareText: String? = data,
                     topText: String? = null,
+                    bottomText: String? = null,
                     requestCode: Int = 0) {
 
         val intent = context?.intentFor<SingleFragmentActivity>(
@@ -193,6 +194,7 @@ class Navigator private constructor() {
                 SingleFragmentActivity.SHARE_DIALOG_TEXT_EXTRA to shareLabel,
                 SingleFragmentActivity.TOP_TEXT_EXTRA to topText,
                 SingleFragmentActivity.SHARE_TEXT_EXTRA to shareText,
+                SingleFragmentActivity.BOTTOM_TEXT_EXTRA to bottomText,
                 SingleFragmentActivity.SCREEN_ID to ShareQrFragment.ID
         )
         performIntent(intent, requestCode = requestCode)
