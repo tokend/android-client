@@ -37,13 +37,14 @@ class AccountRecord(
                 var payload: String? = null
 
                 val address = try {
-                    val data = JSONObject(source.data).getJSONObject(FIELD_DATA)
+                    val data = JSONObject(source.data)
+                    val addressData = data.getJSONObject(FIELD_DATA)
 
                     if (data.getString(FIELD_TYPE) == TYPE_ADDRESS_WITH_PAYLOAD) {
-                        payload = data.getString(FIELD_PAYLOAD)
+                        payload = addressData.getString(FIELD_PAYLOAD)
                     }
 
-                    data.getString(FIELD_ADDRESS)
+                    addressData.getString(FIELD_ADDRESS)
                 } catch (e: JSONException) {
                     source.data
                 }
