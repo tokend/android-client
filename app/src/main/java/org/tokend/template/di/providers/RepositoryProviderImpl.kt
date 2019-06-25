@@ -239,7 +239,6 @@ class RepositoryProviderImpl(
     }
 
     override fun polls(ownerAccountId: String): PollsRepository {
-        val ownerAccountId = "GBA4EX43M25UPV4WIE6RRMQOFTWXZZRIPFAI5VPY6Z2ZVVXVWZ6NEOOB"
         return pollsRepositoriesByOwnerAccountId.getOrPut(ownerAccountId) {
             PollsRepository(ownerAccountId, apiProvider, walletInfoProvider, PollsCache())
         }
