@@ -3,7 +3,7 @@ package org.tokend.template.data.repository.base
 /**
  * Repository cache without persistence
  */
-class MemoryOnlyRepositoryCache<T> : RepositoryCache<T>() {
+open class MemoryOnlyRepositoryCache<T> : RepositoryCache<T>() {
     override fun isContentSame(first: T, second: T): Boolean = false
 
     override fun getAllFromDb(): List<T> = emptyList()

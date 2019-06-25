@@ -7,6 +7,7 @@ class PollListItem(
         val choices: List<PollRecord.Choice>,
         val currentChoice: Int?,
         val canVote: Boolean,
+        val isEnded: Boolean,
         val hasResults: Boolean,
         val source: PollRecord?
 ) {
@@ -16,6 +17,7 @@ class PollListItem(
             currentChoice = source.currentChoice,
             canVote = source.canVote,
             hasResults = source.hasResults,
+            isEnded = source.isEnded,
             source = source
     )
 }

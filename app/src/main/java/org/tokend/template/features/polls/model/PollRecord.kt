@@ -3,6 +3,7 @@ package org.tokend.template.features.polls.model
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.tokend.sdk.api.generated.resources.PollResource
+import org.tokend.sdk.api.v3.polls.model.PollState
 import org.tokend.sdk.factory.JsonApiToolsProvider
 
 class PollRecord(
@@ -10,7 +11,8 @@ class PollRecord(
         val ownerAccountId: String,
         val subject: String,
         val choices: List<Choice>,
-        var currentChoice: Int?
+        var currentChoice: Int?,
+        val isEnded: Boolean
 ) {
     private class ChoiceData
     @JsonCreator
@@ -41,7 +43,7 @@ class PollRecord(
 
     val hasResults = choices.all { it.result != null }
     val canVote: Boolean
-        get() = currentChoice == null
+        get() = currentChoice == null && !isEnded
 
     override fun hashCode(): Int {
         return id.hashCode()
@@ -63,11 +65,27 @@ class PollRecord(
                     .map { mapper.treeToValue(it, ChoiceData::class.java) }
                     .sortedBy(ChoiceData::number)
 
+            val outcome = details.get("outcome")
+            val votesByChoices = choicesData
+                    .associateBy(ChoiceData::number)
+                    .mapValues { outcome?.get(it.key.toString())?.asInt() ?: 0 }
+            val totalVotes = votesByChoices.values.map(Int::toLong).sum()
+
+            val pollIsEnded = source.pollState.value == PollState.PASSED.value
+                    || source.pollState.value == PollState.FAILED.value
+
             val choices = choicesData
                     .map {
                         Choice(
                                 name = it.description,
-                                result = null
+                                result =
+                                if (pollIsEnded)
+                                    Choice.Result(
+                                            votesCount = votesByChoices[it.number] ?: 0,
+                                            totalVotes = totalVotes
+                                    )
+                                else
+                                    null
                         )
                     }
 
@@ -76,7 +94,8 @@ class PollRecord(
                     ownerAccountId = source.owner.id,
                     subject = subject,
                     choices = choices,
-                    currentChoice = null
+                    currentChoice = null,
+                    isEnded = pollIsEnded
             )
         }
     }
