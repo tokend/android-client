@@ -156,7 +156,7 @@ class VotingTest {
                         "\"choices\":$choices}",
                 Date().time / 1000L,
                 (Date().time / 1000L) + 3600,
-                PublicKeyFactory.fromAccountId(accountId),
+                PublicKeyFactory.fromAccountId(Config.ADMIN_ACCOUNT.accountId),
                 false,
                 CreatePollRequest.CreatePollRequestExt.EmptyVersion()
         )
