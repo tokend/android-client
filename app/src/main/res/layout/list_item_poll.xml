@@ -21,14 +21,27 @@
             style="@style/HeadingText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/standard_margin"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
             tools:text="Would you like us to do something?" />
+
+        <TextView
+            android:id="@+id/ended_hint_text_view"
+            style="@style/SecondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/quarter_standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:text="@string/poll_ended" />
 
         <LinearLayout
             android:id="@+id/choices_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/standard_margin"
             android:layout_marginEnd="@dimen/standard_margin"
             android:orientation="vertical" />
 

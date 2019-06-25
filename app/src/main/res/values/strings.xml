@@ -412,4 +412,5 @@
     for external system assets directly, without the need of deposit</string>
     <string name="template_send_to_address">Send %1$s to this address</string>
     <string name="template_atomic_swap_invoice_share_text">Send %1$s to this address to buy %2$s:\n%3$s</string>
+    <string name="poll_ended">Ended</string>
 </resources>
