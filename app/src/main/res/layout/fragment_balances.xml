@@ -7,62 +7,69 @@
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <android.support.design.widget.CoordinatorLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/balances_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        <include layout="@layout/include_error_empty_view" />
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar"
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:elevation="0dp">
+            android:layout_height="match_parent">
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/collapsing_toolbar"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/balances_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                app:layout_scrollFlags="scroll">
+                app:elevation="0dp">
 
-                <LinearLayout
+                <android.support.design.widget.CollapsingToolbarLayout
+                    android:id="@+id/collapsing_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/standard_margin"
-                    android:layout_marginEnd="@dimen/standard_margin"
-                    android:orientation="vertical">
+                    android:background="@android:color/transparent"
+                    app:layout_scrollFlags="scroll">
 
-                    <me.grantland.widget.AutofitTextView
-                        android:id="@+id/total_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/standard_margin"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:paddingBottom="@dimen/standard_margin"
-                        android:textSize="@dimen/text_size_heading_large"
-                        tools:text="14,221.5 USD" />
-
-                    <org.tokend.template.features.dashboard.balances.view.AssetDistributionChart
-                        android:id="@+id/distribution_chart"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/quarter_standard_margin"
-                        android:paddingBottom="@dimen/standard_margin" />
+                        android:layout_marginStart="@dimen/standard_margin"
+                        android:layout_marginEnd="@dimen/standard_margin"
+                        android:orientation="vertical">
 
-                </LinearLayout>
-            </android.support.design.widget.CollapsingToolbarLayout>
-        </android.support.design.widget.AppBarLayout>
+                        <me.grantland.widget.AutofitTextView
+                            android:id="@+id/total_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/standard_margin"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:paddingBottom="@dimen/standard_margin"
+                            android:textSize="@dimen/text_size_heading_large"
+                            tools:text="14,221.5 USD" />
 
-        <include layout="@layout/include_appbar_elevation" />
+                        <org.tokend.template.features.dashboard.balances.view.AssetDistributionChart
+                            android:id="@+id/distribution_chart"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/quarter_standard_margin"
+                            android:paddingBottom="@dimen/standard_margin" />
 
-    </android.support.design.widget.CoordinatorLayout>
+                    </LinearLayout>
+                </android.support.design.widget.CollapsingToolbarLayout>
+            </android.support.design.widget.AppBarLayout>
+
+            <include layout="@layout/include_appbar_elevation" />
+
+        </android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>
 
 

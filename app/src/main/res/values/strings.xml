@@ -415,4 +415,5 @@
     <string name="template_atomic_swap_invoice_share_text">Send %1$s to this address to buy %2$s:\n%3$s</string>
     <string name="address_payload">Payload</string>
     <string name="poll_ended">Ended</string>
+    <string name="you_have_no_balances">You have no balances yet</string>
 </resources>

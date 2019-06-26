@@ -8,6 +8,7 @@ import android.view.*
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_balances.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
+import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.data.repository.balances.BalancesRepository
@@ -64,6 +65,10 @@ class BalancesFragment : BaseFragment() {
         adapter.onItemClick { _, item ->
             item.source?.id?.also { openWallet(it) }
         }
+
+        error_empty_view.observeAdapter(adapter, R.string.you_have_no_balances)
+        error_empty_view.setEmptyViewDenial { balancesRepository.isNeverUpdated }
+        error_empty_view.setEmptyDrawable(R.drawable.ic_coins)
     }
 
     private fun initSwipeRefresh() {
