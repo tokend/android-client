@@ -91,18 +91,21 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
             val choiceIndex = choiceView.tag as? Int
                     ?: return@forEachChildWithIndex
 
-            choiceView.background =
-                    if (choiceIndex == currentChoice)
+            val backgroundDrawable =
+                    (if (choiceIndex == currentChoice)
                         ContextCompat.getDrawable(context, R.drawable.poll_choice_selected_background)
                     else
-                        ContextCompat.getDrawable(context, R.drawable.poll_choice_background)
+                        ContextCompat.getDrawable(context, R.drawable.poll_choice_background))
+                            ?.mutate()
 
             val resultData = item.choices.getOrNull(choiceIndex)?.result
-            choiceView.background.level =
+            backgroundDrawable?.level =
                     if (resultData != null)
                         (resultData.percentOfTotal * 100).toInt()
                     else
                         0
+
+            choiceView.background = backgroundDrawable
         }
     }
 
