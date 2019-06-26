@@ -27,7 +27,7 @@ class DefaultAmountFormatter : AmountFormatter {
         }
 
         return if (withAssetCode) {
-            "$formattedAmount ${asset.code}"
+            "$formattedAmount\u00A0${asset.code}"
         } else formattedAmount
     }
 
