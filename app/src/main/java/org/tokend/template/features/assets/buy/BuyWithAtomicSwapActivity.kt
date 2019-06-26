@@ -3,15 +3,18 @@ package org.tokend.template.features.assets.buy
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.content.ContextCompat
 import android.view.MenuItem
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.android.synthetic.main.fragment_user_flow.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AtomicSwapAskRecord
+import org.tokend.template.data.repository.balances.BalancesRepository
 import org.tokend.template.features.amountscreen.model.AmountInputResult
 import org.tokend.template.features.assets.buy.logic.CreateAtomicSwapBidUseCase
 import org.tokend.template.features.assets.buy.model.AtomicSwapInvoice
@@ -20,10 +23,19 @@ import org.tokend.template.features.assets.buy.view.quoteasset.AtomicSwapQuoteAs
 import org.tokend.template.logic.transactions.TxManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 import java.math.BigDecimal
 
 class BuyWithAtomicSwapActivity : BaseActivity() {
+    private val loadingIndicator = LoadingIndicatorManager(
+            showLoading = { swipe_refresh.isRefreshing = true },
+            hideLoading = { swipe_refresh.isRefreshing = false }
+    )
+
+    private val balancesRepository: BalancesRepository
+        get() = repositoryProvider.balances()
+
     private lateinit var ask: AtomicSwapAskRecord
     private var amount: BigDecimal = BigDecimal.ZERO
     private var asset: Asset? = null
@@ -55,7 +67,8 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
         this.ask = ask
 
         initToolbar()
-
+        initSwipeRefresh()
+        subscribeToBalances()
         toAmountScreen()
     }
 
@@ -64,6 +77,11 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = getString(R.string.template_buy_asset_code, ask.asset.code)
+    }
+
+    private fun initSwipeRefresh() {
+        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(this, R.color.accent))
+        swipe_refresh.setOnRefreshListener { balancesRepository.update() }
     }
     // endregion
 
@@ -173,6 +191,20 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
                 .replace(R.id.fragment_container_layout, fragment)
                 .addToBackStack(tag)
                 .commit()
+    }
+
+    private fun subscribeToBalances() {
+        balancesRepository.loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { loadingIndicator.setLoading(it, "balances") }
+                .addTo(compositeDisposable)
+
+        balancesRepository.errorsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    errorHandlerFactory.getDefault().handle(it)
+                }
+                .addTo(compositeDisposable)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
