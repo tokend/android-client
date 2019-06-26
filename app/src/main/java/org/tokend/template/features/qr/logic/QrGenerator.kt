@@ -55,6 +55,6 @@ class QrGenerator {
     }
 
     private companion object {
-        private val ERROR_CORRECTION_LV = ErrorCorrectionLevel.H
+        private val ERROR_CORRECTION_LV = ErrorCorrectionLevel.Q
     }
 }
