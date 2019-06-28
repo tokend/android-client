@@ -15,6 +15,7 @@ import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.extensions.mapSuccessful
 import org.tokend.template.features.invest.model.SaleRecord
 
 class SalesRepository(
@@ -57,7 +58,7 @@ class SalesRepository(
                 .map { page ->
                     DataPage(
                             page.nextCursor,
-                            page.items.map {
+                            page.items.mapSuccessful {
                                 SaleRecord.fromResource(it, urlConfigProvider.getConfig(), mapper)
                             },
                             page.isLast
