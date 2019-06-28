@@ -12,18 +12,12 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import com.jakewharton.rxbinding2.widget.RxTextView
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_sales.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
-import kotlinx.android.synthetic.main.layout_sales_search.view.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.dip
 import org.tokend.template.R
 import org.tokend.template.features.invest.logic.SalesSubscriptionManager
 import org.tokend.template.features.invest.repository.SalesRepository
@@ -31,9 +25,8 @@ import org.tokend.template.features.invest.view.adapter.SalesAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.util.Navigator
+import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.*
-import org.tokend.template.view.util.input.SoftInputUtil
-import java.util.concurrent.TimeUnit
 
 class SalesFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -51,10 +44,9 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     private lateinit var salesAdapter: SalesAdapter
 
     private var searchItem: MenuItem? = null
-    private var nameQuery = ""
     private var tokenQuery = ""
     private val hasFilter: Boolean
-        get() = nameQuery.isNotEmpty() || tokenQuery.isNotEmpty()
+        get() = tokenQuery.isNotEmpty()
 
     private lateinit var salesSubscriptionManager: SalesSubscriptionManager
     private lateinit var layoutManager: GridLayoutManager
@@ -131,71 +123,35 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
 
         val pendingOffersItem = menu?.findItem(R.id.pending_offers)
         searchItem = menu?.findItem(R.id.search) ?: return
-        val searchLayout = searchItem?.actionView as? LinearLayout ?: return
 
-        val nameEditText = searchLayout.search_name_edit_text
-        val tokenEditText = searchLayout.search_token_edit_text
-
-        val updateFilter = {
-            val prevNameQuery = nameQuery
-            nameQuery = nameEditText.text.toString()
+        val updateFilter = { newQuery: String ->
             val prevTokenQuery = tokenQuery
-            tokenQuery = tokenEditText.text.toString()
+            tokenQuery = newQuery
 
-            if (prevNameQuery != nameQuery && nameQuery.isNotEmpty()
-                    || prevTokenQuery != tokenQuery && tokenQuery.isNotEmpty()) {
+            if (prevTokenQuery != tokenQuery && tokenQuery.isNotEmpty()) {
                 update(true)
             } else {
                 update()
             }
         }
 
-        Observable.merge(
-                RxTextView.textChanges(nameEditText).skipInitialValue(),
-                RxTextView.textChanges(tokenEditText).skipInitialValue()
-        )
-                .debounce(600, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    updateFilter()
-                }
-                .addTo(compositeDisposable)
+        searchItem = menu.findItem(R.id.search) ?: return
+        val searchItem = menu.findItem(R.id.search) ?: return
 
-        searchItem?.setOnActionExpandListener(
-                object : MenuItem.OnActionExpandListener {
-                    var trueCollapse = false
-                    override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                        trueCollapse = false
+        try {
+            val searchManager = MenuSearchViewManager(searchItem, toolbar, compositeDisposable)
 
-                        nameEditText?.requestFocus()
-                        SoftInputUtil.showSoftInputOnView(nameEditText)
-                        pendingOffersItem?.isVisible = false
-
-                        // The only way I found for correct positioning of custom search layout.
-                        searchLayout.translationY = requireContext().dip(38).toFloat()
-
-                        AnimationUtil.expandView(searchLayout)
-
-                        return true
+            searchManager.queryHint = getString(R.string.sales_search_asset_hint)
+            searchManager
+                    .queryChanges
+                    .compose(ObservableTransformers.defaultSchedulers())
+                    .subscribe { newValue ->
+                        updateFilter(newValue)
                     }
-
-                    override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                        if (!trueCollapse) {
-                            AnimationUtil.collapseView(searchLayout) {
-                                trueCollapse = true
-                                searchItem?.collapseActionView()
-                            }
-                        } else {
-                            nameEditText?.text?.clear()
-                            tokenEditText?.text?.clear()
-                            updateFilter()
-                            SoftInputUtil.hideSoftInput(requireActivity())
-                            pendingOffersItem?.isVisible = true
-                        }
-
-                        return trueCollapse
-                    }
-                })
+                    .addTo(compositeDisposable)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         pendingOffersItem?.setOnMenuItemClickListener {
             Navigator.from(this).openPendingOffers(CANCEL_OFFER_REQUEST, true)
@@ -214,7 +170,6 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
             salesSubscriptionManager
                     .subscribeTo(
                             filterSalesRepository,
-                            nameQuery,
                             tokenQuery,
                             force
                     )

@@ -122,11 +122,14 @@ class SaleOverviewFragment : SaleFragment() {
 
     // region Overview blob
     private fun loadOverview() {
+        val blobId = sale.fullDescriptionBlob
+                ?: return
+
         SaleOverviewMarkdownLoader(
                 requireContext(),
                 BlobManager(apiProvider, walletInfoProvider)
         )
-                .load(sale.fullDescriptionBlob)
+                .load(blobId)
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe {
                     loadingIndicator.show("overview")

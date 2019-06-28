@@ -80,11 +80,21 @@ class RepositoryProviderImpl(
         AccountRepository(apiProvider, walletInfoProvider)
     }
     private val salesRepository: SalesRepository by lazy {
-        SalesRepository(apiProvider, urlConfigProvider, MemoryOnlyRepositoryCache())
+        SalesRepository(
+                walletInfoProvider,
+                apiProvider,
+                urlConfigProvider,
+                mapper,
+                MemoryOnlyRepositoryCache())
     }
 
     private val filteredSalesRepository: SalesRepository by lazy {
-        SalesRepository(apiProvider, urlConfigProvider, MemoryOnlyRepositoryCache())
+        SalesRepository(
+                walletInfoProvider,
+                apiProvider,
+                urlConfigProvider,
+                mapper,
+                MemoryOnlyRepositoryCache())
     }
 
     private val contactsRepository: ContactsRepository by lazy {
