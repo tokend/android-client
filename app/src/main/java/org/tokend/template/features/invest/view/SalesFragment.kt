@@ -139,15 +139,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         val searchItem = menu.findItem(R.id.search) ?: return
 
         try {
-            val searchManager = MenuSearchViewManager(searchItem, toolbar, compositeDisposable,
-                    onActionExpand = {
-                        pendingOffersItem?.isVisible = false
-                        true
-                    },
-                    onActionCollapse = {
-                        pendingOffersItem?.isVisible = true
-                        true
-                    })
+            val searchManager = MenuSearchViewManager(searchItem, toolbar, compositeDisposable)
 
             searchManager.queryHint = getString(R.string.sales_search_asset_hint)
             searchManager

@@ -236,7 +236,7 @@
     <string name="template_sale_max_investment">Max investment is %1$s</string>
     <string name="template_sale_name_asset">%1$s (%2$s)</string>
     <string name="sales_search_name_hint">Name</string>
-    <string name="sales_search_asset_hint">Asset code (exact match)</string>
+    <string name="sales_search_asset_hint">Asset code</string>
     <string name="explore_sales_title">Explore sales</string>
     <string name="no_sales_found">No sales found</string>
     <string name="pending_investments_title">Pending investments</string>
