@@ -23,7 +23,9 @@ import java.util.concurrent.TimeUnit
 class MenuSearchViewManager(
         private val searchMenuItem: MenuItem,
         private val toolbar: ViewGroup,
-        compositeDisposable: CompositeDisposable
+        compositeDisposable: CompositeDisposable,
+        onActionExpand: (() -> Boolean)? = null,
+        onActionCollapse: (() -> Boolean)? = null
 ) {
     private val searchView: SearchView = searchMenuItem.actionView as? SearchView
             ?: throw IllegalArgumentException("Given menu item has no SearchView action view")
@@ -74,11 +76,13 @@ class MenuSearchViewManager(
 
         // Publish query update immediately on search collapse.
         searchMenuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                return onActionExpand?.invoke() ?: true
+            }
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 publishQueryChange(null)
-                return true
+                return onActionCollapse?.invoke() ?: true
             }
         })
     }

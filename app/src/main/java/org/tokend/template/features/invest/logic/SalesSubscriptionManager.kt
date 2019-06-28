@@ -21,14 +21,13 @@ class SalesSubscriptionManager(private val list: PaginationRecyclerView,
     private var salesDisposable: CompositeDisposable? = null
 
     fun subscribeTo(repository: SalesRepository,
-                    name: String? = null,
                     baseAsset: String? = null,
                     force: Boolean = false) {
 
         salesDisposable?.dispose()
         attachTo(repository)
         salesDisposable = CompositeDisposable(
-                repository.forQuery(name, baseAsset).itemsSubject
+                repository.forQuery(baseAsset).itemsSubject
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
                             adapter.setData(it)

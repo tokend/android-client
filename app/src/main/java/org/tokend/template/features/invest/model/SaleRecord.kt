@@ -1,7 +1,13 @@
 package org.tokend.template.features.invest.model
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.NullNode
+import org.tokend.sdk.api.base.model.RemoteFile
+import org.tokend.sdk.api.generated.resources.SaleResource
 import org.tokend.sdk.api.sales.model.SaleState
 import org.tokend.sdk.api.sales.model.SimpleSale
+import org.tokend.sdk.utils.extentions.isClosed
+import org.tokend.sdk.utils.extentions.isEnded
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.model.UrlConfig
@@ -30,43 +36,6 @@ class SaleRecord(
         val youtubeVideo: YoutubeVideo?,
         val ownerAccountId: String
 ) : Serializable {
-    constructor(source: SimpleSale,
-                urlConfig: UrlConfig?
-    ) : this(
-            id = source.id,
-            name = source.details.name,
-            baseAsset = SimpleAsset(source.baseAsset),
-            defaultQuoteAsset = SimpleAsset(source.defaultQuoteAsset),
-            quoteAssets = source.quoteAssets.map {
-                QuoteAsset(
-                        code = it.code,
-                        price = it.price,
-                        // TODO: Resolve this
-                        trailingDigits = 6,
-                        hardCap = it.hardCap,
-                        totalCurrentCap = it.totalCurrentCap
-                )
-            },
-            shortDescription = source.details.shortDescription,
-            fullDescriptionBlob = source.details.descriptionBlob,
-            logoUrl = source.details.logo.getUrl(urlConfig?.storage),
-            startDate = source.startDate,
-            endDate = source.endDate,
-            state = SaleState.fromName(source.state.name),
-            type = SaleType.values().find { it.value == source.type.value }!!,
-            softCap = source.softCap,
-            hardCap = source.hardCap,
-            baseHardCap = source.baseHardCap,
-            currentCap = source.currentCap,
-            youtubeVideo =
-            try {
-                YoutubeVideo(source.details.getYoutubeVideoUrl(true)!!,
-                        source.details.youtubeVideoPreviewImage!!)
-            } catch (_: Exception) {
-                null
-            },
-            ownerAccountId = source.ownerAccount
-    )
 
     val isAvailable: Boolean
         get() = !isUpcoming && !isEnded
@@ -95,14 +64,97 @@ class SaleRecord(
             override val code: String,
             override val trailingDigits: Int,
             val price: BigDecimal,
+            val totalCurrentCap: BigDecimal,
             val hardCap: BigDecimal,
-            val totalCurrentCap: BigDecimal
-    ) : Asset {
-        override val name: String? = null
-    }
+            val currentCap: BigDecimal,
+            val softCap: BigDecimal,
+            override val name: String? = null
+    ) : Asset
 
     class YoutubeVideo(
             val url: String,
             val previewUrl: String
     ) : Serializable
+
+    companion object {
+        fun fromResource(source: SaleResource, urlConfig: UrlConfig?, mapper: ObjectMapper): SaleRecord {
+
+            val name = source.details.get("name")?.takeIf { it !is NullNode }?.asText()
+                    ?: ""
+
+            val shortDescription = source.details.get("short_description")?.takeIf { it !is NullNode }?.asText()
+                    ?: ""
+
+            val fullDescription = source.details.get("description")?.takeIf { it !is NullNode }?.asText()
+                    ?: ""
+
+            val quoteAssetName = source.defaultQuoteAsset.asset.details
+                    ?.get("name")?.takeIf { it !is NullNode }?.asText()
+
+            val defaultQuoteAsset = QuoteAsset(
+                    code = source.defaultQuoteAsset.asset.id,
+                    trailingDigits = 6,
+                    price = source.defaultQuoteAsset.price,
+                    hardCap = source.defaultQuoteAsset.hardCap,
+                    totalCurrentCap = source.defaultQuoteAsset.totalCurrentCap,
+                    currentCap = source.defaultQuoteAsset.currentCap,
+                    softCap = source.defaultQuoteAsset.softCap,
+                    name = quoteAssetName
+            )
+
+            val quoteAssets =
+                    source.quoteAssets.map {
+                        QuoteAsset(
+                                code = it.asset.id,
+                                trailingDigits = 6,
+                                price = it.price,
+                                totalCurrentCap = it.totalCurrentCap,
+                                hardCap = it.hardCap,
+                                softCap = it.softCap,
+                                currentCap = it.currentCap,
+                                name = it.asset.details
+                                        ?.get("name")?.takeIf { it !is NullNode }?.asText()
+                        )
+                    }
+
+            val saleType = SaleType.values()
+                    .find { it.value == source.saleType.value } ?: SaleType.BASIC_SALE
+
+            val logo = source.details.get("logo")?.takeIf { it !is NullNode }?.let {
+                mapper.convertValue(it, RemoteFile::class.java)
+            }
+
+            val youtubeVideo = source.details.get("youtube_video_id")
+                    ?.takeIf { it !is NullNode  }
+                    ?.asText()
+                    ?.takeIf { it.isNotEmpty() }
+                    ?.let {
+                YoutubeVideo(
+                        url = "https://m.youtube.com/watch?v=$it",
+                        previewUrl = "https://img.youtube.com/vi/$it/hqdefault.jpg"
+                )
+            }
+
+            return SaleRecord(
+                    id = source.id.toLong(),
+                    name = name,
+                    baseAsset = SimpleAsset(source.baseAsset),
+                    quoteAssets = quoteAssets,
+                    defaultQuoteAsset = defaultQuoteAsset,
+                    shortDescription = shortDescription,
+                    fullDescriptionBlob = fullDescription,
+                    logoUrl = logo?.getUrl(urlConfig?.storage),
+                    startDate = source.startTime,
+                    endDate = source.endTime,
+                    state = SaleState.fromValue(source.saleState.value),
+                    type = saleType,
+                    baseHardCap = source.baseHardCap,
+                    currentCap = defaultQuoteAsset.currentCap,
+                    softCap = defaultQuoteAsset.softCap,
+                    hardCap = defaultQuoteAsset.hardCap,
+                    ownerAccountId = source.owner.id,
+                    youtubeVideo = youtubeVideo
+            )
+        }
+    }
 }
