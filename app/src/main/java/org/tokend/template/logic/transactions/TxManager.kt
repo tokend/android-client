@@ -3,13 +3,12 @@ package org.tokend.template.logic.transactions
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.transactions.model.SubmitTransactionResponse
 import org.tokend.template.di.providers.ApiProvider
-import org.tokend.rx.extensions.toSingle
 import org.tokend.template.util.confirmation.ConfirmationProvider
 import org.tokend.wallet.*
 import org.tokend.wallet.xdr.Operation
-import java.util.concurrent.TimeUnit
 
 /**
  * Manages transactions sending
@@ -26,13 +25,11 @@ class TxManager(
         return confirmationCompletable
                 .andThen(
                         apiProvider.getApi()
+                                .v3
                                 .transactions
-                                .submit(transaction.getEnvelope().toBase64())
+                                .submit(transaction, true)
                                 .toSingle()
                 )
-                // Magic delay is required because
-                // API doesn't sync with Horizon immediately.
-                .delay(1, TimeUnit.SECONDS)
     }
 
     companion object {
