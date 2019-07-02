@@ -201,6 +201,7 @@ class CreateAtomicSwapBidUseCase(
                     .v3
                     .requests
                     .getById(
+                            requestorAccount = accountId,
                             requestId = pendingRequestId
                     )
                     .toSingle()
