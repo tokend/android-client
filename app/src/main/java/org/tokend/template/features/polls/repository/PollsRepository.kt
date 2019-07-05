@@ -30,7 +30,7 @@ class PollsRepository(
                     polls.forEach {
                         it.currentChoice = votes[it.id]
                     }
-                    polls
+                    polls.sortedBy { !it.isEnded }
                 }
         )
     }
