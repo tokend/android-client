@@ -11,6 +11,8 @@ import org.jetbrains.anko.layoutInflater
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
+import java.util.*
+import kotlin.math.roundToInt
 
 class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
     private val context = view.context
@@ -24,6 +26,8 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
             context.getString(R.string.vote_action)
     private val actionButtonRemoveVoteTitle =
             context.getString(R.string.remove_vote_action)
+    private val pollEndedTitle =
+            context.getString(R.string.poll_ended)
 
     private val votesCountTopMargin =
             context.resources.getDimensionPixelSize(R.dimen.quarter_standard_margin)
@@ -35,7 +39,7 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
     fun bindWithActionListener(item: PollListItem,
                                actionListener: PollActionListener?) {
         subjectTextView.text = item.subject
-        endedHintTextView.visibility = if (item.isEnded) View.VISIBLE else View.GONE
+        endedHintTextView.text = if (item.isEnded) pollEndedTitle else getTimeToGo(item.endDate)
 
         val themedHintTextContext = ContextThemeWrapper(context, R.style.HintText)
 
@@ -143,5 +147,22 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
                 }
             }
         }
+    }
+
+    private fun getTimeToGo(endDate: Date): String {
+        val milliseconds = endDate.time - Date().time
+
+        val (timeValue, pluralRes) =
+                ((milliseconds / (1000f * 86400)).roundToInt() to R.plurals.day)
+                        .takeIf { it.first > 0 }
+
+                        ?: ((milliseconds / (1000f * 3600)).roundToInt() to R.plurals.hour)
+                                .takeIf { it.first > 0 }
+
+                        ?: ((milliseconds / (1000f * 60)).roundToInt() to R.plurals.minute)
+
+        val quantityString = context.resources.getQuantityString(pluralRes, timeValue)
+
+        return context.getString(R.string.template_poll_days_to_go, timeValue, quantityString)
     }
 }
