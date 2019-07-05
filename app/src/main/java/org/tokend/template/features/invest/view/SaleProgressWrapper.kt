@@ -10,6 +10,7 @@ import org.tokend.template.extensions.highlight
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 class SaleProgressWrapper(private val rootView: View,
@@ -47,7 +48,15 @@ class SaleProgressWrapper(private val rootView: View,
                         (sale.endDate.time - Date().time)
                     else
                         (sale.startDate.time - Date().time)
-            val days = Math.round(milliseconds / (1000f * 86400))
+
+            val (timeValue, pluralRes) =
+                    ((milliseconds / (1000f * 86400)).roundToInt() to R.plurals.day)
+                            .takeIf { it.first > 0 }
+
+                            ?: ((milliseconds / (1000f * 3600)).roundToInt() to R.plurals.hour)
+                                    .takeIf { it.first > 0 }
+
+                            ?: ((milliseconds / (1000f * 60)).roundToInt() to R.plurals.minute)
 
             val templateRes =
                     if (sale.isAvailable)
@@ -55,10 +64,10 @@ class SaleProgressWrapper(private val rootView: View,
                     else
                         R.string.template_sale_starts_in
             val daysString =
-                    context.getString(templateRes, days, context.resources.getQuantityString(R.plurals.day, days))
+                    context.getString(templateRes, timeValue, context.resources.getQuantityString(pluralRes, timeValue))
 
             rootView.sale_remain_time_text_view.text = SpannableString(daysString)
-                    .apply { highlight(days.toString(), highlightColor) }
+                    .apply { highlight(timeValue.toString(), highlightColor) }
         } else {
             rootView.sale_remain_time_text_view.visibility = View.GONE
         }
