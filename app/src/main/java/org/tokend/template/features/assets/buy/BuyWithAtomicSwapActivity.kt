@@ -129,9 +129,10 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
 
         var disposable: Disposable? = null
 
-        val progress = ProgressDialogFactory.getTunedDialog(this)
-        progress.setCancelable(true)
-        progress.setOnCancelListener { disposable?.dispose() }
+        val progress = ProgressDialogFactory.getDialog(
+                this,
+                cancelListener = { disposable?.dispose() }
+        )
 
         disposable = CreateAtomicSwapBidUseCase(
                 amount = amount,

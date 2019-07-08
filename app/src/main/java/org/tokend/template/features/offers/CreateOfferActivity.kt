@@ -9,7 +9,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.DynamicDrawableSpan
 import android.text.style.ImageSpan
-import android.view.WindowManager
 import com.rengwuxian.materialedittext.MaterialEditText
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -298,12 +297,11 @@ class CreateOfferActivity : BaseActivity() {
         val price = priceEditTextWrapper.scaledAmount
         val amount = amountEditTextWrapper.scaledAmount
 
-        val progress = ProgressDialogFactory.getTunedDialog(this).apply {
-            setCanceledOnTouchOutside(true)
-            setMessage(getString(R.string.loading_data))
-            setOnCancelListener {
-                offerCreationDisposable?.dispose()
-            }
+        val progress = ProgressDialogFactory.getDialog(
+                this,
+                R.string.loading_data
+        ) {
+            offerCreationDisposable?.dispose()
         }
 
         offerCreationDisposable = CreateOfferRequestUseCase(

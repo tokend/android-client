@@ -240,7 +240,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun createBalance(asset: String) {
-        val progress = ProgressDialogFactory.getTunedDialog(context)
+        val progress = ProgressDialogFactory.getDialog(context)
 
         CreateBalanceUseCase(
                 asset,

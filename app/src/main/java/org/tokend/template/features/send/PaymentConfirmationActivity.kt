@@ -155,7 +155,7 @@ class PaymentConfirmationActivity : BaseActivity() {
     }
 
     private fun confirm() {
-        val progress = ProgressDialogFactory.getTunedDialog(this)
+        val progress = ProgressDialogFactory.getDialog(this)
 
         ConfirmPaymentRequestUseCase(
                 request,

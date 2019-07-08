@@ -160,7 +160,7 @@ open class PendingOfferDetailsActivity : BaseActivity() {
     }
 
     private fun cancelOffer() {
-        val progress = ProgressDialogFactory.getTunedDialog(this)
+        val progress = ProgressDialogFactory.getDialog(this)
 
         CancelOfferUseCase(
                 item,

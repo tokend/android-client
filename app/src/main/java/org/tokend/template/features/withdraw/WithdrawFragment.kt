@@ -119,9 +119,9 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     private fun onBalancesUpdated() {
         val anyTransferableAssets =
                 balancesRepository
-                .itemsList
-                .map(BalanceRecord::asset)
-                .any(AssetRecord::isWithdrawable)
+                        .itemsList
+                        .map(BalanceRecord::asset)
+                        .any(AssetRecord::isWithdrawable)
 
         if (anyTransferableAssets) {
             if (isWaitingForWithdrawableAssets) {
@@ -199,12 +199,11 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
                             ?: it
                 }
 
-        val progress = ProgressDialogFactory.getTunedDialog(requireContext()).apply {
-            setCanceledOnTouchOutside(true)
-            setOnCancelListener {
-                withdrawRequestDisposable?.dispose()
-            }
-            setMessage(getString(R.string.loading_data))
+        val progress = ProgressDialogFactory.getDialog(
+                requireContext(),
+                R.string.loading_data
+        ) {
+            withdrawRequestDisposable?.dispose()
         }
 
         withdrawRequestDisposable?.dispose()

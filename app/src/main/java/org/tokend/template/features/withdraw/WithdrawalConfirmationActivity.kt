@@ -101,7 +101,7 @@ class WithdrawalConfirmationActivity : BaseActivity() {
     }
 
     private fun confirm() {
-        val progress = ProgressDialogFactory.getTunedDialog(this)
+        val progress = ProgressDialogFactory.getDialog(this)
 
         ConfirmWithdrawalRequestUseCase(
                 request,

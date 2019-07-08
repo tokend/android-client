@@ -229,10 +229,9 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
                            choice: Int) {
         var disposable: Disposable? = null
 
-        val progress = ProgressDialogFactory.getTunedDialog(requireContext())
-        progress.setMessage(getString(R.string.processing_progress))
-        progress.setCancelable(true)
-        progress.setOnCancelListener { disposable?.dispose() }
+        val progress = ProgressDialogFactory.getDialog(
+                requireContext(),
+                cancelListener = { disposable?.dispose() })
 
         disposable = AddVoteUseCase(
                 pollId = poll.id,
@@ -265,10 +264,10 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
     private fun removeVote(poll: PollRecord) {
         var disposable: Disposable? = null
 
-        val progress = ProgressDialogFactory.getTunedDialog(requireContext())
-        progress.setMessage(getString(R.string.processing_progress))
-        progress.setCancelable(true)
-        progress.setOnCancelListener { disposable?.dispose() }
+        val progress = ProgressDialogFactory.getDialog(
+                requireContext(),
+                cancelListener = { disposable?.dispose() }
+        )
 
         disposable = RemoveVoteUseCase(
                 pollId = poll.id,
