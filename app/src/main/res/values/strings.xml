@@ -416,6 +416,6 @@
     <string name="address_payload">Payload</string>
     <string name="poll_ended">Ended</string>
     <string name="you_have_no_balances">You have no balances yet</string>
-    <string name="template_poll_days_to_go">%1$d %2$s to go</string>
+    <string name="template_days_to_go">%1$d %2$s to go</string>
 
 </resources>

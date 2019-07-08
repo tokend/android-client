@@ -11,8 +11,9 @@ import org.jetbrains.anko.layoutInflater
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
+import org.tokend.template.view.util.LocalizedName
+import org.tokend.template.view.util.RemainedTimeUtil
 import java.util.*
-import kotlin.math.roundToInt
 
 class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
     private val context = view.context
@@ -31,6 +32,8 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
 
     private val votesCountTopMargin =
             context.resources.getDimensionPixelSize(R.dimen.quarter_standard_margin)
+
+    private val localizedName = LocalizedName(view.context)
 
     /**
      * @param actionListener receives current list item and selected choice
@@ -150,19 +153,12 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
     }
 
     private fun getTimeToGo(endDate: Date): String {
-        val milliseconds = endDate.time - Date().time
+        val (timeValue, timeUnit) = RemainedTimeUtil.getRemainedTime(endDate)
 
-        val (timeValue, pluralRes) =
-                ((milliseconds / (1000f * 86400)).roundToInt() to R.plurals.day)
-                        .takeIf { it.first > 0 }
-
-                        ?: ((milliseconds / (1000f * 3600)).roundToInt() to R.plurals.hour)
-                                .takeIf { it.first > 0 }
-
-                        ?: ((milliseconds / (1000f * 60)).roundToInt() to R.plurals.minute)
-
-        val quantityString = context.resources.getQuantityString(pluralRes, timeValue)
-
-        return context.getString(R.string.template_poll_days_to_go, timeValue, quantityString)
+        return context.getString(
+                R.string.template_days_to_go,
+                timeValue,
+                localizedName.forTimeUnit(timeUnit, timeValue)
+        )
     }
 }
