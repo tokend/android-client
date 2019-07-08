@@ -13,7 +13,7 @@ class AtomicSwapAskRecord(
 ) : Serializable {
     constructor(source: AtomicSwapAskResource) : this(
             id = source.id,
-            asset = SimpleAsset(source.baseBalance.asset),
+            asset = SimpleAsset(source.baseAsset),
             amount = source.availableAmount,
             isCanceled = source.isCanceled,
             quoteAssets = source.quoteAssets.map {
