@@ -11,6 +11,9 @@ import org.jetbrains.anko.layoutInflater
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
+import org.tokend.template.view.util.LocalizedName
+import org.tokend.template.view.util.RemainedTimeUtil
+import java.util.*
 
 class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
     private val context = view.context
@@ -24,9 +27,13 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
             context.getString(R.string.vote_action)
     private val actionButtonRemoveVoteTitle =
             context.getString(R.string.remove_vote_action)
+    private val pollEndedTitle =
+            context.getString(R.string.poll_ended)
 
     private val votesCountTopMargin =
             context.resources.getDimensionPixelSize(R.dimen.quarter_standard_margin)
+
+    private val localizedName = LocalizedName(view.context)
 
     /**
      * @param actionListener receives current list item and selected choice
@@ -35,7 +42,7 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
     fun bindWithActionListener(item: PollListItem,
                                actionListener: PollActionListener?) {
         subjectTextView.text = item.subject
-        endedHintTextView.visibility = if (item.isEnded) View.VISIBLE else View.GONE
+        endedHintTextView.text = if (item.isEnded) pollEndedTitle else getTimeToGo(item.endDate)
 
         val themedHintTextContext = ContextThemeWrapper(context, R.style.HintText)
 
@@ -143,5 +150,15 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
                 }
             }
         }
+    }
+
+    private fun getTimeToGo(endDate: Date): String {
+        val (timeValue, timeUnit) = RemainedTimeUtil.getRemainedTime(endDate)
+
+        return context.getString(
+                R.string.template_days_to_go,
+                timeValue,
+                localizedName.forTimeUnit(timeUnit, timeValue)
+        )
     }
 }

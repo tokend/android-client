@@ -8,12 +8,16 @@ import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.extensions.highlight
 import org.tokend.template.features.invest.model.SaleRecord
+import org.tokend.template.view.util.LocalizedName
+import org.tokend.template.view.util.RemainedTimeUtil
 import org.tokend.template.view.util.formatter.AmountFormatter
-import java.util.*
 import kotlin.math.roundToInt
 
 class SaleProgressWrapper(private val rootView: View,
-                          private val amountFormatter: AmountFormatter) {
+                          private val amountFormatter: AmountFormatter
+) {
+    private val localizedName = LocalizedName(rootView.context)
+
     fun displayProgress(sale: SaleRecord) {
         val context = rootView.context
         val highlightColor = ContextCompat.getColor(context, R.color.accent)
@@ -42,23 +46,30 @@ class SaleProgressWrapper(private val rootView: View,
         if (sale.isAvailable || sale.isUpcoming) {
             rootView.sale_remain_time_text_view.visibility = View.VISIBLE
 
-            val milliseconds =
+            val date =
                     if (sale.isAvailable)
-                        (sale.endDate.time - Date().time)
+                        sale.endDate
                     else
-                        (sale.startDate.time - Date().time)
-            val days = Math.round(milliseconds / (1000f * 86400))
+                        sale.startDate
+
+            val (timeValue, timeUnit) = RemainedTimeUtil.getRemainedTime(date)
 
             val templateRes =
                     if (sale.isAvailable)
                         R.string.template_sale_days_to_go
                     else
                         R.string.template_sale_starts_in
+
             val daysString =
-                    context.getString(templateRes, days, context.resources.getQuantityString(R.plurals.day, days))
+                    context.getString(
+                            templateRes,
+                            timeValue,
+                            localizedName.forTimeUnit(timeUnit, timeValue)
+                    )
+            val toHighlight = daysString.substringBefore('\n')
 
             rootView.sale_remain_time_text_view.text = SpannableString(daysString)
-                    .apply { highlight(days.toString(), highlightColor) }
+                    .apply { highlight(toHighlight, highlightColor) }
         } else {
             rootView.sale_remain_time_text_view.visibility = View.GONE
         }

@@ -9,6 +9,7 @@ import org.tokend.template.features.kyc.model.form.KycFormType
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.StatsOpType
+import java.util.concurrent.TimeUnit
 
 /**
  * Holds localized name getters for enums
@@ -102,6 +103,15 @@ class LocalizedName(private val context: Context) {
             KycFormType.GENERAL -> context.getString(R.string.kyc_form_type_general)
             KycFormType.CORPORATE -> context.getString(R.string.kyc_form_type_corporate)
             KycFormType.UNKNOWN -> context.getString(R.string.kyc_form_type_unknown)
+        }
+    }
+
+    fun forTimeUnit(unit: TimeUnit, value: Int): String {
+        return when (unit) {
+            TimeUnit.DAYS -> context.resources.getQuantityString(R.plurals.day, value)
+            TimeUnit.HOURS -> context.resources.getQuantityString(R.plurals.hour, value)
+            TimeUnit.MINUTES -> context.resources.getQuantityString(R.plurals.minute, value)
+            else -> unit.name.toLowerCase()
         }
     }
 }

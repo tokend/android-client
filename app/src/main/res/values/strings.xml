@@ -231,8 +231,8 @@
 
     <string name="template_sale_invested">%1$s\ninvested</string>
     <string name="template_sale_funded">%1$s\nfunded</string>
-    <string name="template_sale_days_to_go">%1$d\n%2$s to go</string>
-    <string name="template_sale_starts_in">%1$d\n%2$s to start</string>
+    <string name="template_sale_days_to_go">%1$d %2$s\nto go</string>
+    <string name="template_sale_starts_in">%1$d %2$s\nto start</string>
     <string name="template_sale_max_investment">Max investment is %1$s</string>
     <string name="template_sale_name_asset">%1$s (%2$s)</string>
     <string name="sales_search_name_hint">Name</string>
@@ -416,4 +416,6 @@
     <string name="address_payload">Payload</string>
     <string name="poll_ended">Ended</string>
     <string name="you_have_no_balances">You have no balances yet</string>
+    <string name="template_days_to_go">%1$d %2$s to go</string>
+
 </resources>

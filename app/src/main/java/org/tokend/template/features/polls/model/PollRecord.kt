@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import org.tokend.sdk.api.generated.resources.PollResource
 import org.tokend.sdk.api.v3.polls.model.PollState
 import org.tokend.sdk.factory.JsonApiToolsProvider
+import java.util.*
 
 class PollRecord(
         val id: String,
@@ -12,7 +13,8 @@ class PollRecord(
         val subject: String,
         val choices: List<Choice>,
         var currentChoice: Int?,
-        val isEnded: Boolean
+        val isEnded: Boolean,
+        val endDate: Date
 ) {
     private class ChoiceData
     @JsonCreator
@@ -95,7 +97,8 @@ class PollRecord(
                     subject = subject,
                     choices = choices,
                     currentChoice = null,
-                    isEnded = pollIsEnded
+                    isEnded = pollIsEnded,
+                    endDate = source.endTime
             )
         }
     }
