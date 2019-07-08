@@ -66,9 +66,10 @@ class SaleProgressWrapper(private val rootView: View,
                             timeValue,
                             localizedName.forTimeUnit(timeUnit, timeValue)
                     )
+            val toHighlight = daysString.substringBefore('\n')
 
             rootView.sale_remain_time_text_view.text = SpannableString(daysString)
-                    .apply { highlight(timeValue.toString(), highlightColor) }
+                    .apply { highlight(toHighlight, highlightColor) }
         } else {
             rootView.sale_remain_time_text_view.visibility = View.GONE
         }
