@@ -246,22 +246,20 @@ open class AssetDetailsFragment : BaseFragment() {
         const val ASSET_CODE_EXTRA = "asset_code"
         const val BALANCE_CREATION_EXTRA = "balance_creation"
 
-        fun newInstance(asset: AssetRecord, balanceCreation: Boolean): AssetDetailsFragment {
+        fun newInstance(bundle: Bundle): AssetDetailsFragment {
             val fragment = AssetDetailsFragment()
-            fragment.arguments = Bundle().apply {
-                putSerializable(ASSET_EXTRA, asset)
-                putBoolean(BALANCE_CREATION_EXTRA, balanceCreation)
-            }
+            fragment.arguments = bundle
             return fragment
         }
 
-        fun newInstance(assetCode: String, balanceCreation: Boolean): AssetDetailsFragment {
-            val fragment = AssetDetailsFragment()
-            fragment.arguments = Bundle().apply {
-                putSerializable(ASSET_CODE_EXTRA, assetCode)
-                putBoolean(BALANCE_CREATION_EXTRA, balanceCreation)
-            }
-            return fragment
+        fun getBundle(assetCode: String, balanceCreation: Boolean) = Bundle().apply {
+            putSerializable(ASSET_CODE_EXTRA, assetCode)
+            putBoolean(BALANCE_CREATION_EXTRA, balanceCreation)
+        }
+
+        fun getBundle(asset: AssetRecord, balanceCreation: Boolean) = Bundle().apply {
+            putSerializable(ASSET_EXTRA, asset)
+            putBoolean(BALANCE_CREATION_EXTRA, balanceCreation)
         }
     }
 }

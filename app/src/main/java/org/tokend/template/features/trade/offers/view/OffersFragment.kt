@@ -149,20 +149,18 @@ class OffersFragment : BaseFragment() {
         private const val ASSET_PAIR_EXTRA = "asset_pair"
         const val ONLY_PRIMARY_EXTRA = "only_primary"
 
-        fun newInstance(pair: AssetPairRecord): OffersFragment {
+        fun newInstance(bundle: Bundle): OffersFragment {
             val fragment = OffersFragment()
-            fragment.arguments = Bundle().apply {
-                putSerializable(ASSET_PAIR_EXTRA, pair)
-            }
+            fragment.arguments = bundle
             return fragment
         }
 
-        fun newInstance(onlyPrimary: Boolean): OffersFragment {
-            val fragment = OffersFragment()
-            fragment.arguments = Bundle().apply {
-                putBoolean(ONLY_PRIMARY_EXTRA, onlyPrimary)
-            }
-            return fragment
+        fun getBundle(assetPair: AssetPairRecord) = Bundle().apply {
+            putSerializable(ASSET_PAIR_EXTRA, assetPair)
+        }
+
+        fun getBundle(onlyPrimary: Boolean)  = Bundle().apply {
+            putBoolean(ONLY_PRIMARY_EXTRA, onlyPrimary)
         }
     }
 }

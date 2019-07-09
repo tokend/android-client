@@ -189,6 +189,10 @@ open class PendingOfferDetailsActivity : BaseActivity() {
     }
 
     companion object {
-        const val OFFER_EXTRA = "offer"
+        private const val OFFER_EXTRA = "offer"
+
+        fun getBundle(offer: OfferRecord) = Bundle().apply {
+            putSerializable(OFFER_EXTRA, offer)
+        }
     }
 }

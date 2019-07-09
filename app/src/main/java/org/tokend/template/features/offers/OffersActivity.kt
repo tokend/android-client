@@ -27,6 +27,10 @@ class OffersActivity : BaseActivity() {
     }
 
     companion object {
-        const val ONLY_PRIMARY_EXTRA = "only_primary"
+        private const val ONLY_PRIMARY_EXTRA = "only_primary"
+
+        fun getBundle(onlyPrimary: Boolean) = Bundle().apply {
+            putBoolean(ONLY_PRIMARY_EXTRA, onlyPrimary)
+        }
     }
 }

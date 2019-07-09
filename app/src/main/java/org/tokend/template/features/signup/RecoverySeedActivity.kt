@@ -13,20 +13,23 @@ import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.extensions.getNullableStringExtra
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.input.SimpleTextWatcher
 
 class RecoverySeedActivity : BaseActivity() {
     companion object {
-        const val SEED_EXTRA = "seed"
+        private const val SEED_EXTRA = "seed"
+
+        fun getBundle(seed: CharArray) = Bundle().apply {
+            putCharArray(SEED_EXTRA, seed)
+        }
     }
 
     override val allowUnauthorized = true
 
     private val seed: String?
-        get() = intent.getNullableStringExtra(SEED_EXTRA)
+        get() = intent.getCharArrayExtra(SEED_EXTRA)?.joinToString("")
 
     private var canContinue: Boolean = false
         set(value) {

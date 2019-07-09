@@ -157,7 +157,9 @@ class FeesActivity : BaseActivity() {
             appbar_tabs.selectedItemIndex =
                     sortedAssets.indexOfFirst { it == requestedAssetCode }
 
-            if (forceUpdate) { updateFeeCards() }
+            if (forceUpdate) {
+                updateFeeCards()
+            }
 
             toRequestedAsset = false
             return
@@ -194,7 +196,13 @@ class FeesActivity : BaseActivity() {
     }
 
     companion object {
-        const val EXTRA_ASSET = "extra_asset"
-        const val EXTRA_TYPE = "extra_type"
+        private const val EXTRA_ASSET = "extra_asset"
+        private const val EXTRA_TYPE = "extra_type"
+
+        fun getBundle(assetCode: String?,
+                      feeType: Int?) = Bundle().apply {
+            putString(EXTRA_ASSET, assetCode)
+            putInt(EXTRA_TYPE, feeType ?: -1)
+        }
     }
 }

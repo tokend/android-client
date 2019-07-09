@@ -148,12 +148,14 @@ class AtomicSwapAsksFragment : BaseFragment(), ToolbarProvider {
         val ID = "aswap_asks".hashCode().toLong() and 0xffff
         private const val ASSET_CODE_EXTRA = "asset_code"
 
-        fun newInstance(assetCode: String?): AtomicSwapAsksFragment {
+        fun newInstance(bundle: Bundle): AtomicSwapAsksFragment {
             val fragment = AtomicSwapAsksFragment()
-            fragment.arguments = Bundle().apply {
-                putString(ASSET_CODE_EXTRA, assetCode)
-            }
+            fragment.arguments = bundle
             return fragment
+        }
+
+        fun getBundle(assetCode: String) = Bundle().apply {
+            putString(ASSET_CODE_EXTRA, assetCode)
         }
     }
 }

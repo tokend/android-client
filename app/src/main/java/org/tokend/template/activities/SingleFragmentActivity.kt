@@ -5,64 +5,48 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import io.reactivex.rxkotlin.addTo
 import org.tokend.template.R
-import org.tokend.template.extensions.getStringExtra
 import org.tokend.template.features.assets.ExploreAssetsFragment
 import org.tokend.template.features.assets.buy.view.AtomicSwapAsksFragment
-import org.tokend.template.features.dashboard.view.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.qr.ShareQrFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
-import org.tokend.template.fragments.FragmentFactory
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.wallet.WalletEventsListener
 
 class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
-    private var asset: String? = null
-    private var screenId: Long? = null
-    private var title: String? = null
-    private var data: String? = null
-    private var shareDialogText: String? = null
-    private var shareText: String? = null
-    private var topText: String? = null
-    private var bottomText: String? = null
-    private val factory = FragmentFactory()
+    private var screenId: Long = 0
     private var onBackPressedListener: OnBackPressedListener? = null
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_single_fragment)
         window.setBackgroundDrawable(null)
 
-        asset = intent.getStringExtra(ASSET_EXTRA)
-        screenId = intent.getLongExtra(SCREEN_ID, DashboardFragment.ID)
-        title = intent.getStringExtra(TITLE_EXTRA, "")
-        data = intent.getStringExtra(DATA_EXTRA, "")
-        shareDialogText = intent.getStringExtra(SHARE_DIALOG_TEXT_EXTRA, "")
-        shareText = intent.getStringExtra(SHARE_TEXT_EXTRA, data ?: "")
-        topText = intent.getStringExtra(TOP_TEXT_EXTRA, "")
-        bottomText = intent.getStringExtra(BOTTOM_TEXT_EXTRA, "")
+        screenId = intent.getLongExtra(FRAGMENT_ID_EXTRA, 0)
 
-        getFragment()?.also { displayFragment(it) }
-                ?: finish()
+        val fragment = getFragment()
+        if (fragment != null) {
+            displayFragment(fragment)
+        } else {
+            errorHandlerFactory.getDefault().handle(
+                    IllegalArgumentException("No fragment found for ID $screenId")
+            )
+            finish()
+        }
     }
 
     private fun getFragment(): Fragment? {
+        val bundle = intent.getBundleExtra(FRAGMENT_BUNDLE_EXTRA)
+
         return when (screenId) {
-            SendFragment.ID -> factory.getSendFragment(asset)
-            DepositFragment.ID -> factory.getDepositFragment(asset)
-            WithdrawFragment.ID -> factory.getWithdrawFragment(asset)
-            ExploreAssetsFragment.ID -> factory.getExploreFragment()
-            ShareQrFragment.ID -> factory.getShareQrFragment(
-                    title,
-                    data,
-                    shareDialogText,
-                    shareText,
-                    topText,
-                    bottomText
-            )
-            AtomicSwapAsksFragment.ID -> factory.getAtomicSwapAsksFragment(asset)
+            SendFragment.ID -> bundle?.let(SendFragment.Companion::newInstance)
+            DepositFragment.ID -> bundle?.let(DepositFragment.Companion::newInstance)
+            WithdrawFragment.ID -> bundle?.let(WithdrawFragment.Companion::newInstance)
+            ExploreAssetsFragment.ID -> ExploreAssetsFragment()
+            ShareQrFragment.ID -> bundle?.let(ShareQrFragment.Companion::newInstance)
+            AtomicSwapAsksFragment.ID -> bundle?.let(AtomicSwapAsksFragment.Companion::newInstance)
             else -> null
         }
     }
@@ -105,14 +89,14 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
     }
 
     companion object {
-        const val SCREEN_ID = "screenId"
-        const val ASSET_EXTRA = "asset"
-        const val TITLE_EXTRA = "title"
-        const val DATA_EXTRA = "data"
-        const val SHARE_DIALOG_TEXT_EXTRA = "share_dialog_text"
-        const val SHARE_TEXT_EXTRA = "share_text"
-        const val TOP_TEXT_EXTRA = "top_text"
-        const val BOTTOM_TEXT_EXTRA = "bottom_text"
+        private const val FRAGMENT_ID_EXTRA = "screenId"
+        private const val FRAGMENT_BUNDLE_EXTRA = "fragment_bundle"
+
+        fun getBundle(fragmentId: Long,
+                      fragmentBundle: Bundle?) = Bundle().apply {
+            putLong(FRAGMENT_ID_EXTRA, fragmentId)
+            putBundle(FRAGMENT_BUNDLE_EXTRA, fragmentBundle)
+        }
     }
 }
 

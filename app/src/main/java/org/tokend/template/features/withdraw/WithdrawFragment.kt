@@ -310,12 +310,14 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         const val ID = 1113L
         val WITHDRAWAL_CONFIRMATION_REQUEST = "confirm_withdrawal".hashCode() and 0xffff
 
-        fun newInstance(asset: String? = null): WithdrawFragment {
+        fun newInstance(bundle: Bundle): WithdrawFragment {
             val fragment = WithdrawFragment()
-            fragment.arguments = Bundle().apply {
-                putString(ASSET_EXTRA, asset)
-            }
+            fragment.arguments = bundle
             return fragment
+        }
+
+        fun getBundle(assetCode: String?) = Bundle().apply {
+            putString(ASSET_EXTRA, assetCode)
         }
     }
 }

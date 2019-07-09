@@ -241,7 +241,7 @@ class SignUpActivity : BaseActivity() {
     private fun openRecoverySeedConfirmation(seed: CharArray) {
         Navigator.from(this).openRecoverySeedSaving(
                 SAVE_SEED_REQUEST,
-                seed.joinToString("")
+                seed
         )
     }
     // endregion

@@ -114,12 +114,14 @@ class AssetPairChartFragment : BaseFragment() {
     companion object {
         private const val ASSET_PAIR_EXTRA = "asset_pair"
 
-        fun newInstance(assetPair: AssetPairRecord): AssetPairChartFragment {
+        fun newInstance(bundle: Bundle): AssetPairChartFragment {
             val fragment = AssetPairChartFragment()
-            fragment.arguments = Bundle().apply {
-                putSerializable(ASSET_PAIR_EXTRA, assetPair)
-            }
+            fragment.arguments = bundle
             return fragment
+        }
+
+        fun getBundle(assetPair: AssetPairRecord) = Bundle().apply {
+            putSerializable(ASSET_PAIR_EXTRA, assetPair)
         }
     }
 }

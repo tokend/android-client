@@ -137,5 +137,9 @@ class WithdrawalConfirmationActivity : BaseActivity() {
 
     companion object {
         const val WITHDRAWAL_REQUEST_EXTRA = "withdrawal_request"
+
+        fun getBundle(withdrawalRequest: WithdrawalRequest) = Bundle().apply {
+            putSerializable(WITHDRAWAL_REQUEST_EXTRA, withdrawalRequest)
+        }
     }
 }

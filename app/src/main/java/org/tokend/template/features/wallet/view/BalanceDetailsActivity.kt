@@ -402,7 +402,11 @@ class BalanceDetailsActivity : BaseActivity() {
     }
 
     companion object {
-        const val BALANCE_ID_EXTRA = "balance_id"
-        const val ASSET_DETAILS_REQUEST = 1132
+        private const val BALANCE_ID_EXTRA = "balance_id"
+        private const val ASSET_DETAILS_REQUEST = 1132
+
+        fun getBundle(balanceId: String) = Bundle().apply {
+            putString(BALANCE_ID_EXTRA, balanceId)
+        }
     }
 }

@@ -5,7 +5,6 @@ import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.features.assets.AssetDetailsFragment
 import org.tokend.template.features.assets.ExploreAssetsFragment
-import org.tokend.template.features.assets.buy.view.AtomicSwapAsksFragment
 import org.tokend.template.features.dashboard.balances.view.BalancesFragment
 import org.tokend.template.features.dashboard.movements.view.AccountMovementsFragment
 import org.tokend.template.features.dashboard.view.DashboardFragment
@@ -15,8 +14,6 @@ import org.tokend.template.features.invest.view.fragments.SaleChartFragment
 import org.tokend.template.features.invest.view.fragments.SaleDetailsFragment
 import org.tokend.template.features.invest.view.fragments.SaleOverviewFragment
 import org.tokend.template.features.polls.view.PollsFragment
-import org.tokend.template.features.qr.ShareQrFragment
-import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.settings.GeneralSettingsFragment
 import org.tokend.template.features.trade.chart.view.AssetPairChartFragment
 import org.tokend.template.features.trade.history.view.TradeHistoryFragment
@@ -32,11 +29,9 @@ class FragmentFactory {
     }
 
     fun getAssetDetailsFragment(asset: AssetRecord, balanceCreation: Boolean = true): Fragment {
-        return AssetDetailsFragment.newInstance(asset, balanceCreation)
-    }
-
-    fun getAssetDetailsFragment(assetCode: String, balanceCreation: Boolean = true): Fragment {
-        return AssetDetailsFragment.newInstance(assetCode, balanceCreation)
+        return AssetDetailsFragment.newInstance(
+                AssetDetailsFragment.getBundle(asset, balanceCreation)
+        )
     }
 
     fun getSettingsFragment(): Fragment {
@@ -44,15 +39,15 @@ class FragmentFactory {
     }
 
     fun getOrderBookFragment(assetPair: AssetPairRecord): Fragment {
-        return OrderBookFragment.newInstance(assetPair)
+        return OrderBookFragment.newInstance(
+                OrderBookFragment.getBundle(assetPair)
+        )
     }
 
     fun getWithdrawFragment(asset: String? = null): Fragment {
-        return WithdrawFragment.newInstance(asset)
-    }
-
-    fun getSendFragment(asset: String? = null, allowToolbar: Boolean = true): Fragment {
-        return SendFragment.newInstance(asset, allowToolbar)
+        return WithdrawFragment.newInstance(
+                WithdrawFragment.getBundle(asset)
+        )
     }
 
     fun getExploreFragment(): Fragment {
@@ -60,7 +55,9 @@ class FragmentFactory {
     }
 
     fun getDepositFragment(asset: String? = null): Fragment {
-        return DepositFragment.newInstance(asset)
+        return DepositFragment.newInstance(
+                DepositFragment.getBundle(asset)
+        )
     }
 
     fun getSalesFragment(): Fragment {
@@ -72,7 +69,9 @@ class FragmentFactory {
     }
 
     fun getSaleDetailsFragment(saleAssetCode: String): Fragment {
-        return SaleDetailsFragment.newInstance(saleAssetCode)
+        return SaleDetailsFragment.newInstance(
+                SaleDetailsFragment.getBundle(saleAssetCode)
+        )
     }
 
     fun getSaleChartFragment(): Fragment {
@@ -84,19 +83,27 @@ class FragmentFactory {
     }
 
     fun getAssetPairChartFragment(assetPair: AssetPairRecord): Fragment {
-        return AssetPairChartFragment.newInstance(assetPair)
+        return AssetPairChartFragment.newInstance(
+                AssetPairChartFragment.getBundle(assetPair)
+        )
     }
 
     fun getTradeHistoryFragment(assetPair: AssetPairRecord): Fragment {
-        return TradeHistoryFragment.newInstance(assetPair)
+        return TradeHistoryFragment.newInstance(
+                TradeHistoryFragment.getBundle(assetPair)
+        )
     }
 
     fun getOffersFragment(assetPair: AssetPairRecord): Fragment {
-        return OffersFragment.newInstance(assetPair)
+        return OffersFragment.newInstance(
+                OffersFragment.getBundle(assetPair)
+        )
     }
 
     fun getOffersFragment(onlyPrimary: Boolean): Fragment {
-        return OffersFragment.newInstance(onlyPrimary)
+        return OffersFragment.newInstance(
+                OffersFragment.getBundle(onlyPrimary)
+        )
     }
 
     fun getAccountMovementsFragment(): Fragment {
@@ -107,23 +114,12 @@ class FragmentFactory {
         return BalancesFragment()
     }
 
-    fun getShareQrFragment(title: String? = null,
-                           data: String? = null,
-                           shareDialogText: String? = null,
-                           shareText: String? = null,
-                           topText: String? = null,
-                           bottomText: String? = null): Fragment {
-        return ShareQrFragment.newInstance(title, data, shareDialogText, shareText, topText, bottomText)
-    }
-
     fun getPollsFragment(ownerAccountId: String? = null): Fragment {
         return PollsFragment.newInstance(
-                allowToolbar = ownerAccountId == null,
-                ownerAccountId = ownerAccountId
+                PollsFragment.getBundle(
+                        allowToolbar = ownerAccountId == null,
+                        ownerAccountId = ownerAccountId
+                )
         )
-    }
-
-    fun getAtomicSwapAsksFragment(assetCode: String? = null): Fragment {
-        return AtomicSwapAsksFragment.newInstance(assetCode)
     }
 }

@@ -497,12 +497,14 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         private val EXPIRATION_ITEM_ID = "expiration_date".hashCode().toLong()
         private val RENEW_ITEM_ID = "renew".hashCode().toLong()
 
-        fun newInstance(asset: String?): DepositFragment {
+        fun newInstance(bundle: Bundle): DepositFragment {
             val fragment = DepositFragment()
-            val bundle = Bundle()
-            bundle.putString(EXTRA_ASSET, asset)
             fragment.arguments = bundle
             return fragment
+        }
+
+        fun getBundle(assetCode: String?) = Bundle().apply {
+            putString(EXTRA_ASSET, assetCode)
         }
     }
 }

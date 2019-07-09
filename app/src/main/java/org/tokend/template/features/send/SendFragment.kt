@@ -309,13 +309,16 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         const val ID = 1118L
         val PAYMENT_CONFIRMATION_REQUEST = "confirm_payment".hashCode() and 0xffff
 
-        fun newInstance(asset: String? = null, allowToolbar: Boolean): SendFragment {
+        fun newInstance(bundle: Bundle): SendFragment {
             val fragment = SendFragment()
-            fragment.arguments = Bundle().apply {
-                putString(ASSET_EXTRA, asset)
-                putBoolean(ALLOW_TOOLBAR_EXTRA, allowToolbar)
-            }
+            fragment.arguments = bundle
             return fragment
+        }
+
+        fun getBundle(assetCode: String?,
+                      allowToolbar: Boolean) = Bundle().apply {
+            putString(ASSET_EXTRA, assetCode)
+            putBoolean(ALLOW_TOOLBAR_EXTRA, allowToolbar)
         }
     }
 }

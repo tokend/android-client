@@ -216,12 +216,14 @@ class OrderBookFragment : BaseFragment() {
         private const val ASSET_PAIR_EXTRA = "asset_pair"
         const val ID = 1115L
 
-        fun newInstance(assetPair: AssetPairRecord): OrderBookFragment {
+        fun newInstance(bundle: Bundle): OrderBookFragment {
             val fragment = OrderBookFragment()
-            fragment.arguments = Bundle().apply {
-                putSerializable(ASSET_PAIR_EXTRA, assetPair)
-            }
+            fragment.arguments = bundle
             return fragment
+        }
+
+        fun getBundle(assetPair: AssetPairRecord) = Bundle().apply {
+            putSerializable(ASSET_PAIR_EXTRA, assetPair)
         }
     }
 }

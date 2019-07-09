@@ -87,7 +87,11 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
     }
 
     companion object {
-        const val BALANCE_CHANGE_EXTRA = "balance_change"
+        private const val BALANCE_CHANGE_EXTRA = "balance_change"
         private const val LOG_TAG = "BlncChDetailsActivity"
+
+        fun getBundle(balanceChange: BalanceChange) = Bundle().apply {
+            putSerializable(BALANCE_CHANGE_EXTRA, balanceChange)
+        }
     }
 }

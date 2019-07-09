@@ -51,6 +51,10 @@ class TradeActivity : BaseActivity() {
     }
 
     companion object {
-        const val ASSET_PAIR_EXTRA = "asset_pair"
+        private const val ASSET_PAIR_EXTRA = "asset_pair"
+
+        fun getBundle(assetPair: AssetPairRecord) = Bundle().apply {
+            putSerializable(ASSET_PAIR_EXTRA, assetPair)
+        }
     }
 }

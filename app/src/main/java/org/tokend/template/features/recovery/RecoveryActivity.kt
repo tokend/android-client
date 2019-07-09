@@ -39,7 +39,11 @@ class RecoveryActivity : BaseActivity() {
     override val allowUnauthorized = true
 
     companion object {
-        const val EMAIL_EXTRA = "email"
+        private const val EMAIL_EXTRA = "email"
+
+        fun getBundle(email: String?) = Bundle().apply {
+            putString(EMAIL_EXTRA, email)
+        }
     }
 
     private val loadingIndicator = LoadingIndicatorManager(

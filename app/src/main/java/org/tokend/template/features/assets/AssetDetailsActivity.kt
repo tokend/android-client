@@ -41,6 +41,10 @@ class AssetDetailsActivity : BaseActivity() {
     }
 
     companion object {
-        const val ASSET_EXTRA = "asset"
+        private const val ASSET_EXTRA = "asset"
+
+        fun getBundle(asset: AssetRecord) = Bundle().apply {
+            putSerializable(ASSET_EXTRA, asset)
+        }
     }
 }

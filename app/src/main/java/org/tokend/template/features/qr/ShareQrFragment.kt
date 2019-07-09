@@ -39,24 +39,24 @@ open class ShareQrFragment : BaseFragment(), ToolbarProvider {
         const val TOP_TEXT_EXTRA = "top_text"
         const val BOTTOM_TEXT_EXTRA = "bottom_text"
 
-        fun newInstance(
-                title: String? = null,
-                data: String? = null,
-                shareDialogText: String? = null,
-                shareText: String? = null,
-                topText: String? = null,
-                bottomText: String? = null
-        ): ShareQrFragment {
+        fun newInstance(bundle: Bundle): ShareQrFragment {
             val fragment = ShareQrFragment()
-            fragment.arguments = Bundle().apply {
-                putString(TITLE_EXTRA, title)
-                putString(DATA_EXTRA, data)
-                putString(SHARE_DIALOG_TEXT_EXTRA, shareDialogText)
-                putString(SHARE_TEXT_EXTRA, shareText)
-                putString(TOP_TEXT_EXTRA, topText)
-                putString(BOTTOM_TEXT_EXTRA, bottomText)
-            }
+            fragment.arguments = bundle
             return fragment
+        }
+
+        fun getBundle(data: String,
+                      title: String?,
+                      shareDialogText: String?,
+                      shareText: String?,
+                      topText: String?,
+                      bottomText: String?) = Bundle().apply {
+            putString(TITLE_EXTRA, title)
+            putString(DATA_EXTRA, data)
+            putString(SHARE_DIALOG_TEXT_EXTRA, shareDialogText)
+            putString(SHARE_TEXT_EXTRA, shareText)
+            putString(TOP_TEXT_EXTRA, topText)
+            putString(BOTTOM_TEXT_EXTRA, bottomText)
         }
     }
 

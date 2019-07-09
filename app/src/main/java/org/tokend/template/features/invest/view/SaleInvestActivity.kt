@@ -390,6 +390,10 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
 
     companion object {
         private val INVESTMENT_REQUEST = "invest".hashCode() and 0xffff
-        const val SALE_EXTRA = "sale"
+        private const val SALE_EXTRA = "sale"
+
+        fun getBundle(sale: SaleRecord) = Bundle().apply {
+            putSerializable(SALE_EXTRA, sale)
+        }
     }
 }

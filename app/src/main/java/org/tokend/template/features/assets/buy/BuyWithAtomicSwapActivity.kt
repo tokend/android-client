@@ -225,7 +225,13 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
     }
 
     companion object {
-        const val ASSET_CODE_EXTRA = "asset_code"
-        const val ASK_ID_EXTRA = "ask_id"
+        private const val ASSET_CODE_EXTRA = "asset_code"
+        private const val ASK_ID_EXTRA = "ask_id"
+
+        fun getBundle(assetCode: String,
+                      askId: String) = Bundle().apply {
+            putString(ASSET_CODE_EXTRA, assetCode)
+            putString(ASK_ID_EXTRA, askId)
+        }
     }
 }

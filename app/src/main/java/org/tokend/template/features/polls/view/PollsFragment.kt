@@ -302,14 +302,16 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
         private const val ALLOW_TOOLBAR_EXTRA = "allow_toolbar"
         private const val OWNER_ACCOUNT_ID_EXTRA = "owner"
 
-        fun newInstance(allowToolbar: Boolean,
-                        ownerAccountId: String?): PollsFragment {
+        fun newInstance(bundle: Bundle): PollsFragment {
             val fragment = PollsFragment()
-            fragment.arguments = Bundle().apply {
-                putString(OWNER_ACCOUNT_ID_EXTRA, ownerAccountId)
-                putBoolean(ALLOW_TOOLBAR_EXTRA, allowToolbar)
-            }
+            fragment.arguments = bundle
             return fragment
+        }
+
+        fun getBundle(allowToolbar: Boolean,
+                      ownerAccountId: String?) = Bundle().apply {
+            putString(OWNER_ACCOUNT_ID_EXTRA, ownerAccountId)
+            putBoolean(ALLOW_TOOLBAR_EXTRA, allowToolbar)
         }
     }
 }

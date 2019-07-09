@@ -23,7 +23,7 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.balances.BalancesRepository
-import org.tokend.template.extensions.getNullableStringExtra
+import org.tokend.template.extensions.getBigDecimalExtra
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.isMaxPossibleAmount
 import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
@@ -70,8 +70,7 @@ class CreateOfferActivity : BaseActivity() {
                 ?: return
         quoteAsset = intent.getSerializableExtra(QUOTE_ASSET_EXTRA) as? Asset
                 ?: return
-        requiredPrice = intent.getNullableStringExtra(PRICE_STRING_EXTRA)
-                .let { BigDecimalUtil.valueOf(it) }
+        requiredPrice = intent.getBigDecimalExtra(PRICE_STRING_EXTRA)
 
         initViews()
         subscribeToBalances()
@@ -340,8 +339,16 @@ class CreateOfferActivity : BaseActivity() {
     companion object {
         private val CREATE_OFFER_REQUEST = "create_offer".hashCode() and 0xffff
 
-        const val BASE_ASSET_EXTRA = "base_asset"
-        const val QUOTE_ASSET_EXTRA = "quote_asset"
-        const val PRICE_STRING_EXTRA = "price"
+        private const val BASE_ASSET_EXTRA = "base_asset"
+        private const val QUOTE_ASSET_EXTRA = "quote_asset"
+        private const val PRICE_STRING_EXTRA = "price"
+
+        fun getBundle(baseAsset: Asset,
+                      quoteAsset: Asset,
+                      requiredPrice: BigDecimal?) = Bundle().apply {
+            putSerializable(BASE_ASSET_EXTRA, baseAsset)
+            putSerializable(QUOTE_ASSET_EXTRA, quoteAsset)
+            putString(PRICE_STRING_EXTRA, BigDecimalUtil.toPlainString(requiredPrice))
+        }
     }
 }

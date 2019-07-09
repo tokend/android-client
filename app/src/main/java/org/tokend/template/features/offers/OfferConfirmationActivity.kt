@@ -199,6 +199,10 @@ open class OfferConfirmationActivity : BaseActivity() {
     }
 
     companion object {
-        const val OFFER_REQUEST_EXTRA = "offer_request"
+        private const val OFFER_REQUEST_EXTRA = "offer_request"
+
+        fun getBundle(offerRequest: OfferRequest) = Bundle().apply {
+            putSerializable(OFFER_REQUEST_EXTRA, offerRequest)
+        }
     }
 }

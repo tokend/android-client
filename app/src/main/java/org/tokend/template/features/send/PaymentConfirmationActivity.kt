@@ -193,5 +193,9 @@ class PaymentConfirmationActivity : BaseActivity() {
         const val PAYMENT_REQUEST_EXTRA = "payment_request"
         private val RECIPIENT_FEE_ITEM_ID = "recipient_fee".hashCode().toLong()
         private val TO_RECEIVE_AMOUNT_ITEM_ID = "to_receive_amount".hashCode().toLong()
+
+        fun getBundle(paymentRequest: PaymentRequest) = Bundle().apply {
+            putSerializable(PAYMENT_REQUEST_EXTRA, paymentRequest)
+        }
     }
 }

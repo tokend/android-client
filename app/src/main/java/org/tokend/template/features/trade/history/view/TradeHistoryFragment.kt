@@ -127,13 +127,14 @@ class TradeHistoryFragment : BaseFragment() {
     companion object {
         private const val EXTRA_ASSET_PAIR = "asset_pair"
 
-        @JvmStatic
-        fun newInstance(pair: AssetPairRecord): TradeHistoryFragment {
+        fun newInstance(bundle: Bundle): TradeHistoryFragment {
             val fragment = TradeHistoryFragment()
-            fragment.arguments = Bundle().apply {
-                putSerializable(EXTRA_ASSET_PAIR, pair)
-            }
+            fragment.arguments = bundle
             return fragment
+        }
+
+        fun getBundle(assetPair: AssetPairRecord) = Bundle().apply {
+            putSerializable(EXTRA_ASSET_PAIR, assetPair)
         }
     }
 }

@@ -76,6 +76,10 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
     }
 
     companion object {
-        const val SALE_EXTRA = "sale"
+        private const val SALE_EXTRA = "sale"
+
+        fun getBundle(sale: SaleRecord) = Bundle().apply {
+            putSerializable(SALE_EXTRA, sale)
+        }
     }
 }

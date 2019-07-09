@@ -41,13 +41,12 @@ class SaleDetailsFragment : AssetDetailsFragment() {
     }
 
     companion object {
-        fun newInstance(saleAssetCode: String): SaleDetailsFragment {
+        fun newInstance(bundle: Bundle): SaleDetailsFragment {
             val fragment = SaleDetailsFragment()
-            fragment.arguments = Bundle().apply {
-                putSerializable(AssetDetailsFragment.ASSET_CODE_EXTRA, saleAssetCode)
-                putBoolean(AssetDetailsFragment.BALANCE_CREATION_EXTRA, false)
-            }
+            fragment.arguments = bundle
             return fragment
         }
+
+        fun getBundle(saleAssetCode: String) = getBundle(saleAssetCode, false)
     }
 }
