@@ -4,12 +4,17 @@ import android.content.Context
 import android.content.SharedPreferences
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
+import org.tokend.template.R
 import java.util.*
 
 class AppLocaleManager(
+        context: Context,
         private val preferences: SharedPreferences
 ) {
-    private val localeChangesSubject =  PublishSubject.create<Locale>()
+    private val defaultLocale = context.resources.getString(R.string.language_code)
+            .let(::Locale)
+
+    private val localeChangesSubject = PublishSubject.create<Locale>()
 
     /**
      * Emits new locale when it changes.
@@ -24,9 +29,13 @@ class AppLocaleManager(
             Locale.ENGLISH
     )
 
-    fun getLocale(): Locale = loadLocale() ?: getDefaultLocale()
+    fun getLocale(): Locale = loadLocale() ?: defaultLocale
 
     fun setLocale(locale: Locale) {
+        if (locale == getLocale()) {
+            return
+        }
+
         saveLocale(locale)
         applyLocale(locale)
         localeChangesSubject.onNext(locale)
@@ -49,10 +58,6 @@ class AppLocaleManager(
 
     private fun applyLocale(locale: Locale) {
         Locale.setDefault(locale)
-    }
-
-    private fun getDefaultLocale(): Locale {
-        return Locale.getDefault()
     }
 
     private fun loadLocale(): Locale? {

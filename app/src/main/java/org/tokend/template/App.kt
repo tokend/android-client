@@ -131,7 +131,7 @@ class App : MultiDexApplication() {
     }
 
     private fun initLocale() {
-        mLocaleManager = AppLocaleManager(getAppPreferences())
+        mLocaleManager = AppLocaleManager(this, getAppPreferences())
         localeManager.initLocale()
     }
 

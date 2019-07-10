@@ -58,4 +58,5 @@
 
     <dimen name="badge_text_height">22sp</dimen>
     <dimen name="badge_text_corner_radius">11sp</dimen>
+    <dimen name="single_check_dialog_left_margin">20dp</dimen>
 </resources>

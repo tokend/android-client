@@ -117,6 +117,6 @@ class LocalizedName(private val context: Context) {
     }
 
     fun forLocale(locale: Locale): String {
-        return locale.displayLanguage.toLowerCase().capitalize()
+        return locale.getDisplayLanguage(locale).toLowerCase().capitalize()
     }
 }

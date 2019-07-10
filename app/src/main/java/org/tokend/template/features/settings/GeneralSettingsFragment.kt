@@ -31,8 +31,10 @@ import org.tokend.template.logic.persistance.FingerprintUtil
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.SecretSeedDialog
+import org.tokend.template.view.SingleCheckDialog
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.SignOutDialogFactory
 
 class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
@@ -95,6 +97,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         initAccountCategory()
         initSecurityCategory()
         initInfoCategory()
+        initAppCategory()
     }
 
     // region Account
@@ -306,6 +309,45 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         }
     }
 // endregion
+
+    // region App
+    private fun initAppCategory() {
+        initLanguageItem()
+    }
+
+    private fun initLanguageItem() {
+        val languagePreference = findPreference("language")
+                ?: return
+
+        val currentLocale = localeManager.getLocale()
+        val availableLocales = localeManager.availableLocales
+        val localizedName = LocalizedName(requireContext())
+
+        languagePreference.summary = localizedName.forLocale(currentLocale)
+
+        val dialog = SingleCheckDialog(
+                requireContext(),
+                availableLocales.map(localizedName::forLocale)
+        )
+        dialog.setDefaultCheckIndex(availableLocales.indexOf(currentLocale))
+        dialog.setPositiveButtonListener { _, index ->
+            availableLocales
+                    .getOrNull(index)
+                    ?.also(localeManager::setLocale)
+        }
+        dialog.setTitle(R.string.select_language)
+
+        languagePreference.setOnPreferenceClickListener {
+            dialog.show()
+            true
+        }
+
+        if (availableLocales.size == 1) {
+            languagePreference.isVisible = false
+            findPreference("app").isVisible = false
+        }
+    }
+    // endregion
 
     companion object {
         private val TFA_FACTOR_TYPE = TfaFactor.Type.TOTP
