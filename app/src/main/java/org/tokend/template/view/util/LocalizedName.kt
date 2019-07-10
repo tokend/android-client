@@ -9,6 +9,7 @@ import org.tokend.template.features.kyc.model.form.KycFormType
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.StatsOpType
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -113,5 +114,9 @@ class LocalizedName(private val context: Context) {
             TimeUnit.MINUTES -> context.resources.getQuantityString(R.plurals.minute, value)
             else -> unit.name.toLowerCase()
         }
+    }
+
+    fun forLocale(locale: Locale): String {
+        return locale.displayLanguage.toLowerCase().capitalize()
     }
 }

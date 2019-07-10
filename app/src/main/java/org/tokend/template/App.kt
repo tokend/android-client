@@ -36,6 +36,7 @@ import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.SessionInfoStorage
 import org.tokend.template.logic.persistance.UrlConfigPersistor
 import org.tokend.template.util.Navigator
+import org.tokend.template.util.locale.AppLocaleManager
 import java.io.IOException
 import java.net.SocketException
 import java.util.*
@@ -51,6 +52,10 @@ class App : MultiDexApplication() {
          * [true] means that the app is currently in the background.
          */
         val backgroundStateSubject: BehaviorSubject<Boolean> = BehaviorSubject.createDefault(false)
+
+        private lateinit var mLocaleManager: AppLocaleManager
+        val localeManager: AppLocaleManager
+            get() = mLocaleManager
     }
 
     private var isInForeground = false
@@ -107,6 +112,7 @@ class App : MultiDexApplication() {
             override fun onActivityDestroyed(a: Activity) {}
         })
 
+        initLocale()
         initState()
         initPicasso()
         initCrashlytics()
@@ -122,6 +128,11 @@ class App : MultiDexApplication() {
                 )
                 .build()
         Fabric.with(this, crashlytics)
+    }
+
+    private fun initLocale() {
+        mLocaleManager = AppLocaleManager(getAppPreferences())
+        localeManager.initLocale()
     }
 
     private fun initPicasso() {
@@ -178,6 +189,11 @@ class App : MultiDexApplication() {
                 Context.MODE_PRIVATE)
     }
 
+    private fun getAppPreferences(): SharedPreferences {
+        return getSharedPreferences("App",
+                Context.MODE_PRIVATE)
+    }
+
     private fun initState() {
         sessionInfoStorage = SessionInfoStorage(defaultSharedPreferences)
         session = Session(
@@ -210,6 +226,7 @@ class App : MultiDexApplication() {
                         kycStatePreferences = getKycStatePreferences()
                 ))
                 .sessionModule(SessionModule(session))
+                .localeManagerModule(LocaleManagerModule(localeManager))
                 .build()
     }
 
@@ -295,7 +312,7 @@ class App : MultiDexApplication() {
         backgroundStateSubject.onNext(false)
         session.isExpired =
                 logoutTime != 0L &&
-                now - lastInForeground > logoutTime
+                        now - lastInForeground > logoutTime
         lastInForeground = 0
     }
     // endregion
