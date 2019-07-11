@@ -124,6 +124,7 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
     private fun initToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setTitle(R.string.sale_investing)
         toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleAppearance)
         toolbar.subtitle = sale.name
     }

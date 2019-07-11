@@ -133,7 +133,7 @@
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/receive_fab"
                 style="@style/FloatingButtonMenuItem"
-                app:fab_label="Receive" />
+                app:fab_label="@string/receive_title" />
 
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/deposit_fab"

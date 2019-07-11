@@ -1,11 +1,13 @@
 package org.tokend.template.activities
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.WindowManager
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.TfaCallback
 import org.tokend.sdk.tfa.TfaVerifier
@@ -20,7 +22,9 @@ import org.tokend.template.logic.AppTfaCallback
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.template.logic.persistance.UrlConfigPersistor
+import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
+import org.tokend.template.util.locale.AppLocaleManager
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import javax.inject.Inject
@@ -58,6 +62,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var amountFormatter: AmountFormatter
     @Inject
     lateinit var kycStatePersistor: SubmittedKycStatePersistor
+    @Inject
+    lateinit var localeManager: AppLocaleManager
 
     /**
      * If set to true the activity will be operational
@@ -88,6 +94,7 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
             onCreateAllowed(savedInstanceState)
         } else {
             (application as App).signOut(this, soft = true)
+            return
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -97,6 +104,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
                 enterTransition.excludeTarget(android.R.id.navigationBarBackground, true)
             }
         }
+
+        subscribeToLocaleChanges()
     }
 
     /**
@@ -138,6 +147,20 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
                     ?: verifierInterface.cancelVerification()
         }
     }
+
+    // region Locale
+    private fun subscribeToLocaleChanges() {
+        localeManager
+                .localeChanges
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { recreate() }
+                .addTo(compositeDisposable)
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(App.localeManager.getLocalizeContext(newBase))
+    }
+    // endregion
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == android.R.id.home) {

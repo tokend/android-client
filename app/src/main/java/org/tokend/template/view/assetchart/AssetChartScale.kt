@@ -26,28 +26,6 @@ enum class AssetChartScale {
         }
 
     /**
-     * @return short label of the scale
-     */
-    val label: String
-        get() = when (this) {
-            HOUR -> "H"
-            DAY -> "D"
-            MONTH -> "M"
-            YEAR -> "Y"
-        }
-
-    /**
-     * @return scale unit name
-     */
-    val unitName: String
-        get() = when (this) {
-            HOUR -> "hour"
-            DAY -> "day"
-            MONTH -> "month"
-            YEAR -> "year"
-        }
-
-    /**
      * @return best looking points count for the scale
      */
     val pointsToDisplay: Int

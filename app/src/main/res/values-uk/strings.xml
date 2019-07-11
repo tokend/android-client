@@ -1,0 +1,445 @@
+<resources>
+    <string name="language_code">uk</string>
+    <string name="app_name">TokenD</string>
+    <string name="authenticator_app_name">TokenD Authenticator</string>
+
+    <string name="sign_up">Реєстрація</string>
+    <string name="sign_in">Увійти</string>
+    <string name="email">Email</string>
+    <string name="password">Пароль</string>
+    <string name="confirm_password">Підтвердіть пароль</string>
+    <string name="forgot_password">Забули пароль?</string>
+    <string name="back_to_sign_in">Повернутися</string>
+    <string name="i_agree_to_the">Приймаю</string>
+    <string name="terms_of_service">Умови використання</string>
+    <string name="recovery_seed">Ключ відновлення</string>
+    <string name="new_password">Новий пароль</string>
+    <string name="confirm_new_password">Підтвердіть новий пароль</string>
+    <string name="recover_account">Відновити акаунт</string>
+    <string name="sign_out">Вийти</string>
+    <string name="loading_data">Завантаження…</string>
+    <string name="retry">Повторити</string>
+    <string name="share">Поділитися</string>
+    <string name="share_account_id">Поділитися акаунтом</string>
+    <string name="check_your_email_to_verify_account">Дотримуйтесь інструкції з листа щоб підтвердити email</string>
+    <string name="save_recovery_seed">Ключ відновлення</string>
+    <string name="continue_action">Далі</string>
+    <string name="validate_recovery_seed">Перевірити ключ відновлення</string>
+    <string name="recovery_seed_explanation">Збережіть цей ключ у надійному місці та
+        не показуйте нікому\n\nВін використовується для відновлення акаунта у випадку втрати пароля.
+        Якщо ви втратите пароль та цей ключ, ви не зможете відновити ваш акаунт.\n\n<b>Ми не знаємо
+        ваш ключ</b> і його ніколи більше не буде показано
+    </string>
+    <string name="validate_recovery_seed_explanation">Будь ласка, перевірте ключ у полі нижче
+        щоб упевнитися, що його скопійовано правильно</string>
+    <string name="seed_copied">Ключ скопійовано</string>
+    <string name="cancel">Відміна</string>
+    <string name="ok">OK</string>
+    <string name="no">Ні</string>
+    <string name="email_not_verified_explanation">Цей email не підтверджено.
+        Перевірте папку Спам або запросіть новий лист
+    </string>
+    <string name="resend_letter">Повторити відправку</string>
+    <string name="paste">Вставити</string>
+    <string name="no_transaction_history">Історія операцій порожня</string>
+    <string name="no_trades_history">Історія торгів порожня</string>
+    <string name="received">Отримано</string>
+    <string name="price">Ціна</string>
+    <string name="payment_description">Коментар</string>
+    <string name="amount">Сума</string>
+    <string name="withdrawal_fee_warning">Кінцева сума може бути менше внаслідок додаткових комісій</string>
+    <string name="offer_match">Виконання ордера</string>
+    <string name="sign_out_confirmation">Вийти з акаунта?</string>
+    <string name="yes">Так</string>
+    <string name="password_was_changed">Пароль змінено</string>
+    <string name="change_password_action">Змінити</string>
+    <string name="current_password">Поточний пароль</string>
+    <string name="open_action">Відкрити</string>
+    <string name="copy_action">Копіювати</string>
+    <string name="template_balance">Баланс: %1$s</string>
+    <string name="template_available">%1$s доступно</string>
+    <string name="to_receive">Буде отримано</string>
+    <string name="confirm_action">Підтвердити</string>
+    <string name="processing_progress">Обробка…</string>\
+    <string name="withdrawal_request_created">Запит на вивід створено</string>
+    <string name="details">Деталі</string>
+    <string name="create_balance_action">Додати баланс</string>
+    <string name="view_asset_history_action">Історія</string>
+    <string name="no_assets_found">Активи не знайдено</string>
+    <string name="asset_balance_exists">Баланс додано</string>
+    <string name="template_asset_code_asset">Актив %1$s</string>
+    <string name="asset_overview">Загальне</string>
+    <string name="template_file_download_location">Файл будет завантажено до папки \"%1$s\"</string>
+    <string name="template_asset_balance_created">Баланс %1$s створено</string>
+    <string name="search">Пошук</string>
+    <string name="recipient_label">Email чи акаунт отримувача</string>
+    <string name="payment_description_label">Коментар (опціонально)</string>
+    <string name="payment_successfully_sent">Платіж відправлено</string>
+    <string name="no_offers">Немає ордерів</string>
+    <string name="template_offer_bid_asset">Бід (%1$s)</string>
+    <string name="template_offer_ask_asset">Аск (%1$s)</string>
+    <string name="template_asset_pair">%1$s/%2$s</string>
+    <string name="create_offer_title">Створити ордер</string>
+    <string name="buy_action">Копити</string>
+    <string name="sell_action">Продати</string>
+    <string name="offer_confirmation_title">Ордер</string>
+    <string name="offer_created">Ордер створено</string>
+    <string name="pending_offers_title">Активні ордери</string>
+    <string name="no_pending_offers">Немає активних ордерів</string>
+    <string name="buy">Покупка</string>
+    <string name="sell">Продаж</string>
+    <string name="template_price_one_equals">1 %1$s = %2$s</string>
+    <string name="cancel_offer_action">Скасувати ордер</string>
+    <string name="cancel_offer_confirmation">Ви впевнені що хочете скасувати ордер?</string>
+    <string name="offer_canceled">Ордер скасовано</string>
+    <string name="email_verified">Email підтверджено</string>
+    <string name="touch_sensor">Доторкніться до сенсора</string>
+    <string name="aml_alert_reason">Причина</string>
+    <string name="aml_alert_reason_unknown">Невідомо</string>
+    <string name="charged">Списано</string>
+    <string name="fee_paid_by_sender">Комісію сплачено відправником</string>
+    <string name="no_fee_charged">Немає комісії</string>
+    <string name="no_fee">Немає комісії</string>
+    <string name="no_balances_found">Баланси не знайдено</string>
+    <string name="template_fee">Комісія: %1$s</string>
+    <string name="template_recipients_fee">Комісія отримувача: %1$s</string>
+
+    <string name="asset_summary_title">Огляд актива</string>
+    <string name="asset_available">Доступно</string>
+    <string name="asset_available_lowercase">доступно</string>
+    <string name="asset_issued">Земітовано</string>
+    <string name="asset_maximum">Максимум</string>
+    <string name="asset_terms_of_use">Умови використання</string>
+    <string name="asset_can_be_transferred">Може пересилатися</string>
+    <string name="asset_can_not_be_transferred">Не може пересилатися</string>
+    <string name="asset_can_be_withdrawn">Може виводитися</string>
+    <string name="asset_can_not_be_withdrawn">Може виводитися</string>
+
+    <string name="dashboard_title">Панель управління</string>
+    <string name="deposit_title">Депозит</string>
+    <string name="withdraw_title">Вивід</string>
+    <string name="explore_assets_title">Активи</string>
+    <string name="send_title">Відправка</string>
+    <string name="trade_title">Біржа</string>
+    <string name="settings_title">Налаштування</string>
+    <string name="polls_title">Опитування</string>
+
+    <string name="template_tx_from">Від %1$s</string>
+    <string name="template_tx_to">На %1$s</string>
+    <string name="tx_action_issued">Емісія</string>
+    <string name="tx_action_withdrawn">Вивід</string>
+    <string name="tx_action_investment">Інвестиція</string>
+    <string name="tx_action_received">Отримано</string>
+    <string name="tx_action_sent">Відправлено</string>
+    <string name="tx_action_locked">Заблоковано</string>
+    <string name="tx_action_unlocked">Розблоковано</string>
+    <string name="tx_action_charged">Списано</string>
+    <string name="tx_action_matched">Виконання ордера</string>
+    <string name="tx_sender">Відправник</string>
+    <string name="tx_recipient">Отримувач</string>
+    <string name="tx_fee">Комісія</string>
+    <string name="tx_cause">Причина</string>
+    <string name="tx_reference">Ідентифікатор</string>
+    <string name="tx_withdrawal_destination">Адреса</string>
+    <string name="template_tx_in">У %1$s</string>
+    <string name="pay_recipient_fee_action">Сплатити комісію відправника</string>
+    <string name="data_has_been_copied">Дані скопійовано</string>
+
+    <string name="settings_account_group">Акаунт</string>
+    <string name="settings_security_group">Безпека</string>
+    <string name="account_id_title">ID акаунта</string>
+    <string name="verification_title">Верифікація</string>
+    <string name="verification_summary">Скористайтеся веб-клієнтом щоб верифікувати акаунт</string>
+    <string name="tfa_title">Двофакторна аутентифікація (2FA)</string>
+    <string name="change_password_title">Змінити пароль</string>
+
+    <string name="error_cannot_be_empty">Не може бути порожнім</string>
+    <string name="error_invalid_email">Некоректний email</string>
+    <string name="error_passwords_mismatch">Паролі не співпадають</string>
+    <string name="error_weak_password">Слабкий пароль</string>
+    <string name="error_email_already_taken">Email вже зареєстровано</string>
+    <string name="error_try_again">Виникла помилка. Спробуйте пізніше</string>
+    <string name="error_connection_try_again">Помилка мережі. Спробуйте пізніше</string>
+    <string name="error_invalid_password">Неправильний пароль</string>
+    <string name="error_email_not_verified">Email не підтверджено</string>
+    <string name="error_seed_mismatch">Ключі не співпадають</string>
+    <string name="error_invalid_seed">Неправильний ключ</string>
+    <string name="error_insufficient_balance">Недостатньо коштів</string>
+    <string name="error_no_transferable_assets">Немає активів для відправки</string>
+    <string name="error_invalid_recipient">Некоректний отримувач</string>
+    <string name="error_no_withdrawable_assets">Немає активів для виводу</string>
+    <string name="error_no_tradeable_pairs">Торгові пари не знайдено</string>
+    <string name="error_cannot_send_to_yourself">Не можна відправляти самому собі</string>
+    <string name="error_fingerprint_locked">Забагато спроб. Спробуйте пізніше</string>
+    <string name="error_payment_amount_less_than_fee">Комісія отримувача більша за суму відправки</string>
+    <string name="error_password_changed">Пароль було змінено, введіть новий пароль</string>
+
+    <string name="error_tx_general">Транзакцію відхилено. Спробуйте пізніше</string>
+    <string name="error_tx_bad_auth">Неправильний підпис транзакції</string>
+    <string name="error_tx_limits">Транзакція перевищує один з ваших лімітів</string>
+    <string name="error_tx_insufficient_balance">@string/error_insufficient_balance</string>
+    <string name="error_tx_invalid_amount">Некоректна сума в транзакції</string>
+    <string name="error_tx_malformed">Некоректна транзакція</string>
+    <string name="error_tx_account_blocked">Ваш акаунт заблоковано</string>
+    <string name="error_tx_invalid_fee">Неправильна комісія в транзакції</string>
+    <string name="error_tx_not_allowed">Вам не дозволена ця дія</string>
+    <string name="error_tx_cross_self">Ордер співпадає з одним із вже існуючих</string>
+    <string name="error_tx_not_found">Елемент не знайдено</string>
+
+    <string name="tfa_dialog_title">Двофакторна аутентифікація</string>
+    <string name="tfa_default_dialog_message">Введіть перевірочний код</string>
+    <string name="totp_dialog_message">Введіть код з аутентифікатора</string>
+    <string name="email_otp_dialog_message">Введіть код з листа</string>
+    <string name="otp_verification_code">Перевірочний код</string>
+    <string name="error_invalid_otp_code">Неправильний код</string>
+    <string name="enter_your_password">Введіть пароль</string>
+    <string name="tfa_add_dialog_title">Налаштування 2FA</string>
+    <string name="template_tfa_add_dialog_message">Відкрийте Google Authenticator (або схожий додаток)
+        за допомогою кнопки нижче
+        \nабо імпортуйте цей ключ вручну:\n\n%1$s</string>
+    <string name="tfa_key_copied">Ключ скопійовано</string>
+
+    <!-- withdraw -->
+    <string name="amount_label">Сума</string>
+    <string name="go_to_confirmation_btn_label">До підтвердження</string>
+
+    <!-- Deposit -->
+    <string name="create_balance_confirmation">Ви впевнені що хочете створити баланс для %1s?</string>
+    <string name="personal_address">Персональна адреса</string>
+    <string name="to_make_deposit_send_asset">Для депозиту відправте %1$s на цю адресу</string>
+    <string name="show_qr_label">Показати QR код</string>
+    <string name="share_address_label">Поділитися адресою</string>
+    <string name="error_deposit_unavailable">Депозит недоступний</string>
+    <string name="template_no_personal_asset_address">Немає адреси для %1$s</string>
+    <string name="get_personal_address_action">Отримати адрес</string>
+    <string name="deposit_address_expiration_date">Доступна до</string>
+    <string name="renew_personal_address_action">Подовжити</string>
+    <string name="no_addresses_in_pool_title">Немає доступних адрес</string>
+    <string name="no_addresses_in_pool_explanation">Зараз немає доступних адрес для цього актива.
+    Спробуйте пізніше чи зверніться у підтримку</string>
+    <string name="template_deposit_address">Депозит %1$s:\n%2$s</string>
+    <string name="template_deposit_payload">\nПримітка: %1$s</string>
+    <string name="template_deposit_expiration">\nАдреса доступна до %1$s</string>
+
+    <string name="chart_highlight_at_hint">%1$s о %2$s</string>
+    <string name="template_since">за %1$s</string>
+    <string name="last_hour">останню годину</string>
+    <string name="last_day">останній день</string>
+    <string name="last_month">останній місяць</string>
+    <string name="last_year">останній рік</string>
+    <string name="hour">Година</string>
+    <string name="day">День</string>
+    <string name="year">Рік</string>
+    <string name="month">Місяць</string>
+    <string name="no_growth">Немає росту</string>
+    <string name="no_data">Немає даних</string>
+    <string name="deployed_hint">розміщено</string>
+    <string name="asset_price_for_one_part">за 1 %1$s</string>
+    <string name="no_price_chart_yet">Немає історії ціни</string>
+    <string name="no_sale_chart_yet">Немає історії прогресу</string>
+
+    <string name="template_sale_invested">%1$s\nвнесено</string>
+    <string name="template_sale_funded">%1$s\nзібрано</string>
+    <string name="template_sale_days_to_go">%1$d %2$s\nдо кінця</string>
+    <string name="template_sale_starts_in">%1$d %2$s\nдо початку</string>
+    <string name="template_sale_max_investment">Максимальна інвестиція – %1$s</string>
+    <string name="template_sale_name_asset">%1$s (%2$s)</string>
+    <string name="sales_search_name_hint">Назва</string>
+    <string name="sales_search_asset_hint">Код</string>
+    <string name="explore_sales_title">Інвестиції</string>
+    <string name="no_sales_found">Кампанії не знайдено</string>
+    <string name="pending_investments_title">Активні інвестиції</string>
+    <string name="no_pending_investments">Немає активних інвестицій</string>
+    <string name="sale_investing">Інвестиція</string>
+    <string name="invest_action">Інвестувати</string>
+    <string name="update_investment_action">Оновити</string>
+    <string name="cancel_investment_action">Скасувати інвестицію</string>
+    <string name="investment_confirmation_title">Підтвердження інвестиція</string>
+    <string name="investment_cancellation_title">Скасування інвестиції</string>
+    <string name="investment_updating_title">Оновлення інвестиції</string>
+    <string name="sale_asset">Актив</string>
+    <string name="successfully_invested">Інвестицію створено</string>
+    <string name="investment_canceled">Інвестицію скасовано</string>
+    <string name="investment_updated">Інвестицію оновлено</string>
+    <string name="cancel_investment_confirmation">Ви впевнені що хочете скасувати інвестицію?</string>
+    <string name="sale_details_title">Деталі</string>
+    <string name="sale_overview_title">Загальне</string>
+    <string name="sale_chart_title">Графік</string>
+    <string name="invest_asset_hint">Актив</string>
+    <string name="sale_summary_title">Огляд кампанії</string>
+    <string name="sale_title">Кампанія</string>
+
+    <string name="tokend_network_hint">Мережа</string>
+    <string name="not_specified">Не вказано</string>
+    <string name="error_network_not_specified">Не вказано мережу</string>
+
+    <string name="open_source_licenses_title">Ліцензії відкритого ПЗ</string>
+    <string name="settings_information_group">Інформація</string>
+    <string name="contacts">Контакти</string>
+    <string name="no_contacts_message">Немає доступних контактів</string>
+    <string name="use_fingerprint">Використовувати відбиток пальця</string>
+    <string name="secret_seed">Секретний ключ</string>
+    <string name="secret_seed_description">Поточний приватний ключ вашого акаунта</string>
+    <string name="template_offer_creation_price">Ціна (%1$s за 1 %2$s)</string>
+    <string name="deposit_address_copied">Адресу скопійовано</string>
+    <string name="deposit_address_renewed">Адресу подовжено</string>
+    <string name="error_kyc_required_to_own_asset">Тільки верифіковані користувачі можуть
+        володіти цим активом</string>
+
+    <string name="help">Допомога</string>
+    <string name="investment_help_title">Допомога в інвестуванні</string>
+    <string name="investment_help_content">
+        • Ви можете інвестувати в цю кампанію використовуючи доступні активи\n\n
+        • На кожен актив дозволяється тільки одна інвестиція\n\n
+        • Поки кампанія активна ви можете змінювати суми ваших інвестицій або скасовувати їх\n\n
+        • При скасуванні інвестиції вам повертаються заблоковані кошти\n\n
+        • Якщо кампанія досягне цілі ви отримаєте суму в її активі
+        відповідно до ваших інвестицій, інакше ж всі інвестиції буде скасовано.
+    </string>
+    <string name="limits_title">Ліміти</string>
+    <string name="payment">Платіж</string>
+    <string name="deposit">Депозит</string>
+    <string name="no_limits_message">Лімітов немає</string>
+
+    <string name="fees_title">Комісії</string>
+    <string name="no_fees">Комісій немає</string>
+    <string name="payment_fee">Платіж</string>
+    <string name="offer_fee">Ордер</string>
+    <string name="withdrawal_fee">Вивід</string>
+    <string name="issuance_fee">Емісія</string>
+    <string name="invest_fee">Інвестиція</string>
+    <string name="capital_deployment_fee">Розміщення</string>
+    <string name="operation_fee">Операція</string>
+    <string name="payout_fee">Виплата</string>
+    <string name="atomic_swap_sale_fee">Пряма покупка</string>
+    <string name="atomic_swap_purchase_fee">Прямий продаж</string>
+    <string name="incoming_outgoing_fee"><![CDATA[Отримання та Відправка]]></string>
+    <string name="outgoing_fee">Відправка</string>
+    <string name="incoming_fee">Отримання</string>
+
+    <string name="limit_period_daily">За день</string>
+    <string name="limit_period_weekly">За тиждень</string>
+    <string name="limit_period_monthly">За місяць</string>
+    <string name="limit_period_annual">Усього</string>
+    <string name="template_limit_left_of_total">%1$s залишилось із %2$s</string>
+    <string name="limit_unlimited">Не обмежено</string>
+
+    <string name="authenticator_hint">Скористайтеся TokenD Authenticator щоб увійти у ваш акаунт</string>
+    <string name="open_authenticator_action">Відкрити Authenticator</string>
+    <string name="install_authenticator_action">Встановити Authenticator</string>
+    <string name="use_authenticator">Скористатися Authenticator</string>
+
+    <string name="error_unauthorized">Сесія закінчилася</string>
+
+    <string name="sale_info_start_time">Дата початку</string>
+    <string name="sale_info_close_time">Дата кінця</string>
+    <string name="sale_info_soft_cap">Ціль</string>
+    <string name="sale_info_hard_cap">Максимум</string>
+    <string name="sale_info_to_sell_template">%1$s до продажу</string>
+
+    <string name="seed_alert_dialog">Ви збираєтеся показати важливу інформацію.\nБудь-хто знаючи
+        ваш секретний ключ зможе отримати доступ до вашого акаунту.\nБажаєте продовжити?</string>
+
+    <string name="unknown_balance_change">Зміна балансу</string>
+
+    <string name="balance_change_cause_unknown">Невідомо</string>
+    <string name="balance_change_cause_aml">Блокування по AML</string>
+    <string name="balance_change_cause_investment">Інвестиція</string>
+    <string name="balance_change_cause_matched_offer">Ордер</string>
+    <string name="balance_change_cause_issuance">Депозит/емісія</string>
+    <string name="balance_change_cause_payment">Платіж</string>
+    <string name="balance_change_cause_withdrawal_request">Запит на вивід</string>
+    <string name="balance_change_cause_pending_offer">Активний ордер</string>
+    <string name="balance_change_cause_pending_investment">Активна інвестиція</string>
+    <string name="balance_change_cause_sale_cancellation">Скасування кампанії</string>
+    <string name="balance_change_cause_asset_pair_update">Оновлення торгової пари</string>
+    <string name="balance_change_cause_offer_cancellation">Скасування ордера</string>
+
+    <string name="asset_pair_title">Торгова пара</string>
+    <string name="asset_pair_code">Код</string>
+    <string name="asset_pair_physical_price">Фізична ціна</string>
+    <string name="asset_pair_restricted_by_physical_price">Обмежена фізичною ціною</string>
+    <string name="asset_pair_not_restricted_by_physical_price">Не обмежена фізичною ціною</string>
+    <string name="asset_pair_restricted_by_current_price">Обмежена поточною ціною</string>
+    <string name="asset_pair_not_restricted_by_current_price">Не обмежена поточною ціною</string>
+    <string name="asset_pair_can_be_traded">Може торгуватися</string>
+    <string name="asset_pair_can_not_be_traded">Не може торгуватися</string>
+
+    <string name="trade_order_book_title">Біржевий стакан</string>
+    <string name="trade_chart_title">Графік</string>
+    <string name="trade_trades_title">Торги</string>
+
+    <string name="time_hint">Дата</string>
+    <string name="template_price_hint">Ціна (%1$s)</string>
+    <string name="template_amount_hint">Сума (%1$s)</string>
+    <string name="template_total_hint">Всього (%1$s)</string>
+    <string name="trade_offers_title">Мої ордери</string>
+
+    <string name="zero">0</string>
+    <string name="max_sell_hint">Макс. продаж</string>
+    <string name="max_buy_hint">Макс. купівля</string>
+
+    <string name="template_fee_bounds">Від %1$s до %2$s</string>
+    <string name="template_fee_bounds_upto">До %1$s</string>
+    <string name="template_fee_bounds_from">Від %1$s</string>
+    <string name="fee_bounds_default">За замовчуванням</string>
+    <string name="fee_info_titles">Фіксована:\nПроцентна:</string>
+    <string name="spend">Витрата</string>
+    <string name="payout">Виплата</string>
+
+    <string name="volume_label">Об\'єм</string>
+
+    <string name="template_to_withdraw">%1$s до виводу</string>
+
+    <string name="kyc_form_type_general">Стандартний акаунт</string>
+    <string name="kyc_form_type_corporate">Корпоративний акаунт</string>
+    <string name="kyc_form_type_unknown">Верифікований акаунт</string>
+    <string name="unverified_account">Неверифікований акаунт</string>
+
+    <string name="template_amount_with_converted">%1$s ≈ %2$s</string>
+    <string name="template_converted_amount">≈ %1$s</string>
+    <string name="asset_distribution_other">Інше</string>
+    <string name="movements_screen_title">Операції</string>
+    <string name="balances_screen_title">Баланси</string>
+    <string name="unlock_label">Увійти</string>
+    <string name="use_password">Ввести пароль</string>
+    <string name="receive_title">Отримання</string>
+    <string name="asset_details">Деталі актива</string>
+    <string name="template_asset">Актив: %1$s</string>
+    <string name="remove_vote_action">Видалити голос</string>
+    <string name="vote_action">Проголосувати</string>
+    <string name="no_polls_found">Опитувань немає</string>
+    <string name="vote_has_been_submitted">Голос прийнято</string>
+    <string name="vote_has_been_removed">Голос видалено</string>
+    <string name="template_with_one_asset_for">З 1 %1$s за</string>
+    <string name="template_buy_asset_code">Купити %1$s</string>
+    <string name="template_amount_available_for_buy">Доступно для купівлі: %1$s</string>
+    <string name="error_too_big_amount">Сума занадто велика</string>
+    <string name="atomic_swap_payment_method">Спосіб оплати</string>
+    <string name="template_amount_to_pay">%1$s до сплати</string>
+    <string name="template_atomic_swaps_hint">Це пропозиції прямої покупки %1$s за зовнішні
+    активи без необхідності депозиту</string>
+    <string name="template_send_to_address">Відправте %1$s на цю адресу</string>
+    <string name="template_atomic_swap_invoice_share_text">Відправте %1$s на цю адресу для купівлі %2$s:\n%3$s</string>
+    <string name="address_payload">Примітка</string>
+    <string name="poll_ended">Завершено</string>
+    <string name="you_have_no_balances">Балансів немає</string>
+    <string name="template_days_to_go">%1$d %2$s до кінця</string>
+    <string name="settings_app_group">Додаток</string>
+    <string name="language">Мова</string>
+    <string name="select_language">Оберіть мову</string>
+    <string-array name="months">
+        <item>Січень</item>
+        <item>Лютий</item>
+        <item>Березень</item>
+        <item>Квітень</item>
+        <item>Травень</item>
+        <item>Червень</item>
+        <item>Липень</item>
+        <item>Серпень</item>
+        <item>Вересень</item>
+        <item>Жовтень</item>
+        <item>Листопад</item>
+        <item>Грудень</item>
+    </string-array>
+</resources>

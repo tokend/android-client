@@ -21,7 +21,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
-        resConfigs "en"
+        resConfigs("en", "ru", "uk")
         manifestPlaceholders = [
                 fabricApiKey: keystoreProperties['FabricApiKey'] != null
                         ? keystoreProperties['FabricApiKey']

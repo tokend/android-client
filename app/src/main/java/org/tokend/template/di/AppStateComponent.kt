@@ -21,7 +21,8 @@ import javax.inject.Singleton
     UrlConfigProviderModule::class,
     UtilModule::class,
     AppModule::class,
-    SessionModule::class
+    SessionModule::class,
+    LocaleManagerModule::class
 ])
 interface AppStateComponent {
     fun inject(baseActivity: BaseActivity)

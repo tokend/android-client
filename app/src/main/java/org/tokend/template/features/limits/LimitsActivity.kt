@@ -50,6 +50,7 @@ class LimitsActivity : BaseActivity() {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_limits)
         setSupportActionBar(toolbar)
+        setTitle(R.string.limits_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initSwipeRefresh()

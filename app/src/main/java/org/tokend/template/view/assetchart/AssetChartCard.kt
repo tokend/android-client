@@ -30,6 +30,7 @@ import org.tokend.template.R
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AssetChartData
 import org.tokend.template.view.ContentLoadingProgressBar
+import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.formatter.DateFormatter
 import java.math.BigDecimal
@@ -55,6 +56,8 @@ class AssetChartCard : LinearLayout {
             super(context, attributeSet, style)
 
     constructor(context: Context) : super(context)
+
+    private val localizedName = LocalizedName(context)
 
     @Inject
     lateinit var amountFormatter: AmountFormatter
@@ -96,7 +99,7 @@ class AssetChartCard : LinearLayout {
     private fun initChart() {
         chartScaleTabs.apply {
             AssetChartScale.values().forEach {
-                addTab(newTab().setTag(it).setText(it.label))
+                addTab(newTab().setTag(it).setText(localizedName.forAssetChartScaleShort(it)))
                 if (it == chartScale) {
                     getTabAt(tabCount - 1)?.select()
                 }
@@ -354,7 +357,11 @@ class AssetChartCard : LinearLayout {
             growthTextView.textColor = ContextCompat.getColor(context, R.color.secondary_text)
             growthTextView.setText(R.string.no_growth)
         }
-        growthHintTextView.text = context.getString(R.string.since_last_time_hint, chartScale.unitName)
+
+        growthHintTextView.text = context.getString(
+                R.string.template_since,
+                localizedName.forAssetChartScaleLast(chartScale)
+        )
     }
 
     private val location = IntArray(2)

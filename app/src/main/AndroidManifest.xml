@@ -63,12 +63,10 @@
         <activity
             android:name=".features.signup.SignUpActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/sign_up"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".features.recovery.RecoveryActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/recover_account"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".activities.MainActivity"
@@ -78,12 +76,10 @@
         <activity
             android:name=".features.signup.RecoverySeedActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/save_recovery_seed"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name=".features.changepassword.ChangePasswordActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/change_password_title" />
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".features.withdraw.WithdrawalConfirmationActivity"
             android:configChanges="orientation|screenSize" />
@@ -101,8 +97,7 @@
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".features.offers.OffersActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/pending_offers_title" />
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".features.links.ProcessLinkActivity"
             android:configChanges="orientation|screenSize"
@@ -171,25 +166,20 @@
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".features.trade.TradeActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/trade_title" />
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".features.offers.CreateOfferActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/create_offer_title"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".features.limits.LimitsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/limits_title" />
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".features.fees.view.FeesActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/fees_title" />
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".features.invest.view.SaleInvestActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/sale_investing"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".features.signin.UnlockAppActivity"

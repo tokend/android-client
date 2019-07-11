@@ -13,6 +13,7 @@ import android.widget.TextSwitcher
 import org.tokend.template.R
 import org.tokend.template.util.DateProvider
 import org.tokend.template.view.adapter.base.BaseRecyclerAdapter
+import org.tokend.template.view.util.LocalizedName
 import java.util.*
 
 /**
@@ -23,6 +24,8 @@ class TxDateTextSwitcher : TextSwitcher {
             super(context, attributeSet)
 
     constructor(context: Context) : super(context)
+
+    private val localizedName = LocalizedName(context)
 
     private var slideInFromBottom: Animation? = null
     private var slideOutToTop: Animation? = null
@@ -121,7 +124,7 @@ class TxDateTextSwitcher : TextSwitcher {
         txCalendar.time = tx.date
 
         val withYear = nowCalendar.get(Calendar.YEAR) != txCalendar.get(Calendar.YEAR)
-        val month = txCalendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH)
+        val month = localizedName.forMonth(txCalendar.get(Calendar.MONTH))
         return month + if (withYear) ", " + txCalendar.get(Calendar.YEAR) else ""
     }
 

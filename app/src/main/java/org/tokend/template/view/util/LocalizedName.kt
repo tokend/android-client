@@ -7,8 +7,10 @@ import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.fees.adapter.FeeListItem
 import org.tokend.template.features.kyc.model.form.KycFormType
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
+import org.tokend.template.view.assetchart.AssetChartScale
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.StatsOpType
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -113,5 +115,31 @@ class LocalizedName(private val context: Context) {
             TimeUnit.MINUTES -> context.resources.getQuantityString(R.plurals.minute, value)
             else -> unit.name.toLowerCase()
         }
+    }
+
+    fun forLocale(locale: Locale): String {
+        return locale.getDisplayLanguage(locale).toLowerCase().capitalize()
+    }
+
+    fun forAssetChartScaleLast(scale: AssetChartScale): String {
+        return when (scale) {
+            AssetChartScale.HOUR -> context.getString(R.string.last_hour)
+            AssetChartScale.DAY -> context.getString(R.string.last_day)
+            AssetChartScale.MONTH -> context.getString(R.string.last_month)
+            AssetChartScale.YEAR -> context.getString(R.string.last_year)
+        }
+    }
+
+    fun forAssetChartScaleShort(scale: AssetChartScale): String {
+        return (when (scale) {
+            AssetChartScale.HOUR -> context.getString(R.string.hour)
+            AssetChartScale.DAY -> context.getString(R.string.day)
+            AssetChartScale.MONTH -> context.getString(R.string.month)
+            AssetChartScale.YEAR -> context.getString(R.string.year)
+        }).first().toString().toUpperCase()
+    }
+
+    fun forMonth(numberFromZero: Int): String {
+        return context.resources.getStringArray(R.array.months)[numberFromZero]
     }
 }
