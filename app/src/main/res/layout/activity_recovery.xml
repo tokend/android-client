@@ -38,14 +38,22 @@
                 android:hint="@string/recovery_seed"
                 android:inputType="textCapCharacters" />
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/password_edit_text"
-                style="@style/EditText"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/standard_padding"
-                android:hint="@string/new_password"
-                android:inputType="textPassword" />
+                app:hintEnabled="false"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/icons">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/password_edit_text"
+                    style="@style/EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/new_password"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/confirm_password_edit_text"

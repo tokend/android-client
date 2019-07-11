@@ -178,7 +178,7 @@ class RecoveryActivity : BaseActivity() {
         passwordChars.fill('0')
         confirmationChars.fill('0')
 
-        if (!passwordsMatch && confirm_password_edit_text.text.isNullOrEmpty()) {
+        if (!passwordsMatch && !confirm_password_edit_text.text.isNullOrEmpty()) {
             confirm_password_edit_text.error = getString(R.string.error_passwords_mismatch)
         } else {
             confirm_password_edit_text.error = null
