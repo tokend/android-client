@@ -13,6 +13,7 @@ import org.tokend.template.util.comparator.BalancesByConvertedAmountComparator
 import org.tokend.template.util.errorhandler.DefaultErrorLogger
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.util.errorhandler.ErrorLogger
+import org.tokend.template.util.locale.AppLocaleManager
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.formatter.DefaultAmountFormatter
@@ -23,15 +24,18 @@ class UtilModule {
     @Provides
     @Singleton
     fun errorHandlerFactory(context: Context,
+                            localeManager: AppLocaleManager,
                             toastManager: ToastManager,
                             errorLogger: ErrorLogger): ErrorHandlerFactory {
-        return ErrorHandlerFactory(context, toastManager, errorLogger)
+        return ErrorHandlerFactory(localeManager.getLocalizeContext(context),
+                toastManager, errorLogger)
     }
 
     @Provides
     @Singleton
-    fun toastManager(context: Context): ToastManager {
-        return ToastManager(context)
+    fun toastManager(context: Context,
+                     localeManager: AppLocaleManager): ToastManager {
+        return ToastManager(localeManager.getLocalizeContext(context))
     }
 
     @Provides

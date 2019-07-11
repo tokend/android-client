@@ -56,6 +56,7 @@ class FeesActivity : BaseActivity() {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_fees)
         setSupportActionBar(toolbar)
+        setTitle(R.string.fees_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initViews()
