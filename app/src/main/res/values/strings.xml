@@ -222,7 +222,15 @@
     <string name="template_deposit_expiration">\nExpires at %1$s</string>
 
     <string name="chart_highlight_at_hint">%1$s at %2$s</string>
-    <string name="since_last_time_hint">since last %1$s</string>
+    <string name="template_since">since %1$s</string>
+    <string name="last_hour">last hour</string>
+    <string name="last_day">last day</string>
+    <string name="last_month">last month</string>
+    <string name="last_year">last year</string>
+    <string name="hour">Hour</string>
+    <string name="day">Day</string>
+    <string name="year">Year</string>
+    <string name="month">Month</string>
     <string name="no_growth">No growth</string>
     <string name="no_data">No data</string>
     <string name="deployed_hint">deployed</string>
@@ -370,7 +378,6 @@
     <string name="zero">0</string>
     <string name="max_sell_hint">Max Sell</string>
     <string name="max_buy_hint">Max Buy</string>
-    <string name="error_amount_to_big">Amount is to big</string>
 
     <string name="template_fee_bounds">From %1$s to %2$s</string>
     <string name="template_fee_bounds_upto">Up to %1$s</string>
@@ -421,4 +428,18 @@
     <string name="settings_app_group">App</string>
     <string name="language">Language</string>
     <string name="select_language">Select language</string>
+    <string-array name="months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
 </resources>

@@ -5,6 +5,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class DateFormatter(private val context: Context) {
+    // Expecting it was set by locale manager.
+    private val locale = Locale.getDefault()
+
     /**
      * Formats given date to the long string:
      * full month name, full year number, 12-/24-hour time based on device preference
@@ -26,7 +29,7 @@ class DateFormatter(private val context: Context) {
      * full month name, full year number
      */
     fun formatDateOnly(date: Date): String {
-        return SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH)
+        return SimpleDateFormat("dd MMMM yyyy", locale)
                 .format(date)
     }
 
@@ -42,7 +45,7 @@ class DateFormatter(private val context: Context) {
                 else
                     "dd MMM"
 
-        return SimpleDateFormat(pattern, Locale.ENGLISH)
+        return SimpleDateFormat(pattern, locale)
                 .format(date)
     }
 

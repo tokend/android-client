@@ -153,10 +153,10 @@ class CreateOfferActivity : BaseActivity() {
     private fun getError(amount: BigDecimal): String? {
         return try {
             if (amount.isMaxPossibleAmount()) {
-                return getString(R.string.error_amount_to_big)
+                return getString(R.string.error_too_big_amount)
             } else null
         } catch (e: ArithmeticException) {
-            getString(R.string.error_amount_to_big)
+            getString(R.string.error_too_big_amount)
         }
     }
 

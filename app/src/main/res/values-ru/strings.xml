@@ -21,7 +21,7 @@
     <string name="retry">Повторить</string>
     <string name="share">Поделиться</string>
     <string name="share_account_id">Поделиться аккаунтом</string>
-    <string name="check_your_email_to_verify_account">Проверьте ваш email чтобы подтвердить аккаунт</string>
+    <string name="check_your_email_to_verify_account">Следуйте инструкциям из письма чтобы подтвердить email</string>
     <string name="save_recovery_seed">Ключ восстановления</string>
     <string name="continue_action">Продолжить</string>
     <string name="validate_recovery_seed">Проверить ключ восстановления</string>
@@ -68,7 +68,7 @@
     <string name="no_assets_found">Активы не найдены</string>
     <string name="asset_balance_exists">Баланс добавлен</string>
     <string name="template_asset_code_asset">Актив %1$s</string>
-    <string name="asset_overview">Обзор</string>
+    <string name="asset_overview">Сводка</string>
     <string name="template_file_download_location">Файл будет скачан в папку \"%1$s\"</string>
     <string name="template_asset_balance_created">Баланс %1$s создан</string>
     <string name="search">Поиск</string>
@@ -115,310 +115,331 @@
     <string name="asset_can_be_withdrawn">Может выводиться</string>
     <string name="asset_can_not_be_withdrawn">Не может выводиться</string>
 
-    <string name="dashboard_title">Dashboard</string>
-    <string name="deposit_title">Deposit</string>
-    <string name="withdraw_title">Withdraw</string>
-    <string name="explore_assets_title">Explore assets</string>
-    <string name="send_title">Send</string>
-    <string name="trade_title">Trade</string>
-    <string name="settings_title">Settings</string>
-    <string name="polls_title">Polls</string>
+    <string name="dashboard_title">Панель управления</string>
+    <string name="deposit_title">Депозит</string>
+    <string name="withdraw_title">Вывод</string>
+    <string name="explore_assets_title">Активы</string>
+    <string name="send_title">Отправка</string>
+    <string name="trade_title">Биржа</string>
+    <string name="settings_title">Настройки</string>
+    <string name="polls_title">Опросы</string>
 
-    <string name="template_tx_from">From %1$s</string>
-    <string name="template_tx_to">To %1$s</string>
-    <string name="tx_action_issued">Issued</string>
-    <string name="tx_action_withdrawn">Withdrawn</string>
-    <string name="tx_action_investment">Investment</string>
-    <string name="tx_action_received">Received</string>
-    <string name="tx_action_sent">Sent</string>
-    <string name="tx_action_locked">Locked</string>
-    <string name="tx_action_unlocked">Unlocked</string>
-    <string name="tx_action_charged">Charged</string>
-    <string name="tx_action_matched">Matched</string>
-    <string name="tx_sender">Sender</string>
-    <string name="tx_recipient">Recipient</string>
-    <string name="tx_fee">Fee</string>
-    <string name="tx_cause">Cause</string>
-    <string name="tx_reference">Reference</string>
-    <string name="tx_withdrawal_destination">Destination address</string>
-    <string name="template_tx_in">In %1$s</string>
-    <string name="pay_recipient_fee_action">Pay recipient\'s fee</string>
-    <string name="data_has_been_copied">Data has been copied to the clipboard</string>
+    <string name="template_tx_from">От %1$s</string>
+    <string name="template_tx_to">На %1$s</string>
+    <string name="tx_action_issued">Эмиссия</string>
+    <string name="tx_action_withdrawn">Вывод</string>
+    <string name="tx_action_investment">Инвестиция</string>
+    <string name="tx_action_received">Получено</string>
+    <string name="tx_action_sent">Отправлено</string>
+    <string name="tx_action_locked">Заблокировано</string>
+    <string name="tx_action_unlocked">Разблокировано</string>
+    <string name="tx_action_charged">Списано</string>
+    <string name="tx_action_matched">Выполнение ордера</string>
+    <string name="tx_sender">Отправитель</string>
+    <string name="tx_recipient">Получатель</string>
+    <string name="tx_fee">Комиссия</string>
+    <string name="tx_cause">Причина</string>
+    <string name="tx_reference">Идентификатор</string>
+    <string name="tx_withdrawal_destination">Адрес</string>
+    <string name="template_tx_in">В %1$s</string>
+    <string name="pay_recipient_fee_action">Оплатить комиссию получателя</string>
+    <string name="data_has_been_copied">Данные скопированы</string>
 
-    <string name="settings_account_group">Account</string>
-    <string name="settings_security_group">Security</string>
-    <string name="account_id_title">Account ID</string>
-    <string name="verification_title">Verification</string>
-    <string name="verification_summary">In order to verify your account data use web client</string>
-    <string name="tfa_title">Two-factor authentication</string>
-    <string name="change_password_title">Change password</string>
+    <string name="settings_account_group">Аккаунт</string>
+    <string name="settings_security_group">Безопасность</string>
+    <string name="account_id_title">ID аккаунта</string>
+    <string name="verification_title">Верификация</string>
+    <string name="verification_summary">Воспользуйтесь веб-клиентом чтобы верифицировать аккаунт</string>
+    <string name="tfa_title">Двухфакторная аутентификация (2FA)</string>
+    <string name="change_password_title">Изменить пароль</string>
 
-    <string name="error_cannot_be_empty">Cannot be empty</string>
-    <string name="error_invalid_email">Invalid email</string>
-    <string name="error_passwords_mismatch">Password doesn\'t match confirmation</string>
-    <string name="error_weak_password">Password is weak</string>
-    <string name="error_email_already_taken">Email is already taken</string>
-    <string name="error_try_again">An error occurred. Try again later</string>
-    <string name="error_connection_try_again">Connection error. Try again later</string>
-    <string name="error_invalid_password">Invalid password</string>
-    <string name="error_email_not_verified">Email is not verified</string>
-    <string name="error_seed_mismatch">Seed doesn\'t match confirmation</string>
-    <string name="error_invalid_seed">Invalid seed</string>
-    <string name="error_insufficient_balance">Insufficient balance</string>
-    <string name="error_no_transferable_assets">No transferable assets found</string>
-    <string name="error_invalid_recipient">Invalid recipient</string>
-    <string name="error_no_withdrawable_assets">No withdrawable assets found</string>
-    <string name="error_no_tradeable_pairs">No tradeable pairs found</string>
-    <string name="error_cannot_send_to_yourself">Send to yourself is not allowed</string>
-    <string name="error_fingerprint_locked">Too many failed attempts. Try again later</string>
-    <string name="error_payment_amount_less_than_fee">Payment amount is less than recipient\'s fee</string>
-    <string name="error_password_changed">Password has been changed, enter your new password to continue</string>
+    <string name="error_cannot_be_empty">Не может быть пустым</string>
+    <string name="error_invalid_email">Некорректный email</string>
+    <string name="error_passwords_mismatch">Пароли не совпадают</string>
+    <string name="error_weak_password">Слабый пароль</string>
+    <string name="error_email_already_taken">Email уже зарегистрирован</string>
+    <string name="error_try_again">Возникла ошибка. Попробуйте позже</string>
+    <string name="error_connection_try_again">Ошибка соединения. Попробуйте позже</string>
+    <string name="error_invalid_password">Неправильный пароль</string>
+    <string name="error_email_not_verified">Email не подтвержден</string>
+    <string name="error_seed_mismatch">Ключи не совпадают</string>
+    <string name="error_invalid_seed">Неправильный ключ</string>
+    <string name="error_insufficient_balance">Недостаточно средств</string>
+    <string name="error_no_transferable_assets">Нет пересылаемых активов</string>
+    <string name="error_invalid_recipient">Некорректный получатель</string>
+    <string name="error_no_withdrawable_assets">Нет выводимых активов</string>
+    <string name="error_no_tradeable_pairs">Торговые пары не найдены</string>
+    <string name="error_cannot_send_to_yourself">Нельзя отправлять самому себе</string>
+    <string name="error_fingerprint_locked">Слишком много попыток. Попробуйте позже</string>
+    <string name="error_payment_amount_less_than_fee">Комиссия получателя превышает сумму платежа</string>
+    <string name="error_password_changed">Пароль был изменен, введите новый пароль</string>
 
-    <string name="error_tx_general">Transaction failed. Try again later</string>
-    <string name="error_tx_bad_auth">Transaction signature is invalid</string>
-    <string name="error_tx_limits">Transaction exceeds limits set to your account</string>
+    <string name="error_tx_general">Транзакция отклонена. Попробуйте позже</string>
+    <string name="error_tx_bad_auth">Неправильная подпись транзакции</string>
+    <string name="error_tx_limits">Транзакция превышает один из ваших лимитов</string>
     <string name="error_tx_insufficient_balance">@string/error_insufficient_balance</string>
-    <string name="error_tx_invalid_amount">Transaction amount is invalid</string>
-    <string name="error_tx_malformed">Transaction is malformed</string>
-    <string name="error_tx_account_blocked">Your account is blocked</string>
-    <string name="error_tx_invalid_fee">Transaction fee is invalid</string>
-    <string name="error_tx_not_allowed">You are not allowed to perform this action</string>
-    <string name="error_tx_cross_self">Current order crosses one of your existing orders</string>
-    <string name="error_tx_not_found">Requested entry not found</string>
+    <string name="error_tx_invalid_amount">Некорректная сумма в транзакции</string>
+    <string name="error_tx_malformed">Некорректная транзакция</string>
+    <string name="error_tx_account_blocked">Ваш аккаунт заблокирован</string>
+    <string name="error_tx_invalid_fee">Неправильная комиссия в транзакции</string>
+    <string name="error_tx_not_allowed">Вам не разрешено это действие</string>
+    <string name="error_tx_cross_self">Ордер совпадает с одним из уже существующих</string>
+    <string name="error_tx_not_found">Элемент не найден</string>
 
-    <string name="tfa_dialog_title">Two-factor authentication</string>
-    <string name="tfa_default_dialog_message">Enter verification code</string>
-    <string name="totp_dialog_message">Enter code from the authentication app</string>
-    <string name="email_otp_dialog_message">Verification code was sent to your email</string>
-    <string name="otp_verification_code">Verification code</string>
-    <string name="error_invalid_otp_code">Invalid code</string>
-    <string name="enter_your_password">Enter your password</string>
-    <string name="tfa_add_dialog_title">Set up 2FA</string>
-    <string name="template_tfa_add_dialog_message">Open Google Authenticator (or similar app)
-        with the button below
-        \nor import this key manually:\n\n%1$s</string>
-    <string name="tfa_key_copied">Key has been copied to the clipboard</string>
+    <string name="tfa_dialog_title">Двухфакторная аутентификация</string>
+    <string name="tfa_default_dialog_message">Введите проверочный код</string>
+    <string name="totp_dialog_message">Введите код из аутентификатора</string>
+    <string name="email_otp_dialog_message">Введите код из письма</string>
+    <string name="otp_verification_code">Проверочный код</string>
+    <string name="error_invalid_otp_code">Неправильный код</string>
+    <string name="enter_your_password">Введите пароль</string>
+    <string name="tfa_add_dialog_title">Настройка 2FA</string>
+    <string name="template_tfa_add_dialog_message">Откройте Google Authenticator (или идентичное приложение)
+        с помощью кнопки ниже
+        \nили импортируйте этот ключ вручную:\n\n%1$s</string>
+    <string name="tfa_key_copied">Ключ скопирован</string>
 
     <!-- withdraw -->
-    <string name="amount_label">Amount</string>
-    <string name="go_to_confirmation_btn_label">Go to confirmation</string>
+    <string name="amount_label">Сумма</string>
+    <string name="go_to_confirmation_btn_label">К подтверждению</string>
 
     <!-- Deposit -->
-    <string name="create_balance_confirmation">Are you sure you want to create %1s balance?</string>
-    <string name="personal_address">Personal address</string>
-    <string name="to_make_deposit_send_asset">To make a deposit, send %1$s to this address</string>
-    <string name="show_qr_label">Show QR code</string>
-    <string name="share_address_label">Share address</string>
-    <string name="error_deposit_unavailable">Deposit is unavailable</string>
-    <string name="template_no_personal_asset_address">No personal %1$s address</string>
-    <string name="get_personal_address_action">Get address</string>
-    <string name="deposit_address_expiration_date">Expiration date</string>
-    <string name="renew_personal_address_action">Renew</string>
-    <string name="no_addresses_in_pool_title">No available addresses</string>
-    <string name="no_addresses_in_pool_explanation">No addresses are currently available
-        for this asset. Try again later or contact support</string>
-    <string name="template_deposit_address">Deposit %1$s:\n%2$s</string>
-    <string name="template_deposit_payload">\nPayload: %1$s</string>
-    <string name="template_deposit_expiration">\nExpires at %1$s</string>
+    <string name="create_balance_confirmation">Вы уверены что хотите создать баланс для %1s?</string>
+    <string name="personal_address">Личный адрес</string>
+    <string name="to_make_deposit_send_asset">Для депозита отправьте %1$s на этот адрес</string>
+    <string name="show_qr_label">Показать QR код</string>
+    <string name="share_address_label">Поделиться адресом</string>
+    <string name="error_deposit_unavailable">Депозит недоступен</string>
+    <string name="template_no_personal_asset_address">Нет адреса для %1$s</string>
+    <string name="get_personal_address_action">Получить адрес</string>
+    <string name="deposit_address_expiration_date">Доступен до</string>
+    <string name="renew_personal_address_action">Продлить</string>
+    <string name="no_addresses_in_pool_title">Нет доступных адресов</string>
+    <string name="no_addresses_in_pool_explanation">Сейчас нет доступных адресов для этого актива.
+        Попробуйте позже или обратитесь в поддержку</string>
+    <string name="template_deposit_address">Депозит %1$s:\n%2$s</string>
+    <string name="template_deposit_payload">\nПримечание: %1$s</string>
+    <string name="template_deposit_expiration">\nДоступен до %1$s</string>
 
-    <string name="chart_highlight_at_hint">%1$s at %2$s</string>
-    <string name="since_last_time_hint">since last %1$s</string>
-    <string name="no_growth">No growth</string>
-    <string name="no_data">No data</string>
-    <string name="deployed_hint">deployed</string>
-    <string name="asset_price_for_one_part">for 1 %1$s</string>
-    <string name="no_price_chart_yet">There is no price history yet</string>
-    <string name="no_sale_chart_yet">There is no progress history yet</string>
+    <string name="chart_highlight_at_hint">%1$s в %2$s</string>
+    <string name="template_since">за %1$s</string>
+    <string name="last_hour">последний час</string>
+    <string name="last_day">последний день</string>
+    <string name="last_month">последний месяц</string>
+    <string name="last_year">последний год</string>
+    <string name="hour">Час</string>
+    <string name="day">День</string>
+    <string name="year">Год</string>
+    <string name="month">Месяц</string>
+    <string name="no_growth">Нет роста</string>
+    <string name="no_data">Нет данных</string>
+    <string name="deployed_hint">размещено</string>
+    <string name="asset_price_for_one_part">за 1 %1$s</string>
+    <string name="no_price_chart_yet">Нет истории цены</string>
+    <string name="no_sale_chart_yet">Нет истории прогресса</string>
 
-    <string name="template_sale_invested">%1$s\ninvested</string>
-    <string name="template_sale_funded">%1$s\nfunded</string>
-    <string name="template_sale_days_to_go">%1$d %2$s\nto go</string>
-    <string name="template_sale_starts_in">%1$d %2$s\nto start</string>
-    <string name="template_sale_max_investment">Max investment is %1$s</string>
+    <string name="template_sale_invested">%1$s\nвнесено</string>
+    <string name="template_sale_funded">%1$s\nсобрано</string>
+    <string name="template_sale_days_to_go">%1$d %2$s\nдо конца</string>
+    <string name="template_sale_starts_in">%1$d %2$s\nдо начала</string>
+    <string name="template_sale_max_investment">Максимальная инвестиция – %1$s</string>
     <string name="template_sale_name_asset">%1$s (%2$s)</string>
-    <string name="sales_search_name_hint">Name</string>
-    <string name="sales_search_asset_hint">Asset code</string>
-    <string name="explore_sales_title">Explore sales</string>
-    <string name="no_sales_found">No sales found</string>
-    <string name="pending_investments_title">Pending investments</string>
-    <string name="no_pending_investments">No pending investments</string>
-    <string name="sale_investing">Investing</string>
-    <string name="invest_action">Invest</string>
-    <string name="update_investment_action">Update</string>
-    <string name="cancel_investment_action">Cancel investment</string>
-    <string name="investment_confirmation_title">Investment confirmation</string>
-    <string name="investment_cancellation_title">Investment cancellation</string>
-    <string name="investment_updating_title">Investment update</string>
-    <string name="sale_asset">Asset</string>
-    <string name="successfully_invested">Investment has been placed</string>
-    <string name="investment_canceled">Investment has been canceled</string>
-    <string name="investment_updated">Investment has been updated</string>
-    <string name="cancel_investment_confirmation">Are you sure you want to cancel this investment?</string>
-    <string name="sale_details_title">Details</string>
-    <string name="sale_overview_title">Overview</string>
-    <string name="sale_chart_title">Chart</string>
-    <string name="invest_asset_hint">Asset</string>
-    <string name="sale_summary_title">Sale summary</string>
-    <string name="sale_title">Sale</string>
+    <string name="sales_search_name_hint">Имя</string>
+    <string name="sales_search_asset_hint">Код</string>
+    <string name="explore_sales_title">Инвестиции</string>
+    <string name="no_sales_found">Кампании не найдены</string>
+    <string name="pending_investments_title">Активные инвестиции</string>
+    <string name="no_pending_investments">Нет активных инвестиций</string>
+    <string name="sale_investing">Инвестиция</string>
+    <string name="invest_action">Инвестировать</string>
+    <string name="update_investment_action">Обновить</string>
+    <string name="cancel_investment_action">Отменить инвестицию</string>
+    <string name="investment_confirmation_title">Подтверждение инвестиции</string>
+    <string name="investment_cancellation_title">Отмена инвестиции</string>
+    <string name="investment_updating_title">Обновление инвестиции</string>
+    <string name="sale_asset">Актив</string>
+    <string name="successfully_invested">Инвестиция создана</string>
+    <string name="investment_canceled">Инвестиция отменена</string>
+    <string name="investment_updated">Инвестиция обновлена</string>
+    <string name="cancel_investment_confirmation">Вы уверены что хотите отменить инвестицию?</string>
+    <string name="sale_details_title">Детали</string>
+    <string name="sale_overview_title">Сводка</string>
+    <string name="sale_chart_title">График</string>
+    <string name="invest_asset_hint">Актив</string>
+    <string name="sale_summary_title">Обзор кампании</string>
+    <string name="sale_title">Кампания</string>
 
-    <string name="tokend_network_hint">Network</string>
-    <string name="not_specified">Not specified</string>
-    <string name="error_network_not_specified">Network is not specified</string>
+    <string name="tokend_network_hint">Сеть</string>
+    <string name="not_specified">Не указано</string>
+    <string name="error_network_not_specified">Не указана сеть</string>
 
-    <string name="open_source_licenses_title">Open source licenses</string>
-    <string name="settings_information_group">Information</string>
-    <string name="contacts">Contacts</string>
-    <string name="no_contacts_message">No contacts available</string>
-    <string name="use_fingerprint">Use fingerprint</string>
-    <string name="secret_seed">Secret seed</string>
-    <string name="secret_seed_description">Secret seed is private information that proves you own your account</string>
-    <string name="template_offer_creation_price">Price (%1$s for 1 %2$s)</string>
-    <string name="deposit_address_copied">Address has been copied to the clipboard</string>
-    <string name="deposit_address_renewed">Address has been renewed</string>
-    <string name="error_kyc_required_to_own_asset">Only verified accounts can own this asset</string>
+    <string name="open_source_licenses_title">Лицензии открытого ПО</string>
+    <string name="settings_information_group">Информация</string>
+    <string name="contacts">Контакты</string>
+    <string name="no_contacts_message">Нет доступных контактов</string>
+    <string name="use_fingerprint">Использовать отпечаток пальца</string>
+    <string name="secret_seed">Секретный ключ</string>
+    <string name="secret_seed_description">Текущий приватный ключ вашего аккаунта</string>
+    <string name="template_offer_creation_price">Цена (%1$s за 1 %2$s)</string>
+    <string name="deposit_address_copied">Адрес скопирован</string>
+    <string name="deposit_address_renewed">Адрес продлен</string>
+    <string name="error_kyc_required_to_own_asset">Только верифицированные пользователи могут
+        владеть этим активом</string>
 
-    <string name="help">Help</string>
-    <string name="investment_help_title">Investment help</string>
+    <string name="help">Помощь</string>
+    <string name="investment_help_title">Помощь в инвестировании</string>
     <string name="investment_help_content">
-        • You can make investments in this sale using proposed assets\n\n
-        • You can have one investment per asset\n\n
-        • While the sale is active, you can change the amount of your investment or cancel them\n\n
-        • If you cancel your investment, the paid amount and fee will be returned\n\n
-        • If the sale has reached it\s soft cap by it\s end date, you will receive the amount
-        of the sale asset according to your investments; otherwise, your investments will be returned.
+        • Вы можете инвестировать в эту кампанию используя доступные активы\n\n
+        • На каждый актив допускается только одна инвестиция\n\n
+        • Пока кампания активна вы можете изменять суммы ваших инвестиций или отменять их\n\n
+        • При отмене инвестиции вам возвращаются заблокированные средства\n\n
+        • Если кампания достигнет цели к дате завершения вы получите сумму в ее активе
+        соответствующую вашим инвестициям, иначе же все инвестиции будут возвращены.
     </string>
-    <string name="limits_title">Limits</string>
-    <string name="payment">Payment</string>
-    <string name="deposit">Deposit</string>
-    <string name="no_limits_message">No limits</string>
+    <string name="limits_title">Лимиты</string>
+    <string name="payment">Платеж</string>
+    <string name="deposit">Депозит</string>
+    <string name="no_limits_message">Лимитов нет</string>
 
-    <string name="fees_title">Fees</string>
-    <string name="no_fees">No fees available</string>
-    <string name="payment_fee">Payment</string>
-    <string name="offer_fee">Order</string>
-    <string name="withdrawal_fee">Withdrawal</string>
-    <string name="issuance_fee">Issuance</string>
-    <string name="invest_fee">Invest</string>
-    <string name="capital_deployment_fee">Capital deployment</string>
-    <string name="operation_fee">Operation</string>
-    <string name="payout_fee">Payout</string>
-    <string name="atomic_swap_sale_fee">Sale atomic swap</string>
-    <string name="atomic_swap_purchase_fee">Purchase atomic swap</string>
-    <string name="incoming_outgoing_fee"><![CDATA[Incoming & Outgoing]]></string>
-    <string name="outgoing_fee">Outgoing</string>
-    <string name="incoming_fee">Incoming</string>
+    <string name="fees_title">Комиссии</string>
+    <string name="no_fees">Комиссий нет</string>
+    <string name="payment_fee">Платеж</string>
+    <string name="offer_fee">Ордер</string>
+    <string name="withdrawal_fee">Вывод</string>
+    <string name="issuance_fee">Эмиссия</string>
+    <string name="invest_fee">Инвестиция</string>
+    <string name="capital_deployment_fee">Размещение</string>
+    <string name="operation_fee">Операция</string>
+    <string name="payout_fee">Выплата</string>
+    <string name="atomic_swap_sale_fee">Прямая покупка</string>
+    <string name="atomic_swap_purchase_fee">Прямая продажа</string>
+    <string name="incoming_outgoing_fee"><![CDATA[Получение и Отправка]]></string>
+    <string name="outgoing_fee">Отправка</string>
+    <string name="incoming_fee">Получение</string>
 
-    <string name="limit_period_daily">Daily</string>
-    <string name="limit_period_weekly">Weekly</string>
-    <string name="limit_period_monthly">Monthly</string>
-    <string name="limit_period_annual">Annual</string>
-    <string name="template_limit_left_of_total">%1$s left of %2$s</string>
-    <string name="limit_unlimited">Unlimited</string>
+    <string name="limit_period_daily">В день</string>
+    <string name="limit_period_weekly">В неделю</string>
+    <string name="limit_period_monthly">В месяц</string>
+    <string name="limit_period_annual">Всего</string>
+    <string name="template_limit_left_of_total">%1$s осталось из %2$s</string>
+    <string name="limit_unlimited">Не ограничено</string>
 
-    <string name="authenticator_hint">Use TokenD Authenticator to set up and access your account</string>
-    <string name="open_authenticator_action">Open authenticator</string>
-    <string name="install_authenticator_action">Install authenticator</string>
-    <string name="use_authenticator">Use authenticator</string>
+    <string name="authenticator_hint">Воспользуйтесь TokenD Authenticator чтобы войти в ваш аккаунт</string>
+    <string name="open_authenticator_action">Открыть Authenticator</string>
+    <string name="install_authenticator_action">Установить Authenticator</string>
+    <string name="use_authenticator">Использовать Authenticator</string>
 
-    <string name="error_unauthorized">The session has been expired</string>
+    <string name="error_unauthorized">Сессия закончилась</string>
 
-    <string name="sale_info_start_time">Start time</string>
-    <string name="sale_info_close_time">Close time</string>
-    <string name="sale_info_soft_cap">Soft cap</string>
-    <string name="sale_info_hard_cap">Hard cap</string>
-    <string name="sale_info_to_sell_template">%1$s to sell</string>
+    <string name="sale_info_start_time">Дата начала</string>
+    <string name="sale_info_close_time">Дата конца</string>
+    <string name="sale_info_soft_cap">Цель</string>
+    <string name="sale_info_hard_cap">Максимум</string>
+    <string name="sale_info_to_sell_template">%1$s к продаже</string>
 
-    <string name="seed_alert_dialog">"You are about to show sensitive data.\nAnyone
-        who knows the secret seed can gain access to your account.\nDo
-        you want to continue?"</string>
+    <string name="seed_alert_dialog">Вы собираетесь отобразить важную информацию.\nЛюбой, кто знает
+        ваш секретный ключ, может получить доступ к вашему аккаунту.\nЖелаете продолжить?</string>
 
-    <string name="unknown_balance_change">Balance change</string>
+    <string name="unknown_balance_change">Изменение баланса</string>
 
-    <string name="balance_change_cause_unknown">Unknown</string>
-    <string name="balance_change_cause_aml">AML alert</string>
-    <string name="balance_change_cause_investment">Investment</string>
-    <string name="balance_change_cause_matched_offer">Order</string>
-    <string name="balance_change_cause_issuance">Issuance/deposit</string>
-    <string name="balance_change_cause_payment">Payment</string>
-    <string name="balance_change_cause_withdrawal_request">Withdrawal request</string>
-    <string name="balance_change_cause_pending_offer">Pending order</string>
-    <string name="balance_change_cause_pending_investment">Pending investment</string>
-    <string name="balance_change_cause_sale_cancellation">Sale cancellation</string>
-    <string name="balance_change_cause_asset_pair_update">Asset pair update</string>
-    <string name="balance_change_cause_offer_cancellation">Order cancellation</string>
+    <string name="balance_change_cause_unknown">Неизвестно</string>
+    <string name="balance_change_cause_aml">Блокировка по AML</string>
+    <string name="balance_change_cause_investment">Инвестиция</string>
+    <string name="balance_change_cause_matched_offer">Ордер</string>
+    <string name="balance_change_cause_issuance">Депозит/эмиссия</string>
+    <string name="balance_change_cause_payment">Платеж</string>
+    <string name="balance_change_cause_withdrawal_request">Запрос на вывод</string>
+    <string name="balance_change_cause_pending_offer">Активный ордер</string>
+    <string name="balance_change_cause_pending_investment">Активная инвестиция</string>
+    <string name="balance_change_cause_sale_cancellation">Отмена кампании</string>
+    <string name="balance_change_cause_asset_pair_update">Обновление торговой пары</string>
+    <string name="balance_change_cause_offer_cancellation">Отмена ордера</string>
 
-    <string name="asset_pair_title">Asset pair</string>
-    <string name="asset_pair_code">Code</string>
-    <string name="asset_pair_physical_price">Physical price</string>
-    <string name="asset_pair_restricted_by_physical_price">Is restricted by physical price</string>
-    <string name="asset_pair_not_restricted_by_physical_price">Is not restricted by physical price</string>
-    <string name="asset_pair_restricted_by_current_price">Is restricted by current price</string>
-    <string name="asset_pair_not_restricted_by_current_price">Is restricted by current price</string>
-    <string name="asset_pair_can_be_traded">Can be traded on secondary market</string>
-    <string name="asset_pair_can_not_be_traded">Can\'t be traded on secondary market</string>
+    <string name="asset_pair_title">Торговая пара</string>
+    <string name="asset_pair_code">Код</string>
+    <string name="asset_pair_physical_price">Физическая цена</string>
+    <string name="asset_pair_restricted_by_physical_price">Ограничена физической ценой</string>
+    <string name="asset_pair_not_restricted_by_physical_price">Не ограничена физической ценой</string>
+    <string name="asset_pair_restricted_by_current_price">Ограничена текущей ценой</string>
+    <string name="asset_pair_not_restricted_by_current_price">Не ограничена текущей ценой</string>
+    <string name="asset_pair_can_be_traded">Может торговаться</string>
+    <string name="asset_pair_can_not_be_traded">Не может торговаться</string>
 
-    <string name="trade_order_book_title">Order book</string>
-    <string name="trade_chart_title">Chart</string>
-    <string name="trade_trades_title">Trades</string>
+    <string name="trade_order_book_title">Биржевой стакан</string>
+    <string name="trade_chart_title">График</string>
+    <string name="trade_trades_title">Торги</string>
 
-    <string name="time_hint">Time</string>
-    <string name="template_price_hint">Price (%1$s)</string>
-    <string name="template_amount_hint">Amount (%1$s)</string>
-    <string name="template_total_hint">Total (%1$s)</string>
-    <string name="trade_offers_title">My orders</string>
+    <string name="time_hint">Дата</string>
+    <string name="template_price_hint">Цена (%1$s)</string>
+    <string name="template_amount_hint">Сумма (%1$s)</string>
+    <string name="template_total_hint">Всего (%1$s)</string>
+    <string name="trade_offers_title">Мои ордеры</string>
 
     <string name="zero">0</string>
-    <string name="max_sell_hint">Max Sell</string>
-    <string name="max_buy_hint">Max Buy</string>
-    <string name="error_amount_to_big">Amount is to big</string>
+    <string name="max_sell_hint">Макс. продажа</string>
+    <string name="max_buy_hint">Макс. покупка</string>
 
-    <string name="template_fee_bounds">From %1$s to %2$s</string>
-    <string name="template_fee_bounds_upto">Up to %1$s</string>
-    <string name="template_fee_bounds_from">From %1$s</string>
-    <string name="fee_bounds_default">Default</string>
-    <string name="fee_info_titles">Fixed:\nPercent:</string>
-    <string name="spend">Spend</string>
-    <string name="payout">Payout</string>
+    <string name="template_fee_bounds">От %1$s до %2$s</string>
+    <string name="template_fee_bounds_upto">До %1$s</string>
+    <string name="template_fee_bounds_from">От %1$s</string>
+    <string name="fee_bounds_default">По умолчанию</string>
+    <string name="fee_info_titles">Фиксированная:\nПроцентная:</string>
+    <string name="spend">Трата</string>
+    <string name="payout">Выплата</string>
 
-    <string name="volume_label">Volume</string>
+    <string name="volume_label">Объем</string>
 
-    <string name="template_to_withdraw">%1$s to withdraw</string>
+    <string name="template_to_withdraw">%1$s к выводу</string>
 
-    <string name="kyc_form_type_general">General account</string>
-    <string name="kyc_form_type_corporate">Corporate account</string>
-    <string name="kyc_form_type_unknown">Verified account</string>
-    <string name="unverified_account">Unverified account</string>
+    <string name="kyc_form_type_general">Стандартный аккаунт</string>
+    <string name="kyc_form_type_corporate">Корпоративный аккаунт</string>
+    <string name="kyc_form_type_unknown">Верифицированный аккаунт</string>
+    <string name="unverified_account">Неверифицированный аккаунт</string>
 
     <string name="template_amount_with_converted">%1$s ≈ %2$s</string>
     <string name="template_converted_amount">≈ %1$s</string>
-    <string name="asset_distribution_other">Other</string>
-    <string name="movements_screen_title">Movements</string>
-    <string name="balances_screen_title">Balances</string>
-    <string name="unlock_label">Unlock</string>
-    <string name="use_password">Use password</string>
-    <string name="receive_title">Receive</string>
-    <string name="asset_details">Asset details</string>
-    <string name="template_asset">Asset: %1$s</string>
-    <string name="remove_vote_action">Remove vote</string>
-    <string name="vote_action">Submit vote</string>
-    <string name="no_polls_found">No polls found</string>
-    <string name="vote_has_been_submitted">Your vote has been submitted</string>
-    <string name="vote_has_been_removed">Your vote has been removed</string>
-    <string name="template_with_one_asset_for">With 1 %1$s for</string>
-    <string name="template_buy_asset_code">Buy %1$s</string>
-    <string name="template_amount_available_for_buy">Available for buy: %1$s</string>
-    <string name="error_too_big_amount">Amount is too big</string>
-    <string name="atomic_swap_payment_method">Payment method</string>
-    <string name="template_amount_to_pay">%1$s to pay</string>
-    <string name="template_atomic_swaps_hint">This orders allow you to buy %1$s
-    for external system assets directly, without the need of deposit</string>
-    <string name="template_send_to_address">Send %1$s to this address</string>
-    <string name="template_atomic_swap_invoice_share_text">Send %1$s to this address to buy %2$s:\n%3$s</string>
-    <string name="address_payload">Payload</string>
-    <string name="poll_ended">Ended</string>
-    <string name="you_have_no_balances">You have no balances yet</string>
-    <string name="template_days_to_go">%1$d %2$s to go</string>
-    <string name="settings_app_group">App</string>
-    <string name="language">Language</string>
-    <string name="select_language">Select language</string>
+    <string name="asset_distribution_other">Другое</string>
+    <string name="movements_screen_title">Операции</string>
+    <string name="balances_screen_title">Балансы</string>
+    <string name="unlock_label">Войти</string>
+    <string name="use_password">Ввести пароль</string>
+    <string name="receive_title">Получение</string>
+    <string name="asset_details">Детали актива</string>
+    <string name="template_asset">Актив: %1$s</string>
+    <string name="remove_vote_action">Удалить голос</string>
+    <string name="vote_action">Проголосовать</string>
+    <string name="no_polls_found">Опросов нет</string>
+    <string name="vote_has_been_submitted">Голос принят</string>
+    <string name="vote_has_been_removed">Голос удален</string>
+    <string name="template_with_one_asset_for">С 1 %1$s за</string>
+    <string name="template_buy_asset_code">Купить %1$s</string>
+    <string name="template_amount_available_for_buy">Доступно для покупки: %1$s</string>
+    <string name="error_too_big_amount">Сумма слишком велика</string>
+    <string name="atomic_swap_payment_method">Способ оплаты</string>
+    <string name="template_amount_to_pay">%1$s к оплате</string>
+    <string name="template_atomic_swaps_hint">Это предложения прямой покупки %1$s за внешние
+    активы без необходимости депозита</string>
+    <string name="template_send_to_address">Отправьте %1$s на этот адрес</string>
+    <string name="template_atomic_swap_invoice_share_text">Отправьте %1$s на этот адрес для покупки %2$s:\n%3$s</string>
+    <string name="address_payload">Примечание</string>
+    <string name="poll_ended">Завершен</string>
+    <string name="you_have_no_balances">Балансов нет</string>
+    <string name="template_days_to_go">%1$d %2$s до конца</string>
+    <string name="settings_app_group">Приложение</string>
+    <string name="language">Язык</string>
+    <string name="select_language">Выберите язык</string>
+    <string-array name="months">
+        <item>Январь</item>
+        <item>Февраль</item>
+        <item>Март</item>
+        <item>Апрель</item>
+        <item>Май</item>
+        <item>Июнь</item>
+        <item>Июль</item>
+        <item>Август</item>
+        <item>Сентябрь</item>
+        <item>Октябрь</item>
+        <item>Ноябрь</item>
+        <item>Декабрь</item>
+    </string-array>
 </resources>
