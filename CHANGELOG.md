@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [Unreleased]
+## [1.11.0] 2019-07.11
 
 ### Added
 - Partial support of custom asset trailing digits count
@@ -194,7 +194,8 @@ with ability to copy
 
 - Error on sign in when user has balances with unknown asset details
 
-[Unreleased]: https://github.com/tokend/android-client/compare/1.10.0(13)...HEAD
+[Unreleased]: https://github.com/tokend/android-client/compare/1.11.0(15)...HEAD
+[1.11.0]: https://github.com/tokend/android-client/compare/1.10.0(13)...1.11.0(15)
 [1.10.0]: https://github.com/tokend/android-client/compare/1.9.0(12)...1.10.0(13)
 [1.9.0]: https://github.com/tokend/android-client/compare/1.8.0(10)...1.9.0(12)
 [1.8.0]: https://github.com/tokend/android-client/compare/1.7.0(8)...1.8.0(10)
