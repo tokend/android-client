@@ -26,7 +26,9 @@ class AppLocaleManager(
 
     val availableLocales = listOf(
             // Do not forget to update resConfigs in build.gradle
-            Locale.ENGLISH
+            Locale("en"),
+            Locale("ru"),
+            Locale("uk")
     )
 
     fun getLocale(): Locale = loadLocale() ?: defaultLocale

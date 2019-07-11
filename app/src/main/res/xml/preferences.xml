@@ -2,6 +2,19 @@
 <android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <android.support.v7.preference.PreferenceCategory
+        android:layout="@layout/preference_category_layout_divider"
+        android:title="@string/settings_app_group"
+        android:key="app">
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_language"
+            android:key="language"
+            android:layout="@layout/preference_layout"
+            android:title="@string/language" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory
         android:layout="@layout/preference_category_layout"
         android:title="@string/settings_account_group">
 
@@ -89,19 +102,6 @@
             android:key="open_source_licenses"
             android:layout="@layout/preference_layout"
             android:title="@string/open_source_licenses_title" />
-
-    </android.support.v7.preference.PreferenceCategory>
-
-    <android.support.v7.preference.PreferenceCategory
-        android:layout="@layout/preference_category_layout_divider"
-        android:title="@string/settings_information_group"
-        android:key="app">
-
-        <android.support.v7.preference.Preference
-            android:icon="@drawable/ic_language"
-            android:key="language"
-            android:layout="@layout/preference_layout"
-            android:title="@string/language" />
 
     </android.support.v7.preference.PreferenceCategory>
 
