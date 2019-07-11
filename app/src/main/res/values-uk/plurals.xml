@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="ImpliedQuantity">
+
     <plurals name="day">
-        <item quantity="one">day</item>
-        <item quantity="other">days</item>
+        <item quantity="one">день</item>
+        <item quantity="few">дні</item>
+        <item quantity="many">днів</item>
     </plurals>
 
     <plurals name="hour">
-        <item quantity="one">hour</item>
-        <item quantity="other">hours</item>
+        <item quantity="one">година</item>
+        <item quantity="few">години</item>
+        <item quantity="many">годин</item>
     </plurals>
 
     <plurals name="minute">
-        <item quantity="one">minute</item>
-        <item quantity="other">minutes</item>
+        <item quantity="one">хвилина</item>
+        <item quantity="few">хвилини</item>
+        <item quantity="many">хвилин</item>
     </plurals>
 
     <plurals name="vote_with_percent">
-        <item quantity="zero">No votes</item>
-        <item quantity="one">%1$d vote – %2$.1f%%</item>
-        <item quantity="other">%1$d votes – %2$.1f%%</item>
+        <item quantity="one">%1$d голос – %2$.1f%%</item>
+        <item quantity="few">%1$d голоса – %2$.1f%%</item>
+        <item quantity="many">%1$d голосів – %2$.1f%%</item>
     </plurals>
 </resources>

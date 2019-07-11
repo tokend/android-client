@@ -3,7 +3,7 @@
     <string name="app_name">TokenD</string>
     <string name="authenticator_app_name">TokenD Authenticator</string>
 
-    <string name="sign_up">Зарегистрироваться</string>
+    <string name="sign_up">Регистрация</string>
     <string name="sign_in">Войти</string>
     <string name="email">Email</string>
     <string name="password">Пароль</string>
@@ -32,7 +32,7 @@
     </string>
     <string name="validate_recovery_seed_explanation">Пожалуйста, проверьте ключ в поле ниже
         чтобы убедиться, что он скопирован правильно</string>
-    <string name="seed_copied">Ключ был скопирован</string>
+    <string name="seed_copied">Ключ скопирован</string>
     <string name="cancel">Отмена</string>
     <string name="ok">OK</string>
     <string name="no">Нет</string>
@@ -294,7 +294,7 @@
         • Пока кампания активна вы можете изменять суммы ваших инвестиций или отменять их\n\n
         • При отмене инвестиции вам возвращаются заблокированные средства\n\n
         • Если кампания достигнет цели к дате завершения вы получите сумму в ее активе
-        соответствующую вашим инвестициям, иначе же все инвестиции будут возвращены.
+        соответствующую вашим инвестициям, иначе же все инвестиции будут отменены.
     </string>
     <string name="limits_title">Лимиты</string>
     <string name="payment">Платеж</string>
