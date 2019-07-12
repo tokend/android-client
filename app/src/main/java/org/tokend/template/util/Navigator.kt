@@ -289,10 +289,8 @@ class Navigator private constructor() {
                 openPendingOfferDetails(OfferRecord.fromBalanceChange(change))
                 return
             }
-            is BalanceChangeCause.SaleCancellation -> SaleCancellationDetailsActivity::class.java
-            is BalanceChangeCause.OfferCancellation -> OfferCancellationDetailsActivity::class.java
             is BalanceChangeCause.AssetPairUpdate -> AssetPairUpdateDetailsActivity::class.java
-            is BalanceChangeCause.Unknown -> UnknownDetailsActivity::class.java
+            else -> DefaultBalanceChangeDetailsActivity::class.java
         }
 
         Intent(context, activityClass)

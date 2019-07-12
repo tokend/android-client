@@ -18,7 +18,6 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
             return
         }
 
-        displayOperationName(getString(R.string.offer_match))
         displayPrice(details)
         displayChargedOrFunded(item, details)
     }

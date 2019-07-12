@@ -162,7 +162,7 @@
             android:name=".features.wallet.details.AssetPairUpdateDetailsActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".features.wallet.details.UnknownDetailsActivity"
+            android:name=".features.wallet.details.DefaultBalanceChangeDetailsActivity"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".features.trade.TradeActivity"
