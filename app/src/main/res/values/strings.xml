@@ -342,7 +342,6 @@
 
     <string name="unknown_balance_change">Balance change</string>
 
-    <string name="balance_change_cause_unknown">Unknown</string>
     <string name="balance_change_cause_aml">AML alert</string>
     <string name="balance_change_cause_investment">Investment</string>
     <string name="balance_change_cause_matched_offer">Order</string>
@@ -354,6 +353,8 @@
     <string name="balance_change_cause_sale_cancellation">Sale cancellation</string>
     <string name="balance_change_cause_asset_pair_update">Asset pair update</string>
     <string name="balance_change_cause_offer_cancellation">Order cancellation</string>
+    <string name="balance_change_cause_aswap_ask_creation">Direct buy offer creation</string>
+    <string name="balance_change_cause_aswap_bid_creation">Direct buy</string>
 
     <string name="asset_pair_title">Asset pair</string>
     <string name="asset_pair_code">Code</string>

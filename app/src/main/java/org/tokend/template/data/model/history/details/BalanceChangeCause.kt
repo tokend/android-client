@@ -242,4 +242,10 @@ sealed class BalanceChangeCause : Serializable {
         val isTradeable: Boolean
             get() = checkPolicy(policies, AssetPairPolicy.TRADEABLE_SECONDARY_MARKET.value)
     }
+
+    // ------- Atomic swap ask creation ------- //
+    object AtomicSwapAskCreation: BalanceChangeCause()
+
+    // ------- Atomic swap bid creation ------- //
+    object AtomicSwapBidCreation: BalanceChangeCause()
 }

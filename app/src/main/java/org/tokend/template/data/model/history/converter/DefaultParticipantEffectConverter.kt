@@ -158,6 +158,10 @@ class DefaultParticipantEffectConverter: ParticipantEffectConverter {
                     BalanceChangeCause.AmlAlert(operationDetails)
                 is OpManageAssetPairDetailsResource ->
                     BalanceChangeCause.AssetPairUpdate(operationDetails)
+                is OpCreateAtomicSwapAskRequestDetailsResource ->
+                    BalanceChangeCause.AtomicSwapAskCreation
+                is OpCreateAtomicSwapBidRequestDetailsResource ->
+                    BalanceChangeCause.AtomicSwapAskCreation
                 else ->
                     BalanceChangeCause.Unknown
             }

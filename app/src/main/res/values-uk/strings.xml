@@ -342,7 +342,6 @@
 
     <string name="unknown_balance_change">Зміна балансу</string>
 
-    <string name="balance_change_cause_unknown">Невідомо</string>
     <string name="balance_change_cause_aml">Блокування по AML</string>
     <string name="balance_change_cause_investment">Інвестиція</string>
     <string name="balance_change_cause_matched_offer">Ордер</string>
@@ -354,6 +353,8 @@
     <string name="balance_change_cause_sale_cancellation">Скасування кампанії</string>
     <string name="balance_change_cause_asset_pair_update">Оновлення торгової пари</string>
     <string name="balance_change_cause_offer_cancellation">Скасування ордера</string>
+    <string name="balance_change_cause_aswap_ask_creation">Створення прямого продажу</string>
+    <string name="balance_change_cause_aswap_bid_creation">Пряма покупка</string>
 
     <string name="asset_pair_title">Торгова пара</string>
     <string name="asset_pair_code">Код</string>
