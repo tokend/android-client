@@ -200,6 +200,8 @@ class BalanceDetailsActivity : BaseActivity() {
             menu_fab.close(false)
         }
         buy_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_buy_fab))
+
+        menu_fab.setClosedOnTouchOutside(true)
     }
 
     private val hideFabScrollListener =
