@@ -21,10 +21,10 @@ import org.jetbrains.anko.enabled
 import org.tokend.template.R
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
+import org.tokend.template.features.send.model.PaymentRecipient
 import org.tokend.template.features.send.recipient.logic.PaymentRecipientLoader
 import org.tokend.template.features.send.recipient.model.Contact
 import org.tokend.template.features.send.recipient.model.ContactEmail
-import org.tokend.template.features.send.model.PaymentRecipient
 import org.tokend.template.features.send.recipient.repository.ContactsRepository
 import org.tokend.template.features.send.recipient.view.adapter.ContactListItem
 import org.tokend.template.features.send.recipient.view.adapter.ContactsAdapter
@@ -177,19 +177,28 @@ class PaymentRecipientFragment : BaseFragment() {
         }
     }
 
-    private fun checkRecipient() {
-        val recipient = recipient_edit_text.text.toString().trim()
+    private fun readAndCheckRecipient(): String {
+        val recipient = recipient_edit_text.text
+                .toString()
+                .trim()
+                .split(' ', '\r', '\n')
+                .first()
 
         val validAccountId = Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID,
                 recipient.toCharArray())
         val validEmail = EmailValidator.isValid(recipient)
 
-        if (recipient.isEmpty()) {
-            recipient_edit_text.error = getString(R.string.error_cannot_be_empty)
-        } else if (!validAccountId && !validEmail) {
-            recipient_edit_text.error = getString(R.string.error_invalid_recipient)
-        } else {
-            recipient_edit_text.error = null
+        return when {
+            validAccountId -> Base32Check.encodeAccountId(Base32Check.decodeAccountId(recipient))
+            validEmail -> recipient
+            else -> {
+                if (recipient.isEmpty()) {
+                    recipient_edit_text.error = getString(R.string.error_cannot_be_empty)
+                } else {
+                    recipient_edit_text.error = getString(R.string.error_invalid_recipient)
+                }
+                ""
+            }
         }
     }
 
@@ -201,14 +210,12 @@ class PaymentRecipientFragment : BaseFragment() {
 
     private var recipientLoadingDisposable: Disposable? = null
     private fun tryToLoadRecipient() {
-        checkRecipient()
+        val recipient = readAndCheckRecipient()
         updateContinueAvailability()
 
         if (!canContinue) {
             return
         }
-
-        val recipient = recipient_edit_text.text.toString().trim()
 
         recipientLoadingDisposable?.dispose()
         recipientLoadingDisposable =
@@ -259,8 +266,7 @@ class PaymentRecipientFragment : BaseFragment() {
         QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
             recipient_edit_text.setText(it)
             recipient_edit_text.setSelection(recipient_edit_text.text?.length ?: 0)
-            checkRecipient()
-            updateContinueAvailability()
+            tryToLoadRecipient()
         }
     }
 
