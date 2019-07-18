@@ -40,4 +40,5 @@ interface RepositoryProvider {
     fun investmentInfo(sale: SaleRecord): InvestmentInfoRepository
     fun polls(ownerAccountId: String): PollsRepository
     fun atomicSwapAsks(asset: String): AtomicSwapRequestsRepository
+    fun keyValueEntries(): KeyValueEntriesRepository
 }
