@@ -94,7 +94,7 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
 
     private fun updateChoicesBackground(currentChoice: Int?,
                                         item: PollListItem) {
-        choicesLayout.forEachChildWithIndex { i, choiceView ->
+        choicesLayout.forEachChildWithIndex { _, choiceView ->
             val choiceIndex = choiceView.tag as? Int
                     ?: return@forEachChildWithIndex
 

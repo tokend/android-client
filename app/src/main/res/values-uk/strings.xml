@@ -423,7 +423,7 @@
     <string name="template_send_to_address">Відправте %1$s на цю адресу</string>
     <string name="template_atomic_swap_invoice_share_text">Відправте %1$s на цю адресу для купівлі %2$s:\n%3$s</string>
     <string name="address_payload">Примітка</string>
-    <string name="poll_ended">Завершено</string>
+    <string name="poll_ended">Завершене</string>
     <string name="you_have_no_balances">Балансів немає</string>
     <string name="template_days_to_go">%1$d %2$s до кінця</string>
     <string name="settings_app_group">Додаток</string>
