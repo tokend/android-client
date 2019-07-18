@@ -56,7 +56,7 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
             choiceView.text = choice.name
             choiceView.tag = i
 
-            if (item.canVote) {
+            if (item.canChoose) {
                 choiceView.onClick { onNewChoice(i, item, actionListener) }
             }
 
@@ -119,7 +119,7 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
     private fun updateActionButtonState(currentChoice: Int?,
                                         item: PollListItem,
                                         actionListener: (PollActionListener)?) {
-        if (item.hasResults || item.isEnded) {
+        if (!item.canVote) {
             actionButton.visibility = View.GONE
             actionButtonPlaceholder.visibility = View.VISIBLE
             return
@@ -128,25 +128,23 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
         actionButton.visibility = View.VISIBLE
         actionButtonPlaceholder.visibility = View.GONE
 
-        if (currentChoice == null) {
+        val hasChoice = currentChoice != null
+
+        if (!hasChoice) {
             actionButton.text = actionButtonVoteTitle
             actionButton.isEnabled = false
         } else {
-            actionButton.text =
-                    if (item.canVote)
-                        actionButtonVoteTitle
-                    else
-                        actionButtonRemoveVoteTitle
-
             actionButton.isEnabled = true
 
-            if (actionListener != null) {
-                actionButton.setOnClickListener {
-                    if (item.canVote) {
-                        actionListener.invoke(item, currentChoice)
-                    } else {
-                        actionListener.invoke(item, null)
-                    }
+            if (item.canChoose) {
+                actionButton.text = actionButtonVoteTitle
+                if (actionListener != null) {
+                    actionButton.setOnClickListener { actionListener.invoke(item, currentChoice) }
+                }
+            } else {
+                actionButton.text = actionButtonRemoveVoteTitle
+                if (actionListener != null) {
+                    actionButton.setOnClickListener { actionListener.invoke(item, null) }
                 }
             }
         }

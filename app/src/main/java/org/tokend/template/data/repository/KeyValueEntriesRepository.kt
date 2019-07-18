@@ -15,6 +15,8 @@ class KeyValueEntriesRepository(
         private val apiProvider: ApiProvider,
         itemsCache: RepositoryCache<KeyValueEntryRecord>
 ) : SimpleMultipleItemsRepository<KeyValueEntryRecord>(itemsCache) {
+    private val entriesMap = mutableMapOf<String, KeyValueEntryRecord>()
+
     override fun getItems(): Single<List<KeyValueEntryRecord>> {
         val loader = SimplePagedResourceLoader({ nextCursor ->
             apiProvider
@@ -24,7 +26,8 @@ class KeyValueEntriesRepository(
                     .get(
                             PagingParamsV2(
                                     order = PagingOrder.ASC,
-                                    limit = 20
+                                    limit = 20,
+                                    page = nextCursor
                             )
                     )
         }, distinct = false)
@@ -35,5 +38,15 @@ class KeyValueEntriesRepository(
                 .map { entries ->
                     entries.mapSuccessful(KeyValueEntryRecord.Companion::fromResource)
                 }
+    }
+
+    override fun cacheNewItems(newItems: List<KeyValueEntryRecord>) {
+        super.cacheNewItems(newItems)
+        entriesMap.clear()
+        newItems.associateByTo(entriesMap, KeyValueEntryRecord::key)
+    }
+
+    fun getEntry(key: String): KeyValueEntryRecord? {
+        return entriesMap[key]
     }
 }

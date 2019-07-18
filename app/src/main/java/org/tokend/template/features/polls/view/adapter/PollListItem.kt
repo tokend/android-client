@@ -10,7 +10,6 @@ class PollListItem(
         val canVote: Boolean,
         val isEnded: Boolean,
         val endDate: Date,
-        val hasResults: Boolean,
         val source: PollRecord?
 ) {
     constructor(source: PollRecord) : this(
@@ -18,9 +17,10 @@ class PollListItem(
             choices = source.choices.toList(),
             currentChoice = source.currentChoice,
             canVote = source.canVote,
-            hasResults = source.hasResults,
             isEnded = source.isEnded,
             endDate = source.endDate,
             source = source
     )
+
+    val canChoose = canVote && currentChoice == null
 }

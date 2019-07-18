@@ -9,6 +9,8 @@ import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.v3.polls.params.PollsPageParams
 import org.tokend.sdk.api.v3.polls.params.VotesPageParams
 import org.tokend.sdk.utils.SimplePagedResourceLoader
+import org.tokend.template.data.model.KeyValueEntryRecord
+import org.tokend.template.data.repository.KeyValueEntriesRepository
 import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
@@ -20,6 +22,7 @@ class PollsRepository(
         private val ownerAccountId: String,
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
+        private val keyValueEntriesRepository: KeyValueEntriesRepository,
         itemsCache: RepositoryCache<PollRecord>
 ) : SimpleMultipleItemsRepository<PollRecord>(itemsCache) {
     override fun getItems(): Single<List<PollRecord>> {
@@ -51,17 +54,33 @@ class PollsRepository(
                             )
                     )
                     .map { pollsPage ->
+                        val choiceChangeAllowedType = (
+                                keyValueEntriesRepository
+                                        .getEntry(KEY_POLL_TYPE_CHOICE_CHANGE_ALLOWED)
+                                        as? KeyValueEntryRecord.Number
+                                )
+                                ?.value
+
                         DataPage(
                                 isLast = pollsPage.isLast,
                                 nextCursor = pollsPage.nextCursor,
-                                items = pollsPage.items.mapSuccessful(PollRecord.Companion::fromResource)
+                                items = pollsPage.items.mapSuccessful { pollResource ->
+                                    PollRecord.fromResource(
+                                            pollResource,
+                                            choiceChangeAllowedType
+                                    )
+                                }
                         )
                     }
         })
 
-        return loader
-                .loadAll()
-                .toSingle()
+        return keyValueEntriesRepository
+                .updateIfNotFreshDeferred()
+                .andThen(
+                        loader
+                                .loadAll()
+                                .toSingle()
+                )
     }
 
     private fun getVotes(): Single<Map<String, Int>> {
@@ -107,5 +126,9 @@ class PollsRepository(
                     pollToUpdate.currentChoice = choice
                     broadcast()
                 }
+    }
+
+    private companion object {
+        private const val KEY_POLL_TYPE_CHOICE_CHANGE_ALLOWED = "poll_type:unrestricted"
     }
 }

@@ -14,6 +14,7 @@ class PollRecord(
         val choices: List<Choice>,
         var currentChoice: Int?,
         val isEnded: Boolean,
+        val isChoiceChangeAllowed: Boolean,
         val endDate: Date
 ) {
     private class ChoiceData
@@ -43,9 +44,8 @@ class PollRecord(
         }
     }
 
-    val hasResults = choices.all { it.result != null }
     val canVote: Boolean
-        get() = currentChoice == null && !isEnded
+        get() = (currentChoice == null || isChoiceChangeAllowed) && !isEnded
 
     override fun hashCode(): Int {
         return id.hashCode()
@@ -56,7 +56,12 @@ class PollRecord(
     }
 
     companion object {
-        fun fromResource(source: PollResource): PollRecord {
+        /**
+         * @param permissionTypeAllowChoiceChange key-value entry value
+         * for [PollResource.permissionType] which allows choice change
+         */
+        fun fromResource(source: PollResource,
+                         permissionTypeAllowChoiceChange: Long?): PollRecord {
             val details = source.creatorDetails
 
             val subject = details.get("question").asText()
@@ -91,6 +96,8 @@ class PollRecord(
                         )
                     }
 
+            val isChoiceChangeAllowed = source.permissionType == permissionTypeAllowChoiceChange
+
             return PollRecord(
                     id = source.id,
                     ownerAccountId = source.owner.id,
@@ -98,6 +105,7 @@ class PollRecord(
                     choices = choices,
                     currentChoice = null,
                     isEnded = pollIsEnded,
+                    isChoiceChangeAllowed = isChoiceChangeAllowed,
                     endDate = source.endTime
             )
         }

@@ -254,7 +254,8 @@ class RepositoryProviderImpl(
 
     override fun polls(ownerAccountId: String): PollsRepository {
         return pollsRepositoriesByOwnerAccountId.getOrPut(ownerAccountId) {
-            PollsRepository(ownerAccountId, apiProvider, walletInfoProvider, PollsCache())
+            PollsRepository(ownerAccountId, apiProvider, walletInfoProvider,
+                    keyValueEntries(), PollsCache())
         }
     }
 
