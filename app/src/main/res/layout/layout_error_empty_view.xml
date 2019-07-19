@@ -28,7 +28,7 @@
         tools:text="Something went wrong" />
 
     <Button
-        android:id="@+id/action_button"
+        android:id="@+id/error_action_button"
         style="@style/SecondaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,4 +36,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/standard_padding"
         android:text="@string/retry" />
+
+    <Button
+        android:id="@+id/empty_action_button"
+        style="@style/PrimaryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/message_text_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/standard_padding"
+        android:text="@string/confirm_action" />
 </merge>

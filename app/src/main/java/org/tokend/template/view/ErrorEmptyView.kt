@@ -31,9 +31,14 @@ class ErrorEmptyView @JvmOverloads constructor(
         attributeSet: AttributeSet? = null,
         defStyleAttr: Int = 0
 ) : RelativeLayout(context, attributeSet, defStyleAttr) {
+    data class ButtonAction(
+            val title: String,
+            val listener: () -> Unit
+    )
 
     private val messageTextView: TextView
-    private val actionButton: Button
+    private val errorActionButton: Button
+    private val emptyActionButton: Button
     private val iconImageView: AppCompatImageView
 
     private var emptyDrawable: Drawable? = null
@@ -51,7 +56,8 @@ class ErrorEmptyView @JvmOverloads constructor(
                 this, true)
 
         messageTextView = findViewById(R.id.message_text_view)
-        actionButton = findViewById(R.id.action_button)
+        errorActionButton = findViewById(R.id.error_action_button)
+        emptyActionButton = findViewById(R.id.empty_action_button)
         iconImageView = findViewById(R.id.icon_image_view)
 
         attributeSet?.let {
@@ -167,18 +173,29 @@ class ErrorEmptyView @JvmOverloads constructor(
     /**
      * Shows empty state with given message.
      */
-    fun showEmpty(@StringRes messageId: Int) {
-        showEmpty(context.getString(messageId))
+    fun showEmpty(@StringRes messageId: Int,
+                  buttonAction: ButtonAction? = null) {
+        showEmpty(context.getString(messageId), buttonAction)
     }
 
     /**
      * Shows empty state with given message.
      */
-    fun showEmpty(message: String) {
+    fun showEmpty(message: String,
+                  buttonAction: ButtonAction? = null) {
         visibility = View.VISIBLE
 
         messageTextView.text = message
-        actionButton.visibility = View.GONE
+        errorActionButton.visibility = View.GONE
+
+        if (buttonAction != null) {
+            emptyActionButton.visibility = View.VISIBLE
+            emptyActionButton.text = buttonAction.title
+            emptyActionButton.onClick { buttonAction.listener.invoke() }
+        } else {
+            emptyActionButton.visibility = View.GONE
+        }
+
 
         setIcon(emptyDrawable)
     }
@@ -205,17 +222,32 @@ class ErrorEmptyView @JvmOverloads constructor(
      * If not set the button will be invisible
      */
     fun showError(error: String?, actionButtonClick: (() -> Unit)? = null) {
+        showError(
+                error,
+                actionButtonClick?.let { ButtonAction(context.getString(R.string.retry), it) }
+        )
+    }
+
+    /**
+     * Shows error state
+     *
+     * @param error message to display
+     * @param buttonAction if not set the button will be invisible
+     */
+    fun showError(error: String?, buttonAction: ButtonAction? = null) {
         error ?: return
 
         visibility = View.VISIBLE
 
         messageTextView.text = error
+        emptyActionButton.visibility = View.GONE
 
-        if (actionButtonClick != null) {
-            actionButton.visibility = View.VISIBLE
-            actionButton.onClick { actionButtonClick.invoke() }
+        if (buttonAction != null) {
+            errorActionButton.visibility = View.VISIBLE
+            errorActionButton.text = buttonAction.title
+            errorActionButton.onClick { buttonAction.listener.invoke() }
         } else {
-            actionButton.visibility = View.GONE
+            errorActionButton.visibility = View.GONE
         }
 
         setIcon(errorDrawable)
@@ -228,10 +260,15 @@ class ErrorEmptyView @JvmOverloads constructor(
      * @param messageId empty state message id
      */
     fun observeAdapter(adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
-                       @StringRes messageId: Int) {
-        adapter.registerAdapterDataObserver(getEmptyObserver(adapter) {
-            context.getString(messageId)
-        })
+                       @StringRes messageId: Int,
+                       buttonAction: ButtonAction? = null) {
+        adapter.registerAdapterDataObserver(
+                getEmptyObserver(
+                        adapter,
+                        { context.getString(messageId) },
+                        buttonAction
+                )
+        )
     }
 
     /**
@@ -241,8 +278,11 @@ class ErrorEmptyView @JvmOverloads constructor(
      * @param messageProvider provider of the empty state message
      */
     fun observeAdapter(adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
-                       messageProvider: () -> String) {
-        adapter.registerAdapterDataObserver(getEmptyObserver(adapter, messageProvider))
+                       messageProvider: () -> String,
+                       buttonAction: ButtonAction? = null) {
+        adapter.registerAdapterDataObserver(
+                getEmptyObserver(adapter, messageProvider, buttonAction)
+        )
     }
 
     /**
@@ -258,7 +298,8 @@ class ErrorEmptyView @JvmOverloads constructor(
     }
 
     private fun getEmptyObserver(adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
-                                 messageProvider: () -> String):
+                                 messageProvider: () -> String,
+                                 buttonAction: ButtonAction?):
             RecyclerView.AdapterDataObserver {
         return object : RecyclerView.AdapterDataObserver() {
             private fun operate() {
@@ -266,7 +307,7 @@ class ErrorEmptyView @JvmOverloads constructor(
                     hide()
                 } else {
                     if (!emptyViewDenial()) {
-                        showEmpty(messageProvider())
+                        showEmpty(messageProvider(), buttonAction)
                     } else {
                         hide()
                     }

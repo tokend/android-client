@@ -68,12 +68,12 @@ class OffersFragment : BaseFragment() {
         }
 
         error_empty_view.setEmptyDrawable(R.drawable.ic_pending)
-        error_empty_view.observeAdapter(adapter) {
+        error_empty_view.observeAdapter(adapter, messageProvider = {
             if (onlyPrimary)
                 getString(R.string.no_pending_investments)
             else
                 getString(R.string.no_pending_offers)
-        }
+        })
         error_empty_view.setEmptyViewDenial { offersRepository.isNeverUpdated }
 
         history_list.adapter = adapter
@@ -159,7 +159,7 @@ class OffersFragment : BaseFragment() {
             putSerializable(ASSET_PAIR_EXTRA, assetPair)
         }
 
-        fun getBundle(onlyPrimary: Boolean)  = Bundle().apply {
+        fun getBundle(onlyPrimary: Boolean) = Bundle().apply {
             putBoolean(ONLY_PRIMARY_EXTRA, onlyPrimary)
         }
     }
