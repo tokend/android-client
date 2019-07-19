@@ -113,7 +113,7 @@
     <string name="asset_can_be_transferred">Може пересилатися</string>
     <string name="asset_can_not_be_transferred">Не може пересилатися</string>
     <string name="asset_can_be_withdrawn">Може виводитися</string>
-    <string name="asset_can_not_be_withdrawn">Може виводитися</string>
+    <string name="asset_can_not_be_withdrawn">Не може виводитися</string>
 
     <string name="dashboard_title">Панель управління</string>
     <string name="deposit_title">Депозит</string>
