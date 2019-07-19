@@ -127,7 +127,7 @@ class SaleOverviewFragment : SaleFragment() {
 
         SaleOverviewMarkdownLoader(
                 requireContext(),
-                BlobManager(apiProvider, walletInfoProvider)
+                BlobManager(apiProvider)
         )
                 .load(blobId)
                 .compose(ObservableTransformers.defaultSchedulersSingle())
