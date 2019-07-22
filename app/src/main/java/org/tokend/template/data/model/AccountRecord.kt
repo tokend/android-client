@@ -1,6 +1,5 @@
 package org.tokend.template.data.model
 
-import org.json.JSONException
 import org.json.JSONObject
 import org.tokend.sdk.api.generated.resources.AccountResource
 import org.tokend.sdk.api.generated.resources.ExternalSystemIdResource
@@ -45,7 +44,7 @@ class AccountRecord(
                     }
 
                     addressData.getString(FIELD_ADDRESS)
-                } catch (e: JSONException) {
+                } catch (_: Exception) {
                     source.data
                 }
 
