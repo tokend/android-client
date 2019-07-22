@@ -112,7 +112,7 @@ class WithdrawTest {
         Assert.assertEquals("Withdrawal request amount must be equal to the requested one",
                 0, amount.compareTo(request.amount))
         Assert.assertEquals("Withdrawal request asset must be equal to the requested one",
-                asset, request.asset)
+                asset, request.asset.code)
         Assert.assertEquals("Withdrawal request destination address must be equal to the requested one",
                 destAddress, request.destinationAddress)
         Assert.assertEquals("Withdrawal request account ID must be equal to the actual one",
