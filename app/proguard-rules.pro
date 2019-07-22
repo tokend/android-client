@@ -80,3 +80,8 @@
 -keepclassmembers class android.support.design.internal.BottomNavigationMenuView {
     boolean mShiftingMode;
 }
+
+# Keep JsonCreator
+-keepclassmembers class * {
+     @com.fasterxml.jackson.annotation.JsonCreator *;
+}
