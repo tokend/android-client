@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [Unreleased]
+
+### Added
+- Support of deposit addresses with payload
+- Empty view to balances screen
+- End date countdown for polls
+- Ukrainian and Russian translations
+- Handling of poll re-vote rule
+
+### Changed
+- Reduced QR generator error correction level
+- Made space in amount-asset string non-breakable
+- Use account-sales endpoint to load sales
+- Use V3 transactions endpoint to submit transactions
+- Display active polls on the top
+
+### Removed
+- Sales filter by name :(
+- Recovery seed confirmation and password recovery (temporarily)
+
+### Fixed
+- Non-working swipe refresh on asset buy screen
+- Closing action menu on touch outside
+
 ## [1.11.0] 2019-07.11
 
 ### Added
