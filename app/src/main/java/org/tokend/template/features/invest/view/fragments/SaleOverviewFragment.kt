@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.layout_sale_picture.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
-import org.tokend.template.features.invest.logic.BlobManager
 import org.tokend.template.features.invest.logic.SaleOverviewMarkdownLoader
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.util.ObservableTransformers
@@ -127,7 +126,7 @@ class SaleOverviewFragment : SaleFragment() {
 
         SaleOverviewMarkdownLoader(
                 requireContext(),
-                BlobManager(apiProvider)
+                repositoryProvider.blobs()
         )
                 .load(blobId)
                 .compose(ObservableTransformers.defaultSchedulersSingle())

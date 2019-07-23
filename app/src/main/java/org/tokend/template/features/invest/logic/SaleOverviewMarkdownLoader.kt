@@ -6,6 +6,7 @@ import io.reactivex.Single
 import org.tokend.sdk.api.blobs.model.Blob
 import org.tokend.sdk.factory.HttpClientFactory
 import org.tokend.template.BuildConfig
+import org.tokend.template.data.repository.BlobsRepository
 import ru.noties.markwon.Markwon
 import ru.noties.markwon.SpannableConfiguration
 import ru.noties.markwon.il.AsyncDrawableLoader
@@ -15,7 +16,7 @@ import ru.noties.markwon.spans.SpannableTheme
  * Loads sale overview blob content and transforms it to markdown
  */
 class SaleOverviewMarkdownLoader(context: Context,
-                                 private val blobManager: BlobManager) {
+                                 private val blobsRepository: BlobsRepository) {
     private val markdownConfiguration = SpannableConfiguration
             .builder(context)
             .theme(
@@ -40,8 +41,8 @@ class SaleOverviewMarkdownLoader(context: Context,
             .build()
 
     fun load(blobId: String): Single<CharSequence> {
-        return blobManager
-                .getBlob(blobId)
+        return blobsRepository
+                .getById(blobId)
                 .map(Blob::valueString)
                 .map { rawValue ->
                     try {

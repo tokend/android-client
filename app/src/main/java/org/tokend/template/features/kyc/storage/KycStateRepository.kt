@@ -14,10 +14,10 @@ import org.tokend.sdk.api.requests.model.base.RequestState
 import org.tokend.sdk.api.v3.requests.params.ChangeRoleRequestPageParams
 import org.tokend.sdk.api.v3.requests.params.RequestParamsV3
 import org.tokend.sdk.utils.extentions.getTypedRequestDetails
+import org.tokend.template.data.repository.BlobsRepository
 import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.features.invest.logic.BlobManager
 import org.tokend.template.features.kyc.model.KycState
 import org.tokend.template.features.kyc.model.form.EmptyKycForm
 import org.tokend.template.features.kyc.model.form.KycForm
@@ -29,7 +29,8 @@ import org.tokend.template.features.kyc.model.form.SimpleKycForm
 class KycStateRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
-        private val submittedStatePersistor: SubmittedKycStatePersistor?
+        private val submittedStatePersistor: SubmittedKycStatePersistor?,
+        private val blobsRepository: BlobsRepository
 ) : SimpleSingleItemRepository<KycState>() {
     private class NoRequestFoundException : Exception()
 
@@ -145,8 +146,8 @@ class KycStateRepository(
             return Single.just(EmptyKycForm())
         }
 
-        return BlobManager(apiProvider)
-                .getPrivateBlob(blobId)
+        return blobsRepository
+                .getById(blobId, true)
                 .map { blob ->
                     try {
                         blob.getValue(SimpleKycForm::class.java)
