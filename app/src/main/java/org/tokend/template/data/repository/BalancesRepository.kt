@@ -1,4 +1,4 @@
-package org.tokend.template.data.repository.balances
+package org.tokend.template.data.repository
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.reactivex.Completable
@@ -11,7 +11,6 @@ import org.tokend.sdk.api.v3.balances.params.ConvertedBalancesParams
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.SimpleAsset
-import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.AccountProvider

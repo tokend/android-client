@@ -1,4 +1,4 @@
-package org.tokend.template.data.repository.tradehistory
+package org.tokend.template.data.repository
 
 import io.reactivex.Single
 import org.jetbrains.anko.collections.forEachReversedByIndex

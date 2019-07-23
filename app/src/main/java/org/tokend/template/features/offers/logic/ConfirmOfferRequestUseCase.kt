@@ -3,7 +3,7 @@ package org.tokend.template.features.offers.logic
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.tokend.template.data.repository.SystemInfoRepository
-import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.data.repository.BalancesRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.features.offers.model.OfferRequest

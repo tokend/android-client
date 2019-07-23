@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.assets.AssetsRepository
-import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.data.repository.BalancesRepository
 import org.tokend.template.features.assets.adapter.AssetListItem
 import org.tokend.template.features.assets.adapter.AssetsAdapter
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase

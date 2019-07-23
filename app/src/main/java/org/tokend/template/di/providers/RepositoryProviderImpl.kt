@@ -10,11 +10,11 @@ import org.tokend.template.data.repository.assets.AssetChartRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
-import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.data.repository.BalancesRepository
 import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
-import org.tokend.template.data.repository.tfa.TfaFactorsRepository
-import org.tokend.template.data.repository.tradehistory.TradeHistoryRepository
+import org.tokend.template.data.repository.TfaFactorsRepository
+import org.tokend.template.data.repository.TradeHistoryRepository
 import org.tokend.template.extensions.getOrPut
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.repository.InvestmentInfoRepository

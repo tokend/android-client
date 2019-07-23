@@ -23,7 +23,7 @@ import org.tokend.template.R
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
-import org.tokend.template.data.repository.balances.BalancesRepository
+import org.tokend.template.data.repository.BalancesRepository
 import org.tokend.template.features.amountscreen.model.AmountInputResult
 import org.tokend.template.features.withdraw.amount.view.WithdrawAmountFragment
 import org.tokend.template.features.withdraw.destination.view.WithdrawDestinationFragment

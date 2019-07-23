@@ -20,7 +20,7 @@ import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
-import org.tokend.template.data.repository.tfa.TfaFactorsRepository
+import org.tokend.template.data.repository.TfaFactorsRepository
 import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
 import org.tokend.template.features.tfa.logic.EnableTfaUseCase

@@ -1,4 +1,4 @@
-package org.tokend.template.data.repository.tfa
+package org.tokend.template.data.repository
 
 import io.reactivex.Completable
 import io.reactivex.Single
