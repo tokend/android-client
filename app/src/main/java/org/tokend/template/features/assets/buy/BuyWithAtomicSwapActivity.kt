@@ -137,7 +137,7 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
         disposable = CreateAtomicSwapBidUseCase(
                 amount = amount,
                 quoteAssetCode = assetCode,
-                askId = ask.id,
+                ask = ask,
                 repositoryProvider = repositoryProvider,
                 walletInfoProvider = walletInfoProvider,
                 accountProvider = accountProvider,

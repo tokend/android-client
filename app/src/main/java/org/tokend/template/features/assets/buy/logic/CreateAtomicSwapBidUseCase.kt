@@ -17,6 +17,7 @@ import org.tokend.sdk.api.v3.requests.params.RequestParamsV3
 import org.tokend.sdk.api.v3.requests.params.RequestsPageParamsV3
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.sdk.utils.extentions.encodeBase64String
+import org.tokend.template.data.model.AtomicSwapAskRecord
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.RepositoryProvider
@@ -35,12 +36,14 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Submits [CreateAtomicSwapBidRequestOp] and waits
- * for invoice to appear in related reviewable request details
+ * for invoice to appear in related reviewable request details.
+ *
+ * Updates asks repository on success
  */
 class CreateAtomicSwapBidUseCase(
         private val amount: BigDecimal,
         private val quoteAssetCode: String,
-        private val askId: String,
+        private val ask: AtomicSwapAskRecord,
         private val apiProvider: ApiProvider,
         private val repositoryProvider: RepositoryProvider,
         private val walletInfoProvider: WalletInfoProvider,
@@ -89,6 +92,9 @@ class CreateAtomicSwapBidUseCase(
                 .flatMap {
                     getInvoiceFromRequest()
                 }
+                .doOnSuccess {
+                    updateRepositories()
+                }
     }
 
     private fun getAccountId(): Single<String> {
@@ -114,7 +120,7 @@ class CreateAtomicSwapBidUseCase(
     private fun getTransaction(): Single<Transaction> {
         val op = CreateAtomicSwapBidRequestOp(
                 request = CreateAtomicSwapBidRequest(
-                        askID = askId.toLong(),
+                        askID = ask.id.toLong(),
                         quoteAsset = quoteAssetCode,
                         baseAmount = networkParams.amountToPrecised(amount),
                         // Unique data is required to identify the request
@@ -239,6 +245,10 @@ class CreateAtomicSwapBidUseCase(
                         }
                     }
                 }
+    }
+
+    private fun updateRepositories() {
+        repositoryProvider.atomicSwapAsks(ask.asset.code).updateIfEverUpdated()
     }
 
     companion object {
