@@ -17,6 +17,7 @@ import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onCheckedChange
 import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
+import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
@@ -199,7 +200,7 @@ class SignUpActivity : BaseActivity() {
                     password.fill('0')
                 }
                 .subscribeBy(
-                        onSuccess = { onSuccessfulSignUp() },
+                        onSuccess = this::onSuccessfulSignUp,
                         onError = this::handleSignUpError
                 )
                 .addTo(compositeDisposable)
@@ -231,8 +232,12 @@ class SignUpActivity : BaseActivity() {
         }
     }
 
-    private fun onSuccessfulSignUp() {
-        toastManager.long(R.string.check_your_email_to_verify_account)
+    private fun onSuccessfulSignUp(walletCreateResult: WalletCreateResult) {
+        if (walletCreateResult.walletData.attributes?.isVerified == true) {
+            toastManager.long(R.string.account_created_successfully)
+        } else {
+            toastManager.long(R.string.check_your_email_to_verify_account)
+        }
         Navigator.from(this).toSignIn(false)
     }
 }
