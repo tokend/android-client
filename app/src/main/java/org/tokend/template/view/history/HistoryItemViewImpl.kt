@@ -7,8 +7,7 @@ import android.widget.TextView
 import org.jetbrains.anko.find
 import org.tokend.template.R
 
-class HistoryItemViewImpl(val view: View,
-                          smallIcon: Boolean) : HistoryItemView {
+class HistoryItemViewImpl(val view: View) : HistoryItemView {
     override val iconImageView: AppCompatImageView = view.find(R.id.tx_icon_image_view)
     override val actionTextView: TextView = view.find(R.id.tx_action_text_view)
     override val actionDetailsTextView: TextView = view.find(R.id.tx_counterparty_text_view)
@@ -32,10 +31,6 @@ class HistoryItemViewImpl(val view: View,
         view.context.resources.getDimensionPixelSize(R.dimen.tx_list_item_icon_size)
     }
 
-    override val iconSizeSmall: Int by lazy {
-        view.context.resources.getDimensionPixelSize(R.dimen.tx_list_item_icon_size_small)
-    }
-
     override var dividerIsVisible: Boolean = true
         set(value) {
             field = value
@@ -47,12 +42,7 @@ class HistoryItemViewImpl(val view: View,
         }
 
     init {
-        if (smallIcon) {
-            iconImageView.layoutParams.height = iconSizeSmall
-            iconImageView.layoutParams.width = iconSizeSmall
-        } else {
-            iconImageView.layoutParams.height = iconSize
-            iconImageView.layoutParams.width = iconSize
-        }
+        iconImageView.layoutParams.height = iconSize
+        iconImageView.layoutParams.width = iconSize
     }
 }

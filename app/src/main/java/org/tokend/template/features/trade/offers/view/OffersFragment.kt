@@ -60,7 +60,7 @@ class OffersFragment : BaseFragment() {
     }
 
     private fun initList() {
-        adapter = PendingOffersAdapter(amountFormatter, false)
+        adapter = PendingOffersAdapter(amountFormatter)
         adapter.onItemClick { _, item ->
             item.source?.also {
                 Navigator.from(this).openPendingOfferDetails(it)

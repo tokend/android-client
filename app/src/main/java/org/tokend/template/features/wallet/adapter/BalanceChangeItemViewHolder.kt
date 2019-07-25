@@ -11,10 +11,9 @@ import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.formatter.DateFormatter
 
 class BalanceChangeItemViewHolder(view: View,
-                                  private val amountFormatter: AmountFormatter,
-                                  smallIcon: Boolean
+                                  private val amountFormatter: AmountFormatter
 ) : BaseViewHolder<BalanceChangeListItem>(view),
-        HistoryItemView by HistoryItemViewImpl(view, smallIcon) {
+        HistoryItemView by HistoryItemViewImpl(view) {
 
     private val iconFactory = BalanceChangeIconFactory(view.context)
     private val dateFormatter = DateFormatter(view.context)

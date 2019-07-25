@@ -9,9 +9,8 @@ import org.tokend.template.view.adapter.base.PaginationRecyclerAdapter
 import org.tokend.template.view.history.HistoryItemView
 import org.tokend.template.view.util.formatter.AmountFormatter
 
-class BalanceChangesAdapter(private val amountFormatter: AmountFormatter,
-                            private val smallIcons: Boolean
-) : PaginationRecyclerAdapter<BalanceChangeListItem, BaseViewHolder<BalanceChangeListItem>>() {
+class BalanceChangesAdapter(private val amountFormatter: AmountFormatter) :
+        PaginationRecyclerAdapter<BalanceChangeListItem, BaseViewHolder<BalanceChangeListItem>>() {
 
     class FooterViewHolder(v: View) : BaseViewHolder<BalanceChangeListItem>(v) {
         override fun bind(item: BalanceChangeListItem) {}
@@ -20,7 +19,7 @@ class BalanceChangesAdapter(private val amountFormatter: AmountFormatter,
     override fun createItemViewHolder(parent: ViewGroup): BalanceChangeItemViewHolder {
         val view = parent.context
                 .layoutInflater.inflate(R.layout.list_item_tx, parent, false)
-        return BalanceChangeItemViewHolder(view, amountFormatter, smallIcons)
+        return BalanceChangeItemViewHolder(view, amountFormatter)
     }
 
     override fun createFooterViewHolder(parent: ViewGroup): BaseViewHolder<BalanceChangeListItem> {

@@ -12,10 +12,9 @@ import org.tokend.template.view.util.formatter.DateFormatter
 
 class PendingOfferItemViewHolder(
         view: View,
-        private val amountFormatter: AmountFormatter,
-        smallIcon: Boolean
+        private val amountFormatter: AmountFormatter
 ) : BaseViewHolder<PendingOfferListItem>(view),
-        HistoryItemView by HistoryItemViewImpl(view, smallIcon) {
+        HistoryItemView by HistoryItemViewImpl(view) {
 
     private val incomingIcon: Drawable? =
             ContextCompat.getDrawable(view.context, R.drawable.ic_tx_received)

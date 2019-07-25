@@ -9,9 +9,8 @@ import org.tokend.template.view.adapter.base.PaginationRecyclerAdapter
 import org.tokend.template.view.history.HistoryItemView
 import org.tokend.template.view.util.formatter.AmountFormatter
 
-class PendingOffersAdapter(private val amountFormatter: AmountFormatter,
-                           private val smallIcons: Boolean
-) : PaginationRecyclerAdapter<PendingOfferListItem, BaseViewHolder<PendingOfferListItem>>() {
+class PendingOffersAdapter(private val amountFormatter: AmountFormatter) :
+        PaginationRecyclerAdapter<PendingOfferListItem, BaseViewHolder<PendingOfferListItem>>() {
     private class FooterViewHolder(view: View) : BaseViewHolder<PendingOfferListItem>(view) {
         override fun bind(item: PendingOfferListItem) {}
     }
@@ -25,7 +24,7 @@ class PendingOffersAdapter(private val amountFormatter: AmountFormatter,
     override fun createItemViewHolder(parent: ViewGroup): PendingOfferItemViewHolder {
         val view = parent.context
                 .layoutInflater.inflate(R.layout.list_item_tx, parent, false)
-        return PendingOfferItemViewHolder(view, amountFormatter, smallIcons)
+        return PendingOfferItemViewHolder(view, amountFormatter)
     }
 
     override fun bindItemViewHolder(holder: BaseViewHolder<PendingOfferListItem>, position: Int) {

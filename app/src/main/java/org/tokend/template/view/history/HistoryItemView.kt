@@ -13,7 +13,6 @@ interface HistoryItemView {
     val dividerView: View
 
     val iconSize: Int
-    val iconSizeSmall: Int
 
     val incomingColor: Int
     val outgoingColor: Int
