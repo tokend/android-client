@@ -48,6 +48,47 @@ class AccountDetailsRepository(
                 .map(IdentityRecord::email)
     }
 
+    fun getEmailsByAccountIds(accountIds: List<String>): Single<Map<String, String>> {
+        val toReturn = mutableMapOf<String, String>()
+        val toRequest = mutableListOf<String>()
+
+        val identitiesByAccountId = identities.associateBy(IdentityRecord::accountId)
+
+        accountIds
+                .forEach { accountId ->
+                    val cached = identitiesByAccountId[accountId]
+                    if (cached != null) {
+                        toReturn[accountId] = cached.email
+                    } else {
+                        toRequest.add(accountId)
+                    }
+                }
+
+        if (toRequest.isEmpty()) {
+            return Single.just(toReturn)
+        }
+
+        val signedApi = apiProvider.getSignedApi()
+                ?: return Single.error(IllegalStateException("No signed API instance found"))
+
+        return signedApi
+                .identities
+                .getForAccounts(toRequest)
+                .toSingle()
+                .map {
+                    it.map(::IdentityRecord)
+                }
+                .map { identities ->
+                    this.identities.addAll(identities)
+                    toReturn.putAll(
+                            identities
+                                    .associateBy(IdentityRecord::accountId)
+                                    .mapValues { it.value.email }
+                    )
+                    toReturn
+                }
+    }
+
     private fun getIdentity(params: IdentitiesPageParams): Single<IdentityRecord> {
         return apiProvider
                 .getApi()

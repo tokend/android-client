@@ -9,6 +9,8 @@ import org.tokend.sdk.api.v3.history.params.ParticipantEffectsPageParams
 import org.tokend.sdk.api.v3.history.params.ParticipantEffectsParams
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.converter.ParticipantEffectConverter
+import org.tokend.template.data.model.history.details.BalanceChangeCause
+import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
@@ -25,6 +27,7 @@ class BalanceChangesRepository(
         private val accountId: String?,
         private val apiProvider: ApiProvider,
         private val participantEffectConverter: ParticipantEffectConverter,
+        private val accountDetailsRepository: AccountDetailsRepository?,
         itemsCache: RepositoryCache<BalanceChange>
 ) : PagedDataRepository<BalanceChange>(itemsCache) {
 
@@ -74,6 +77,34 @@ class BalanceChangesRepository(
                     )
                 }
                 .toSingle()
+                .flatMap(this::loadAndSetEmails)
+    }
+
+    private fun loadAndSetEmails(changesPage: DataPage<BalanceChange>): Single<DataPage<BalanceChange>> {
+        val payments = changesPage
+                .items
+                .map(BalanceChange::cause)
+                .filterIsInstance(BalanceChangeCause.Payment::class.java)
+
+        val accounts = payments
+                .map(BalanceChangeCause.Payment::sourceAccountId)
+                .toMutableList()
+        accounts.addAll(payments.map(BalanceChangeCause.Payment::destAccountId))
+
+        return if (accounts.isNotEmpty() && accountDetailsRepository != null) {
+            accountDetailsRepository
+                    .getEmailsByAccountIds(accounts)
+                    .onErrorReturnItem(emptyMap())
+                    .map { emailsMap ->
+                        payments.forEach { payment ->
+                            payment.sourceName = emailsMap[payment.sourceAccountId]
+                            payment.destName = emailsMap[payment.destAccountId]
+                        }
+                    }
+                    .map { changesPage }
+        } else {
+            Single.just(changesPage)
+        }
     }
 
     companion object {

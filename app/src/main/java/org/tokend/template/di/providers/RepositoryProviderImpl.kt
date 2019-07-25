@@ -208,6 +208,7 @@ class RepositoryProviderImpl(
                     walletInfoProvider.getWalletInfo()?.accountId,
                     apiProvider,
                     DefaultParticipantEffectConverter(),
+                    accountDetails(),
                     BalanceChangesCache()
             )
         }
