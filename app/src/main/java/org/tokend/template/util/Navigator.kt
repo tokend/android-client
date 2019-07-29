@@ -57,6 +57,7 @@ import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import java.math.BigDecimal
+import java.util.*
 
 /**
  * Performs transitions between screens.
@@ -92,6 +93,7 @@ class Navigator private constructor() {
 
     private fun performIntent(intent: Intent?, requestCode: Int? = null, bundle: Bundle? = null) {
         if (intent != null) {
+            if (!checkIntent(intent)) return
             activity?.let {
                 if (requestCode != null) {
                     it.startActivityForResult(intent, requestCode, bundle ?: Bundle.EMPTY)
@@ -111,6 +113,20 @@ class Navigator private constructor() {
             }
 
             context?.startActivity(intent.newTask(), bundle ?: Bundle.EMPTY)
+        }
+    }
+
+    private fun checkIntent(intent: Intent): Boolean {
+        val context = this.context ?: return false
+        val hashCode = intent.resolveActivity(context.packageManager).hashCode()
+        val time = Date().time
+
+        return if (IntentLock.instance.hash != hashCode
+                || time - IntentLock.instance.time > 200L) {
+            IntentLock.instance.set(hashCode, time)
+            true
+        } else {
+            false
         }
     }
 
