@@ -23,13 +23,8 @@ ext {
     // used to open verification and referral links in app
     app_host = 'demo.tokend.io'
 
-    // Terms of Service URL - Link to the Terms of Service page of your project,
-    // used during sign in
-    terms_url = 'https://demo.tokend.io/terms'
-
-    // KYC URL - Link to the user verification page of your project,
-    // used on settings screen
-    kyc_url = 'https://demo.tokend.io/settings/verification/'
+    // Client URL - URL of the related web-client
+    client_url = 'https://demo.tokend.io/'
 
     //Allow to log request and response information.
     logs_enabled = true
@@ -159,8 +154,7 @@ ext.applyAppConfig = { buildConfig ->
 
     b.buildConfigField 'String', 'API_URL', "\"${api_url}\""
     b.buildConfigField 'String', 'STORAGE_URL', "\"${storage_url}\""
-    b.buildConfigField 'String', 'TERMS_URL', "\"${terms_url}\""
-    b.buildConfigField 'String', 'KYC_URL', "\"${kyc_url}\""
+    b.buildConfigField 'String', 'CLIENT_URL', "\"${client_url}\""
     b.buildConfigField 'Boolean', 'WITH_LOGS', "${logs_enabled}"
 
     b.buildConfigField 'Boolean', 'SECURE_CONTENT', "${secure_content}"

@@ -28,7 +28,7 @@ import java.security.SecureRandom
 object Util {
     fun getUrlConfigProvider(url: String = Config.API): UrlConfigProvider {
         return UrlConfigProviderFactory().createUrlConfigProvider(
-                UrlConfig(url, "", "", "")
+                UrlConfig(url, "", "")
         )
     }
 

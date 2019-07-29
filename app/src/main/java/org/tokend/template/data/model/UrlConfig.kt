@@ -4,16 +4,23 @@ import com.google.gson.annotations.SerializedName
 import okhttp3.HttpUrl
 import java.io.Serializable
 
-data class UrlConfig(
-        @SerializedName("api")
-        private val mApi: String,
-        @SerializedName("storage")
-        private val mStorage: String,
-        @SerializedName("kyc")
-        private val mKyc: String,
-        @SerializedName("terms")
-        private val mTerms: String
+class UrlConfig(
+        api: String,
+        storage: String,
+        client: String
 ) : Serializable {
+    @SerializedName("api")
+    private val mApi: String = api
+
+    @SerializedName("storage")
+    private val mStorage: String = storage
+
+    @SerializedName("client")
+    private val mClient: String? = client
+
+    @SerializedName("terms")
+    private val mTerms: String? = null
+
     val api: String
         get() = mApi
                 .addTrailSlashIfNeeded()
@@ -24,13 +31,19 @@ data class UrlConfig(
                 .addTrailSlashIfNeeded()
                 .addProtocolIfNeeded()
 
+    val client: String
+        get() = (mClient ?: mTerms?.substringBefore(TERMS_ROUTE))
+                ?.addTrailSlashIfNeeded()
+                ?.addProtocolIfNeeded()
+                ?: "//"
+
     val kyc: String
-        get() = mKyc
+        get() = (client + KYC_ROUTE)
                 .addTrailSlashIfNeeded()
                 .addProtocolIfNeeded()
 
     val terms: String
-        get() = mTerms
+        get() = (mTerms ?: client + TERMS_ROUTE)
                 .addTrailSlashIfNeeded()
                 .addProtocolIfNeeded()
 
@@ -48,5 +61,10 @@ data class UrlConfig(
             "https:" + this
         else
             this
+    }
+
+    companion object {
+        private const val TERMS_ROUTE = "terms"
+        private const val KYC_ROUTE = "settings/verification"
     }
 }
