@@ -412,7 +412,7 @@
     <string name="no_polls_found">Опросов нет</string>
     <string name="vote_has_been_submitted">Голос принят</string>
     <string name="vote_has_been_removed">Голос удален</string>
-    <string name="template_with_one_asset_for">С 1 %1$s за</string>
+    <string name="with_price_of">По цене</string>
     <string name="template_buy_asset_code">Купить %1$s</string>
     <string name="template_amount_available_for_buy">Доступно для покупки: %1$s</string>
     <string name="error_too_big_amount">Сумма слишком велика</string>

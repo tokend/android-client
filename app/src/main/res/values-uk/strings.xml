@@ -80,7 +80,7 @@
     <string name="template_offer_ask_asset">Аск (%1$s)</string>
     <string name="template_asset_pair">%1$s/%2$s</string>
     <string name="create_offer_title">Створити ордер</string>
-    <string name="buy_action">Копити</string>
+    <string name="buy_action">Купити</string>
     <string name="sell_action">Продати</string>
     <string name="offer_confirmation_title">Ордер</string>
     <string name="offer_created">Ордер створено</string>
@@ -412,7 +412,7 @@
     <string name="no_polls_found">Опитувань немає</string>
     <string name="vote_has_been_submitted">Голос прийнято</string>
     <string name="vote_has_been_removed">Голос видалено</string>
-    <string name="template_with_one_asset_for">З 1 %1$s за</string>
+    <string name="with_price_of">За ціною</string>
     <string name="template_buy_asset_code">Купити %1$s</string>
     <string name="template_amount_available_for_buy">Доступно для купівлі: %1$s</string>
     <string name="error_too_big_amount">Сума занадто велика</string>

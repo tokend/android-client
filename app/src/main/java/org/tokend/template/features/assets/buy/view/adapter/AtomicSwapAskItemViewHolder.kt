@@ -35,10 +35,7 @@ class AtomicSwapAskItemViewHolder(view: View,
                 withAssetCode = false
         )
 
-        pricesHintTextView.text = view.context.getString(
-                R.string.template_with_one_asset_for,
-                item.asset.code
-        )
+        pricesHintTextView.text = view.context.getString(R.string.with_price_of)
 
         pricesLayout.removeAllViews()
         item.quoteAssets.forEach { quoteAsset ->
