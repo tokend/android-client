@@ -5,10 +5,12 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.widget.RelativeLayout
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
 import com.mikepenz.materialdrawer.Drawer
@@ -17,9 +19,11 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.mikepenz.materialdrawer.util.DrawerImageLoader
+import com.mikepenz.materialdrawer.view.BezelImageView
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.dip
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.features.assets.ExploreAssetsFragment
@@ -46,6 +50,7 @@ import org.tokend.template.util.ProfileUtil
 import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.PicassoDrawerImageLoader
 import org.tokend.template.view.util.input.SoftInputUtil
+import kotlin.math.roundToInt
 
 class MainActivity : BaseActivity(), WalletEventsListener {
     companion object {
@@ -169,7 +174,28 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .apply {
                     view.findViewById<View>(R.id.material_drawer_account_header)
                             .setOnClickListener { openAccountIdShare() }
+                    view.findViewById<RelativeLayout>(R.id.material_drawer_account_header)
+                            .also(this@MainActivity::addQrCodeButton)
                 }
+    }
+
+    private fun addQrCodeButton(headerLayout: RelativeLayout) {
+        val button = BezelImageView(this).apply {
+            ViewCompat.setElevation(this, dip(2).toFloat())
+            setImageDrawable(ContextCompat.getDrawable(context, R.drawable.qr_code_round_button))
+            isClickable = false
+
+            val size = dip(28)
+
+            layoutParams = RelativeLayout.LayoutParams(size, size).apply {
+                addRule(RelativeLayout.ALIGN_BOTTOM,
+                        com.mikepenz.materialdrawer.R.id.material_drawer_account_header_current)
+                addRule(RelativeLayout.ALIGN_END,
+                        com.mikepenz.materialdrawer.R.id.material_drawer_account_header_current)
+                marginEnd = -(size.toFloat() / 3).roundToInt()
+            }
+        }
+        headerLayout.addView(button)
     }
 
     private fun getProfileHeaderItem(email: String?,
