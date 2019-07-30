@@ -3,6 +3,9 @@
     <item>
         <shape android:shape="oval">
             <solid android:color="@color/white" />
+            <stroke
+                android:width="@dimen/elevated_round_button_stroke_width"
+                android:color="@color/material_drawer_divider" />
         </shape>
     </item>
     <item
