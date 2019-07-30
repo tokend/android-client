@@ -59,7 +59,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
                 val content =
                         if (counterpartyLoadingFinished && counterpartyEmail != null)
-                            counterpartyEmail + "\n\n" + counterpartyAccount
+                            counterpartyEmail
                         else
                             counterpartyAccount
 
