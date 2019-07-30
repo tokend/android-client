@@ -1,6 +1,9 @@
 package org.tokend.template.features.invest.view
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_sale.*
 import kotlinx.android.synthetic.main.appbar_with_tabs.*
@@ -73,6 +76,33 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
 
     private fun openInvest() {
         Navigator.from(this).openInvest(sale)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.share, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.share -> shareData()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun shareData() {
+        val url = "${urlConfigProvider.getConfig().client}funds/${sale.id}/campaign"
+        val shareText = "${sale.name}\n$url"
+        val sharingIntent = Intent(Intent.ACTION_SEND)
+                .apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_SUBJECT,
+                            getString(R.string.app_name))
+                    putExtra(Intent.EXTRA_TEXT, shareText)
+                }
+
+        startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_sale)))
     }
 
     companion object {

@@ -430,6 +430,7 @@
     <string name="language">Мова</string>
     <string name="select_language">Оберіть мову</string>
     <string name="account_created_successfully">Акаунт створено</string>
+    <string name="share_sale">Поділитися інвестицією</string>
     <string-array name="months">
         <item>Січень</item>
         <item>Лютий</item>
