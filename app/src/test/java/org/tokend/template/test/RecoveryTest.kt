@@ -1,19 +1,16 @@
 package org.tokend.template.test
 
-import junit.framework.Assert
+import org.junit.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import org.tokend.template.data.repository.SystemInfoRepository
-import org.tokend.template.di.providers.AccountProviderFactory
-import org.tokend.template.di.providers.ApiProviderFactory
-import org.tokend.template.features.recovery.logic.RecoveryUseCase
-import org.tokend.template.logic.wallet.WalletUpdateManager
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class RecoveryTest {
     @Test
     fun aRecoveryOfConfirmed() {
+        Assert.fail("No new test for KYC recovery")
+        /*
         val urlConfigProvider = Util.getUrlConfigProvider()
         val accountProvider = AccountProviderFactory().createAccountProvider()
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, accountProvider)
@@ -31,7 +28,7 @@ class RecoveryTest {
         System.out.println("Email is $email")
         System.out.println("Recovery seed is ${recoverySeed.joinToString("")}")
 
-        val useCase = RecoveryUseCase(
+        val useCase = RecoverPasswordUseCase(
                 email,
                 recoverySeed,
                 newPassword,
@@ -47,5 +44,6 @@ class RecoveryTest {
         } catch (e: Exception) {
             Assert.fail("Recovered wallet must be accessible with a new password")
         }
+        */
     }
 }

@@ -12,7 +12,6 @@
     <string name="back_to_sign_in">Back to Sign in</string>
     <string name="i_agree_to_the">I agree to the</string>
     <string name="terms_of_service">Terms of Service</string>
-    <string name="recovery_seed">Recovery seed</string>
     <string name="new_password">New password</string>
     <string name="confirm_new_password">Confirm new password</string>
     <string name="recover_account">Recover account</string>
@@ -51,7 +50,7 @@
     <string name="offer_match">Order match</string>
     <string name="sign_out_confirmation">Are you sure you want to sign out?</string>
     <string name="yes">Yes</string>
-    <string name="password_was_changed">Password has been changed</string>
+    <string name="password_was_changed">Password has been changed, sign in to continue</string>
     <string name="change_password_action">Change</string>
     <string name="current_password">Current password</string>
     <string name="open_action">Open</string>
@@ -163,7 +162,6 @@
     <string name="error_invalid_password">Invalid password</string>
     <string name="error_email_not_verified">Email is not verified</string>
     <string name="error_seed_mismatch">Seed doesn\'t match confirmation</string>
-    <string name="error_invalid_seed">Invalid seed</string>
     <string name="error_insufficient_balance">Insufficient balance</string>
     <string name="error_no_transferable_assets">No transferable assets found</string>
     <string name="error_invalid_recipient">Invalid recipient</string>

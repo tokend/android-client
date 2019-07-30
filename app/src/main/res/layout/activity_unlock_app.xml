@@ -111,8 +111,7 @@
                             android:layout_alignBottom="@+id/unlock_button"
                             android:layout_alignParentStart="true"
                             android:layout_toStartOf="@id/unlock_button"
-                            android:text="@string/forgot_password"
-                            android:visibility="gone" />
+                            android:text="@string/forgot_password" />
                     </RelativeLayout>
                 </LinearLayout>
 

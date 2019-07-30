@@ -12,7 +12,6 @@
     <string name="back_to_sign_in">Повернутися</string>
     <string name="i_agree_to_the">Приймаю</string>
     <string name="terms_of_service">Умови використання</string>
-    <string name="recovery_seed">Ключ відновлення</string>
     <string name="new_password">Новий пароль</string>
     <string name="confirm_new_password">Підтвердіть новий пароль</string>
     <string name="recover_account">Відновити акаунт</string>
@@ -51,7 +50,7 @@
     <string name="offer_match">Виконання ордера</string>
     <string name="sign_out_confirmation">Вийти з акаунта?</string>
     <string name="yes">Так</string>
-    <string name="password_was_changed">Пароль змінено</string>
+    <string name="password_was_changed">Пароль змінено, увійдіть щоб продовжити</string>
     <string name="change_password_action">Змінити</string>
     <string name="current_password">Поточний пароль</string>
     <string name="open_action">Відкрити</string>
@@ -163,7 +162,6 @@
     <string name="error_invalid_password">Неправильний пароль</string>
     <string name="error_email_not_verified">Email не підтверджено</string>
     <string name="error_seed_mismatch">Ключі не співпадають</string>
-    <string name="error_invalid_seed">Неправильний ключ</string>
     <string name="error_insufficient_balance">Недостатньо коштів</string>
     <string name="error_no_transferable_assets">Немає активів для відправки</string>
     <string name="error_invalid_recipient">Некоректний отримувач</string>

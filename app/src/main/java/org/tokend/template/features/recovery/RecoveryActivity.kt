@@ -21,9 +21,8 @@ import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.*
-import org.tokend.template.features.recovery.logic.RecoveryUseCase
+import org.tokend.template.features.recovery.logic.RecoverPasswordUseCase
 import org.tokend.template.logic.UrlConfigManager
-import org.tokend.template.logic.wallet.WalletUpdateManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
@@ -33,7 +32,6 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
-import org.tokend.wallet.Base32Check
 
 class RecoveryActivity : BaseActivity() {
     override val allowUnauthorized = true
@@ -81,7 +79,6 @@ class RecoveryActivity : BaseActivity() {
         urlConfigManager.onConfigUpdated {
             initNetworkField()
 
-            seed_edit_text.error = null
             email_edit_text.text = email_edit_text.text
 
             updateRecoveryAvailability()
@@ -103,14 +100,14 @@ class RecoveryActivity : BaseActivity() {
         if (email.isNotEmpty()) {
             email_edit_text.setText(email)
             email_edit_text.setSelection(email.length)
-            seed_edit_text.requestFocus()
+            password_edit_text.requestFocus()
         } else {
             email_edit_text.requestFocus()
         }
 
         email_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
-                seed_edit_text.error = null
+                email_edit_text.error = null
                 updateRecoveryAvailability()
             }
         })
@@ -126,13 +123,6 @@ class RecoveryActivity : BaseActivity() {
         EditTextHelper.initPasswordEditText(password_edit_text)
 
         confirm_password_edit_text.addTextChangedListener(passwordTextWatcher)
-
-        seed_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                seed_edit_text.error = null
-                updateRecoveryAvailability()
-            }
-        })
 
         confirm_password_edit_text.onEditorAction {
             tryToRecover()
@@ -185,31 +175,18 @@ class RecoveryActivity : BaseActivity() {
         }
     }
 
-    private fun checkSeed() {
-        val seedChars = seed_edit_text.text.getChars()
-        if (!Base32Check.isValid(Base32Check.VersionByte.SEED, seedChars)) {
-            seed_edit_text.setErrorAndFocus(R.string.error_invalid_seed)
-        } else {
-            seed_edit_text.error = null
-        }
-        seedChars.fill('0')
-    }
-
     private fun updateRecoveryAvailability() {
         canRecover = !isLoading
                 && !email_edit_text.text.isNullOrBlank()
-                && !seed_edit_text.text.isNullOrBlank()
                 && passwordsMatch
                 && !password_edit_text.text.isNullOrEmpty()
                 && !email_edit_text.hasError()
                 && !password_edit_text.hasError()
-                && !seed_edit_text.hasError()
                 && urlConfigProvider.hasConfig()
     }
 
     private fun tryToRecover() {
         checkPasswordsMatch()
-        checkSeed()
         updateRecoveryAvailability()
         if (canRecover) {
             SoftInputUtil.hideSoftInput(this)
@@ -219,17 +196,14 @@ class RecoveryActivity : BaseActivity() {
 
     private fun recover() {
         val email = email_edit_text.text.toString()
-        val seed = seed_edit_text.text.getChars()
         val password = password_edit_text.text.getChars()
 
-        val walletUpdateManager = WalletUpdateManager(repositoryProvider.systemInfo())
+        SoftInputUtil.hideSoftInput(this)
 
-        RecoveryUseCase(
+        RecoverPasswordUseCase(
                 email,
-                seed,
                 password,
-                walletUpdateManager,
-                urlConfigProvider
+                apiProvider
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
@@ -238,7 +212,6 @@ class RecoveryActivity : BaseActivity() {
                 }
                 .doOnTerminate {
                     isLoading = false
-                    seed.fill('0')
                     password.fill('0')
                 }
                 .subscribeBy(
@@ -263,12 +236,7 @@ class RecoveryActivity : BaseActivity() {
         error.printStackTrace()
         when (error) {
             is InvalidCredentialsException ->
-                when (error.credential) {
-                    InvalidCredentialsException.Credential.EMAIL ->
-                        email_edit_text.setErrorAndFocus(R.string.error_invalid_email)
-                    InvalidCredentialsException.Credential.PASSWORD ->
-                        seed_edit_text.setErrorAndFocus(R.string.error_invalid_seed)
-                }
+                email_edit_text.setErrorAndFocus(R.string.error_invalid_email)
             is EmailNotVerifiedException ->
                 email_edit_text.setErrorAndFocus(R.string.error_email_not_verified)
             else -> errorHandlerFactory.getDefault().handle(error)
