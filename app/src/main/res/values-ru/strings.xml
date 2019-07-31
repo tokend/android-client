@@ -416,6 +416,10 @@
     <string name="language">Язык</string>
     <string name="select_language">Выберите язык</string>
     <string name="account_created_successfully">Аккаунт создан</string>
+    <string name="kyc_recovery_status_dialog_title">Восстановление аккаунта</string>
+    <string name="kyc_recovery_initiated_message">Начато восстановление аккаунта. Воспользуйтесь веб-клиентом чтобы закончить процесс</string>
+    <string name="kyc_recovery_pending_message">Ваш запрос ожидает рассмотрения. Ожидайте уведомление</string>
+    <string name="kyc_recovery_rejected_message">Ваш запрос отклонен. Попробуйте еще раз</string>
     <string-array name="months">
         <item>Январь</item>
         <item>Февраль</item>

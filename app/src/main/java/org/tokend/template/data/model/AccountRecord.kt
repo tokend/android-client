@@ -8,10 +8,12 @@ import java.util.*
 
 class AccountRecord(
         val id: String,
+        val kycRecoveryStatus: KycRecoveryStatus,
         val depositAccounts: List<DepositAccount>
 ) : Serializable {
     constructor(source: AccountResource) : this(
             id = source.id,
+            kycRecoveryStatus = KycRecoveryStatus.valueOf(source.kycRecoveryStatus.name.toUpperCase()),
             depositAccounts = source.externalSystemIds?.map { DepositAccount.fromResource(it) }
                     ?: emptyList()
     )
@@ -51,5 +53,13 @@ class AccountRecord(
                 return DepositAccount(source.externalSystemType, address, payload, source.expiresAt)
             }
         }
+    }
+
+    enum class KycRecoveryStatus {
+        NONE,
+        INITIATED,
+        PENDING,
+        REJECTED,
+        PERMANENTLY_REJECTED;
     }
 }
