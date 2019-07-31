@@ -421,6 +421,7 @@
     <string name="kyc_recovery_initiated_message">Почато відновлення акаунта. Скористайтеся веб-клієнтом щоб завершити процес</string>
     <string name="kyc_recovery_pending_message">Ваш запит очікує розгляду. Чекайте на повідомлення</string>
     <string name="kyc_recovery_rejected_message">Ваш запит відхилено. Спробуйте ще раз</string>
+    <string name="share_sale">Поділитися кампанією</string>
     <string-array name="months">
         <item>Січень</item>
         <item>Лютий</item>

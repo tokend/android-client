@@ -422,6 +422,7 @@
     <string name="kyc_recovery_initiated_message">Account recovery has been initiated. Use web client to complete it</string>
     <string name="kyc_recovery_pending_message">Your request is waiting for review. Wait for notification</string>
     <string name="kyc_recovery_rejected_message">Your request has been rejected. Try again</string>
+    <string name="share_sale">Share sale</string>
     <string-array name="months">
         <item>January</item>
         <item>February</item>
