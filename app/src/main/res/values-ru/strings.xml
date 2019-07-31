@@ -12,7 +12,6 @@
     <string name="back_to_sign_in">Вернуться</string>
     <string name="i_agree_to_the">Принимаю</string>
     <string name="terms_of_service">Условия использования</string>
-    <string name="recovery_seed">Ключ восстановления</string>
     <string name="new_password">Новый пароль</string>
     <string name="confirm_new_password">Подтвердите новый пароль</string>
     <string name="recover_account">Восстановить аккаунт</string>
@@ -22,17 +21,7 @@
     <string name="share">Поделиться</string>
     <string name="share_account_id">Поделиться аккаунтом</string>
     <string name="check_your_email_to_verify_account">Следуйте инструкциям из письма чтобы подтвердить email</string>
-    <string name="save_recovery_seed">Ключ восстановления</string>
     <string name="continue_action">Продолжить</string>
-    <string name="validate_recovery_seed">Проверить ключ восстановления</string>
-    <string name="recovery_seed_explanation">Сохраните этот ключ в надежном месте и
-        не показывайте никому\n\nОн используется для восстановления аккаунта в случае потери пароля.
-        Если вы потеряете пароль и этот ключ, вы не сможете восстановить аккаунт.\n\n<b>Мы не знаем
-        ваш ключ</b> и он больше никогда не будет показан
-    </string>
-    <string name="validate_recovery_seed_explanation">Пожалуйста, проверьте ключ в поле ниже
-        чтобы убедиться, что он скопирован правильно</string>
-    <string name="seed_copied">Ключ скопирован</string>
     <string name="cancel">Отмена</string>
     <string name="ok">OK</string>
     <string name="no">Нет</string>
@@ -51,7 +40,7 @@
     <string name="offer_match">Выполнение ордера</string>
     <string name="sign_out_confirmation">Выйти из аккаунта?</string>
     <string name="yes">Да</string>
-    <string name="password_was_changed">Пароль изменен</string>
+    <string name="password_was_changed">Пароль изменен, войдите чтобы продолжить</string>
     <string name="change_password_action">Изменить</string>
     <string name="current_password">Текущий пароль</string>
     <string name="open_action">Открыть</string>
@@ -162,8 +151,6 @@
     <string name="error_connection_try_again">Ошибка соединения. Попробуйте позже</string>
     <string name="error_invalid_password">Неправильный пароль</string>
     <string name="error_email_not_verified">Email не подтвержден</string>
-    <string name="error_seed_mismatch">Ключи не совпадают</string>
-    <string name="error_invalid_seed">Неправильный ключ</string>
     <string name="error_insufficient_balance">Недостаточно средств</string>
     <string name="error_no_transferable_assets">Нет пересылаемых активов</string>
     <string name="error_invalid_recipient">Некорректный получатель</string>
@@ -430,6 +417,10 @@
     <string name="language">Язык</string>
     <string name="select_language">Выберите язык</string>
     <string name="account_created_successfully">Аккаунт создан</string>
+    <string name="kyc_recovery_status_dialog_title">Восстановление аккаунта</string>
+    <string name="kyc_recovery_initiated_message">Начато восстановление аккаунта. Воспользуйтесь веб-клиентом чтобы закончить процесс</string>
+    <string name="kyc_recovery_pending_message">Ваш запрос ожидает рассмотрения. Ожидайте уведомление</string>
+    <string name="kyc_recovery_rejected_message">Ваш запрос отклонен. Попробуйте еще раз</string>
     <string name="share_sale">Поделиться кампанией</string>
     <string-array name="months">
         <item>Январь</item>
