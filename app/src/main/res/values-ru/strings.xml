@@ -21,6 +21,7 @@
     <string name="share">Поделиться</string>
     <string name="share_account_id">Поделиться аккаунтом</string>
     <string name="check_your_email_to_verify_account">Следуйте инструкциям из письма чтобы подтвердить email</string>
+    <string name="continue_action">Продолжить</string>
     <string name="cancel">Отмена</string>
     <string name="ok">OK</string>
     <string name="no">Нет</string>
