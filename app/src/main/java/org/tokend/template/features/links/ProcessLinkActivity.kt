@@ -5,11 +5,11 @@ import io.reactivex.Completable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.layout_progress.*
+import org.tokend.rx.extensions.toCompletable
 import org.tokend.sdk.redirects.ClientRedirectPayload
 import org.tokend.sdk.redirects.ClientRedirectType
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.rx.extensions.toCompletable
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 
@@ -37,8 +37,7 @@ class ProcessLinkActivity : BaseActivity() {
         val url = intentData.toString()
 
         val payload = ClientRedirectPayload.fromUrl(url)
-        if (payload != null && payload.isSuccessful
-                && payload.type == ClientRedirectType.EMAIL_VERIFICATION) {
+        if (payload != null && payload.type == ClientRedirectType.EMAIL_VERIFICATION) {
             performVerification(payload)
         } else {
             finish()
