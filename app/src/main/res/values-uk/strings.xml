@@ -21,17 +21,7 @@
     <string name="share">Поділитися</string>
     <string name="share_account_id">Поділитися акаунтом</string>
     <string name="check_your_email_to_verify_account">Дотримуйтесь інструкції з листа щоб підтвердити email</string>
-    <string name="save_recovery_seed">Ключ відновлення</string>
     <string name="continue_action">Далі</string>
-    <string name="validate_recovery_seed">Перевірити ключ відновлення</string>
-    <string name="recovery_seed_explanation">Збережіть цей ключ у надійному місці та
-        не показуйте нікому\n\nВін використовується для відновлення акаунта у випадку втрати пароля.
-        Якщо ви втратите пароль та цей ключ, ви не зможете відновити ваш акаунт.\n\n<b>Ми не знаємо
-        ваш ключ</b> і його ніколи більше не буде показано
-    </string>
-    <string name="validate_recovery_seed_explanation">Будь ласка, перевірте ключ у полі нижче
-        щоб упевнитися, що його скопійовано правильно</string>
-    <string name="seed_copied">Ключ скопійовано</string>
     <string name="cancel">Відміна</string>
     <string name="ok">OK</string>
     <string name="no">Ні</string>
@@ -161,7 +151,6 @@
     <string name="error_connection_try_again">Помилка мережі. Спробуйте пізніше</string>
     <string name="error_invalid_password">Неправильний пароль</string>
     <string name="error_email_not_verified">Email не підтверджено</string>
-    <string name="error_seed_mismatch">Ключі не співпадають</string>
     <string name="error_insufficient_balance">Недостатньо коштів</string>
     <string name="error_no_transferable_assets">Немає активів для відправки</string>
     <string name="error_invalid_recipient">Некоректний отримувач</string>
