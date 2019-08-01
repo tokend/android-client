@@ -17,25 +17,46 @@ import org.tokend.template.util.locale.AppLocaleManager
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.formatter.DefaultAmountFormatter
+import java.util.*
 import javax.inject.Singleton
 
 @Module
 class UtilModule {
+    private var errorHandlerFactory: ErrorHandlerFactory? = null
+    private var errorHandlerFactoryLocale: Locale? = null
+
     @Provides
-    @Singleton
     fun errorHandlerFactory(context: Context,
                             localeManager: AppLocaleManager,
                             toastManager: ToastManager,
                             errorLogger: ErrorLogger): ErrorHandlerFactory {
-        return ErrorHandlerFactory(localeManager.getLocalizeContext(context),
-                toastManager, errorLogger)
+        val locale = localeManager.getLocale()
+        val cached = errorHandlerFactory
+        return if (cached != null && errorHandlerFactoryLocale == locale)
+            cached
+        else
+            ErrorHandlerFactory(localeManager.getLocalizeContext(context),
+                    toastManager, errorLogger).also {
+                errorHandlerFactory = it
+                errorHandlerFactoryLocale = locale
+            }
     }
 
+    private var toastManager: ToastManager? = null
+    private var toastManagerLocale: Locale? = null
+
     @Provides
-    @Singleton
     fun toastManager(context: Context,
                      localeManager: AppLocaleManager): ToastManager {
-        return ToastManager(localeManager.getLocalizeContext(context))
+        val locale = localeManager.getLocale()
+        val cached = toastManager
+        return if (cached != null && toastManagerLocale == locale)
+            cached
+        else
+            ToastManager(localeManager.getLocalizeContext(context)).also {
+                toastManager = it
+                toastManagerLocale = locale
+            }
     }
 
     @Provides
