@@ -35,9 +35,7 @@
     <string name="received">Отримано</string>
     <string name="price">Ціна</string>
     <string name="payment_description">Коментар</string>
-    <string name="amount">Сума</string>
     <string name="withdrawal_fee_warning">Кінцева сума може бути менше внаслідок додаткових комісій</string>
-    <string name="offer_match">Виконання ордера</string>
     <string name="sign_out_confirmation">Вийти з акаунта?</string>
     <string name="yes">Так</string>
     <string name="password_was_changed">Пароль змінено, увійдіть щоб продовжити</string>
@@ -231,7 +229,6 @@
     <string name="template_sale_starts_in">%1$d %2$s\nдо початку</string>
     <string name="template_sale_max_investment">Максимальна інвестиція – %1$s</string>
     <string name="template_sale_name_asset">%1$s (%2$s)</string>
-    <string name="sales_search_name_hint">Назва</string>
     <string name="sales_search_asset_hint">Код</string>
     <string name="explore_sales_title">Інвестиції</string>
     <string name="no_sales_found">Кампанії не знайдено</string>

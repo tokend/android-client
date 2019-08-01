@@ -35,9 +35,7 @@
     <string name="received">Получено</string>
     <string name="price">Цена</string>
     <string name="payment_description">Комментарий</string>
-    <string name="amount">Сумма</string>
     <string name="withdrawal_fee_warning">Итоговая сумма может быть меньше вследствие дополнительных комиссий</string>
-    <string name="offer_match">Выполнение ордера</string>
     <string name="sign_out_confirmation">Выйти из аккаунта?</string>
     <string name="yes">Да</string>
     <string name="password_was_changed">Пароль изменен, войдите чтобы продолжить</string>
@@ -231,7 +229,6 @@
     <string name="template_sale_starts_in">%1$d %2$s\nдо начала</string>
     <string name="template_sale_max_investment">Максимальная инвестиция – %1$s</string>
     <string name="template_sale_name_asset">%1$s (%2$s)</string>
-    <string name="sales_search_name_hint">Имя</string>
     <string name="sales_search_asset_hint">Код</string>
     <string name="explore_sales_title">Инвестиции</string>
     <string name="no_sales_found">Кампании не найдены</string>

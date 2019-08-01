@@ -253,12 +253,12 @@ class SignInActivity : BaseActivity() {
     private fun showKycRecoveryStatusDialog(status: AccountRecord.KycRecoveryStatus) {
         AlertDialog.Builder(this, R.style.AlertDialogStyle)
                 .setTitle(R.string.kyc_recovery_status_dialog_title)
-                .setMessage(when(status) {
+                .setMessage(when (status) {
                     AccountRecord.KycRecoveryStatus.PENDING ->
                         R.string.kyc_recovery_pending_message
                     AccountRecord.KycRecoveryStatus.REJECTED,
                     AccountRecord.KycRecoveryStatus.PERMANENTLY_REJECTED ->
-                        R.string.kyc_recovery_pending_message
+                        R.string.kyc_recovery_rejected_message
                     else ->
                         R.string.kyc_recovery_initiated_message
                 })
