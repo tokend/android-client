@@ -2,13 +2,13 @@ package org.tokend.template.data.repository
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.tokend.rx.extensions.toCompletable
+import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.rx.extensions.toCompletable
-import org.tokend.rx.extensions.toSingle
 import org.tokend.template.features.tfa.model.TfaFactorCreationResult
 import org.tokend.template.features.tfa.model.TfaFactorRecord
 
