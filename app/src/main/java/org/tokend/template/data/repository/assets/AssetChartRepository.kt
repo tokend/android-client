@@ -1,6 +1,7 @@
 package org.tokend.template.data.repository.assets
 
 import io.reactivex.Observable
+import io.reactivex.Single
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.utils.extentions.isNotFound
 import org.tokend.template.data.model.AssetChartData
@@ -39,11 +40,11 @@ class AssetChartRepository private constructor(
                 }
                 .map(::AssetChartData)
                 .toSingle()
-                .onErrorReturn { error ->
+                .onErrorResumeNext{ error ->
                     if (error is HttpException && error.isNotFound())
-                        AssetChartData()
+                        Single.just(AssetChartData())
                     else
-                        throw error
+                        Single.error(error)
                 }
                 .toObservable()
     }
