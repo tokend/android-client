@@ -37,8 +37,7 @@ class ProcessLinkActivity : BaseActivity() {
         val url = intentData.toString()
 
         val payload = ClientRedirectPayload.fromUrl(url)
-        if (payload != null && payload.isSuccessful
-                && payload.type == ClientRedirectType.EMAIL_VERIFICATION) {
+        if (payload != null && payload.type == ClientRedirectType.EMAIL_VERIFICATION) {
             performVerification(payload)
         } else {
             finish()
