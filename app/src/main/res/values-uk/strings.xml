@@ -211,7 +211,7 @@
     <string name="share_address_label">Поділитися адресою</string>
     <string name="error_deposit_unavailable">Депозит недоступний</string>
     <string name="template_no_personal_asset_address">Немає адреси для %1$s</string>
-    <string name="get_personal_address_action">Отримати адрес</string>
+    <string name="get_personal_address_action">Отримати адресу</string>
     <string name="deposit_address_expiration_date">Доступна до</string>
     <string name="renew_personal_address_action">Подовжити</string>
     <string name="no_addresses_in_pool_title">Немає доступних адрес</string>
