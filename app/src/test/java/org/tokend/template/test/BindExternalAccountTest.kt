@@ -3,9 +3,9 @@ package org.tokend.template.test
 import junit.framework.Assert
 import org.junit.Test
 import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
-import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.features.deposit.BindExternalAccountUseCase
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.transactions.TxManager
@@ -38,7 +38,7 @@ class BindExternalAccountTest {
         )
 
         val assetCode = Util.createAsset(apiProvider,
-                txManager, "0")
+                txManager, EXTERNAL_SYSTEM_TYPE)
 
         CreateBalanceUseCase(
                 assetCode,
@@ -97,7 +97,8 @@ class BindExternalAccountTest {
                         .ManageExternalSystemAccountIdPoolEntryOpActionInput.Create(
                         CreateExternalSystemAccountIdPoolEntryActionInput(
                                 asset.externalSystemType!!,
-                                "testaddr${System.currentTimeMillis()}",
+                                "{\"type\":\"address\",\"data\":" +
+                                        "{\"address\":\"testaddr${System.currentTimeMillis()}\"}}",
                                 0,
                                 CreateExternalSystemAccountIdPoolEntryActionInput
                                         .CreateExternalSystemAccountIdPoolEntryActionInputExt
@@ -118,5 +119,9 @@ class BindExternalAccountTest {
         tx.addSignature(sourceAccount)
 
         txManager.submit(tx).blockingGet()
+    }
+
+    companion object {
+        private const val EXTERNAL_SYSTEM_TYPE = "2"
     }
 }
