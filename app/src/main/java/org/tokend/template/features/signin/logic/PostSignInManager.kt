@@ -32,6 +32,8 @@ class PostSignInManager(
             it.printStackTrace()
         })
 
+        repositoryProvider.tfaFactors().invalidate()
+
         return performSyncActions
                 .andThen(performParallelActions)
                 .onErrorResumeNext {

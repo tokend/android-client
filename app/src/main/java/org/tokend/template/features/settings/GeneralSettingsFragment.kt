@@ -89,8 +89,6 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
         // Disable list overscroll.
         listView.overScrollMode = ScrollView.OVER_SCROLL_NEVER
-
-        tfaRepository.updateIfNotFresh()
     }
 
     override fun reloadPreferences() {
