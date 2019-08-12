@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.childrenSequence
 import org.jetbrains.anko.dip
-import org.jetbrains.anko.onClick
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
@@ -29,6 +28,8 @@ import org.tokend.template.features.wallet.adapter.BalanceChangesAdapter
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.*
+import org.tokend.template.view.util.fab.FloatingActionMenuAction
+import org.tokend.template.view.util.fab.addActions
 
 class BalanceDetailsActivity : BaseActivity() {
     private val loadingIndicator = LoadingIndicatorManager(
@@ -129,79 +130,80 @@ class BalanceDetailsActivity : BaseActivity() {
     }
 
     private fun initFab() {
+        menu_fab.addActions(getFabActions())
+        menu_fab.setClosedOnTouchOutside(true)
+    }
+
+    private fun getFabActions(): Collection<FloatingActionMenuAction> {
         val asset = this.balance?.asset
-
-        val canWithdraw = asset?.isWithdrawable == true
-        val canDeposit = asset?.isBackedByExternalSystem == true
-        val canSend = asset?.isTransferable == true
-        val canBuy = asset?.canBeBaseForAtomicSwap == true
-
-        if (!canWithdraw && !canDeposit && !canSend && !canBuy) {
-            menu_fab.visibility = View.GONE
-            menu_fab.isEnabled = false
-            return
-        } else {
-            menu_fab.visibility = View.VISIBLE
-            menu_fab.isEnabled = true
-
-            withdraw_fab.isEnabled = canWithdraw
-            deposit_fab.isEnabled = canDeposit
-            send_fab.isEnabled = canSend
-            receive_fab.isEnabled = canSend
-            buy_fab.isEnabled = canBuy
-        }
-
         val navigator = Navigator.from(this)
 
-        send_fab.onClick {
-            val assetCode = balance?.assetCode ?: return@onClick
-            navigator.openSend(assetCode, 0)
-            menu_fab.close(false)
-        }
-        send_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_send_fab))
-        if (!BuildConfig.IS_SEND_ALLOWED) {
-            menu_fab.removeMenuButton(send_fab)
+        val actions = mutableListOf<FloatingActionMenuAction>()
+
+        if (BuildConfig.IS_DIRECT_BUY_ALLOWED) {
+            actions.add(FloatingActionMenuAction(
+                    this,
+                    R.string.buy,
+                    R.drawable.ic_buy_fab,
+                    {
+                        val assetCode = asset?.code ?: return@FloatingActionMenuAction
+                        navigator.openAtomicSwapsAsks(assetCode)
+                    },
+                    isEnabled = asset?.canBeBaseForAtomicSwap == true
+            ))
         }
 
-        receive_fab.onClick {
-            val walletInfo = walletInfoProvider.getWalletInfo()
-                    ?: return@onClick
-            navigator.openAccountQrShare(walletInfo)
-            menu_fab.close(false)
-        }
-        receive_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_receive_fab))
-        if (!BuildConfig.IS_SEND_ALLOWED) {
-            menu_fab.removeMenuButton(receive_fab)
-        }
-
-        deposit_fab.onClick {
-            val assetCode = balance?.assetCode ?: return@onClick
-            navigator.openDeposit(0, assetCode)
-            menu_fab.close(false)
-        }
-        deposit_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_deposit_fab))
-        if (!BuildConfig.IS_DEPOSIT_ALLOWED) {
-            menu_fab.removeMenuButton(deposit_fab)
-        }
-
-        withdraw_fab.onClick {
-            val assetCode = balance?.assetCode ?: return@onClick
-            navigator.openWithdraw(0, assetCode)
-            menu_fab.close(false)
-        }
-        withdraw_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_withdraw_fab))
-        if (!BuildConfig.IS_WITHDRAW_ALLOWED) {
-            menu_fab.removeMenuButton(withdraw_fab)
+        if (BuildConfig.IS_SEND_ALLOWED) {
+            actions.add(FloatingActionMenuAction(
+                    this,
+                    R.string.send_title,
+                    R.drawable.ic_send_fab,
+                    {
+                        val assetCode = asset?.code ?: return@FloatingActionMenuAction
+                        navigator.openSend(assetCode, 0)
+                    },
+                    isEnabled = asset?.isTransferable == true
+            ))
+            actions.add(FloatingActionMenuAction(
+                    this,
+                    R.string.receive_title,
+                    R.drawable.ic_receive_fab,
+                    {
+                        val walletInfo = walletInfoProvider.getWalletInfo()
+                                ?: return@FloatingActionMenuAction
+                        navigator.openAccountQrShare(walletInfo)
+                    },
+                    isEnabled = asset?.isTransferable == true
+            ))
         }
 
-        buy_fab.onClick {
-            val assetCode = balance?.assetCode ?: return@onClick
-            navigator.openAtomicSwapsAsks(assetCode)
-            menu_fab.close(false)
+        if (BuildConfig.IS_DEPOSIT_ALLOWED) {
+            actions.add(FloatingActionMenuAction(
+                    this,
+                    R.string.deposit_title,
+                    R.drawable.ic_deposit_fab,
+                    {
+                        val assetCode = asset?.code ?: return@FloatingActionMenuAction
+                        navigator.openDeposit(0, assetCode)
+                    },
+                    isEnabled = asset?.isBackedByExternalSystem == true
+            ))
         }
-        buy_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_buy_fab))
 
-        menu_fab.setClosedOnTouchOutside(true)
+        if (BuildConfig.IS_WITHDRAW_ALLOWED) {
+            actions.add(FloatingActionMenuAction(
+                    this,
+                    R.string.withdraw_title,
+                    R.drawable.ic_withdraw_fab,
+                    {
+                        val assetCode = asset?.code ?: return@FloatingActionMenuAction
+                        navigator.openWithdraw(0, assetCode)
+                    },
+                    isEnabled = asset?.isBackedByExternalSystem == true
+            ))
+        }
+
+        return actions
     }
 
     private val hideFabScrollListener =
