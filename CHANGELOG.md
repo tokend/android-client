@@ -30,6 +30,7 @@ for further information about branching and tagging conventions.
 ### Fixed
 - Non-working swipe refresh on asset buy screen
 - Closing action menu on touch outside
+- Broken `JsonCreator` because of ProGuard
 
 ## [1.11.0] 2019-07.11
 
