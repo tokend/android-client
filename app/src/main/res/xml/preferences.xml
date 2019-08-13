@@ -16,7 +16,8 @@
 
     <android.support.v7.preference.PreferenceCategory
         android:layout="@layout/preference_category_layout"
-        android:title="@string/settings_account_group">
+        android:title="@string/settings_account_group"
+        android:key="account">
 
         <android.support.v7.preference.Preference
             android:icon="@drawable/ic_account"
