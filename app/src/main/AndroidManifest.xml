@@ -55,48 +55,48 @@
         </activity>
         <activity
             android:name=".features.signin.SignInActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".features.signin.AuthenticatorSignInActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.signup.SignUpActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".features.recovery.RecoveryActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".activities.MainActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".features.changepassword.ChangePasswordActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.withdraw.WithdrawalConfirmationActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.assets.AssetDetailsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.send.PaymentConfirmationActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.offers.OfferConfirmationActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.invest.view.InvestmentConfirmationActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.offers.OffersActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.links.ProcessLinkActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:theme="@style/SplashTheme"
             android:windowSoftInputMode="adjustResize">
 
@@ -119,61 +119,61 @@
         </activity>
         <activity
             android:name=".activities.SingleFragmentActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".features.invest.view.SaleActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.AmlAlertDetailsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.IssuanceDetailsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.OfferMatchDetailsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.InvestmentDetailsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.PaymentDetailsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.WithdrawalDetailsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.offers.view.details.PendingOfferDetailsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.offers.view.details.PendingInvestmentDetailsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.AssetPairUpdateDetailsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.DefaultBalanceChangeDetailsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.trade.TradeActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.offers.CreateOfferActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".features.limits.LimitsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.fees.view.FeesActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.invest.view.SaleInvestActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".features.signin.UnlockAppActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.qr.CaptureActivityPortrait"
             android:screenOrientation="portrait"
@@ -182,10 +182,10 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".features.wallet.view.BalanceDetailsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.assets.buy.BuyWithAtomicSwapActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
     </application>
 
