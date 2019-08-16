@@ -27,8 +27,6 @@ import org.tokend.template.features.dashboard.view.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
 import org.tokend.template.features.kyc.model.KycState
-import org.tokend.template.features.kyc.model.form.KycFormType
-import org.tokend.template.features.kyc.model.form.SimpleKycForm
 import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.polls.view.PollsFragment
 import org.tokend.template.features.send.model.PaymentRequest
@@ -176,15 +174,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     private fun getProfileHeaderItem(email: String?,
                                      kycState: KycState?): ProfileDrawerItem {
         val submittedForm = (kycState as? KycState.Submitted<*>)?.formData
-        val approvedType = when (kycState) {
-            is KycState.Submitted.Approved<*> -> {
-                when (submittedForm) {
-                    is SimpleKycForm -> submittedForm.formType
-                    else -> KycFormType.UNKNOWN
-                }
-            }
-            else -> null
-        }
+        val isApproved = kycState is KycState.Submitted.Approved<*>
         val avatarUrl = ProfileUtil.getAvatarUrl(kycState, urlConfigProvider)
 
         return ProfileDrawerItem()
@@ -193,8 +183,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withEmail(
                         when {
                             kycState == null -> getString(R.string.loading_data)
-                            approvedType == null -> getString(R.string.unverified_account)
-                            else -> LocalizedName(this).forKycFormType(approvedType)
+                            !isApproved -> getString(R.string.unverified_account)
+                            else -> LocalizedName(this).forKycForm(submittedForm)
                         }
                 )
                 .apply {

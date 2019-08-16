@@ -5,7 +5,7 @@ import org.tokend.template.R
 import org.tokend.template.data.model.history.BalanceChangeAction
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.features.fees.adapter.FeeListItem
-import org.tokend.template.features.kyc.model.form.KycFormType
+import org.tokend.template.features.kyc.model.KycForm
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.template.view.assetchart.AssetChartScale
 import org.tokend.wallet.xdr.FeeType
@@ -104,11 +104,12 @@ class LocalizedName(private val context: Context) {
         }
     }
 
-    fun forKycFormType(kycFormType: KycFormType): String {
+    fun forKycForm(kycFormType: KycForm?): String {
         return when (kycFormType) {
-            KycFormType.GENERAL -> context.getString(R.string.kyc_form_type_general)
-            KycFormType.CORPORATE -> context.getString(R.string.kyc_form_type_corporate)
-            KycFormType.UNKNOWN -> context.getString(R.string.kyc_form_type_unknown)
+            is KycForm.General -> context.getString(R.string.kyc_form_type_general)
+            is KycForm.Corporate -> context.getString(R.string.kyc_form_type_corporate)
+            is KycForm.Empty -> context.getString(R.string.kyc_form_type_unknown)
+            null -> context.getString(R.string.kyc_form_type_unknown)
         }
     }
 

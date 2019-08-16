@@ -11,8 +11,8 @@ import com.squareup.picasso.Picasso
 import org.tokend.template.R
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.features.assets.LogoFactory
+import org.tokend.template.features.kyc.model.KycForm
 import org.tokend.template.features.kyc.model.KycState
-import org.tokend.template.features.kyc.model.form.SimpleKycForm
 import org.tokend.template.util.imagetransform.CircleTransform
 
 object ProfileUtil {
@@ -20,7 +20,11 @@ object ProfileUtil {
     fun getAvatarUrl(kycState: KycState?,
                      urlConfigProvider: UrlConfigProvider): String? {
         val submittedForm = (kycState as? KycState.Submitted<*>)?.formData
-        val avatar = (submittedForm as? SimpleKycForm)?.avatar
+        val avatar = when (submittedForm) {
+            is KycForm.Corporate -> submittedForm.avatar
+            is KycForm.General -> submittedForm.avatar
+            else -> null
+        }
         return avatar?.getUrl(urlConfigProvider.getConfig().storage)
     }
 

@@ -4,6 +4,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
+import org.json.JSONObject
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.TokenDApi
 import org.tokend.sdk.api.base.params.PagingOrder
@@ -18,10 +19,8 @@ import org.tokend.template.data.repository.BlobsRepository
 import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.features.kyc.model.KycForm
 import org.tokend.template.features.kyc.model.KycState
-import org.tokend.template.features.kyc.model.form.EmptyKycForm
-import org.tokend.template.features.kyc.model.form.KycForm
-import org.tokend.template.features.kyc.model.form.SimpleKycForm
 
 /**
  * Holds user's KYC data and it's state
@@ -143,16 +142,29 @@ class KycStateRepository(
 
     private fun loadKycFormFromBlob(blobId: String?): Single<KycForm> {
         if (blobId == null) {
-            return Single.just(EmptyKycForm())
+            return Single.just(KycForm.Empty)
         }
 
         return blobsRepository
                 .getById(blobId, true)
                 .map { blob ->
                     try {
-                        blob.getValue(SimpleKycForm::class.java)
+                        val valueJson = JSONObject(blob.valueString)
+
+                        val isGeneral = valueJson.has(KycForm.General.FIRST_NAME_KEY)
+                        val isCorporate = valueJson.has(KycForm.Corporate.COMPANY_KEY)
+
+                        when {
+                            isGeneral ->
+                                blob.getValue(KycForm.General::class.java)
+                            isCorporate ->
+                                blob.getValue(KycForm.Corporate::class.java)
+                            else ->
+                                throw IllegalStateException("Unknown KYC form type")
+                        }
                     } catch (e: Exception) {
-                        EmptyKycForm()
+                        e.printStackTrace()
+                        KycForm.Empty
                     }
                 }
     }
