@@ -39,7 +39,7 @@
     <string name="withdrawal_fee_warning">Receive amount may be lower due to additional fees</string>
     <string name="sign_out_confirmation">Are you sure you want to sign out?</string>
     <string name="yes">Yes</string>
-    <string name="password_was_changed">Password has been changed, sign in to continue</string>
+    <string name="password_changed_successfully">Password has been changed</string>
     <string name="change_password_action">Change</string>
     <string name="current_password">Current password</string>
     <string name="open_action">Open</string>

@@ -23,6 +23,7 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
+import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.signup.logic.SignUpUseCase
 import org.tokend.template.logic.UrlConfigManager
@@ -34,6 +35,7 @@ import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
+import org.tokend.template.view.util.input.SoftInputUtil
 
 class SignUpActivity : BaseActivity() {
     override val allowUnauthorized = true
@@ -183,6 +185,8 @@ class SignUpActivity : BaseActivity() {
     private fun signUp() {
         val email = email_edit_text.text.toString()
         val password = password_edit_text.text.getChars()
+
+        SoftInputUtil.hideSoftInput(this)
 
         SignUpUseCase(
                 email,

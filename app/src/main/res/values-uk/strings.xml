@@ -38,7 +38,7 @@
     <string name="withdrawal_fee_warning">Кінцева сума може бути менше внаслідок додаткових комісій</string>
     <string name="sign_out_confirmation">Вийти з акаунта?</string>
     <string name="yes">Так</string>
-    <string name="password_was_changed">Пароль змінено, увійдіть щоб продовжити</string>
+    <string name="password_changed_successfully">Пароль змінено</string>
     <string name="change_password_action">Змінити</string>
     <string name="current_password">Поточний пароль</string>
     <string name="open_action">Відкрити</string>

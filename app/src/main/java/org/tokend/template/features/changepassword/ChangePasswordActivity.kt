@@ -188,7 +188,7 @@ class ChangePasswordActivity : BaseActivity() {
                 }
                 .subscribeBy(
                         onComplete = {
-                            toastManager.long(R.string.password_was_changed)
+                            toastManager.long(R.string.password_changed_successfully)
                             finishWithSuccess()
                         },
                         onError = { error ->

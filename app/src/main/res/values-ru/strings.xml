@@ -38,7 +38,7 @@
     <string name="withdrawal_fee_warning">Итоговая сумма может быть меньше вследствие дополнительных комиссий</string>
     <string name="sign_out_confirmation">Выйти из аккаунта?</string>
     <string name="yes">Да</string>
-    <string name="password_was_changed">Пароль изменен, войдите чтобы продолжить</string>
+    <string name="password_changed_successfully">Пароль изменен</string>
     <string name="change_password_action">Изменить</string>
     <string name="current_password">Текущий пароль</string>
     <string name="open_action">Открыть</string>

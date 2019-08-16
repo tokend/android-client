@@ -216,7 +216,7 @@ class RecoveryActivity : BaseActivity() {
                 }
                 .subscribeBy(
                         onComplete = {
-                            toastManager.long(R.string.password_was_changed)
+                            toastManager.long(R.string.kyc_recovery_initiated_message)
                             finishWithSuccess()
                         },
                         onError = {
