@@ -45,7 +45,7 @@ class PaymentsTest {
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
-        val (_, _, _) = Util.getVerifiedWallet(
+        val (_) = Util.getVerifiedWallet(
                 recipientEmail, password, apiProvider, session, null
         )
 
@@ -101,7 +101,7 @@ class PaymentsTest {
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
-        val (_, _, _) = Util.getVerifiedWallet(
+        val (_) = Util.getVerifiedWallet(
                 recipientEmail, password, apiProvider, session, null
         )
 
@@ -185,11 +185,11 @@ class PaymentsTest {
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
-        val (_, _, _) = Util.getVerifiedWallet(
+        val (_, _) = Util.getVerifiedWallet(
                 recipientEmail, password, apiProvider, session, null
         )
 
-        val (_, rootAccount, _) = Util.getVerifiedWallet(
+        val (_, rootAccount) = Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
         )
 

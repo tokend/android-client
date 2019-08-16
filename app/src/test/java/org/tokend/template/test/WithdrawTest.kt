@@ -205,7 +205,7 @@ class WithdrawTest {
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
-        val (_, rootAccount, _) = Util.getVerifiedWallet(
+        val (_, rootAccount) = Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
         )
 

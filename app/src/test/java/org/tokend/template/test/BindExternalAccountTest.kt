@@ -33,7 +33,7 @@ class BindExternalAccountTest {
 
         val txManager = TxManager(apiProvider)
 
-        val (walletData, rootAccount, _) = Util.getVerifiedWallet(
+        val (walletData, rootAccount) = Util.getVerifiedWallet(
                 email, password, apiProvider, session, repositoryProvider
         )
 

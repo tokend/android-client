@@ -1,7 +1,6 @@
 package org.tokend.template.features.signup.logic
 
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
 import org.tokend.rx.extensions.randomSingle
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
@@ -19,16 +18,14 @@ class SignUpUseCase(
         private val keyServer: KeyServer
 ) {
     private lateinit var rootAccount: Account
-    private lateinit var recoveryAccount: Account
 
     fun perform(): Single<WalletCreateResult> {
         return ensureEmailIsFree()
                 .flatMap {
-                    getAccounts()
+                    getAccount()
                 }
-                .doOnSuccess { (rootAccount, recoveryAccount) ->
+                .doOnSuccess { rootAccount ->
                     this.rootAccount = rootAccount
-                    this.recoveryAccount = recoveryAccount
                 }
                 .flatMap {
                     createAndSaveWallet()
@@ -54,15 +51,7 @@ class SignUpUseCase(
                 }
     }
 
-    private fun getAccounts(): Single<Pair<Account, Account>> {
-        return Single.zip(
-                generateNewAccount(),
-                generateNewAccount(),
-                BiFunction { x: Account, y: Account -> x to y }
-        )
-    }
-
-    private fun generateNewAccount(): Single<Account> {
+    private fun getAccount(): Single<Account> {
         return Account.randomSingle()
     }
 
@@ -70,8 +59,7 @@ class SignUpUseCase(
         return keyServer.createAndSaveWallet(
                 email,
                 password,
-                rootAccount,
-                recoveryAccount
+                rootAccount
         ).toSingle()
     }
 }

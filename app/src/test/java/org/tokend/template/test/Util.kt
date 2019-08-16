@@ -40,11 +40,9 @@ object Util {
         val createResult = apiProvider.getKeyServer().createAndSaveWallet(email, password)
                 .execute().get()
 
-        System.out.println("Email is $email")
-        System.out.println("Account id is " + createResult.rootAccount.accountId)
-        System.out.println("Recovery seed is " +
-                createResult.recoveryAccount.secretSeed!!.joinToString(""))
-        System.out.println("Password is " +
+        println("Email is $email")
+        println("Account id is " + createResult.rootAccount.accountId)
+        println("Password is " +
                 password.joinToString(""))
 
         SignInUseCase(

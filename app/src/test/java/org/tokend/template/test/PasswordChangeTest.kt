@@ -45,7 +45,7 @@ class PasswordChangeTest {
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
-        val (originalWalletData, rootAccount, recoveryAccount)
+        val (originalWalletData, rootAccount)
                 = Util.getVerifiedWallet(email, password, apiProvider, session, repositoryProvider)
 
         val useCase = ChangePasswordUseCase(

@@ -35,7 +35,7 @@ class VotingTest {
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
-        val (_, rootAccount, _) =
+        val (_, rootAccount) =
                 Util.getVerifiedWallet(email, password, apiProvider, session, repositoryProvider)
 
         Util.makeAccountCorporate(session, apiProvider, repositoryProvider.systemInfo(),
@@ -89,7 +89,7 @@ class VotingTest {
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
-        val (_, rootAccount, _) =
+        val (_, rootAccount) =
                 Util.getVerifiedWallet(email, password, apiProvider, session, repositoryProvider)
 
         Util.makeAccountCorporate(session, apiProvider, repositoryProvider.systemInfo(),
