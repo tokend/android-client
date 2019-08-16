@@ -38,6 +38,9 @@ class VotingTest {
         val (_, rootAccount, _) =
                 Util.getVerifiedWallet(email, password, apiProvider, session, repositoryProvider)
 
+        Util.makeAccountCorporate(session, apiProvider, repositoryProvider.systemInfo(),
+                TxManager(apiProvider))
+
         createPoll(repositoryProvider, apiProvider, session)
 
         val pollOwner = rootAccount.accountId
@@ -88,6 +91,9 @@ class VotingTest {
 
         val (_, rootAccount, _) =
                 Util.getVerifiedWallet(email, password, apiProvider, session, repositoryProvider)
+
+        Util.makeAccountCorporate(session, apiProvider, repositoryProvider.systemInfo(),
+                TxManager(apiProvider))
 
         createPoll(repositoryProvider, apiProvider, session)
 

@@ -63,13 +63,30 @@ object Util {
                            apiProvider: ApiProvider,
                            systemInfoRepository: SystemInfoRepository,
                            txManager: TxManager) {
+        setAccountRole("account_role:general", walletInfoProvider, apiProvider,
+                systemInfoRepository, txManager)
+    }
+
+    fun makeAccountCorporate(walletInfoProvider: WalletInfoProvider,
+                             apiProvider: ApiProvider,
+                             systemInfoRepository: SystemInfoRepository,
+                             txManager: TxManager) {
+        setAccountRole("account_role:corporate", walletInfoProvider, apiProvider,
+                systemInfoRepository, txManager)
+    }
+
+    private fun setAccountRole(roleKey: String,
+                               walletInfoProvider: WalletInfoProvider,
+                               apiProvider: ApiProvider,
+                               systemInfoRepository: SystemInfoRepository,
+                               txManager: TxManager) {
         val accountId = walletInfoProvider.getWalletInfo()!!.accountId
         val api = apiProvider.getApi()
 
         val roleToSet = api
                 .v3
                 .keyValue
-                .getById("account_role:general")
+                .getById(roleKey)
                 .execute()
                 .get()
                 .value

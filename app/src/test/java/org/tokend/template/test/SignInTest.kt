@@ -56,7 +56,7 @@ class SignInTest {
     private fun checkRepositories(repositoryProvider: RepositoryProvider) {
         Assert.assertTrue("Balances repository must be updated after sign in",
                 repositoryProvider.balances().isFresh)
-        Assert.assertTrue("TFA factors repository must be updated after sign in",
-                repositoryProvider.tfaFactors().isFresh)
+        Assert.assertTrue("Account repository must be updated after sign in",
+                repositoryProvider.account().isFresh)
     }
 }
