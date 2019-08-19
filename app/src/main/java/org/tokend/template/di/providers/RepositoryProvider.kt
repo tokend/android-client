@@ -36,7 +36,7 @@ interface RepositoryProvider {
     fun kycState(): KycStateRepository
     fun investmentInfo(sale: SaleRecord): InvestmentInfoRepository
     fun polls(ownerAccountId: String): PollsRepository
-    fun atomicSwapAsks(asset: String): AtomicSwapRequestsRepository
+    fun atomicSwapAsks(asset: String): AtomicSwapAsksRepository
     fun keyValueEntries(): KeyValueEntriesRepository
     fun blobs(): BlobsRepository
 }

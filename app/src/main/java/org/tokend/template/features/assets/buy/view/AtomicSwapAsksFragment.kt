@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.data.model.AtomicSwapAskRecord
-import org.tokend.template.data.repository.AtomicSwapRequestsRepository
+import org.tokend.template.data.repository.AtomicSwapAsksRepository
 import org.tokend.template.features.assets.buy.view.adapter.AtomicSwapAskListItem
 import org.tokend.template.features.assets.buy.view.adapter.AtomicSwapAsksAdapter
 import org.tokend.template.fragments.BaseFragment
@@ -37,7 +37,7 @@ class AtomicSwapAsksFragment : BaseFragment(), ToolbarProvider {
                 ?: throw IllegalArgumentException("$ASSET_CODE_EXTRA must be specified in arguments")
     }
 
-    private val asksRepository: AtomicSwapRequestsRepository
+    private val asksRepository: AtomicSwapAsksRepository
         get() = repositoryProvider.atomicSwapAsks(assetCode)
 
     private lateinit var adapter: AtomicSwapAsksAdapter

@@ -124,7 +124,7 @@ class RepositoryProviderImpl(
             LruCache<String, PollsRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     private val atomicSwapRepositoryByAsset =
-            LruCache<String, AtomicSwapRequestsRepository>(MAX_SAME_REPOSITORIES_COUNT)
+            LruCache<String, AtomicSwapAsksRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     private val keyValueEntries: KeyValueEntriesRepository by lazy {
         KeyValueEntriesRepository(apiProvider, MemoryOnlyRepositoryCache())
@@ -261,9 +261,9 @@ class RepositoryProviderImpl(
         }
     }
 
-    override fun atomicSwapAsks(asset: String): AtomicSwapRequestsRepository {
+    override fun atomicSwapAsks(asset: String): AtomicSwapAsksRepository {
         return atomicSwapRepositoryByAsset.getOrPut(asset) {
-            AtomicSwapRequestsRepository(apiProvider, asset,
+            AtomicSwapAsksRepository(apiProvider, asset,
                     MemoryOnlyRepositoryCache())
         }
     }

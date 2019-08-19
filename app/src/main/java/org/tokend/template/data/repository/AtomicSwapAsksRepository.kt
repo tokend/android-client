@@ -12,7 +12,7 @@ import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 
-class AtomicSwapRequestsRepository(
+class AtomicSwapAsksRepository(
         private val apiProvider: ApiProvider,
         private val asset: String,
         itemsCache: RepositoryCache<AtomicSwapAskRecord>
