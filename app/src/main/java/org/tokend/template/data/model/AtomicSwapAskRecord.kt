@@ -1,6 +1,7 @@
 package org.tokend.template.data.model
 
 import org.tokend.sdk.api.generated.resources.AtomicSwapAskResource
+import org.tokend.sdk.api.generated.resources.AtomicSwapQuoteAssetResource
 import java.io.Serializable
 import java.math.BigDecimal
 
@@ -16,13 +17,7 @@ class AtomicSwapAskRecord(
             asset = SimpleAsset(source.baseAsset),
             amount = source.availableAmount,
             isCanceled = source.isCanceled,
-            quoteAssets = source.quoteAssets.map {
-                QuoteAsset(
-                        code = it.id,
-                        trailingDigits = 6,
-                        price = it.price
-                )
-            }
+            quoteAssets = source.quoteAssets.map(::QuoteAsset)
     )
 
     override fun equals(other: Any?): Boolean {
@@ -39,5 +34,11 @@ class AtomicSwapAskRecord(
             val price: BigDecimal
     ) : Asset {
         override val name: String? = null
+
+        constructor(source: AtomicSwapQuoteAssetResource): this(
+                code = source.quoteAsset,
+                price = source.price,
+                trailingDigits = 6 // Well..
+        )
     }
 }
