@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [Unreleased]
+## [1.12.0] 2019-08-20
 
 ### Added
 - Support of deposit addresses with payload
@@ -30,6 +30,7 @@ for further information about branching and tagging conventions.
 ### Fixed
 - Non-working swipe refresh on asset buy screen
 - Closing action menu on touch outside
+- Broken `JsonCreator` because of ProGuard
 
 ## [1.11.0] 2019-07.11
 
@@ -219,6 +220,7 @@ with ability to copy
 - Error on sign in when user has balances with unknown asset details
 
 [Unreleased]: https://github.com/tokend/android-client/compare/1.11.0(16)...HEAD
+[1.12.0]: https://github.com/tokend/android-client/compare/1.11.0(16)...1.12.0(20)
 [1.11.0]: https://github.com/tokend/android-client/compare/1.10.0(13)...1.11.0(16)
 [1.10.0]: https://github.com/tokend/android-client/compare/1.9.0(12)...1.10.0(13)
 [1.9.0]: https://github.com/tokend/android-client/compare/1.8.0(10)...1.9.0(12)
