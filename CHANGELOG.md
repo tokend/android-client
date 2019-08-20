@@ -220,6 +220,7 @@ with ability to copy
 - Error on sign in when user has balances with unknown asset details
 
 [Unreleased]: https://github.com/tokend/android-client/compare/1.11.0(16)...HEAD
+[1.12.0]: https://github.com/tokend/android-client/compare/1.11.0(16)...1.12.0(20)
 [1.11.0]: https://github.com/tokend/android-client/compare/1.10.0(13)...1.11.0(16)
 [1.10.0]: https://github.com/tokend/android-client/compare/1.9.0(12)...1.10.0(13)
 [1.9.0]: https://github.com/tokend/android-client/compare/1.8.0(10)...1.9.0(12)
