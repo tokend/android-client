@@ -9,7 +9,14 @@ class PaymentFee(
         val recipientFee: SimpleFeeRecord,
         var senderPaysForRecipient: Boolean = false
 ): Serializable {
+    val totalPercentSenderFee: BigDecimal
+        get() = senderFee.percent +
+                if (senderPaysForRecipient) recipientFee.percent else BigDecimal.ZERO
+
+    val totalFixedSenderFee: BigDecimal
+        get() = senderFee.fixed +
+                if (senderPaysForRecipient) recipientFee.fixed else BigDecimal.ZERO
+
     val totalSenderFee: BigDecimal
-        get() = senderFee.total +
-                if (senderPaysForRecipient) recipientFee.total else BigDecimal.ZERO
+        get() = totalFixedSenderFee + totalPercentSenderFee
 }

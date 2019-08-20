@@ -9,7 +9,7 @@ import java.math.BigDecimal
 class BalanceRecord(
         val id: String,
         val asset: AssetRecord,
-        val available: BigDecimal,
+        var available: BigDecimal,
         val conversionAsset: Asset?,
         val convertedAmount: BigDecimal?
 ) : Serializable {

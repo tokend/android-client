@@ -25,6 +25,7 @@ import org.tokend.wallet.*
 import org.tokend.wallet.xdr.Operation
 import org.tokend.wallet.xdr.op_extensions.CreateBalanceOp
 import retrofit2.HttpException
+import java.math.BigDecimal
 
 class BalancesRepository(
         private val apiProvider: ApiProvider,
@@ -170,5 +171,16 @@ class BalancesRepository(
 
             Single.just(transaction)
         }.subscribeOn(Schedulers.computation())
+    }
+
+    fun updateAssetBalance(assetCode: String,
+                           delta: BigDecimal) {
+        itemsList
+                .find { it.assetCode == assetCode }
+                ?.also { balance ->
+                    balance.available += delta
+                    itemsCache.update(balance)
+                    broadcast()
+                }
     }
 }

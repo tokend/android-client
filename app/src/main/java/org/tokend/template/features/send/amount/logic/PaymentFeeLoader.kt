@@ -15,8 +15,6 @@ class PaymentFeeLoader(
         private val walletInfoProvider: WalletInfoProvider,
         private val feeManager: FeeManager
 ) {
-    private val zeroFee = SimpleFeeRecord(BigDecimal.ZERO, BigDecimal.ZERO)
-
     /**
      * Performs loading for non-zero amounts,
      * returns zero fees for 0
@@ -28,7 +26,7 @@ class PaymentFeeLoader(
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
         if (amount.signum() == 0) {
-            return Single.just(PaymentFee(zeroFee, zeroFee))
+            return Single.just(PaymentFee(SimpleFeeRecord.ZERO, SimpleFeeRecord.ZERO))
         }
 
         return Single.zip(

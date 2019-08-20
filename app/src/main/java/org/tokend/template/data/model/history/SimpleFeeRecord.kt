@@ -23,4 +23,8 @@ class SimpleFeeRecord(
                 org.tokend.wallet.xdr.Fee.FeeExt.EmptyVersion()
         )
     }
+
+    companion object {
+        val ZERO = SimpleFeeRecord(BigDecimal.ZERO, BigDecimal.ZERO)
+    }
 }
