@@ -102,6 +102,54 @@ open class BalancePickerBottomDialog(
         adjustDialogSize(dialog, dialogView)
     }
 
+    open fun getItemsToDisplay(): List<BalancePickerListItem> {
+        val filteredBalances = balancesRepository
+                .itemsList
+                .sortedWith(balancesComparator)
+                .let { items ->
+                    if (balancesFilter != null)
+                        items.filter(balancesFilter)
+                    else
+                        items
+                }
+
+        val unfilteredItems =
+                requiredAssets?.map { requiredAsset ->
+                    val balance =
+                            filteredBalances.find { it.assetCode == requiredAsset.code }
+
+                    if (balance != null)
+                        BalancePickerListItem(
+                                source = balance,
+                                available = getAvailableAmount(requiredAsset.code, balance)
+                        )
+                    else
+                        BalancePickerListItem(
+                                asset = requiredAsset,
+                                available = getAvailableAmount(requiredAsset.code, null),
+                                isEnough = true,
+                                logoUrl = null,
+                                source = null
+                        )
+                } ?: filteredBalances.map {
+                    BalancePickerListItem(
+                            source = it,
+                            available = getAvailableAmount(it.assetCode, it)
+                    )
+                }
+
+
+        return unfilteredItems
+                .let { items ->
+                    filter?.let { filter ->
+                        items.filter { item ->
+                            SearchUtil.isMatchGeneralCondition(filter,
+                                    item.asset.code, item.asset.name)
+                        }
+                    } ?: items
+                }
+    }
+
     protected open fun initDialogView(dialog: Dialog,
                                       dialogView: View,
                                       callback: (BalancePickerListItem) -> Unit) {
@@ -209,53 +257,7 @@ open class BalancePickerBottomDialog(
     }
 
     protected open fun displayBalances() {
-        val filteredBalances = balancesRepository
-                .itemsList
-                .sortedWith(balancesComparator)
-                .let { items ->
-                    if (balancesFilter != null)
-                        items.filter(balancesFilter)
-                    else
-                        items
-                }
-
-        val unfilteredItems =
-                requiredAssets?.map { requiredAsset ->
-                    val balance =
-                            filteredBalances.find { it.assetCode == requiredAsset.code }
-
-                    if (balance != null)
-                        BalancePickerListItem(
-                                source = balance,
-                                available = getAvailableAmount(requiredAsset.code, balance)
-                        )
-                    else
-                        BalancePickerListItem(
-                                asset = requiredAsset,
-                                available = getAvailableAmount(requiredAsset.code, null),
-                                isEnough = true,
-                                logoUrl = null,
-                                source = null
-                        )
-                } ?: filteredBalances.map {
-                    BalancePickerListItem(
-                            source = it,
-                            available = getAvailableAmount(it.assetCode, it)
-                    )
-                }
-
-
-        val items = unfilteredItems
-                .let { items ->
-                    filter?.let { filter ->
-                        items.filter { item ->
-                            SearchUtil.isMatchGeneralCondition(filter,
-                                    item.asset.code, item.asset.name)
-                        }
-                    } ?: items
-                }
-
-        adapter.setData(items)
+        adapter.setData(getItemsToDisplay())
     }
 
     private fun onFilterChanged() {

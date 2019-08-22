@@ -1,22 +1,10 @@
 package org.tokend.template.features.withdraw.amount.view
 
 import android.os.Bundle
-import org.tokend.template.data.model.AssetRecord
-import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.features.amountscreen.view.AmountInputFragment
 import org.tokend.template.view.balancepicker.BalancePickerBottomDialog
 
 class WithdrawAmountFragment : AmountInputFragment() {
-
-    override fun getAssetsToDisplay(): Collection<String> {
-        return balancesRepository
-                .itemsList
-                .sortedWith(balanceComparator)
-                .map(BalanceRecord::asset)
-                .filter(AssetRecord::isWithdrawable)
-                .map(AssetRecord::code)
-    }
-
     override fun getBalancePicker(): BalancePickerBottomDialog {
         return BalancePickerBottomDialog(
                 requireContext(),

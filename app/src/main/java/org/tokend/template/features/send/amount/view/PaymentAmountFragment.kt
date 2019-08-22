@@ -13,8 +13,6 @@ import kotlinx.android.synthetic.main.layout_payment_description.view.*
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
-import org.tokend.template.data.model.AssetRecord
-import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.features.amountscreen.view.AmountInputFragment
 import org.tokend.template.features.send.amount.logic.PaymentFeeLoader
@@ -92,15 +90,6 @@ class PaymentAmountFragment : AmountInputFragment() {
 
     override fun getActionButtonText(): String {
         return getString(R.string.go_to_confirmation_btn_label)
-    }
-
-    override fun getAssetsToDisplay(): Collection<String> {
-        return balancesRepository
-                .itemsList
-                .sortedWith(balanceComparator)
-                .map(BalanceRecord::asset)
-                .filter(AssetRecord::isTransferable)
-                .map(AssetRecord::code)
     }
 
     override fun getBalancePicker(): BalancePickerBottomDialog {

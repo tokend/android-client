@@ -25,7 +25,7 @@ import java.math.BigDecimal
 open class AmountInputFragment : BaseFragment() {
     protected lateinit var amountWrapper: AmountEditTextWrapper
 
-    protected open val resultSubject: Subject<in AmountInputResult> = PublishSubject.create<AmountInputResult>()
+    protected open val resultSubject: Subject<in AmountInputResult> = PublishSubject.create()
 
     /**
      * Emits entered amount as [AmountInputResult]
@@ -57,12 +57,15 @@ open class AmountInputFragment : BaseFragment() {
     protected open val hasError: Boolean
         get() = errorMessage != null
 
+    private lateinit var balancePicker: BalancePickerBottomDialog
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_amount_input, container, false)
     }
 
     override fun onInitAllowed() {
         initLayout()
+        initBalancePicker()
         initTitle()
         initFields()
         initButtons()
@@ -149,12 +152,14 @@ open class AmountInputFragment : BaseFragment() {
         action_button.setOnClickListener { postResult() }
     }
 
-    protected open fun initAssetSelection() {
-        val picker = getBalancePicker()
+    private fun initBalancePicker() {
+        balancePicker = getBalancePicker()
+    }
 
+    protected open fun initAssetSelection() {
         asset_code_text_view.setOnClickListener {
             SoftInputUtil.hideSoftInput(requireActivity())
-            picker.show(
+            balancePicker.show(
                     onItemPicked = { result ->
                         asset = result.asset.code
                     },
@@ -219,7 +224,9 @@ open class AmountInputFragment : BaseFragment() {
     }
 
     protected open fun displayAssets() {
-        val assetsToDisplay = getAssetsToDisplay()
+        val assetsToDisplay = balancePicker
+                .getItemsToDisplay()
+                .map { it.asset.code }
 
         if (assetsToDisplay.isEmpty()) {
             return
@@ -293,16 +300,6 @@ open class AmountInputFragment : BaseFragment() {
                 balanceComparator,
                 balancesRepository
         )
-    }
-
-    /**
-     * @return collection of asset codes to display in picker
-     */
-    protected open fun getAssetsToDisplay(): Collection<String> {
-        return balancesRepository
-                .itemsList
-                .sortedWith(balanceComparator)
-                .map(BalanceRecord::assetCode)
     }
 
     /**

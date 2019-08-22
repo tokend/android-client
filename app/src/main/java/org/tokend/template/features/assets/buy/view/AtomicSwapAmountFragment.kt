@@ -25,10 +25,6 @@ class AtomicSwapAmountFragment : AmountInputFragment() {
         asset_code_text_view.background = null
     }
 
-    override fun getAssetsToDisplay(): Collection<String> {
-        return listOf(ask.asset.code)
-    }
-
     override fun getTitleText(): String? = null
 
     override fun displayBalance() { }
