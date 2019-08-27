@@ -47,7 +47,7 @@ import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.signin.AuthenticatorSignInActivity
 import org.tokend.template.features.signin.SignInActivity
-import org.tokend.template.features.signin.UnlockAppActivity
+import org.tokend.template.features.signin.unlock.UnlockAppActivity
 import org.tokend.template.features.signup.SignUpActivity
 import org.tokend.template.features.trade.TradeActivity
 import org.tokend.template.features.wallet.details.*
