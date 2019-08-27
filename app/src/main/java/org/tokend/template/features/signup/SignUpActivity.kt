@@ -17,7 +17,9 @@ import org.jetbrains.anko.browse
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onCheckedChange
 import org.jetbrains.anko.onClick
+import org.tokend.crypto.ecdsa.erase
 import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
+import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
@@ -25,6 +27,8 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.setErrorAndFocus
+import org.tokend.template.features.signin.logic.PostSignInManager
+import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.features.signup.logic.SignUpUseCase
 import org.tokend.template.logic.UrlConfigManager
 import org.tokend.template.util.Navigator
@@ -64,6 +68,9 @@ class SignUpActivity : BaseActivity() {
     private lateinit var urlConfigManager: UrlConfigManager
 
     private var toSignInOnResume: Boolean = false
+
+    private var email: String? = null
+    private var password: CharArray? = null
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_sign_up)
@@ -186,7 +193,13 @@ class SignUpActivity : BaseActivity() {
 
     private fun signUp() {
         val email = email_edit_text.text.toString()
+        this.email = email
+
         val password = password_edit_text.text.getChars()
+        if (this.password !== password) {
+            this.password?.erase()
+        }
+        this.password = password
 
         SoftInputUtil.hideSoftInput(this)
 
@@ -202,7 +215,6 @@ class SignUpActivity : BaseActivity() {
                 }
                 .doOnEvent { _, _ ->
                     isLoading = false
-                    password.fill('0')
                 }
                 .subscribeBy(
                         onSuccess = this::onSuccessfulSignUp,
@@ -239,7 +251,7 @@ class SignUpActivity : BaseActivity() {
 
     private fun onSuccessfulSignUp(walletCreateResult: WalletCreateResult) {
         if (walletCreateResult.walletData.attributes?.isVerified == true) {
-            toastManager.long(R.string.account_created_successfully)
+            tryToSignIn()
         } else {
             showNotVerifiedEmailDialogAndFinish()
         }
@@ -277,5 +289,51 @@ class SignUpActivity : BaseActivity() {
         if (toSignInOnResume) {
             toSignIn()
         }
+    }
+
+    private fun tryToSignIn() {
+        val email = this.email
+        val password = this.password
+
+        if (email == null || password == null) {
+            toSignIn()
+            return
+        }
+
+        SignInUseCase(
+                email,
+                password,
+                KeyServer(apiProvider.getApi().wallets),
+                session,
+                credentialsPersistor,
+                PostSignInManager(repositoryProvider)
+        )
+                .perform()
+                .compose(ObservableTransformers.defaultSchedulersCompletable())
+                .doOnSubscribe {
+                    isLoading = true
+                }
+                .doOnDispose {
+                    isLoading = false
+                }
+                .subscribeBy(
+                        onComplete = this::onSuccessfulSignIn,
+                        onError = this::handleSignInError
+                )
+                .addTo(compositeDisposable)
+    }
+
+    private fun onSuccessfulSignIn() {
+        Navigator.from(this).toMainActivity(finishAffinity = true)
+    }
+
+    private fun handleSignInError(error: Throwable) {
+        errorHandlerFactory.getDefault().handle(error)
+        toSignIn()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        password?.erase()
     }
 }

@@ -172,10 +172,17 @@ class Navigator private constructor() {
         activity?.finish()
     }
 
-    fun toMainActivity() {
+    fun toMainActivity(finishAffinity: Boolean = false) {
         context?.intentFor<MainActivity>()
                 ?.also { performIntent(it) }
-        activity?.let { fadeOut(it) }
+        activity?.let {
+            if (finishAffinity) {
+                it.setResult(Activity.RESULT_CANCELED, null)
+                ActivityCompat.finishAffinity(it)
+            } else {
+                fadeOut(it)
+            }
+        }
     }
 
     fun openQrShare(title: String,
