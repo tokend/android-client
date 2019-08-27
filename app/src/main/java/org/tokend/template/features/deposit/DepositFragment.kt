@@ -34,7 +34,7 @@ import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.ExtraViewProvider
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.picker.PickerItem
-import org.tokend.template.view.util.CopyDataDialogFactory
+import org.tokend.template.view.dialog.CopyDataDialogFactory
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory

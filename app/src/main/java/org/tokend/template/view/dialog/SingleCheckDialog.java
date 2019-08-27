@@ -1,4 +1,4 @@
-package org.tokend.template.view;
+package org.tokend.template.view.dialog;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

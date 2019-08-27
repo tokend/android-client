@@ -27,7 +27,7 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ProfileUtil
 import org.tokend.template.view.FingerprintIndicatorManager
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.SignOutDialogFactory
+import org.tokend.template.view.dialog.SignOutDialogFactory
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
 
@@ -118,7 +118,7 @@ class UnlockAppActivity : BaseActivity() {
 
         sign_out_button.onClick {
             if (!loadingIndicator.isLoading) {
-                SignOutDialogFactory.getTunedDialog(this) {
+                SignOutDialogFactory.getDialog(this) {
                     (application as App).signOut(this)
                 }.show()
             }

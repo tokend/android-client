@@ -420,6 +420,8 @@
     <string name="kyc_recovery_rejected_message">Ваш запит відхилено. Спробуйте ще раз</string>
     <string name="share_sale">Поділитися кампанією</string>
     <string name="lock_app_in_background">Блокувати додаток у фоні</string>
+    <string name="open_email_app">Відкрити пошту</string>
+    <string name="almost_done">Майже готово</string>
     <string-array name="months">
         <item>Січень</item>
         <item>Лютий</item>

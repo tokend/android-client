@@ -3,6 +3,7 @@ package org.tokend.template.features.signup
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.view.View
 import io.reactivex.rxkotlin.addTo
@@ -23,7 +24,6 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
-import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.signup.logic.SignUpUseCase
 import org.tokend.template.logic.UrlConfigManager
@@ -62,6 +62,8 @@ class SignUpActivity : BaseActivity() {
 
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
     private lateinit var urlConfigManager: UrlConfigManager
+
+    private var toSignInOnResume: Boolean = false
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_sign_up)
@@ -239,8 +241,41 @@ class SignUpActivity : BaseActivity() {
         if (walletCreateResult.walletData.attributes?.isVerified == true) {
             toastManager.long(R.string.account_created_successfully)
         } else {
-            toastManager.long(R.string.check_your_email_to_verify_account)
+            showNotVerifiedEmailDialogAndFinish()
         }
+    }
+
+    private fun showNotVerifiedEmailDialogAndFinish() {
+        AlertDialog.Builder(this, R.style.AlertDialogStyle)
+                .setTitle(R.string.almost_done)
+                .setMessage(R.string.check_your_email_to_verify_account)
+                .setPositiveButton(R.string.ok) { _, _ ->
+                    toSignIn()
+                }
+                .setNeutralButton(R.string.open_email_app) { _, _ ->
+                    toSignInOnResume = true
+                    startActivity(
+                            Intent.createChooser(
+                                    Intent(Intent.ACTION_MAIN)
+                                            .addCategory(Intent.CATEGORY_APP_EMAIL),
+                                    getString(R.string.open_email_app)
+                            )
+                    )
+                }
+                .setOnCancelListener {
+                    toSignIn()
+                }
+                .show()
+    }
+
+    private fun toSignIn() {
         Navigator.from(this).toSignIn(false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (toSignInOnResume) {
+            toSignIn()
+        }
     }
 }

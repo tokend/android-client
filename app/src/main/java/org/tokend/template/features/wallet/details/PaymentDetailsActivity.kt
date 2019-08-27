@@ -9,7 +9,7 @@ import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
-import org.tokend.template.view.util.CopyDataDialogFactory
+import org.tokend.template.view.dialog.CopyDataDialogFactory
 
 
 class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
