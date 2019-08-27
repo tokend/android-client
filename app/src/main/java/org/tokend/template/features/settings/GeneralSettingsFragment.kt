@@ -27,6 +27,7 @@ import org.tokend.template.features.tfa.logic.EnableTfaUseCase
 import org.tokend.template.features.tfa.model.TfaFactorRecord
 import org.tokend.template.features.tfa.view.confirmation.TfaConfirmationDialogFactory
 import org.tokend.template.fragments.ToolbarProvider
+import org.tokend.template.logic.persistance.BackgroundLockManager
 import org.tokend.template.logic.persistance.FingerprintUtil
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -160,10 +161,23 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         if (session.isAuthenticatorUsed) {
             preferenceScreen.removePreference(findPreference("security"))
         } else {
+            initBackgroundLockItem()
             initFingerprintItem()
             initTfaItem()
             initChangePasswordItem()
             hideCategoryIfEmpty("security")
+        }
+    }
+
+    private fun initBackgroundLockItem() {
+        val lockPreference = findPreference("background_lock")
+                as? SwitchPreferenceCompat
+                ?: return
+        lockPreference.isVisible = backgroundLockManager.canBackgroundLockBeDisabled
+        lockPreference.isChecked = backgroundLockManager.isBackgroundLockEnabled
+        lockPreference.setOnPreferenceClickListener {
+            backgroundLockManager.isBackgroundLockEnabled = lockPreference.isChecked
+            true
         }
     }
 

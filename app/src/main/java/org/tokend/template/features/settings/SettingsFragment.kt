@@ -17,6 +17,8 @@ import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.settings.view.PreferenceDividerDecoration
 import org.tokend.template.logic.Session
+import org.tokend.template.logic.persistance.BackgroundLockManager
+import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.util.locale.AppLocaleManager
 import org.tokend.template.view.ToastManager
@@ -43,6 +45,10 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
     lateinit var amountFormatter: AmountFormatter
     @Inject
     lateinit var localeManager: AppLocaleManager
+    @Inject
+    lateinit var credentialsPersistor: CredentialsPersistor
+    @Inject
+    lateinit var backgroundLockManager: BackgroundLockManager
 
     protected val compositeDisposable = CompositeDisposable()
 

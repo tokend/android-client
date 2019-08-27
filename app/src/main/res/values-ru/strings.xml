@@ -419,6 +419,7 @@
     <string name="kyc_recovery_pending_message">Ваш запрос ожидает рассмотрения. Ожидайте уведомление</string>
     <string name="kyc_recovery_rejected_message">Ваш запрос отклонен. Попробуйте еще раз</string>
     <string name="share_sale">Поделиться кампанией</string>
+    <string name="lock_app_in_background">Блокировать приложение в фоне</string>
     <string-array name="months">
         <item>Январь</item>
         <item>Февраль</item>

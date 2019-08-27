@@ -67,7 +67,8 @@ class UnlockAppActivity : BaseActivity() {
         initViews()
         initDefaultState()
         updateSignInAvailability()
-        requestFingerprintAuthIfAvailable()
+
+        unlockOrRequestAuth()
     }
 
     private fun initViews() {
@@ -162,6 +163,17 @@ class UnlockAppActivity : BaseActivity() {
             AnimationUtil.fadeInView(sign_out_button)
             progress.hide()
             if (!usePassword) requestFingerprintAuthIfAvailable()
+        }
+    }
+
+    private fun unlockOrRequestAuth() {
+        val savedEmail = credentialsPersistor.getSavedEmail()
+        val savedPassword = credentialsPersistor.getSavedPassword()
+        if (!backgroundLockManager.isBackgroundLockEnabled
+                && savedEmail != null && savedPassword != null) {
+            signIn(savedEmail, savedPassword)
+        } else {
+            requestFingerprintAuthIfAvailable()
         }
     }
 
