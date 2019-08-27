@@ -7,6 +7,7 @@ import dagger.Provides
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.logic.persistance.BackgroundLockManager
 import org.tokend.template.util.comparator.AssetCodeComparator
 import org.tokend.template.util.comparator.AssetComparator
 import org.tokend.template.util.comparator.BalancesByConvertedAmountComparator
@@ -93,5 +94,11 @@ class UtilModule {
     @Singleton
     fun errorLogger(): ErrorLogger {
         return DefaultErrorLogger()
+    }
+
+    @Provides
+    @Singleton
+    fun backgroundLockManager(context: Context): BackgroundLockManager {
+        return BackgroundLockManager(context)
     }
 }

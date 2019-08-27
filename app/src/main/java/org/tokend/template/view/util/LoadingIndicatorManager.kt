@@ -48,10 +48,11 @@ class LoadingIndicatorManager(private val showLoading: () -> Unit,
             }
             isLoading = true
         } else {
-            if (isLoading) {
+            val wasLoading = isLoading
+            isLoading = false
+            if (wasLoading) {
                 hideLoading()
             }
-            isLoading = false
         }
     }
 }

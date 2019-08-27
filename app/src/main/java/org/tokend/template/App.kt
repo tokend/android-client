@@ -190,12 +190,11 @@ class App : MultiDexApplication() {
     }
 
     private fun getAppPreferences(): SharedPreferences {
-        return getSharedPreferences("App",
-                Context.MODE_PRIVATE)
+        return defaultSharedPreferences
     }
 
     private fun initState() {
-        sessionInfoStorage = SessionInfoStorage(defaultSharedPreferences)
+        sessionInfoStorage = SessionInfoStorage(getAppPreferences())
         session = Session(
                 WalletInfoProviderFactory().createWalletInfoProvider(),
                 AccountProviderFactory().createAccountProvider(),

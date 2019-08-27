@@ -52,7 +52,6 @@ class CredentialsPersistor(
     /**
      * @return true if there is a securely saved password
      */
-    @RequiresApi(Build.VERSION_CODES.M)
     fun hasSavedPassword(): Boolean {
         val password = getSavedPassword()
         val hasPassword = password != null
@@ -63,8 +62,11 @@ class CredentialsPersistor(
     /**
      * @return password from the secure storage, null if there is no saved password
      */
-    @RequiresApi(Build.VERSION_CODES.M)
     fun getSavedPassword(): CharArray? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return null
+        }
+
         val passwordBytes = secureStorage.load(PASSWORD_KEY)
                 ?: return null
         val password = passwordBytes.toCharArray()

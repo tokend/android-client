@@ -53,6 +53,13 @@
         android:title="@string/settings_security_group">
 
         <android.support.v7.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_password_lock_preference"
+            android:key="background_lock"
+            android:layout="@layout/preference_layout"
+            android:persistent="false"
+            android:title="@string/lock_app_in_background" />
+
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:icon="@drawable/ic_fingerprint"
             android:key="fingerprint"

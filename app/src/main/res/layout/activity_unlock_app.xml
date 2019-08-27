@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.signin.UnlockAppActivity">
+    tools:context=".features.signin.unlock.UnlockAppActivity">
 
     <ScrollView
         style="@style/LimitedMatchParentWidthConstraint"
@@ -35,7 +35,8 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_padding">
+                android:layout_marginTop="@dimen/standard_padding"
+                android:animateLayoutChanges="true">
 
                 <LinearLayout
                     android:id="@+id/fingerprint_layout"
@@ -122,6 +123,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:visibility="gone" />
+
+                <include layout="@layout/include_error_empty_view" />
             </FrameLayout>
 
             <Button
