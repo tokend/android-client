@@ -37,16 +37,10 @@ class TradeHistoryRepository(
 
         return signedApi.trades.getMatchedOrders(requestParams)
                 .toSingle()
-                .map {
-                    val items = it.items.map { matchedOrder ->
+                .map { page ->
+                    page.mapItems { matchedOrder ->
                         TradeHistoryRecord.fromMatchedOrder(matchedOrder)
                     }
-
-                    DataPage(
-                            it.nextCursor,
-                            items,
-                            it.isLast
-                    )
                 }
     }
 
