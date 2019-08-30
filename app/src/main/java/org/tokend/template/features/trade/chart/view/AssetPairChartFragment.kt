@@ -13,6 +13,7 @@ import org.jetbrains.anko.dip
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.repository.assets.AssetChartRepository
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
@@ -114,11 +115,8 @@ class AssetPairChartFragment : BaseFragment() {
     companion object {
         private const val ASSET_PAIR_EXTRA = "asset_pair"
 
-        fun newInstance(bundle: Bundle): AssetPairChartFragment {
-            val fragment = AssetPairChartFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): AssetPairChartFragment =
+                AssetPairChartFragment().withArguments(bundle)
 
         fun getBundle(assetPair: AssetPairRecord) = Bundle().apply {
             putSerializable(ASSET_PAIR_EXTRA, assetPair)

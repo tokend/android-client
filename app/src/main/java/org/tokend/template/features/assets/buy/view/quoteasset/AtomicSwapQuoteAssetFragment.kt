@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.fragment_atomic_swap_quote_asset.*
 import org.tokend.template.R
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AtomicSwapAskRecord
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.assets.buy.view.quoteasset.picker.AtomicSwapQuoteAssetSpinnerItem
 import org.tokend.template.features.assets.buy.view.quoteasset.picker.AtomicSwapQuoteAssetsSpinnerAdapter
 import org.tokend.template.fragments.BaseFragment
@@ -29,13 +30,8 @@ class AtomicSwapQuoteAssetFragment : BaseFragment() {
     }
 
     override fun onInitAllowed() {
-        val assetCode = arguments?.getString(ASSET_CODE_EXTRA)
-                ?: throw IllegalArgumentException("No $ASSET_CODE_EXTRA specified")
-        val askId = arguments?.getString(ASK_ID_EXTRA)
-        this.ask = repositoryProvider.atomicSwapAsks(assetCode)
-                .itemsList
-                .find { it.id == askId }
-                ?: throw IllegalArgumentException("No ask found for ID $askId from $ASK_ID_EXTRA")
+        this.ask = arguments?.getSerializable(ASK_EXTRA) as? AtomicSwapAskRecord
+                ?: throw IllegalArgumentException("No $ASK_EXTRA specified")
         this.amount = (arguments?.getSerializable(AMOUNT_EXTRA) as? BigDecimal)
                 ?: throw IllegalArgumentException("No $AMOUNT_EXTRA specified")
 
@@ -73,20 +69,16 @@ class AtomicSwapQuoteAssetFragment : BaseFragment() {
     }
 
     companion object {
-        private const val ASSET_CODE_EXTRA = "asset_code"
-        private const val ASK_ID_EXTRA = "ask_id"
+        private const val ASK_EXTRA = "ask"
         private const val AMOUNT_EXTRA = "amount"
 
-        fun newInstance(assetCode: String,
-                        askId: String,
-                        amount: BigDecimal): AtomicSwapQuoteAssetFragment {
-            val fragment = AtomicSwapQuoteAssetFragment()
-            fragment.arguments = Bundle().apply {
-                putString(ASSET_CODE_EXTRA, assetCode)
-                putString(ASK_ID_EXTRA, askId)
-                putSerializable(AMOUNT_EXTRA, amount)
-            }
-            return fragment
+        fun getBundle(ask: AtomicSwapAskRecord,
+                      amount: BigDecimal) = Bundle().apply {
+            putSerializable(ASK_EXTRA, ask)
+            putSerializable(AMOUNT_EXTRA, amount)
         }
+
+        fun newInstance(bundle: Bundle): AtomicSwapQuoteAssetFragment =
+                AtomicSwapQuoteAssetFragment().withArguments(bundle)
     }
 }

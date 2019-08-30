@@ -24,6 +24,7 @@ import org.jetbrains.anko.find
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetRecord
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.assets.adapter.AssetListItem
 import org.tokend.template.features.assets.adapter.AssetListItemViewHolder
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
@@ -246,11 +247,8 @@ open class AssetDetailsFragment : BaseFragment() {
         const val ASSET_CODE_EXTRA = "asset_code"
         const val BALANCE_CREATION_EXTRA = "balance_creation"
 
-        fun newInstance(bundle: Bundle): AssetDetailsFragment {
-            val fragment = AssetDetailsFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): AssetDetailsFragment =
+                AssetDetailsFragment().withArguments(bundle)
 
         fun getBundle(assetCode: String, balanceCreation: Boolean) = Bundle().apply {
             putSerializable(ASSET_CODE_EXTRA, assetCode)

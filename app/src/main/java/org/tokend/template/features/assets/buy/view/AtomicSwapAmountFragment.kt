@@ -4,17 +4,15 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.fragment_amount_input.*
 import org.tokend.template.R
 import org.tokend.template.data.model.AtomicSwapAskRecord
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.amountscreen.view.AmountInputFragment
 
 class AtomicSwapAmountFragment : AmountInputFragment() {
     private lateinit var ask: AtomicSwapAskRecord
 
     override fun onInitAllowed() {
-        val askId = arguments?.getString(ASK_ID_EXTRA)
-        this.ask = repositoryProvider.atomicSwapAsks(requestedAsset!!)
-                .itemsList
-                .find { it.id == askId }
-                ?: throw IllegalArgumentException("No ask found for ID $askId from $ASK_ID_EXTRA")
+        this.ask = arguments?.getSerializable(ASK_EXTRA) as? AtomicSwapAskRecord
+                ?: throw IllegalArgumentException("No $ASK_EXTRA specified")
 
         displayAvailableAmount()
         super.onInitAllowed()
@@ -48,16 +46,13 @@ class AtomicSwapAmountFragment : AmountInputFragment() {
     }
 
     companion object {
-        private const val ASK_ID_EXTRA = "ask_id"
+        private const val ASK_EXTRA = "ask"
 
-        fun newInstance(assetCode: String,
-                        askId: String): AtomicSwapAmountFragment {
-            val fragment = AtomicSwapAmountFragment()
-            fragment.arguments = Bundle().apply {
-                putString(ASK_ID_EXTRA, askId)
-                putString(ASSET_EXTRA, assetCode)
-            }
-            return fragment
+        fun getBundle(ask: AtomicSwapAskRecord) = Bundle().apply {
+            putSerializable(ASK_EXTRA, ask)
         }
+
+        fun newInstance(bundle: Bundle): AtomicSwapAmountFragment =
+                AtomicSwapAmountFragment().withArguments(bundle)
     }
 }

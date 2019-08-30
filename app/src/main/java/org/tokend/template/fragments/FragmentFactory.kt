@@ -25,7 +25,7 @@ import org.tokend.template.features.withdraw.WithdrawFragment
 class FragmentFactory {
 
     fun getDashboardFragment(): Fragment {
-        return DashboardFragment.newInstance()
+        return DashboardFragment()
     }
 
     fun getAssetDetailsFragment(asset: AssetRecord, balanceCreation: Boolean = true): Fragment {

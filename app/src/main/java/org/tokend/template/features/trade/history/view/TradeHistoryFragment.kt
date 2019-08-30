@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.repository.TradeHistoryRepository
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.trade.history.view.adapter.TradeHistoryAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.ObservableTransformers
@@ -127,11 +128,8 @@ class TradeHistoryFragment : BaseFragment() {
     companion object {
         private const val EXTRA_ASSET_PAIR = "asset_pair"
 
-        fun newInstance(bundle: Bundle): TradeHistoryFragment {
-            val fragment = TradeHistoryFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): TradeHistoryFragment =
+                TradeHistoryFragment().withArguments(bundle)
 
         fun getBundle(assetPair: AssetPairRecord) = Bundle().apply {
             putSerializable(EXTRA_ASSET_PAIR, assetPair)

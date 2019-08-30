@@ -14,6 +14,7 @@ import org.jetbrains.anko.enabled
 import org.tokend.template.R
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
@@ -125,12 +126,11 @@ class WithdrawDestinationFragment : BaseFragment() {
     companion object {
         private const val AMOUNT_EXTRA = "amount to withdraw"
 
-        fun newInstance(amountToWithdraw: String): WithdrawDestinationFragment {
-            val fragment = WithdrawDestinationFragment()
-            fragment.arguments = Bundle().apply {
-                putString(AMOUNT_EXTRA, amountToWithdraw)
-            }
-            return fragment
+        fun getBundle(amountToWithdraw: String) = Bundle().apply {
+            putString(AMOUNT_EXTRA, amountToWithdraw)
         }
+
+        fun newInstance(bundle: Bundle): WithdrawDestinationFragment =
+                WithdrawDestinationFragment().withArguments(bundle)
     }
 }

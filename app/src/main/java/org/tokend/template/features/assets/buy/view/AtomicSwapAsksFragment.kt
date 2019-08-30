@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.data.model.AtomicSwapAskRecord
 import org.tokend.template.data.repository.AtomicSwapAsksRepository
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.assets.buy.view.adapter.AtomicSwapAskListItem
 import org.tokend.template.features.assets.buy.view.adapter.AtomicSwapAsksAdapter
 import org.tokend.template.fragments.BaseFragment
@@ -148,11 +149,8 @@ class AtomicSwapAsksFragment : BaseFragment(), ToolbarProvider {
         val ID = "aswap_asks".hashCode().toLong() and 0xffff
         private const val ASSET_CODE_EXTRA = "asset_code"
 
-        fun newInstance(bundle: Bundle): AtomicSwapAsksFragment {
-            val fragment = AtomicSwapAsksFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): AtomicSwapAsksFragment =
+                AtomicSwapAsksFragment().withArguments(bundle)
 
         fun getBundle(assetCode: String) = Bundle().apply {
             putString(ASSET_CODE_EXTRA, assetCode)

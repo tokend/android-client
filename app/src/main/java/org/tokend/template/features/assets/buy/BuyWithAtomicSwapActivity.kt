@@ -86,7 +86,10 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
     // endregion
 
     private fun toAmountScreen() {
-        val fragment = AtomicSwapAmountFragment.newInstance(ask.asset.code, ask.id)
+        val fragment = AtomicSwapAmountFragment.newInstance(
+                AtomicSwapAmountFragment.getBundle(ask)
+        )
+
         fragment
                 .resultObservable
                 .compose(ObservableTransformers.defaultSchedulers())
@@ -106,7 +109,10 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
     }
 
     private fun toQuoteAssetScreen() {
-        val fragment = AtomicSwapQuoteAssetFragment.newInstance(ask.asset.code, ask.id, amount)
+        val fragment = AtomicSwapQuoteAssetFragment.newInstance(
+                AtomicSwapQuoteAssetFragment.getBundle(ask, amount)
+        )
+
         fragment
                 .resultObservable
                 .compose(ObservableTransformers.defaultSchedulers())

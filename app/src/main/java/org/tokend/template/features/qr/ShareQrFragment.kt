@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.doAsync
 import org.tokend.template.R
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.qr.logic.QrGenerator
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
@@ -39,11 +40,7 @@ open class ShareQrFragment : BaseFragment(), ToolbarProvider {
         const val TOP_TEXT_EXTRA = "top_text"
         const val BOTTOM_TEXT_EXTRA = "bottom_text"
 
-        fun newInstance(bundle: Bundle): ShareQrFragment {
-            val fragment = ShareQrFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): ShareQrFragment = ShareQrFragment().withArguments(bundle)
 
         fun getBundle(data: String,
                       title: String?,

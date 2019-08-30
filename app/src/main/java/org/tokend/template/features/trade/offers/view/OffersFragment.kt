@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetPairRecord
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.offers.view.PendingOfferListItem
@@ -149,11 +150,7 @@ class OffersFragment : BaseFragment() {
         private const val ASSET_PAIR_EXTRA = "asset_pair"
         const val ONLY_PRIMARY_EXTRA = "only_primary"
 
-        fun newInstance(bundle: Bundle): OffersFragment {
-            val fragment = OffersFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): OffersFragment = OffersFragment().withArguments(bundle)
 
         fun getBundle(assetPair: AssetPairRecord) = Bundle().apply {
             putSerializable(ASSET_PAIR_EXTRA, assetPair)

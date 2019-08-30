@@ -14,6 +14,7 @@ import org.jetbrains.anko.dip
 import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
 import org.tokend.template.extensions.onEditorAction
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.amountscreen.view.AmountInputFragment
 import org.tokend.template.features.send.amount.logic.PaymentFeeLoader
 import org.tokend.template.features.send.amount.model.PaymentAmountData
@@ -233,16 +234,15 @@ class PaymentAmountFragment : AmountInputFragment() {
         private const val RECIPIENT_ACCOUNT_EXTRA = "recipient_account"
         private const val FEES_LOADING_DELAY = 400L
 
-        fun newInstance(recipient: String,
-                        recipientAccount: String,
-                        requiredAsset: String? = null): PaymentAmountFragment {
-            val fragment = PaymentAmountFragment()
-            fragment.arguments = Bundle().apply {
-                putString(ASSET_EXTRA, requiredAsset)
-                putString(RECIPIENT_EXTRA, recipient)
-                putString(RECIPIENT_ACCOUNT_EXTRA, recipientAccount)
-            }
-            return fragment
+        fun getBundle(recipient: String,
+                      recipientAccount: String,
+                      requiredAsset: String? = null) = Bundle().apply {
+            putString(ASSET_EXTRA, requiredAsset)
+            putString(RECIPIENT_EXTRA, recipient)
+            putString(RECIPIENT_ACCOUNT_EXTRA, recipientAccount)
         }
+
+        fun newInstance(bundle: Bundle): PaymentAmountFragment =
+                PaymentAmountFragment().withArguments(bundle)
     }
 }

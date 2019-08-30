@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.fragment_order_book.*
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.trade.orderbook.model.OrderBook
 import org.tokend.template.features.trade.orderbook.model.OrderBookEntryRecord
 import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
@@ -216,11 +217,8 @@ class OrderBookFragment : BaseFragment() {
         private const val ASSET_PAIR_EXTRA = "asset_pair"
         const val ID = 1115L
 
-        fun newInstance(bundle: Bundle): OrderBookFragment {
-            val fragment = OrderBookFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): OrderBookFragment =
+                OrderBookFragment().withArguments(bundle)
 
         fun getBundle(assetPair: AssetPairRecord) = Bundle().apply {
             putSerializable(ASSET_PAIR_EXTRA, assetPair)

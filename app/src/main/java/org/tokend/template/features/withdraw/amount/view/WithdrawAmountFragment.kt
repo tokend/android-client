@@ -1,6 +1,7 @@
 package org.tokend.template.features.withdraw.amount.view
 
 import android.os.Bundle
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.amountscreen.view.AmountInputFragment
 import org.tokend.template.view.balancepicker.BalancePickerBottomDialog
 
@@ -21,13 +22,11 @@ class WithdrawAmountFragment : AmountInputFragment() {
     }
 
     companion object {
-
-        fun newInstance(requiredAsset: String? = null): WithdrawAmountFragment {
-            val fragment = WithdrawAmountFragment()
-            fragment.arguments = Bundle().apply {
-                putString(ASSET_EXTRA, requiredAsset)
-            }
-            return fragment
+        fun getBundle(requiredAsset: String? = null) = Bundle().apply {
+            putString(ASSET_EXTRA, requiredAsset)
         }
+
+        fun newInstance(bundle: Bundle): WithdrawAmountFragment =
+                WithdrawAmountFragment().withArguments(bundle)
     }
 }

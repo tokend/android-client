@@ -3,6 +3,7 @@ package org.tokend.template.features.invest.view.fragments
 import android.os.Bundle
 import kotlinx.android.synthetic.main.fragment_asset_details.*
 import org.tokend.template.R
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.assets.AssetDetailsFragment
 import org.tokend.template.features.invest.logic.InvestmentInfoHolder
 import org.tokend.template.features.invest.model.SaleRecord
@@ -41,11 +42,8 @@ class SaleDetailsFragment : AssetDetailsFragment() {
     }
 
     companion object {
-        fun newInstance(bundle: Bundle): SaleDetailsFragment {
-            val fragment = SaleDetailsFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): SaleDetailsFragment =
+                SaleDetailsFragment().withArguments(bundle)
 
         fun getBundle(saleAssetCode: String) = getBundle(saleAssetCode, false)
     }

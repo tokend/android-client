@@ -25,6 +25,7 @@ import org.tokend.template.data.model.AccountRecord
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.transactions.TxManager
@@ -33,8 +34,8 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.ExtraViewProvider
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
-import org.tokend.template.view.picker.PickerItem
 import org.tokend.template.view.dialog.CopyDataDialogFactory
+import org.tokend.template.view.picker.PickerItem
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
@@ -497,11 +498,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         private val EXPIRATION_ITEM_ID = "expiration_date".hashCode().toLong()
         private val RENEW_ITEM_ID = "renew".hashCode().toLong()
 
-        fun newInstance(bundle: Bundle): DepositFragment {
-            val fragment = DepositFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): DepositFragment =
+                DepositFragment().withArguments(bundle)
 
         fun getBundle(assetCode: String?) = Bundle().apply {
             putString(EXTRA_ASSET, assetCode)

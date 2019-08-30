@@ -24,6 +24,7 @@ import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.amountscreen.model.AmountInputResult
 import org.tokend.template.features.withdraw.amount.view.WithdrawAmountFragment
 import org.tokend.template.features.withdraw.destination.view.WithdrawDestinationFragment
@@ -138,7 +139,9 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     // endregion
 
     private fun toAmountScreen() {
-        val fragment = WithdrawAmountFragment.newInstance(requiredAsset)
+        val fragment = WithdrawAmountFragment.newInstance(
+                WithdrawAmountFragment.getBundle(requiredAsset)
+        )
 
         fragment
                 .resultObservable
@@ -162,7 +165,9 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     private fun toDestinationScreen() {
         val asset = this.asset ?: return
         val amountToWithdraw = amountFormatter.formatAssetAmount(amount, asset)
-        val fragment = WithdrawDestinationFragment.newInstance(amountToWithdraw)
+        val fragment = WithdrawDestinationFragment.newInstance(
+                WithdrawDestinationFragment.getBundle(amountToWithdraw)
+        )
 
         fragment
                 .resultObservable
@@ -310,11 +315,8 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         const val ID = 1113L
         val WITHDRAWAL_CONFIRMATION_REQUEST = "confirm_withdrawal".hashCode() and 0xffff
 
-        fun newInstance(bundle: Bundle): WithdrawFragment {
-            val fragment = WithdrawFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): WithdrawFragment =
+                WithdrawFragment().withArguments(bundle)
 
         fun getBundle(assetCode: String?) = Bundle().apply {
             putString(ASSET_EXTRA, assetCode)

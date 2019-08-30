@@ -22,6 +22,7 @@ import org.tokend.template.R
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.polls.logic.AddVoteUseCase
 import org.tokend.template.features.polls.logic.RemoveVoteUseCase
 import org.tokend.template.features.polls.model.PollRecord
@@ -302,11 +303,7 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
         private const val ALLOW_TOOLBAR_EXTRA = "allow_toolbar"
         private const val OWNER_ACCOUNT_ID_EXTRA = "owner"
 
-        fun newInstance(bundle: Bundle): PollsFragment {
-            val fragment = PollsFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): PollsFragment = PollsFragment().withArguments(bundle)
 
         fun getBundle(allowToolbar: Boolean,
                       ownerAccountId: String?) = Bundle().apply {

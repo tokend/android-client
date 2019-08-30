@@ -25,6 +25,7 @@ import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.send.amount.model.PaymentAmountData
 import org.tokend.template.features.send.amount.view.PaymentAmountFragment
 import org.tokend.template.features.send.logic.CreatePaymentRequestUseCase
@@ -175,8 +176,9 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         val recipientAccount = recipient?.accountId
                 ?: return
 
-        val fragment = PaymentAmountFragment
-                .newInstance(recipientNickname, recipientAccount, requiredAsset)
+        val fragment = PaymentAmountFragment.newInstance(
+                PaymentAmountFragment.getBundle(recipientNickname, recipientAccount, requiredAsset)
+        )
 
         fragment
                 .resultObservable
@@ -309,11 +311,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         const val ID = 1118L
         val PAYMENT_CONFIRMATION_REQUEST = "confirm_payment".hashCode() and 0xffff
 
-        fun newInstance(bundle: Bundle): SendFragment {
-            val fragment = SendFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): SendFragment = SendFragment().withArguments(bundle)
 
         fun getBundle(assetCode: String?,
                       allowToolbar: Boolean) = Bundle().apply {
