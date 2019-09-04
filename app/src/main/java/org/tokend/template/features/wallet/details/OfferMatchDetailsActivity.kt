@@ -14,7 +14,7 @@ open class OfferMatchDetailsActivity : BalanceChangeDetailsActivity() {
         val details = item.cause as? BalanceChangeCause.MatchedOffer
 
         if (details == null) {
-            finish()
+            finishWithError(IllegalStateException("Invalid item cause type"))
             return
         }
 

@@ -30,7 +30,7 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
         try {
             mSale = intent.getSerializableExtra(SALE_EXTRA) as SaleRecord
         } catch (e: Exception) {
-            finish()
+            finishWithError(e)
             return
         }
 

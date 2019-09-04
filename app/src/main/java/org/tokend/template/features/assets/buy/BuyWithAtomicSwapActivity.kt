@@ -43,14 +43,9 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.fragment_user_flow)
 
-        val errorHandler = errorHandlerFactory.getDefault()
-
         val assetCode = intent.getStringExtra(ASSET_CODE_EXTRA)
         if (assetCode == null) {
-            errorHandler.handle(
-                    IllegalArgumentException("No $ASSET_CODE_EXTRA specified")
-            )
-            finish()
+            finishWithMissingArgError(ASSET_CODE_EXTRA)
             return
         }
         val askId = intent.getStringExtra(ASK_ID_EXTRA)
@@ -58,10 +53,7 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
                 .itemsList
                 .find { it.id == askId }
         if (ask == null) {
-            errorHandler.handle(
-                    IllegalArgumentException("No ask found for ID $askId from $ASK_ID_EXTRA")
-            )
-            finish()
+            finishWithError(IllegalArgumentException("No ask found for ID $askId from $ASK_ID_EXTRA"))
             return
         }
         this.ask = ask

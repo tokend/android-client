@@ -21,7 +21,7 @@ class TradeActivity : BaseActivity() {
                 as? AssetPairRecord
 
         if (assetPair == null) {
-            finish()
+            finishWithMissingArgError(ASSET_PAIR_EXTRA)
             return
         }
 

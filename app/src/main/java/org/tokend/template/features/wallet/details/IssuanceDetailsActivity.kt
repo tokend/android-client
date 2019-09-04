@@ -13,7 +13,7 @@ class IssuanceDetailsActivity : BalanceChangeDetailsActivity() {
         val details = item.cause as? BalanceChangeCause.Issuance
 
         if (details == null) {
-            finish()
+            finishWithError(IllegalStateException("Invalid item cause type"))
             return
         }
 

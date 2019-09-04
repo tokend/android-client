@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 import org.tokend.sdk.factory.GsonFactory
+import org.tokend.template.extensions.tryOrNull
 import org.tokend.template.features.kyc.model.KycState
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -51,12 +52,9 @@ class SubmittedKycStatePersistor(
         return preferences
                 .getString(KEY, null)
                 ?.let {
-                    try {
+                    tryOrNull {
                         val container = gson.fromJson(it, Container::class.java)
-
                         deserializeState(container)
-                    } catch (e: Exception) {
-                        null
                     }
                 }
     }

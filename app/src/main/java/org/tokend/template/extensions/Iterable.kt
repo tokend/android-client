@@ -6,11 +6,5 @@ package org.tokend.template.extensions
  * to each element in the original collection.
  */
 inline fun <T, R : Any> Iterable<T>.mapSuccessful(transform: (T) -> R): List<R> {
-    return this.mapNotNull {
-        try {
-            transform(it)
-        } catch (e: Exception) {
-            null
-        }
-    }
+    return this.mapNotNull { tryOrNull { transform(it) } }
 }

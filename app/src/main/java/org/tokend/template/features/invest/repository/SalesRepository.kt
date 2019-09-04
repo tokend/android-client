@@ -7,7 +7,6 @@ import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.sales.model.SaleState
-import org.tokend.sdk.api.sales.params.SalesParams
 import org.tokend.sdk.api.v3.sales.params.SaleParamsV3
 import org.tokend.sdk.api.v3.sales.params.SalesPageParamsV3
 import org.tokend.template.data.repository.base.RepositoryCache
@@ -15,7 +14,7 @@ import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.mapSuccessful
+import org.tokend.template.extensions.tryOrNull
 import org.tokend.template.features.invest.model.SaleRecord
 
 class SalesRepository(
@@ -56,13 +55,11 @@ class SalesRepository(
                 .getForAccount(accountId, requestParams)
                 .toSingle()
                 .map { page ->
-                    DataPage(
-                            page.nextCursor,
-                            page.items.mapSuccessful {
-                                SaleRecord.fromResource(it, urlConfigProvider.getConfig(), mapper)
-                            },
-                            page.isLast
-                    )
+                    page.mapItemsNotNull {
+                        tryOrNull {
+                            SaleRecord.fromResource(it, urlConfigProvider.getConfig(), mapper)
+                        }
+                    }
                 }
     }
 

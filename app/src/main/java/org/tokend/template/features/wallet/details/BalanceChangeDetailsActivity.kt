@@ -5,7 +5,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
-import android.util.Log
 import kotlinx.android.synthetic.main.activity_balance_change_details.*
 import kotlinx.android.synthetic.main.appbar_with_balance_change_main_data.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -33,8 +32,7 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
         if (intentItem != null) {
             displayDetails(intentItem)
         } else {
-            Log.e(LOG_TAG, "Unable to get serializable $BALANCE_CHANGE_EXTRA")
-            finish()
+            finishWithMissingArgError(BALANCE_CHANGE_EXTRA)
             return
         }
     }

@@ -3,6 +3,7 @@ package org.tokend.template.logic.persistance
 import android.content.SharedPreferences
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.data.model.UrlConfig
+import org.tokend.template.extensions.tryOrNull
 
 /**
  * Implements [UrlConfig] storage based on [SharedPreferences]
@@ -27,10 +28,8 @@ class UrlConfigPersistor(
         return preferences
                 .getString(CONFIG_KEY, null)
                 ?.let {
-                    try {
+                    tryOrNull {
                         GsonFactory().getBaseGson().fromJson(it, UrlConfig::class.java)
-                    } catch (e: Exception) {
-                        null
                     }
                 }
 

@@ -45,14 +45,9 @@ class TxManager(
                 val transaction =
                         TransactionBuilder(networkParams,
                                 PublicKeyFactory.fromAccountId(sourceAccountId))
-                                .apply {
-                                    operations.forEach {
-                                        addOperation(it)
-                                    }
-                                }
+                                .addOperations(operations.toList())
+                                .addSigner(signer)
                                 .build()
-
-                transaction.addSignature(signer)
 
                 Single.just(transaction)
             }.subscribeOn(Schedulers.newThread())

@@ -3,7 +3,6 @@ package org.tokend.template.features.polls.repository
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.tokend.rx.extensions.toSingle
-import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.v3.polls.params.PollsPageParams
@@ -15,7 +14,7 @@ import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.extensions.mapSuccessful
+import org.tokend.template.extensions.tryOrNull
 import org.tokend.template.features.polls.model.PollRecord
 
 class PollsRepository(
@@ -61,16 +60,14 @@ class PollsRepository(
                                 )
                                 ?.value
 
-                        DataPage(
-                                isLast = pollsPage.isLast,
-                                nextCursor = pollsPage.nextCursor,
-                                items = pollsPage.items.mapSuccessful { pollResource ->
-                                    PollRecord.fromResource(
-                                            pollResource,
-                                            choiceChangeAllowedType
-                                    )
-                                }
-                        )
+                        pollsPage.mapItemsNotNull {
+                            tryOrNull {
+                                PollRecord.fromResource(
+                                        it,
+                                        choiceChangeAllowedType
+                                )
+                            }
+                        }
                     }
         })
 

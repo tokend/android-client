@@ -13,7 +13,7 @@ class WithdrawalDetailsActivity : BalanceChangeDetailsActivity() {
         val details = item.cause as? BalanceChangeCause.WithdrawalRequest
 
         if (details == null) {
-            finish()
+            finishWithError(IllegalStateException("Invalid item cause type"))
             return
         }
 

@@ -21,14 +21,14 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         val details = item.cause as? BalanceChangeCause.Payment
 
         if (details == null) {
-            finish()
+            finishWithError(IllegalStateException("Invalid item cause type"))
             return
         }
 
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
 
         if (accountId == null) {
-            finish()
+            finishWithError(IllegalStateException("No wallet info found"))
             return
         }
 

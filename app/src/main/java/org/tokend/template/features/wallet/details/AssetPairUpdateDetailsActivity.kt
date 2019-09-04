@@ -13,7 +13,7 @@ class AssetPairUpdateDetailsActivity : BalanceChangeDetailsActivity() {
         val details = item.cause as? BalanceChangeCause.AssetPairUpdate
 
         if (details == null) {
-            finish()
+            finishWithError(IllegalStateException("Invalid item cause type"))
             return
         }
 

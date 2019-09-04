@@ -171,4 +171,14 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
         }
         return super.onOptionsItemSelected(item)
     }
+
+    protected fun finishWithError(cause: Throwable) {
+        errorHandlerFactory.getDefault().handle(cause)
+        finish()
+    }
+
+    protected fun finishWithMissingArgError(argName: String) {
+        errorHandlerFactory.getDefault().handle(IllegalArgumentException("No $argName specified"))
+        finish()
+    }
 }

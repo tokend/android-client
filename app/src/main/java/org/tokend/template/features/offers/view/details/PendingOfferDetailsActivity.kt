@@ -36,7 +36,7 @@ open class PendingOfferDetailsActivity : BaseActivity() {
         val item = intent.getSerializableExtra(OFFER_EXTRA) as? OfferRecord
 
         if (item == null) {
-            finish()
+            finishWithMissingArgError(OFFER_EXTRA)
             return
         }
 

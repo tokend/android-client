@@ -30,10 +30,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         if (fragment != null) {
             displayFragment(fragment)
         } else {
-            errorHandlerFactory.getDefault().handle(
-                    IllegalArgumentException("No fragment found for ID $screenId")
-            )
-            finish()
+            finishWithError(IllegalArgumentException("No fragment found for ID $screenId"))
         }
     }
 

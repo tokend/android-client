@@ -56,7 +56,7 @@ class BalanceDetailsActivity : BaseActivity() {
         val balanceId = intent.getStringExtra(BALANCE_ID_EXTRA)
 
         if (balanceId == null) {
-            finish()
+            finishWithMissingArgError(BALANCE_ID_EXTRA)
             return
         }
 
