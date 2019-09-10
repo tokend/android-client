@@ -1,7 +1,6 @@
 package org.tokend.template.features.amountscreen.view
 
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -139,10 +138,10 @@ open class AmountInputFragment : BaseFragment() {
                     assetCodeSize
             )
             title_text_view.layoutParams =
-                    (title_text_view.layoutParams as ConstraintLayout.LayoutParams)
+                    (title_text_view.layoutParams as ViewGroup.MarginLayoutParams)
                             .apply {
-                                setMargins(titleMargin, titleMargin,
-                                        titleMargin, titleMargin)
+                                setMargins(defaultTitleMargin, titleMargin,
+                                        defaultTitleMargin, titleMargin)
                             }
         }
     }

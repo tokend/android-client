@@ -6,111 +6,118 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <!-- Min height is applied programmatically -->
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/root_layout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background">
+        android:orientation="vertical">
 
+        <!-- Margins are applied programmatically -->
         <TextView
             android:id="@+id/title_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/standard_margin"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="parent"
             tools:text="Enter amount to send" />
 
+        <!-- Min height is applied programmatically -->
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/amount_edit_text_container"
-            style="@style/LimitedMatchParentWidthConstraint"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@null"
-            app:layout_constraintBottom_toTopOf="@id/extra_view_frame">
+            android:id="@+id/root_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background">
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/amount_edit_text"
-                style="@style/EditText"
-                android:layout_width="wrap_content"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/amount_edit_text_container"
+                style="@style/LimitedMatchParentWidthConstraint"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/standard_margin"
-                android:gravity="end"
-                android:hint="0"
-                android:inputType="numberDecimal"
-                android:textSize="@dimen/text_size_amount_input"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/asset_code_text_view"
-                app:layout_constraintHorizontal_bias=".6"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
-                app:met_floatingLabel="none"
-                app:met_hideUnderline="true"
-                app:met_textColor="@color/primary_text"
-                app:met_textColorHint="@color/primary_text" />
+                app:layout_constraintBottom_toBottomOf="@null"
+                app:layout_constraintBottom_toTopOf="@id/extra_view_frame">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/amount_edit_text"
+                    style="@style/EditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/standard_margin"
+                    android:gravity="end"
+                    android:hint="0"
+                    android:inputType="numberDecimal"
+                    android:textSize="@dimen/text_size_amount_input"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/asset_code_text_view"
+                    app:layout_constraintHorizontal_bias=".6"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:met_floatingLabel="none"
+                    app:met_hideUnderline="true"
+                    app:met_textColor="@color/primary_text"
+                    app:met_textColorHint="@color/primary_text" />
+
+                <TextView
+                    android:id="@+id/asset_code_text_view"
+                    style="@style/Base.Widget.AppCompat.Spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/half_standard_margin"
+                    android:paddingTop="2sp"
+                    android:textSize="@dimen/text_size_heading"
+                    app:layout_constraintBottom_toBottomOf="@id/amount_edit_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/amount_edit_text"
+                    app:layout_constraintTop_toTopOf="@id/amount_edit_text"
+                    tools:text="BTC" />
+
+            </android.support.constraint.ConstraintLayout>
 
             <TextView
-                android:id="@+id/asset_code_text_view"
-                style="@style/Base.Widget.AppCompat.Spinner"
-                android:layout_width="wrap_content"
+                android:id="@+id/balance_text_view"
+                style="@style/HintText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/half_standard_margin"
-                android:paddingTop="2sp"
-                android:textSize="@dimen/text_size_heading"
-                app:layout_constraintBottom_toBottomOf="@id/amount_edit_text"
+                android:gravity="center"
+                app:layout_constraintBottom_toTopOf="@id/amount_edit_text_container"
+                tools:text="Balance: 100 BTC" />
+
+            <TextView
+                android:id="@+id/error_text_view"
+                style="@style/HintText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/error"
+                app:layout_constraintTop_toBottomOf="@id/amount_edit_text_container"
+                tools:text="Insufficient balance" />
+
+            <FrameLayout
+                android:id="@+id/extra_amount_view_frame"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/amount_edit_text"
-                app:layout_constraintTop_toTopOf="@id/amount_edit_text"
-                tools:text="BTC" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/error_text_view" />
+
+            <FrameLayout
+                android:id="@+id/extra_view_frame"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/action_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/action_button"
+                style="@style/PrimaryButton.NoBorders"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Continue" />
 
         </android.support.constraint.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/balance_text_view"
-            style="@style/HintText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            app:layout_constraintBottom_toTopOf="@id/amount_edit_text_container"
-            tools:text="Balance: 100 BTC" />
+    </LinearLayout>
 
-        <TextView
-            android:id="@+id/error_text_view"
-            style="@style/HintText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/error"
-            app:layout_constraintTop_toBottomOf="@id/amount_edit_text_container"
-            tools:text="Insufficient balance" />
-
-        <FrameLayout
-            android:id="@+id/extra_amount_view_frame"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/error_text_view" />
-
-        <FrameLayout
-            android:id="@+id/extra_view_frame"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/action_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
-            android:id="@+id/action_button"
-            style="@style/PrimaryButton.NoBorders"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="Continue" />
-
-    </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>
