@@ -100,35 +100,28 @@ open class AmountInputFragment : BaseFragment() {
         val minHeight = getSmallSizingHeightThreshold()
 
         var isSmallSize: Boolean? = null
-        var saveHeightOnNextTick = false
-        var savedHeight = 0
-
 
         val heightChanges = PublishSubject.create<Int>()
 
-        root_layout.viewTreeObserver.addOnGlobalLayoutListener {
-            val height = root_layout?.height ?: return@addOnGlobalLayoutListener
-            heightChanges.onNext(height)
+        root_layout.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
+            val oldHeight = oldBottom - oldTop
+            val height = bottom - top
+            if (height != oldHeight) {
+                heightChanges.onNext(height)
+            }
         }
 
         heightChanges
-                .doOnNext { height ->
-                    if (saveHeightOnNextTick) {
-                        savedHeight = height
-                        saveHeightOnNextTick = false
-                    }
-                }
-                .debounce(30, TimeUnit.MILLISECONDS)
+                .debounce(100, TimeUnit.MILLISECONDS)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe { height ->
                     val useSmallSize = height <= minHeight
 
-                    if (useSmallSize == isSmallSize || height == savedHeight) {
+                    if (useSmallSize == isSmallSize) {
                         return@subscribe
                     }
 
                     isSmallSize = useSmallSize
-                    saveHeightOnNextTick = true
 
                     updateSizing(useSmallSize)
                 }
