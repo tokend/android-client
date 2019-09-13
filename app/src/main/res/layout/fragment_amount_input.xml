@@ -61,12 +61,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/half_standard_margin"
                     android:paddingTop="2sp"
-                    android:textSize="@dimen/text_size_heading"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     app:layout_constraintBottom_toBottomOf="@id/amount_edit_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/amount_edit_text"
                     app:layout_constraintTop_toTopOf="@id/amount_edit_text"
-                    tools:text="BTC" />
+                    tools:text="Bitcoin" />
 
             </android.support.constraint.ConstraintLayout>
 

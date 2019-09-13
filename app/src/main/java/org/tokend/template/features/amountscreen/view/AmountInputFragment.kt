@@ -21,6 +21,7 @@ import org.tokend.template.view.util.input.AmountEditTextWrapper
 import org.tokend.template.view.util.input.SoftInputUtil
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 open class AmountInputFragment : BaseFragment() {
     protected lateinit var amountWrapper: AmountEditTextWrapper
@@ -161,6 +162,8 @@ open class AmountInputFragment : BaseFragment() {
                             setMargins(defaultTitleMargin, titleMargin,
                                     defaultTitleMargin, titleMargin)
                         }
+
+        asset_code_text_view.maxWidth = (root_layout.width * 0.75).roundToInt()
     }
 
     protected open fun initButtons() {
