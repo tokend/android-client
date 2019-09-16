@@ -53,6 +53,9 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
 
+    private val balances: List<BalanceRecord>
+        get() = balancesRepository.itemsList
+
     private val requiredAsset: String?
         get() = arguments?.getString(ASSET_EXTRA)
 
@@ -132,8 +135,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun onBalancesUpdated() {
-        val anyTransferableAssets = balancesRepository
-                .itemsList
+        val anyTransferableAssets = balances
                 .map(BalanceRecord::asset)
                 .any(AssetRecord::isTransferable)
 
