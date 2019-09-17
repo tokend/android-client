@@ -1,13 +1,13 @@
 package org.tokend.template.features.invest.view.fragments
 
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import com.squareup.picasso.Picasso
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_sale_overview.*
@@ -19,6 +19,7 @@ import org.tokend.template.R
 import org.tokend.template.features.invest.logic.SaleOverviewMarkdownLoader
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.ImageViewUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import ru.noties.markwon.Markwon
 
@@ -27,6 +28,10 @@ class SaleOverviewFragment : SaleFragment() {
             showLoading = { progress.show() },
             hideLoading = { progress.hide() }
     )
+
+    private val picturePlaceholder: Drawable by lazy {
+        ColorDrawable(ContextCompat.getColor(requireContext(), R.color.imagePlaceholder))
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_sale_overview, container, false)
@@ -76,13 +81,13 @@ class SaleOverviewFragment : SaleFragment() {
     }
 
     private fun displaySalePhoto() {
-        sale.logoUrl?.let {
-            Picasso.with(requireContext())
-                    .load(it)
-                    .placeholder(R.color.saleImagePlaceholder)
-                    .fit()
-                    .centerCrop()
-                    .into(sale_picture_image_view)
+        ImageViewUtil.loadImage(
+                sale_picture_image_view,
+                sale.logoUrl,
+                picturePlaceholder
+        ) {
+            fit()
+            centerCrop()
         }
 
         if (sale.isUpcoming) {
@@ -101,13 +106,14 @@ class SaleOverviewFragment : SaleFragment() {
 
             video_preview_image_view.layoutParams = RelativeLayout.LayoutParams(width, height)
 
-            Picasso.with(requireContext())
-                    .load(sale.youtubeVideo?.previewUrl)
-                    .placeholder(ColorDrawable(ContextCompat.getColor(requireContext(),
-                            R.color.saleImagePlaceholder)))
-                    .resize(width, height)
-                    .centerCrop()
-                    .into(video_preview_image_view)
+            ImageViewUtil.loadImage(
+                    video_preview_image_view,
+                    sale.youtubeVideo?.previewUrl,
+                    picturePlaceholder
+            ) {
+                resize(width, height)
+                centerCrop()
+            }
         }
 
         video_preview_layout.onClick {

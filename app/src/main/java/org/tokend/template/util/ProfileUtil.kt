@@ -6,14 +6,14 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.support.annotation.Dimension
 import android.support.v4.content.ContextCompat
+import android.view.ViewGroup
 import android.widget.ImageView
-import com.squareup.picasso.Picasso
 import org.tokend.template.R
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.features.assets.LogoFactory
 import org.tokend.template.features.kyc.model.KycForm
 import org.tokend.template.features.kyc.model.KycState
-import org.tokend.template.util.imagetransform.CircleTransform
+import org.tokend.template.view.util.ImageViewUtil
 
 object ProfileUtil {
 
@@ -46,22 +46,11 @@ object ProfileUtil {
     fun setAvatar(view: ImageView,
                   email: String,
                   urlConfigProvider: UrlConfigProvider,
-                  savedKycState: KycState.Submitted<*>?) {
-        val context = view.context
+                  savedKycState: KycState.Submitted<*>?,
+                  sizePx: Int = (view.layoutParams as ViewGroup.LayoutParams).width) {
+        val placeholderDrawable = getAvatarPlaceholder(email, view.context, sizePx)
+        val avatarUrl = getAvatarUrl(savedKycState, urlConfigProvider)
 
-        val placeholderDrawable = getAvatarPlaceholder(
-                email, context, context.resources.getDimensionPixelSize(R.dimen.hepta_margin)
-        )
-        view.setImageDrawable(placeholderDrawable)
-
-        getAvatarUrl(savedKycState, urlConfigProvider)?.let {
-            Picasso.with(context)
-                    .load(it)
-                    .placeholder(placeholderDrawable)
-                    .transform(CircleTransform())
-                    .fit()
-                    .centerCrop()
-                    .into(view)
-        }
+        ImageViewUtil.loadImageCircle(view, avatarUrl, placeholderDrawable)
     }
 }

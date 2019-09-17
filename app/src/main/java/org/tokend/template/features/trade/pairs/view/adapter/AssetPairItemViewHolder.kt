@@ -6,7 +6,7 @@ import android.widget.TextView
 import org.jetbrains.anko.find
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
-import org.tokend.template.view.util.AssetLogoUtil
+import org.tokend.template.view.util.CircleLogoUtil
 import org.tokend.template.view.util.formatter.AmountFormatter
 
 class AssetPairItemViewHolder(
@@ -18,9 +18,6 @@ class AssetPairItemViewHolder(
     private val restCodeTextView = view.find<TextView>(R.id.rest_pair_code_text_view)
     private val baseLogoImageView = view.find<ImageView>(R.id.base_asset_logo_image_view)
     private val dividerView = view.findViewById<View>(R.id.divider_view)
-
-    private val baseLogoSize: Int =
-            view.context.resources.getDimensionPixelSize(R.dimen.asset_list_item_logo_size)
 
     var dividerIsVisible: Boolean
         get() = dividerView.visibility == View.VISIBLE
@@ -43,7 +40,6 @@ class AssetPairItemViewHolder(
                 minDecimalDigits = item.quoteAsset.trailingDigits
         )
 
-        AssetLogoUtil.setAssetLogo(baseLogoImageView, item.baseAsset.code,
-                item.baseAssetLogoUrl, baseLogoSize)
+        CircleLogoUtil.setLogo(baseLogoImageView, item.baseAsset.code, item.baseAssetLogoUrl)
     }
 }

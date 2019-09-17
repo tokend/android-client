@@ -2,15 +2,15 @@ package org.tokend.template.features.send.recipient.view.adapter
 
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
+import android.graphics.drawable.BitmapDrawable
 import android.view.View
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_contact.view.*
 import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.features.assets.LogoFactory
-import org.tokend.template.util.imagetransform.CircleTransform
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.SimpleItemClickListener
+import org.tokend.template.view.util.ImageViewUtil
 
 class ContactViewHolder(itemView: View) : BaseViewHolder<Any>(itemView) {
     private val photoSize =
@@ -21,6 +21,8 @@ class ContactViewHolder(itemView: View) : BaseViewHolder<Any>(itemView) {
     private val image = itemView.contact_icon_image_view
     private val name = itemView.contact_name
     private val arrow = itemView.expand_icon_image_view
+
+    private val logoFactory = LogoFactory(itemView.context)
 
     override fun bind(item: Any, clickListener: SimpleItemClickListener<Any>?) {
         item as ContactListItem
@@ -33,23 +35,13 @@ class ContactViewHolder(itemView: View) : BaseViewHolder<Any>(itemView) {
 
     override fun bind(item: Any) {
         item as ContactListItem
-        if (item.photoUri != null) {
-            Picasso.with(view.context)
-                    .load(item.photoUri)
-                    .placeholder(R.color.white)
-                    .resize(photoSize, photoSize)
-                    .centerInside()
-                    .transform(CircleTransform())
-                    .into(image)
-        } else {
-            image.setImageBitmap(
-                    LogoFactory(view.context).getWithAutoBackground(
-                            item.name,
-                            photoSize,
-                            item.id
-                    )
-            )
-        }
+
+        val placeholder = BitmapDrawable(
+                itemView.context.resources,
+                logoFactory.getWithAutoBackground(item.name, photoSize, item.id)
+        )
+
+        ImageViewUtil.loadImageCircle(image, item.photoUri, placeholder)
 
         name.text = item.name
 
