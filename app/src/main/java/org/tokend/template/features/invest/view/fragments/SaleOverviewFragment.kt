@@ -66,7 +66,7 @@ class SaleOverviewFragment : SaleFragment() {
     private fun displaySaleInfo() {
         sale_name_text_view.text =
                 getString(R.string.template_sale_name_asset, sale.name, sale.baseAsset.code)
-        sale_description_text_view.text = sale.shortDescription
+        sale_description_text_view.text = sale.description
 
         if (sale.youtubeVideo != null) {
             displayYoutubePreview()

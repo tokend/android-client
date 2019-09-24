@@ -6,26 +6,30 @@ import org.tokend.sdk.api.generated.resources.AssetResource
 class SimpleAsset(
         override val code: String,
         override val trailingDigits: Int,
-        override val name: String?
-) : Asset {
+        override val name: String?,
+        override val logoUrl: String?
+) : Asset, RecordWithLogo {
 
     constructor(source: AssetResource) : this(
             code = source.id,
             trailingDigits = source.trailingDigits.toInt(),
-            name = source.details.get("name")?.takeIf { it !is NullNode }?.asText()
+            name = source.details.get("name")?.takeIf { it !is NullNode }?.asText(),
+            logoUrl = null
     )
 
     constructor(source: Asset): this(
             code = source.code,
             trailingDigits = source.trailingDigits,
-            name = source.name
+            name = source.name,
+            logoUrl = (source as? RecordWithLogo)?.logoUrl
     )
 
     @Deprecated("Going to be removed. Right now used because of some issues")
     constructor(asset: String) : this(
             code = asset,
             trailingDigits = 6,
-            name = null
+            name = null,
+            logoUrl = null
     )
 
     override fun equals(other: Any?): Boolean {

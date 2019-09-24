@@ -25,7 +25,7 @@ class SaleViewHolder(view: View,
     override fun bind(item: SaleRecord) {
         nameTextView.text = view.context.getString(R.string.template_sale_name_asset,
                 item.name, item.baseAsset.code)
-        shortDescriptionTextView.text = item.shortDescription
+        shortDescriptionTextView.text = item.description
 
         ImageViewUtil.loadImage(pictureImageView, item.logoUrl, picturePlaceholder) {
             fit()

@@ -51,7 +51,7 @@ class SalesAdapter(
                 val old = items[oldItemPosition]
                 return new.state == old.state
                         && new.currentCap == old.currentCap
-                        && new.shortDescription == old.shortDescription
+                        && new.description == old.description
             }
         }
     }

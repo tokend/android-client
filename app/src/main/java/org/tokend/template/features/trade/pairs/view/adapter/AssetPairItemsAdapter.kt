@@ -59,7 +59,7 @@ class AssetPairItemsAdapter(
             return first.baseAsset.code == second.baseAsset.code
                     && first.quoteAsset.code == second.quoteAsset.code
                     && first.price == second.price
-                    && first.baseAssetLogoUrl == second.baseAssetLogoUrl
+                    && first.logoUrl == second.logoUrl
         }
     }
 }

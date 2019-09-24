@@ -40,6 +40,6 @@ class AssetPairItemViewHolder(
                 minDecimalDigits = item.quoteAsset.trailingDigits
         )
 
-        CircleLogoUtil.setLogo(baseLogoImageView, item.baseAsset.code, item.baseAssetLogoUrl)
+        CircleLogoUtil.setLogo(baseLogoImageView, item.baseAsset.code, item.logoUrl)
     }
 }

@@ -5,15 +5,16 @@ import com.fasterxml.jackson.databind.node.NullNode
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.generated.resources.AssetResource
 import org.tokend.sdk.utils.HashCodes
-import org.tokend.template.util.PolicyChecker
+import org.tokend.template.util.RecordWithPolicy
 import java.io.Serializable
 import java.math.BigDecimal
 
 class AssetRecord(
         override val code: String,
-        val policy: Int,
+        override val policy: Int,
         override val name: String?,
-        val logoUrl: String?,
+        override val logoUrl: String?,
+        override val description: String?,
         val terms: RemoteFile?,
         val externalSystemType: Int?,
         val issued: BigDecimal?,
@@ -21,18 +22,18 @@ class AssetRecord(
         val maximum: BigDecimal,
         val ownerAccountId: String,
         override val trailingDigits: Int
-) : Serializable, PolicyChecker, Asset {
+) : Serializable, RecordWithPolicy, Asset, RecordWithLogo, RecordWithDescription {
     val isBackedByExternalSystem: Boolean
         get() = externalSystemType != null
 
     val isTransferable: Boolean
-        get() = checkPolicy(policy, org.tokend.wallet.xdr.AssetPolicy.TRANSFERABLE.value)
+        get() = hasPolicy(org.tokend.wallet.xdr.AssetPolicy.TRANSFERABLE.value)
 
     val isWithdrawable: Boolean
-        get() = checkPolicy(policy, org.tokend.wallet.xdr.AssetPolicy.WITHDRAWABLE.value)
+        get() = hasPolicy(org.tokend.wallet.xdr.AssetPolicy.WITHDRAWABLE.value)
 
     val canBeBaseForAtomicSwap: Boolean
-        get() = checkPolicy(policy, org.tokend.wallet.xdr.AssetPolicy.CAN_BE_BASE_IN_ATOMIC_SWAP.value)
+        get() = hasPolicy(org.tokend.wallet.xdr.AssetPolicy.CAN_BE_BASE_IN_ATOMIC_SWAP.value)
 
     override fun equals(other: Any?): Boolean {
         return other is AssetRecord
@@ -68,6 +69,10 @@ class AssetRecord(
                             ?.takeIf { it.isNotEmpty() }
                             ?.toIntOrNull()
 
+            val description = source.details.get("description")
+                    ?.asText("")
+                    ?.takeIf(String::isNotEmpty)
+
             return AssetRecord(
                     code = source.id,
                     policy = source.policies.value,
@@ -79,7 +84,8 @@ class AssetRecord(
                     available = source.availableForIssuance,
                     maximum = source.maxIssuanceAmount,
                     ownerAccountId = source.owner.id,
-                    trailingDigits = source.trailingDigits.toInt()
+                    trailingDigits = source.trailingDigits.toInt(),
+                    description = description
             )
         }
     }

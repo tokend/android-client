@@ -6,9 +6,7 @@ import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.generated.resources.SaleQuoteAssetResource
 import org.tokend.sdk.api.generated.resources.SaleResource
 import org.tokend.sdk.api.sales.model.SaleState
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.SimpleAsset
-import org.tokend.template.data.model.UrlConfig
+import org.tokend.template.data.model.*
 import org.tokend.wallet.xdr.SaleType
 import java.io.Serializable
 import java.math.BigDecimal
@@ -20,9 +18,9 @@ class SaleRecord(
         val baseAsset: Asset,
         val quoteAssets: List<QuoteAsset>,
         val defaultQuoteAsset: Asset,
-        val shortDescription: String,
+        override val description: String?,
         val fullDescriptionBlob: String?,
-        val logoUrl: String?,
+        override val logoUrl: String?,
         val startDate: Date,
         val endDate: Date,
         val state: SaleState,
@@ -33,7 +31,7 @@ class SaleRecord(
         val currentCap: BigDecimal,
         val youtubeVideo: YoutubeVideo?,
         val ownerAccountId: String
-) : Serializable {
+) : Serializable, RecordWithLogo, RecordWithDescription {
 
     val isAvailable: Boolean
         get() = !isUpcoming && !isEnded
@@ -126,7 +124,7 @@ class SaleRecord(
                     baseAsset = SimpleAsset(source.baseAsset),
                     quoteAssets = quoteAssets,
                     defaultQuoteAsset = defaultQuoteAsset,
-                    shortDescription = shortDescription,
+                    description = shortDescription,
                     fullDescriptionBlob = fullDescription,
                     logoUrl = logo?.getUrl(urlConfig?.storage),
                     startDate = source.startTime,

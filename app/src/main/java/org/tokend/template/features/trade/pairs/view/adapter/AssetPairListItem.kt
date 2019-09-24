@@ -8,7 +8,7 @@ data class AssetPairListItem(
         val baseAsset: Asset,
         val quoteAsset: Asset,
         val price: BigDecimal,
-        val baseAssetLogoUrl: String?,
+        val logoUrl: String?,
         val id: String?,
         val source: AssetPairRecord?
 ) {
@@ -16,7 +16,7 @@ data class AssetPairListItem(
             baseAsset = source.base,
             quoteAsset = source.quote,
             price = source.price,
-            baseAssetLogoUrl = source.baseAssetLogoUrl,
+            logoUrl = source.logoUrl,
             id = source.id,
             source = source
     )
