@@ -1,6 +1,6 @@
 package org.tokend.template.features.fees.model
 
-import org.tokend.sdk.api.generated.resources.FeeResource
+import org.tokend.sdk.api.generated.resources.FeeRecordResource
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.SimpleAsset
 import java.io.Serializable
@@ -15,7 +15,7 @@ class FeeRecord(
         val lowerBound: BigDecimal = BigDecimal.ZERO,
         val upperBound: BigDecimal = BigDecimal.ZERO
 ) : Serializable {
-    constructor(source: FeeResource) : this(
+    constructor(source: FeeRecordResource) : this(
             feeType = source.appliedTo.feeType,
             subtype = source.appliedTo.subtype.toInt(),
             asset = SimpleAsset(source.appliedTo.asset),

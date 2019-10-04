@@ -297,6 +297,7 @@
     <string name="payout_fee">Payout</string>
     <string name="atomic_swap_sale_fee">Sale atomic swap</string>
     <string name="atomic_swap_purchase_fee">Purchase atomic swap</string>
+    <string name="swap_fee">Swap</string>
     <string name="incoming_outgoing_fee"><![CDATA[Incoming & Outgoing]]></string>
     <string name="outgoing_fee">Outgoing</string>
     <string name="incoming_fee">Incoming</string>

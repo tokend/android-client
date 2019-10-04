@@ -75,7 +75,8 @@ class AssetRecord(
 
             return AssetRecord(
                     code = source.id,
-                    policy = source.policies.value,
+                    policy = source.policies.value
+                            ?: throw IllegalStateException("Asset must have a policy"),
                     name = name,
                     logoUrl = logo?.getUrl(urlConfig?.storage),
                     terms = terms,

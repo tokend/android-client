@@ -37,7 +37,8 @@ class AssetPairRecord(
                     base = SimpleAsset(resource.baseAsset),
                     quote = SimpleAsset(resource.quoteAsset),
                     price = resource.price,
-                    policy = resource.policies.value,
+                    policy = resource.policies.value
+                            ?: throw IllegalStateException("Asset pair must have a policy"),
                     logoUrl =
                     if (resource.baseAsset.isFilled)
                         AssetRecord.fromResource(resource.baseAsset, urlConfig, objectMapper)

@@ -297,6 +297,7 @@
     <string name="payout_fee">Выплата</string>
     <string name="atomic_swap_sale_fee">Прямая покупка</string>
     <string name="atomic_swap_purchase_fee">Прямая продажа</string>
+    <string name="swap_fee">Обмен</string>
     <string name="incoming_outgoing_fee"><![CDATA[Получение и Отправка]]></string>
     <string name="outgoing_fee">Отправка</string>
     <string name="incoming_fee">Получение</string>

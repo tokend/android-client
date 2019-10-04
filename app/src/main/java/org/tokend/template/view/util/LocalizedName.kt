@@ -29,6 +29,7 @@ class LocalizedName(private val context: Context) {
             FeeType.PAYOUT_FEE -> context.getString(R.string.payout_fee)
             FeeType.ATOMIC_SWAP_SALE_FEE -> context.getString(R.string.atomic_swap_sale_fee)
             FeeType.ATOMIC_SWAP_PURCHASE_FEE -> context.getString(R.string.atomic_swap_purchase_fee)
+            FeeType.SWAP_FEE -> context.getString(R.string.swap_fee)
         }
     }
 

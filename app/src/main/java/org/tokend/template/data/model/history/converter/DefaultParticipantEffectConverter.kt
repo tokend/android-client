@@ -9,7 +9,7 @@ import org.tokend.template.data.model.history.SimpleFeeRecord
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 
 class DefaultParticipantEffectConverter: ParticipantEffectConverter {
-    override fun toBalanceChanges(participantEffects: Collection<ParticipantEffectResource>)
+    override fun toBalanceChanges(participantEffects: Collection<ParticipantsEffectResource>)
             : Collection<BalanceChange> {
         val result = ArrayList<BalanceChange>(participantEffects.size)
 
@@ -43,21 +43,21 @@ class DefaultParticipantEffectConverter: ParticipantEffectConverter {
             }
 
             val action: BalanceChangeAction = when (effect) {
-                is EffectLockedResource ->
+                is EffectsLockedResource ->
                     BalanceChangeAction.LOCKED
-                is EffectChargedFromLockedResource ->
+                is EffectsChargedFromLockedResource ->
                     BalanceChangeAction.CHARGED_FROM_LOCKED
-                is EffectUnlockedResource ->
+                is EffectsUnlockedResource ->
                     BalanceChangeAction.UNLOCKED
-                is EffectChargedResource ->
+                is EffectsChargedResource ->
                     BalanceChangeAction.CHARGED
-                is EffectWithdrawnResource ->
+                is EffectsWithdrawnResource ->
                     BalanceChangeAction.WITHDRAWN
                 is EffectMatchedResource ->
                     BalanceChangeAction.MATCHED
-                is EffectIssuedResource ->
+                is EffectsIssuedResource ->
                     BalanceChangeAction.ISSUED
-                is EffectFundedResource ->
+                is EffectsFundedResource ->
                     BalanceChangeAction.FUNDED
                 else -> {
                     logError("Cannot obtain action from effect ${effect.id} $effect")
@@ -130,37 +130,37 @@ class DefaultParticipantEffectConverter: ParticipantEffectConverter {
         return result
     }
 
-    private fun getCause(effect: EffectResource,
-                         operationDetails: OperationDetailsResource)
+    private fun getCause(effect: BaseEffectResource,
+                         operationDetails: BaseOperationDetailsResource)
             : BalanceChangeCause {
         return try {
             when (operationDetails) {
-                is OpPaymentDetailsResource ->
+                is PaymentOpResource ->
                     BalanceChangeCause.Payment(operationDetails)
-                is OpCreateIssuanceRequestDetailsResource ->
+                is CreateIssuanceRequestOpResource ->
                     BalanceChangeCause.Issuance(operationDetails)
-                is OpCreateWithdrawRequestDetailsResource ->
+                is CreateWithdrawRequestOpResource ->
                     BalanceChangeCause.WithdrawalRequest(operationDetails)
-                is OpManageOfferDetailsResource ->
+                is ManageOfferOpResource ->
                     when (effect) {
                         is EffectMatchedResource -> BalanceChangeCause.MatchedOffer(operationDetails, effect)
-                        is EffectUnlockedResource -> BalanceChangeCause.OfferCancellation
+                        is EffectsUnlockedResource -> BalanceChangeCause.OfferCancellation
                         else -> BalanceChangeCause.Offer(operationDetails)
                     }
-                is OpCheckSaleStateDetailsResource ->
+                is CheckSaleStateOpResource ->
                     when (effect) {
                         is EffectMatchedResource -> BalanceChangeCause.Investment(effect)
-                        is EffectIssuedResource -> BalanceChangeCause.Issuance(null, null)
-                        is EffectUnlockedResource -> BalanceChangeCause.SaleCancellation
+                        is EffectsIssuedResource -> BalanceChangeCause.Issuance(null, null)
+                        is EffectsUnlockedResource -> BalanceChangeCause.SaleCancellation
                         else -> BalanceChangeCause.Unknown
                     }
-                is OpCreateAMLAlertRequestDetailsResource ->
+                is CreateAmlAlertRequestOpResource ->
                     BalanceChangeCause.AmlAlert(operationDetails)
-                is OpManageAssetPairDetailsResource ->
+                is ManageAssetPairOpResource ->
                     BalanceChangeCause.AssetPairUpdate(operationDetails)
-                is OpCreateAtomicSwapAskRequestDetailsResource ->
+                is CreateAtomicSwapAskRequestOpResource ->
                     BalanceChangeCause.AtomicSwapAskCreation
-                is OpCreateAtomicSwapBidRequestDetailsResource ->
+                is CreateAtomicSwapBidRequestOpResource ->
                     BalanceChangeCause.AtomicSwapAskCreation
                 else ->
                     BalanceChangeCause.Unknown

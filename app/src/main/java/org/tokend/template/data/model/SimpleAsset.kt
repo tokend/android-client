@@ -2,6 +2,7 @@ package org.tokend.template.data.model
 
 import com.fasterxml.jackson.databind.node.NullNode
 import org.tokend.sdk.api.generated.resources.AssetResource
+import org.tokend.sdk.api.generated.resources.QuoteAssetResource
 
 class SimpleAsset(
         override val code: String,

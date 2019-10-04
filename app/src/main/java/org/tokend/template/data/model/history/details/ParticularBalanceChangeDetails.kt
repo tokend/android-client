@@ -1,6 +1,6 @@
 package org.tokend.template.data.model.history.details
 
-import org.tokend.sdk.api.generated.inner.ParticularBalanceChange
+import org.tokend.sdk.api.generated.inner.ParticularBalanceChangeEffect
 import org.tokend.template.data.model.history.SimpleFeeRecord
 import java.io.Serializable
 import java.math.BigDecimal
@@ -11,7 +11,7 @@ class ParticularBalanceChangeDetails(
         val balanceId: String,
         val assetCode: String
 ) : Serializable {
-    constructor(particularBalanceChangeResponse: ParticularBalanceChange) :
+    constructor(particularBalanceChangeResponse: ParticularBalanceChangeEffect) :
             this(
                     amount = particularBalanceChangeResponse.amount,
                     fee = SimpleFeeRecord(

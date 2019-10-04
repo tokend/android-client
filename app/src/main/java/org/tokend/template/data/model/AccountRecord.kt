@@ -1,7 +1,7 @@
 package org.tokend.template.data.model
 
 import org.tokend.sdk.api.generated.resources.AccountResource
-import org.tokend.sdk.api.generated.resources.ExternalSystemIdResource
+import org.tokend.sdk.api.generated.resources.ExternalSystemIDResource
 import java.io.Serializable
 import java.util.*
 
@@ -12,7 +12,7 @@ class AccountRecord(
 ) : Serializable {
     constructor(source: AccountResource) : this(
             id = source.id,
-            kycRecoveryStatus = KycRecoveryStatus.valueOf(source.kycRecoveryStatus.name.toUpperCase()),
+            kycRecoveryStatus = KycRecoveryStatus.valueOf(source.kycRecoveryStatus!!.name!!.toUpperCase()),
             depositAccounts = source.externalSystemIds?.map(::DepositAccount) ?: emptyList()
     )
 
@@ -22,7 +22,7 @@ class AccountRecord(
             val payload: String?,
             val expirationDate: Date?
     ) : Serializable {
-        constructor(source: ExternalSystemIdResource) : this(
+        constructor(source: ExternalSystemIDResource) : this(
                 type = source.externalSystemType,
                 address = source.data.data.address,
                 payload = source.data.data.payload,

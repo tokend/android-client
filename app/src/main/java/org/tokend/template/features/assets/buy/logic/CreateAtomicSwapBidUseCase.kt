@@ -10,7 +10,7 @@ import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
-import org.tokend.sdk.api.generated.resources.AtomicSwapBidRequestDetailsResource
+import org.tokend.sdk.api.generated.resources.CreateAtomicSwapBidRequestResource
 import org.tokend.sdk.api.generated.resources.ReviewableRequestResource
 import org.tokend.sdk.api.requests.model.base.RequestState
 import org.tokend.sdk.api.v3.requests.params.RequestParamsV3
@@ -170,7 +170,7 @@ class CreateAtomicSwapBidUseCase(
                         recentRequests
                                 .find { request ->
                                     val details = request.requestDetails
-                                    details is AtomicSwapBidRequestDetailsResource
+                                    details is CreateAtomicSwapBidRequestResource
                                             && details.creatorDetails
                                             .get(REFERENCE_KEY).asText() == reference
                                 }

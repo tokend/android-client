@@ -21,7 +21,7 @@ sealed class BalanceChangeCause : Serializable {
     class AmlAlert(
             val reason: String?
     ) : BalanceChangeCause() {
-        constructor(op: OpCreateAMLAlertRequestDetailsResource) : this(
+        constructor(op: CreateAmlAlertRequestOpResource) : this(
                 reason = op.creatorDetails?.get("reason")?.asText()?.takeIf { it.isNotEmpty() }
         )
     }
@@ -38,7 +38,7 @@ sealed class BalanceChangeCause : Serializable {
             val quoteAssetCode: String,
             val fee: SimpleFeeRecord
     ) : BalanceChangeCause() {
-        constructor(op: OpManageOfferDetailsResource) : this(
+        constructor(op: ManageOfferOpResource) : this(
                 offerId = op.offerId,
                 orderBookId = op.orderBookId,
                 price = op.price,
@@ -70,7 +70,7 @@ sealed class BalanceChangeCause : Serializable {
             val funded: ParticularBalanceChangeDetails
 
     ) : Offer(offerId, orderBookId, price, isBuy, baseAmount, baseAssetCode, quoteAssetCode, fee) {
-        constructor(op: OpManageOfferDetailsResource,
+        constructor(op: ManageOfferOpResource,
                     effect: EffectMatchedResource) : this(
                 offerId = effect.offerId,
                 orderBookId = effect.orderBookId,
@@ -133,7 +133,7 @@ sealed class BalanceChangeCause : Serializable {
             val cause: String?,
             val reference: String?
     ) : BalanceChangeCause() {
-        constructor(op: OpCreateIssuanceRequestDetailsResource) : this(
+        constructor(op: CreateIssuanceRequestOpResource) : this(
                 cause = op.creatorDetails?.get("cause")?.asText(),
                 reference = op.reference
         )
@@ -151,7 +151,7 @@ sealed class BalanceChangeCause : Serializable {
             var sourceName: String?,
             var destName: String?
     ) : BalanceChangeCause() {
-        constructor(op: OpPaymentDetailsResource) : this(
+        constructor(op: PaymentOpResource) : this(
                 sourceAccountId = op.accountFrom.id,
                 destAccountId = op.accountTo.id,
                 destFee = SimpleFeeRecord(op.destinationFee),
@@ -228,7 +228,7 @@ sealed class BalanceChangeCause : Serializable {
     class WithdrawalRequest(
             val destinationAddress: String
     ) : BalanceChangeCause() {
-        constructor(op: OpCreateWithdrawRequestDetailsResource) : this(
+        constructor(op: CreateWithdrawRequestOpResource) : this(
                 destinationAddress = op.creatorDetails.get("address").asText()
         )
     }
@@ -241,11 +241,11 @@ sealed class BalanceChangeCause : Serializable {
             override val policy: Int
     ) : BalanceChangeCause(), RecordWithPolicy {
 
-        constructor(op: OpManageAssetPairDetailsResource) : this(
+        constructor(op: ManageAssetPairOpResource) : this(
                 baseAsset = SimpleAsset(op.baseAsset),
                 quoteAsset = SimpleAsset(op.quoteAsset),
                 physicalPrice = op.physicalPrice,
-                policy = op.policies.value
+                policy = op.policies?.value ?: 0
         )
 
         val isRestrictedByCurrentPrice: Boolean

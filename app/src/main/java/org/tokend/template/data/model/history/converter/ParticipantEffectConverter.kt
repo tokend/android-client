@@ -1,6 +1,6 @@
 package org.tokend.template.data.model.history.converter
 
-import org.tokend.sdk.api.generated.resources.ParticipantEffectResource
+import org.tokend.sdk.api.generated.resources.ParticipantsEffectResource
 import org.tokend.template.data.model.history.BalanceChange
 
 /**
@@ -12,6 +12,6 @@ interface ParticipantEffectConverter {
      *
      * Notice that result list size may be different
      */
-    fun toBalanceChanges(participantEffects: Collection<ParticipantEffectResource>)
+    fun toBalanceChanges(participantEffects: Collection<ParticipantsEffectResource>)
             : Collection<BalanceChange>
 }

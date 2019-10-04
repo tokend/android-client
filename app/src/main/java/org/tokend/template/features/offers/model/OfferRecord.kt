@@ -45,7 +45,6 @@ class OfferRecord(
 
         @JvmStatic
         fun fromResource(source: OfferResource): OfferRecord {
-            val createdAt = ApiDateUtil.tryParseDate(source.createdAt)
             return OfferRecord(
                     id = source.id.toLong(),
                     baseAmount = source.baseAmount,
@@ -53,7 +52,7 @@ class OfferRecord(
                     quoteAmount = source.quoteAmount,
                     quoteAsset = SimpleAsset(source.quoteAsset),
                     isBuy = source.isBuy,
-                    date = createdAt,
+                    date = source.createdAt,
                     fee = source.fee.calculatedPercent,
                     orderBookId = source.orderBookId.toLong(),
                     price = source.price,
