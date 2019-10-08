@@ -4,5 +4,6 @@ import org.tokend.template.features.localaccount.model.LocalAccount
 
 interface LocalAccountPersistor {
     fun load(): LocalAccount?
-    fun save(localAccount: LocalAccount): LocalAccount
+    fun save(localAccount: LocalAccount)
+    fun clear()
 }
