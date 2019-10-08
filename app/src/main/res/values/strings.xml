@@ -424,6 +424,7 @@
     <string name="lock_app_in_background">Lock app in background</string>
     <string name="open_email_app">Open mailbox</string>
     <string name="almost_done">Almost done</string>
+    <string name="use_local_account_sign_in">Use local key</string>
     <string-array name="months">
         <item>January</item>
         <item>February</item>

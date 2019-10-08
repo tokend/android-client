@@ -22,7 +22,7 @@ import java.net.HttpURLConnection
  *
  * @param postSignInManager if set then [PostSignInManager.doPostSignIn] will be performed
  */
-class SignInWithAccountUseCase(
+class SignInWithAuthenticatorAccountUseCase(
         private val account: Account,
         private val keyServer: KeyServer,
         private val authResultsApi: AuthResultsApi,

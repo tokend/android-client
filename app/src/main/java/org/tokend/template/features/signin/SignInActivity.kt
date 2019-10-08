@@ -162,6 +162,14 @@ class SignInActivity : BaseActivity() {
         } else {
             sign_in_with_authenticator_button.visibility = View.GONE
         }
+
+        if (BuildConfig.ENABLE_LOCAL_ACCOUNT_SIGN_IN) {
+            sign_in_with_local_account_button.onClick {
+                openLocalAccountSignIn()
+            }
+        } else {
+            sign_in_with_local_account_button.visibility = View.GONE
+        }
     }
     // endregion
 
@@ -173,6 +181,10 @@ class SignInActivity : BaseActivity() {
 
     private fun openAuthenticatorSignIn() {
         Navigator.from(this).openAuthenticatorSignIn(SIGN_IN_WITH_AUTHENTICATOR_REQUEST)
+    }
+
+    private fun openLocalAccountSignIn() {
+        TODO()
     }
 
     private fun updateSignInAvailability() {

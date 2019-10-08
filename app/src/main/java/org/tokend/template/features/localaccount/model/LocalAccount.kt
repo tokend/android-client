@@ -14,7 +14,7 @@ import org.tokend.wallet.Account
  * @see fromEntropy
  */
 class LocalAccount
-private constructor(
+constructor(
         val accountId: String,
         val entropy: ByteArray,
         account: Account?

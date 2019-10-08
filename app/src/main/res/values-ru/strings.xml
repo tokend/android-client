@@ -423,6 +423,7 @@
     <string name="lock_app_in_background">Блокировать приложение в фоне</string>
     <string name="open_email_app">Открыть почту</string>
     <string name="almost_done">Почти готово</string>
+    <string name="use_local_account_sign_in">Войти с локальным ключом</string>
     <string-array name="months">
         <item>Январь</item>
         <item>Февраль</item>

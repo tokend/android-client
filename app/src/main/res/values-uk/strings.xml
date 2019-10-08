@@ -423,6 +423,7 @@
     <string name="lock_app_in_background">Блокувати додаток у фоні</string>
     <string name="open_email_app">Відкрити пошту</string>
     <string name="almost_done">Майже готово</string>
+    <string name="use_local_account_sign_in">Увійти з локальним ключем</string>
     <string-array name="months">
         <item>Січень</item>
         <item>Лютий</item>
