@@ -46,6 +46,7 @@ import org.tokend.template.features.send.PaymentConfirmationActivity
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.signin.AuthenticatorSignInActivity
+import org.tokend.template.features.signin.LocalAccountSignInActivity
 import org.tokend.template.features.signin.SignInActivity
 import org.tokend.template.features.signin.unlock.UnlockAppActivity
 import org.tokend.template.features.signup.SignUpActivity
@@ -399,5 +400,10 @@ class Navigator private constructor() {
                         AtomicSwapAsksFragment.getBundle(assetCode)
                 ))
                 ?.also { performIntent(it) }
+    }
+
+    fun openLocalAccountSignIn(requestCode: Int) {
+        context?.intentFor<LocalAccountSignInActivity>()
+                ?.also { performIntent(it, requestCode = requestCode) }
     }
 }

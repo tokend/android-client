@@ -61,4 +61,6 @@
     <dimen name="single_check_dialog_left_margin">20dp</dimen>
 
     <dimen name="elevated_round_button_stroke_width">1dp</dimen>
+
+    <dimen name="local_account_logo_size">56dp</dimen>
 </resources>

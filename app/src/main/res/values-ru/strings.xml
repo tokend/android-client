@@ -424,6 +424,13 @@
     <string name="open_email_app">Открыть почту</string>
     <string name="almost_done">Почти готово</string>
     <string name="use_local_account_sign_in">Войти с локальным ключом</string>
+    <string name="local_account_explanation">Локальный ключ создается и хранится на вашем устройстве
+        без загрузки на сервер ключей</string>
+    <string name="generate_local_account">Создать ключ</string>
+    <string name="import_local_account">Импортировать</string>
+    <string name="sign_in_with_local_account_title">@string/use_local_account_sign_in</string>
+    <string name="current_local_account">Текущий ключ</string>
+    <string name="sign_in_with_current_local_account">Войти</string>
     <string-array name="months">
         <item>Январь</item>
         <item>Февраль</item>

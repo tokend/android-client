@@ -1,6 +1,7 @@
 package org.tokend.template.features.localaccount.repository
 
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import org.tokend.template.data.repository.base.SimpleSingleItemRepository
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
@@ -17,7 +18,7 @@ class LocalAccountRepository(
             } else {
                 Observable.empty()
             }
-        }
+        }.subscribeOn(Schedulers.newThread())
     }
 
     fun useAccount(newAccount: LocalAccount) {

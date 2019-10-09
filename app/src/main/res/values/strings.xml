@@ -425,6 +425,13 @@
     <string name="open_email_app">Open mailbox</string>
     <string name="almost_done">Almost done</string>
     <string name="use_local_account_sign_in">Use local key</string>
+    <string name="local_account_explanation">Local key is generated and stored on your device without
+        an upload to the key server</string>
+    <string name="generate_local_account">Generate a key</string>
+    <string name="import_local_account">Import</string>
+    <string name="sign_in_with_local_account_title">Sign in with local key</string>
+    <string name="current_local_account">Current key</string>
+    <string name="sign_in_with_current_local_account">Sign in</string>
     <string-array name="months">
         <item>January</item>
         <item>February</item>

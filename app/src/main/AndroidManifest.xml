@@ -174,7 +174,7 @@
         <activity
             android:name=".features.signin.unlock.UnlockAppActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".features.qr.CaptureActivityPortrait"
             android:screenOrientation="portrait"
@@ -188,6 +188,9 @@
             android:name=".features.assets.buy.BuyWithAtomicSwapActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
+        <activity
+            android:name=".features.signin.LocalAccountSignInActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
     </application>
 
 </manifest>

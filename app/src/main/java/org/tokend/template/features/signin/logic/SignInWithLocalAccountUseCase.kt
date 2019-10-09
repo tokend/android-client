@@ -71,9 +71,12 @@ class SignInWithLocalAccountUseCase(
     }
 
     private fun getWalletInfo(): Single<WalletInfo> {
+        val accountId = account.accountId
+
         return WalletInfo(
-                accountId = account.accountId,
-                email = "",
+                accountId = accountId,
+                email = accountId.substring(0..3) + "..." +
+                        accountId.substring(accountId.length - 3, accountId.length),
                 secretSeed = charArrayOf(),
                 walletIdHex = "",
                 loginParams = LoginParams("", 0,
@@ -83,7 +86,7 @@ class SignInWithLocalAccountUseCase(
 
     private fun updateProviders(): Single<Boolean> {
         session.setWalletInfo(walletInfo)
-        credentialsPersistor.clear(false)
+        credentialsPersistor.saveCredentials(walletInfo, charArrayOf())
         session.setAccount(account)
         session.signInMethod = SignInMethod.LOCAL_ACCOUNT
 
