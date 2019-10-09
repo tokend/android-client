@@ -33,6 +33,7 @@ import org.tokend.template.features.invest.view.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.view.SaleActivity
 import org.tokend.template.features.invest.view.SaleInvestActivity
 import org.tokend.template.features.limits.LimitsActivity
+import org.tokend.template.features.localaccount.view.LocalAccountDetailsActivity
 import org.tokend.template.features.offers.CreateOfferActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
@@ -378,7 +379,10 @@ class Navigator private constructor() {
     }
 
     fun openAccountQrShare(walletInfo: WalletInfo) {
-        val accountId = walletInfo.accountId
+        openAccountQrShare(walletInfo.accountId)
+    }
+
+    fun openAccountQrShare(accountId: String) {
         openQrShare(
                 data = accountId,
                 title = context!!.getString(R.string.account_id_title),
@@ -405,5 +409,10 @@ class Navigator private constructor() {
     fun openLocalAccountSignIn(requestCode: Int) {
         context?.intentFor<LocalAccountSignInActivity>()
                 ?.also { performIntent(it, requestCode = requestCode) }
+    }
+
+    fun openLocalAccountDetails() {
+        context?.intentFor<LocalAccountDetailsActivity>()
+                ?.also { performIntent(it) }
     }
 }

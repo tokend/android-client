@@ -431,6 +431,14 @@
     <string name="sign_in_with_local_account_title">@string/use_local_account_sign_in</string>
     <string name="current_local_account">Текущий ключ</string>
     <string name="sign_in_with_current_local_account">Войти</string>
+    <string name="local_account_details_title">Детали ключа</string>
+    <string name="local_account_public_key">Публичный ключ (Account ID)</string>
+    <string name="show_secret_seed">Показать секрет</string>
+    <string name="erase_local_account">Удалить ключ</string>
+    <string name="erase_local_account_confirmation"><![CDATA[<b>Перед удалением ключа убедитесь,
+        что вы сохранили его секрет,</b> иначе восстановить ключ будет невозможно. Продолжить?]]></string>
+    <string name="local_account_erased">Ключ удален</string>
+    <string name="local_account_actions">Действия</string>
     <string-array name="months">
         <item>Январь</item>
         <item>Февраль</item>

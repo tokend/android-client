@@ -322,9 +322,9 @@
     <string name="sale_info_hard_cap">Hard cap</string>
     <string name="sale_info_to_sell_template">%1$s to sell</string>
 
-    <string name="seed_alert_dialog">"You are about to show sensitive data.\nAnyone
+    <string name="seed_alert_dialog">You are about to show sensitive data.\nAnyone
         who knows the secret seed can gain access to your account.\nDo
-        you want to continue?"</string>
+        you want to continue?</string>
 
     <string name="unknown_balance_change">Balance change</string>
 
@@ -432,6 +432,14 @@
     <string name="sign_in_with_local_account_title">Sign in with local key</string>
     <string name="current_local_account">Current key</string>
     <string name="sign_in_with_current_local_account">Sign in</string>
+    <string name="local_account_details_title">Key details</string>
+    <string name="local_account_public_key">Public key (Account ID)</string>
+    <string name="show_secret_seed">Show secret seed</string>
+    <string name="erase_local_account">Erase key</string>
+    <string name="erase_local_account_confirmation"><![CDATA[<b>Before erasing the key make sure,
+        that you have saved it\'s secret seed,</b> otherwise you won\'t be able to recover it. Continue?]]></string>
+    <string name="local_account_erased">Key has been erased</string>
+    <string name="local_account_actions">Actions</string>
     <string-array name="months">
         <item>January</item>
         <item>February</item>

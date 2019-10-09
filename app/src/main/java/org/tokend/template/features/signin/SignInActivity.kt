@@ -94,14 +94,16 @@ class SignInActivity : BaseActivity() {
         // Does nothing but EC engine warm up.
         doAsync { Account.random() }
 
-        if (session.lastSignInMethod == SignInMethod.AUTHENTICATOR
-                && BuildConfig.ENABLE_AUTHENTICATOR_AUTH) {
-            openAuthenticatorSignIn()
-            return
-        }
-
-        credentialsPersistor.getSavedEmail()?.let {
-            Navigator.from(this).toUnlock()
+        when (session.lastSignInMethod) {
+            SignInMethod.AUTHENTICATOR -> {
+                openAuthenticatorSignIn()
+            }
+            SignInMethod.LOCAL_ACCOUNT -> {
+                openLocalAccountSignIn()
+            }
+            else -> credentialsPersistor.getSavedEmail()?.let {
+                Navigator.from(this).toUnlock()
+            }
         }
     }
 

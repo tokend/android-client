@@ -1,17 +1,16 @@
 package org.tokend.template.view.dialog
 
 import android.content.Context
-import android.graphics.Typeface
 import android.support.v7.app.AlertDialog
-import android.widget.TextView
-import org.jetbrains.anko.isSelectable
 import org.tokend.template.R
-import org.tokend.template.di.providers.AccountProvider
+import org.tokend.template.view.ToastManager
+import org.tokend.wallet.Account
 import java.nio.CharBuffer
 
 class SecretSeedDialog(
         private val context: Context,
-        private val accountProvider: AccountProvider
+        private val account: Account,
+        private val toastManager: ToastManager
 ) {
 
     fun show() {
@@ -28,16 +27,14 @@ class SecretSeedDialog(
     }
 
     private fun showSecretSeed() {
-        AlertDialog.Builder(context, R.style.AlertDialogStyle)
-                .setMessage(
-                        CharBuffer.wrap(accountProvider.getAccount()?.secretSeed
-                                ?: context.getString(R.string.error_try_again).toCharArray())
-                )
-                .setTitle(R.string.secret_seed)
-                .setPositiveButton(R.string.ok, null)
-                .show().findViewById<TextView>(android.R.id.message)?.let { textView ->
-                    textView.isSelectable = true
-                    textView.typeface = Typeface.MONOSPACE
-                }
+        val seed = account.secretSeed ?: return
+
+        CopyDataDialogFactory.getDialog(
+                context = context,
+                content = CharBuffer.wrap(seed),
+                title = context.getString(R.string.secret_seed),
+                toastManager = toastManager,
+                toastMessage = context.getString(R.string.data_has_been_copied)
+        )
     }
 }

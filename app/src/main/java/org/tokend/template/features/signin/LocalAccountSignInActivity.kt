@@ -1,9 +1,7 @@
 package org.tokend.template.features.signin
 
 import android.app.Activity
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.view.View
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -16,11 +14,11 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.localaccount.logic.CreateLocalAccountUseCase
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.repository.LocalAccountRepository
+import org.tokend.template.features.localaccount.view.util.LocalAccountLogoUtil
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.util.ImageViewUtil
 import java.util.concurrent.TimeUnit
 
 class LocalAccountSignInActivity : BaseActivity() {
@@ -66,6 +64,10 @@ class LocalAccountSignInActivity : BaseActivity() {
         sign_in_button.setOnClickListener {
             signIn()
         }
+
+        local_account_details_button.setOnClickListener {
+            Navigator.from(this).openLocalAccountDetails()
+        }
     }
 
     private fun subscribeToLocalAccount() {
@@ -107,7 +109,7 @@ class LocalAccountSignInActivity : BaseActivity() {
             return
         }
 
-        if (localAccount == null) {
+        if (localAccount == null || localAccount.isErased) {
             if (localAccountRepository.isNeverUpdated) {
                 showLoading()
             } else {
@@ -141,15 +143,7 @@ class LocalAccountSignInActivity : BaseActivity() {
         val localAccount = this.localAccount
                 ?: return
 
-        val logoCode = localAccount.accountId
-        ImageViewUtil.loadImage(
-                account_logo_image_view,
-                "https://www.tinygraphs.com/squares/$logoCode" +
-                        "?size=${resources.getDimensionPixelSize(R.dimen.local_account_logo_size)}" +
-                        "&fmt=jpeg&theme=bythepool",
-                ColorDrawable(ContextCompat.getColor(this, R.color.avatar_placeholder_background))
-        )
-
+        LocalAccountLogoUtil.setLogo(account_logo_image_view, localAccount)
         local_account_name_text_view.text = localAccount.accountId
     }
 

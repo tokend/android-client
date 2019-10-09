@@ -25,4 +25,12 @@ class LocalAccountRepository(
         storage.save(newAccount)
         onNewItem(newAccount)
     }
+
+    fun erase() {
+        storage.clear()
+        item?.let {
+            it.isErased = true
+            broadcast()
+        }
+    }
 }

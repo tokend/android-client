@@ -11,7 +11,7 @@ object CopyDataDialogFactory {
 
     fun getDialog(
             context: Context,
-            content: String,
+            content: CharSequence,
             title: String?,
             toastManager: ToastManager,
             toastMessage: String = context.getString(R.string.data_has_been_copied)

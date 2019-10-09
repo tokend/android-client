@@ -25,6 +25,8 @@ constructor(
                 ?: getAccountFromEntropy(entropy)
                         .also { mAccount = it }
 
+    var isErased = false
+
     companion object {
         private const val SCRYPT_N = 4096
         private const val SCRYPT_R = 8

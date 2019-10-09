@@ -31,11 +31,11 @@ import org.tokend.template.logic.persistance.FingerprintUtil
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.dialog.SecretSeedDialog
+import org.tokend.template.view.dialog.SignOutDialogFactory
 import org.tokend.template.view.dialog.SingleCheckDialog
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.LocalizedName
-import org.tokend.template.view.dialog.SignOutDialogFactory
 
 class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
@@ -133,11 +133,13 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     private fun initSecretSeedItem() {
         val seedPreference = findPreference("secret_seed") ?: return
+        val account = accountProvider.getAccount() ?: return
 
         seedPreference.setOnPreferenceClickListener {
             SecretSeedDialog(
                     requireContext(),
-                    accountProvider
+                    account,
+                    toastManager
             ).show()
 
             true

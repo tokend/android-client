@@ -86,7 +86,7 @@ class SignInWithLocalAccountUseCase(
 
     private fun updateProviders(): Single<Boolean> {
         session.setWalletInfo(walletInfo)
-        credentialsPersistor.saveCredentials(walletInfo, charArrayOf())
+        credentialsPersistor.clear(false)
         session.setAccount(account)
         session.signInMethod = SignInMethod.LOCAL_ACCOUNT
 
