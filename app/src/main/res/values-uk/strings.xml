@@ -439,6 +439,10 @@
         що ви зберегли його секрет,</b> інакше відновити ключ буде неможливо. Продовжити?]]></string>
     <string name="local_account_erased">Ключ видалено</string>
     <string name="local_account_actions">Дії</string>
+    <string name="show_mnemonic_phrase">Показати мнемонічну фразу</string>
+    <string name="mnemonic_phrase">Мнемонічна фраза</string>
+    <string name="mnemonic_alert_dialog">Ви збираєтеся показати важливу інформацію.\nБудь-хто знаючи
+        вашу мнемонічну фразу зможе отримати доступ до вашого акаунту.\nБажаєте продовжити?</string>
     <string-array name="months">
         <item>Січень</item>
         <item>Лютий</item>

@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.dip
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.features.localaccount.mnemonic.view.MnemonicPhraseDialog
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.view.util.LocalAccountLogoUtil
 import org.tokend.template.view.details.DetailsItem
@@ -58,6 +59,7 @@ class LocalAccountDetailsActivity : BaseActivity() {
             when (item.id) {
                 SECRET_SEED_ITEM_ID -> showSecretSeedWithConfirmation()
                 ACCOUNT_ID_ITEM_ID -> showAccountId()
+                MNEMONIC_PHRASE_ITEM_ID -> showMnemonicPhraseWithConfirmation()
                 ERASE_ACCOUNT_ITEM_ID -> eraseAccountWithConfirmation()
             }
         }
@@ -87,6 +89,11 @@ class LocalAccountDetailsActivity : BaseActivity() {
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_account_key)
                 ),
                 DetailsItem(
+                        id = MNEMONIC_PHRASE_ITEM_ID,
+                        text = getString(R.string.show_mnemonic_phrase),
+                        icon = ContextCompat.getDrawable(this, R.drawable.ic_text)
+                ),
+                DetailsItem(
                         id = ERASE_ACCOUNT_ITEM_ID,
                         text = getString(R.string.erase_local_account),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_delete)
@@ -112,6 +119,14 @@ class LocalAccountDetailsActivity : BaseActivity() {
         )
     }
 
+    private fun showMnemonicPhraseWithConfirmation() {
+        val entropy = localAccount.entropy
+
+        val phrase = mnemonicCode.toMnemonic(entropy).joinToString(" ")
+
+        MnemonicPhraseDialog(this, phrase, toastManager).show()
+    }
+
     private fun eraseAccountWithConfirmation() {
         AlertDialog.Builder(this, R.style.AlertDialogStyle)
                 .setTitle(R.string.erase_local_account)
@@ -135,5 +150,6 @@ class LocalAccountDetailsActivity : BaseActivity() {
         private const val SECRET_SEED_ITEM_ID = 1L
         private const val ACCOUNT_ID_ITEM_ID = 2L
         private const val ERASE_ACCOUNT_ITEM_ID = 3L
+        private const val MNEMONIC_PHRASE_ITEM_ID = 4L
     }
 }

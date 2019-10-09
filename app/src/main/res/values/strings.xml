@@ -440,6 +440,11 @@
         that you have saved it\'s secret seed,</b> otherwise you won\'t be able to recover it. Continue?]]></string>
     <string name="local_account_erased">Key has been erased</string>
     <string name="local_account_actions">Actions</string>
+    <string name="show_mnemonic_phrase">Show mnemonic phrase</string>
+    <string name="mnemonic_phrase">Mnemonic phrase</string>
+    <string name="mnemonic_alert_dialog">You are about to show sensitive data.\nAnyone
+        who knows the phrase can gain access to your account.\nDo
+        you want to continue?</string>
     <string-array name="months">
         <item>January</item>
         <item>February</item>
