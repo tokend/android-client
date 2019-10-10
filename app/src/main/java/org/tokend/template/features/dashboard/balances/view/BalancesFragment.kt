@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.*
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_balances.*
+import kotlinx.android.synthetic.main.fragment_balances_collapsing_content.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.template.BuildConfig
@@ -105,9 +106,21 @@ class BalancesFragment : BaseFragment() {
     }
 
     private fun onBalancesUpdated() {
+        initCollapsingContentOnce()
         displayBalances()
         displayDistribution()
         displayTotal()
+    }
+
+    private var collapsingContentInitCompleted = false
+    private fun initCollapsingContentOnce() {
+        if (collapsingContentInitCompleted) {
+            return
+        }
+
+        collapsing_content_stub.inflate()
+
+        collapsingContentInitCompleted = true
     }
 
     // region Display
