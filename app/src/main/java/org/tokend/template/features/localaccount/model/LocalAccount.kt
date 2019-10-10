@@ -16,13 +16,13 @@ import org.tokend.wallet.Account
 class LocalAccount
 constructor(
         val accountId: String,
-        val entropy: ByteArray,
-        account: Account?
+        val secretSeed: CharArray,
+        val entropy: ByteArray?
 ) {
-    private var mAccount: Account? = account
+    private var mAccount: Account? = null
     val account
         get() = mAccount
-                ?: getAccountFromEntropy(entropy)
+                ?: Account.Companion.fromSecretSeed(secretSeed)
                         .also { mAccount = it }
 
     var isErased = false
@@ -39,11 +39,21 @@ constructor(
             return LocalAccount(
                     accountId = account.accountId,
                     entropy = entropy,
-                    account = null
+                    secretSeed = account.secretSeed
+                            ?: throw IllegalStateException("Account has no secret seed")
             )
         }
 
-        fun getAccountFromEntropy(entropy: ByteArray): Account {
+        fun fromSecretSeed(seed: CharArray): LocalAccount {
+            val account = Account.fromSecretSeed(seed)
+            return LocalAccount(
+                    accountId = account.accountId,
+                    secretSeed = seed,
+                    entropy = null
+            )
+        }
+
+        private fun getAccountFromEntropy(entropy: ByteArray): Account {
             val seed = deriveSecretSeedFromEntropy(entropy)
             return Account.fromSecretSeed(seed)
         }

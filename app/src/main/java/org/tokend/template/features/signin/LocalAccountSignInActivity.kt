@@ -68,6 +68,10 @@ class LocalAccountSignInActivity : BaseActivity() {
         local_account_details_button.setOnClickListener {
             Navigator.from(this).openLocalAccountDetails()
         }
+
+        import_local_account_button.setOnClickListener {
+            Navigator.from(this).openLocalAccountImport()
+        }
     }
 
     private fun subscribeToLocalAccount() {

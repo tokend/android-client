@@ -9,22 +9,28 @@ import org.tokend.template.features.localaccount.model.LocalAccount
 
 class LocalAccountPersistorOnPreferences(
         private val preferences: SharedPreferences
-): LocalAccountPersistor {
+) : LocalAccountPersistor {
     private class LocalAccountData(
             @SerializedName("account_id")
             val accountId: String,
             @SerializedName("entropy_hex")
-            val entropyHex: String
+            val entropyHex: String?,
+            @SerializedName("secret_seed")
+            val secretSeed: String
     ) {
         fun toLocalAccount(): LocalAccount {
-            return LocalAccount.fromEntropy(entropyHex.decodeHex())
+            return if (entropyHex != null)
+                LocalAccount.fromEntropy(entropyHex.decodeHex())
+            else
+                LocalAccount.fromSecretSeed(secretSeed.toCharArray())
         }
 
         companion object {
             fun fromLocalAccount(localAccount: LocalAccount): LocalAccountData {
                 return LocalAccountData(
                         accountId = localAccount.accountId,
-                        entropyHex = localAccount.entropy.encodeHexString()
+                        entropyHex = localAccount.entropy?.encodeHexString(),
+                        secretSeed = localAccount.secretSeed.joinToString("")
                 )
             }
         }

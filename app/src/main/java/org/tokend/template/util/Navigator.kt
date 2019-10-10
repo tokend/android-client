@@ -33,6 +33,7 @@ import org.tokend.template.features.invest.view.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.view.SaleActivity
 import org.tokend.template.features.invest.view.SaleInvestActivity
 import org.tokend.template.features.limits.LimitsActivity
+import org.tokend.template.features.localaccount.importt.view.ImportLocalAccountActivity
 import org.tokend.template.features.localaccount.view.LocalAccountDetailsActivity
 import org.tokend.template.features.offers.CreateOfferActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
@@ -413,6 +414,11 @@ class Navigator private constructor() {
 
     fun openLocalAccountDetails() {
         context?.intentFor<LocalAccountDetailsActivity>()
+                ?.also { performIntent(it) }
+    }
+
+    fun openLocalAccountImport() {
+        context?.intentFor<ImportLocalAccountActivity>()
                 ?.also { performIntent(it) }
     }
 }

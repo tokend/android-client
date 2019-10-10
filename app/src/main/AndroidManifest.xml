@@ -194,6 +194,10 @@
         <activity
             android:name=".features.localaccount.view.LocalAccountDetailsActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
+        <activity
+            android:name=".features.localaccount.importt.view.ImportLocalAccountActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
     </application>
 
 </manifest>

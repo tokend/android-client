@@ -445,6 +445,12 @@
     <string name="mnemonic_alert_dialog">You are about to show sensitive data.\nAnyone
         who knows the phrase can gain access to your account.\nDo
         you want to continue?</string>
+    <string name="import_local_account_title">Import a key</string>
+    <string name="import_local_account_explanation">You can import a key from another device
+        using it\'s mnemonic phrase or secret seed</string>
+    <string name="local_account_mnemonic_or_secret_hint">Mnemonic phrase or secret seed</string>
+    <string name="local_account_imported">Key has been imported</string>
+    <string name="error_invalid_mnemonic_phrase">Invalid mnemonic phrase</string>
     <string-array name="months">
         <item>January</item>
         <item>February</item>

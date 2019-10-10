@@ -443,6 +443,12 @@
     <string name="mnemonic_phrase">Мнемоническая фраза</string>
     <string name="mnemonic_alert_dialog">Вы собираетесь отобразить важную информацию.\nЛюбой, кто знает
         вашу мнемоническую фразу, может получить доступ к вашему аккаунту.\nЖелаете продолжить?</string>
+    <string name="import_local_account_title">Импортировать ключ</string>
+    <string name="import_local_account_explanation">Вы можете импортировать ключ с другого устройства
+        с помощью его мнемноической фразы или секрета</string>
+    <string name="local_account_mnemonic_or_secret_hint">Мнемоническая фраза или секрет</string>
+    <string name="local_account_imported">Ключ импортирован</string>
+    <string name="error_invalid_mnemonic_phrase">Некорректная мнемоническая фраза</string>
     <string-array name="months">
         <item>Январь</item>
         <item>Февраль</item>

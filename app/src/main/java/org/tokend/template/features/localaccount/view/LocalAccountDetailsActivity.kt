@@ -120,7 +120,7 @@ class LocalAccountDetailsActivity : BaseActivity() {
     }
 
     private fun showMnemonicPhraseWithConfirmation() {
-        val entropy = localAccount.entropy
+        val entropy = localAccount.entropy ?: return
 
         val phrase = mnemonicCode.toMnemonic(entropy).joinToString(" ")
 

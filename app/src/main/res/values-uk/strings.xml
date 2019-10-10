@@ -425,7 +425,7 @@
     <string name="almost_done">Майже готово</string>
     <string name="use_local_account_sign_in">Увійти з локальним ключем</string>
     <string name="local_account_explanation">Локальний ключ створюється та зберігається на вашому
-        пристрою без завантаження на сервер ключів</string>
+        пристрої без завантаження на сервер ключів</string>
     <string name="generate_local_account">Створити ключ</string>
     <string name="import_local_account">Імпортувати</string>
     <string name="sign_in_with_local_account_title">@string/use_local_account_sign_in</string>
@@ -443,6 +443,12 @@
     <string name="mnemonic_phrase">Мнемонічна фраза</string>
     <string name="mnemonic_alert_dialog">Ви збираєтеся показати важливу інформацію.\nБудь-хто знаючи
         вашу мнемонічну фразу зможе отримати доступ до вашого акаунту.\nБажаєте продовжити?</string>
+    <string name="import_local_account_title">Імпортувати ключ</string>
+    <string name="import_local_account_explanation">Ви можете імпортувати ключ з іншого пристрою
+        за допомогою його мнемонічної фрази чи секрета</string>
+    <string name="local_account_mnemonic_or_secret_hint">Мнемонічна фраза або секрет</string>
+    <string name="local_account_imported">Ключ імпортовано</string>
+    <string name="error_invalid_mnemonic_phrase">Некоректна мнемонічна фраза</string>
     <string-array name="months">
         <item>Січень</item>
         <item>Лютий</item>
