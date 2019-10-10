@@ -76,7 +76,7 @@ class SignInWithLocalAccountUseCase(
         return WalletInfo(
                 accountId = accountId,
                 email = accountId.substring(0..3) + "..." +
-                        accountId.substring(accountId.length - 3, accountId.length),
+                        accountId.substring(accountId.length - 4, accountId.length),
                 secretSeed = charArrayOf(),
                 walletIdHex = "",
                 loginParams = LoginParams("", 0,

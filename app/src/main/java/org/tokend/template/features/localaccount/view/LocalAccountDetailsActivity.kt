@@ -87,12 +87,19 @@ class LocalAccountDetailsActivity : BaseActivity() {
                         id = SECRET_SEED_ITEM_ID,
                         text = getString(R.string.show_secret_seed),
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_account_key)
-                ),
-                DetailsItem(
-                        id = MNEMONIC_PHRASE_ITEM_ID,
-                        text = getString(R.string.show_mnemonic_phrase),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_text)
-                ),
+                )
+        )
+
+        if (localAccount.entropy != null) {
+            adapter.addData(DetailsItem(
+                    id = MNEMONIC_PHRASE_ITEM_ID,
+                    text = getString(R.string.show_mnemonic_phrase),
+                    icon = ContextCompat.getDrawable(this, R.drawable.ic_text)
+            )
+            )
+        }
+
+        adapter.addData(
                 DetailsItem(
                         id = ERASE_ACCOUNT_ITEM_ID,
                         text = getString(R.string.erase_local_account),

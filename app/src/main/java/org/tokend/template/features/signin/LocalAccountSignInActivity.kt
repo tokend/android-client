@@ -182,12 +182,12 @@ class LocalAccountSignInActivity : BaseActivity() {
                 .doOnSubscribe {
                     isLoading = true
                 }
-                .doOnTerminate {
-                    isLoading = false
-                }
                 .subscribeBy(
                         onComplete = this::onSignInCompleted,
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
+                        onError = {
+                            isLoading = false
+                            errorHandlerFactory.getDefault().handle(it)
+                        }
                 )
     }
 
