@@ -451,6 +451,16 @@
     <string name="local_account_mnemonic_or_secret_hint">Mnemonic phrase or secret seed</string>
     <string name="local_account_imported">Key has been imported</string>
     <string name="error_invalid_mnemonic_phrase">Invalid mnemonic phrase</string>
+    <string name="error_many_wrong_entry_attempts">Too many failed entry attempts.</string>
+    <string name="template_timer">Wait for %1$s sec…</string>
+    <string name="or_use_fingerprint">Or use your fingerprint</string>
+    <string name="pin_code_title">PIN code</string>
+    <string name="set_up_pin_code_title">Set up PIN code</string>
+    <string name="enter_pin_code">Enter PIN code</string>
+    <string name="enter_new_pin_code">Enter new PIN code</string>
+    <string name="confirm_pin_code">Confirm PIN code</string>
+    <string name="error_pin_confirmation_mismatch">PIN doesn\'t match the confirmation</string>
+    <string name="error_invalid_pin">Invalid PIN</string>
     <string-array name="months">
         <item>January</item>
         <item>February</item>

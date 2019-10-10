@@ -2,7 +2,6 @@ package org.tokend.template.logic.persistance
 
 import android.content.SharedPreferences
 import android.os.Build
-import android.support.annotation.RequiresApi
 import io.reactivex.Maybe
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.WalletInfo
@@ -12,16 +11,16 @@ import org.tokend.template.extensions.toCharArray
 /**
  * Represents secure credentials storage based on SharedPreferences.
  */
-class CredentialsPersistor(
+open class CredentialsPersistor(
         private val preferences: SharedPreferences
 ) {
-    private val secureStorage = SecureStorage(preferences)
+    protected val secureStorage = SecureStorage(preferences)
 
     /**
      * @param credentials [WalletInfo] with filled [WalletInfo.secretSeed] field.
      * @param password password for encryption
      */
-    fun saveCredentials(credentials: WalletInfo, password: CharArray) {
+    open fun saveCredentials(credentials: WalletInfo, password: CharArray) {
         val email = credentials.email
         val nonSensitiveData =
                 GsonFactory().getBaseGson().toJson(
@@ -32,11 +31,7 @@ class CredentialsPersistor(
         secureStorage.saveWithPassword(sensitiveData, SEED_KEY, password)
         secureStorage.saveWithPassword(nonSensitiveData, WALLET_INFO_KEY, password)
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            val passwordBytes = password.toByteArray()
-            secureStorage.save(passwordBytes, PASSWORD_KEY)
-            passwordBytes.fill(0)
-        }
+        tryToSavePassword(password)
 
         preferences.edit().putString(EMAIL_KEY, email).apply()
     }
@@ -44,7 +39,7 @@ class CredentialsPersistor(
     /**
      * @return saved email address, null if it is absent
      */
-    fun getSavedEmail(): String? {
+    open fun getSavedEmail(): String? {
         return preferences.getString(EMAIL_KEY, "")
                 ?.takeIf { it.isNotEmpty() }
     }
@@ -52,7 +47,7 @@ class CredentialsPersistor(
     /**
      * @return true if there is a securely saved password
      */
-    fun hasSavedPassword(): Boolean {
+    open fun hasSavedPassword(): Boolean {
         val password = getSavedPassword()
         val hasPassword = password != null
         password?.fill('0')
@@ -62,7 +57,7 @@ class CredentialsPersistor(
     /**
      * @return password from the secure storage, null if there is no saved password
      */
-    fun getSavedPassword(): CharArray? {
+    open fun getSavedPassword(): CharArray? {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return null
         }
@@ -127,10 +122,18 @@ class CredentialsPersistor(
         }
     }
 
+    protected open fun tryToSavePassword(password: CharArray) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val passwordBytes = password.toByteArray()
+            secureStorage.save(passwordBytes, PASSWORD_KEY)
+            passwordBytes.fill(0)
+        }
+    }
+
     companion object {
         private const val SEED_KEY = "(◕‿◕✿)"
         private const val WALLET_INFO_KEY = "ಠ_ಠ"
-        private const val PASSWORD_KEY = "(¬_¬)"
+        const val PASSWORD_KEY = "(¬_¬)"
         private const val EMAIL_KEY = "email"
     }
 }
