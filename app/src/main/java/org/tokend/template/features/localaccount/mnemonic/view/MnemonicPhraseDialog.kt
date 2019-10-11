@@ -21,7 +21,7 @@ class MnemonicPhraseDialog(
     private fun showSensitiveDataWarningDialog() {
         AlertDialog.Builder(context, style)
                 .setMessage(context.getString(R.string.mnemonic_alert_dialog))
-                .setNegativeButton(context.getString(R.string.cancel), null)
+                .setNegativeButton(context.getString(R.string.no), null)
                 .setPositiveButton(context.getString(R.string.yes)) { _, _ ->
                     showMnemonic()
                 }.show()

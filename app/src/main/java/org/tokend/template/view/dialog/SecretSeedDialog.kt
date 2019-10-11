@@ -20,7 +20,7 @@ class SecretSeedDialog(
     private fun showSeedWarningDialog() {
         AlertDialog.Builder(context, R.style.AlertDialogStyle)
                 .setMessage(context.getString(R.string.seed_alert_dialog))
-                .setNegativeButton(context.getString(R.string.cancel), null)
+                .setNegativeButton(context.getString(R.string.no), null)
                 .setPositiveButton(context.getString(R.string.yes)) { _, _ ->
                     showSecretSeed()
                 }.show()
