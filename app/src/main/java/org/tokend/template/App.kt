@@ -248,11 +248,11 @@ class App : MultiDexApplication() {
      */
     @SuppressLint("ApplySharedPref")
     fun signOut(activity: Activity?, soft: Boolean = false) {
+        session.reset()
+
         if (!soft) {
             clearUserData()
             initState()
-        } else {
-            session.reset()
         }
 
         Navigator.from(this).toSignIn()

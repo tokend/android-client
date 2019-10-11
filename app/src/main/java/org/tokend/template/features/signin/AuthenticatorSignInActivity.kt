@@ -12,7 +12,6 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toSingle
 import kotlinx.android.synthetic.main.activity_authenticator_sign_in.*
-import kotlinx.android.synthetic.main.activity_authenticator_sign_in.scroll_view
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.browse
@@ -24,7 +23,6 @@ import org.tokend.template.features.qr.logic.QrGenerator
 import org.tokend.template.features.signin.logic.AuthResultPoller
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInWithAuthenticatorAccountUseCase
-import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.ElevationUtil
@@ -226,7 +224,7 @@ class AuthenticatorSignInActivity : BaseActivity() {
                 .subscribeBy(
                         onComplete = {
                             setResult(Activity.RESULT_OK)
-                            Navigator.from(this).toMainActivity()
+                            finish()
                         },
                         onError = {
                             errorHandlerFactory.getDefault().handle(it)

@@ -344,7 +344,9 @@ class SignInActivity : BaseActivity() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 SIGN_IN_WITH_AUTHENTICATOR_REQUEST,
-                SIGN_IN_WITH_LOCAL_KEY_REQUEST -> finish()
+                SIGN_IN_WITH_LOCAL_KEY_REQUEST -> {
+                    onSignInComplete()
+                }
             }
         }
     }

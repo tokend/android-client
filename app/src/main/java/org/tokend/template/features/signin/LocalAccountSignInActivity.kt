@@ -214,7 +214,6 @@ class LocalAccountSignInActivity : BaseActivity() {
     }
 
     private fun onSignInCompleted() {
-        Navigator.from(this).toMainActivity()
         setResult(Activity.RESULT_OK)
         finish()
     }
