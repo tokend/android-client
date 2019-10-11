@@ -174,6 +174,12 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         val lockPreference = findPreference("background_lock")
                 as? SwitchPreferenceCompat
                 ?: return
+
+        if (session.isLocalAccountUsed) {
+            lockPreference.isVisible = false
+            return
+        }
+
         lockPreference.isVisible = backgroundLockManager.canBackgroundLockBeDisabled
         lockPreference.isChecked = backgroundLockManager.isBackgroundLockEnabled
         lockPreference.setOnPreferenceClickListener {
@@ -189,6 +195,12 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     private fun initTfaItem() {
         tfaPreference = findPreference("tfa") as? SwitchPreferenceCompat
+
+        if (session.isLocalAccountUsed) {
+            tfaPreference?.isVisible = false
+            return
+        }
+
         tfaPreference?.setOnPreferenceClickListener {
             tfaPreference?.isChecked = isTfaEnabled
             switchTfa()
@@ -201,6 +213,12 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     private fun initChangePasswordItem() {
         val changePasswordPreference = findPreference("change_password")
+
+        if (session.isLocalAccountUsed) {
+            changePasswordPreference?.isVisible = false
+            return
+        }
+
         changePasswordPreference?.setOnPreferenceClickListener {
             activity?.let { parentActivity ->
                 Navigator.from(parentActivity).openPasswordChange(3597)

@@ -2,6 +2,7 @@ package org.tokend.template.logic
 
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.signin.logic.SignInMethod
 import org.tokend.template.logic.persistance.SessionInfoStorage
 
@@ -41,6 +42,12 @@ class Session(
      */
     val isAuthenticatorUsed
         get() = signInMethod == SignInMethod.AUTHENTICATOR
+
+    /**
+     * @returns true if session was started with [LocalAccount] sign in
+     */
+    val isLocalAccountUsed
+        get() = signInMethod == SignInMethod.LOCAL_ACCOUNT
 
     /**
      * Resets the session to the initial state, clears data
