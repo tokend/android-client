@@ -17,6 +17,7 @@ import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.repository.LocalAccountRepository
 import org.tokend.template.features.localaccount.view.util.LocalAccountLogoUtil
 import org.tokend.template.features.signin.logic.PostSignInManager
+import org.tokend.template.features.signin.logic.SignInMethod
 import org.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
 import org.tokend.template.features.userkey.pin.PinCodeActivity
 import org.tokend.template.features.userkey.pin.SetUpPinCodeActivity
@@ -56,11 +57,15 @@ class LocalAccountSignInActivity : BaseActivity() {
             null
     )
 
+    private var quickSignInRequired = false
+
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_local_account_sign_in)
 
         initToolbar()
         initButtons()
+
+        quickSignInRequired = session.lastSignInMethod == SignInMethod.LOCAL_ACCOUNT
 
         subscribeToLocalAccount()
         localAccountRepository.updateIfNotFresh()
@@ -119,6 +124,7 @@ class LocalAccountSignInActivity : BaseActivity() {
     }
 
     private fun onLocalAccountUpdated() {
+        doQuickSignInIfRequired()
         updateLocalAccountView()
     }
 
@@ -181,6 +187,8 @@ class LocalAccountSignInActivity : BaseActivity() {
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnSubscribe {
                     isLoading = true
+                    loading_message_text_view.text =
+                            getString(R.string.creating_local_account_progress)
                 }
                 .doOnEvent { _, _ ->
                     isLoading = false
@@ -188,6 +196,13 @@ class LocalAccountSignInActivity : BaseActivity() {
                 .subscribeBy(
                         onError = { errorHandlerFactory.getDefault().handle(it) })
                 .addTo(compositeDisposable)
+    }
+
+    private fun doQuickSignInIfRequired() {
+        if (quickSignInRequired) {
+            quickSignInRequired = false
+            signIn()
+        }
     }
 
     private fun signIn() {
@@ -203,6 +218,7 @@ class LocalAccountSignInActivity : BaseActivity() {
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
                     isLoading = true
+                    loading_message_text_view.text = getString(R.string.loading_data)
                 }
                 .subscribeBy(
                         onComplete = this::onSignInCompleted,

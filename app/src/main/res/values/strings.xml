@@ -459,6 +459,7 @@
     <string name="confirm_pin_code">Confirm PIN code</string>
     <string name="error_pin_confirmation_mismatch">PIN doesn\'t match the confirmation</string>
     <string name="error_invalid_pin">Invalid PIN</string>
+    <string name="creating_local_account_progress">Generating key…</string>
     <string-array name="months">
         <item>January</item>
         <item>February</item>

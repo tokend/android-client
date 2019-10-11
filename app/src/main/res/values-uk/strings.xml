@@ -457,6 +457,7 @@
     <string name="confirm_pin_code">Підтвердіть PIN код</string>
     <string name="error_pin_confirmation_mismatch">PIN коди не співпали</string>
     <string name="error_invalid_pin">Неправильний код</string>
+    <string name="creating_local_account_progress">Створення ключа…</string>
     <string-array name="months">
         <item>Січень</item>
         <item>Лютий</item>
