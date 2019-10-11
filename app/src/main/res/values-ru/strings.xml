@@ -458,6 +458,7 @@
     <string name="error_pin_confirmation_mismatch">PIN коды не совпали</string>
     <string name="error_invalid_pin">Неправильный код</string>
     <string name="creating_local_account_progress">Создание ключа…</string>
+    <string name="mnemonic_phrase_description">Более удобная форма записи вашего секретного ключа</string>
     <string-array name="months">
         <item>Январь</item>
         <item>Февраль</item>

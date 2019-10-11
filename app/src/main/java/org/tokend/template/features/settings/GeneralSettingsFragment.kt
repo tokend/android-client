@@ -21,6 +21,7 @@ import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.data.repository.TfaFactorsRepository
+import org.tokend.template.features.localaccount.mnemonic.view.MnemonicPhraseDialog
 import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
 import org.tokend.template.features.tfa.logic.EnableTfaUseCase
@@ -105,6 +106,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         initAccountIdItem()
         initKycItem()
         initSecretSeedItem()
+        initLocalAccountMnemonicItem()
         initSignOutItem()
         hideCategoryIfEmpty("account")
     }
@@ -139,6 +141,32 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
             SecretSeedDialog(
                     requireContext(),
                     account,
+                    toastManager
+            ).show()
+
+            true
+        }
+    }
+
+    private fun initLocalAccountMnemonicItem() {
+        val mnemonicPreference = findPreference("mnemonic") ?: return
+
+        val localAccount = repositoryProvider.localAccount().item
+        val entropy =
+                if (localAccount != null && localAccount.hasEntropy && localAccount.isDecrypted)
+                    localAccount.entropy
+                else
+                    null
+
+        if (!session.isLocalAccountUsed || entropy == null) {
+            mnemonicPreference.isVisible = false
+            return
+        }
+
+        mnemonicPreference.setOnPreferenceClickListener {
+            MnemonicPhraseDialog(
+                    requireContext(),
+                    mnemonicCode.toMnemonic(entropy).joinToString(" "),
                     toastManager
             ).show()
 

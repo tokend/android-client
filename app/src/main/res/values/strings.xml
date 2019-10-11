@@ -264,7 +264,7 @@
     <string name="no_contacts_message">No contacts available</string>
     <string name="use_fingerprint">Use fingerprint</string>
     <string name="secret_seed">Secret seed</string>
-    <string name="secret_seed_description">Secret seed is private information that proves you own your account</string>
+    <string name="secret_seed_description">Secret seed is a private information that proves you own your account</string>
     <string name="template_offer_creation_price">Price (%1$s for 1 %2$s)</string>
     <string name="deposit_address_copied">Address has been copied to the clipboard</string>
     <string name="deposit_address_renewed">Address has been renewed</string>
@@ -460,6 +460,7 @@
     <string name="error_pin_confirmation_mismatch">PIN doesn\'t match the confirmation</string>
     <string name="error_invalid_pin">Invalid PIN</string>
     <string name="creating_local_account_progress">Generating key…</string>
+    <string name="mnemonic_phrase_description">Mnemonic phrase is a human readable form of your secret key</string>
     <string-array name="months">
         <item>January</item>
         <item>February</item>
