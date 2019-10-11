@@ -13,24 +13,24 @@ class LocalAccountPersistorOnPreferences(
     private class LocalAccountData(
             @SerializedName("account_id")
             val accountId: String,
-            @SerializedName("entropy_hex")
-            val entropyHex: String?,
-            @SerializedName("secret_seed")
-            val secretSeed: String
+            @SerializedName("serialized_encrypted_source_hex")
+            val serializedEncryptedSourceHex: String
     ) {
         fun toLocalAccount(): LocalAccount {
-            return if (entropyHex != null)
-                LocalAccount.fromEntropy(entropyHex.decodeHex())
-            else
-                LocalAccount.fromSecretSeed(secretSeed.toCharArray())
+            return LocalAccount.fromSerializedEncryptedSource(
+                    accountId = accountId,
+                    serializedEncryptedSource = serializedEncryptedSourceHex.decodeHex()
+            )
         }
 
         companion object {
             fun fromLocalAccount(localAccount: LocalAccount): LocalAccountData {
                 return LocalAccountData(
                         accountId = localAccount.accountId,
-                        entropyHex = localAccount.entropy?.encodeHexString(),
-                        secretSeed = localAccount.secretSeed.joinToString("")
+                        serializedEncryptedSourceHex = localAccount
+                                .serializeEncryptedSource()
+                                ?.encodeHexString()
+                                ?: throw IllegalArgumentException("Cannot save unencrypted local account")
                 )
             }
         }

@@ -1,5 +1,6 @@
 package org.tokend.template.features.localaccount.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -8,18 +9,26 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.text.Html
 import android.view.ViewGroup
 import android.widget.ImageView
+import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_local_account_details.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.dip
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.features.localaccount.logic.LocalAccountRetryDecryptor
 import org.tokend.template.features.localaccount.mnemonic.view.MnemonicPhraseDialog
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.view.util.LocalAccountLogoUtil
+import org.tokend.template.features.userkey.pin.PinCodeActivity
+import org.tokend.template.features.userkey.view.ActivityUserKeyProvider
+import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
 import org.tokend.template.view.dialog.CopyDataDialogFactory
 import org.tokend.template.view.dialog.SecretSeedDialog
+import org.tokend.template.view.util.ProgressDialogFactory
 
 class LocalAccountDetailsActivity : BaseActivity() {
     override val allowUnauthorized = true
@@ -27,6 +36,12 @@ class LocalAccountDetailsActivity : BaseActivity() {
     protected val adapter = DetailsItemsAdapter()
 
     private lateinit var localAccount: LocalAccount
+
+    private val pinCodeProvider = ActivityUserKeyProvider(
+            PinCodeActivity::class.java,
+            this,
+            null
+    )
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_local_account_details)
@@ -57,9 +72,9 @@ class LocalAccountDetailsActivity : BaseActivity() {
 
         adapter.onItemClick { _, item ->
             when (item.id) {
-                SECRET_SEED_ITEM_ID -> showSecretSeedWithConfirmation()
+                SECRET_SEED_ITEM_ID -> decryptAccountAnd(this::showSecretSeedWithConfirmation)
                 ACCOUNT_ID_ITEM_ID -> showAccountId()
-                MNEMONIC_PHRASE_ITEM_ID -> showMnemonicPhraseWithConfirmation()
+                MNEMONIC_PHRASE_ITEM_ID -> decryptAccountAnd(this::showMnemonicPhraseWithConfirmation)
                 ERASE_ACCOUNT_ITEM_ID -> eraseAccountWithConfirmation()
             }
         }
@@ -90,7 +105,7 @@ class LocalAccountDetailsActivity : BaseActivity() {
                 )
         )
 
-        if (localAccount.entropy != null) {
+        if (localAccount.hasEntropy) {
             adapter.addData(DetailsItem(
                     id = MNEMONIC_PHRASE_ITEM_ID,
                     text = getString(R.string.show_mnemonic_phrase),
@@ -106,6 +121,34 @@ class LocalAccountDetailsActivity : BaseActivity() {
                         icon = ContextCompat.getDrawable(this, R.drawable.ic_delete)
                 )
         )
+    }
+
+    private fun decryptAccountAnd(callback: () -> Unit) {
+        if (localAccount.isDecrypted) {
+            callback()
+            return
+        }
+
+        var disposable: Disposable? = null
+
+        val progress = ProgressDialogFactory.getDialog(this, cancelListener = { _ ->
+            disposable?.dispose()
+        })
+
+        disposable = LocalAccountRetryDecryptor(pinCodeProvider, defaultDataCipher)
+                .decrypt(localAccount)
+                .compose(ObservableTransformers.defaultSchedulersSingle())
+                .doOnSubscribe {
+                    progress.show()
+                }
+                .doOnEvent { _, _ ->
+                    progress.dismiss()
+                }
+                .subscribeBy(
+                        onSuccess = { callback() },
+                        onError = { errorHandlerFactory.getDefault().handle(it) }
+                )
+                .addTo(compositeDisposable)
     }
 
     private fun showSecretSeedWithConfirmation() {
@@ -151,6 +194,11 @@ class LocalAccountDetailsActivity : BaseActivity() {
         repositoryProvider.localAccount().erase()
         toastManager.short(R.string.local_account_erased)
         finish()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        pinCodeProvider.handleActivityResult(requestCode, resultCode, data)
     }
 
     private companion object {

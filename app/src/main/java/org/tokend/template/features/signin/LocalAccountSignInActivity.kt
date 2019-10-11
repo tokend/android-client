@@ -1,6 +1,7 @@
 package org.tokend.template.features.signin
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import io.reactivex.disposables.Disposable
@@ -17,6 +18,9 @@ import org.tokend.template.features.localaccount.repository.LocalAccountReposito
 import org.tokend.template.features.localaccount.view.util.LocalAccountLogoUtil
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
+import org.tokend.template.features.userkey.pin.PinCodeActivity
+import org.tokend.template.features.userkey.pin.SetUpPinCodeActivity
+import org.tokend.template.features.userkey.view.ActivityUserKeyProvider
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import java.util.concurrent.TimeUnit
@@ -39,6 +43,18 @@ class LocalAccountSignInActivity : BaseActivity() {
                 updateLocalAccountView()
             }
         }
+
+    private val setUpPinCodeProvider = ActivityUserKeyProvider(
+            SetUpPinCodeActivity::class.java,
+            this,
+            null
+    )
+
+    private val pinCodeProvider = ActivityUserKeyProvider(
+            PinCodeActivity::class.java,
+            this,
+            null
+    )
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_local_account_sign_in)
@@ -155,7 +171,11 @@ class LocalAccountSignInActivity : BaseActivity() {
     private fun generateLocalAccount() {
         generatingDisposable?.dispose()
 
-        generatingDisposable = CreateLocalAccountUseCase(localAccountRepository)
+        generatingDisposable = CreateLocalAccountUseCase(
+                defaultDataCipher,
+                setUpPinCodeProvider,
+                localAccountRepository
+        )
                 .perform()
                 .delay(GENERATION_VISUAL_DELAY_MS, TimeUnit.MILLISECONDS)
                 .compose(ObservableTransformers.defaultSchedulersSingle())
@@ -173,6 +193,8 @@ class LocalAccountSignInActivity : BaseActivity() {
     private fun signIn() {
         SignInWithLocalAccountUseCase(
                 localAccountRepository,
+                defaultDataCipher,
+                pinCodeProvider,
                 session,
                 credentialsPersistor,
                 PostSignInManager(repositoryProvider)
@@ -195,6 +217,12 @@ class LocalAccountSignInActivity : BaseActivity() {
         Navigator.from(this).toMainActivity()
         setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        pinCodeProvider.handleActivityResult(requestCode, resultCode, data)
+        setUpPinCodeProvider.handleActivityResult(requestCode, resultCode, data)
     }
 
     companion object {

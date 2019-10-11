@@ -1,6 +1,7 @@
 package org.tokend.template.features.localaccount.importt.view
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import io.reactivex.rxkotlin.addTo
@@ -12,10 +13,13 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.setErrorAndFocus
+import org.tokend.template.util.cipher.Aes256GcmDataCipher
 import org.tokend.template.features.localaccount.importt.logic.ImportLocalAccountFromMnemonicUseCase
 import org.tokend.template.features.localaccount.importt.logic.ImportLocalAccountFromSecretSeedUseCase
 import org.tokend.template.features.localaccount.mnemonic.logic.MnemonicException
 import org.tokend.template.features.localaccount.model.LocalAccount
+import org.tokend.template.features.userkey.pin.SetUpPinCodeActivity
+import org.tokend.template.features.userkey.view.ActivityUserKeyProvider
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -36,6 +40,12 @@ class ImportLocalAccountActivity : BaseActivity() {
             field = value
             import_local_account_button.isEnabled = value
         }
+
+    private val setUpPinCodeProvider = ActivityUserKeyProvider(
+            SetUpPinCodeActivity::class.java,
+            this,
+            null
+    )
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_import_local_account)
@@ -89,12 +99,16 @@ class ImportLocalAccountActivity : BaseActivity() {
                 if (dataIsSeed) {
                     ImportLocalAccountFromSecretSeedUseCase(
                             importDataChars,
+                            defaultDataCipher,
+                            setUpPinCodeProvider,
                             repositoryProvider.localAccount()
                     )
                 } else {
                     ImportLocalAccountFromMnemonicUseCase(
                             importData,
                             mnemonicCode,
+                            defaultDataCipher,
+                            setUpPinCodeProvider,
                             repositoryProvider.localAccount()
                     )
                 }
@@ -133,6 +147,11 @@ class ImportLocalAccountActivity : BaseActivity() {
         setResult(Activity.RESULT_OK)
         toastManager.short(R.string.local_account_imported)
         finish()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        setUpPinCodeProvider.handleActivityResult(requestCode, resultCode, data)
     }
 
     companion object {

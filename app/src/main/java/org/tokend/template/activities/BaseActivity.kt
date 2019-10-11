@@ -25,6 +25,7 @@ import org.tokend.template.logic.persistance.BackgroundLockManager
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.template.logic.persistance.UrlConfigPersistor
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.cipher.DataCipher
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.util.locale.AppLocaleManager
 import org.tokend.template.view.ToastManager
@@ -70,6 +71,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var backgroundLockManager: BackgroundLockManager
     @Inject
     lateinit var mnemonicCode: MnemonicCode
+    @Inject
+    lateinit var defaultDataCipher: DataCipher
 
     /**
      * If set to true the activity will be operational

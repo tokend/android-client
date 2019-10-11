@@ -36,6 +36,4 @@
 
     </LinearLayout>
 
-    <include layout="@layout/include_punishment_timer_holder" />
-
 </android.support.constraint.ConstraintLayout>

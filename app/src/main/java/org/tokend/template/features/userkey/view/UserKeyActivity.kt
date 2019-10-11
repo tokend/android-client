@@ -4,10 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import com.rengwuxian.materialedittext.MaterialEditText
 import kotlinx.android.synthetic.main.include_fingerprint_field_hint.*
-import kotlinx.android.synthetic.main.include_punishment_timer_holder.*
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.userkey.logic.UserKeyPersistor
@@ -53,6 +51,7 @@ abstract class UserKeyActivity : BaseActivity() {
                 FingerprintAuthManager(this, userKeyPersistor)
         fingerprintIndicatorManager =
                 FingerprintIndicatorManager(this, fingerprint_indicator, toastManager)
+        focusOnEditText()
     }
 
     override fun onBackPressed() {
@@ -61,9 +60,6 @@ abstract class UserKeyActivity : BaseActivity() {
     }
 
     protected open fun focusOnEditText() {
-        timer_holder.visibility = View.GONE
-        supportActionBar?.show()
-
         entryEditText.isFocusableInTouchMode = true
         if (isRetry) {
             entryEditText.setErrorAndFocus(errorMessage)

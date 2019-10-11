@@ -449,6 +449,14 @@
     <string name="local_account_mnemonic_or_secret_hint">Мнемоническая фраза или секрет</string>
     <string name="local_account_imported">Ключ импортирован</string>
     <string name="error_invalid_mnemonic_phrase">Некорректная мнемоническая фраза</string>
+    <string name="or_use_fingerprint">Или воспользуйтесь отпечатком</string>
+    <string name="pin_code_title">PIN код</string>
+    <string name="set_up_pin_code_title">Установить PIN код</string>
+    <string name="enter_pin_code">Введите PIN код</string>
+    <string name="enter_new_pin_code">Придумайте PIN код</string>
+    <string name="confirm_pin_code">Подтвердите PIN код</string>
+    <string name="error_pin_confirmation_mismatch">PIN коды не совпали</string>
+    <string name="error_invalid_pin">Неправильный код</string>
     <string-array name="months">
         <item>Январь</item>
         <item>Февраль</item>

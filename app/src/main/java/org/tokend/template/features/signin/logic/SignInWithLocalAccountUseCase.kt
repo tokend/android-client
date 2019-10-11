@@ -8,10 +8,13 @@ import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.keyserver.models.KdfAttributes
 import org.tokend.sdk.keyserver.models.LoginParams
 import org.tokend.sdk.keyserver.models.WalletInfo
+import org.tokend.template.features.localaccount.logic.LocalAccountRetryDecryptor
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.repository.LocalAccountRepository
+import org.tokend.template.features.userkey.logic.UserKeyProvider
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.CredentialsPersistor
+import org.tokend.template.util.cipher.DataCipher
 import org.tokend.wallet.Account
 
 /**
@@ -24,10 +27,14 @@ import org.tokend.wallet.Account
  */
 class SignInWithLocalAccountUseCase(
         private val localAccountRepository: LocalAccountRepository,
+        accountCipher: DataCipher,
+        userKeyProvider: UserKeyProvider,
         private val session: Session,
         private val credentialsPersistor: CredentialsPersistor,
         private val postSignInManager: PostSignInManager?
 ) {
+    private val accountDecryptor = LocalAccountRetryDecryptor(userKeyProvider, accountCipher)
+
     private lateinit var localAccount: LocalAccount
     private lateinit var account: Account
     private lateinit var walletInfo: WalletInfo
@@ -36,7 +43,11 @@ class SignInWithLocalAccountUseCase(
         return getLocalAccount()
                 .doOnSuccess { localAccount ->
                     this.localAccount = localAccount
-                }.flatMap {
+                }
+                .flatMap {
+                    decryptLocalAccount()
+                }
+                .flatMap {
                     getAccount()
                 }
                 .doOnSuccess { account ->
@@ -62,6 +73,10 @@ class SignInWithLocalAccountUseCase(
                 .item
                 .toMaybe()
                 .switchIfEmpty(Single.error(IllegalStateException("There is no local account in the repository")))
+    }
+
+    private fun decryptLocalAccount(): Single<LocalAccount> {
+        return accountDecryptor.decrypt(localAccount)
     }
 
     private fun getAccount(): Single<Account> {
