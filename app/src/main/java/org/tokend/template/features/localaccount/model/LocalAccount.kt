@@ -2,9 +2,9 @@ package org.tokend.template.features.localaccount.model
 
 import org.tokend.crypto.ecdsa.erase
 import org.tokend.kdf.ScryptKeyDerivation
-import org.tokend.template.util.cipher.DataCipher
 import org.tokend.template.features.localaccount.model.LocalAccount.Companion.DEFAULT_ENTROPY_BYTES
 import org.tokend.template.features.localaccount.model.LocalAccount.Companion.fromEntropy
+import org.tokend.template.util.cipher.DataCipher
 import org.tokend.wallet.Account
 import org.tokend.wallet.Base32Check
 import org.tokend.wallet.utils.toByteArray
@@ -167,7 +167,8 @@ private constructor(
         private const val SCRYPT_N = 4096
         private const val SCRYPT_R = 8
         private const val SCRYPT_P = 1
-        private val SCRYPT_PASSPHRASE = "entropy".toByteArray(Charsets.UTF_8)
+        private val SCRYPT_ENTROPY_SALT = "entropy".toByteArray(Charsets.UTF_8)
+        private val SCRYPT_USER_KEY_SALT = "user_key".toByteArray(Charsets.UTF_8)
         const val DEFAULT_ENTROPY_BYTES = 16
 
         /**
@@ -231,12 +232,12 @@ private constructor(
 
         private fun deriveSecretSeedFromEntropy(entropy: ByteArray): ByteArray {
             return ScryptKeyDerivation(SCRYPT_N, SCRYPT_R, SCRYPT_P)
-                    .derive(SCRYPT_PASSPHRASE, entropy, 32)
+                    .derive(entropy, SCRYPT_ENTROPY_SALT, 32)
         }
 
         private fun deriveEncryptionKeyFromUserKey(userKey: CharArray): ByteArray {
             return ScryptKeyDerivation(SCRYPT_N, SCRYPT_R, SCRYPT_P)
-                    .derive(SCRYPT_PASSPHRASE, userKey.toByteArray(), 32)
+                    .derive(userKey.toByteArray(), SCRYPT_USER_KEY_SALT, 32)
         }
     }
 }

@@ -1,5 +1,6 @@
 package org.tokend.template.test
 
+import io.reactivex.Maybe
 import org.junit.Assert
 import org.junit.Test
 import org.tokend.template.features.localaccount.importt.logic.ImportLocalAccountFromMnemonicUseCase
@@ -9,6 +10,8 @@ import org.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.repository.LocalAccountRepository
 import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
+import org.tokend.template.features.userkey.logic.UserKeyProvider
+import org.tokend.template.util.cipher.Aes256GcmDataCipher
 
 class LocalAccountImportTest {
     private fun getDummyStorage(): LocalAccountPersistor {
@@ -27,11 +30,19 @@ class LocalAccountImportTest {
         }
     }
 
+    private fun getDummyUserKeyProvider(): UserKeyProvider {
+        return object : UserKeyProvider {
+            override fun getUserKey(isRetry: Boolean): Maybe<CharArray> {
+                return Maybe.just("0000".toCharArray())
+            }
+        }
+    }
+
     @Test
     fun fromMnemonicPhrase() {
         val mnemonic = "tonight fat have keen intact happy social powder tired shaft length cram"
         val code = MnemonicCode(EnglishMnemonicWords.LIST)
-        val expectedAccountId = "GAWJM63P32VP6PAUAGWLYL7HV77JZ2EUKKJCU74TEFHLBP2NFVOS4GEJ"
+        val expectedAccountId = "GD3DTFJZMEZ5WOMCDNGNR4EQSOCFGLYWVS3FD3H3C424LRZRB4NNBQPR"
 
         val storage = getDummyStorage()
         val repository = LocalAccountRepository(storage)
@@ -39,6 +50,8 @@ class LocalAccountImportTest {
         val account = ImportLocalAccountFromMnemonicUseCase(
                 mnemonic,
                 code,
+                Aes256GcmDataCipher(),
+                getDummyUserKeyProvider(),
                 repository
         )
                 .perform()
@@ -61,6 +74,8 @@ class LocalAccountImportTest {
 
         val account = ImportLocalAccountFromSecretSeedUseCase(
                 seed,
+                Aes256GcmDataCipher(),
+                getDummyUserKeyProvider(),
                 repository
         )
                 .perform()
