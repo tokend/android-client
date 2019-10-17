@@ -1,6 +1,8 @@
 package org.tokend.template.features.send.recipient.view
 
 import android.Manifest
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -9,6 +11,7 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -86,6 +89,14 @@ class PaymentRecipientFragment : BaseFragment() {
 
     // region Init
     private fun initFields() {
+        recipient_edit_text.onFocusChangeListener = View.OnFocusChangeListener { _, _ ->
+            showRecipientAutocompleteIfFocused()
+        }
+
+        recipient_edit_text.setOnClickListener {
+            showRecipientAutocompleteIfFocused()
+        }
+
         recipient_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
                 recipient_edit_text.error = null
@@ -177,29 +188,35 @@ class PaymentRecipientFragment : BaseFragment() {
         }
     }
 
-    private fun readAndCheckRecipient(): String {
-        val recipient = recipient_edit_text.text
-                .toString()
+    private fun readRecipient(raw: String): String? {
+        val filtered = raw
                 .trim()
                 .split(' ', '\r', '\n')
                 .first()
 
         val validAccountId = Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID,
-                recipient.toCharArray())
-        val validEmail = EmailValidator.isValid(recipient)
+                filtered.toCharArray())
+        val validEmail = EmailValidator.isValid(filtered)
 
         return when {
-            validAccountId -> Base32Check.encodeAccountId(Base32Check.decodeAccountId(recipient))
-            validEmail -> recipient
-            else -> {
-                if (recipient.isEmpty()) {
-                    recipient_edit_text.error = getString(R.string.error_cannot_be_empty)
-                } else {
-                    recipient_edit_text.error = getString(R.string.error_invalid_recipient)
-                }
-                ""
-            }
+            validAccountId -> Base32Check.encodeAccountId(Base32Check.decodeAccountId(filtered))
+            validEmail -> filtered
+            filtered.isEmpty() -> ""
+            else -> null
         }
+    }
+
+    private fun readAndCheckRecipient(raw: String): String {
+        val recipient = readRecipient(raw)
+
+        when {
+            recipient == null ->
+                recipient_edit_text.error = getString(R.string.error_invalid_recipient)
+            recipient.isEmpty() ->
+                recipient_edit_text.error = getString(R.string.error_cannot_be_empty)
+        }
+
+        return recipient ?: ""
     }
 
     private fun updateContinueAvailability() {
@@ -210,7 +227,7 @@ class PaymentRecipientFragment : BaseFragment() {
 
     private var recipientLoadingDisposable: Disposable? = null
     private fun tryToLoadRecipient() {
-        val recipient = readAndCheckRecipient()
+        val recipient = readAndCheckRecipient(recipient_edit_text.text.toString())
         updateContinueAvailability()
 
         if (!canContinue) {
@@ -269,6 +286,50 @@ class PaymentRecipientFragment : BaseFragment() {
             tryToLoadRecipient()
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        checkClipboardForRecipient()
+    }
+
+    // region Clipboard suggestion
+    private var recipientSuggestion: String? = null
+        set(value) {
+            val sameAsBefore = field == value
+            field = value
+            if (value != null) {
+                if (!sameAsBefore) {
+                    val adapter = ArrayAdapter(requireContext(),
+                            android.R.layout.simple_list_item_1, arrayOf(value))
+                    recipient_edit_text.setAdapter(adapter)
+                    adapter.notifyDataSetChanged()
+                    showRecipientAutocompleteIfFocused()
+                }
+            } else {
+                recipient_edit_text.setAdapter(null)
+            }
+        }
+
+    private fun checkClipboardForRecipient() {
+        val clipboard = requireContext().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val content = clipboard.primaryClip
+                ?.takeIf { it.itemCount > 0 }
+                ?.getItemAt(0)
+                ?.text
+                ?.toString()
+                ?: return
+
+        recipientSuggestion = readRecipient(content)?.takeIf(String::isNotEmpty)
+    }
+
+    private fun showRecipientAutocompleteIfFocused() {
+        recipient_edit_text.apply {
+            if (hasFocus() && !isPopupShowing) {
+                showDropDown()
+            }
+        }
+    }
+    // endregion
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<out String>,

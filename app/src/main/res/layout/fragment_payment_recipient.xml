@@ -21,7 +21,7 @@
             android:layout_below="@id/main_progress"
             android:padding="@dimen/standard_margin">
 
-            <com.rengwuxian.materialedittext.MaterialEditText
+            <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
                 android:id="@+id/recipient_edit_text"
                 style="@style/EditText"
                 android:layout_width="0dp"
@@ -30,6 +30,7 @@
                 android:hint="@string/recipient_label"
                 android:inputType="text|textEmailAddress"
                 android:paddingEnd="42dp"
+                android:completionThreshold="0"
                 android:paddingRight="42dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
