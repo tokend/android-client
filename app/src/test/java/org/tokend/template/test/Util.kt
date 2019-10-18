@@ -164,6 +164,8 @@ object Util {
 
         txManager.submit(tx).blockingGet()
 
+        repositoryProvider.balances().updateAssetBalance(asset, amount)
+
         return amount
     }
 

@@ -242,10 +242,6 @@ class PaymentsTest {
                 txManager
         ).perform().blockingAwait()
 
-        Thread.sleep(500)
-
-        repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
-
         val currentBalance = repositoryProvider.balances().itemsList
                 .find { it.assetCode == asset }!!.available
 
