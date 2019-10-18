@@ -12,7 +12,12 @@ class AccountRecord(
 ) : Serializable {
     constructor(source: AccountResource) : this(
             id = source.id,
-            kycRecoveryStatus = KycRecoveryStatus.valueOf(source.kycRecoveryStatus!!.name!!.toUpperCase()),
+            kycRecoveryStatus = source
+                    .kycRecoveryStatus
+                    ?.name
+                    ?.toUpperCase(Locale.ENGLISH)
+                    ?.let(KycRecoveryStatus::valueOf)
+                    ?: KycRecoveryStatus.NONE,
             depositAccounts = source.externalSystemIds?.map(::DepositAccount) ?: emptyList()
     )
 
