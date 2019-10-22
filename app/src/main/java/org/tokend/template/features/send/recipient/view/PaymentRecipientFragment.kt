@@ -25,19 +25,19 @@ import org.tokend.template.R
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.features.send.model.PaymentRecipient
+import org.tokend.template.features.send.recipient.contacts.model.ContactRecord
+import org.tokend.template.features.send.recipient.contacts.repository.ContactsRepository
+import org.tokend.template.features.send.recipient.contacts.view.adapter.ContactExtraCredentialListItem
+import org.tokend.template.features.send.recipient.contacts.view.adapter.ContactMainListItem
+import org.tokend.template.features.send.recipient.contacts.view.adapter.ContactSectionTitleListItem
+import org.tokend.template.features.send.recipient.contacts.view.adapter.ContactsAdapter
 import org.tokend.template.features.send.recipient.logic.PaymentRecipientLoader
-import org.tokend.template.features.send.recipient.model.Contact
-import org.tokend.template.features.send.recipient.model.ContactEmail
-import org.tokend.template.features.send.recipient.repository.ContactsRepository
-import org.tokend.template.features.send.recipient.view.adapter.ContactListItem
-import org.tokend.template.features.send.recipient.view.adapter.ContactsAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.util.validator.EmailValidator
 import org.tokend.template.view.ContentLoadingProgressBar
-import org.tokend.template.view.adapter.base.SimpleItemClickListener
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -136,14 +136,28 @@ class PaymentRecipientFragment : BaseFragment() {
 
         ElevationUtil.initScrollElevation(contacts_list, appbar_elevation_view)
 
-        contactsAdapter.onEmailClickListener = object : SimpleItemClickListener<Any> {
-            override fun invoke(view: View?, item: Any) {
-                item as ContactEmail
-                recipient_edit_text.setText(item.email)
-                recipient_edit_text.setSelection(item.email.length)
-                tryToLoadRecipient()
-            }
-        }
+//        contactsAdapter.onEmailClickListener = object : SimpleItemClickListener<Any> {
+//            override fun invoke(view: View?, item: Any) {
+//                item as ContactEmail
+//                recipient_edit_text.setText(item.email)
+//                recipient_edit_text.setSelection(item.email.length)
+//                tryToLoadRecipient()
+//            }
+//        }
+
+        contactsAdapter.setData(
+                listOf(
+                        ContactSectionTitleListItem("A"),
+                        ContactMainListItem("anton", "Antony M", "zayci@mail.com", null),
+                        ContactMainListItem("1", "Artem Skriabin", "artem@mail.com", null),
+                        ContactExtraCredentialListItem("+3809555422333"),
+                        ContactMainListItem("lesha", "Alexey", "bob@mail.com", null),
+                        ContactExtraCredentialListItem("alice@mail.com"),
+                        ContactExtraCredentialListItem("@telegram_username"),
+                        ContactSectionTitleListItem("B"),
+                        ContactMainListItem("bs", "Bohdan Skriabin", "bohdan@distributedlab.com", null)
+                )
+        )
     }
     // endregion
 
@@ -164,13 +178,13 @@ class PaymentRecipientFragment : BaseFragment() {
                 .addTo(compositeDisposable)
     }
 
-    private fun displayContacts(contacts: List<Contact>) {
-        contactsAdapter.setData(contacts.map(::ContactListItem))
-        contacts_empty_view.visibility =
-                if (contacts.isEmpty() && !contactsRepository.isNeverUpdated)
-                    View.VISIBLE
-                else
-                    View.GONE
+    private fun displayContacts(contacts: List<ContactRecord>) {
+//        contactsAdapter.setData(contacts.map(::ContactListItem))
+//        contacts_empty_view.visibility =
+//                if (contacts.isEmpty() && !contactsRepository.isNeverUpdated)
+//                    View.VISIBLE
+//                else
+//                    View.GONE
     }
 
     private fun tryUpdateContacts() {

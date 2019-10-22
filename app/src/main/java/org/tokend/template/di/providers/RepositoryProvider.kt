@@ -11,7 +11,7 @@ import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.polls.repository.PollsRepository
-import org.tokend.template.features.send.recipient.repository.ContactsRepository
+import org.tokend.template.features.send.recipient.contacts.repository.ContactsRepository
 import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
 
 interface RepositoryProvider {
