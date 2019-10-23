@@ -14,7 +14,7 @@ class ContactsRepository(val context: Context,
 
     override fun getItems(): Single<List<ContactRecord>> {
         val contacts = mutableListOf<ContactRecord>()
-        val credentialsByIds = mutableMapOf<String, Set<String>>()
+        val credentialsByIds = mutableMapOf<String, MutableSet<String>>()
 
         val contentResolver = context.contentResolver
 
@@ -26,7 +26,7 @@ class ContactsRepository(val context: Context,
                 do {
                     val id = credentialsCursor.getString(credentialsCursor.getColumnIndex(EMAIL_CONTACT_ID))
                     val email = credentialsCursor.getString(credentialsCursor.getColumnIndex(EMAIL))
-                    credentialsByIds[id] = setOf(email)
+                    credentialsByIds.getOrPut(id, ::mutableSetOf).add(email)
                 } while (credentialsCursor.moveToNext())
                 credentialsCursor.close()
             }

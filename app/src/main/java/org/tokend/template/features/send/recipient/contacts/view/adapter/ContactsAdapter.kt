@@ -4,6 +4,8 @@ import android.support.v7.util.DiffUtil
 import android.view.ViewGroup
 import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.features.send.recipient.contacts.model.ContactRecord
+import org.tokend.template.util.SearchUtil
 import org.tokend.template.view.adapter.base.BaseRecyclerAdapter
 import org.tokend.template.view.adapter.base.BaseViewHolder
 
@@ -45,6 +47,55 @@ class ContactsAdapter : BaseRecyclerAdapter<ContactListItem, BaseViewHolder<Cont
         val view = parent.context.layoutInflater.inflate(R.layout.list_item_section_title,
                 parent, false)
         return ContactSectionTitleItemViewHolder(view)
+    }
+
+    fun setData(contacts: List<ContactRecord>,
+                filter: String?) {
+        contacts
+                .sortedBy(ContactRecord::name)
+                .map { contact ->
+                    if (filter == null) {
+                        getListItemsFromContact(contact)
+                    } else {
+                        if (SearchUtil.isMatchGeneralCondition(filter, contact.name)) {
+                            getListItemsFromContact(contact)
+                        } else {
+                            getListItemsFromContact(contact) { credential ->
+                                SearchUtil.isMatchGeneralCondition(filter, credential)
+                            }
+                        }
+                    }
+                }
+                .filterNot(List<*>::isEmpty)
+                .groupBy { contactListItems ->
+                    (contactListItems.first() as ContactMainListItem).sectionLetter
+                }
+                .flatMap { (sectionLetter, entries) ->
+                    listOf(
+                            ContactSectionTitleListItem(sectionLetter.toString()),
+                            *entries.flatten().toTypedArray()
+                    )
+                }
+                .also(this::setData)
+    }
+
+    private fun getListItemsFromContact(contact: ContactRecord,
+                                        credentialsFilter: ((String) -> Boolean)? = null)
+            : List<ContactListItem> {
+        return contact.credentials
+                .let {
+                    if (credentialsFilter != null)
+                        it.filter(credentialsFilter)
+                    else
+                        it
+
+                }
+                .mapIndexed { i, credential ->
+                    if (i == 0)
+                        ContactMainListItem(contact, credential)
+                    else
+                        ContactExtraCredentialListItem(credential)
+                }
     }
 
     override fun getDiffCallback(newItems: List<ContactListItem>): DiffUtil.Callback? {

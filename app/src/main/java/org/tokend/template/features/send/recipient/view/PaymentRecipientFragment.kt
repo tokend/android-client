@@ -12,7 +12,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -25,12 +27,9 @@ import org.tokend.template.R
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.features.send.model.PaymentRecipient
-import org.tokend.template.features.send.recipient.contacts.model.ContactRecord
 import org.tokend.template.features.send.recipient.contacts.repository.ContactsRepository
-import org.tokend.template.features.send.recipient.contacts.view.adapter.ContactExtraCredentialListItem
-import org.tokend.template.features.send.recipient.contacts.view.adapter.ContactMainListItem
-import org.tokend.template.features.send.recipient.contacts.view.adapter.ContactSectionTitleListItem
 import org.tokend.template.features.send.recipient.contacts.view.adapter.ContactsAdapter
+import org.tokend.template.features.send.recipient.contacts.view.adapter.CredentialedContactListItem
 import org.tokend.template.features.send.recipient.logic.PaymentRecipientLoader
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.ObservableTransformers
@@ -42,6 +41,7 @@ import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.wallet.Base32Check
+import java.util.concurrent.TimeUnit
 
 class PaymentRecipientFragment : BaseFragment() {
     private val loadingIndicator = LoadingIndicatorManager(
@@ -70,6 +70,17 @@ class PaymentRecipientFragment : BaseFragment() {
 
     protected val resultSubject = PublishSubject.create<PaymentRecipient>()
     val resultObservable: Observable<PaymentRecipient> = resultSubject
+
+    private var contactsFilter: String? = null
+        set(value) {
+            if (value != field) {
+                val isTheSame = field == value
+                field = value
+                if (!isTheSame) {
+                    onContactsFilterChanged()
+                }
+            }
+        }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_payment_recipient, container, false)
@@ -136,28 +147,22 @@ class PaymentRecipientFragment : BaseFragment() {
 
         ElevationUtil.initScrollElevation(contacts_list, appbar_elevation_view)
 
-//        contactsAdapter.onEmailClickListener = object : SimpleItemClickListener<Any> {
-//            override fun invoke(view: View?, item: Any) {
-//                item as ContactEmail
-//                recipient_edit_text.setText(item.email)
-//                recipient_edit_text.setSelection(item.email.length)
-//                tryToLoadRecipient()
-//            }
-//        }
+        contactsAdapter.onItemClick { _, item ->
+            if (item is CredentialedContactListItem) {
+                recipient_edit_text.setText(item.credential)
+                recipient_edit_text.setSelection(item.credential.length)
+                tryToLoadRecipient()
+            }
+        }
 
-        contactsAdapter.setData(
-                listOf(
-                        ContactSectionTitleListItem("A"),
-                        ContactMainListItem("anton", "Antony M", "zayci@mail.com", null),
-                        ContactMainListItem("1", "Artem Skriabin", "artem@mail.com", null),
-                        ContactExtraCredentialListItem("+3809555422333"),
-                        ContactMainListItem("lesha", "Alexey", "bob@mail.com", null),
-                        ContactExtraCredentialListItem("alice@mail.com"),
-                        ContactExtraCredentialListItem("@telegram_username"),
-                        ContactSectionTitleListItem("B"),
-                        ContactMainListItem("bs", "Bohdan Skriabin", "bohdan@distributedlab.com", null)
-                )
-        )
+        RxTextView.textChanges(recipient_edit_text)
+                .skipInitialValue()
+                .debounce(FILTER_DEBOUNCE_MS, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { query ->
+                    contactsFilter = query.trim().toString().takeIf(String::isNotBlank)
+                }
+                .addTo(compositeDisposable)
     }
     // endregion
 
@@ -165,9 +170,7 @@ class PaymentRecipientFragment : BaseFragment() {
     private fun subscribeToContacts() {
         contactsRepository.itemsSubject
                 .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    displayContacts(it)
-                }
+                .subscribe { displayContacts() }
                 .addTo(compositeDisposable)
 
         contactsRepository.loadingSubject
@@ -178,13 +181,14 @@ class PaymentRecipientFragment : BaseFragment() {
                 .addTo(compositeDisposable)
     }
 
-    private fun displayContacts(contacts: List<ContactRecord>) {
-//        contactsAdapter.setData(contacts.map(::ContactListItem))
-//        contacts_empty_view.visibility =
-//                if (contacts.isEmpty() && !contactsRepository.isNeverUpdated)
-//                    View.VISIBLE
-//                else
-//                    View.GONE
+    private fun displayContacts() {
+        val contacts = contactsRepository.itemsList
+        contactsAdapter.setData(contacts, contactsFilter)
+        contacts_empty_view.visibility =
+                if (!contactsAdapter.hasData && !contactsRepository.isNeverUpdated)
+                    View.VISIBLE
+                else
+                    View.GONE
     }
 
     private fun tryUpdateContacts() {
@@ -193,6 +197,10 @@ class PaymentRecipientFragment : BaseFragment() {
         }, {
             contacts_empty_view.visibility = View.VISIBLE
         })
+    }
+
+    private fun onContactsFilterChanged() {
+        displayContacts()
     }
     // endregion
 
@@ -351,5 +359,9 @@ class PaymentRecipientFragment : BaseFragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
         contactsPermission.handlePermissionResult(requestCode, permissions, grantResults)
+    }
+
+    private companion object {
+        private const val FILTER_DEBOUNCE_MS = 400L
     }
 }

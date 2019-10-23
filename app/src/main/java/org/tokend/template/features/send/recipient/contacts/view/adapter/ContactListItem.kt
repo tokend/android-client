@@ -14,10 +14,13 @@ class ContactMainListItem(
         override val credential: String,
         val photoUri: String?
 ) : CredentialedContactListItem {
-    constructor(source: ContactRecord) : this(
+    val sectionLetter = name.first().toUpperCase()
+
+    constructor(source: ContactRecord,
+                credential: String = source.credentials.first()) : this(
             id = source.id,
             name = source.name,
-            credential = source.credentials.first(),
+            credential = credential,
             photoUri = source.photoUri
     )
 
