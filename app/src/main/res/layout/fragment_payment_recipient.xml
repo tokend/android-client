@@ -27,10 +27,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/standard_padding"
+                android:completionThreshold="0"
                 android:hint="@string/recipient_label"
                 android:inputType="text|textEmailAddress"
                 android:paddingEnd="42dp"
-                android:completionThreshold="0"
                 android:paddingRight="42dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -56,21 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/recipient_layout"
-            android:layout_marginTop="@dimen/standard_margin"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/header_text_view"
-                style="@style/HintText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/standard_margin"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif-medium"
-                android:maxLines="1"
-                android:paddingBottom="@dimen/half_standard_margin"
-                android:text="@string/contacts"
-                android:textAllCaps="true" />
 
             <include layout="@layout/layout_progress" />
 
