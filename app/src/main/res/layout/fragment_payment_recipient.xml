@@ -62,8 +62,7 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/half_standard_margin">
+                android:layout_height="match_parent">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/contacts_list"
@@ -77,7 +76,7 @@
                     android:id="@+id/contacts_empty_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_margin"
+                    android:layout_marginTop="@dimen/standard_padding"
                     android:gravity="center"
                     android:text="@string/no_contacts_message"
                     android:textColor="@color/secondary_text"
