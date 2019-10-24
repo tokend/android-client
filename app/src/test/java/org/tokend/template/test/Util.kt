@@ -37,7 +37,8 @@ object Util {
                           apiProvider: ApiProvider,
                           session: Session,
                           repositoryProvider: RepositoryProvider?): WalletCreateResult {
-        val createResult = apiProvider.getKeyServer().createAndSaveWallet(email, password)
+        val createResult = apiProvider.getKeyServer()
+                .createAndSaveWallet(email, password, apiProvider.getApi().v3.keyValue)
                 .execute().get()
 
         println("Email is $email")

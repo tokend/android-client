@@ -25,7 +25,8 @@ class SignInTest {
         val password = Config.DEFAULT_PASSWORD
 
         val (walletData, rootAccount)
-                = apiProvider.getKeyServer().createAndSaveWallet(email, password)
+                = apiProvider.getKeyServer()
+                .createAndSaveWallet(email, password, apiProvider.getApi().v3.keyValue)
                 .execute().get()
 
         println("Email is $email")
