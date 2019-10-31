@@ -212,6 +212,7 @@ class LocalAccountSignInActivity : BaseActivity() {
                 pinCodeProvider,
                 session,
                 credentialsPersistor,
+                apiProvider,
                 PostSignInManager(repositoryProvider)
         )
                 .perform()

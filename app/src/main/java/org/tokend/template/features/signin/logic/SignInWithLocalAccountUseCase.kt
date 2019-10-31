@@ -5,9 +5,16 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
+import org.tokend.rx.extensions.toCompletable
+import org.tokend.rx.extensions.toSingle
+import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.KdfAttributes
 import org.tokend.sdk.keyserver.models.LoginParams
+import org.tokend.sdk.keyserver.models.SignerData
 import org.tokend.sdk.keyserver.models.WalletInfo
+import org.tokend.sdk.utils.extentions.isConflict
+import org.tokend.sdk.utils.extentions.isNotFound
+import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.features.localaccount.logic.LocalAccountRetryDecryptor
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.repository.LocalAccountRepository
@@ -16,6 +23,7 @@ import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.CredentialsPersistor
 import org.tokend.template.util.cipher.DataCipher
 import org.tokend.wallet.Account
+import retrofit2.HttpException
 
 /**
  * Performs sign in with given [Account]:
@@ -31,11 +39,13 @@ class SignInWithLocalAccountUseCase(
         userKeyProvider: UserKeyProvider,
         private val session: Session,
         private val credentialsPersistor: CredentialsPersistor,
+        private val apiProvider: ApiProvider,
         private val postSignInManager: PostSignInManager?
 ) {
     private val accountDecryptor = LocalAccountRetryDecryptor(userKeyProvider, accountCipher)
 
     private lateinit var localAccount: LocalAccount
+    private var defaultSignerRole: Long = 0
     private lateinit var account: Account
     private lateinit var walletInfo: WalletInfo
 
@@ -46,6 +56,15 @@ class SignInWithLocalAccountUseCase(
                 }
                 .flatMap {
                     decryptLocalAccount()
+                }
+                .flatMap {
+                    getDefaultSignerRole()
+                }
+                .doOnSuccess { defaultSignerRole ->
+                    this.defaultSignerRole = defaultSignerRole
+                }
+                .flatMap {
+                    ensureRemoteAccountExists()
                 }
                 .flatMap {
                     getAccount()
@@ -77,6 +96,32 @@ class SignInWithLocalAccountUseCase(
 
     private fun decryptLocalAccount(): Single<LocalAccount> {
         return accountDecryptor.decrypt(localAccount)
+    }
+
+    private fun getDefaultSignerRole(): Single<Long> {
+        return apiProvider.getApi()
+                .v3
+                .keyValue
+                .getById(KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY)
+                .map { it.value.u32!! }
+                .toSingle()
+    }
+
+    private fun ensureRemoteAccountExists(): Single<Boolean> {
+        return apiProvider.getApi()
+                .accounts
+                .createAccount(
+                        accountId = localAccount.accountId,
+                        signers = listOf(SignerData(localAccount.accountId, defaultSignerRole))
+                )
+                .toCompletable()
+                .toSingleDefault(true)
+                .onErrorResumeNext { error ->
+                    if (error is HttpException && error.isConflict())
+                        Single.just(true)
+                    else
+                        Single.error(error)
+                }
     }
 
     private fun getAccount(): Single<Account> {
