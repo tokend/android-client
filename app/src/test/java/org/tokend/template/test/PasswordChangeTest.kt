@@ -14,7 +14,6 @@ import org.tokend.template.di.providers.RepositoryProviderImpl
 import org.tokend.template.di.providers.WalletInfoProviderFactory
 import org.tokend.template.features.changepassword.ChangePasswordUseCase
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.wallet.WalletUpdateManager
 
 class PasswordChangeTest {
     @Test
@@ -50,10 +49,11 @@ class PasswordChangeTest {
 
         val useCase = ChangePasswordUseCase(
                 newPassword,
-                WalletUpdateManager(repositoryProvider.systemInfo()),
                 apiProvider,
                 session,
-                session
+                session,
+                repositoryProvider,
+                null
         )
 
         useCase.perform().blockingAwait()
