@@ -3,8 +3,11 @@ package org.tokend.template.test
 import org.junit.Assert
 import org.junit.Test
 import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
+import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.template.di.providers.ApiProviderFactory
+import org.tokend.template.di.providers.RepositoryProviderImpl
+import org.tokend.template.di.providers.WalletInfoProviderImpl
 import org.tokend.template.features.signup.logic.SignUpUseCase
 
 class SignUpTest {
@@ -15,8 +18,12 @@ class SignUpTest {
         val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, WalletInfoProviderImpl(),
+                urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
-        val useCase = SignUpUseCase(email, password, apiProvider)
+        val useCase = SignUpUseCase(email, password, KeyServer(apiProvider.getApi().wallets),
+                repositoryProvider)
 
         useCase.perform().blockingGet()
 
@@ -39,8 +46,12 @@ class SignUpTest {
         val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider)
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, WalletInfoProviderImpl(),
+                urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper())
 
-        val useCase = SignUpUseCase(email, password, apiProvider)
+        val useCase = SignUpUseCase(email, password, KeyServer(apiProvider.getApi().wallets),
+                repositoryProvider)
 
         try {
             useCase.perform().blockingGet()

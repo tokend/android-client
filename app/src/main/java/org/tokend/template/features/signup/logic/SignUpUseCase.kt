@@ -7,7 +7,8 @@ import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
 import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletCreateResult
-import org.tokend.template.di.providers.ApiProvider
+import org.tokend.template.data.model.KeyValueEntryRecord
+import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.wallet.Account
 
 /**
@@ -16,10 +17,11 @@ import org.tokend.wallet.Account
 class SignUpUseCase(
         private val email: String,
         private val password: CharArray,
-        private val apiProvider: ApiProvider
+        private val keyServer: KeyServer,
+        private val repositoryProvider: RepositoryProvider
 ) {
-    private val keyServer = KeyServer(apiProvider.getApi().wallets)
     private lateinit var rootAccount: Account
+    private var defaultSignerRole: Long = 0
 
     fun perform(): Single<WalletCreateResult> {
         return ensureEmailIsFree()
@@ -28,6 +30,12 @@ class SignUpUseCase(
                 }
                 .doOnSuccess { rootAccount ->
                     this.rootAccount = rootAccount
+                }
+                .flatMap {
+                    getDefaultSignerRole()
+                }
+                .doOnSuccess { defaultSignerRole ->
+                    this.defaultSignerRole = defaultSignerRole
                 }
                 .flatMap {
                     createAndSaveWallet()
@@ -57,11 +65,21 @@ class SignUpUseCase(
         return Account.randomSingle()
     }
 
+    private fun getDefaultSignerRole(): Single<Long> {
+        return repositoryProvider
+                .keyValueEntries()
+                .ensureEntries(listOf(KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY))
+                .map {
+                    it[KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY] as KeyValueEntryRecord.Number
+                }
+                .map(KeyValueEntryRecord.Number::value)
+    }
+
     private fun createAndSaveWallet(): Single<WalletCreateResult> {
         return keyServer.createAndSaveWallet(
                 email,
                 password,
-                apiProvider.getApi().v3.keyValue,
+                defaultSignerRole,
                 rootAccount
         ).toSingle()
     }

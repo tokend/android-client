@@ -72,12 +72,12 @@ class PollsRepository(
         })
 
         return keyValueEntriesRepository
-                .updateIfNotFreshDeferred()
-                .andThen(
-                        loader
-                                .loadAll()
-                                .toSingle()
-                )
+                .ensureEntries(listOf(KEY_POLL_TYPE_CHOICE_CHANGE_ALLOWED))
+                .flatMap {
+                    loader
+                            .loadAll()
+                            .toSingle()
+                }
     }
 
     private fun getVotes(): Single<Map<String, Int>> {

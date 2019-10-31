@@ -23,7 +23,6 @@ import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.logic.persistance.FingerprintAuthManager
-import org.tokend.template.logic.wallet.WalletUpdateManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.FingerprintIndicatorManager
 import org.tokend.template.view.util.ElevationUtil
@@ -167,15 +166,13 @@ class ChangePasswordActivity : BaseActivity() {
     private fun changePassword() {
         val newPassword = new_password_edit_text.text.getChars()
 
-        val walletUpdateManager =
-                WalletUpdateManager(repositoryProvider.systemInfo(), credentialsPersistor)
-
         ChangePasswordUseCase(
                 newPassword,
-                walletUpdateManager,
                 apiProvider,
                 accountProvider,
-                walletInfoProvider
+                walletInfoProvider,
+                repositoryProvider,
+                credentialsPersistor
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
