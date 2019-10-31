@@ -213,6 +213,7 @@ class LocalAccountSignInActivity : BaseActivity() {
                 session,
                 credentialsPersistor,
                 apiProvider,
+                repositoryProvider,
                 PostSignInManager(repositoryProvider)
         )
                 .perform()
