@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/standard_margin"
+    android:paddingTop="@dimen/half_standard_padding"
+    android:paddingEnd="@dimen/standard_margin"
+    android:paddingBottom="@dimen/quarter_standard_margin">
+
+    <ImageView
+        android:id="@+id/contact_photo_image_view"
+        android:layout_width="@dimen/contact_photo_size"
+        android:layout_height="@dimen/contact_photo_size"
+        tools:background="@color/md_amber_200" />
+
+    <TextView
+        android:id="@+id/contact_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_toEndOf="@id/contact_photo_image_view"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="16sp"
+        tools:text="Contact Name" />
+
+    <TextView
+        android:id="@+id/contact_credential_text_view"
+        style="@style/SecondaryText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contact_name_text_view"
+        android:layout_alignStart="@id/contact_name_text_view"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/contact_name_text_view"
+        android:ellipsize="end"
+        android:layout_marginTop="2dp"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="15sp"
+        tools:text="alice@mail.com" />
+
+</RelativeLayout>

@@ -3,6 +3,7 @@ package org.tokend.template.test
 import org.junit.Assert
 import org.junit.Test
 import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
+import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.template.di.providers.ApiProviderFactory
 import org.tokend.template.features.signup.logic.SignUpUseCase
 
@@ -13,14 +14,15 @@ class SignUpTest {
 
         val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
-        val keyStorage = ApiProviderFactory().createApiProvider(urlConfigProvider).getKeyServer()
+        val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider)
 
-        val useCase = SignUpUseCase(email, password, keyStorage)
+        val useCase = SignUpUseCase(email, password, apiProvider)
 
         useCase.perform().blockingGet()
 
         try {
-            val walletInfo = keyStorage.getWalletInfo(email, password, false)
+            val walletInfo = KeyServer(apiProvider.getApi().wallets)
+                    .getWalletInfo(email, password, false)
                     .execute().get()
 
             Assert.assertTrue("Wallet email must be the same as the used one for sign up",
@@ -36,9 +38,9 @@ class SignUpTest {
 
         val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
-        val keyStorage = ApiProviderFactory().createApiProvider(urlConfigProvider).getKeyServer()
+        val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider)
 
-        val useCase = SignUpUseCase(email, password, keyStorage)
+        val useCase = SignUpUseCase(email, password, apiProvider)
 
         try {
             useCase.perform().blockingGet()

@@ -198,7 +198,7 @@ open class AssetDetailsFragment : BaseFragment() {
                 .setPositiveButton(R.string.yes) { _, _ ->
                     createBalance()
                 }
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.no, null)
                 .show()
     }
 

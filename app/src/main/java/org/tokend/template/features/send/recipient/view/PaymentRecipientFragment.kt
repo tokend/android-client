@@ -1,6 +1,8 @@
 package org.tokend.template.features.send.recipient.view
 
 import android.Manifest
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -9,7 +11,10 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -22,23 +27,21 @@ import org.tokend.template.R
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.features.send.model.PaymentRecipient
+import org.tokend.template.features.send.recipient.contacts.repository.ContactsRepository
+import org.tokend.template.features.send.recipient.contacts.view.adapter.ContactsAdapter
+import org.tokend.template.features.send.recipient.contacts.view.adapter.CredentialedContactListItem
 import org.tokend.template.features.send.recipient.logic.PaymentRecipientLoader
-import org.tokend.template.features.send.recipient.model.Contact
-import org.tokend.template.features.send.recipient.model.ContactEmail
-import org.tokend.template.features.send.recipient.repository.ContactsRepository
-import org.tokend.template.features.send.recipient.view.adapter.ContactListItem
-import org.tokend.template.features.send.recipient.view.adapter.ContactsAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.util.validator.EmailValidator
 import org.tokend.template.view.ContentLoadingProgressBar
-import org.tokend.template.view.adapter.base.SimpleItemClickListener
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.wallet.Base32Check
+import java.util.concurrent.TimeUnit
 
 class PaymentRecipientFragment : BaseFragment() {
     private val loadingIndicator = LoadingIndicatorManager(
@@ -68,6 +71,17 @@ class PaymentRecipientFragment : BaseFragment() {
     protected val resultSubject = PublishSubject.create<PaymentRecipient>()
     val resultObservable: Observable<PaymentRecipient> = resultSubject
 
+    private var contactsFilter: String? = null
+        set(value) {
+            if (value != field) {
+                val isTheSame = field == value
+                field = value
+                if (!isTheSame) {
+                    onContactsFilterChanged()
+                }
+            }
+        }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_payment_recipient, container, false)
     }
@@ -86,6 +100,14 @@ class PaymentRecipientFragment : BaseFragment() {
 
     // region Init
     private fun initFields() {
+        recipient_edit_text.onFocusChangeListener = View.OnFocusChangeListener { _, _ ->
+            showRecipientAutocompleteIfFocused()
+        }
+
+        recipient_edit_text.setOnClickListener {
+            showRecipientAutocompleteIfFocused()
+        }
+
         recipient_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
                 recipient_edit_text.error = null
@@ -125,14 +147,22 @@ class PaymentRecipientFragment : BaseFragment() {
 
         ElevationUtil.initScrollElevation(contacts_list, appbar_elevation_view)
 
-        contactsAdapter.onEmailClickListener = object : SimpleItemClickListener<Any> {
-            override fun invoke(view: View?, item: Any) {
-                item as ContactEmail
-                recipient_edit_text.setText(item.email)
-                recipient_edit_text.setSelection(item.email.length)
+        contactsAdapter.onItemClick { _, item ->
+            if (item is CredentialedContactListItem) {
+                recipient_edit_text.setText(item.credential)
+                recipient_edit_text.setSelection(item.credential.length)
                 tryToLoadRecipient()
             }
         }
+
+        RxTextView.textChanges(recipient_edit_text)
+                .skipInitialValue()
+                .debounce(FILTER_DEBOUNCE_MS, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { query ->
+                    contactsFilter = query.trim().toString().takeIf(String::isNotBlank)
+                }
+                .addTo(compositeDisposable)
     }
     // endregion
 
@@ -140,9 +170,7 @@ class PaymentRecipientFragment : BaseFragment() {
     private fun subscribeToContacts() {
         contactsRepository.itemsSubject
                 .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    displayContacts(it)
-                }
+                .subscribe { displayContacts() }
                 .addTo(compositeDisposable)
 
         contactsRepository.loadingSubject
@@ -153,10 +181,11 @@ class PaymentRecipientFragment : BaseFragment() {
                 .addTo(compositeDisposable)
     }
 
-    private fun displayContacts(contacts: List<Contact>) {
-        contactsAdapter.setData(contacts.map(::ContactListItem))
+    private fun displayContacts() {
+        val contacts = contactsRepository.itemsList
+        contactsAdapter.setData(contacts, contactsFilter)
         contacts_empty_view.visibility =
-                if (contacts.isEmpty() && !contactsRepository.isNeverUpdated)
+                if (!contactsAdapter.hasData && !contactsRepository.isNeverUpdated)
                     View.VISIBLE
                 else
                     View.GONE
@@ -169,6 +198,10 @@ class PaymentRecipientFragment : BaseFragment() {
             contacts_empty_view.visibility = View.VISIBLE
         })
     }
+
+    private fun onContactsFilterChanged() {
+        displayContacts()
+    }
     // endregion
 
     private fun tryOpenQrScanner() {
@@ -177,29 +210,35 @@ class PaymentRecipientFragment : BaseFragment() {
         }
     }
 
-    private fun readAndCheckRecipient(): String {
-        val recipient = recipient_edit_text.text
-                .toString()
+    private fun readRecipient(raw: String): String? {
+        val filtered = raw
                 .trim()
                 .split(' ', '\r', '\n')
                 .first()
 
         val validAccountId = Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID,
-                recipient.toCharArray())
-        val validEmail = EmailValidator.isValid(recipient)
+                filtered.toCharArray())
+        val validEmail = EmailValidator.isValid(filtered)
 
         return when {
-            validAccountId -> Base32Check.encodeAccountId(Base32Check.decodeAccountId(recipient))
-            validEmail -> recipient
-            else -> {
-                if (recipient.isEmpty()) {
-                    recipient_edit_text.error = getString(R.string.error_cannot_be_empty)
-                } else {
-                    recipient_edit_text.error = getString(R.string.error_invalid_recipient)
-                }
-                ""
-            }
+            validAccountId -> Base32Check.encodeAccountId(Base32Check.decodeAccountId(filtered))
+            validEmail -> filtered
+            filtered.isEmpty() -> ""
+            else -> null
         }
+    }
+
+    private fun readAndCheckRecipient(raw: String): String {
+        val recipient = readRecipient(raw)
+
+        when {
+            recipient == null ->
+                recipient_edit_text.error = getString(R.string.error_invalid_recipient)
+            recipient.isEmpty() ->
+                recipient_edit_text.error = getString(R.string.error_cannot_be_empty)
+        }
+
+        return recipient ?: ""
     }
 
     private fun updateContinueAvailability() {
@@ -210,7 +249,7 @@ class PaymentRecipientFragment : BaseFragment() {
 
     private var recipientLoadingDisposable: Disposable? = null
     private fun tryToLoadRecipient() {
-        val recipient = readAndCheckRecipient()
+        val recipient = readAndCheckRecipient(recipient_edit_text.text.toString())
         updateContinueAvailability()
 
         if (!canContinue) {
@@ -270,11 +309,59 @@ class PaymentRecipientFragment : BaseFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        checkClipboardForRecipient()
+    }
+
+    // region Clipboard suggestion
+    private var recipientSuggestion: String? = null
+        set(value) {
+            val sameAsBefore = field == value
+            field = value
+            if (value != null) {
+                if (!sameAsBefore) {
+                    val adapter = ArrayAdapter(requireContext(),
+                            android.R.layout.simple_list_item_1, arrayOf(value))
+                    recipient_edit_text.setAdapter(adapter)
+                    adapter.notifyDataSetChanged()
+                    showRecipientAutocompleteIfFocused()
+                }
+            } else {
+                recipient_edit_text.setAdapter(null)
+            }
+        }
+
+    private fun checkClipboardForRecipient() {
+        val clipboard = requireContext().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val content = clipboard.primaryClip
+                ?.takeIf { it.itemCount > 0 }
+                ?.getItemAt(0)
+                ?.text
+                ?.toString()
+                ?: return
+
+        recipientSuggestion = readRecipient(content)?.takeIf(String::isNotEmpty)
+    }
+
+    private fun showRecipientAutocompleteIfFocused() {
+        recipient_edit_text.apply {
+            if (hasFocus() && !isPopupShowing) {
+                showDropDown()
+            }
+        }
+    }
+    // endregion
+
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<out String>,
                                             grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
         contactsPermission.handlePermissionResult(requestCode, permissions, grantResults)
+    }
+
+    private companion object {
+        private const val FILTER_DEBOUNCE_MS = 400L
     }
 }

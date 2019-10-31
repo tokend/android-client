@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/standard_margin"
+    android:layout_marginEnd="@dimen/standard_margin"
+    android:orientation="vertical">
+
+    <!-- Required for vertical-offset-based elevation -->
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp" />
+
+    <me.grantland.widget.AutofitTextView
+        android:id="@+id/total_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingBottom="@dimen/standard_margin"
+        android:textSize="@dimen/text_size_heading_large"
+        tools:text="14,221.5 USD" />
+
+    <org.tokend.template.features.dashboard.balances.view.AssetDistributionChart
+        android:id="@+id/distribution_chart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/quarter_standard_margin"
+        android:paddingBottom="@dimen/standard_margin" />
+
+</LinearLayout>

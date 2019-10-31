@@ -7,6 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [1.13.0] 2019-09-25
+
+### Added
+- Auto sign in after sign up if verification isn't needed
+- Conterparty emails display in history
+- QR code button to the corner of the avatar
+- Clipboard content suggestion on payment recipient screen
+- Ability to share a sale
+- Ability to initiate KYC recovery
+- Ability to disable app locking in the background
+
+### Changed
+- History and balance are now updated immediately after sending a payment
+- Improved look of contacts list on payment recipient screen
+
+### Fixed
+- Deposit addresses parsing in some cases
+- Ability to open a new screen twice if you're a fast clicker
+- Wrong font size of auto-fit labels in some cases
+- Missing elevation on balances screen when there are no balances
+- Not working email confirmation
+- Locale change issues
+- App reload on entering split-screen mode
+- Typos in some messages and labels
+- Content overlap on amount enter screen in some cases
+- Unwanted keyboard display on unlock screen
+
+### Removed 
+- Seed-based recovery
+
+### Internal
+- Removed repository packages with only one class
+- Replaced BlobManager with BlobsRepository with cache
+- Removed unused small icon attribute from history-related adapters
+- Removed KYC and terms URLs from URL config
+- 2FA factors are now loading only on the settings screen
+- Cleaned up resources
+- Simplified FAB actions setup
+- Reorganized KYC form hierarchy
+- Renamed aswap asks repository
+- Got rid of 'getAssetsToDisplay' in amount input fragment
+- Create separated package for dialogs
+- Cleaned up fragment instance creation methods
+- Cleaned up and optimized utils for logos generation
+- Refactored helper interfaces for records
+- Added lazy inflate of collapsing content on balances screen to avoid framerate drop
+
 ## [1.12.0] 2019-08-20
 
 ### Added
@@ -219,7 +266,8 @@ with ability to copy
 
 - Error on sign in when user has balances with unknown asset details
 
-[Unreleased]: https://github.com/tokend/android-client/compare/1.11.0(16)...HEAD
+[Unreleased]: https://github.com/tokend/android-client/compare/1.13.0(21)...HEAD
+[1.13.0]: https://github.com/tokend/android-client/compare/1.12.0(20)...1.13.0(21)
 [1.12.0]: https://github.com/tokend/android-client/compare/1.11.0(16)...1.12.0(20)
 [1.11.0]: https://github.com/tokend/android-client/compare/1.10.0(13)...1.11.0(16)
 [1.10.0]: https://github.com/tokend/android-client/compare/1.9.0(12)...1.10.0(13)

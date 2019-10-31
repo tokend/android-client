@@ -77,7 +77,7 @@
     <string name="sell">Продажа</string>
     <string name="template_price_one_equals">1 %1$s = %2$s</string>
     <string name="cancel_offer_action">Отменить ордер</string>
-    <string name="cancel_offer_confirmation">Вы уверены что хотите отменить ордер?</string>
+    <string name="cancel_offer_confirmation">Вы уверены, что хотите отменить ордер?</string>
     <string name="offer_canceled">Ордер отменен</string>
     <string name="email_verified">Email подтвержден</string>
     <string name="touch_sensor">Прикоснитесь к сенсору</string>
@@ -189,7 +189,7 @@
     <string name="go_to_confirmation_btn_label">К подтверждению</string>
 
     <!-- Deposit -->
-    <string name="create_balance_confirmation">Вы уверены что хотите создать баланс для %1s?</string>
+    <string name="create_balance_confirmation">Вы уверены, что хотите создать баланс для %1s?</string>
     <string name="personal_address">Личный адрес</string>
     <string name="to_make_deposit_send_asset">Для депозита отправьте %1$s на этот адрес</string>
     <string name="show_qr_label">Показать QR код</string>
@@ -245,7 +245,7 @@
     <string name="successfully_invested">Инвестиция создана</string>
     <string name="investment_canceled">Инвестиция отменена</string>
     <string name="investment_updated">Инвестиция обновлена</string>
-    <string name="cancel_investment_confirmation">Вы уверены что хотите отменить инвестицию?</string>
+    <string name="cancel_investment_confirmation">Вы уверены, что хотите отменить инвестицию?</string>
     <string name="sale_details_title">Детали</string>
     <string name="sale_overview_title">Сводка</string>
     <string name="sale_chart_title">График</string>

@@ -7,9 +7,7 @@ import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
 import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletCreateResult
-import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.logic.Session
-import org.tokend.template.logic.persistance.CredentialsPersistor
+import org.tokend.template.di.providers.ApiProvider
 import org.tokend.wallet.Account
 
 /**
@@ -18,8 +16,9 @@ import org.tokend.wallet.Account
 class SignUpUseCase(
         private val email: String,
         private val password: CharArray,
-        private val keyServer: KeyServer
+        private val apiProvider: ApiProvider
 ) {
+    private val keyServer = KeyServer(apiProvider.getApi().wallets)
     private lateinit var rootAccount: Account
 
     fun perform(): Single<WalletCreateResult> {
@@ -62,6 +61,7 @@ class SignUpUseCase(
         return keyServer.createAndSaveWallet(
                 email,
                 password,
+                apiProvider.getApi().v3.keyValue,
                 rootAccount
         ).toSingle()
     }
