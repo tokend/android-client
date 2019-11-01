@@ -1,7 +1,6 @@
 package org.tokend.template.features.localaccount.importt.logic
 
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.repository.LocalAccountRepository
 import org.tokend.template.features.userkey.logic.UserKeyProvider
@@ -11,18 +10,10 @@ abstract class ImportLocalAccountUseCase(
         protected val userKeyProvider: UserKeyProvider,
         protected val localAccountRepository: LocalAccountRepository
 ) {
-    protected lateinit var userKey: CharArray
     protected lateinit var localAccount: LocalAccount
 
     open fun perform(): Single<LocalAccount> {
-        return getUserKey()
-                .observeOn(Schedulers.newThread())
-                .doOnSuccess { userKey ->
-                    this.userKey = userKey
-                }
-                .flatMap {
-                    getLocalAccount()
-                }
+        return getLocalAccount()
                 .doOnSuccess { localAccount ->
                     this.localAccount = localAccount
                 }
