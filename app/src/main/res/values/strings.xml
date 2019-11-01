@@ -264,7 +264,7 @@
     <string name="no_contacts_message">No contacts available</string>
     <string name="use_fingerprint">Use fingerprint</string>
     <string name="secret_seed">Secret seed</string>
-    <string name="secret_seed_description">Secret seed is private information that proves you own your account</string>
+    <string name="secret_seed_description">Secret seed is a private information that proves you own your account</string>
     <string name="template_offer_creation_price">Price (%1$s for 1 %2$s)</string>
     <string name="deposit_address_copied">Address has been copied to the clipboard</string>
     <string name="deposit_address_renewed">Address has been renewed</string>
@@ -322,9 +322,9 @@
     <string name="sale_info_hard_cap">Hard cap</string>
     <string name="sale_info_to_sell_template">%1$s to sell</string>
 
-    <string name="seed_alert_dialog">"You are about to show sensitive data.\nAnyone
+    <string name="seed_alert_dialog">You are about to show sensitive data.\nAnyone
         who knows the secret seed can gain access to your account.\nDo
-        you want to continue?"</string>
+        you want to continue?</string>
 
     <string name="unknown_balance_change">Balance change</string>
 
@@ -424,6 +424,43 @@
     <string name="lock_app_in_background">Lock app in background</string>
     <string name="open_email_app">Open mailbox</string>
     <string name="almost_done">Almost done</string>
+    <string name="use_local_account_sign_in">Use local key</string>
+    <string name="local_account_explanation">Local key is generated and stored on your device without
+        an upload to the key server</string>
+    <string name="generate_local_account">Generate a key</string>
+    <string name="import_local_account">Import</string>
+    <string name="sign_in_with_local_account_title">Sign in with local key</string>
+    <string name="current_local_account">Current key</string>
+    <string name="sign_in_with_current_local_account">Sign in</string>
+    <string name="local_account_details_title">Key details</string>
+    <string name="local_account_public_key">Public key (Account ID)</string>
+    <string name="show_secret_seed">Show secret seed</string>
+    <string name="erase_local_account">Erase key</string>
+    <string name="erase_local_account_confirmation"><![CDATA[<b>Before erasing the key make sure,
+        that you have saved it\'s secret seed,</b> otherwise you won\'t be able to recover it. Continue?]]></string>
+    <string name="local_account_erased">Key has been erased</string>
+    <string name="local_account_actions">Actions</string>
+    <string name="show_mnemonic_phrase">Show mnemonic phrase</string>
+    <string name="mnemonic_phrase">Mnemonic phrase</string>
+    <string name="mnemonic_alert_dialog">You are about to show sensitive data.\nAnyone
+        who knows the phrase can gain access to your account.\nDo
+        you want to continue?</string>
+    <string name="import_local_account_title">Import a key</string>
+    <string name="import_local_account_explanation">You can import a key from another device
+        using it\'s mnemonic phrase or secret seed</string>
+    <string name="local_account_mnemonic_or_secret_hint">Mnemonic phrase or secret seed</string>
+    <string name="local_account_imported">Key has been imported</string>
+    <string name="error_invalid_mnemonic_phrase">Invalid mnemonic phrase</string>
+    <string name="or_use_fingerprint">Or use your fingerprint</string>
+    <string name="pin_code_title">PIN code</string>
+    <string name="set_up_pin_code_title">Set up PIN code</string>
+    <string name="enter_pin_code">Enter PIN code</string>
+    <string name="enter_new_pin_code">Enter new PIN code</string>
+    <string name="confirm_pin_code">Confirm PIN code</string>
+    <string name="error_pin_confirmation_mismatch">PIN doesn\'t match the confirmation</string>
+    <string name="error_invalid_pin">Invalid PIN</string>
+    <string name="creating_local_account_progress">Generating key…</string>
+    <string name="mnemonic_phrase_description">Mnemonic phrase is a human readable form of your secret key</string>
     <string-array name="months">
         <item>January</item>
         <item>February</item>

@@ -33,6 +33,8 @@ import org.tokend.template.features.invest.view.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.view.SaleActivity
 import org.tokend.template.features.invest.view.SaleInvestActivity
 import org.tokend.template.features.limits.LimitsActivity
+import org.tokend.template.features.localaccount.importt.view.ImportLocalAccountActivity
+import org.tokend.template.features.localaccount.view.LocalAccountDetailsActivity
 import org.tokend.template.features.offers.CreateOfferActivity
 import org.tokend.template.features.offers.OfferConfirmationActivity
 import org.tokend.template.features.offers.OffersActivity
@@ -46,6 +48,7 @@ import org.tokend.template.features.send.PaymentConfirmationActivity
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.signin.AuthenticatorSignInActivity
+import org.tokend.template.features.signin.LocalAccountSignInActivity
 import org.tokend.template.features.signin.SignInActivity
 import org.tokend.template.features.signin.unlock.UnlockAppActivity
 import org.tokend.template.features.signup.SignUpActivity
@@ -377,7 +380,10 @@ class Navigator private constructor() {
     }
 
     fun openAccountQrShare(walletInfo: WalletInfo) {
-        val accountId = walletInfo.accountId
+        openAccountQrShare(walletInfo.accountId)
+    }
+
+    fun openAccountQrShare(accountId: String) {
         openQrShare(
                 data = accountId,
                 title = context!!.getString(R.string.account_id_title),
@@ -398,6 +404,21 @@ class Navigator private constructor() {
                         AtomicSwapAsksFragment.ID,
                         AtomicSwapAsksFragment.getBundle(assetCode)
                 ))
+                ?.also { performIntent(it) }
+    }
+
+    fun openLocalAccountSignIn(requestCode: Int) {
+        context?.intentFor<LocalAccountSignInActivity>()
+                ?.also { performIntent(it, requestCode = requestCode) }
+    }
+
+    fun openLocalAccountDetails() {
+        context?.intentFor<LocalAccountDetailsActivity>()
+                ?.also { performIntent(it) }
+    }
+
+    fun openLocalAccountImport() {
+        context?.intentFor<ImportLocalAccountActivity>()
                 ?.also { performIntent(it) }
     }
 }

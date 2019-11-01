@@ -423,6 +423,42 @@
     <string name="lock_app_in_background">Блокувати додаток у фоні</string>
     <string name="open_email_app">Відкрити пошту</string>
     <string name="almost_done">Майже готово</string>
+    <string name="use_local_account_sign_in">Увійти з локальним ключем</string>
+    <string name="local_account_explanation">Локальний ключ створюється та зберігається на вашому
+        пристрої без завантаження на сервер ключів</string>
+    <string name="generate_local_account">Створити ключ</string>
+    <string name="import_local_account">Імпортувати</string>
+    <string name="sign_in_with_local_account_title">@string/use_local_account_sign_in</string>
+    <string name="current_local_account">Поточний ключ</string>
+    <string name="sign_in_with_current_local_account">Увійти</string>
+    <string name="local_account_details_title">Деталі ключа</string>
+    <string name="local_account_public_key">Публічний ключ (Account ID)</string>
+    <string name="show_secret_seed">Показати секрет</string>
+    <string name="erase_local_account">Видалити ключ</string>
+    <string name="erase_local_account_confirmation"><![CDATA[<b>Перед видаленням ключа переконайтеся,
+        що ви зберегли його секрет,</b> інакше відновити ключ буде неможливо. Продовжити?]]></string>
+    <string name="local_account_erased">Ключ видалено</string>
+    <string name="local_account_actions">Дії</string>
+    <string name="show_mnemonic_phrase">Показати мнемонічну фразу</string>
+    <string name="mnemonic_phrase">Мнемонічна фраза</string>
+    <string name="mnemonic_alert_dialog">Ви збираєтеся показати важливу інформацію.\nБудь-хто знаючи
+        вашу мнемонічну фразу зможе отримати доступ до вашого акаунту.\nБажаєте продовжити?</string>
+    <string name="import_local_account_title">Імпортувати ключ</string>
+    <string name="import_local_account_explanation">Ви можете імпортувати ключ з іншого пристрою
+        за допомогою його мнемонічної фрази чи секрета</string>
+    <string name="local_account_mnemonic_or_secret_hint">Мнемонічна фраза або секрет</string>
+    <string name="local_account_imported">Ключ імпортовано</string>
+    <string name="error_invalid_mnemonic_phrase">Некоректна мнемонічна фраза</string>
+    <string name="or_use_fingerprint">Або скористайтеся відбитком</string>
+    <string name="pin_code_title">PIN код</string>
+    <string name="set_up_pin_code_title">Встановити PIN код</string>
+    <string name="enter_pin_code">Введіть PIN код</string>
+    <string name="enter_new_pin_code">Придуймате PIN код</string>
+    <string name="confirm_pin_code">Підтвердіть PIN код</string>
+    <string name="error_pin_confirmation_mismatch">PIN коди не співпали</string>
+    <string name="error_invalid_pin">Неправильний код</string>
+    <string name="creating_local_account_progress">Створення ключа…</string>
+    <string name="mnemonic_phrase_description">Більш зручна форма запису вашого секретного ключа</string>
     <string-array name="months">
         <item>Січень</item>
         <item>Лютий</item>

@@ -94,14 +94,16 @@ class SignInActivity : BaseActivity() {
         // Does nothing but EC engine warm up.
         doAsync { Account.random() }
 
-        if (session.lastSignInMethod == SignInMethod.AUTHENTICATOR
-                && BuildConfig.ENABLE_AUTHENTICATOR_AUTH) {
-            openAuthenticatorSignIn()
-            return
-        }
-
-        credentialsPersistor.getSavedEmail()?.let {
-            Navigator.from(this).toUnlock()
+        when (session.lastSignInMethod) {
+            SignInMethod.AUTHENTICATOR -> {
+                openAuthenticatorSignIn()
+            }
+            SignInMethod.LOCAL_ACCOUNT -> {
+                openLocalAccountSignIn()
+            }
+            else -> credentialsPersistor.getSavedEmail()?.let {
+                Navigator.from(this).toUnlock()
+            }
         }
     }
 
@@ -162,6 +164,14 @@ class SignInActivity : BaseActivity() {
         } else {
             sign_in_with_authenticator_button.visibility = View.GONE
         }
+
+        if (BuildConfig.ENABLE_LOCAL_ACCOUNT_SIGN_IN) {
+            sign_in_with_local_account_button.onClick {
+                openLocalAccountSignIn()
+            }
+        } else {
+            sign_in_with_local_account_button.visibility = View.GONE
+        }
     }
     // endregion
 
@@ -173,6 +183,10 @@ class SignInActivity : BaseActivity() {
 
     private fun openAuthenticatorSignIn() {
         Navigator.from(this).openAuthenticatorSignIn(SIGN_IN_WITH_AUTHENTICATOR_REQUEST)
+    }
+
+    private fun openLocalAccountSignIn() {
+        Navigator.from(this).openLocalAccountSignIn(SIGN_IN_WITH_LOCAL_KEY_REQUEST)
     }
 
     private fun updateSignInAvailability() {
@@ -329,13 +343,18 @@ class SignInActivity : BaseActivity() {
 
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                SIGN_IN_WITH_AUTHENTICATOR_REQUEST -> finish()
+                SIGN_IN_WITH_AUTHENTICATOR_REQUEST,
+                SIGN_IN_WITH_LOCAL_KEY_REQUEST -> {
+                    onSignInComplete()
+                }
             }
         }
     }
 
     companion object {
         private val SIGN_IN_WITH_AUTHENTICATOR_REQUEST =
+                "sign_in_with_authenticator".hashCode() and 0xffff
+        private val SIGN_IN_WITH_LOCAL_KEY_REQUEST =
                 "sign_in_with_authenticator".hashCode() and 0xffff
     }
 }

@@ -42,6 +42,7 @@ abstract class SimpleSingleItemRepository<T : Any> : SingleItemRepository<T>() {
                                 onNewItem(newItem)
                             },
                             onComplete = {
+                                isNeverUpdated = false
                                 isLoading = false
 
                                 updateResultSubject = null

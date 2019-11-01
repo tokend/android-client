@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".features.localaccount.importt.view.ImportLocalAccountActivity">
+
+    <include layout="@layout/appbar" />
+
+    <LinearLayout
+        style="@style/LimitedMatchParentWidthConstraint"
+        android:orientation="vertical"
+        android:padding="@dimen/standard_margin"
+        app:layout_constraintTop_toBottomOf="@id/appbar"
+        app:layout_constraintTop_toTopOf="@null">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/import_local_account_explanation" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/import_data_edit_text"
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standard_padding"
+            android:hint="@string/local_account_mnemonic_or_secret_hint"
+            android:inputType="text|textMultiLine"
+            android:maxLines="5"
+            app:met_floatingLabelText="@string/local_account_mnemonic_or_secret_hint">
+
+            <requestFocus />
+        </com.rengwuxian.materialedittext.MaterialEditText>
+
+        <include
+            layout="@layout/layout_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/import_local_account_button"
+            style="@style/PrimaryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:paddingStart="@dimen/double_margin"
+            android:paddingEnd="@dimen/double_margin"
+            android:text="@string/import_local_account"
+            android:theme="@style/PrimaryButton.Overlay" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

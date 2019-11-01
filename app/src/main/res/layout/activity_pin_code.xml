@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".features.userkey.pin.PinCodeActivity">
+
+    <include layout="@layout/appbar" />
+
+    <LinearLayout
+        style="@style/LimitedMatchParentWidthConstraint"
+        android:layout_margin="@dimen/standard_margin"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/appbar"
+        app:layout_constraintTop_toTopOf="@null">
+
+        <TextView
+            android:id="@+id/pin_code_label_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_pin_code" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/pin_code_edit_text"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/half_standard_margin"
+            android:ems="8"
+            android:gravity="center_horizontal"
+            android:inputType="numberPassword" />
+
+        <include layout="@layout/include_fingerprint_field_hint" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

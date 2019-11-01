@@ -21,6 +21,7 @@ import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.data.repository.TfaFactorsRepository
+import org.tokend.template.features.localaccount.mnemonic.view.MnemonicPhraseDialog
 import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
 import org.tokend.template.features.tfa.logic.EnableTfaUseCase
@@ -31,11 +32,11 @@ import org.tokend.template.logic.persistance.FingerprintUtil
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.dialog.SecretSeedDialog
+import org.tokend.template.view.dialog.SignOutDialogFactory
 import org.tokend.template.view.dialog.SingleCheckDialog
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.LocalizedName
-import org.tokend.template.view.dialog.SignOutDialogFactory
 
 class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
@@ -105,6 +106,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         initAccountIdItem()
         initKycItem()
         initSecretSeedItem()
+        initLocalAccountMnemonicItem()
         initSignOutItem()
         hideCategoryIfEmpty("account")
     }
@@ -133,11 +135,39 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     private fun initSecretSeedItem() {
         val seedPreference = findPreference("secret_seed") ?: return
+        val account = accountProvider.getAccount() ?: return
 
         seedPreference.setOnPreferenceClickListener {
             SecretSeedDialog(
                     requireContext(),
-                    accountProvider
+                    account,
+                    toastManager
+            ).show()
+
+            true
+        }
+    }
+
+    private fun initLocalAccountMnemonicItem() {
+        val mnemonicPreference = findPreference("mnemonic") ?: return
+
+        val localAccount = repositoryProvider.localAccount().item
+        val entropy =
+                if (localAccount != null && localAccount.hasEntropy && localAccount.isDecrypted)
+                    localAccount.entropy
+                else
+                    null
+
+        if (!session.isLocalAccountUsed || entropy == null) {
+            mnemonicPreference.isVisible = false
+            return
+        }
+
+        mnemonicPreference.setOnPreferenceClickListener {
+            MnemonicPhraseDialog(
+                    requireContext(),
+                    mnemonicCode.toMnemonic(entropy).joinToString(" "),
+                    toastManager
             ).show()
 
             true
@@ -172,6 +202,12 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         val lockPreference = findPreference("background_lock")
                 as? SwitchPreferenceCompat
                 ?: return
+
+        if (session.isLocalAccountUsed) {
+            lockPreference.isVisible = false
+            return
+        }
+
         lockPreference.isVisible = backgroundLockManager.canBackgroundLockBeDisabled
         lockPreference.isChecked = backgroundLockManager.isBackgroundLockEnabled
         lockPreference.setOnPreferenceClickListener {
@@ -187,6 +223,12 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     private fun initTfaItem() {
         tfaPreference = findPreference("tfa") as? SwitchPreferenceCompat
+
+        if (session.isLocalAccountUsed) {
+            tfaPreference?.isVisible = false
+            return
+        }
+
         tfaPreference?.setOnPreferenceClickListener {
             tfaPreference?.isChecked = isTfaEnabled
             switchTfa()
@@ -199,6 +241,12 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     private fun initChangePasswordItem() {
         val changePasswordPreference = findPreference("change_password")
+
+        if (session.isLocalAccountUsed) {
+            changePasswordPreference?.isVisible = false
+            return
+        }
+
         changePasswordPreference?.setOnPreferenceClickListener {
             activity?.let { parentActivity ->
                 Navigator.from(parentActivity).openPasswordChange(3597)

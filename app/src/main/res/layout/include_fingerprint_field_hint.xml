@@ -1,0 +1,29 @@
+<LinearLayout android:id="@+id/fingerprint_hint_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/half_standard_margin"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:visibility="gone"
+    tools:visibility="visible"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        style="@style/SecondaryText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/or_use_fingerprint" />
+
+    <Space
+        android:layout_width="4sp"
+        android:layout_height="0dp" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/fingerprint_indicator"
+        android:layout_width="22sp"
+        android:layout_height="22sp"
+        app:srcCompat="@drawable/ic_fingerprint"
+        app:tint="@color/secondary_text" />
+</LinearLayout>

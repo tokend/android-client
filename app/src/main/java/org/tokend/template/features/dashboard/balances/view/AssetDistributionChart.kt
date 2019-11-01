@@ -136,6 +136,8 @@ class AssetDistributionChart
         if (distribution.isEmpty()) {
             showEmpty()
             return
+        } else {
+            emptyView.hide()
         }
 
         this.distribution.clear()

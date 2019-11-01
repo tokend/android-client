@@ -15,6 +15,7 @@ import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import org.tokend.template.features.settings.view.PreferenceDividerDecoration
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistance.BackgroundLockManager
@@ -49,6 +50,8 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
     lateinit var credentialsPersistor: CredentialsPersistor
     @Inject
     lateinit var backgroundLockManager: BackgroundLockManager
+    @Inject
+    lateinit var mnemonicCode: MnemonicCode
 
     protected val compositeDisposable = CompositeDisposable()
 

@@ -40,6 +40,13 @@
             android:title="@string/secret_seed" />
 
         <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_text"
+            android:key="mnemonic"
+            android:layout="@layout/preference_layout"
+            android:summary="@string/mnemonic_phrase_description"
+            android:title="@string/mnemonic_phrase" />
+
+        <android.support.v7.preference.Preference
             android:icon="@drawable/ic_sign_out"
             android:key="sign_out"
             android:layout="@layout/preference_layout"

@@ -18,6 +18,8 @@ import org.tokend.template.features.invest.repository.InvestmentInfoRepository
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistor
+import org.tokend.template.features.localaccount.repository.LocalAccountRepository
+import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
 import org.tokend.template.features.offers.repository.OffersCache
 import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.polls.repository.PollsCache
@@ -35,7 +37,8 @@ class RepositoryProviderImpl(
         private val urlConfigProvider: UrlConfigProvider,
         private val mapper: ObjectMapper,
         private val context: Context? = null,
-        private val kycStatePersistor: SubmittedKycStatePersistor? = null
+        private val kycStatePersistor: SubmittedKycStatePersistor? = null,
+        private val localAccountPersistor: LocalAccountPersistor? = null
 ) : RepositoryProvider {
     private val conversionAssetCode =
             if (BuildConfig.ENABLE_BALANCES_CONVERSION)
@@ -132,6 +135,12 @@ class RepositoryProviderImpl(
 
     private val blobs: BlobsRepository by lazy {
         BlobsRepository(apiProvider)
+    }
+
+    private val localAccount: LocalAccountRepository by lazy {
+        localAccountPersistor
+                ?: throw IllegalStateException("LocalAccountPersistor is required for this repo")
+        LocalAccountRepository(localAccountPersistor)
     }
 
     override fun balances(): BalancesRepository {
@@ -274,6 +283,10 @@ class RepositoryProviderImpl(
 
     override fun blobs(): BlobsRepository {
         return blobs
+    }
+
+    override fun localAccount(): LocalAccountRepository {
+        return localAccount
     }
 
     companion object {
