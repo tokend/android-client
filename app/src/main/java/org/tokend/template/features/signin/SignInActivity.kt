@@ -186,7 +186,7 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun openLocalAccountSignIn() {
-        Navigator.from(this).openLocalAccountSignIn(SIGN_IN_WITH_LOCAL_KEY_REQUEST)
+        Navigator.from(this).openLocalAccountSignIn(SIGN_IN_WITH_LOCAL_ACCOUNT_REQUEST)
     }
 
     private fun updateSignInAvailability() {
@@ -344,7 +344,7 @@ class SignInActivity : BaseActivity() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 SIGN_IN_WITH_AUTHENTICATOR_REQUEST,
-                SIGN_IN_WITH_LOCAL_KEY_REQUEST -> {
+                SIGN_IN_WITH_LOCAL_ACCOUNT_REQUEST -> {
                     onSignInComplete()
                 }
             }
@@ -354,7 +354,7 @@ class SignInActivity : BaseActivity() {
     companion object {
         private val SIGN_IN_WITH_AUTHENTICATOR_REQUEST =
                 "sign_in_with_authenticator".hashCode() and 0xffff
-        private val SIGN_IN_WITH_LOCAL_KEY_REQUEST =
-                "sign_in_with_authenticator".hashCode() and 0xffff
+        private val SIGN_IN_WITH_LOCAL_ACCOUNT_REQUEST =
+                "sign_in_with_local_account".hashCode() and 0xffff
     }
 }
