@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.NullNode
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.generated.resources.AssetResource
+import org.tokend.sdk.api.v3.assets.model.AssetState
 import org.tokend.sdk.utils.HashCodes
 import org.tokend.template.util.RecordWithPolicy
 import java.io.Serializable
@@ -21,7 +22,8 @@ class AssetRecord(
         val available: BigDecimal?,
         val maximum: BigDecimal,
         val ownerAccountId: String,
-        override val trailingDigits: Int
+        override val trailingDigits: Int,
+        val state: AssetState
 ) : Serializable, RecordWithPolicy, Asset, RecordWithLogo, RecordWithDescription {
     val isBackedByExternalSystem: Boolean
         get() = externalSystemType != null
@@ -34,6 +36,9 @@ class AssetRecord(
 
     val canBeBaseForAtomicSwap: Boolean
         get() = hasPolicy(org.tokend.wallet.xdr.AssetPolicy.CAN_BE_BASE_IN_ATOMIC_SWAP.value)
+
+    val isActive: Boolean
+        get() = state == AssetState.ACTIVE
 
     override fun equals(other: Any?): Boolean {
         return other is AssetRecord
@@ -86,7 +91,8 @@ class AssetRecord(
                     maximum = source.maxIssuanceAmount,
                     ownerAccountId = source.owner.id,
                     trailingDigits = source.trailingDigits.toInt(),
-                    description = description
+                    description = description,
+                    state = AssetState.fromValue(source.state.value)
             )
         }
     }

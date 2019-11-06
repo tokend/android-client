@@ -25,9 +25,10 @@ import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
+import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
-import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.features.assets.adapter.AssetListItem
 import org.tokend.template.features.assets.adapter.AssetsAdapter
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
@@ -185,6 +186,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
         val items = assetsRepository.itemsList
                 .asSequence()
+                .filter(AssetRecord::isActive)
                 .map { asset ->
                     AssetListItem(
                             asset,

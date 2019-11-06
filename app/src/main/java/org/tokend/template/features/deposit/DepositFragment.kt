@@ -192,7 +192,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     private fun initAssets(assets: List<AssetRecord>) {
         val depositableAssets = assets
-                .filter { it.isBackedByExternalSystem }
+                .filter { it.isActive && it.isBackedByExternalSystem }
                 .sortedWith(assetComparator)
 
         if (depositableAssets.isEmpty()) {
