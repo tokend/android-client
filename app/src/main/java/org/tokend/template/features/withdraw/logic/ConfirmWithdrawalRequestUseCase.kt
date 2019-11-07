@@ -6,7 +6,7 @@ import io.reactivex.schedulers.Schedulers
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
-import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.logic.TxManager
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.Transaction

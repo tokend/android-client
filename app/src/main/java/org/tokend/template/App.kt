@@ -33,8 +33,8 @@ import org.tokend.template.di.providers.AppModule
 import org.tokend.template.di.providers.SessionModule
 import org.tokend.template.di.providers.WalletInfoProviderFactory
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.persistance.SessionInfoStorage
-import org.tokend.template.logic.persistance.UrlConfigPersistor
+import org.tokend.template.logic.persistence.SessionInfoStorage
+import org.tokend.template.logic.persistence.UrlConfigPersistor
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.locale.AppLocaleManager
 import java.io.IOException

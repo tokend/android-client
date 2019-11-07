@@ -9,7 +9,7 @@ import org.tokend.template.di.providers.RepositoryProviderImpl
 import org.tokend.template.di.providers.WalletInfoProviderFactory
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.logic.TxManager
 
 class CreateBalanceTest {
     @Test

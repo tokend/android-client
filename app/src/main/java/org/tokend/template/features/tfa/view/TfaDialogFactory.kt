@@ -4,7 +4,7 @@ import android.content.Context
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.TfaVerifier
-import org.tokend.template.logic.persistance.CredentialsPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
 import org.tokend.template.util.errorhandler.ErrorHandler
 import org.tokend.template.view.ToastManager
 

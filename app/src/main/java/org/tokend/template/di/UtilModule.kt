@@ -9,7 +9,7 @@ import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.features.localaccount.mnemonic.logic.EnglishMnemonicWords
 import org.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
-import org.tokend.template.logic.persistance.BackgroundLockManager
+import org.tokend.template.logic.persistence.BackgroundLockManager
 import org.tokend.template.util.cipher.Aes256GcmDataCipher
 import org.tokend.template.util.cipher.DataCipher
 import org.tokend.template.util.comparator.AssetCodeComparator

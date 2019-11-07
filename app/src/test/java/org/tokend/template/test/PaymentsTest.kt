@@ -17,7 +17,7 @@ import org.tokend.template.features.send.logic.CreatePaymentRequestUseCase
 import org.tokend.template.features.send.recipient.logic.PaymentRecipientLoader
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.logic.TxManager
 import org.tokend.wallet.Base32Check
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.PaymentFeeType

@@ -15,7 +15,7 @@ import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.logic.persistance.CredentialsPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
 import org.tokend.wallet.Account
 import org.tokend.wallet.NetworkParams
 

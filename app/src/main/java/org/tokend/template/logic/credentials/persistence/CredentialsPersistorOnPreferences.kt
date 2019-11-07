@@ -1,26 +1,22 @@
-package org.tokend.template.logic.persistance
+package org.tokend.template.logic.credentials.persistence
 
 import android.content.SharedPreferences
 import android.os.Build
-import io.reactivex.Maybe
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.extensions.toByteArray
-import org.tokend.template.extensions.toCharArray
+import org.tokend.template.logic.persistence.SecureStorage
+import org.tokend.wallet.utils.toByteArray
+import org.tokend.wallet.utils.toCharArray
 
 /**
  * Represents secure credentials storage based on SharedPreferences.
  */
-open class CredentialsPersistor(
+class CredentialsPersistorOnPreferences(
         private val preferences: SharedPreferences
-) {
-    protected val secureStorage = SecureStorage(preferences)
+): CredentialsPersistor {
+    private val secureStorage = SecureStorage(preferences)
 
-    /**
-     * @param credentials [WalletInfo] with filled [WalletInfo.secretSeed] field.
-     * @param password password for encryption
-     */
-    open fun saveCredentials(credentials: WalletInfo, password: CharArray) {
+    override fun saveCredentials(credentials: WalletInfo, password: CharArray) {
         val email = credentials.email
         val nonSensitiveData =
                 GsonFactory().getBaseGson().toJson(
@@ -36,28 +32,19 @@ open class CredentialsPersistor(
         preferences.edit().putString(EMAIL_KEY, email).apply()
     }
 
-    /**
-     * @return saved email address, null if it is absent
-     */
-    open fun getSavedEmail(): String? {
+    override fun getSavedEmail(): String? {
         return preferences.getString(EMAIL_KEY, "")
                 ?.takeIf { it.isNotEmpty() }
     }
 
-    /**
-     * @return true if there is a securely saved password
-     */
-    open fun hasSavedPassword(): Boolean {
+    override fun hasSavedPassword(): Boolean {
         val password = getSavedPassword()
         val hasPassword = password != null
         password?.fill('0')
         return hasPassword
     }
 
-    /**
-     * @return password from the secure storage, null if there is no saved password
-     */
-    open fun getSavedPassword(): CharArray? {
+    override fun getSavedPassword(): CharArray? {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return null
         }
@@ -69,10 +56,7 @@ open class CredentialsPersistor(
         return password
     }
 
-    /**
-     * @return saved credentials, null if there is no saved credentials or password is incorrect
-     */
-    fun loadCredentials(password: CharArray): WalletInfo? {
+    override fun loadCredentials(password: CharArray): WalletInfo? {
         try {
             val walletInfoBytes = secureStorage.loadWithPassword(WALLET_INFO_KEY, password)
                     ?: return null
@@ -95,24 +79,7 @@ open class CredentialsPersistor(
         }
     }
 
-    /**
-     * @return saved credentials or empty [Maybe] if there is no saved credentials or
-     * password is incorrect
-     */
-    fun loadCredentialsMaybe(password: CharArray): Maybe<WalletInfo> {
-        return Maybe.defer {
-            loadCredentials(password)
-                    ?.let { Maybe.just(it) }
-                    ?: Maybe.empty()
-        }
-    }
-
-    /**
-     * Clears all saved data
-     *
-     * @param keepEmail if set to true email will not be cleared
-     */
-    fun clear(keepEmail: Boolean) {
+    override fun clear(keepEmail: Boolean) {
         secureStorage.clear(SEED_KEY)
         secureStorage.clear(WALLET_INFO_KEY)
         secureStorage.clear(PASSWORD_KEY)
@@ -122,7 +89,7 @@ open class CredentialsPersistor(
         }
     }
 
-    protected open fun tryToSavePassword(password: CharArray) {
+    private fun tryToSavePassword(password: CharArray) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val passwordBytes = password.toByteArray()
             secureStorage.save(passwordBytes, PASSWORD_KEY)

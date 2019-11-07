@@ -3,7 +3,7 @@ package org.tokend.template.logic
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.data.model.UrlConfig
 import org.tokend.template.di.providers.UrlConfigProvider
-import org.tokend.template.logic.persistance.UrlConfigPersistor
+import org.tokend.template.logic.persistence.UrlConfigPersistor
 
 /**
  * Manages network configuration of the app.

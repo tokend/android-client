@@ -19,7 +19,7 @@ import org.tokend.template.features.localaccount.logic.LocalAccountRetryDecrypto
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.userkey.logic.UserKeyProvider
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.persistance.CredentialsPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
 import org.tokend.template.util.cipher.DataCipher
 import org.tokend.wallet.Account
 import retrofit2.HttpException

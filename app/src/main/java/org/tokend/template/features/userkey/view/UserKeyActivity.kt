@@ -8,8 +8,8 @@ import com.rengwuxian.materialedittext.MaterialEditText
 import kotlinx.android.synthetic.main.include_fingerprint_field_hint.*
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.setErrorAndFocus
-import org.tokend.template.features.userkey.logic.UserKeyPersistor
-import org.tokend.template.logic.persistance.FingerprintAuthManager
+import org.tokend.template.features.userkey.logic.persistence.UserKeyPersistor
+import org.tokend.template.logic.fingerprint.FingerprintAuthManager
 import org.tokend.template.view.FingerprintIndicatorManager
 import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.input.SoftInputUtil

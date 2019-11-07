@@ -18,8 +18,8 @@ import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import org.tokend.template.features.settings.view.PreferenceDividerDecoration
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.persistance.BackgroundLockManager
-import org.tokend.template.logic.persistance.CredentialsPersistor
+import org.tokend.template.logic.persistence.BackgroundLockManager
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.util.locale.AppLocaleManager
 import org.tokend.template.view.ToastManager

@@ -4,7 +4,7 @@ import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.signin.logic.SignInMethod
-import org.tokend.template.logic.persistance.SessionInfoStorage
+import org.tokend.template.logic.persistence.SessionInfoStorage
 
 /**
  * Holds session data

@@ -14,7 +14,7 @@ import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.logic.TxManager
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.AssetPairPolicy
 import org.tokend.wallet.xdr.ManageAssetPairAction

@@ -1,4 +1,4 @@
-package org.tokend.template.logic.transactions
+package org.tokend.template.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single

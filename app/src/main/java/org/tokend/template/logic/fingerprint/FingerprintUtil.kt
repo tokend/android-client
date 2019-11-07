@@ -1,4 +1,4 @@
-package org.tokend.template.logic.persistance
+package org.tokend.template.logic.fingerprint
 
 import android.app.KeyguardManager
 import android.content.Context

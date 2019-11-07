@@ -37,7 +37,7 @@ import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.fragments.FragmentFactory
 import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.logic.wallet.WalletEventsListener
+import org.tokend.template.logic.WalletEventsListener
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ProfileUtil

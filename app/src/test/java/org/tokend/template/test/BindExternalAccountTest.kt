@@ -8,7 +8,7 @@ import org.tokend.template.di.providers.*
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
 import org.tokend.template.features.deposit.BindExternalAccountUseCase
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.logic.TxManager
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.CreateExternalSystemAccountIdPoolEntryActionInput
 import org.tokend.wallet.xdr.ManageExternalSystemAccountIdPoolEntryOp

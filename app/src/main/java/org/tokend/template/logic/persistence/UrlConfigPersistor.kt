@@ -1,4 +1,4 @@
-package org.tokend.template.logic.persistance
+package org.tokend.template.logic.persistence
 
 import android.content.SharedPreferences
 import org.tokend.sdk.factory.GsonFactory

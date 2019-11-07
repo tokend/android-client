@@ -1,4 +1,4 @@
-package org.tokend.template.logic.persistance
+package org.tokend.template.logic.persistence
 
 import android.content.SharedPreferences
 import android.os.Build
@@ -11,7 +11,7 @@ import org.tokend.kdf.ScryptKeyDerivation
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.KdfAttributes
 import org.tokend.sdk.keyserver.models.KeychainData
-import org.tokend.template.extensions.toByteArray
+import org.tokend.wallet.utils.toByteArray
 import java.security.KeyStore
 import java.security.SecureRandom
 import javax.crypto.Cipher
@@ -51,20 +51,20 @@ class SecureStorage(
 
     /**
      * Loads data by given key and decrypts it with secure key from Android [KeyStore]
-     * @return decrypted data or [null] if it is not exists or decryption failed
+     * @return decrypted data or null if it is not exists or decryption failed
      */
     @RequiresApi(Build.VERSION_CODES.M)
     fun load(key: String): ByteArray? {
         val secretKey = getSecretKey(key)
                 ?: return null
 
-        try {
+        return try {
             val keychainData = loadKeychainData(key)!!
             val decryptCipher = getDecryptCipher(secretKey, keychainData.iv)!!
-            return decryptCipher.doFinal(keychainData.cipherText)
+            decryptCipher.doFinal(keychainData.cipherText)
         } catch (e: Exception) {
             e.printStackTrace()
-            return null
+            null
         }
     }
 

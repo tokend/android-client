@@ -21,9 +21,9 @@ import org.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import org.tokend.template.features.tfa.view.TfaDialogFactory
 import org.tokend.template.logic.AppTfaCallback
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.persistance.BackgroundLockManager
-import org.tokend.template.logic.persistance.CredentialsPersistor
-import org.tokend.template.logic.persistance.UrlConfigPersistor
+import org.tokend.template.logic.persistence.BackgroundLockManager
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
+import org.tokend.template.logic.persistence.UrlConfigPersistor
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.cipher.DataCipher
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory

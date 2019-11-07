@@ -5,7 +5,7 @@ import io.reactivex.Single
 import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.BalancesRepository
 import org.tokend.template.di.providers.AccountProvider
-import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.logic.TxManager
 
 /**
  * Creates balance of given asset

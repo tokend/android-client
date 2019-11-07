@@ -11,10 +11,10 @@ import kotlinx.android.synthetic.main.include_fingerprint_field_hint.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.extensions.getChars
-import org.tokend.template.features.userkey.logic.UserKeyPersistor
+import org.tokend.template.features.userkey.logic.persistence.UserKeyPersistor
+import org.tokend.template.features.userkey.logic.persistence.UserKeyPersistorOnPreferences
 import org.tokend.template.features.userkey.view.UserKeyActivity
 import org.tokend.template.view.util.input.SimpleTextWatcher
-import org.tokend.template.view.util.input.SoftInputUtil
 
 open class PinCodeActivity : UserKeyActivity() {
 
@@ -23,7 +23,9 @@ open class PinCodeActivity : UserKeyActivity() {
     override val entryEditText: MaterialEditText
         get() = pin_code_edit_text
     override val userKeyPersistor: UserKeyPersistor by lazy {
-        UserKeyPersistor(getSharedPreferences("PinCodePersistence", Context.MODE_PRIVATE))
+        UserKeyPersistorOnPreferences(
+                getSharedPreferences(PERSISTENCE_PREFERENCES_NAME, Context.MODE_PRIVATE)
+        )
     }
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
@@ -62,6 +64,7 @@ open class PinCodeActivity : UserKeyActivity() {
     }
 
     companion object {
+        private const val PERSISTENCE_PREFERENCES_NAME = "PinCodePersistence"
         protected const val PIN_CODE_LENGTH = 4
     }
 }

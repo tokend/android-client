@@ -6,8 +6,9 @@ import dagger.Provides
 import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistor
 import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
 import org.tokend.template.features.localaccount.storage.LocalAccountPersistorOnPreferences
-import org.tokend.template.logic.persistance.CredentialsPersistor
-import org.tokend.template.logic.persistance.UrlConfigPersistor
+import org.tokend.template.logic.persistence.UrlConfigPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistorOnPreferences
 import javax.inject.Singleton
 
 @Module
@@ -20,7 +21,7 @@ class PersistenceModule(
     @Provides
     @Singleton
     fun credentialsPresistor(): CredentialsPersistor {
-        return CredentialsPersistor(credentialsPreferences)
+        return CredentialsPersistorOnPreferences(credentialsPreferences)
     }
 
     @Provides

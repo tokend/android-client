@@ -11,7 +11,7 @@ import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.data.repository.BalancesRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.logic.TxManager
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.Transaction
 import org.tokend.wallet.xdr.Operation

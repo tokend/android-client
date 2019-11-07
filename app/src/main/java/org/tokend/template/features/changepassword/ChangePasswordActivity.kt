@@ -22,7 +22,7 @@ import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
-import org.tokend.template.logic.persistance.FingerprintAuthManager
+import org.tokend.template.logic.fingerprint.FingerprintAuthManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.FingerprintIndicatorManager
 import org.tokend.template.view.util.ElevationUtil

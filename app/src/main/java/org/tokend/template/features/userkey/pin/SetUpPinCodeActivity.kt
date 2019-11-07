@@ -30,7 +30,7 @@ class SetUpPinCodeActivity : PinCodeActivity() {
             switchToConfirmationEnter()
         } else {
             if (enteredPin.contentEquals(key)) {
-                userKeyPersistor.saveUserKeyAsPassword(enteredPin)
+                userKeyPersistor.save(enteredPin)
                 super.onUserKeyEntered(key)
             } else {
                 showConfirmationError()

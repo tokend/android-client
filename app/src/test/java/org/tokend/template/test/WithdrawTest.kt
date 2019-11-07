@@ -16,7 +16,7 @@ import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCa
 import org.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
 import org.tokend.template.logic.FeeManager
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.logic.TxManager
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.*
 import org.tokend.wallet.xdr.utils.XdrDataOutputStream

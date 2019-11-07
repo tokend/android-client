@@ -14,7 +14,7 @@ import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.logic.wallet.WalletEventsListener
+import org.tokend.template.logic.WalletEventsListener
 
 class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
     private var screenId: Long = 0

@@ -8,7 +8,7 @@ import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.features.offers.model.OfferRequest
 import org.tokend.template.features.offers.repository.OffersRepository
-import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.logic.TxManager
 
 /**
  * Submits offer by given [OfferRequest].

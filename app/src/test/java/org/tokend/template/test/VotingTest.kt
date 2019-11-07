@@ -9,7 +9,7 @@ import org.tokend.template.di.providers.*
 import org.tokend.template.features.polls.logic.AddVoteUseCase
 import org.tokend.template.features.polls.logic.RemoveVoteUseCase
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.logic.TxManager
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.*

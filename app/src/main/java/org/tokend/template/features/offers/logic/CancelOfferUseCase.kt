@@ -5,7 +5,7 @@ import io.reactivex.Single
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.features.offers.model.OfferRecord
-import org.tokend.template.logic.transactions.TxManager
+import org.tokend.template.logic.TxManager
 
 /**
  * Cancels given offer.

@@ -1,15 +1,16 @@
-package org.tokend.template.logic.persistance
+package org.tokend.template.logic.fingerprint
 
 import android.content.Context
 import android.os.Build
 import org.jetbrains.anko.defaultSharedPreferences
+import org.tokend.template.logic.credentials.SimpleCredentialsProvider
 
 /**
  * Manages fingerprint auth request to obtain saved credentials.
  */
 class FingerprintAuthManager(
         applicationContext: Context,
-        private val credentialsPersistor: CredentialsPersistor
+        private val simpleCredentialsProvider: SimpleCredentialsProvider
 ) {
     private val fingerprintUtil = FingerprintUtil(applicationContext)
     private var isAuthCanceled = false
@@ -22,7 +23,7 @@ class FingerprintAuthManager(
     val isAuthAvailable: Boolean
         get() = preferences.getBoolean("fingerprint", true)
                 && fingerprintUtil.isFingerprintAvailable
-                && credentialsPersistor.hasSavedPassword()
+                && simpleCredentialsProvider.hasSimpleCredentials()
 
     /**
      * @param onAuthStart will be called when auth is available and started
@@ -37,23 +38,13 @@ class FingerprintAuthManager(
             return
         }
 
-        if (!preferences.getBoolean("fingerprint", true)) {
-            return
-        }
-
         fingerprintUtil.cancelAuth()
 
         successCallback = onSuccess
         errorCallback = onError
         isAuthCanceled = false
 
-        val savedEmail = credentialsPersistor.getSavedEmail()
-                ?: return
-
-        val fingerprintAuthAvailable = credentialsPersistor.hasSavedPassword()
-                && fingerprintUtil.isFingerprintAvailable
-
-        if (fingerprintAuthAvailable && !isAuthCanceled) {
+        if (isAuthAvailable && !isAuthCanceled) {
             onAuthStart()
 
             val handleErrorMessage: (String?) -> Unit = { errorMessage ->
@@ -62,9 +53,8 @@ class FingerprintAuthManager(
 
             fingerprintUtil.requestAuth(
                     onSuccess = {
-                        val password = credentialsPersistor.getSavedPassword()
-                                ?: CharArray(0)
-                        successCallback?.invoke(savedEmail, password)
+                        val (email, password) = simpleCredentialsProvider.getSimpleCredentials()
+                        successCallback?.invoke(email, password)
                     },
                     onError = handleErrorMessage,
                     onHelp = handleErrorMessage
