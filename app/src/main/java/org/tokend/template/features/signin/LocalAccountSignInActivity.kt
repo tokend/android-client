@@ -207,7 +207,6 @@ class LocalAccountSignInActivity : BaseActivity() {
 
     private fun signIn() {
         SignInWithLocalAccountUseCase(
-                localAccountRepository,
                 defaultDataCipher,
                 pinCodeProvider,
                 session,

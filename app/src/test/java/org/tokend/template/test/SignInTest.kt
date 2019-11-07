@@ -1,14 +1,22 @@
 package org.tokend.template.test
 
+import io.reactivex.Maybe
+import io.reactivex.rxkotlin.toMaybe
 import org.junit.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.di.providers.*
+import org.tokend.template.features.localaccount.model.LocalAccount
+import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInUseCase
+import org.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
+import org.tokend.template.features.userkey.logic.UserKeyProvider
 import org.tokend.template.logic.Session
+import org.tokend.template.util.cipher.Aes256GcmDataCipher
+import org.tokend.wallet.Account
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class SignInTest {
@@ -46,11 +54,130 @@ class SignInTest {
         useCase.perform().blockingAwait()
 
         Assert.assertEquals("WalletInfoProvider must hold an actual wallet data",
-                walletData.attributes!!.accountId, session.getWalletInfo()!!.accountId)
+                walletData.attributes.accountId, session.getWalletInfo()!!.accountId)
         Assert.assertArrayEquals("AccountProvider must hold an actual account",
                 rootAccount.secretSeed, session.getAccount()?.secretSeed)
 
         checkRepositories(repositoryProvider)
+    }
+
+    @Test
+    fun bFirstSignInWithLocalAccount() {
+        val account = Account.random()
+
+        val urlConfigProvider = Util.getUrlConfigProvider()
+        val session = Session(
+                WalletInfoProviderFactory().createWalletInfoProvider(),
+                AccountProviderFactory().createAccountProvider()
+        )
+        val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper(),
+                localAccountPersistor = getDummyLocalAccountsStorage())
+
+        val userKey = "0000".toCharArray()
+        val cipher = Aes256GcmDataCipher()
+        val localAccountRepository = repositoryProvider.localAccount()
+        localAccountRepository.useAccount(LocalAccount.fromSecretSeed(
+                account.secretSeed!!, cipher, userKey
+        ))
+        val userKeyProvider = object : UserKeyProvider {
+            override fun getUserKey(isRetry: Boolean): Maybe<CharArray> {
+                return userKey.toMaybe()
+            }
+        }
+
+        val useCase = SignInWithLocalAccountUseCase(
+                accountCipher = cipher,
+                userKeyProvider = userKeyProvider,
+                session = session,
+                credentialsPersistor = null,
+                repositoryProvider = repositoryProvider,
+                apiProvider = apiProvider,
+                postSignInManager = PostSignInManager(repositoryProvider)
+        )
+
+        useCase.perform().blockingAwait()
+
+        try {
+            apiProvider.getApi()
+                    .v3
+                    .accounts
+                    .getById(account.accountId)
+                    .execute()
+                    .get()
+        } catch (e: Exception) {
+            Assert.fail("Remote account must be created")
+        }
+
+        Assert.assertEquals("WalletInfoProvider must hold wallet data with actual account ID",
+                account.accountId, session.getWalletInfo()!!.accountId)
+        Assert.assertArrayEquals("AccountProvider must hold an actual account",
+                account.secretSeed, session.getAccount()?.secretSeed)
+
+        checkRepositories(repositoryProvider)
+    }
+
+    @Test
+    fun cSecondSignInWithLocalAccount() {
+        val account = Account.random()
+
+        val urlConfigProvider = Util.getUrlConfigProvider()
+        val session = Session(
+                WalletInfoProviderFactory().createWalletInfoProvider(),
+                AccountProviderFactory().createAccountProvider()
+        )
+        val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+
+        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+                JsonApiToolsProvider.getObjectMapper(),
+                localAccountPersistor = getDummyLocalAccountsStorage())
+
+        val userKey = "0000".toCharArray()
+        val cipher = Aes256GcmDataCipher()
+        val localAccountRepository = repositoryProvider.localAccount()
+        localAccountRepository.useAccount(LocalAccount.fromSecretSeed(
+                account.secretSeed!!, cipher, userKey
+        ))
+        val userKeyProvider = object : UserKeyProvider {
+            override fun getUserKey(isRetry: Boolean): Maybe<CharArray> {
+                return userKey.toMaybe()
+            }
+        }
+
+        val useCase = SignInWithLocalAccountUseCase(
+                accountCipher = cipher,
+                userKeyProvider = userKeyProvider,
+                session = session,
+                credentialsPersistor = null,
+                repositoryProvider = repositoryProvider,
+                apiProvider = apiProvider,
+                postSignInManager = PostSignInManager(repositoryProvider)
+        )
+
+        useCase.perform().blockingAwait()
+
+        try {
+            useCase.perform().blockingAwait()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Assert.fail("Second sign in with local account must be as successful as the first one")
+        }
+    }
+
+    private fun getDummyLocalAccountsStorage() = object : LocalAccountPersistor {
+        private var mAccount: LocalAccount? = null
+
+        override fun load(): LocalAccount? = mAccount
+
+        override fun save(localAccount: LocalAccount) {
+            mAccount = localAccount
+        }
+
+        override fun clear() {
+            mAccount = null
+        }
     }
 
     private fun checkRepositories(repositoryProvider: RepositoryProvider) {
