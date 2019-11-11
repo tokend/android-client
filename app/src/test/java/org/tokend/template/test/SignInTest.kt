@@ -7,6 +7,9 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.keyserver.models.KdfAttributes
+import org.tokend.sdk.keyserver.models.LoginParams
+import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
@@ -15,6 +18,7 @@ import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
 import org.tokend.template.features.userkey.logic.UserKeyProvider
 import org.tokend.template.logic.Session
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
 import org.tokend.template.util.cipher.Aes256GcmDataCipher
 import org.tokend.wallet.Account
 
@@ -42,12 +46,14 @@ class SignInTest {
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper())
 
+        val credentialsPersistor = getDummyCredentialsStorage()
+
         val useCase = SignInUseCase(
                 email,
                 password,
                 apiProvider.getKeyServer(),
                 session,
-                null,
+                credentialsPersistor,
                 PostSignInManager(repositoryProvider)
         )
 
@@ -57,6 +63,10 @@ class SignInTest {
                 walletData.attributes.accountId, session.getWalletInfo()!!.accountId)
         Assert.assertArrayEquals("AccountProvider must hold an actual account",
                 rootAccount.secretSeed, session.getAccount()?.secretSeed)
+        Assert.assertEquals("Credentials persistor must hold actual email",
+                email.toLowerCase(), credentialsPersistor.getSavedEmail()?.toLowerCase())
+        Assert.assertArrayEquals("Credentials persistor must hold actual password",
+                password, credentialsPersistor.getSavedPassword())
 
         checkRepositories(repositoryProvider)
     }
@@ -88,11 +98,17 @@ class SignInTest {
             }
         }
 
+        val credentialsPersistor = getDummyCredentialsStorage().apply {
+            saveCredentials(WalletInfo("", "", "", charArrayOf(),
+                    LoginParams("", 0, KdfAttributes("", 0, 0, 0, 0, byteArrayOf()))),
+                    charArrayOf())
+        }
+
         val useCase = SignInWithLocalAccountUseCase(
                 accountCipher = cipher,
                 userKeyProvider = userKeyProvider,
                 session = session,
-                credentialsPersistor = null,
+                credentialsPersistor = credentialsPersistor,
                 repositoryProvider = repositoryProvider,
                 apiProvider = apiProvider,
                 postSignInManager = PostSignInManager(repositoryProvider)
@@ -115,6 +131,9 @@ class SignInTest {
                 account.accountId, session.getWalletInfo()!!.accountId)
         Assert.assertArrayEquals("AccountProvider must hold an actual account",
                 account.secretSeed, session.getAccount()?.secretSeed)
+        Assert.assertFalse("Credentials persistor must be cleaned",
+                credentialsPersistor.hasSimpleCredentials() || credentialsPersistor.getSavedEmail() != null
+        )
 
         checkRepositories(repositoryProvider)
     }
@@ -163,6 +182,30 @@ class SignInTest {
         } catch (e: Exception) {
             e.printStackTrace()
             Assert.fail("Second sign in with local account must be as successful as the first one")
+        }
+    }
+
+    private fun getDummyCredentialsStorage() = object : CredentialsPersistor {
+        private var walletInfo: WalletInfo? = null
+        private var password: CharArray? = null
+
+        override fun saveCredentials(credentials: WalletInfo, password: CharArray) {
+            this.walletInfo = credentials
+            this.password = password
+        }
+
+        override fun getSavedEmail(): String?=walletInfo?.email
+
+        override fun hasSavedPassword(): Boolean = password != null
+
+        override fun getSavedPassword(): CharArray? = password
+
+        override fun loadCredentials(password: CharArray): WalletInfo? =
+                walletInfo.takeIf { this.password?.contentEquals(password) == true }
+
+        override fun clear(keepEmail: Boolean) {
+            this.walletInfo = null
+            this.password = null
         }
     }
 
