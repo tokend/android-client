@@ -3,9 +3,6 @@ package org.tokend.template.features.send
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
@@ -39,6 +36,7 @@ import org.tokend.template.logic.WalletEventsListener
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.UserFlowFragmentDisplayer
 import org.tokend.template.view.util.input.SoftInputUtil
 import java.math.BigDecimal
 
@@ -62,6 +60,8 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     private val allowToolbar: Boolean
         get() = arguments?.getBoolean(ALLOW_TOOLBAR_EXTRA) ?: true
 
+    private val fragmentDisplayer =
+            UserFlowFragmentDisplayer(this, R.id.fragment_container_layout)
 
     private var recipient: PaymentRecipient? = null
     private var amount: BigDecimal = BigDecimal.ZERO
@@ -164,7 +164,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 )
                 .addTo(compositeDisposable)
 
-        displayFragment(fragment, "recipient", null)
+        fragmentDisplayer.display(fragment, "recipient", null)
     }
 
     private fun onRecipientSelected(recipient: PaymentRecipient) {
@@ -191,7 +191,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                         onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
 
-        displayFragment(fragment, "amount", true)
+        fragmentDisplayer.display(fragment, "amount", true)
     }
 
     private fun onAmountEntered(result: PaymentAmountData) {
@@ -237,37 +237,15 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 )
     }
 
-    private fun displayFragment(
-            fragment: Fragment,
-            tag: String,
-            forward: Boolean?
-    ) {
-        childFragmentManager.beginTransaction()
-                .setTransition(
-                        when (forward) {
-                            true -> FragmentTransaction.TRANSIT_FRAGMENT_OPEN
-                            false -> FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
-                            null -> FragmentTransaction.TRANSIT_NONE
-                        }
-                )
-                .replace(R.id.fragment_container_layout, fragment)
-                .addToBackStack(tag)
-                .commit()
-    }
-
-    private fun clearScreensBackStack() {
-        childFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-    }
-
     // region Error/empty
     private fun toEmptyView() {
-        clearScreensBackStack()
+        fragmentDisplayer.clearBackStack()
         SoftInputUtil.hideSoftInput(requireActivity())
         error_empty_view.showEmpty(R.string.error_no_transferable_assets)
     }
 
     private fun toErrorView(e: Throwable) {
-        clearScreensBackStack()
+        fragmentDisplayer.clearBackStack()
         SoftInputUtil.hideSoftInput(requireActivity())
         error_empty_view.showError(e, errorHandlerFactory.getDefault()) {
             update(force = true)
@@ -280,12 +258,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     // endregion
 
     override fun onBackPressed(): Boolean {
-        return if (childFragmentManager.backStackEntryCount <= 1) {
-            true
-        } else {
-            childFragmentManager.popBackStackImmediate()
-            false
-        }
+        return !fragmentDisplayer.tryPopBackStack()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

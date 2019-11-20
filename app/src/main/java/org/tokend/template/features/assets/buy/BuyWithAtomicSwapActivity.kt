@@ -1,8 +1,6 @@
 package org.tokend.template.features.assets.buy
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.view.MenuItem
 import io.reactivex.disposables.Disposable
@@ -25,6 +23,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
+import org.tokend.template.view.util.UserFlowFragmentDisplayer
 import java.math.BigDecimal
 
 class BuyWithAtomicSwapActivity : BaseActivity() {
@@ -35,6 +34,9 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
 
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
+
+    private val fragmentDisplayer =
+            UserFlowFragmentDisplayer(this, R.id.fragment_container_layout)
 
     private lateinit var ask: AtomicSwapAskRecord
     private var amount: BigDecimal = BigDecimal.ZERO
@@ -92,7 +94,7 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
                         onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
-        displayFragment(fragment, "amount", null)
+        fragmentDisplayer.display(fragment, "amount", null)
     }
 
     private fun onAmountEntered(amount: BigDecimal) {
@@ -113,7 +115,7 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
                         onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
-        displayFragment(fragment, "quote-asset", true)
+        fragmentDisplayer.display(fragment, "quote-asset", true)
     }
 
     private fun onQuoteAssetSelected(asset: Asset) {
@@ -174,24 +176,6 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
         finish()
     }
 
-    private fun displayFragment(
-            fragment: Fragment,
-            tag: String,
-            forward: Boolean?
-    ) {
-        supportFragmentManager.beginTransaction()
-                .setTransition(
-                        when (forward) {
-                            true -> FragmentTransaction.TRANSIT_FRAGMENT_OPEN
-                            false -> FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
-                            null -> FragmentTransaction.TRANSIT_NONE
-                        }
-                )
-                .replace(R.id.fragment_container_layout, fragment)
-                .addToBackStack(tag)
-                .commit()
-    }
-
     private fun subscribeToBalances() {
         balancesRepository.loadingSubject
                 .compose(ObservableTransformers.defaultSchedulers())
@@ -215,10 +199,8 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount <= 1) {
+        if (!fragmentDisplayer.tryPopBackStack()) {
             finish()
-        } else {
-            supportFragmentManager.popBackStackImmediate()
         }
     }
 
