@@ -61,7 +61,7 @@ class AssetDistributionChart
                 assetCode = balance.assetCode,
                 convertedAmount = balance.convertedAmount!!,
                 conversionAsset = balance.conversionAsset!!,
-                percentOfTotal = balance.convertedAmount.percentOf(total)
+                percentOfTotal = balance.convertedAmount!!.percentOf(total)
         )
     }
 
@@ -310,9 +310,8 @@ class AssetDistributionChart
                                 conversionAsset: Asset): List<AssetDistributionEntry> {
         val sortedAndFilteredByConverted = balances
                 .filter {
-                    it.convertedAmount != null
-                            && it.conversionAsset == conversionAsset
-                            && it.convertedAmount.signum() > 0
+                            it.conversionAsset == conversionAsset
+                            && (it.convertedAmount?.signum() ?: 0) > 0
                 }
                 .sortedByDescending { it.convertedAmount!! }
 

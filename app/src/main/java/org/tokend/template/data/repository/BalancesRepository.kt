@@ -26,6 +26,7 @@ import org.tokend.wallet.xdr.Operation
 import org.tokend.wallet.xdr.op_extensions.CreateBalanceOp
 import retrofit2.HttpException
 import java.math.BigDecimal
+import java.math.MathContext
 
 class BalancesRepository(
         private val apiProvider: ApiProvider,
@@ -37,6 +38,7 @@ class BalancesRepository(
 ) : SimpleMultipleItemsRepository<BalanceRecord>(itemsCache) {
 
     var conversionAsset: Asset? = null
+        private set
 
     override fun getItems(): Single<List<BalanceRecord>> {
         val signedApi = apiProvider.getSignedApi()
@@ -174,6 +176,16 @@ class BalancesRepository(
                 .find { it.assetCode == assetCode }
                 ?.also { balance ->
                     balance.available += delta
+
+                    if (balance.conversionPrice != null) {
+                        val currentConvertedAmount = balance.convertedAmount
+                        if (currentConvertedAmount != null) {
+                            balance.convertedAmount =
+                                    currentConvertedAmount +
+                                            delta.multiply(balance.conversionPrice, MathContext.DECIMAL128)
+                        }
+                    }
+
                     itemsCache.update(balance)
                     broadcast()
                 }
