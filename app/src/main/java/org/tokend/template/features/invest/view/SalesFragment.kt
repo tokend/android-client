@@ -200,8 +200,10 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     }
 
     companion object {
-        val ID = "sales_fragment".hashCode().toLong() and 0xffff
+        val ID = "sales_fragment".hashCode().toLong()
         private val INVESTMENT_REQUEST = "invest".hashCode() and 0xfff
         private val CANCEL_OFFER_REQUEST = "cancel_offer".hashCode() and 0xffff
+
+        fun newInstance() = SalesFragment()
     }
 }

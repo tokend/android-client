@@ -204,4 +204,8 @@ class BalancesFragment : BaseFragment() {
     private fun openAssetsExplorer() {
         Navigator.from(this).openAssetsExplorer()
     }
+
+    companion object {
+        fun newInstance() = BalancesFragment()
+    }
 }

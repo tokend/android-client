@@ -30,12 +30,11 @@ import org.tokend.template.features.kyc.model.KycState
 import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.polls.view.PollsFragment
 import org.tokend.template.features.send.model.PaymentRequest
-import org.tokend.template.features.settings.SettingsFragment
+import org.tokend.template.features.settings.GeneralSettingsFragment
 import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
 import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
-import org.tokend.template.fragments.FragmentFactory
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.WalletEventsListener
 import org.tokend.template.util.Navigator
@@ -47,13 +46,12 @@ import org.tokend.template.view.util.input.SoftInputUtil
 
 class MainActivity : BaseActivity(), WalletEventsListener {
     companion object {
-        private const val DEFAULT_FRAGMENT_ID = DashboardFragment.ID
+        private val DEFAULT_FRAGMENT_ID = DashboardFragment.ID
     }
 
     private var navigationDrawer: Drawer? = null
     private var landscapeNavigationDrawer: Drawer? = null
     private var onBackPressedListener: OnBackPressedListener? = null
-    private val factory = FragmentFactory()
     private val tablet by lazy {
         resources.getBoolean(R.bool.isTablet)
     }
@@ -133,9 +131,9 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
         PrimaryDrawerItem()
                 .withName(R.string.settings_title)
-                .withIdentifier(SettingsFragment.ID)
+                .withIdentifier(GeneralSettingsFragment.ID)
                 .withIcon(R.drawable.ic_settings)
-                .also { items[SettingsFragment.ID] = it }
+                .also { items[GeneralSettingsFragment.ID] = it }
 
         val accountHeader = getHeaderInstance(email)
         val landscapeAccountHeader = getHeaderInstance(email)
@@ -226,7 +224,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     }
                 }
                 .addDrawerItems(
-                        items[SettingsFragment.ID]
+                        items[GeneralSettingsFragment.ID]
                 )
                 .withOnDrawerItemClickListener { _, _, item ->
                     return@withOnDrawerItemClickListener onNavigationItemSelected(item)
@@ -261,16 +259,19 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     private fun navigateTo(screenIdentifier: Long) {
-        val fragment =
+        val fragment: Fragment =
                 when (screenIdentifier) {
-                    DashboardFragment.ID -> factory.getDashboardFragment()
-                    WithdrawFragment.ID -> factory.getWithdrawFragment()
-                    ExploreAssetsFragment.ID -> factory.getExploreFragment()
-                    SettingsFragment.ID -> factory.getSettingsFragment()
-                    DepositFragment.ID -> factory.getDepositFragment()
-                    SalesFragment.ID -> factory.getSalesFragment()
-                    TradeAssetPairsFragment.ID -> factory.getTradeAssetPairsFragment()
-                    PollsFragment.ID -> factory.getPollsFragment()
+                    DashboardFragment.ID -> DashboardFragment.newInstance()
+                    WithdrawFragment.ID -> WithdrawFragment.newInstance(WithdrawFragment.getBundle())
+                    ExploreAssetsFragment.ID -> ExploreAssetsFragment.newInstance()
+                    GeneralSettingsFragment.ID -> GeneralSettingsFragment.newInstance()
+                    DepositFragment.ID -> DepositFragment.newInstance(DepositFragment.getBundle())
+                    SalesFragment.ID -> SalesFragment.newInstance()
+                    TradeAssetPairsFragment.ID -> TradeAssetPairsFragment.newInstance()
+                    PollsFragment.ID -> PollsFragment.newInstance(PollsFragment.getBundle(
+                            allowToolbar = true,
+                            ownerAccountId = null
+                    ))
                     else -> return
                 }
 

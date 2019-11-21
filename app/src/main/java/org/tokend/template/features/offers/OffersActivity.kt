@@ -4,7 +4,7 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.fragments.FragmentFactory
+import org.tokend.template.features.trade.offers.view.OffersFragment
 
 class OffersActivity : BaseActivity() {
     private val onlyPrimary: Boolean
@@ -22,7 +22,7 @@ class OffersActivity : BaseActivity() {
         }
 
         supportFragmentManager.beginTransaction()
-                .add(R.id.container, FragmentFactory().getOffersFragment(onlyPrimary))
+                .add(R.id.container, OffersFragment.newInstance(OffersFragment.getBundle(onlyPrimary)))
                 .commit()
     }
 

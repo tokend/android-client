@@ -321,7 +321,9 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     companion object {
-        const val ID = 1114L
+        val ID = "explore-assets".hashCode().toLong()
         const val CREATE_REQUEST = 314
+
+        fun newInstance() = ExploreAssetsFragment()
     }
 }

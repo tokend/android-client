@@ -415,5 +415,8 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     companion object {
         private val TFA_FACTOR_TYPE = TfaFactor.Type.TOTP
+        val ID = "general-settings".hashCode().toLong()
+
+        fun newInstance() = GeneralSettingsFragment()
     }
 }

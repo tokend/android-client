@@ -6,22 +6,23 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetPairRecord
-import org.tokend.template.fragments.FragmentFactory
+import org.tokend.template.features.trade.chart.view.AssetPairChartFragment
+import org.tokend.template.features.trade.history.view.TradeHistoryFragment
+import org.tokend.template.features.trade.offers.view.OffersFragment
+import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
 
 class TradePagerAdapter(assetPair: AssetPairRecord,
                         context: Context,
                         fragmentManager: FragmentManager
 ) : FragmentPagerAdapter(fragmentManager) {
-    private val fragmentFactory = FragmentFactory()
-
     private val pages = listOf(
-            fragmentFactory.getOrderBookFragment(assetPair) to
+            OrderBookFragment.newInstance(OrderBookFragment.getBundle(assetPair)) to
                     context.getString(R.string.trade_order_book_title),
-            fragmentFactory.getAssetPairChartFragment(assetPair) to
+            AssetPairChartFragment.newInstance(AssetPairChartFragment.getBundle(assetPair)) to
                     context.getString(R.string.trade_chart_title),
-            fragmentFactory.getTradeHistoryFragment(assetPair) to
+            TradeHistoryFragment.newInstance(TradeHistoryFragment.getBundle(assetPair)) to
                     context.getString(R.string.trade_trades_title),
-            fragmentFactory.getOffersFragment(assetPair) to
+            OffersFragment.newInstance(OffersFragment.getBundle(assetPair)) to
                     context.getString(R.string.trade_offers_title)
     )
 

@@ -286,13 +286,13 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
     companion object {
         private const val ASSET_EXTRA = "asset"
-        const val ID = 1113L
+        val ID = "withdraw".hashCode().toLong()
         val WITHDRAWAL_CONFIRMATION_REQUEST = "confirm_withdrawal".hashCode() and 0xffff
 
         fun newInstance(bundle: Bundle): WithdrawFragment =
                 WithdrawFragment().withArguments(bundle)
 
-        fun getBundle(assetCode: String?) = Bundle().apply {
+        fun getBundle(assetCode: String? = null) = Bundle().apply {
             putString(ASSET_EXTRA, assetCode)
         }
     }

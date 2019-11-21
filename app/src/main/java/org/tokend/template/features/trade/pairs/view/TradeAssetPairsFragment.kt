@@ -275,5 +275,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
 
     companion object {
         val ID = "asset_pairs_fragment".hashCode().toLong()
+
+        fun newInstance() = TradeAssetPairsFragment()
     }
 }

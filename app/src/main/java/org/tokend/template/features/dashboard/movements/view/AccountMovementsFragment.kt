@@ -133,4 +133,8 @@ class AccountMovementsFragment : BaseFragment() {
             balanceChangesRepository.update()
         }
     }
+
+    companion object {
+        fun newInstance() = AccountMovementsFragment()
+    }
 }

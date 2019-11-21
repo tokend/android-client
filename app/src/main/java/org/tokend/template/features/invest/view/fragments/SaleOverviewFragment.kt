@@ -155,4 +155,8 @@ class SaleOverviewFragment : SaleFragment() {
                 .addTo(compositeDisposable)
     }
     // endregion
+
+    companion object {
+        fun newInstance() = SaleOverviewFragment()
+    }
 }

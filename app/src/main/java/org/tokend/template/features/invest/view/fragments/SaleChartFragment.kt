@@ -109,4 +109,8 @@ class SaleChartFragment : SaleFragment() {
             }
         }
     }
+
+    companion object {
+        fun newInstance() = SaleChartFragment()
+    }
 }

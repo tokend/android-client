@@ -487,7 +487,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     companion object {
-        const val ID = 1112L
+        val ID = "deposit".hashCode().toLong()
         private const val EXPIRATION_WARNING_THRESHOLD = 6 * 60 * 60 * 1000L
         private const val CRITICAL_EXPIRATION_WARNING_THRESHOLD = 30 * 60 * 1000L
         private const val EXTRA_ASSET = "extra_asset"
@@ -501,7 +501,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         fun newInstance(bundle: Bundle): DepositFragment =
                 DepositFragment().withArguments(bundle)
 
-        fun getBundle(assetCode: String?) = Bundle().apply {
+        fun getBundle(assetCode: String? = null) = Bundle().apply {
             putString(EXTRA_ASSET, assetCode)
         }
     }

@@ -6,21 +6,19 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import org.tokend.template.R
 import org.tokend.template.features.invest.model.SaleRecord
-import org.tokend.template.fragments.FragmentFactory
 
 class SalePagerAdapter(sale: SaleRecord,
                        context: Context,
                        fragmentManager: FragmentManager
 ) : FragmentPagerAdapter(fragmentManager) {
-    private val fragmentFactory = FragmentFactory()
-
     private val pages = listOf(
-            fragmentFactory.getSaleOverviewFragment() to
-                    context.getString(R.string.sale_overview_title),
-            fragmentFactory.getSaleDetailsFragment(sale.baseAsset.code) to
-                    context.getString(R.string.sale_details_title),
-            fragmentFactory.getSaleChartFragment() to
-                    context.getString(R.string.sale_chart_title)
+            SaleOverviewFragment.newInstance() to context.getString(R.string.sale_overview_title),
+
+            SaleDetailsFragment.newInstance(SaleDetailsFragment.getBundle(
+                    saleAssetCode = sale.baseAsset.code)
+            ) to context.getString(R.string.sale_details_title),
+
+            SaleChartFragment.newInstance() to context.getString(R.string.sale_chart_title)
     )
 
     override fun getItem(position: Int): Fragment? {

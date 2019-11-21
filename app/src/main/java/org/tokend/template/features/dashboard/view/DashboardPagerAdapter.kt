@@ -5,21 +5,21 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import org.tokend.template.R
-import org.tokend.template.fragments.FragmentFactory
+import org.tokend.template.features.dashboard.balances.view.BalancesFragment
+import org.tokend.template.features.dashboard.movements.view.AccountMovementsFragment
 
 class DashboardPagerAdapter(context: Context,
                             fragmentManager: FragmentManager
 ) : FragmentPagerAdapter(fragmentManager) {
-    private val fragmentFactory = FragmentFactory()
 
     private val pages = arrayListOf(
             Triple(
-                    fragmentFactory.getBalancesFragment(),
+                    BalancesFragment.newInstance(),
                     context.getString(R.string.balances_screen_title),
                     R.id.balances.toLong()
             ),
             Triple(
-                    fragmentFactory.getAccountMovementsFragment(),
+                    AccountMovementsFragment.newInstance(),
                     context.getString(R.string.movements_screen_title),
                     R.id.movements.toLong()
             )

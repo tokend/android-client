@@ -299,7 +299,7 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
     // endregion
 
     companion object {
-        val ID = "polls".hashCode().toLong() and 0xffff
+        val ID = "polls".hashCode().toLong()
         private const val ALLOW_TOOLBAR_EXTRA = "allow_toolbar"
         private const val OWNER_ACCOUNT_ID_EXTRA = "owner"
 

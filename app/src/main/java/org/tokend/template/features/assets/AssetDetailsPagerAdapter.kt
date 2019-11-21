@@ -6,20 +6,22 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import org.tokend.template.R
 import org.tokend.template.data.model.AssetRecord
-import org.tokend.template.fragments.FragmentFactory
+import org.tokend.template.features.polls.view.PollsFragment
 
 class AssetDetailsPagerAdapter(asset: AssetRecord,
                                context: Context,
                                fragmentManager: FragmentManager
 ) : FragmentPagerAdapter(fragmentManager) {
 
-    private val fragmentFactory = FragmentFactory()
-
     private val pages = mutableListOf(
-            fragmentFactory.getAssetDetailsFragment(asset) to
-                    context.getString(R.string.asset_overview),
-            fragmentFactory.getPollsFragment(asset.ownerAccountId) to
-                    context.getString(R.string.polls_title)
+            AssetDetailsFragment.newInstance(AssetDetailsFragment.getBundle(
+                    asset = asset,
+                    balanceCreation = true
+            )) to context.getString(R.string.asset_overview),
+            PollsFragment.newInstance(PollsFragment.getBundle(
+                    allowToolbar = false,
+                    ownerAccountId = asset.ownerAccountId
+            )) to context.getString(R.string.polls_title)
     )
 
     override fun getItem(position: Int): Fragment? {
