@@ -14,6 +14,7 @@ import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.RemainedTimeUtil
 import java.util.*
+import kotlin.math.absoluteValue
 
 class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
     private val context = view.context
@@ -65,7 +66,7 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
                 val votesCountTextView = TextView(themedHintTextContext, null, R.style.HintText)
                 votesCountTextView.text = context.resources.getQuantityString(
                         R.plurals.vote_with_percent,
-                        resultData.votesCount,
+                        resultData.votesCount.absoluteValue,
                         resultData.votesCount,
                         resultData.percentOfTotal
                 )

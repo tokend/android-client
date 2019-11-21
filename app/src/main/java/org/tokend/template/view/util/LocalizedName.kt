@@ -12,6 +12,7 @@ import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.StatsOpType
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.absoluteValue
 
 /**
  * Holds localized name getters for enums
@@ -115,10 +116,11 @@ class LocalizedName(private val context: Context) {
     }
 
     fun forTimeUnit(unit: TimeUnit, value: Int): String {
+        val absoluteValue = value.absoluteValue
         return when (unit) {
-            TimeUnit.DAYS -> context.resources.getQuantityString(R.plurals.day, value)
-            TimeUnit.HOURS -> context.resources.getQuantityString(R.plurals.hour, value)
-            TimeUnit.MINUTES -> context.resources.getQuantityString(R.plurals.minute, value)
+            TimeUnit.DAYS -> context.resources.getQuantityString(R.plurals.day, absoluteValue)
+            TimeUnit.HOURS -> context.resources.getQuantityString(R.plurals.hour, absoluteValue)
+            TimeUnit.MINUTES -> context.resources.getQuantityString(R.plurals.minute, absoluteValue)
             else -> unit.name.toLowerCase()
         }
     }
