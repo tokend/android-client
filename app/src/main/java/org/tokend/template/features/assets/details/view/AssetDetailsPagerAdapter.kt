@@ -1,4 +1,4 @@
-package org.tokend.template.features.assets
+package org.tokend.template.features.assets.details.view
 
 import android.content.Context
 import android.support.v4.app.Fragment

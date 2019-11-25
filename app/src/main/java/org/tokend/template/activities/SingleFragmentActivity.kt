@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import io.reactivex.rxkotlin.addTo
 import org.tokend.template.R
-import org.tokend.template.features.assets.ExploreAssetsFragment
+import org.tokend.template.features.assets.view.ExploreAssetsFragment
 import org.tokend.template.features.assets.buy.view.AtomicSwapAsksFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.qr.ShareQrFragment

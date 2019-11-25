@@ -1,4 +1,4 @@
-package org.tokend.template.features.assets
+package org.tokend.template.features.assets.view
 
 import android.app.Activity
 import android.content.Intent

@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import org.tokend.template.R
 import org.tokend.template.di.providers.UrlConfigProvider
-import org.tokend.template.features.assets.LogoFactory
+import org.tokend.template.view.util.LogoFactory
 import org.tokend.template.features.kyc.model.KycForm
 import org.tokend.template.features.kyc.model.KycState
 import org.tokend.template.view.util.ImageViewUtil

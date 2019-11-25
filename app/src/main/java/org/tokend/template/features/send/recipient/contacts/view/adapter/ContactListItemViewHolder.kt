@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import org.tokend.template.R
-import org.tokend.template.features.assets.LogoFactory
+import org.tokend.template.view.util.LogoFactory
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.util.ImageViewUtil
 

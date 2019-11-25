@@ -22,7 +22,7 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_main.*
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
-import org.tokend.template.features.assets.ExploreAssetsFragment
+import org.tokend.template.features.assets.view.ExploreAssetsFragment
 import org.tokend.template.features.dashboard.view.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment

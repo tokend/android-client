@@ -81,7 +81,7 @@
             android:name=".features.withdraw.WithdrawalConfirmationActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
-            android:name=".features.assets.AssetDetailsActivity"
+            android:name=".features.assets.details.view.AssetDetailsActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.send.PaymentConfirmationActivity"

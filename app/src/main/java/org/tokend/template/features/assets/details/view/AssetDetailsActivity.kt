@@ -1,4 +1,4 @@
-package org.tokend.template.features.assets
+package org.tokend.template.features.assets.details.view
 
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_asset_details.*

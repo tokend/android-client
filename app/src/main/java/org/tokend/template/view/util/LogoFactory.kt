@@ -1,4 +1,4 @@
-package org.tokend.template.features.assets
+package org.tokend.template.view.util
 
 import android.content.Context
 import android.graphics.*
