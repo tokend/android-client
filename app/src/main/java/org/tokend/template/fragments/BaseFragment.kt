@@ -64,6 +64,7 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
     override fun onDestroyView() {
         super.onDestroyView()
         compositeDisposable.dispose()
+        compositeDisposable = CompositeDisposable()
     }
 
     /**
