@@ -9,9 +9,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.activity_offers.*
 import kotlinx.android.synthetic.main.fragment_amount_input.*
-import kotlinx.android.synthetic.main.fragment_amount_input.container
 import org.tokend.template.R
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.BalancesRepository
@@ -83,7 +81,7 @@ open class AmountInputFragment : BaseFragment() {
 
     // region Init
     protected open fun initLayout() {
-        root_layout.minHeight = getMinLayoutHeight()
+        root_layout.minHeight = getMinLayoutHeight() + action_button.height
     }
 
     protected open fun initFields() {
