@@ -81,7 +81,7 @@ open class AmountInputFragment : BaseFragment() {
 
     // region Init
     protected open fun initLayout() {
-        root_layout.minimumHeight = getMinLayoutHeight() + action_button.height
+        root_layout.minHeight = getMinLayoutHeight()
     }
 
     protected open fun initFields() {
@@ -113,7 +113,6 @@ open class AmountInputFragment : BaseFragment() {
         }
 
         heightChanges
-                .map { it - action_button.height }
                 .debounce(100, TimeUnit.MILLISECONDS)
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe { height ->
