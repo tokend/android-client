@@ -225,8 +225,12 @@ class PaymentAmountFragment : AmountInputFragment() {
                 && !feeIsLoading
     }
 
+    override fun getSmallSizingHeightThreshold(): Int {
+        return requireContext().dip(248)
+    }
+
     override fun getMinLayoutHeight(): Int {
-        return requireContext().dip(242)
+        return requireContext().dip(248)
     }
 
     companion object {

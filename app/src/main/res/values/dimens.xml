@@ -53,8 +53,8 @@
 
     <dimen name="modern_card_corner_radius">8dp</dimen>
 
-    <dimen name="amount_input_height_threshold">260dp</dimen>
-    <dimen name="amount_input_min_height">220dp</dimen>
+    <dimen name="amount_input_height_threshold">200dp</dimen>
+    <dimen name="amount_input_min_height">160dp</dimen>
 
     <dimen name="badge_text_height">22sp</dimen>
     <dimen name="badge_text_corner_radius">11sp</dimen>

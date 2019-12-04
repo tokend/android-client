@@ -9,7 +9,9 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import kotlinx.android.synthetic.main.activity_offers.*
 import kotlinx.android.synthetic.main.fragment_amount_input.*
+import kotlinx.android.synthetic.main.fragment_amount_input.container
 import org.tokend.template.R
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.BalancesRepository
@@ -104,11 +106,16 @@ open class AmountInputFragment : BaseFragment() {
 
         val heightChanges = PublishSubject.create<Int>()
 
-        root_layout.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
+        container.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
             val oldHeight = oldBottom - oldTop
             val height = bottom - top
             if (height != oldHeight) {
-                heightChanges.onNext(height)
+                val rootLayoutHeight = height - action_button.height -
+                        if (title_text_view.visibility == View.VISIBLE)
+                            title_text_view.height
+                        else
+                            0
+                heightChanges.onNext(rootLayoutHeight)
             }
         }
 
