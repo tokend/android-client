@@ -26,6 +26,7 @@ class ConfirmWithdrawalRequestUseCase(
         private val txManager: TxManager
 ) {
     private lateinit var networkParams: NetworkParams
+    private lateinit var resultMeta: String
 
     fun perform(): Completable {
         return getNetworkParams()
@@ -37,6 +38,9 @@ class ConfirmWithdrawalRequestUseCase(
                 }
                 .flatMap { transaction ->
                     txManager.submit(transaction)
+                }
+                .doOnSuccess { result ->
+                    this.resultMeta = result.resultMetaXdr!!
                 }
                 .doOnSuccess {
                     updateRepositories()
@@ -84,7 +88,10 @@ class ConfirmWithdrawalRequestUseCase(
     }
 
     private fun updateRepositories() {
-        repositoryProvider.balances().updateIfEverUpdated()
+        repositoryProvider.balances().apply {
+            if (!updateBalancesByTransactionResultMeta(resultMeta, networkParams))
+                updateIfEverUpdated()
+        }
         repositoryProvider.balanceChanges(request.balanceId).updateIfEverUpdated()
         repositoryProvider.balanceChanges(null).updateIfEverUpdated()
     }

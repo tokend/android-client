@@ -20,9 +20,11 @@ import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.mapSuccessful
+import org.tokend.template.extensions.tryOrNull
 import org.tokend.template.logic.TxManager
 import org.tokend.wallet.*
-import org.tokend.wallet.xdr.Operation
+import org.tokend.wallet.Transaction
+import org.tokend.wallet.xdr.*
 import org.tokend.wallet.xdr.op_extensions.CreateBalanceOp
 import retrofit2.HttpException
 import java.math.BigDecimal
@@ -170,24 +172,75 @@ class BalancesRepository(
         }.subscribeOn(Schedulers.computation())
     }
 
-    fun updateAssetBalance(assetCode: String,
-                           delta: BigDecimal) {
-        itemsList
-                .find { it.assetCode == assetCode }
-                ?.also { balance ->
-                    balance.available += delta
+    fun updateBalance(balanceId: String,
+                      newAvailableAmount: BigDecimal) {
+        itemsList.find { it.id == balanceId }
+                ?.also { updateBalance(it, newAvailableAmount) }
+    }
 
-                    if (balance.conversionPrice != null) {
-                        val currentConvertedAmount = balance.convertedAmount
-                        if (currentConvertedAmount != null) {
-                            balance.convertedAmount =
-                                    currentConvertedAmount +
-                                            delta.multiply(balance.conversionPrice, MathContext.DECIMAL128)
-                        }
-                    }
+    fun updateBalance(balance: BalanceRecord,
+                      newAvailableAmount: BigDecimal) {
+        balance.available = newAvailableAmount
 
-                    itemsCache.update(balance)
-                    broadcast()
+        if (balance.conversionPrice != null) {
+            val currentConvertedAmount = balance.convertedAmount
+            if (currentConvertedAmount != null) {
+                balance.convertedAmount =
+                        newAvailableAmount.multiply(balance.conversionPrice, MathContext.DECIMAL64)
+            }
+        }
+
+        itemsCache.update(balance)
+        broadcast()
+    }
+
+    fun updateBalanceByDelta(balanceId: String,
+                             delta: BigDecimal) {
+        itemsList.find { it.id == balanceId }
+                ?.also { updateBalanceByDelta(it, delta) }
+    }
+
+    fun updateBalanceByDelta(balance: BalanceRecord,
+                             delta: BigDecimal) =
+            updateBalance(balance, balance.available + delta)
+
+    /**
+     * Parses [TransactionMeta] from [transactionResultMetaXdr] string
+     * and updates available amounts of affected balances
+     */
+    fun updateBalancesByTransactionResultMeta(transactionResultMetaXdr: String,
+                                              networkParams: NetworkParams): Boolean {
+        val meta = tryOrNull {
+            TransactionMeta.fromBase64(transactionResultMetaXdr) as TransactionMeta.EmptyVersion
+        } ?: return false
+
+        val balancesMap = itemsList.associateBy(BalanceRecord::id)
+
+        val balancesToUpdate = meta.operations
+                .map { it.changes.toList() }
+                .flatten()
+                .filterIsInstance(LedgerEntryChange.Updated::class.java)
+                .map { it.updated.data }
+                .filterIsInstance(LedgerEntry.LedgerEntryData.Balance::class.java)
+                .map { it.balance }
+                .mapNotNull { balanceEntry ->
+                    val id = balanceEntry.balanceID as? PublicKey.KeyTypeEd25519
+                            ?: return@mapNotNull null
+
+                    val idString = Base32Check.encodeBalanceId(id.ed25519.wrapped)
+
+                    val balance = balancesMap[idString]
+                            ?: return@mapNotNull null
+
+                    balance to networkParams.amountFromPrecised(balanceEntry.amount)
                 }
+                .takeIf(Collection<Any>::isNotEmpty)
+                ?: return false
+
+        balancesToUpdate.forEach { (balance, newAmount) ->
+            updateBalance(balance, newAmount)
+        }
+
+        return true
     }
 }

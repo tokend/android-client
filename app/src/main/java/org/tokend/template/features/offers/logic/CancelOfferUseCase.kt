@@ -2,10 +2,12 @@ package org.tokend.template.features.offers.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.tokend.sdk.api.transactions.model.SubmitTransactionResponse
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.logic.TxManager
+import org.tokend.wallet.NetworkParams
 
 /**
  * Cancels given offer.
@@ -18,16 +20,31 @@ class CancelOfferUseCase(
         private val txManager: TxManager
 ) {
     private val isPrimaryMarket = offer.orderBookId != 0L
+    private lateinit var networkParams: NetworkParams
+    private lateinit var resultMeta: String
 
     fun perform(): Completable {
-        return cancelOffer()
+        return getNetworkParams()
+                .doOnSuccess { networkParams ->
+                    this.networkParams = networkParams
+                }
                 .flatMap {
+                    cancelOffer()
+                }
+                .doOnSuccess { response ->
+                    this.resultMeta = response.resultMetaXdr!!
+                }
+                .doOnSuccess {
                     updateRepositories()
                 }
                 .ignoreElement()
     }
 
-    private fun cancelOffer(): Single<Boolean> {
+    private fun getNetworkParams(): Single<NetworkParams> {
+        return repositoryProvider.systemInfo().getNetworkParams()
+    }
+
+    private fun cancelOffer(): Single<SubmitTransactionResponse> {
         return repositoryProvider
                 .offers(isPrimaryMarket)
                 .cancel(
@@ -36,24 +53,25 @@ class CancelOfferUseCase(
                         txManager,
                         offer
                 )
-                .toSingleDefault(true)
     }
 
-    private fun updateRepositories(): Single<Boolean> {
+    private fun updateRepositories() {
         if (!isPrimaryMarket) {
             repositoryProvider.orderBook(
                     offer.baseAsset.code,
                     offer.quoteAsset.code
             ).updateIfEverUpdated()
         }
-        repositoryProvider.balances().updateIfEverUpdated()
+        repositoryProvider.balances().apply {
+            if (!updateBalancesByTransactionResultMeta(resultMeta, networkParams)) {
+                updateIfEverUpdated()
+            }
+        }
 
         if (offer.isBuy) {
             repositoryProvider.balanceChanges(offer.quoteBalanceId).updateIfEverUpdated()
         } else {
             repositoryProvider.balanceChanges(offer.baseBalanceId).updateIfEverUpdated()
         }
-
-        return Single.just(true)
     }
 }

@@ -25,6 +25,7 @@ class ConfirmPaymentRequestUseCase(
         private val txManager: TxManager
 ) {
     private lateinit var networkParams: NetworkParams
+    private lateinit var resultMetaXdr: String
 
     fun perform(): Completable {
         return getNetworkParams()
@@ -36,6 +37,9 @@ class ConfirmPaymentRequestUseCase(
                 }
                 .flatMap { transaction ->
                     txManager.submit(transaction)
+                }
+                .doOnSuccess { response ->
+                    this.resultMetaXdr = response.resultMetaXdr!!
                 }
                 .doOnSuccess {
                     updateRepositories()
@@ -82,10 +86,10 @@ class ConfirmPaymentRequestUseCase(
     }
 
     private fun updateRepositories() {
-        repositoryProvider.balances().updateAssetBalance(
-                assetCode = request.asset.code,
-                delta = -(request.amount + request.fee.totalSenderFee)
-        )
+        repositoryProvider.balances().apply {
+            if (!updateBalancesByTransactionResultMeta(resultMetaXdr, networkParams))
+                updateIfEverUpdated()
+        }
         repositoryProvider.balanceChanges(request.senderBalanceId).addPayment(request)
         repositoryProvider.balanceChanges(null).addPayment(request)
     }

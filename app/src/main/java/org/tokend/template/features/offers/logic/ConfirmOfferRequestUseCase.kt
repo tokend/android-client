@@ -2,13 +2,15 @@ package org.tokend.template.features.offers.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.tokend.template.data.repository.SystemInfoRepository
+import org.tokend.sdk.api.transactions.model.SubmitTransactionResponse
 import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.data.repository.SystemInfoRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.features.offers.model.OfferRequest
 import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.logic.TxManager
+import org.tokend.wallet.NetworkParams
 
 /**
  * Submits offer by given [OfferRequest].
@@ -36,8 +38,10 @@ class ConfirmOfferRequestUseCase(
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
 
+    private lateinit var networkParams: NetworkParams
     private lateinit var baseBalanceId: String
     private lateinit var quoteBalanceId: String
+    private lateinit var resultMeta: String
 
     fun perform(): Completable {
         return updateBalances()
@@ -52,9 +56,18 @@ class ConfirmOfferRequestUseCase(
                     offerToCancel?.quoteBalanceId = quoteBalanceId
                 }
                 .flatMap {
-                    submitOfferActions()
+                    getNetworkParams()
+                }
+                .doOnSuccess { networkParams ->
+                    this.networkParams = networkParams
                 }
                 .flatMap {
+                    submitOfferActions()
+                }
+                .doOnSuccess { response ->
+                    this.resultMeta = response.resultMetaXdr!!
+                }
+                .doOnSuccess {
                     updateRepositories()
                 }
                 .ignoreElement()
@@ -111,7 +124,11 @@ class ConfirmOfferRequestUseCase(
                 )
     }
 
-    private fun submitOfferActions(): Single<Boolean> {
+    private fun getNetworkParams(): Single<NetworkParams> {
+        return repositoryProvider.systemInfo().getNetworkParams()
+    }
+
+    private fun submitOfferActions(): Single<SubmitTransactionResponse> {
         return if (cancellationOnly)
             offersRepository
                     .cancel(accountProvider,
@@ -119,7 +136,6 @@ class ConfirmOfferRequestUseCase(
                             txManager,
                             request.offerToCancel!!
                     )
-                    .toSingleDefault(true)
         else
             offersRepository
                     .create(
@@ -131,22 +147,22 @@ class ConfirmOfferRequestUseCase(
                             request,
                             offerToCancel
                     )
-                    .toSingleDefault(true)
     }
 
-    private fun updateRepositories(): Single<Boolean> {
+    private fun updateRepositories() {
         if (!isPrimaryMarket) {
             repositoryProvider.orderBook(request.baseAsset.code, request.quoteAsset.code)
                     .updateIfEverUpdated()
         }
-        repositoryProvider.balances().updateIfEverUpdated()
+        repositoryProvider.balances().apply {
+            if (!updateBalancesByTransactionResultMeta(resultMeta, networkParams))
+                updateIfEverUpdated()
+        }
 
         if (request.isBuy) {
             repositoryProvider.balanceChanges(quoteBalanceId).updateIfEverUpdated()
         } else {
             repositoryProvider.balanceChanges(baseBalanceId).updateIfEverUpdated()
         }
-
-        return Single.just(true)
     }
 }

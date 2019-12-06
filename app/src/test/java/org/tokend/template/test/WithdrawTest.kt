@@ -1,7 +1,7 @@
 package org.tokend.template.test
 
 import junit.framework.Assert
-import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
@@ -28,50 +28,54 @@ class WithdrawTest {
     private val amount = BigDecimal.TEN
     private val destAddress = "0x6a7a43be33ba930fe58f34e07d0ad6ba7adb9b1f"
 
-    @Before
-    fun setKeyValueWithdrawalTasks() {
-        val key = "withdrawal_tasks:*"
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun setKeyValueWithdrawalTasks() {
+            val key = "withdrawal_tasks:*"
 
-        val urlConfigProvider = Util.getUrlConfigProvider()
-        val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
-        )
+            val urlConfigProvider = Util.getUrlConfigProvider()
+            val session = Session(
+                    WalletInfoProviderFactory().createWalletInfoProvider(),
+                    AccountProviderFactory().createAccountProvider()
+            )
 
-        val apiProvider =
-                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+            val apiProvider =
+                    ApiProviderFactory().createApiProvider(urlConfigProvider, session)
 
-        val op = ManageKeyValueOp(
-                key = key,
-                action = ManageKeyValueOp.ManageKeyValueOpAction.Put(
-                        object : KeyValueEntryValue(KeyValueEntryType.UINT32) {
-                            override fun toXdr(stream: XdrDataOutputStream) {
-                                super.toXdr(stream)
-                                1.toXdr(stream)
+            val op = ManageKeyValueOp(
+                    key = key,
+                    action = ManageKeyValueOp.ManageKeyValueOpAction.Put(
+                            object : KeyValueEntryValue(KeyValueEntryType.UINT32) {
+                                override fun toXdr(stream: XdrDataOutputStream) {
+                                    super.toXdr(stream)
+                                    1.toXdr(stream)
+                                }
                             }
-                        }
-                ),
-                ext = ManageKeyValueOp.ManageKeyValueOpExt.EmptyVersion()
-        )
+                    ),
+                    ext = ManageKeyValueOp.ManageKeyValueOpExt.EmptyVersion()
+            )
 
-        val sourceAccount = Config.ADMIN_ACCOUNT
+            val sourceAccount = Config.ADMIN_ACCOUNT
 
-        val systemInfo =
-                apiProvider.getApi()
-                        .general
-                        .getSystemInfo()
-                        .execute()
-                        .get()
-        val netParams = systemInfo.toNetworkParams()
+            val systemInfo =
+                    apiProvider.getApi()
+                            .general
+                            .getSystemInfo()
+                            .execute()
+                            .get()
+            val netParams = systemInfo.toNetworkParams()
 
-        val tx = TransactionBuilder(netParams, sourceAccount.accountId)
-                .addOperation(Operation.OperationBody.ManageKeyValue(op))
-                .build()
+            val tx = TransactionBuilder(netParams, sourceAccount.accountId)
+                    .addOperation(Operation.OperationBody.ManageKeyValue(op))
+                    .build()
 
-        tx.addSignature(sourceAccount)
+            tx.addSignature(sourceAccount)
 
-        TxManager(apiProvider).submit(tx).blockingGet()
+            TxManager(apiProvider).submit(tx).blockingGet()
+        }
     }
+
     @Test
     fun aCreateWithdrawal() {
         val urlConfigProvider = Util.getUrlConfigProvider()
@@ -143,7 +147,7 @@ class WithdrawTest {
 
         val asset = Util.createAsset(apiProvider, txManager)
 
-        Util.getSomeMoney(asset, amount * BigDecimal("2"),
+        val initialBalance = Util.getSomeMoney(asset, amount * BigDecimal("2"),
                 repositoryProvider, session, TxManager(apiProvider))
 
         Util.makeAccountGeneral(session, apiProvider, repositoryProvider.systemInfo(), txManager)
@@ -166,8 +170,12 @@ class WithdrawTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertFalse("Balances repository must be invalidated after withdrawal sending",
-                repositoryProvider.balances().isFresh)
+        val expectedBalance = initialBalance - amount
+        val currentBalance = repositoryProvider.balances().itemsList
+                .find { it.assetCode == asset }!!.available
+
+        Assert.assertEquals("Result balance must be lower than the initial one by withdrawal amount",
+                0, currentBalance.compareTo(expectedBalance))
 
         Thread.sleep(500)
 
@@ -259,6 +267,6 @@ class WithdrawTest {
         val expected = initialBalance - amount - request.fee.total
 
         Assert.assertEquals("Result balance must be lower than the initial one by withdrawal amount and fee",
-                expected, currentBalance)
+                0, expected.compareTo(currentBalance))
     }
 }

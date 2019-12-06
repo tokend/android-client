@@ -248,6 +248,6 @@ class PaymentsTest {
         val expected = initialBalance - paymentAmount - request.fee.senderFee.total
 
         Assert.assertEquals("Result balance must be lower than the initial one by payment amount and fee",
-                expected, currentBalance)
+                0, currentBalance.compareTo(expected))
     }
 }

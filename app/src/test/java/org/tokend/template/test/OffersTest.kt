@@ -95,17 +95,20 @@ class OffersTest {
 
         createAssetPair(baseAsset, quoteAsset, apiProvider, txManager)
 
-        Util.getSomeMoney(quoteAsset, emissionAmount,
+        val initialQuoteBalance = Util.getSomeMoney(quoteAsset, emissionAmount,
                 repositoryProvider, session, txManager)
 
         submitBuyOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
+
+        val currentQuoteBalance = repositoryProvider.balances().itemsList
+                .first { it.assetCode == quoteAsset }.available
+        Assert.assertEquals("Quote balance must be lower that the initial one by offer quote amount",
+                0, currentQuoteBalance.compareTo(initialQuoteBalance - price * baseAmount))
 
         val offersRepository = repositoryProvider.offers(false)
 
         Assert.assertFalse("Offers repository must be invalidated after offer submitting",
                 offersRepository.isFresh)
-        Assert.assertFalse("Balances repository must be invalidated after offer submitting",
-                repositoryProvider.balances().isFresh)
 
         Thread.sleep(500)
 
@@ -186,8 +189,6 @@ class OffersTest {
 
         Assert.assertTrue("Offers repository must be empty after the only offer cancellation",
                 offersRepository.itemsList.isEmpty())
-        Assert.assertFalse("Balances repository must be invalidated after offer cancellation",
-                repositoryProvider.balances().isFresh)
 
         Thread.sleep(500)
 

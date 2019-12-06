@@ -1,6 +1,5 @@
 package org.tokend.template.features.offers.repository
 
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
@@ -10,6 +9,7 @@ import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.transactions.model.SubmitTransactionResponse
 import org.tokend.sdk.api.v3.offers.params.OfferParamsV3
 import org.tokend.sdk.api.v3.offers.params.OffersPageParamsV3
 import org.tokend.sdk.utils.SimplePagedResourceLoader
@@ -116,11 +116,11 @@ class OffersRepository(
                baseBalanceId: String,
                quoteBalanceId: String,
                offerRequest: OfferRequest,
-               offerToCancel: OfferRecord? = null): Completable {
+               offerToCancel: OfferRecord? = null): Single<SubmitTransactionResponse> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                ?: return Completable.error(IllegalStateException("No wallet info found"))
+                ?: return Single.error(IllegalStateException("No wallet info found"))
         val account = accountProvider.getAccount()
-                ?: return Completable.error(IllegalStateException("Cannot obtain current account"))
+                ?: return Single.error(IllegalStateException("Cannot obtain current account"))
 
         return systemInfoRepository.getNetworkParams()
                 .flatMap { netParams ->
@@ -133,14 +133,13 @@ class OffersRepository(
                 .flatMap { transition ->
                     txManager.submit(transition)
                 }
-                .ignoreElement()
                 .doOnSubscribe {
                     isLoading = true
                 }
-                .doOnTerminate {
+                .doOnEvent { _, _ ->
                     isLoading = false
                 }
-                .doOnComplete {
+                .doOnSuccess {
                     update()
                 }
     }
@@ -206,11 +205,11 @@ class OffersRepository(
     fun cancel(accountProvider: AccountProvider,
                systemInfoRepository: SystemInfoRepository,
                txManager: TxManager,
-               offer: OfferRecord): Completable {
+               offer: OfferRecord): Single<SubmitTransactionResponse> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                ?: return Completable.error(IllegalStateException("No wallet info found"))
+                ?: return Single.error(IllegalStateException("No wallet info found"))
         val account = accountProvider.getAccount()
-                ?: return Completable.error(IllegalStateException("Cannot obtain current account"))
+                ?: return Single.error(IllegalStateException("Cannot obtain current account"))
 
         return systemInfoRepository.getNetworkParams()
                 .flatMap { netParams ->
@@ -219,14 +218,13 @@ class OffersRepository(
                 .flatMap { transition ->
                     txManager.submit(transition)
                 }
-                .ignoreElement()
                 .doOnSubscribe {
                     isLoading = true
                 }
-                .doOnTerminate {
+                .doOnEvent { _, _ ->
                     isLoading = false
                 }
-                .doOnComplete {
+                .doOnSuccess {
                     itemsCache.transform(emptyList()) {
                         it.id == offer.id
                     }
