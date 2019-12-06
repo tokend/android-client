@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import io.reactivex.rxkotlin.addTo
@@ -206,17 +205,6 @@ class BalanceDetailsActivity : BaseActivity() {
         return actions
     }
 
-    private val hideFabScrollListener =
-            object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    if (dy > 2) {
-                        menu_fab.hideMenuButton(true)
-                    } else if (dy < -2 && menu_fab.isEnabled) {
-                        menu_fab.showMenuButton(true)
-                    }
-                }
-            }
-
     private fun initHistory() {
         adapter = BalanceChangesAdapter(amountFormatter)
         adapter.onItemClick { _, item ->
@@ -233,7 +221,7 @@ class BalanceDetailsActivity : BaseActivity() {
 
         history_list.adapter = adapter
         history_list.layoutManager = LinearLayoutManager(this)
-        history_list.addOnScrollListener(hideFabScrollListener)
+        history_list.addOnScrollListener(HideFabScrollListener(menu_fab))
 
         history_list.listenBottomReach({ adapter.getDataItemCount() }) {
             balanceChangesRepository.loadMore() || balanceChangesRepository.noMoreItems
