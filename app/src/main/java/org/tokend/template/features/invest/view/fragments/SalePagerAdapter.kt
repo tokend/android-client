@@ -16,9 +16,7 @@ class SalePagerAdapter(sale: SaleRecord,
 
             SaleDetailsFragment.newInstance(SaleDetailsFragment.getBundle(
                     saleAssetCode = sale.baseAsset.code)
-            ) to context.getString(R.string.sale_details_title),
-
-            SaleChartFragment.newInstance() to context.getString(R.string.sale_chart_title)
+            ) to context.getString(R.string.sale_details_title)
     )
 
     override fun getItem(position: Int): Fragment? {

@@ -221,7 +221,6 @@
     <string name="deployed_hint">розміщено</string>
     <string name="asset_price_for_one_part">за 1 %1$s</string>
     <string name="no_price_chart_yet">Немає історії ціни</string>
-    <string name="no_sale_chart_yet">Немає історії прогресу</string>
 
     <string name="template_sale_invested">%1$s\nвнесено</string>
     <string name="template_sale_funded">%1$s\nзібрано</string>
@@ -248,7 +247,6 @@
     <string name="cancel_investment_confirmation">Ви впевнені, що хочете скасувати інвестицію?</string>
     <string name="sale_details_title">Деталі</string>
     <string name="sale_overview_title">Загальне</string>
-    <string name="sale_chart_title">Графік</string>
     <string name="invest_asset_hint">Актив</string>
     <string name="sale_summary_title">Огляд кампанії</string>
     <string name="sale_title">Кампанія</string>
