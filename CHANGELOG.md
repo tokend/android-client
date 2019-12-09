@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [1.14.0] 2019-12-09
+
+### Added
+- Ability to sign in with local key
+- Local balances update after performing financial operations (based on tx result decoding)
+
+### Changed
+- Display only active assets (assets removal support)
+
+### Fixed
+- Missing balance converted amount local update
+- Crash on negative remained time (sales)
+
+### Removed
+- Sale chart tab
+
+### Internal
+- Created fragment displayer for user flow screens
+- Got rid of FragmentFactory
+- Changed the way of height calculation on amount screen
+- Moved hide FAB scroll listener to specific class
+
 ## [1.13.0] 2019-09-25
 
 ### Added
@@ -266,7 +288,8 @@ with ability to copy
 
 - Error on sign in when user has balances with unknown asset details
 
-[Unreleased]: https://github.com/tokend/android-client/compare/1.13.0(21)...HEAD
+[Unreleased]: https://github.com/tokend/android-client/compare/1.14.0(22)...HEAD
+[1.14.0]: https://github.com/tokend/android-client/compare/1.13.0(21)...1.14.0(22)
 [1.13.0]: https://github.com/tokend/android-client/compare/1.12.0(20)...1.13.0(21)
 [1.12.0]: https://github.com/tokend/android-client/compare/1.11.0(16)...1.12.0(20)
 [1.11.0]: https://github.com/tokend/android-client/compare/1.10.0(13)...1.11.0(16)
