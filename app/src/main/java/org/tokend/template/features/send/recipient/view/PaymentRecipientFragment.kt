@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.Editable
@@ -112,6 +113,7 @@ class PaymentRecipientFragment : BaseFragment() {
             override fun afterTextChanged(s: Editable?) {
                 recipient_edit_text.error = null
                 updateContinueAvailability()
+                updateRecipientAction()
             }
         })
         recipient_edit_text.onEditorAction {
@@ -120,8 +122,8 @@ class PaymentRecipientFragment : BaseFragment() {
     }
 
     private fun initButtons() {
-        scan_qr_button.setOnClickListener {
-            tryOpenQrScanner()
+        recipient_action_button.setOnClickListener {
+            onRecipientActionClick()
         }
 
         continue_button.setOnClickListener {
@@ -203,6 +205,24 @@ class PaymentRecipientFragment : BaseFragment() {
         displayContacts()
     }
     // endregion
+
+    private fun updateRecipientAction() {
+        val icon =
+                if (recipient_edit_text.text.isNullOrBlank())
+                    R.drawable.ic_qr_code_scan
+                else
+                    R.drawable.ic_close
+
+        recipient_action_button.setImageDrawable(ContextCompat.getDrawable(requireContext(), icon))
+    }
+
+    private fun onRecipientActionClick() {
+        if (!recipient_edit_text.text.isNullOrBlank()) {
+            recipient_edit_text.text.clear()
+        } else {
+            tryOpenQrScanner()
+        }
+    }
 
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {

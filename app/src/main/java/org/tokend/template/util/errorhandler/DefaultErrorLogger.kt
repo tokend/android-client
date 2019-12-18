@@ -6,17 +6,6 @@ import retrofit2.HttpException
 import retrofit2.Response
 
 class DefaultErrorLogger : ErrorLogger {
-    private class WrappedHttpException(
-            private val httpException: HttpException
-    ) : Exception(httpException) {
-        override val message: String?
-            get() {
-                val request = httpException.response()?.raw()?.request()
-                        ?: return httpException.message
-                return httpException.message() + " (${request.method()} ${request.url()})"
-            }
-    }
-
     override fun log(error: Throwable) {
         var e = error
         

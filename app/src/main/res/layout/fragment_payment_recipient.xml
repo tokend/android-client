@@ -38,7 +38,7 @@
                 app:met_floatingLabelText="@string/tx_recipient" />
 
             <ImageView
-                android:id="@+id/scan_qr_button"
+                android:id="@+id/recipient_action_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/half_standard_padding"
