@@ -56,13 +56,13 @@ class TfaTotpConfirmationDialog(
     }
 
     private fun openAuthenticatorOrGooglePlay(uri: String) {
-        if (!context.browse(uri)) {
-            context.browse(GOOGLE_PLAY_AUTHENTICATOR_URI)
+        if (!context.browse(uri, newTask = true)) {
+            context.browse(GOOGLE_PLAY_AUTHENTICATOR_URI, newTask = true)
         }
     }
 
     private companion object {
         private const val GOOGLE_PLAY_AUTHENTICATOR_URI =
-                "https://play.google.com/store/apps/cause?id=com.google.android.apps.authenticator2"
+                "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
     }
 }
