@@ -71,6 +71,7 @@ open class AmountInputFragment : BaseFragment() {
         initTitle()
         initFields()
         initButtons()
+        initAsset()
         initAssetSelection()
         initExtraView()
         initAdaptiveTextSize()
@@ -181,6 +182,30 @@ open class AmountInputFragment : BaseFragment() {
         balancePicker = getBalancePicker()
     }
 
+    protected open fun initAsset() {
+        val assetsToDisplay = balancePicker
+                .getItemsToDisplay()
+                .map(BalancePickerListItem::asset)
+
+        if (assetsToDisplay.isEmpty()) {
+            return
+        }
+
+        val requestedAssetCode = this.requestedAsset
+
+        var requestedAssetFound = true
+        if (!requestedAssetSet) {
+            requestedAssetFound = assetsToDisplay
+                    .find { it.code == requestedAssetCode }
+                    ?.also { mAsset = it } != null
+            requestedAssetSet = true
+        }
+
+        if (!requestedAssetFound) {
+            mAsset = assetsToDisplay.first()
+        }
+    }
+
     protected open fun initAssetSelection() {
         asset_code_text_view.setOnClickListener {
             SoftInputUtil.hideSoftInput(requireActivity())
@@ -232,7 +257,6 @@ open class AmountInputFragment : BaseFragment() {
 
     protected open fun onBalancesUpdated() {
         balance = balancesRepository.itemsList.find { it.assetCode == asset.code }
-        displayAssets()
         displayBalance()
         updateActionButtonAvailability()
     }
@@ -248,30 +272,6 @@ open class AmountInputFragment : BaseFragment() {
                 R.string.template_balance,
                 amountFormatter.formatAssetAmount(available, asset)
         )
-    }
-
-    protected open fun displayAssets() {
-        val assetsToDisplay = balancePicker
-                .getItemsToDisplay()
-                .map(BalancePickerListItem::asset)
-
-        if (assetsToDisplay.isEmpty()) {
-            return
-        }
-
-        val requestedAssetCode = this.requestedAsset
-
-        var requestedAssetFound = true
-        if (!requestedAssetSet) {
-            requestedAssetFound = assetsToDisplay
-                    .find { it.code == requestedAssetCode }
-                    ?.also { mAsset = it } != null
-            requestedAssetSet = true
-        }
-
-        if (!requestedAssetFound) {
-            mAsset = assetsToDisplay.first()
-        }
     }
 
     /**
