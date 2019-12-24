@@ -151,7 +151,7 @@ class PaymentAmountFragment : AmountInputFragment() {
         feesLoadingDisposable?.dispose()
 
         val amount = amountWrapper.scaledAmount
-        val assetCode = asset
+        val assetCode = asset.code
         val recipientAccount = recipientAccount ?: return
 
         val delaySingle =
