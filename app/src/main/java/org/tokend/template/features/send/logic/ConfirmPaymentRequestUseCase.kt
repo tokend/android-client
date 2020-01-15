@@ -36,7 +36,7 @@ class ConfirmPaymentRequestUseCase(
                     getTransaction()
                 }
                 .flatMap { transaction ->
-                    txManager.submit(transaction)
+                    txManager.submit(transaction, waitForIngest = false)
                 }
                 .doOnSuccess { response ->
                     this.resultMetaXdr = response.resultMetaXdr!!

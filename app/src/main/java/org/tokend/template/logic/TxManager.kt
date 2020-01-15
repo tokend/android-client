@@ -17,7 +17,8 @@ class TxManager(
         private val apiProvider: ApiProvider,
         private val confirmationProvider: ConfirmationProvider<Transaction>? = null
 ) {
-    fun submit(transaction: Transaction): Single<SubmitTransactionResponse> {
+    fun submit(transaction: Transaction,
+               waitForIngest: Boolean = true): Single<SubmitTransactionResponse> {
         val confirmationCompletable =
                 confirmationProvider?.requestConfirmation(transaction)
                         ?: Completable.complete()
@@ -27,7 +28,7 @@ class TxManager(
                         apiProvider.getApi()
                                 .v3
                                 .transactions
-                                .submit(transaction, true)
+                                .submit(transaction, waitForIngest)
                                 .toSingle()
                 )
     }

@@ -37,7 +37,7 @@ class ConfirmWithdrawalRequestUseCase(
                     getTransaction()
                 }
                 .flatMap { transaction ->
-                    txManager.submit(transaction)
+                    txManager.submit(transaction, waitForIngest = false)
                 }
                 .doOnSuccess { result ->
                     this.resultMeta = result.resultMetaXdr!!

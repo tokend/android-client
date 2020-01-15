@@ -39,7 +39,7 @@ class RemoveVoteUseCase(
                     getTransaction()
                 }
                 .flatMap { transaction ->
-                    txManager.submit(transaction)
+                    txManager.submit(transaction, waitForIngest = false)
                 }
                 .doOnSuccess {
                     updateRepository()
