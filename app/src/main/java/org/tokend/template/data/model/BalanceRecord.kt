@@ -45,4 +45,12 @@ class BalanceRecord(
 
     val assetCode: String
         get() = asset.code
+
+    override fun equals(other: Any?): Boolean {
+        return other is BalanceRecord && other.id == this.id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }

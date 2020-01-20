@@ -2,6 +2,7 @@ package org.tokend.template
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.arch.persistence.room.Room
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -27,6 +28,7 @@ import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
 import org.jetbrains.anko.defaultSharedPreferences
 import org.tokend.template.data.model.UrlConfig
+import org.tokend.template.db.AppDatabase
 import org.tokend.template.di.*
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.AppModule
@@ -46,6 +48,7 @@ class App : MultiDexApplication() {
         private const val GO_TO_BACKGROUND_TIMEOUT = 2000
         private const val IMAGE_CACHE_SIZE_MB = 8L
         private const val LOG_TAG = "TokenD App"
+        private const val DATABASE_NAME = "app-db"
 
         /**
          * Emits value when app goes to the background or comes to the foreground.
@@ -69,6 +72,8 @@ class App : MultiDexApplication() {
 
     private lateinit var sessionInfoStorage: SessionInfoStorage
     private lateinit var session: Session
+
+    private lateinit var database: AppDatabase
 
     lateinit var stateComponent: AppStateComponent
 
@@ -198,6 +203,15 @@ class App : MultiDexApplication() {
         return defaultSharedPreferences
     }
 
+    private fun getDatabase(): AppDatabase {
+        return Room.databaseBuilder(
+                this,
+                AppDatabase::class.java,
+                DATABASE_NAME
+        )
+                .build()
+    }
+
     private fun initState() {
         sessionInfoStorage = SessionInfoStorage(getAppPreferences())
         session = Session(
@@ -208,6 +222,8 @@ class App : MultiDexApplication() {
 
         cookiePersistor = SharedPrefsCookiePersistor(this)
         cookieCache = SetCookieCache()
+
+        database = getDatabase()
 
         val defaultUrlConfig = UrlConfig(BuildConfig.API_URL, BuildConfig.STORAGE_URL,
                 BuildConfig.CLIENT_URL)
@@ -232,6 +248,7 @@ class App : MultiDexApplication() {
                 ))
                 .sessionModule(SessionModule(session))
                 .localeManagerModule(LocaleManagerModule(localeManager))
+                .appDatabaseModule(AppDatabaseModule(database))
                 .build()
     }
 
@@ -241,6 +258,7 @@ class App : MultiDexApplication() {
         sessionInfoStorage.clear()
         getCredentialsPreferences().edit().clear().apply()
         getKycStatePreferences().edit().clear().apply()
+        Thread { database.clearAllTables() }.start()
     }
 
     /**

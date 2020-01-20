@@ -22,7 +22,8 @@ import javax.inject.Singleton
     UtilModule::class,
     AppModule::class,
     SessionModule::class,
-    LocaleManagerModule::class
+    LocaleManagerModule::class,
+    AppDatabaseModule::class
 ])
 interface AppStateComponent {
     fun inject(baseActivity: BaseActivity)

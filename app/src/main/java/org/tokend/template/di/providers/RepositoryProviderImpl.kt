@@ -4,6 +4,8 @@ import android.content.Context
 import android.support.v4.util.LruCache
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.template.BuildConfig
+import org.tokend.template.data.model.AssetRecord
+import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
 import org.tokend.template.data.repository.*
 import org.tokend.template.data.repository.assets.AssetChartRepository
@@ -12,7 +14,10 @@ import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
+import org.tokend.template.db.AppDatabase
 import org.tokend.template.extensions.getOrPut
+import org.tokend.template.features.assets.storage.AssetsDbCache
+import org.tokend.template.features.balances.storage.BalancesDbCache
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.repository.InvestmentInfoRepository
 import org.tokend.template.features.invest.repository.SalesRepository
@@ -38,7 +43,8 @@ class RepositoryProviderImpl(
         private val mapper: ObjectMapper,
         private val context: Context? = null,
         private val kycStatePersistor: SubmittedKycStatePersistor? = null,
-        private val localAccountPersistor: LocalAccountPersistor? = null
+        private val localAccountPersistor: LocalAccountPersistor? = null,
+        private val database: AppDatabase? = null
 ) : RepositoryProvider {
     private val conversionAssetCode =
             if (BuildConfig.ENABLE_BALANCES_CONVERSION)
@@ -46,6 +52,15 @@ class RepositoryProviderImpl(
             else
                 null
 
+    private val assetsCache by lazy {
+        database?.let { AssetsDbCache(it.assets) }
+                ?: MemoryOnlyRepositoryCache<AssetRecord>()
+    }
+
+    private val balancesCache by lazy {
+        database?.let { BalancesDbCache(it.balances, assetsCache) }
+                ?: MemoryOnlyRepositoryCache<BalanceRecord>()
+    }
     private val balancesRepository: BalancesRepository by lazy {
         BalancesRepository(
                 apiProvider,
@@ -53,7 +68,7 @@ class RepositoryProviderImpl(
                 urlConfigProvider,
                 mapper,
                 conversionAssetCode,
-                MemoryOnlyRepositoryCache()
+                balancesCache
         )
     }
     private val accountDetails: AccountDetailsRepository by lazy {
@@ -66,7 +81,7 @@ class RepositoryProviderImpl(
         TfaFactorsRepository(apiProvider, walletInfoProvider, MemoryOnlyRepositoryCache())
     }
     private val assetsRepository: AssetsRepository by lazy {
-        AssetsRepository(apiProvider, urlConfigProvider, mapper, MemoryOnlyRepositoryCache())
+        AssetsRepository(apiProvider, urlConfigProvider, mapper, assetsCache)
     }
     private val orderBookRepositories =
             LruCache<String, OrderBookRepository>(MAX_SAME_REPOSITORIES_COUNT)

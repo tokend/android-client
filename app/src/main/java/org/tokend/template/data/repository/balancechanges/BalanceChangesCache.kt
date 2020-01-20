@@ -14,11 +14,11 @@ class BalanceChangesCache: RepositoryCache<BalanceChange>() {
 
     override fun getAllFromDb() = emptyList<BalanceChange>()
 
-    override fun addToDb(items: List<BalanceChange>) {}
+    override fun addToDb(items: Collection<BalanceChange>) {}
 
-    override fun updateInDb(items: List<BalanceChange>) {}
+    override fun updateInDb(items: Collection<BalanceChange>) {}
 
-    override fun deleteFromDb(items: List<BalanceChange>) {}
+    override fun deleteFromDb(items: Collection<BalanceChange>) {}
 
     override fun clearDb() {}
 }

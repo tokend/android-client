@@ -4,6 +4,7 @@ import android.content.Context
 import com.fasterxml.jackson.databind.ObjectMapper
 import dagger.Module
 import dagger.Provides
+import org.tokend.template.db.AppDatabase
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistor
 import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
@@ -20,9 +21,10 @@ class RepositoriesModule {
             mapper: ObjectMapper,
             context: Context,
             kycStatePersistor: SubmittedKycStatePersistor,
-            localAccountPersistor: LocalAccountPersistor
+            localAccountPersistor: LocalAccountPersistor,
+            database: AppDatabase
     ): RepositoryProvider {
         return RepositoryProviderImpl(apiProvider, walletInfoProvider, urlConfigProvider,
-                mapper, context, kycStatePersistor, localAccountPersistor)
+                mapper, context, kycStatePersistor, localAccountPersistor, database)
     }
 }
