@@ -18,7 +18,7 @@ class PostSignInManager(
         val parallelActions = listOf<Completable>(
                 // Added actions will be performed simultaneously.
                 repositoryProvider.balances().ensureData(),
-                repositoryProvider.account().updateDeferred()
+                repositoryProvider.account().ensureData()
         )
         val syncActions = listOf<Completable>(
                 // Added actions will be performed on after another in
@@ -28,7 +28,7 @@ class PostSignInManager(
         val performParallelActions = Completable.merge(parallelActions)
         val performSyncActions = Completable.concat(syncActions)
 
-        repositoryProvider.kycState().update().subscribeBy(onError = {
+        repositoryProvider.kycState().ensureData().subscribeBy(onError = {
             it.printStackTrace()
         })
 

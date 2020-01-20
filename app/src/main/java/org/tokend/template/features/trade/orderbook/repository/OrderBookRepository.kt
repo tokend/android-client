@@ -1,6 +1,6 @@
 package org.tokend.template.features.trade.orderbook.repository
 
-import io.reactivex.Observable
+import io.reactivex.Single
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.v3.orderbook.params.OrderBookParamsV3
 import org.tokend.template.data.repository.base.SingleItemRepository
@@ -13,7 +13,7 @@ class OrderBookRepository
         private val baseAsset: String,
         private val quoteAsset: String
 ) : SingleItemRepository<OrderBook>() {
-    override fun getItem(): Observable<OrderBook> {
+    override fun getItem(): Single<OrderBook> {
         val api = apiProvider.getApi()
 
         val params = OrderBookParamsV3.Builder()
@@ -36,6 +36,5 @@ class OrderBookRepository
                 )
                 .toSingle()
                 .map(::OrderBook)
-                .toObservable()
     }
 }

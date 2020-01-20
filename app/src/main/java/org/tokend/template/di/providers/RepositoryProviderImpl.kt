@@ -1,9 +1,11 @@
 package org.tokend.template.di.providers
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.support.v4.util.LruCache
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.template.BuildConfig
+import org.tokend.template.data.model.AccountRecord
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
@@ -12,7 +14,10 @@ import org.tokend.template.data.repository.assets.AssetChartRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
 import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
+import org.tokend.template.data.repository.base.MemoryOnlyObjectPersistence
 import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
+import org.tokend.template.data.repository.base.ObjectPersistence
+import org.tokend.template.data.repository.base.ObjectPersistenceOnPrefs
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.db.AppDatabase
 import org.tokend.template.extensions.getOrPut
@@ -22,9 +27,9 @@ import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.repository.InvestmentInfoRepository
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.kyc.storage.KycStateRepository
-import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistor
+import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistence
+import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.repository.LocalAccountRepository
-import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
 import org.tokend.template.features.offers.repository.OffersCache
 import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.polls.repository.PollsCache
@@ -42,8 +47,9 @@ class RepositoryProviderImpl(
         private val urlConfigProvider: UrlConfigProvider,
         private val mapper: ObjectMapper,
         private val context: Context? = null,
-        private val kycStatePersistor: SubmittedKycStatePersistor? = null,
-        private val localAccountPersistor: LocalAccountPersistor? = null,
+        private val kycStatePersistence: SubmittedKycStatePersistence? = null,
+        private val localAccountPersistence: ObjectPersistence<LocalAccount>? = null,
+        private val persistencePreferences: SharedPreferences? = null,
         private val database: AppDatabase? = null
 ) : RepositoryProvider {
     private val conversionAssetCode =
@@ -92,7 +98,17 @@ class RepositoryProviderImpl(
     private val offersRepositories =
             LruCache<String, OffersRepository>(MAX_SAME_REPOSITORIES_COUNT)
     private val accountRepository: AccountRepository by lazy {
-        AccountRepository(apiProvider, walletInfoProvider)
+        val persistence =
+                if (persistencePreferences != null)
+                    ObjectPersistenceOnPrefs(
+                            AccountRecord::class.java,
+                            persistencePreferences,
+                            "account_record"
+                    )
+                else
+                    MemoryOnlyObjectPersistence<AccountRecord>()
+
+        AccountRepository(apiProvider, walletInfoProvider, persistence)
     }
     private val salesRepository: SalesRepository by lazy {
         SalesRepository(
@@ -153,9 +169,9 @@ class RepositoryProviderImpl(
     }
 
     private val localAccount: LocalAccountRepository by lazy {
-        localAccountPersistor
-                ?: throw IllegalStateException("LocalAccountPersistor is required for this repo")
-        LocalAccountRepository(localAccountPersistor)
+        val persistence = localAccountPersistence
+                ?: throw IllegalStateException("Local account persistence is required for this repo")
+        LocalAccountRepository(persistence)
     }
 
     override fun balances(): BalancesRepository {
@@ -198,7 +214,7 @@ class RepositoryProviderImpl(
     }
 
     private val kycStateRepository: KycStateRepository by lazy {
-        KycStateRepository(apiProvider, walletInfoProvider, kycStatePersistor, blobs())
+        KycStateRepository(apiProvider, walletInfoProvider, kycStatePersistence, blobs())
     }
 
     override fun account(): AccountRepository {

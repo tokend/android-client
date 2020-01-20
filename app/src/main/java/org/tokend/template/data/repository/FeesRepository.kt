@@ -1,6 +1,5 @@
 package org.tokend.template.data.repository
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import org.tokend.rx.extensions.toSingle
 import org.tokend.template.data.repository.base.SingleItemRepository
@@ -12,11 +11,7 @@ import org.tokend.template.features.fees.model.FeesRecords
 class FeesRepository(private val apiProvider: ApiProvider,
                      private val walletInfoProvider: WalletInfoProvider
 ) : SingleItemRepository<FeesRecords>() {
-    override fun getItem(): Observable<FeesRecords> {
-        return getFeesResponse().toObservable()
-    }
-
-    private fun getFeesResponse(): Single<FeesRecords> {
+    override fun getItem(): Single<FeesRecords> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 

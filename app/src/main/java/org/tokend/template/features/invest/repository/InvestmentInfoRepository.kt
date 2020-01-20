@@ -1,6 +1,5 @@
 package org.tokend.template.features.invest.repository
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.tokend.template.data.model.BalanceRecord
@@ -20,7 +19,7 @@ class InvestmentInfoRepository(
         private val offersRepository: OffersRepository,
         private val salesRepository: SalesRepository
 ) : SingleItemRepository<InvestmentInfo>() {
-    override fun getItem(): Observable<InvestmentInfo> {
+    override fun getItem(): Single<InvestmentInfo> {
         return Single.zip(
                 getDetailedSaleIfNeeded(),
                 getOffersByAsset(),
@@ -31,7 +30,6 @@ class InvestmentInfoRepository(
                     )
                 }
         )
-                .toObservable()
     }
 
     private fun getOffersByAsset(): Single<Map<String, OfferRecord>> {

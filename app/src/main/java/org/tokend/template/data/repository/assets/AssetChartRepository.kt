@@ -1,6 +1,5 @@
 package org.tokend.template.data.repository.assets
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.utils.extentions.isNotFound
@@ -26,7 +25,7 @@ class AssetChartRepository private constructor(
         this.quoteAssetCode = quoteAssetCode
     }
 
-    override fun getItem(): Observable<AssetChartData> {
+    override fun getItem(): Single<AssetChartData> {
         val quoteAssetCode = quoteAssetCode
 
         return apiProvider
@@ -46,6 +45,5 @@ class AssetChartRepository private constructor(
                     else
                         Single.error(error)
                 }
-                .toObservable()
     }
 }

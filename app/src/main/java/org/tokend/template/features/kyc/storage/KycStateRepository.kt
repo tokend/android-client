@@ -1,8 +1,6 @@
 package org.tokend.template.features.kyc.storage
 
-import android.util.Log
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import org.json.JSONObject
@@ -29,7 +27,7 @@ import org.tokend.template.features.kyc.model.KycState
 class KycStateRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
-        private val submittedStatePersistor: SubmittedKycStatePersistor?,
+        private val submittedStatePersistence: SubmittedKycStatePersistence?,
         private val blobsRepository: BlobsRepository
 ) : SingleItemRepository<KycState>() {
     private class NoRequestFoundException : Exception()
@@ -41,14 +39,14 @@ class KycStateRepository(
     )
 
     // region Persistence
-    override fun getStoredItem(): Observable<KycState> {
-        return Observable.defer {
-            val state = submittedStatePersistor?.loadState()
+    override fun getStoredItem(): Maybe<KycState> {
+        return Maybe.defer {
+            val state = submittedStatePersistence?.loadItem()
 
             if (state != null)
-                Observable.just(state)
+                Maybe.just(state)
             else
-                Observable.empty()
+                Maybe.empty()
         }
     }
 
@@ -58,15 +56,15 @@ class KycStateRepository(
             return
         }
 
-        submittedStatePersistor?.saveState(item)
+        submittedStatePersistence?.saveItem(item)
     }
     // endregion
 
-    override fun getItem(): Observable<KycState> {
+    override fun getItem(): Single<KycState> {
         val signedApi = apiProvider.getSignedApi()
-                ?: return Observable.error(IllegalStateException("No signed API instance found"))
+                ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                ?: return Observable.error(IllegalStateException("No wallet info found"))
+                ?: return Single.error(IllegalStateException("No wallet info found"))
 
         var requestId: Long = 0
 
@@ -101,7 +99,6 @@ class KycStateRepository(
                     else
                         Single.error(error)
                 }
-                .toObservable()
     }
 
     private fun getLastKycRequest(signedApi: TokenDApi,

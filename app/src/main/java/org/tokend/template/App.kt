@@ -179,18 +179,49 @@ class App : MultiDexApplication() {
     }
 
     // region State
-    private fun getCredentialsPreferences(): SharedPreferences {
-        return getSharedPreferences("CredentialsPersistence",
-                Context.MODE_PRIVATE)
+    // region Preferences
+    private fun getPersistencePreferences(): SharedPreferences {
+        return getSharedPreferences("persistence", Context.MODE_PRIVATE)
+                // Migration from separated files.
+                .also { persistencePreferences ->
+                    val migrationValues = mutableMapOf<String, String>()
+
+                    migrationValues.putAll(dumpAndClearPreferences(
+                            listOf("(◕‿◕✿)", "ಠ_ಠ", "(¬_¬)", "email"),
+                            "CredentialsPersistence"
+                    ))
+                    migrationValues.putAll(dumpAndClearPreferences(
+                            listOf("submitted_kyc"),
+                            "KycStatePersistence"
+                    ))
+
+                    persistencePreferences
+                            .edit()
+                            .apply {
+                                migrationValues.forEach { (key, value) ->
+                                    putString(key, value)
+                                }
+                            }
+                            .apply()
+                }
+    }
+
+    private fun dumpAndClearPreferences(keys: Collection<String>,
+                                        preferencesName: String): Map<String, String> {
+        val preferences = getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
+        val content = keys
+                .mapNotNull { key ->
+                    preferences.getString(key, null)?.let { value ->
+                        key to value
+                    }
+                }
+                .toMap()
+        preferences.edit().clear().apply()
+        return content
     }
 
     private fun getNetworkPreferences(): SharedPreferences {
         return getSharedPreferences("NetworkPersistence",
-                Context.MODE_PRIVATE)
-    }
-
-    private fun getKycStatePreferences(): SharedPreferences {
-        return getSharedPreferences("KycStatePersistence",
                 Context.MODE_PRIVATE)
     }
 
@@ -202,6 +233,7 @@ class App : MultiDexApplication() {
     private fun getAppPreferences(): SharedPreferences {
         return defaultSharedPreferences
     }
+    // endregion
 
     private fun getDatabase(): AppDatabase {
         return Room.databaseBuilder(
@@ -241,9 +273,7 @@ class App : MultiDexApplication() {
                         PersistentCookieJar(cookieCache, cookiePersistor)
                 ))
                 .persistenceModule(PersistenceModule(
-                        credentialsPreferences = getCredentialsPreferences(),
-                        networkPreferences = getNetworkPreferences(),
-                        kycStatePreferences = getKycStatePreferences(),
+                        persistencePreferences = getPersistencePreferences(),
                         localAccountPreferences = getLocalAccountPreferences()
                 ))
                 .sessionModule(SessionModule(session))
@@ -256,8 +286,7 @@ class App : MultiDexApplication() {
         cookiePersistor.clear()
         cookieCache.clear()
         sessionInfoStorage.clear()
-        getCredentialsPreferences().edit().clear().apply()
-        getKycStatePreferences().edit().clear().apply()
+        getPersistencePreferences().edit().clear().apply()
         Thread { database.clearAllTables() }.start()
     }
 

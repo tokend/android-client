@@ -1,33 +1,33 @@
 package org.tokend.template.features.localaccount.repository
 
-import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import org.tokend.template.data.repository.base.ObjectPersistence
 import org.tokend.template.data.repository.base.SingleItemRepository
 import org.tokend.template.features.localaccount.model.LocalAccount
-import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
 
 class LocalAccountRepository(
-        private val storage: LocalAccountPersistor
+        private val localAccountPersistence: ObjectPersistence<LocalAccount>
 ): SingleItemRepository<LocalAccount>() {
-    override fun getItem(): Observable<LocalAccount> {
-        return Observable.defer {
-            val existing = storage.load()
+    override fun getItem(): Single<LocalAccount> {
+        return Single.defer {
+            val existing = localAccountPersistence.loadItem()
 
             if (existing != null) {
-                Observable.just(existing)
+                Single.just(existing)
             } else {
-                Observable.empty()
+                Single.error(IllegalStateException("No local account found"))
             }
         }.subscribeOn(Schedulers.newThread())
     }
 
     fun useAccount(newAccount: LocalAccount) {
-        storage.save(newAccount)
+        localAccountPersistence.saveItem(newAccount)
         onNewItem(newAccount)
     }
 
     fun erase() {
-        storage.clear()
+        localAccountPersistence.clear()
         item?.let {
             it.isErased = true
             broadcast()

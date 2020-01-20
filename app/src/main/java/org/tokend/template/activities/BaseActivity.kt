@@ -16,7 +16,7 @@ import org.tokend.template.BuildConfig
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.di.providers.*
-import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistor
+import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistence
 import org.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import org.tokend.template.features.tfa.view.TfaDialogFactory
 import org.tokend.template.logic.AppTfaCallback
@@ -64,7 +64,7 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     @Inject
     lateinit var amountFormatter: AmountFormatter
     @Inject
-    lateinit var kycStatePersistor: SubmittedKycStatePersistor
+    lateinit var kycStatePersistence: SubmittedKycStatePersistence
     @Inject
     lateinit var localeManager: AppLocaleManager
     @Inject

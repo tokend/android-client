@@ -26,8 +26,8 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ProfileUtil
 import org.tokend.template.view.FingerprintIndicatorManager
-import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.dialog.SignOutDialogFactory
+import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
 
@@ -63,10 +63,6 @@ class UnlockAppActivity : BaseActivity() {
     private lateinit var email: String
     private var lastEnteredPassword: CharArray? = null
 
-    private val animationDuration: Long by lazy {
-        this.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-    }
-
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_unlock_app)
 
@@ -91,7 +87,7 @@ class UnlockAppActivity : BaseActivity() {
         initButtons()
         initErrorEmptyView()
         user_email_text.text = email
-        ProfileUtil.setAvatar(user_logo, email, urlConfigProvider, kycStatePersistor.loadState())
+        ProfileUtil.setAvatar(user_logo, email, urlConfigProvider, kycStatePersistence.loadItem())
     }
 
     private fun initButtons() {

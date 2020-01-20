@@ -76,6 +76,7 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
                     .onErrorComplete()
                     .andThen(Completable.defer {
                         if (itemsCache.items.isNotEmpty()) {
+                            broadcast()
                             Completable.complete()
                         } else {
                             updateDeferred()
@@ -83,7 +84,6 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
                     })
                     .subscribeBy(
                             onComplete = {
-                                broadcast()
                                 isLoading = false
                                 ensureDataResultSubject = null
                                 resultSubject.onComplete()

@@ -3,42 +3,51 @@ package org.tokend.template.di
 import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
-import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistor
-import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
-import org.tokend.template.features.localaccount.storage.LocalAccountPersistorOnPreferences
-import org.tokend.template.logic.persistence.UrlConfigPersistor
+import org.tokend.template.data.repository.base.ObjectPersistence
+import org.tokend.template.data.repository.base.ObjectPersistenceOnPrefs
+import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistence
+import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistorOnPreferences
+import org.tokend.template.logic.persistence.UrlConfigPersistor
 import javax.inject.Singleton
 
 @Module
 class PersistenceModule(
-        private val credentialsPreferences: SharedPreferences,
-        private val networkPreferences: SharedPreferences,
-        private val kycStatePreferences: SharedPreferences,
+        private val persistencePreferences: SharedPreferences,
         private val localAccountPreferences: SharedPreferences
 ) {
     @Provides
     @Singleton
     fun credentialsPresistor(): CredentialsPersistor {
-        return CredentialsPersistorOnPreferences(credentialsPreferences)
+        return CredentialsPersistorOnPreferences(persistencePreferences)
     }
 
     @Provides
     @Singleton
     fun urlConfigPresistor(): UrlConfigPersistor {
-        return UrlConfigPersistor(networkPreferences)
+        return UrlConfigPersistor(persistencePreferences)
     }
 
     @Provides
     @Singleton
-    fun kycStatePersistor(): SubmittedKycStatePersistor {
-        return SubmittedKycStatePersistor(kycStatePreferences)
+    fun kycStatePersistor(): SubmittedKycStatePersistence {
+        return SubmittedKycStatePersistence(persistencePreferences)
     }
-    
+
     @Provides
     @Singleton
-    fun localAccountPersistor(): LocalAccountPersistor {
-        return LocalAccountPersistorOnPreferences(localAccountPreferences)
+    fun persistencePreferences(): SharedPreferences {
+        return persistencePreferences
+    }
+
+    @Provides
+    @Singleton
+    fun localAccountPersistence(): ObjectPersistence<LocalAccount> {
+        return ObjectPersistenceOnPrefs(
+                LocalAccount::class.java,
+                persistencePreferences,
+                "local_account"
+        )
     }
 }
