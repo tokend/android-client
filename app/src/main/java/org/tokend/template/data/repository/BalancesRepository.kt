@@ -14,7 +14,7 @@ import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
+import org.tokend.template.data.repository.base.MultipleItemsRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
@@ -37,7 +37,7 @@ class BalancesRepository(
         private val mapper: ObjectMapper,
         private val conversionAssetCode: String?,
         itemsCache: RepositoryCache<BalanceRecord>
-) : SimpleMultipleItemsRepository<BalanceRecord>(itemsCache) {
+) : MultipleItemsRepository<BalanceRecord>(itemsCache) {
 
     var conversionAsset: Asset? = null
         private set

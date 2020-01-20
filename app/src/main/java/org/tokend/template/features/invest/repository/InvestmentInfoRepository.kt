@@ -5,7 +5,7 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.BalancesRepository
-import org.tokend.template.data.repository.base.SimpleSingleItemRepository
+import org.tokend.template.data.repository.base.SingleItemRepository
 import org.tokend.template.features.invest.model.InvestmentInfo
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.offers.model.OfferRecord
@@ -19,7 +19,7 @@ class InvestmentInfoRepository(
         private val sale: SaleRecord,
         private val offersRepository: OffersRepository,
         private val salesRepository: SalesRepository
-) : SimpleSingleItemRepository<InvestmentInfo>() {
+) : SingleItemRepository<InvestmentInfo>() {
     override fun getItem(): Observable<InvestmentInfo> {
         return Single.zip(
                 getDetailedSaleIfNeeded(),

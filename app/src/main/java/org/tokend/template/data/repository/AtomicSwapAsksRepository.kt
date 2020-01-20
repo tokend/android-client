@@ -9,14 +9,14 @@ import org.tokend.sdk.api.v3.atomicswap.params.AtomicSwapAsksPageParams
 import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.data.model.AtomicSwapAskRecord
 import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
+import org.tokend.template.data.repository.base.MultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 
 class AtomicSwapAsksRepository(
         private val apiProvider: ApiProvider,
         private val asset: String,
         itemsCache: RepositoryCache<AtomicSwapAskRecord>
-) : SimpleMultipleItemsRepository<AtomicSwapAskRecord>(itemsCache) {
+) : MultipleItemsRepository<AtomicSwapAskRecord>(itemsCache) {
 
     override fun getItems(): Single<List<AtomicSwapAskRecord>> {
         val signedApi = apiProvider.getSignedApi()

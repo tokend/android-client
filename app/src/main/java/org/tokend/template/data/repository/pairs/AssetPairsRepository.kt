@@ -10,7 +10,7 @@ import org.tokend.sdk.api.v3.assetpairs.params.AssetPairsPageParams
 import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
+import org.tokend.template.data.repository.base.MultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
 import java.math.BigDecimal
@@ -22,7 +22,7 @@ class AssetPairsRepository(
         private val objectMapper: ObjectMapper,
         private val defaultConversionAssetCode: String?,
         itemsCache: RepositoryCache<AssetPairRecord>
-) : SimpleMultipleItemsRepository<AssetPairRecord>(itemsCache), AmountConverter {
+) : MultipleItemsRepository<AssetPairRecord>(itemsCache), AmountConverter {
 
     override fun getItems(): Single<List<AssetPairRecord>> {
         val urlConfig = urlConfigProvider.getConfig()

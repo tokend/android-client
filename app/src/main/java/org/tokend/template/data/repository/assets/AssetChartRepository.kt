@@ -5,13 +5,13 @@ import io.reactivex.Single
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.utils.extentions.isNotFound
 import org.tokend.template.data.model.AssetChartData
-import org.tokend.template.data.repository.base.SimpleSingleItemRepository
+import org.tokend.template.data.repository.base.SingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import retrofit2.HttpException
 
 class AssetChartRepository private constructor(
         private val apiProvider: ApiProvider
-) : SimpleSingleItemRepository<AssetChartData>() {
+) : SingleItemRepository<AssetChartData>() {
     private lateinit var baseAssetCode: String
     private var quoteAssetCode: String? = null
 

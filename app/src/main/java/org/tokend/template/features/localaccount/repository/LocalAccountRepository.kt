@@ -2,13 +2,13 @@ package org.tokend.template.features.localaccount.repository
 
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
-import org.tokend.template.data.repository.base.SimpleSingleItemRepository
+import org.tokend.template.data.repository.base.SingleItemRepository
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
 
 class LocalAccountRepository(
         private val storage: LocalAccountPersistor
-): SimpleSingleItemRepository<LocalAccount>() {
+): SingleItemRepository<LocalAccount>() {
     override fun getItem(): Observable<LocalAccount> {
         return Observable.defer {
             val existing = storage.load()

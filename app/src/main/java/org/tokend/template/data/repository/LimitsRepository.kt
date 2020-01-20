@@ -3,14 +3,14 @@ package org.tokend.template.data.repository
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.tokend.sdk.api.accounts.model.limits.Limits
-import org.tokend.template.data.repository.base.SimpleSingleItemRepository
+import org.tokend.template.data.repository.base.SingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.rx.extensions.toSingle
 
 class LimitsRepository(private val apiProvider: ApiProvider,
                        private val walletInfoProvider: WalletInfoProvider
-) : SimpleSingleItemRepository<Limits>() {
+) : SingleItemRepository<Limits>() {
     override fun getItem(): Observable<Limits> {
         return getLimitsResponse().toObservable()
     }

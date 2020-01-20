@@ -14,6 +14,9 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
     private var ensureDataResultSubject: CompletableSubject? = null
     private var ensureDataDisposable: Disposable? = null
 
+    private var updateResultSubject: CompletableSubject? = null
+    private var updateDisposable: Disposable? = null
+
     /**
      * BehaviourSubject which emits repository items on changes,
      * initialized with empty list
@@ -95,5 +98,50 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
         }
 
         resultSubject
+    }
+
+    override fun update(): Completable {
+        invalidate()
+
+        return synchronized(this) {
+            val resultSubject = updateResultSubject.let {
+                if (it == null) {
+                    val new = CompletableSubject.create()
+                    updateResultSubject = new
+                    new
+                } else {
+                    it
+                }
+            }
+
+            isLoading = true
+
+            val loadItemsFromDb =
+                    if (isNeverUpdated)
+                        itemsCache.loadFromDb().doOnComplete { broadcast() }
+                    else
+                        Completable.complete()
+
+            updateDisposable?.dispose()
+            updateDisposable = loadItemsFromDb.andThen(getItems())
+                    .subscribeBy(
+                            onSuccess = { items ->
+                                onNewItems(items)
+
+                                isLoading = false
+                                updateResultSubject = null
+                                resultSubject.onComplete()
+                            },
+                            onError = {
+                                isLoading = false
+                                errorsSubject.onNext(it)
+
+                                updateResultSubject = null
+                                resultSubject.onError(it)
+                            }
+                    )
+
+            resultSubject
+        }
     }
 }
