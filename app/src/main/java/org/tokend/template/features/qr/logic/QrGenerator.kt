@@ -14,7 +14,7 @@ class QrGenerator {
     private fun generateQrBitmap(content: String, maxSizePx: Int): Bitmap {
         val code = Encoder.encode(content, ERROR_CORRECTION_LV, null)
         val matrixSize = code.matrix.width
-        val squareSizePx = (maxSizePx.toDouble() / matrixSize).roundToInt()
+        val squareSizePx = maxSizePx.toFloat() / matrixSize
 
         val bitmap = Bitmap.createBitmap(maxSizePx, maxSizePx, Bitmap.Config.RGB_565)
         val canvas = Canvas(bitmap)
@@ -32,7 +32,7 @@ class QrGenerator {
                     val xPixel = x * squareSizePx
                     val yPixel = y * squareSizePx
                     canvas.drawRect(
-                            Rect(xPixel, yPixel, xPixel + squareSizePx, yPixel + squareSizePx),
+                            RectF(xPixel, yPixel, xPixel + squareSizePx, yPixel + squareSizePx),
                             squarePaint
                     )
                 }
