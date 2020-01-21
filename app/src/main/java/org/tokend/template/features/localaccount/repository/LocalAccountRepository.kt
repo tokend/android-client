@@ -1,6 +1,7 @@
 package org.tokend.template.features.localaccount.repository
 
-import io.reactivex.Single
+import io.reactivex.Maybe
+import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.schedulers.Schedulers
 import org.tokend.template.data.repository.base.ObjectPersistence
 import org.tokend.template.data.repository.base.SingleItemRepository
@@ -9,15 +10,9 @@ import org.tokend.template.features.localaccount.model.LocalAccount
 class LocalAccountRepository(
         private val localAccountPersistence: ObjectPersistence<LocalAccount>
 ): SingleItemRepository<LocalAccount>() {
-    override fun getItem(): Single<LocalAccount> {
-        return Single.defer {
-            val existing = localAccountPersistence.loadItem()
-
-            if (existing != null) {
-                Single.just(existing)
-            } else {
-                Single.error(IllegalStateException("No local account found"))
-            }
+    override fun getItem(): Maybe<LocalAccount> {
+        return Maybe.defer {
+            localAccountPersistence.loadItem().toMaybe()
         }.subscribeOn(Schedulers.newThread())
     }
 

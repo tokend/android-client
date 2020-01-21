@@ -1,6 +1,6 @@
 package org.tokend.template.data.repository
 
-import io.reactivex.Single
+import io.reactivex.Maybe
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.v3.accounts.params.AccountParamsV3
 import org.tokend.template.data.model.AccountRecord
@@ -14,11 +14,11 @@ class AccountRepository(private val apiProvider: ApiProvider,
                         itemPersistence: ObjectPersistence<AccountRecord>?)
     : SingleItemRepository<AccountRecord>(itemPersistence) {
 
-    override fun getItem(): Single<AccountRecord> {
+    override fun getItem(): Maybe<AccountRecord> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                ?: return Single.error(IllegalStateException("No wallet info found"))
+                ?: return Maybe.error(IllegalStateException("No wallet info found"))
         val signedApi = apiProvider.getSignedApi()
-                ?: return Single.error(IllegalStateException("No signed API instance found"))
+                ?: return Maybe.error(IllegalStateException("No signed API instance found"))
 
         return signedApi
                 .v3
@@ -31,5 +31,6 @@ class AccountRepository(private val apiProvider: ApiProvider,
                 )
                 .toSingle()
                 .map(::AccountRecord)
+                .toMaybe()
     }
 }

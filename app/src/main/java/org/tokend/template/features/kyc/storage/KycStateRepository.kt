@@ -60,11 +60,11 @@ class KycStateRepository(
     }
     // endregion
 
-    override fun getItem(): Single<KycState> {
+    override fun getItem(): Maybe<KycState> {
         val signedApi = apiProvider.getSignedApi()
-                ?: return Single.error(IllegalStateException("No signed API instance found"))
+                ?: return Maybe.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                ?: return Single.error(IllegalStateException("No wallet info found"))
+                ?: return Maybe.error(IllegalStateException("No wallet info found"))
 
         var requestId: Long = 0
 
@@ -99,6 +99,7 @@ class KycStateRepository(
                     else
                         Single.error(error)
                 }
+                .toMaybe()
     }
 
     private fun getLastKycRequest(signedApi: TokenDApi,
