@@ -81,9 +81,9 @@ class AuthenticatorSignInActivity : BaseActivity() {
     private fun displayQrCode(text: String) {
         QrGenerator().bitmap(text, getMaxQrSize())
                 .delay(300, TimeUnit.MILLISECONDS)
-                .compose(ObservableTransformers.defaultSchedulers())
+                .compose(ObservableTransformers.defaultSchedulersSingle())
                 .subscribeBy(
-                        onNext = {
+                        onSuccess = {
                             qr_code_image_view.setImageBitmap(it)
                             AnimationUtil.fadeInView(qr_code_image_view)
                         },

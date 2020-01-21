@@ -1,55 +1,53 @@
 package org.tokend.template.features.qr.logic
 
-import android.graphics.Bitmap
-import android.graphics.Color
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.EncodeHintType
-import com.google.zxing.qrcode.QRCodeWriter
+import android.graphics.*
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.google.zxing.qrcode.encoder.Encoder
-import io.reactivex.Observable
-import java.util.*
+import io.reactivex.Single
+import io.reactivex.rxkotlin.toSingle
+import kotlin.math.roundToInt
 
 class QrGenerator {
-    private val qrCodeWriter = QRCodeWriter()
-
-    private val darkColor = Color.BLACK
+    private val darkColor = Color.parseColor("#4A5050")
     private val lightColor = Color.WHITE
 
-    private fun generateQrBitmap(content: String, maxSize: Int): Bitmap {
+    private fun generateQrBitmap(content: String, maxSizePx: Int): Bitmap {
         val code = Encoder.encode(content, ERROR_CORRECTION_LV, null)
-        val baseSize = code.matrix.width
+        val matrixSize = code.matrix.width
+        val squareSizePx = (maxSizePx.toDouble() / matrixSize).roundToInt()
 
-        // Make qr-code size multiples of baseSize
-        val size = (Math.max(Math.floor((maxSize / baseSize).toDouble()), 1.0) * baseSize).toInt()
+        val bitmap = Bitmap.createBitmap(maxSizePx, maxSizePx, Bitmap.Config.RGB_565)
+        val canvas = Canvas(bitmap)
+        canvas.drawRect(
+                Rect(0, 0, maxSizePx, maxSizePx),
+                Paint().apply { color = lightColor }
+        )
 
-        val hints = Hashtable<EncodeHintType, Any>()
-        hints[EncodeHintType.MARGIN] = 0
-        hints[EncodeHintType.ERROR_CORRECTION] = ERROR_CORRECTION_LV
-        val result = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, size, size, hints)
+        val squarePaint = Paint().apply { color = darkColor }
+        val squareByte = 1.toByte()
 
-        val width = result.width
-        val height = result.height
-        val pixels = IntArray(width * height)
-
-        for (y in 0 until height) {
-            val offset = y * width
-            for (x in 0 until width) {
-                pixels[offset + x] = if (result.get(x, y)) darkColor else lightColor
+        for (x in 0 until matrixSize) {
+            for (y in 0 until matrixSize) {
+                if (code.matrix[x, y] == squareByte) {
+                    val xPixel = x * squareSizePx
+                    val yPixel = y * squareSizePx
+                    canvas.drawRect(
+                            Rect(xPixel, yPixel, xPixel + squareSizePx, yPixel + squareSizePx),
+                            squarePaint
+                    )
+                }
             }
         }
 
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
-        bitmap.setPixels(pixels, 0, width, 0, 0, width, height)
         return bitmap
     }
 
-    fun bitmap(content: String, maxSize: Int): Observable<Bitmap> {
-        return Observable.defer {
+    fun bitmap(content: String, maxSize: Int): Single<Bitmap> {
+        return Single.defer {
             try {
-                Observable.just(generateQrBitmap(content, maxSize))
+                generateQrBitmap(content, maxSize).toSingle()
             } catch (e: Exception) {
-                Observable.error<Bitmap>(e)
+                Single.error<Bitmap>(e)
             }
         }
     }
