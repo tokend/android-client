@@ -14,7 +14,7 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.localaccount.logic.CreateLocalAccountUseCase
 import org.tokend.template.features.localaccount.model.LocalAccount
-import org.tokend.template.features.localaccount.repository.LocalAccountRepository
+import org.tokend.template.features.localaccount.storage.LocalAccountRepository
 import org.tokend.template.features.localaccount.view.util.LocalAccountLogoUtil
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInMethod

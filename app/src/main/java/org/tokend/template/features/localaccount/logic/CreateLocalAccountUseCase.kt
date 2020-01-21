@@ -5,7 +5,7 @@ import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.template.util.cipher.DataCipher
 import org.tokend.template.features.localaccount.model.LocalAccount
-import org.tokend.template.features.localaccount.repository.LocalAccountRepository
+import org.tokend.template.features.localaccount.storage.LocalAccountRepository
 import org.tokend.template.features.userkey.logic.UserKeyProvider
 import java.security.SecureRandom
 import java.util.concurrent.CancellationException

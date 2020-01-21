@@ -51,7 +51,8 @@ open class ObjectPersistenceOnPrefs<T : Any>(
     protected open fun deserializeItem(serialized: String): T? =
             try {
                 gson.fromJson(serialized, itemClass)
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                e.printStackTrace()
                 null
             }
 }

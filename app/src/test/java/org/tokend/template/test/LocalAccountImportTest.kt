@@ -10,7 +10,7 @@ import org.tokend.template.features.localaccount.importt.logic.ImportLocalAccoun
 import org.tokend.template.features.localaccount.mnemonic.logic.EnglishMnemonicWords
 import org.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import org.tokend.template.features.localaccount.model.LocalAccount
-import org.tokend.template.features.localaccount.repository.LocalAccountRepository
+import org.tokend.template.features.localaccount.storage.LocalAccountRepository
 import org.tokend.template.features.userkey.logic.UserKeyProvider
 import org.tokend.template.util.cipher.Aes256GcmDataCipher
 

@@ -2,7 +2,7 @@ package org.tokend.template.features.localaccount.importt.logic
 
 import io.reactivex.Single
 import org.tokend.template.features.localaccount.model.LocalAccount
-import org.tokend.template.features.localaccount.repository.LocalAccountRepository
+import org.tokend.template.features.localaccount.storage.LocalAccountRepository
 import org.tokend.template.features.userkey.logic.UserKeyProvider
 import java.util.concurrent.CancellationException
 

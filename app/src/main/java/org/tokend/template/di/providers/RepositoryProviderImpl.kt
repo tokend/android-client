@@ -29,7 +29,7 @@ import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistence
 import org.tokend.template.features.localaccount.model.LocalAccount
-import org.tokend.template.features.localaccount.repository.LocalAccountRepository
+import org.tokend.template.features.localaccount.storage.LocalAccountRepository
 import org.tokend.template.features.offers.repository.OffersCache
 import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.polls.repository.PollsCache

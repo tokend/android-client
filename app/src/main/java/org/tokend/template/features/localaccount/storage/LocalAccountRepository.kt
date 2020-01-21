@@ -1,4 +1,4 @@
-package org.tokend.template.features.localaccount.repository
+package org.tokend.template.features.localaccount.storage
 
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.toMaybe
