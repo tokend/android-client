@@ -19,7 +19,7 @@ import org.tokend.template.features.localaccount.logic.LocalAccountRetryDecrypto
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.userkey.logic.UserKeyProvider
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.util.cipher.DataCipher
 import org.tokend.wallet.Account
 import retrofit2.HttpException
@@ -36,7 +36,7 @@ class SignInWithLocalAccountUseCase(
         accountCipher: DataCipher,
         userKeyProvider: UserKeyProvider,
         private val session: Session,
-        private val credentialsPersistor: CredentialsPersistor?,
+        private val credentialsPersistence: CredentialsPersistence?,
         private val apiProvider: ApiProvider,
         private val repositoryProvider: RepositoryProvider,
         private val postSignInManager: PostSignInManager?
@@ -147,7 +147,7 @@ class SignInWithLocalAccountUseCase(
 
     private fun updateProviders(): Single<Boolean> {
         session.setWalletInfo(walletInfo)
-        credentialsPersistor?.clear(false)
+        credentialsPersistence?.clear(false)
         session.setAccount(account)
         session.signInMethod = SignInMethod.LOCAL_ACCOUNT
 

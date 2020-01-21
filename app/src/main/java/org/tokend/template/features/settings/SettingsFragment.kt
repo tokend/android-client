@@ -18,7 +18,7 @@ import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import org.tokend.template.features.settings.view.PreferenceDividerDecoration
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.logic.persistence.BackgroundLockManager
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.util.locale.AppLocaleManager
@@ -47,7 +47,7 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
     @Inject
     lateinit var localeManager: AppLocaleManager
     @Inject
-    lateinit var credentialsPersistor: CredentialsPersistor
+    lateinit var credentialsPersistence: CredentialsPersistence
     @Inject
     lateinit var backgroundLockManager: BackgroundLockManager
     @Inject

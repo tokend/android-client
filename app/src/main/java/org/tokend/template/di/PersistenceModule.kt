@@ -7,8 +7,8 @@ import org.tokend.template.data.repository.base.ObjectPersistence
 import org.tokend.template.data.repository.base.ObjectPersistenceOnPrefs
 import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistence
 import org.tokend.template.features.localaccount.model.LocalAccount
-import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
-import org.tokend.template.logic.credentials.persistence.CredentialsPersistorOnPreferences
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistenceOnPreferences
 import org.tokend.template.logic.persistence.UrlConfigPersistor
 import javax.inject.Singleton
 
@@ -19,8 +19,8 @@ class PersistenceModule(
 ) {
     @Provides
     @Singleton
-    fun credentialsPresistor(): CredentialsPersistor {
-        return CredentialsPersistorOnPreferences(persistencePreferences)
+    fun credentialsPresistor(): CredentialsPersistence {
+        return CredentialsPersistenceOnPreferences(persistencePreferences)
     }
 
     @Provides

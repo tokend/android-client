@@ -15,7 +15,7 @@ import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.wallet.Account
 import org.tokend.wallet.NetworkParams
 
@@ -31,7 +31,7 @@ class ChangePasswordUseCase(
         private val accountProvider: AccountProvider,
         private val walletInfoProvider: WalletInfoProvider,
         private val repositoryProvider: RepositoryProvider,
-        private val credentialsPersistor: CredentialsPersistor?
+        private val credentialsPersistence: CredentialsPersistence?
 ) {
     private lateinit var currentWalletInfo: WalletInfo
     private lateinit var currentAccount: Account
@@ -150,7 +150,7 @@ class ChangePasswordUseCase(
         accountProvider.setAccount(newAccount)
 
         // Update in persistent storage.
-        credentialsPersistor?.saveCredentials(newWalletInfo, newPassword)
+        credentialsPersistence?.saveCredentials(newWalletInfo, newPassword)
         newWalletInfo.secretSeed.erase()
     }
 }

@@ -210,7 +210,7 @@ class LocalAccountSignInActivity : BaseActivity() {
                 defaultDataCipher,
                 pinCodeProvider,
                 session,
-                credentialsPersistor,
+                credentialsPersistence,
                 apiProvider,
                 repositoryProvider,
                 PostSignInManager(repositoryProvider)

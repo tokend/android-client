@@ -66,7 +66,7 @@ class UnlockAppActivity : BaseActivity() {
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_unlock_app)
 
-        val email = credentialsPersistor.getSavedEmail()
+        val email = credentialsPersistence.getSavedEmail()
         if (email == null) {
             errorHandlerFactory.getDefault().handle(
                     IllegalStateException("No saved email, unlock is not possible")
@@ -76,7 +76,7 @@ class UnlockAppActivity : BaseActivity() {
         }
         this.email = email
 
-        fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
+        fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistence)
         fingerprintIndicatorManager = FingerprintIndicatorManager(this, fingerprint_indicator)
 
         initViews()
@@ -242,7 +242,7 @@ class UnlockAppActivity : BaseActivity() {
     }
 
     private fun performAutoUnlock() {
-        val savedPassword = credentialsPersistor.getSavedPassword()
+        val savedPassword = credentialsPersistence.getSavedPassword()
         if (savedPassword == null) {
             unlockMethod = UnlockMethod.PASSWORD
             return
@@ -261,8 +261,8 @@ class UnlockAppActivity : BaseActivity() {
                 password,
                 apiProvider.getKeyServer(),
                 session,
-                credentialsPersistor,
-                PostSignInManager(repositoryProvider)
+                credentialsPersistence,
+                PostSignInManager(repositoryProvider)::doPostSignIn
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())

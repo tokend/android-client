@@ -5,7 +5,7 @@ import io.reactivex.rxkotlin.toMaybe
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.logic.credentials.SimpleCredentialsProvider
 
-interface CredentialsPersistor: SimpleCredentialsProvider {
+interface CredentialsPersistence: SimpleCredentialsProvider {
     /**
      * @param credentials [WalletInfo] with filled [WalletInfo.secretSeed] field.
      * @param password password for encryption

@@ -64,7 +64,7 @@ class ChangePasswordActivity : BaseActivity() {
         initButtons()
         ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
 
-        fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
+        fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistence)
         fingerprintIndicatorManager =
                 FingerprintIndicatorManager(applicationContext, fingerprint_indicator, toastManager)
 
@@ -172,7 +172,7 @@ class ChangePasswordActivity : BaseActivity() {
                 accountProvider,
                 walletInfoProvider,
                 repositoryProvider,
-                credentialsPersistor
+                credentialsPersistence
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())

@@ -306,8 +306,8 @@ class SignUpActivity : BaseActivity() {
                 password,
                 KeyServer(apiProvider.getApi().wallets),
                 session,
-                credentialsPersistor,
-                PostSignInManager(repositoryProvider)
+                credentialsPersistence,
+                PostSignInManager(repositoryProvider)::doPostSignIn
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
