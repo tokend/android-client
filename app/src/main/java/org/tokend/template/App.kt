@@ -274,6 +274,7 @@ class App : MultiDexApplication() {
                 ))
                 .persistenceModule(PersistenceModule(
                         persistencePreferences = getPersistencePreferences(),
+                        networkPreferences = getNetworkPreferences(),
                         localAccountPreferences = getLocalAccountPreferences()
                 ))
                 .sessionModule(SessionModule(session))

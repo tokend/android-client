@@ -8,6 +8,7 @@ import org.tokend.template.BuildConfig
 import org.tokend.template.data.model.AccountRecord
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.data.model.SystemInfoRecord
 import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
 import org.tokend.template.data.repository.*
 import org.tokend.template.data.repository.assets.AssetChartRepository
@@ -81,7 +82,15 @@ class RepositoryProviderImpl(
         AccountDetailsRepository(apiProvider)
     }
     private val systemInfoRepository: SystemInfoRepository by lazy {
-        SystemInfoRepository(apiProvider)
+        val persistence =
+                if (persistencePreferences != null)
+                    ObjectPersistenceOnPrefs.forType<SystemInfoRecord>(
+                            persistencePreferences,
+                            "system_info"
+                    )
+                else
+                    MemoryOnlyObjectPersistence<SystemInfoRecord>()
+        SystemInfoRepository(apiProvider, persistence)
     }
     private val tfaFactorsRepository: TfaFactorsRepository by lazy {
         TfaFactorsRepository(apiProvider, walletInfoProvider, MemoryOnlyRepositoryCache())
@@ -100,8 +109,7 @@ class RepositoryProviderImpl(
     private val accountRepository: AccountRepository by lazy {
         val persistence =
                 if (persistencePreferences != null)
-                    ObjectPersistenceOnPrefs(
-                            AccountRecord::class.java,
+                    ObjectPersistenceOnPrefs.forType<AccountRecord>(
                             persistencePreferences,
                             "account_record"
                     )

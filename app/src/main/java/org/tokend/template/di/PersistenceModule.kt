@@ -15,7 +15,8 @@ import javax.inject.Singleton
 @Module
 class PersistenceModule(
         private val persistencePreferences: SharedPreferences,
-        private val localAccountPreferences: SharedPreferences
+        private val localAccountPreferences: SharedPreferences,
+        private val networkPreferences: SharedPreferences
 ) {
     @Provides
     @Singleton
@@ -26,7 +27,7 @@ class PersistenceModule(
     @Provides
     @Singleton
     fun urlConfigPresistor(): UrlConfigPersistor {
-        return UrlConfigPersistor(persistencePreferences)
+        return UrlConfigPersistor(networkPreferences)
     }
 
     @Provides

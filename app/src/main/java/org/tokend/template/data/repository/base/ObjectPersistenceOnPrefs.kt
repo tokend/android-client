@@ -3,10 +3,13 @@ package org.tokend.template.data.repository.base
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import org.tokend.sdk.factory.GsonFactory
+import org.tokend.template.data.repository.base.ObjectPersistenceOnPrefs.Companion.forType
 
 /**
  * Implements persistence for an object of type [T]
  * based on [SharedPreferences] with [Gson] serialization
+ *
+ * @see forType
  */
 open class ObjectPersistenceOnPrefs<T : Any>(
         protected open val itemClass: Class<T>,
@@ -55,4 +58,10 @@ open class ObjectPersistenceOnPrefs<T : Any>(
                 e.printStackTrace()
                 null
             }
+
+    companion object {
+        inline fun <reified T : Any> forType(preferences: SharedPreferences,
+                                             key: String) =
+                ObjectPersistenceOnPrefs(T::class.java, preferences, key)
+    }
 }
