@@ -221,7 +221,7 @@ class SignInActivity : BaseActivity() {
                 apiProvider.getKeyServer(),
                 session,
                 credentialsPersistence,
-                PostSignInManager(repositoryProvider)::doPostSignIn
+                postSignInManagerFactory.get()::doPostSignIn
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())

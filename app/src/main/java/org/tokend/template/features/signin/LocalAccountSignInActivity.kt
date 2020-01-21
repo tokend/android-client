@@ -213,7 +213,7 @@ class LocalAccountSignInActivity : BaseActivity() {
                 credentialsPersistence,
                 apiProvider,
                 repositoryProvider,
-                PostSignInManager(repositoryProvider)
+                postSignInManagerFactory.get()::doPostSignIn
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())

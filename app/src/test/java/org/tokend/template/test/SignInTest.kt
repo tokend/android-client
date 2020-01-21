@@ -111,7 +111,7 @@ class SignInTest {
                 credentialsPersistence = credentialsPersistor,
                 repositoryProvider = repositoryProvider,
                 apiProvider = apiProvider,
-                postSignInManager = PostSignInManager(repositoryProvider)
+                postSignInActions = PostSignInManager(repositoryProvider)::doPostSignIn
         )
 
         useCase.perform().blockingAwait()
@@ -172,7 +172,7 @@ class SignInTest {
                 credentialsPersistence = null,
                 repositoryProvider = repositoryProvider,
                 apiProvider = apiProvider,
-                postSignInManager = PostSignInManager(repositoryProvider)
+                postSignInActions = PostSignInManager(repositoryProvider)::doPostSignIn
         )
 
         useCase.perform().blockingAwait()

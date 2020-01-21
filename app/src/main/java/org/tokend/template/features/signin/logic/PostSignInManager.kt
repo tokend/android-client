@@ -6,10 +6,21 @@ import org.tokend.sdk.utils.extentions.isUnauthorized
 import org.tokend.template.di.providers.RepositoryProvider
 import retrofit2.HttpException
 
+/**
+ * Performs post sign in actions such as repositories
+ * update and invalidation
+ *
+ * @param connectionStateProvider required to perform intelligent flow
+ * in case of missing internet connection
+ */
 class PostSignInManager(
-        private val repositoryProvider: RepositoryProvider
+        private val repositoryProvider: RepositoryProvider,
+        private val connectionStateProvider: (() -> Boolean)? = null
 ) {
     class AuthMismatchException : Exception()
+
+    private val isOnline: Boolean
+        get() = connectionStateProvider?.invoke() ?: true
 
     /**
      * Updates all important repositories.
@@ -18,7 +29,17 @@ class PostSignInManager(
         val parallelActions = listOf<Completable>(
                 // Added actions will be performed simultaneously.
                 repositoryProvider.balances().ensureData(),
-                repositoryProvider.account().ensureData()
+
+                // Actual account info is required to handle KYC recovery,
+                // but we can use cached if there is no connection.
+                Completable.defer {
+                    repositoryProvider.account().run {
+                        if (isOnline)
+                            updateDeferred()
+                        else
+                            ensureData()
+                    }
+                }
         )
         val syncActions = listOf<Completable>(
                 // Added actions will be performed on after another in

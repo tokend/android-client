@@ -30,7 +30,7 @@ import retrofit2.HttpException
  * sets up WalletInfoProvider and AccountProvider,
  * clears CredentialsPersistor.
  *
- * @param postSignInManager if set then [PostSignInManager.doPostSignIn] will be performed
+ * @see PostSignInManager
  */
 class SignInWithLocalAccountUseCase(
         accountCipher: DataCipher,
@@ -39,7 +39,7 @@ class SignInWithLocalAccountUseCase(
         private val credentialsPersistence: CredentialsPersistence?,
         private val apiProvider: ApiProvider,
         private val repositoryProvider: RepositoryProvider,
-        private val postSignInManager: PostSignInManager?
+        private val postSignInActions: (() -> Completable)?
 ) {
     private val accountDecryptor = LocalAccountRetryDecryptor(userKeyProvider, accountCipher)
     private val localAccountRepository = repositoryProvider.localAccount()
@@ -155,11 +155,9 @@ class SignInWithLocalAccountUseCase(
     }
 
     private fun performPostSignIn(): Single<Boolean> {
-        return if (postSignInManager != null)
-            postSignInManager
-                    .doPostSignIn()
-                    .toSingleDefault(true)
-        else
-            Single.just(false)
+        return postSignInActions
+                ?.invoke()
+                ?.toSingleDefault(true)
+                ?: Single.just(false)
     }
 }

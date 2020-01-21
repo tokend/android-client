@@ -20,6 +20,7 @@ import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.signin.logic.PostSignInManager
+import org.tokend.template.features.signin.logic.PostSignInManagerFactory
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.logic.fingerprint.FingerprintAuthManager
 import org.tokend.template.util.Navigator
@@ -262,7 +263,7 @@ class UnlockAppActivity : BaseActivity() {
                 apiProvider.getKeyServer(),
                 session,
                 credentialsPersistence,
-                PostSignInManager(repositoryProvider)::doPostSignIn
+                postSignInManagerFactory.get()::doPostSignIn
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
