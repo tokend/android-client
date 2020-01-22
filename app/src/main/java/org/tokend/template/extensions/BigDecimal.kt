@@ -18,3 +18,14 @@ fun BigDecimal.isMaxPossibleAmount(
         .scaleByPowerOfTen(amountPrecision)
         .setScale(0, RoundingMode.DOWN)
         .longValueExact() == Uint64.MAX_VALUE
+
+/**
+ * @return true if two numbers are equal ignoring trailing zeros:
+ *
+ * 3.14 == 3.1400
+ *
+ * null == null
+ */
+fun BigDecimal?.equalsArithmetically(other: BigDecimal?): Boolean {
+    return this == other || this != null && other != null && this.compareTo(other) == 0
+}

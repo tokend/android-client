@@ -99,6 +99,7 @@ abstract class SingleItemRepository<T : Any>(
                     })
                     .subscribeBy(
                             onComplete = {
+                                isNeverUpdated = false
                                 isLoading = false
                                 ensureDataResultSubject = null
                                 resultSubject.onComplete()
@@ -148,10 +149,10 @@ abstract class SingleItemRepository<T : Any>(
                     )
                     .subscribeBy(
                             onNext = { newItem: T ->
+                                isNeverUpdated = false
                                 onNewItem(newItem)
                             },
                             onComplete = {
-                                isNeverUpdated = false
                                 isLoading = false
 
                                 updateResultSubject = null

@@ -3,6 +3,7 @@ package org.tokend.template.features.balances.storage
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.base.RepositoryCache
+import org.tokend.template.extensions.equalsArithmetically
 import org.tokend.template.extensions.mapSuccessful
 import org.tokend.template.features.balances.model.BalanceDbEntity
 
@@ -13,12 +14,11 @@ class BalancesDbCache(
     override fun isContentSame(first: BalanceRecord, second: BalanceRecord): Boolean {
         return first.run {
             id == second.id
-                    && available == second.available
+                    && available.equalsArithmetically(second.available)
                     && asset == second.asset
-                    && available == second.available
                     && conversionAsset == second.conversionAsset
-                    && convertedAmount == second.convertedAmount
-                    && conversionPrice == second.conversionPrice
+                    && convertedAmount.equalsArithmetically(second.convertedAmount)
+                    && conversionPrice.equalsArithmetically(second.conversionPrice)
         }
     }
 

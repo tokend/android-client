@@ -57,8 +57,8 @@ abstract class RepositoryCache<T> {
     fun update(vararg items: T): Boolean {
         val itemsToUpdate = items
                 .mapNotNull { item ->
-                    val index = items.indexOf(item)
-                    if (index < 0 || isContentSame(mItems[index], item))
+                    val index = mItems.indexOf(item)
+                    if (index < 0)
                         null
                     else
                         item to index

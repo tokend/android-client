@@ -39,6 +39,7 @@ import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SearchUtil
 import org.tokend.template.view.util.*
+import java.util.concurrent.TimeUnit
 
 class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
@@ -151,11 +152,12 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         assetsDisposable = CompositeDisposable(
                 Observable.zip(
                         assetsRepository.itemsSubject
-                                .filter { assetsRepository.isFresh },
+                                .filter { !assetsRepository.isNeverUpdated },
                         balancesRepository.itemsSubject
-                                .filter { balancesRepository.isFresh },
+                                .filter { !balancesRepository.isNeverUpdated },
                         BiFunction { _: Any, _: Any -> }
                 )
+                        .debounce(10, TimeUnit.MILLISECONDS)
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe {
                             displayAssets()
@@ -167,6 +169,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                         },
                 assetsRepository.errorsSubject
                         .observeOn(AndroidSchedulers.mainThread())
+                        .debounce(20, TimeUnit.MILLISECONDS)
                         .subscribe { error ->
                             if (!assetsAdapter.hasData) {
                                 error_empty_view.showError(error, errorHandlerFactory.getDefault()) {

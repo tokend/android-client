@@ -84,6 +84,7 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
                     })
                     .subscribeBy(
                             onComplete = {
+                                isNeverUpdated = false
                                 isLoading = false
                                 ensureDataResultSubject = null
                                 resultSubject.onComplete()
@@ -118,7 +119,10 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
 
             val loadItemsFromDb =
                     if (isNeverUpdated)
-                        itemsCache.loadFromDb().doOnComplete { broadcast() }
+                        itemsCache.loadFromDb().doOnComplete {
+                            isNeverUpdated = false
+                            broadcast()
+                        }
                     else
                         Completable.complete()
 
