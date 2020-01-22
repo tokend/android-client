@@ -16,7 +16,6 @@ import org.tokend.template.features.localaccount.logic.CreateLocalAccountUseCase
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.storage.LocalAccountRepository
 import org.tokend.template.features.localaccount.view.util.LocalAccountLogoUtil
-import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInMethod
 import org.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
 import org.tokend.template.features.userkey.pin.PinCodeActivity
@@ -213,6 +212,7 @@ class LocalAccountSignInActivity : BaseActivity() {
                 credentialsPersistence,
                 apiProvider,
                 repositoryProvider,
+                connectionStateUtil::isOnline,
                 postSignInManagerFactory.get()::doPostSignIn
         )
                 .perform()

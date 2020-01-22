@@ -39,8 +39,12 @@ class SignInWithLocalAccountUseCase(
         private val credentialsPersistence: CredentialsPersistence?,
         private val apiProvider: ApiProvider,
         private val repositoryProvider: RepositoryProvider,
+        private val connectionStateProvider: (() -> Boolean)?,
         private val postSignInActions: (() -> Completable)?
 ) {
+    private val isOnline: Boolean
+        get() = connectionStateProvider?.invoke() ?: true
+
     private val accountDecryptor = LocalAccountRetryDecryptor(userKeyProvider, accountCipher)
     private val localAccountRepository = repositoryProvider.localAccount()
 
@@ -58,13 +62,13 @@ class SignInWithLocalAccountUseCase(
                     decryptLocalAccount()
                 }
                 .flatMap {
-                    getDefaultSignerRole()
+                    getDefaultSignerRoleIfOnline()
                 }
                 .doOnSuccess { defaultSignerRole ->
                     this.defaultSignerRole = defaultSignerRole
                 }
                 .flatMap {
-                    ensureRemoteAccountExists()
+                    ensureRemoteAccountExistsIfOnline()
                 }
                 .flatMap {
                     getAccount()
@@ -98,7 +102,11 @@ class SignInWithLocalAccountUseCase(
         return accountDecryptor.decrypt(localAccount)
     }
 
-    private fun getDefaultSignerRole(): Single<Long> {
+    private fun getDefaultSignerRoleIfOnline(): Single<Long> {
+        if (!isOnline) {
+            return Single.just(0)
+        }
+
         return repositoryProvider
                 .keyValueEntries()
                 .ensureEntries(listOf(KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY))
@@ -108,7 +116,11 @@ class SignInWithLocalAccountUseCase(
                 .map(KeyValueEntryRecord.Number::value)
     }
 
-    private fun ensureRemoteAccountExists(): Single<Boolean> {
+    private fun ensureRemoteAccountExistsIfOnline(): Single<Boolean> {
+        if (!isOnline) {
+            return Single.just(false)
+        }
+        
         return apiProvider.getApi()
                 .accounts
                 .createAccount(

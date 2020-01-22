@@ -111,6 +111,7 @@ class SignInTest {
                 credentialsPersistence = credentialsPersistor,
                 repositoryProvider = repositoryProvider,
                 apiProvider = apiProvider,
+                connectionStateProvider = null,
                 postSignInActions = PostSignInManager(repositoryProvider)::doPostSignIn
         )
 
@@ -172,6 +173,7 @@ class SignInTest {
                 credentialsPersistence = null,
                 repositoryProvider = repositoryProvider,
                 apiProvider = apiProvider,
+                connectionStateProvider = null,
                 postSignInActions = PostSignInManager(repositoryProvider)::doPostSignIn
         )
 

@@ -25,6 +25,7 @@ import org.tokend.template.logic.Session
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.logic.persistence.BackgroundLockManager
 import org.tokend.template.logic.persistence.UrlConfigPersistor
+import org.tokend.template.util.ConnectionStateUtil
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.cipher.DataCipher
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
@@ -76,6 +77,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var defaultDataCipher: DataCipher
     @Inject
     lateinit var postSignInManagerFactory: PostSignInManagerFactory
+    @Inject
+    lateinit var connectionStateUtil: ConnectionStateUtil
 
     /**
      * If set to true the activity will be operational
