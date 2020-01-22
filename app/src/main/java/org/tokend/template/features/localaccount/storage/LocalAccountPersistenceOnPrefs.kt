@@ -2,14 +2,14 @@ package org.tokend.template.features.localaccount.storage
 
 import android.content.SharedPreferences
 import com.google.gson.annotations.SerializedName
-import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.utils.extentions.decodeHex
 import org.tokend.sdk.utils.extentions.encodeHexString
+import org.tokend.template.data.repository.base.ObjectPersistenceOnPrefs
 import org.tokend.template.features.localaccount.model.LocalAccount
 
-class LocalAccountPersistorOnPreferences(
-        private val preferences: SharedPreferences
-) : LocalAccountPersistor {
+class LocalAccountPersistenceOnPrefs(
+        preferences: SharedPreferences
+) : ObjectPersistenceOnPrefs<LocalAccount>(LocalAccount::class.java, preferences, KEY) {
     private class LocalAccountData(
             @SerializedName("account_id")
             val accountId: String,
@@ -36,31 +36,20 @@ class LocalAccountPersistorOnPreferences(
         }
     }
 
-    override fun load(): LocalAccount? {
-        return preferences
-                .getString(KEY, "")
-                .takeIf(String::isNotEmpty)
-                ?.let { GsonFactory().getBaseGson().fromJson(it, LocalAccountData::class.java) }
-                ?.let(LocalAccountData::toLocalAccount)
+    override fun serializeItem(item: LocalAccount): String {
+        return gson.toJson(LocalAccountData.fromLocalAccount(item))
     }
 
-    override fun save(localAccount: LocalAccount) {
-        preferences
-                .edit()
-                .putString(
-                        KEY,
-                        GsonFactory().getBaseGson().toJson(
-                                LocalAccountData.fromLocalAccount(localAccount)
-                        )
-                )
-                .apply()
+    override fun deserializeItem(serialized: String): LocalAccount? {
+        return try {
+            gson.fromJson(serialized, LocalAccountData::class.java).toLocalAccount()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
-    override fun clear() {
-        preferences.edit().remove(KEY).apply()
-    }
-
-    companion object {
-        private const val KEY = "local_account"
+    private companion object {
+        const val KEY = "local_account"
     }
 }

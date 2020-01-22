@@ -3,32 +3,19 @@ package org.tokend.template.test
 import io.reactivex.Maybe
 import org.junit.Assert
 import org.junit.Test
+import org.tokend.template.data.repository.base.MemoryOnlyObjectPersistence
+import org.tokend.template.data.repository.base.ObjectPersistence
 import org.tokend.template.features.localaccount.importt.logic.ImportLocalAccountFromMnemonicUseCase
 import org.tokend.template.features.localaccount.importt.logic.ImportLocalAccountFromSecretSeedUseCase
 import org.tokend.template.features.localaccount.mnemonic.logic.EnglishMnemonicWords
 import org.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import org.tokend.template.features.localaccount.model.LocalAccount
-import org.tokend.template.features.localaccount.repository.LocalAccountRepository
-import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
+import org.tokend.template.features.localaccount.storage.LocalAccountRepository
 import org.tokend.template.features.userkey.logic.UserKeyProvider
 import org.tokend.template.util.cipher.Aes256GcmDataCipher
 
 class LocalAccountImportTest {
-    private fun getDummyStorage(): LocalAccountPersistor {
-        return object : LocalAccountPersistor {
-            private var mAccount: LocalAccount? = null
-
-            override fun load(): LocalAccount? = mAccount
-
-            override fun save(localAccount: LocalAccount) {
-                mAccount = localAccount
-            }
-
-            override fun clear() {
-                mAccount = null
-            }
-        }
-    }
+    private fun getDummyStorage() = MemoryOnlyObjectPersistence<LocalAccount>()
 
     private fun getDummyUserKeyProvider(): UserKeyProvider {
         return object : UserKeyProvider {
@@ -88,7 +75,7 @@ class LocalAccountImportTest {
 
     }
 
-    private fun checkRepositoryAndStorage(storage: LocalAccountPersistor,
+    private fun checkRepositoryAndStorage(storage: ObjectPersistence<LocalAccount>,
                                           repository: LocalAccountRepository,
                                           expectedAccountId: String) {
         val localAccount = repository.item
@@ -98,7 +85,7 @@ class LocalAccountImportTest {
 
         Assert.assertEquals(expectedAccountId, localAccount.accountId)
 
-        val storedAccount = storage.load()
+        val storedAccount = storage.loadItem()
 
         Assert.assertNotNull("Storage must contain an account after import", storedAccount)
         storedAccount!!

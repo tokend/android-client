@@ -20,14 +20,15 @@ import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.signin.logic.PostSignInManager
+import org.tokend.template.features.signin.logic.PostSignInManagerFactory
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.logic.fingerprint.FingerprintAuthManager
 import org.tokend.template.util.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ProfileUtil
 import org.tokend.template.view.FingerprintIndicatorManager
-import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.dialog.SignOutDialogFactory
+import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
 
@@ -63,14 +64,10 @@ class UnlockAppActivity : BaseActivity() {
     private lateinit var email: String
     private var lastEnteredPassword: CharArray? = null
 
-    private val animationDuration: Long by lazy {
-        this.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-    }
-
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_unlock_app)
 
-        val email = credentialsPersistor.getSavedEmail()
+        val email = credentialsPersistence.getSavedEmail()
         if (email == null) {
             errorHandlerFactory.getDefault().handle(
                     IllegalStateException("No saved email, unlock is not possible")
@@ -80,7 +77,7 @@ class UnlockAppActivity : BaseActivity() {
         }
         this.email = email
 
-        fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistor)
+        fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistence)
         fingerprintIndicatorManager = FingerprintIndicatorManager(this, fingerprint_indicator)
 
         initViews()
@@ -91,7 +88,7 @@ class UnlockAppActivity : BaseActivity() {
         initButtons()
         initErrorEmptyView()
         user_email_text.text = email
-        ProfileUtil.setAvatar(user_logo, email, urlConfigProvider, kycStatePersistor.loadState())
+        ProfileUtil.setAvatar(user_logo, email, urlConfigProvider, kycStatePersistence.loadItem())
     }
 
     private fun initButtons() {
@@ -246,7 +243,7 @@ class UnlockAppActivity : BaseActivity() {
     }
 
     private fun performAutoUnlock() {
-        val savedPassword = credentialsPersistor.getSavedPassword()
+        val savedPassword = credentialsPersistence.getSavedPassword()
         if (savedPassword == null) {
             unlockMethod = UnlockMethod.PASSWORD
             return
@@ -265,8 +262,8 @@ class UnlockAppActivity : BaseActivity() {
                 password,
                 apiProvider.getKeyServer(),
                 session,
-                credentialsPersistor,
-                PostSignInManager(repositoryProvider)
+                credentialsPersistence,
+                postSignInManagerFactory.get()::doPostSignIn
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())

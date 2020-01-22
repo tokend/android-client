@@ -11,7 +11,7 @@ import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.data.model.KeyValueEntryRecord
 import org.tokend.template.data.repository.KeyValueEntriesRepository
 import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.data.repository.base.SimpleMultipleItemsRepository
+import org.tokend.template.data.repository.base.MultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.tryOrNull
@@ -23,7 +23,7 @@ class PollsRepository(
         private val walletInfoProvider: WalletInfoProvider,
         private val keyValueEntriesRepository: KeyValueEntriesRepository,
         itemsCache: RepositoryCache<PollRecord>
-) : SimpleMultipleItemsRepository<PollRecord>(itemsCache) {
+) : MultipleItemsRepository<PollRecord>(itemsCache) {
     override fun getItems(): Single<List<PollRecord>> {
         return Single.zip(
                 getPolls(),

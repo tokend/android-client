@@ -9,7 +9,7 @@ import org.tokend.sdk.api.authenticator.model.AuthResult
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.wallet.Account
 import retrofit2.HttpException
 import java.net.HttpURLConnection
@@ -27,7 +27,7 @@ class SignInWithAuthenticatorAccountUseCase(
         private val keyServer: KeyServer,
         private val authResultsApi: AuthResultsApi,
         private val session: Session,
-        private val credentialsPersistor: CredentialsPersistor,
+        private val credentialsPersistence: CredentialsPersistence,
         private val postSignInManager: PostSignInManager?
 ) {
     class AuthResultNotFoundException : Exception()
@@ -110,7 +110,7 @@ class SignInWithAuthenticatorAccountUseCase(
 
     private fun updateProviders(): Single<Boolean> {
         session.setWalletInfo(walletInfo)
-        credentialsPersistor.clear(false)
+        credentialsPersistence.clear(false)
         session.setAccount(account)
         session.signInMethod = SignInMethod.AUTHENTICATOR
 

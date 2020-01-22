@@ -2,6 +2,7 @@ package org.tokend.template
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.arch.persistence.room.Room
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -27,6 +28,7 @@ import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
 import org.jetbrains.anko.defaultSharedPreferences
 import org.tokend.template.data.model.UrlConfig
+import org.tokend.template.db.AppDatabase
 import org.tokend.template.di.*
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.AppModule
@@ -46,6 +48,7 @@ class App : MultiDexApplication() {
         private const val GO_TO_BACKGROUND_TIMEOUT = 2000
         private const val IMAGE_CACHE_SIZE_MB = 8L
         private const val LOG_TAG = "TokenD App"
+        private const val DATABASE_NAME = "app-db"
 
         /**
          * Emits value when app goes to the background or comes to the foreground.
@@ -69,6 +72,8 @@ class App : MultiDexApplication() {
 
     private lateinit var sessionInfoStorage: SessionInfoStorage
     private lateinit var session: Session
+
+    private lateinit var database: AppDatabase
 
     lateinit var stateComponent: AppStateComponent
 
@@ -174,18 +179,49 @@ class App : MultiDexApplication() {
     }
 
     // region State
-    private fun getCredentialsPreferences(): SharedPreferences {
-        return getSharedPreferences("CredentialsPersistence",
-                Context.MODE_PRIVATE)
+    // region Preferences
+    private fun getPersistencePreferences(): SharedPreferences {
+        return getSharedPreferences("persistence", Context.MODE_PRIVATE)
+                // Migration from separated files.
+                .also { persistencePreferences ->
+                    val migrationValues = mutableMapOf<String, String>()
+
+                    migrationValues.putAll(dumpAndClearPreferences(
+                            listOf("(◕‿◕✿)", "ಠ_ಠ", "(¬_¬)", "email"),
+                            "CredentialsPersistence"
+                    ))
+                    migrationValues.putAll(dumpAndClearPreferences(
+                            listOf("submitted_kyc"),
+                            "KycStatePersistence"
+                    ))
+
+                    persistencePreferences
+                            .edit()
+                            .apply {
+                                migrationValues.forEach { (key, value) ->
+                                    putString(key, value)
+                                }
+                            }
+                            .apply()
+                }
+    }
+
+    private fun dumpAndClearPreferences(keys: Collection<String>,
+                                        preferencesName: String): Map<String, String> {
+        val preferences = getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
+        val content = keys
+                .mapNotNull { key ->
+                    preferences.getString(key, null)?.let { value ->
+                        key to value
+                    }
+                }
+                .toMap()
+        preferences.edit().clear().apply()
+        return content
     }
 
     private fun getNetworkPreferences(): SharedPreferences {
         return getSharedPreferences("NetworkPersistence",
-                Context.MODE_PRIVATE)
-    }
-
-    private fun getKycStatePreferences(): SharedPreferences {
-        return getSharedPreferences("KycStatePersistence",
                 Context.MODE_PRIVATE)
     }
 
@@ -196,6 +232,16 @@ class App : MultiDexApplication() {
 
     private fun getAppPreferences(): SharedPreferences {
         return defaultSharedPreferences
+    }
+    // endregion
+
+    private fun getDatabase(): AppDatabase {
+        return Room.databaseBuilder(
+                this,
+                AppDatabase::class.java,
+                DATABASE_NAME
+        )
+                .build()
     }
 
     private fun initState() {
@@ -208,6 +254,8 @@ class App : MultiDexApplication() {
 
         cookiePersistor = SharedPrefsCookiePersistor(this)
         cookieCache = SetCookieCache()
+
+        database = getDatabase()
 
         val defaultUrlConfig = UrlConfig(BuildConfig.API_URL, BuildConfig.STORAGE_URL,
                 BuildConfig.CLIENT_URL)
@@ -225,13 +273,13 @@ class App : MultiDexApplication() {
                         PersistentCookieJar(cookieCache, cookiePersistor)
                 ))
                 .persistenceModule(PersistenceModule(
-                        credentialsPreferences = getCredentialsPreferences(),
+                        persistencePreferences = getPersistencePreferences(),
                         networkPreferences = getNetworkPreferences(),
-                        kycStatePreferences = getKycStatePreferences(),
                         localAccountPreferences = getLocalAccountPreferences()
                 ))
                 .sessionModule(SessionModule(session))
                 .localeManagerModule(LocaleManagerModule(localeManager))
+                .appDatabaseModule(AppDatabaseModule(database))
                 .build()
     }
 
@@ -239,8 +287,8 @@ class App : MultiDexApplication() {
         cookiePersistor.clear()
         cookieCache.clear()
         sessionInfoStorage.clear()
-        getCredentialsPreferences().edit().clear().apply()
-        getKycStatePreferences().edit().clear().apply()
+        getPersistencePreferences().edit().clear().apply()
+        Thread { database.clearAllTables() }.start()
     }
 
     /**

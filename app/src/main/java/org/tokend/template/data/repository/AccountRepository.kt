@@ -1,27 +1,24 @@
 package org.tokend.template.data.repository
 
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.Maybe
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.v3.accounts.params.AccountParamsV3
 import org.tokend.template.data.model.AccountRecord
-import org.tokend.template.data.repository.base.SimpleSingleItemRepository
+import org.tokend.template.data.repository.base.ObjectPersistence
+import org.tokend.template.data.repository.base.SingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 
 class AccountRepository(private val apiProvider: ApiProvider,
-                        private val walletInfoProvider: WalletInfoProvider)
-    : SimpleSingleItemRepository<AccountRecord>() {
+                        private val walletInfoProvider: WalletInfoProvider,
+                        itemPersistence: ObjectPersistence<AccountRecord>?)
+    : SingleItemRepository<AccountRecord>(itemPersistence) {
 
-    override fun getItem(): Observable<AccountRecord> {
-        return getAccountResponse().toObservable()
-    }
-
-    private fun getAccountResponse(): Single<AccountRecord> {
+    override fun getItem(): Maybe<AccountRecord> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                ?: return Single.error(IllegalStateException("No wallet info found"))
+                ?: return Maybe.error(IllegalStateException("No wallet info found"))
         val signedApi = apiProvider.getSignedApi()
-                ?: return Single.error(IllegalStateException("No signed API instance found"))
+                ?: return Maybe.error(IllegalStateException("No signed API instance found"))
 
         return signedApi
                 .v3
@@ -34,5 +31,6 @@ class AccountRepository(private val apiProvider: ApiProvider,
                 )
                 .toSingle()
                 .map(::AccountRecord)
+                .toMaybe()
     }
 }

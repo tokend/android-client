@@ -10,15 +10,15 @@ import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.sdk.keyserver.models.KdfAttributes
 import org.tokend.sdk.keyserver.models.LoginParams
 import org.tokend.sdk.keyserver.models.WalletInfo
+import org.tokend.template.data.repository.base.MemoryOnlyObjectPersistence
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.localaccount.model.LocalAccount
-import org.tokend.template.features.localaccount.storage.LocalAccountPersistor
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
 import org.tokend.template.features.userkey.logic.UserKeyProvider
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.util.cipher.Aes256GcmDataCipher
 import org.tokend.wallet.Account
 
@@ -54,7 +54,7 @@ class SignInTest {
                 apiProvider.getKeyServer(),
                 session,
                 credentialsPersistor,
-                PostSignInManager(repositoryProvider)
+                PostSignInManager(repositoryProvider)::doPostSignIn
         )
 
         useCase.perform().blockingAwait()
@@ -84,7 +84,7 @@ class SignInTest {
 
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper(),
-                localAccountPersistor = getDummyLocalAccountsStorage())
+                localAccountPersistence = getDummyLocalAccountsStorage())
 
         val userKey = "0000".toCharArray()
         val cipher = Aes256GcmDataCipher()
@@ -108,10 +108,11 @@ class SignInTest {
                 accountCipher = cipher,
                 userKeyProvider = userKeyProvider,
                 session = session,
-                credentialsPersistor = credentialsPersistor,
+                credentialsPersistence = credentialsPersistor,
                 repositoryProvider = repositoryProvider,
                 apiProvider = apiProvider,
-                postSignInManager = PostSignInManager(repositoryProvider)
+                connectionStateProvider = null,
+                postSignInActions = PostSignInManager(repositoryProvider)::doPostSignIn
         )
 
         useCase.perform().blockingAwait()
@@ -151,7 +152,7 @@ class SignInTest {
 
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
                 JsonApiToolsProvider.getObjectMapper(),
-                localAccountPersistor = getDummyLocalAccountsStorage())
+                localAccountPersistence = getDummyLocalAccountsStorage())
 
         val userKey = "0000".toCharArray()
         val cipher = Aes256GcmDataCipher()
@@ -169,10 +170,11 @@ class SignInTest {
                 accountCipher = cipher,
                 userKeyProvider = userKeyProvider,
                 session = session,
-                credentialsPersistor = null,
+                credentialsPersistence = null,
                 repositoryProvider = repositoryProvider,
                 apiProvider = apiProvider,
-                postSignInManager = PostSignInManager(repositoryProvider)
+                connectionStateProvider = null,
+                postSignInActions = PostSignInManager(repositoryProvider)::doPostSignIn
         )
 
         useCase.perform().blockingAwait()
@@ -185,7 +187,7 @@ class SignInTest {
         }
     }
 
-    private fun getDummyCredentialsStorage() = object : CredentialsPersistor {
+    private fun getDummyCredentialsStorage() = object : CredentialsPersistence {
         private var walletInfo: WalletInfo? = null
         private var password: CharArray? = null
 
@@ -209,19 +211,7 @@ class SignInTest {
         }
     }
 
-    private fun getDummyLocalAccountsStorage() = object : LocalAccountPersistor {
-        private var mAccount: LocalAccount? = null
-
-        override fun load(): LocalAccount? = mAccount
-
-        override fun save(localAccount: LocalAccount) {
-            mAccount = localAccount
-        }
-
-        override fun clear() {
-            mAccount = null
-        }
-    }
+    private fun getDummyLocalAccountsStorage() = MemoryOnlyObjectPersistence<LocalAccount>()
 
     private fun checkRepositories(repositoryProvider: RepositoryProvider) {
         Assert.assertTrue("Balances repository must be updated after sign in",

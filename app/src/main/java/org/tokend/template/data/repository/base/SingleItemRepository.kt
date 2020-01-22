@@ -1,12 +1,26 @@
 package org.tokend.template.data.repository.base
 
-import io.reactivex.Observable
+import io.reactivex.Completable
+import io.reactivex.Maybe
+import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.toMaybe
+import io.reactivex.rxkotlin.toSingle
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.CompletableSubject
 
 /**
  * Repository that holds a single [T] item.
  */
-abstract class SingleItemRepository<T> : Repository() {
+abstract class SingleItemRepository<T : Any>(
+        protected open val itemPersistence: ObjectPersistence<T>? = null
+) : Repository() {
+    private var ensureDataResultSubject: CompletableSubject? = null
+    private var ensureDataDisposable: Disposable? = null
+
+    private var updateResultSubject: CompletableSubject? = null
+    private var updateDisposable: Disposable? = null
+
     /**
      * Repository item
      */
@@ -22,13 +36,16 @@ abstract class SingleItemRepository<T> : Repository() {
         item?.let { itemSubject.onNext(it) }
     }
 
-    abstract protected fun getItem(): Observable<T>
+    protected abstract fun getItem(): Maybe<T>
 
-    protected open fun getStoredItem(): Observable<T> {
-        return Observable.empty()
+    protected open fun getStoredItem(): Maybe<T> {
+        return itemPersistence
+                ?.let { Maybe.defer { it.loadItem().toMaybe() } }
+                ?: Maybe.empty()
     }
 
-    protected open fun storeItem(item: T) {}
+    protected open fun storeItem(item: T) =
+            itemPersistence?.saveItem(item)
 
     protected open fun onNewItem(newItem: T) {
         isNeverUpdated = false
@@ -37,5 +54,120 @@ abstract class SingleItemRepository<T> : Repository() {
         item = newItem
 
         broadcast()
+    }
+
+    /**
+     * Ensures that repository contains a data if it was never updated:
+     * loads data from cache, if the cache is empty then performs [updateDeferred]
+     */
+    open fun ensureData(): Completable = synchronized(this) {
+        val resultSubject = ensureDataResultSubject.let {
+            if (it == null) {
+                val new = CompletableSubject.create()
+                ensureDataResultSubject = new
+                new
+            } else {
+                it
+            }
+        }
+
+        if (!isNeverUpdated) {
+            ensureDataResultSubject = null
+            resultSubject.onComplete()
+        } else {
+            isLoading = true
+
+            ensureDataDisposable?.dispose()
+            ensureDataDisposable = Completable.defer {
+                itemPersistence
+                        ?.loadItem()
+                        ?.toSingle()
+                        ?.doOnSuccess {
+                            item = it
+                        }
+                        ?.ignoreElement()
+                        ?: Completable.complete()
+            }
+                    .onErrorComplete()
+                    .andThen(Completable.defer {
+                        if (item != null) {
+                            broadcast()
+                            Completable.complete()
+                        } else {
+                            updateDeferred()
+                        }
+                    })
+                    .subscribeBy(
+                            onComplete = {
+                                isNeverUpdated = false
+                                isLoading = false
+                                ensureDataResultSubject = null
+                                resultSubject.onComplete()
+                            },
+                            onError = {
+                                isLoading = false
+                                ensureDataResultSubject = null
+                                errorsSubject.onNext(it)
+                                resultSubject.onError(it)
+                            }
+                    )
+        }
+
+        resultSubject
+    }
+
+    override fun update(): Completable {
+        invalidate()
+
+        return synchronized(this) {
+            val resultSubject = updateResultSubject.let {
+                if (it == null) {
+                    val new = CompletableSubject.create()
+                    updateResultSubject = new
+                    new
+                } else {
+                    it
+                }
+            }
+
+            isLoading = true
+
+            val storedItemMaybe =
+                    if (isNeverUpdated)
+                        getStoredItem()
+                    else
+                        Maybe.empty()
+
+            updateDisposable?.dispose()
+            updateDisposable = storedItemMaybe
+                    .toObservable()
+                    .concatWith(
+                            getItem()
+                                    .doOnSuccess {
+                                        storeItem(it)
+                                    }
+                    )
+                    .subscribeBy(
+                            onNext = { newItem: T ->
+                                isNeverUpdated = false
+                                onNewItem(newItem)
+                            },
+                            onComplete = {
+                                isLoading = false
+
+                                updateResultSubject = null
+                                resultSubject.onComplete()
+                            },
+                            onError = {
+                                isLoading = false
+                                errorsSubject.onNext(it)
+
+                                updateResultSubject = null
+                                resultSubject.onError(it)
+                            }
+                    )
+
+            resultSubject
+        }
     }
 }

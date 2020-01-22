@@ -19,7 +19,7 @@ import org.tokend.template.features.localaccount.logic.LocalAccountRetryDecrypto
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.userkey.logic.UserKeyProvider
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.util.cipher.DataCipher
 import org.tokend.wallet.Account
 import retrofit2.HttpException
@@ -30,17 +30,21 @@ import retrofit2.HttpException
  * sets up WalletInfoProvider and AccountProvider,
  * clears CredentialsPersistor.
  *
- * @param postSignInManager if set then [PostSignInManager.doPostSignIn] will be performed
+ * @see PostSignInManager
  */
 class SignInWithLocalAccountUseCase(
         accountCipher: DataCipher,
         userKeyProvider: UserKeyProvider,
         private val session: Session,
-        private val credentialsPersistor: CredentialsPersistor?,
+        private val credentialsPersistence: CredentialsPersistence?,
         private val apiProvider: ApiProvider,
         private val repositoryProvider: RepositoryProvider,
-        private val postSignInManager: PostSignInManager?
+        private val connectionStateProvider: (() -> Boolean)?,
+        private val postSignInActions: (() -> Completable)?
 ) {
+    private val isOnline: Boolean
+        get() = connectionStateProvider?.invoke() ?: true
+
     private val accountDecryptor = LocalAccountRetryDecryptor(userKeyProvider, accountCipher)
     private val localAccountRepository = repositoryProvider.localAccount()
 
@@ -58,13 +62,13 @@ class SignInWithLocalAccountUseCase(
                     decryptLocalAccount()
                 }
                 .flatMap {
-                    getDefaultSignerRole()
+                    getDefaultSignerRoleIfOnline()
                 }
                 .doOnSuccess { defaultSignerRole ->
                     this.defaultSignerRole = defaultSignerRole
                 }
                 .flatMap {
-                    ensureRemoteAccountExists()
+                    ensureRemoteAccountExistsIfOnline()
                 }
                 .flatMap {
                     getAccount()
@@ -98,7 +102,11 @@ class SignInWithLocalAccountUseCase(
         return accountDecryptor.decrypt(localAccount)
     }
 
-    private fun getDefaultSignerRole(): Single<Long> {
+    private fun getDefaultSignerRoleIfOnline(): Single<Long> {
+        if (!isOnline) {
+            return Single.just(0)
+        }
+
         return repositoryProvider
                 .keyValueEntries()
                 .ensureEntries(listOf(KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY))
@@ -108,7 +116,11 @@ class SignInWithLocalAccountUseCase(
                 .map(KeyValueEntryRecord.Number::value)
     }
 
-    private fun ensureRemoteAccountExists(): Single<Boolean> {
+    private fun ensureRemoteAccountExistsIfOnline(): Single<Boolean> {
+        if (!isOnline) {
+            return Single.just(false)
+        }
+        
         return apiProvider.getApi()
                 .accounts
                 .createAccount(
@@ -147,7 +159,7 @@ class SignInWithLocalAccountUseCase(
 
     private fun updateProviders(): Single<Boolean> {
         session.setWalletInfo(walletInfo)
-        credentialsPersistor?.clear(false)
+        credentialsPersistence?.clear(false)
         session.setAccount(account)
         session.signInMethod = SignInMethod.LOCAL_ACCOUNT
 
@@ -155,11 +167,9 @@ class SignInWithLocalAccountUseCase(
     }
 
     private fun performPostSignIn(): Single<Boolean> {
-        return if (postSignInManager != null)
-            postSignInManager
-                    .doPostSignIn()
-                    .toSingleDefault(true)
-        else
-            Single.just(false)
+        return postSignInActions
+                ?.invoke()
+                ?.toSingleDefault(true)
+                ?: Single.just(false)
     }
 }

@@ -8,24 +8,24 @@ import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.logic.Session
-import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.wallet.Account
 
 /**
  * Performs sign in with given credentials:
  * performs keypair loading and decryption,
- * sets up WalletInfoProvider and AccountProvider, updates CredentialsPersistor if it is set.
- * If CredentialsPersistor contains saved credentials no network calls will be performed.
+ * sets up [WalletInfoProvider] and [AccountProvider], updates [CredentialsPersistence] if it is set.
+ * If [CredentialsPersistence] contains saved credentials no network calls will be performed.
  *
- * @param postSignInManager if set then [PostSignInManager.doPostSignIn] will be performed
+ * @see PostSignInManager
  */
 class SignInUseCase(
         private val email: String,
         private val password: CharArray,
         private val keyServer: KeyServer,
         private val session: Session,
-        private val credentialsPersistor: CredentialsPersistor?,
-        private val postSignInManager: PostSignInManager?
+        private val credentialsPersistence: CredentialsPersistence?,
+        private val postSignInActions: (() -> Completable)?
 ) {
     private lateinit var walletInfo: WalletInfo
     private lateinit var account: Account
@@ -60,7 +60,7 @@ class SignInUseCase(
     private fun getWalletInfo(email: String, password: CharArray): Single<WalletInfo> {
         val networkRequest = keyServer.getWalletInfo(email, password).toSingle()
 
-        return credentialsPersistor
+        return credentialsPersistence
                 ?.takeIf { it.getSavedEmail() == email }
                 ?.loadCredentialsMaybe(password)
                 ?.switchIfEmpty(networkRequest)
@@ -73,7 +73,7 @@ class SignInUseCase(
 
     private fun updateProviders(): Single<Boolean> {
         session.setWalletInfo(walletInfo)
-        credentialsPersistor?.saveCredentials(walletInfo, password)
+        credentialsPersistence?.saveCredentials(walletInfo, password)
         session.setAccount(account)
         session.signInMethod = SignInMethod.CREDENTIALS
 
@@ -81,16 +81,14 @@ class SignInUseCase(
     }
 
     private fun performPostSignIn(): Single<Boolean> {
-        return if (postSignInManager != null)
-            postSignInManager
-                    .doPostSignIn()
-                    .doOnError {
-                        if (it is PostSignInManager.AuthMismatchException) {
-                            credentialsPersistor?.clear(keepEmail = true)
-                        }
+        return postSignInActions
+                ?.invoke()
+                ?.doOnError {
+                    if (it is PostSignInManager.AuthMismatchException) {
+                        credentialsPersistence?.clear(keepEmail = true)
                     }
-                    .toSingleDefault(true)
-        else
-            Single.just(false)
+                }
+                ?.toSingleDefault(true)
+                ?: Single.just(false)
     }
 }

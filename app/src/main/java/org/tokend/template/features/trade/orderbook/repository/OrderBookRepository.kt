@@ -1,9 +1,9 @@
 package org.tokend.template.features.trade.orderbook.repository
 
-import io.reactivex.Observable
+import io.reactivex.Maybe
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.v3.orderbook.params.OrderBookParamsV3
-import org.tokend.template.data.repository.base.SimpleSingleItemRepository
+import org.tokend.template.data.repository.base.SingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.features.trade.orderbook.model.OrderBook
 
@@ -12,8 +12,8 @@ class OrderBookRepository
         private val apiProvider: ApiProvider,
         private val baseAsset: String,
         private val quoteAsset: String
-) : SimpleSingleItemRepository<OrderBook>() {
-    override fun getItem(): Observable<OrderBook> {
+) : SingleItemRepository<OrderBook>() {
+    override fun getItem(): Maybe<OrderBook> {
         val api = apiProvider.getApi()
 
         val params = OrderBookParamsV3.Builder()
@@ -36,6 +36,6 @@ class OrderBookRepository
                 )
                 .toSingle()
                 .map(::OrderBook)
-                .toObservable()
+                .toMaybe()
     }
 }

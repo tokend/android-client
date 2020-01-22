@@ -11,9 +11,9 @@ import org.tokend.wallet.utils.toCharArray
 /**
  * Represents secure credentials storage based on SharedPreferences.
  */
-class CredentialsPersistorOnPreferences(
+class CredentialsPersistenceOnPreferences(
         private val preferences: SharedPreferences
-): CredentialsPersistor {
+): CredentialsPersistence {
     private val secureStorage = SecureStorage(preferences)
 
     override fun saveCredentials(credentials: WalletInfo, password: CharArray) {

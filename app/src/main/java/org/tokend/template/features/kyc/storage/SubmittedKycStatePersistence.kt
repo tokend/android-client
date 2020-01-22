@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 import org.tokend.sdk.factory.GsonFactory
+import org.tokend.template.data.repository.base.ObjectPersistence
 import org.tokend.template.extensions.tryOrNull
 import org.tokend.template.features.kyc.model.KycState
 import java.lang.reflect.ParameterizedType
@@ -12,9 +13,9 @@ import java.lang.reflect.Type
 /**
  * Represents single submitted KYC state storage based on SharedPreferences.
  */
-class SubmittedKycStatePersistor(
+class SubmittedKycStatePersistence(
         private val preferences: SharedPreferences
-) {
+): ObjectPersistence<KycState.Submitted<*>> {
     private class Container(
             @SerializedName("state")
             val serializedState: JsonElement,
@@ -26,29 +27,23 @@ class SubmittedKycStatePersistor(
 
     private val gson = GsonFactory().getBaseGson()
 
-    /**
-     * Saves given [state]
-     */
-    fun saveState(state: KycState.Submitted<*>) {
+    override fun saveItem(item: KycState.Submitted<*>) {
         preferences
                 .edit()
                 .putString(
                         KEY,
                         gson.toJson(
                                 Container(
-                                        serializedState = gson.toJsonTree(state),
-                                        formClassName = state.formData.javaClass.name,
-                                        stateClassName = state.javaClass.name
+                                        serializedState = gson.toJsonTree(item),
+                                        formClassName = item.formData.javaClass.name,
+                                        stateClassName = item.javaClass.name
                                 )
                         )
                 )
                 .apply()
     }
 
-    /**
-     * @return saved state
-     */
-    fun loadState(): KycState.Submitted<*>? {
+    override fun loadItem(): KycState.Submitted<*>? {
         return preferences
                 .getString(KEY, null)
                 ?.let {
@@ -57,6 +52,17 @@ class SubmittedKycStatePersistor(
                         deserializeState(container)
                     }
                 }
+    }
+
+    override fun hasItem(): Boolean {
+        return loadItem() != null
+    }
+
+    override fun clear() {
+        preferences
+                .edit()
+                .remove(KEY)
+                .apply()
     }
 
     private fun deserializeState(container: Container): KycState.Submitted<*> {

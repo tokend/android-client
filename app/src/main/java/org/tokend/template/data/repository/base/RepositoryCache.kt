@@ -35,29 +35,41 @@ abstract class RepositoryCache<T> {
         }
     }
 
-    fun add(item: T): Boolean {
-        return if (!mItems.contains(item)) {
-            addToDbSafe(listOf(item))
-            mItems.add(0, item)
+    fun add(vararg items: T): Boolean {
+        val itemsToAdd = items.filterNot(mItems::contains)
+        return if (itemsToAdd.isNotEmpty()) {
+            addToDbSafe(itemsToAdd)
+            mItems.addAll(0, itemsToAdd)
             true
         } else {
             false
         }
     }
 
-    fun delete(item: T): Boolean {
-        return mItems.remove(item).also { deleted ->
+    fun delete(vararg items: T): Boolean {
+        return mItems.removeAll(items).also { deleted ->
             if (deleted) {
-                deleteFromDbSafe(listOf(item))
+                deleteFromDbSafe(items.toList())
             }
         }
     }
 
-    fun update(item: T): Boolean {
-        val index = mItems.indexOf(item)
-        return if (index >= 0) {
-            mItems[index] = item
-            updateInDbSafe(listOf(item))
+    fun update(vararg items: T): Boolean {
+        val itemsToUpdate = items
+                .mapNotNull { item ->
+                    val index = mItems.indexOf(item)
+                    if (index < 0)
+                        null
+                    else
+                        item to index
+                }
+                .toMap()
+
+        return if (itemsToUpdate.isNotEmpty()) {
+            itemsToUpdate.forEach { (item, index) ->
+                mItems[index] = item
+            }
+            updateInDbSafe(itemsToUpdate.keys)
             return true
         } else {
             false
@@ -173,7 +185,7 @@ abstract class RepositoryCache<T> {
         }.subscribeOn(Schedulers.io())
     }
 
-    private fun addToDbSafe(items: List<T>) {
+    private fun addToDbSafe(items: Collection<T>) {
         doAsync {
             synchronized(this@RepositoryCache) {
                 addToDb(items)
@@ -181,7 +193,7 @@ abstract class RepositoryCache<T> {
         }
     }
 
-    private fun updateInDbSafe(items: List<T>) {
+    private fun updateInDbSafe(items: Collection<T>) {
         doAsync {
             synchronized(this@RepositoryCache) {
                 updateInDb(items)
@@ -215,11 +227,11 @@ abstract class RepositoryCache<T> {
     // region DB
     protected abstract fun getAllFromDb(): List<T>
 
-    protected abstract fun addToDb(items: List<T>)
+    protected abstract fun addToDb(items: Collection<T>)
 
-    protected abstract fun updateInDb(items: List<T>)
+    protected abstract fun updateInDb(items: Collection<T>)
 
-    protected abstract fun deleteFromDb(items: List<T>)
+    protected abstract fun deleteFromDb(items: Collection<T>)
 
     protected abstract fun clearDb()
     // endregion

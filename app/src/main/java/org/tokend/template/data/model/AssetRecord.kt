@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.node.NullNode
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.generated.resources.AssetResource
 import org.tokend.sdk.api.v3.assets.model.AssetState
-import org.tokend.sdk.utils.HashCodes
 import org.tokend.template.util.RecordWithPolicy
 import java.io.Serializable
 import java.math.BigDecimal
@@ -18,8 +17,8 @@ class AssetRecord(
         override val description: String?,
         val terms: RemoteFile?,
         val externalSystemType: Int?,
-        val issued: BigDecimal?,
-        val available: BigDecimal?,
+        val issued: BigDecimal,
+        val available: BigDecimal,
         val maximum: BigDecimal,
         val ownerAccountId: String,
         override val trailingDigits: Int,
@@ -41,13 +40,11 @@ class AssetRecord(
         get() = state == AssetState.ACTIVE
 
     override fun equals(other: Any?): Boolean {
-        return other is AssetRecord
-                && other.code == this.code
-                && other.logoUrl == this.logoUrl
+        return other is AssetRecord && other.code == this.code
     }
 
     override fun hashCode(): Int {
-        return HashCodes.ofMany(code, logoUrl)
+        return code.hashCode()
     }
 
     override fun toString(): String {

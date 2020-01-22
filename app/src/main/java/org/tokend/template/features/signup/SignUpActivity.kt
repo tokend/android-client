@@ -27,7 +27,6 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.setErrorAndFocus
-import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.features.signup.logic.SignUpUseCase
 import org.tokend.template.logic.UrlConfigManager
@@ -306,8 +305,8 @@ class SignUpActivity : BaseActivity() {
                 password,
                 KeyServer(apiProvider.getApi().wallets),
                 session,
-                credentialsPersistor,
-                PostSignInManager(repositoryProvider)
+                credentialsPersistence,
+                postSignInManagerFactory.get()::doPostSignIn
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())

@@ -8,7 +8,7 @@ import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
-import org.tokend.template.logic.credentials.persistence.CredentialsPersistor
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.logic.fingerprint.FingerprintAuthManager
 import org.tokend.template.util.errorhandler.ErrorHandler
 import org.tokend.template.view.FingerprintIndicatorManager
@@ -21,12 +21,12 @@ import org.tokend.template.view.ToastManager
 class TfaPasswordDialog(context: Context,
                         errorHandler: ErrorHandler,
                         tfaVerifierInterface: TfaVerifier.Interface,
-                        credentialsPersistor: CredentialsPersistor?,
+                        credentialsPersistence: CredentialsPersistence?,
                         private val tfaException: NeedTfaException,
                         private val email: String,
                         private val toastManager: ToastManager?)
     : TfaDialog(context, errorHandler, tfaVerifierInterface) {
-    private val fingerprintAuthManager = credentialsPersistor?.let {
+    private val fingerprintAuthManager = credentialsPersistence?.let {
         FingerprintAuthManager(context, it)
     }
 

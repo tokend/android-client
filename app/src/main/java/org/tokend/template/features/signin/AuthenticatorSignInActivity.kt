@@ -21,7 +21,6 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.qr.logic.QrGenerator
 import org.tokend.template.features.signin.logic.AuthResultPoller
-import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInWithAuthenticatorAccountUseCase
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.AnimationUtil
@@ -213,8 +212,8 @@ class AuthenticatorSignInActivity : BaseActivity() {
                 apiProvider.getKeyServer(),
                 apiProvider.getApi().authResults,
                 session,
-                credentialsPersistor,
-                PostSignInManager(repositoryProvider)
+                credentialsPersistence,
+                postSignInManagerFactory.get()
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
