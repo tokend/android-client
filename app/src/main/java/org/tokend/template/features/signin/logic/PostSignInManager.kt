@@ -49,9 +49,17 @@ class PostSignInManager(
         val performParallelActions = Completable.merge(parallelActions)
         val performSyncActions = Completable.concat(syncActions)
 
-        repositoryProvider.kycState().ensureData().subscribeBy(onError = {
-            it.printStackTrace()
-        })
+        repositoryProvider.kycState().run {
+            ensureData()
+                    .doOnComplete {
+                        if (!isFresh) {
+                            update()
+                        }
+                    }
+        }
+                .subscribeBy(onError = {
+                    it.printStackTrace()
+                })
 
         repositoryProvider.tfaFactors().invalidate()
 

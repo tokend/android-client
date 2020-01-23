@@ -5,7 +5,6 @@ import io.reactivex.Maybe
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
-import io.reactivex.rxkotlin.toSingle
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.CompletableSubject
 
@@ -78,16 +77,12 @@ abstract class SingleItemRepository<T : Any>(
             isLoading = true
 
             ensureDataDisposable?.dispose()
-            ensureDataDisposable = Completable.defer {
-                itemPersistence
-                        ?.loadItem()
-                        ?.toSingle()
-                        ?.doOnSuccess {
-                            item = it
-                        }
-                        ?.ignoreElement()
-                        ?: Completable.complete()
-            }
+            ensureDataDisposable = getStoredItem()
+                    .doOnSuccess {
+                        item = it
+                    }
+                    .toSingle()
+                    .ignoreElement()
                     .onErrorComplete()
                     .andThen(Completable.defer {
                         if (item != null) {
