@@ -2,7 +2,9 @@ package org.tokend.template
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Room
+import android.arch.persistence.room.migration.Migration
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -241,6 +243,20 @@ class App : MultiDexApplication() {
                 AppDatabase::class.java,
                 DATABASE_NAME
         )
+                .addMigrations(
+                        object : Migration(1, 2) {
+                            override fun migrate(database: SupportSQLiteDatabase) {
+                                database.execSQL("""
+                                    CREATE TABLE `balance_change` (`id` TEXT NOT NULL, 
+                                    `action` TEXT NOT NULL, 
+                                    `amount` TEXT NOT NULL, `asset` TEXT NOT NULL,
+                                     `balance_id` TEXT NOT NULL, `fee` TEXT NOT NULL,
+                                      `date` INTEGER NOT NULL, `cause` TEXT NOT NULL,
+                                       PRIMARY KEY(`id`))
+                                """.trimIndent())
+                            }
+                        }
+                )
                 .build()
     }
 

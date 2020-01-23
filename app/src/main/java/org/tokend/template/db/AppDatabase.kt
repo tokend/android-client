@@ -4,7 +4,12 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverter
 import android.arch.persistence.room.TypeConverters
+import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.utils.BigDecimalUtil
+import org.tokend.template.data.model.Asset
+import org.tokend.template.data.model.SimpleAsset
+import org.tokend.template.data.model.history.BalanceChangeDbEntity
+import org.tokend.template.data.repository.balancechanges.BalanceChangesDao
 import org.tokend.template.features.assets.model.AssetDbEntity
 import org.tokend.template.features.assets.storage.AssetsDao
 import org.tokend.template.features.balances.model.BalanceDbEntity
@@ -15,14 +20,17 @@ import java.util.*
 @Database(
         entities = [
             AssetDbEntity::class,
-            BalanceDbEntity::class
+            BalanceDbEntity::class,
+            BalanceChangeDbEntity::class
         ],
-        version = 1,
+        version = 2,
         exportSchema = false
 )
 @TypeConverters(AppDatabase.Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     class Converters {
+        private val gson = GsonFactory().getBaseGson()
+
         @TypeConverter
         fun dateToUnix(value: Date?): Long? {
             return value?.let { it.time / 1000 }
@@ -42,8 +50,19 @@ abstract class AppDatabase : RoomDatabase() {
         fun stringToBigDecimal(value: String?): BigDecimal? {
             return value?.let { BigDecimalUtil.valueOf(it) }
         }
+
+        @TypeConverter
+        fun assetFromJson(value: String?): Asset? {
+            return value?.let { gson.fromJson(value, SimpleAsset::class.java) }
+        }
+
+        @TypeConverter
+        fun assetToJson(value: Asset?): String? {
+            return value?.let { gson.toJson(SimpleAsset(it)) }
+        }
     }
 
     abstract val balances: BalancesDao
     abstract val assets: AssetsDao
+    abstract val balanceChanges: BalanceChangesDao
 }

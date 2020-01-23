@@ -87,6 +87,7 @@ abstract class PagedDataRepository<T>(itemsCache: RepositoryCache<T>)
     }
 
     private var updateResultSubject: CompletableSubject? = null
+    private var updateDisposable: Disposable? = null
 
     override fun update(): Completable {
         return synchronized(this) {
@@ -106,7 +107,26 @@ abstract class PagedDataRepository<T>(itemsCache: RepositoryCache<T>)
                 }
             }
 
-            loadMore(force = true, resultSubject = resultSubject)
+            val loadItemsFromDb =
+                    if (isNeverUpdated)
+                        itemsCache.loadFromDb().doOnComplete {
+                            isNeverUpdated = false
+                            broadcast()
+                        }
+                    else
+                        Completable.complete()
+
+            updateDisposable?.dispose()
+            updateDisposable =
+                    loadItemsFromDb
+                            .andThen(Completable.defer {
+                                loadMore(force = true, resultSubject = resultSubject)
+                                Completable.complete()
+                            })
+                            .subscribeBy(
+                                    onComplete = {},
+                                    onError = {}
+                            )
 
             return@synchronized resultSubject
         }
