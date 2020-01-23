@@ -121,7 +121,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withName(R.string.trade_title)
                 .withIdentifier(TradeAssetPairsFragment.ID)
                 .withIcon(R.drawable.ic_trade)
-                .also { items[OrderBookFragment.ID] = it }
+                .also { items[TradeAssetPairsFragment.ID] = it }
 
         PrimaryDrawerItem()
                 .withName(R.string.polls_title)
@@ -216,7 +216,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     }
 
                     if (BuildConfig.IS_TRADE_ALLOWED) {
-                        addDrawerItems(items[OrderBookFragment.ID])
+                        addDrawerItems(items[TradeAssetPairsFragment.ID])
                     }
 
                     if (BuildConfig.ARE_POLLS_ALLOWED) {
