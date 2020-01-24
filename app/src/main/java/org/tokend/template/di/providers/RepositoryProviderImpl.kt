@@ -9,13 +9,12 @@ import org.tokend.template.data.model.AccountRecord
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.SystemInfoRecord
-import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
 import org.tokend.template.data.repository.*
 import org.tokend.template.data.repository.assets.AssetChartRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
-import org.tokend.template.data.repository.balancechanges.BalanceChangesDbCache
-import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
+import org.tokend.template.data.repository.balancechanges.BalanceChangesPagedDbCache
+import org.tokend.template.data.repository.balancechanges.SuperBalanceChangesRepository
 import org.tokend.template.data.repository.base.MemoryOnlyObjectPersistence
 import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
 import org.tokend.template.data.repository.base.ObjectPersistence
@@ -152,7 +151,7 @@ class RepositoryProviderImpl(
     }
 
     private val balanceChangesRepositoriesByBalanceId =
-            LruCache<String, BalanceChangesRepository>(MAX_SAME_REPOSITORIES_COUNT)
+            LruCache<String, SuperBalanceChangesRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     private val tradesRepositoriesByAssetPair =
             LruCache<String, TradeHistoryRepository>(MAX_SAME_REPOSITORIES_COUNT)
@@ -250,14 +249,16 @@ class RepositoryProviderImpl(
         return feesRepository
     }
 
-    override fun balanceChanges(balanceId: String?): BalanceChangesRepository {
+    override fun balanceChanges(balanceId: String?): SuperBalanceChangesRepository {
         val cache =
                 if (balanceId == null && database != null)
-                    BalanceChangesDbCache(database.balanceChanges)
-                else
-                    MemoryOnlyRepositoryCache<BalanceChange>()
+                    BalanceChangesPagedDbCache(database.balanceChanges)
+                else {
+                    balanceChangesRepositoriesByBalanceId["null"]?.cache?.clear()
+                    error("No cache implemented")
+                }
         return balanceChangesRepositoriesByBalanceId.getOrPut(balanceId.toString()) {
-            BalanceChangesRepository(
+            SuperBalanceChangesRepository(
                     balanceId,
                     walletInfoProvider.getWalletInfo()?.accountId,
                     apiProvider,
