@@ -16,7 +16,7 @@ import java.util.*
 data class BalanceChangeDbEntity(
         @PrimaryKey
         @ColumnInfo(name = "id")
-        val id: String,
+        val id: Long,
         @ColumnInfo(name = "action")
         val action: String,
         @ColumnInfo(name = "amount")

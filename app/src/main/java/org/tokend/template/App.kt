@@ -247,7 +247,7 @@ class App : MultiDexApplication() {
                         object : Migration(1, 2) {
                             override fun migrate(database: SupportSQLiteDatabase) {
                                 database.execSQL("""
-                                    CREATE TABLE `balance_change` (`id` TEXT NOT NULL, 
+                                    CREATE TABLE `balance_change` (`id` INTEGER NOT NULL, 
                                     `action` TEXT NOT NULL, 
                                     `amount` TEXT NOT NULL, `asset` TEXT NOT NULL,
                                      `balance_id` TEXT NOT NULL, `fee` TEXT NOT NULL,

@@ -9,6 +9,7 @@ import org.tokend.template.data.model.AccountRecord
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.SystemInfoRecord
+import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
 import org.tokend.template.data.repository.*
 import org.tokend.template.data.repository.assets.AssetChartRepository
@@ -19,6 +20,7 @@ import org.tokend.template.data.repository.base.MemoryOnlyObjectPersistence
 import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
 import org.tokend.template.data.repository.base.ObjectPersistence
 import org.tokend.template.data.repository.base.ObjectPersistenceOnPrefs
+import org.tokend.template.data.repository.base.pagination.MemoryOnlyPagedDataCache
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.db.AppDatabase
 import org.tokend.template.extensions.getOrPut
@@ -251,12 +253,11 @@ class RepositoryProviderImpl(
 
     override fun balanceChanges(balanceId: String?): SuperBalanceChangesRepository {
         val cache =
-                if (balanceId == null && database != null)
-                    BalanceChangesPagedDbCache(database.balanceChanges)
-                else {
-                    balanceChangesRepositoriesByBalanceId["null"]?.cache?.clear()
-                    error("No cache implemented")
-                }
+                if (database != null)
+                    BalanceChangesPagedDbCache(balanceId, database.balanceChanges)
+                else
+                    MemoryOnlyPagedDataCache<BalanceChange>()
+
         return balanceChangesRepositoriesByBalanceId.getOrPut(balanceId.toString()) {
             SuperBalanceChangesRepository(
                     balanceId,

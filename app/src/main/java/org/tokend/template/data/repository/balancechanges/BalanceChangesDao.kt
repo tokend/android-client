@@ -8,9 +8,14 @@ interface BalanceChangesDao {
     @Query("SELECT * FROM balance_change")
     fun selectAll(): List<BalanceChangeDbEntity>
 
-    @Query("SELECT * FROM balance_change WHERE id<:cursor ORDER BY id DESC LIMIT :count ")
-    fun selectPageDesc(count: Int,
+    @Query("SELECT * FROM balance_change WHERE id<:cursor ORDER BY id DESC LIMIT :limit ")
+    fun selectPageDesc(limit: Int,
                        cursor: Long): List<BalanceChangeDbEntity>
+
+    @Query("SELECT * FROM balance_change WHERE balance_id=:balanceId AND id<:cursor ORDER BY id DESC LIMIT :limit ")
+    fun selectPageByBalanceIdDesc(balanceId: String,
+                                  limit: Int,
+                                  cursor: Long): List<BalanceChangeDbEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg items: BalanceChangeDbEntity)

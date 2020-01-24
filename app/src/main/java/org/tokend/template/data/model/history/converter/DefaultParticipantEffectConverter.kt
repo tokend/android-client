@@ -115,7 +115,7 @@ class DefaultParticipantEffectConverter: ParticipantEffectConverter {
 
             result.add(
                     BalanceChange(
-                            id = effect.id,
+                            id = effect.id.toLong(),
                             action = action,
                             amount = amount,
                             fee = SimpleFeeRecord(fee),

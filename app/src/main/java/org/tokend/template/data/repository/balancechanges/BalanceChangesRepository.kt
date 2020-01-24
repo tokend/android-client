@@ -113,7 +113,7 @@ class BalanceChangesRepository(
 
     fun addPayment(request: PaymentRequest) {
         val balanceChange = BalanceChange(
-                id = request.reference,
+                id = System.currentTimeMillis(),
                 amount = request.amount,
                 date = Date(),
                 asset = request.asset,

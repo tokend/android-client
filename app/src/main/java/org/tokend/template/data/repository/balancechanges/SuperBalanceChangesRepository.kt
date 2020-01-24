@@ -14,7 +14,7 @@ import org.tokend.template.data.model.history.converter.ParticipantEffectConvert
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.base.pagination.PagedDataCache
-import org.tokend.template.data.repository.base.pagination.SuperDescPagedDataRepository
+import org.tokend.template.data.repository.base.pagination.SuperPagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.features.send.model.PaymentRequest
 import java.util.*
@@ -26,14 +26,14 @@ class SuperBalanceChangesRepository(
         private val participantEffectConverter: ParticipantEffectConverter,
         private val accountDetailsRepository: AccountDetailsRepository?,
         cache: PagedDataCache<BalanceChange>
-) : SuperDescPagedDataRepository<BalanceChange>(cache) {
+) : SuperPagedDataRepository<BalanceChange>(PagingOrder.DESC, cache) {
     init {
         if (balanceId == null && accountId == null) {
             throw IllegalArgumentException("Balance or account ID must be specified")
         }
     }
 
-    override fun getRemotePage(nextCursor: String?): Single<DataPage<BalanceChange>> {
+    override fun getRemotePage(nextCursor: Long?): Single<DataPage<BalanceChange>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
@@ -49,9 +49,9 @@ class SuperBalanceChangesRepository(
                                 )
                                 .withPagingParams(
                                         PagingParamsV2(
-                                                order = PagingOrder.DESC,
+                                                order = pagingOrder,
                                                 limit = pageLimit,
-                                                page = nextCursor
+                                                page = nextCursor?.toString()
                                         )
                                 )
                                 .apply {
@@ -103,9 +103,16 @@ class SuperBalanceChangesRepository(
         }
     }
 
+    override fun cachePage(page: DataPage<BalanceChange>) {
+        // Cache only account-wide movements.
+        if (balanceId == null) {
+            super.cachePage(page)
+        }
+    }
+
     fun addPayment(request: PaymentRequest) {
         val balanceChange = BalanceChange(
-                id = request.reference,
+                id = System.currentTimeMillis(),
                 amount = request.amount,
                 date = Date(),
                 asset = request.asset,

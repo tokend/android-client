@@ -9,17 +9,23 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.CompletableSubject
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
-import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.template.data.repository.base.Repository
 
-abstract class SuperDescPagedDataRepository<T : Any>(
-        open val cache: PagedDataCache<T>
+/**
+ * Repository that loads and caches paged collection of [T].
+ *
+ * Caching works properly only if data is immutable!
+ */
+abstract class SuperPagedDataRepository<T : PagingRecord>(
+        protected open val pagingOrder: PagingOrder,
+        open val cache: PagedDataCache<T>?
 ) : Repository() {
     protected val pageLimit = DEFAULT_PAGE_LIMIT
-    protected var nextCursor: String? = null
+    protected var nextCursor: Long? = null
 
     val isOnFirstPage: Boolean
         get() = nextCursor == null
+                || pagingOrder == PagingOrder.ASC && nextCursor == 0L
 
     var noMoreItems: Boolean = false
         protected set
@@ -53,6 +59,11 @@ abstract class SuperDescPagedDataRepository<T : Any>(
         return@synchronized resultSubject
     }
 
+    /**
+     * Requests next page loading if it's necessary
+     *
+     * @return true if loading will be performed, false otherwise
+     */
     open fun loadMore(): Boolean =
             loadMore(force = false, resultSubject = null)
 
@@ -65,19 +76,32 @@ abstract class SuperDescPagedDataRepository<T : Any>(
 
         isLoading = true
 
-        val nextCursor = this.nextCursor
-
         val getPage: Single<DataPage<T>> =
-                if (isOnFirstPage)
+                if (pagingOrder == PagingOrder.DESC && isOnFirstPage)
+                // First page in DESC order is a source of new items,
+                // it must be actual so load the remote one.
                     getAndCacheRemotePage(nextCursor)
-                            .onErrorResumeNext {
-                                Log.i("Oleg", "Remote page loading error $it")
+                            // But if remote loading failed we can display cached one.
+                            .onErrorResumeNext { error ->
                                 getCachedPage(nextCursor)
+                                        .doOnSuccess { cachedPage ->
+                                            if (cachedPage.items.isNotEmpty()) {
+                                                onNewPage(cachedPage)
+                                            }
+                                        }
+                                        .flatMap { Single.error<DataPage<T>>(error) }
                             }
                 else
+                // Otherwise we prefer lo load cached data as it is immutable.
                     getCachedPage(nextCursor)
                             .flatMap { cachedPage ->
                                 if (cachedPage.isLast) {
+                                    // If cached page is last emmit it
+                                    // but ensure that it is true by loading
+                                    // the same remote page.
+                                    if (cachedPage.items.isNotEmpty()) {
+                                        onNewPage(cachedPage)
+                                    }
                                     getAndCacheRemotePage(nextCursor)
                                 } else {
                                     Single.just(cachedPage)
@@ -104,30 +128,36 @@ abstract class SuperDescPagedDataRepository<T : Any>(
         return true
     }
 
-    protected open fun getAndCacheRemotePage(nextCursor: String?): Single<DataPage<T>> {
-        Log.i("Oleg", "Get remote page $nextCursor")
+    protected open fun getAndCacheRemotePage(nextCursor: Long?): Single<DataPage<T>> {
         return getRemotePage(nextCursor)
                 .doOnSuccess(this::cachePage)
     }
 
-    protected open fun cachePage(page: DataPage<T>) =
-            cache.cachePage(page)
-
-    abstract fun getRemotePage(nextCursor: String?): Single<DataPage<T>>
-
-    open fun getCachedPage(nextCursor: String?): Single<DataPage<T>> {
-        Log.i("Oleg", "Get cached page $nextCursor")
-        return cache.getPage(PagingParamsV2(
-                order = PagingOrder.DESC,
-                limit = pageLimit,
-                page = nextCursor
-        ))
+    protected open fun cachePage(page: DataPage<T>) {
+        cache?.cachePage(page)
     }
 
+    abstract fun getRemotePage(nextCursor: Long?): Single<DataPage<T>>
+
+    open fun getCachedPage(nextCursor: Long?): Single<DataPage<T>> {
+        return cache?.getPage(pageLimit, nextCursor, pagingOrder)
+                ?: Single.just(DataPage(nextCursor?.toString(), emptyList(), true))
+    }
+
+    /**
+     * Called when new page data is loaded, cached or remote.
+     */
     protected open fun onNewPage(page: DataPage<T>) {
         mItems.addAll(page.items)
-        nextCursor = page.nextCursor
+        isNeverUpdated = false
+        if (isOnFirstPage) {
+            isFresh = true
+        }
+        nextCursor = page.nextCursor?.toLong()
         noMoreItems = page.isLast
+        if (noMoreItems) {
+            logDataHash()
+        }
         broadcast()
     }
 
@@ -135,7 +165,16 @@ abstract class SuperDescPagedDataRepository<T : Any>(
         itemsSubject.onNext(mItems)
     }
 
+    private fun logDataHash() {
+        val hash = mItems
+                .map(PagingRecord::getPagingId)
+                .toTypedArray()
+                .contentHashCode()
+        Log.i(LOG_TAG, "Final data hash is $hash")
+    }
+
     companion object {
+        private const val LOG_TAG = "PagedRepo"
         const val DEFAULT_PAGE_LIMIT = 20
     }
 }
