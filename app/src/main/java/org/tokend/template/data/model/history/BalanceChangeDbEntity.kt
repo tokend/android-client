@@ -1,8 +1,7 @@
 package org.tokend.template.data.model.history
 
 import android.arch.persistence.room.*
-import com.google.gson.JsonElement
-import com.google.gson.annotations.SerializedName
+import com.google.gson.JsonObject
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.history.details.BalanceChangeCause
@@ -34,35 +33,24 @@ data class BalanceChangeDbEntity(
         val cause: BalanceChangeCause
 ) {
     class Converters {
-        private class BalanceChangeCauseContainer(
-                @SerializedName("class_name")
-                val className: String,
-                @SerializedName("data")
-                val data: JsonElement
-        )
-
         private val gson = GsonFactory().getBaseGson()
 
         @TypeConverter
         fun causeFromJson(value: String?): BalanceChangeCause? {
-            val container = value?.let { gson.fromJson(it, BalanceChangeCauseContainer::class.java) }
+            val json = value?.let { gson.fromJson(it, JsonObject::class.java) }
                     ?: return null
             return gson.fromJson<BalanceChangeCause>(
-                    container.data,
-                    Class.forName(container.className)
+                    json,
+                    Class.forName(json[CAUSE_CLASS_NAME_PROPERTY].asString)
             )
         }
 
         @TypeConverter
         fun causeToJson(value: BalanceChangeCause?): String? {
-            val container = value?.let {
-                BalanceChangeCauseContainer(
-                        className = it::class.java.name,
-                        data = gson.toJsonTree(it)
-                )
-            }
-                    ?: return null
-            return gson.toJson(container)
+            value ?: return null
+            val tree = gson.toJsonTree(value)
+            (tree as? JsonObject)?.addProperty(CAUSE_CLASS_NAME_PROPERTY, value::class.java.name)
+            return tree.toString()
         }
 
         @TypeConverter
@@ -88,6 +76,8 @@ data class BalanceChangeDbEntity(
     )
 
     companion object {
+        private const val CAUSE_CLASS_NAME_PROPERTY = "_meta_class_name"
+
         fun fromRecord(record: BalanceChange) = record.run {
             BalanceChangeDbEntity(
                     id = id,

@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverter
 import android.arch.persistence.room.TypeConverters
 import android.arch.persistence.room.migration.Migration
-import org.tokend.sdk.factory.GsonFactory
+import com.google.gson.Gson
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.SimpleAsset
@@ -31,7 +31,7 @@ import java.util.*
 @TypeConverters(AppDatabase.Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     class Converters {
-        private val gson = GsonFactory().getBaseGson()
+        private val gsonWithoutNulls = Gson()
 
         @TypeConverter
         fun dateToUnix(value: Date?): Long? {
@@ -55,12 +55,12 @@ abstract class AppDatabase : RoomDatabase() {
 
         @TypeConverter
         fun assetFromJson(value: String?): Asset? {
-            return value?.let { gson.fromJson(value, SimpleAsset::class.java) }
+            return value?.let { gsonWithoutNulls.fromJson(value, SimpleAsset::class.java) }
         }
 
         @TypeConverter
         fun assetToJson(value: Asset?): String? {
-            return value?.let { gson.toJson(SimpleAsset(it)) }
+            return value?.let { gsonWithoutNulls.toJson(SimpleAsset(it)) }
         }
     }
 
