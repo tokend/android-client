@@ -71,7 +71,7 @@ abstract class SuperPagedDataRepository<T : PagingRecord>(
                 onError = resultSubject::onError,
                 onComplete = {
                     resultSubject.onComplete()
-                    if (itemsList.isNotEmpty() && pagingOrder == PagingOrder.DESC) {
+                    if (!isFresh && pagingOrder == PagingOrder.DESC) {
                         loadNewRemoteTopPages()
                     }
                 }
@@ -90,7 +90,7 @@ abstract class SuperPagedDataRepository<T : PagingRecord>(
      * Loads new pages to the top of collection if it's in DESC order
      */
     open fun loadNewRemoteTopPages() {
-        Log.i(LOG_TAG, "Load new remote top items")
+        Log.i(LOG_TAG, "Load new remote top pages")
         val newestItemId = mItems.firstOrNull()?.getPagingId() ?: 0L
 
         var nextNewPagesCursor: Long? = newestItemId
@@ -154,7 +154,9 @@ abstract class SuperPagedDataRepository<T : PagingRecord>(
         val getPage: Single<DataPage<T>> =
                 getCachedPage(nextCursor)
                         .flatMap { cachedPage ->
+                            val wasOnFirstPage = isOnFirstPage
                             if (cachedPage.isLast) {
+                                Log.i(LOG_TAG, "Cached page is last")
                                 // If cached page is last emmit it
                                 // but ensure that it is true by loading
                                 // the same remote page.
@@ -162,7 +164,13 @@ abstract class SuperPagedDataRepository<T : PagingRecord>(
                                     onNewPage(cachedPage)
                                 }
                                 getAndCacheRemotePage(nextCursor, pagingOrder)
+                                        .doOnSuccess {
+                                            if (wasOnFirstPage) {
+                                                isFresh = true
+                                            }
+                                        }
                             } else {
+                                Log.i(LOG_TAG, "Accepted cached page")
                                 Single.just(cachedPage)
                             }
                         }
