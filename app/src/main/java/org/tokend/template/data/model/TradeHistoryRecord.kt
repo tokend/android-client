@@ -3,6 +3,7 @@ package org.tokend.template.data.model
 import org.tokend.sdk.api.trades.model.MatchedOrder
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.sdk.utils.HashCodes
+import org.tokend.template.data.repository.base.pagination.PagingRecord
 import java.io.Serializable
 import java.math.BigDecimal
 import java.util.*
@@ -16,7 +17,8 @@ class TradeHistoryRecord(
         val price: BigDecimal,
         val createdAt: Date,
         var hasPositiveTrend: Boolean
-) : Serializable {
+) : Serializable, PagingRecord {
+    override fun getPagingId(): Long = id
 
     override fun equals(other: Any?): Boolean {
         return other is TradeHistoryRecord

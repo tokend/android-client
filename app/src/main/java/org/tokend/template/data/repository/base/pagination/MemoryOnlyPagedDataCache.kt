@@ -42,6 +42,19 @@ class MemoryOnlyPagedDataCache<T : PagingRecord> : PagedDataCache<T> {
         items.addAll(page.items)
     }
 
+    override fun update(vararg items: T) {
+        this.items.forEachIndexed { index, item ->
+            val updateIndex = items.indexOf(item)
+            if (updateIndex >= 0) {
+                this.items[index] = items[updateIndex]
+            }
+        }
+    }
+
+    override fun delete(vararg items: T) {
+        this.items.removeAll(items)
+    }
+
     override fun clear() {
         items.clear()
     }

@@ -36,6 +36,22 @@ abstract class PagedDbDataCache<T : PagingRecord> : PagedDataCache<T> {
         }
     }
 
+    override fun update(vararg items: T) {
+        executor.submit {
+            synchronized(this) {
+                updateInDb(items.toSet())
+            }
+        }
+    }
+
+    override fun delete(vararg items: T) {
+        executor.submit {
+            synchronized(this) {
+                deleteFromDb(items.toSet())
+            }
+        }
+    }
+
     override fun clear() {
         executor.submit {
             synchronized(this, this::clearDb)
@@ -45,6 +61,10 @@ abstract class PagedDbDataCache<T : PagingRecord> : PagedDataCache<T> {
     protected abstract fun getPageItemsFromDb(limit: Int, cursor: Long?, order: PagingOrder): List<T>
 
     protected abstract fun cachePageToDb(page: DataPage<T>)
+
+    protected abstract fun updateInDb(items: Collection<T>)
+
+    protected abstract fun deleteFromDb(items: Collection<T>)
 
     protected abstract fun clearDb()
 }

@@ -1,139 +1,246 @@
 package org.tokend.template.data.repository.base.pagination
 
+import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.CompletableSubject
 import org.tokend.sdk.api.base.model.DataPage
-import org.tokend.template.data.repository.base.MultipleItemsRepository
-import org.tokend.template.data.repository.base.RepositoryCache
+import org.tokend.sdk.api.base.params.PagingOrder
+import org.tokend.template.data.repository.base.Repository
+import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.LoadingIndicatorManager
 
 /**
- * Repository for paged data of type [T] with request params of type [R].
+ * Repository that loads and caches paged collection of [T].
+ *
+ * Caching works properly only if data is immutable!
  */
-abstract class PagedDataRepository<T>(itemsCache: RepositoryCache<T>)
-    : MultipleItemsRepository<T>(itemsCache) {
-    private var nextCursor: String? = null
+abstract class PagedDataRepository<T : PagingRecord>(
+        protected open val pagingOrder: PagingOrder,
+        open val cache: PagedDataCache<T>?
+) : Repository() {
+    protected open val pageLimit = DEFAULT_PAGE_LIMIT
+    protected var nextCursor: Long? = null
 
     val isOnFirstPage: Boolean
         get() = nextCursor == null
+                || pagingOrder == PagingOrder.ASC && nextCursor == 0L
 
     var noMoreItems: Boolean = false
         protected set
 
-    abstract fun getPage(nextCursor: String?): Single<DataPage<T>>
+    open val itemsSubject = BehaviorSubject.create<List<T>>()
+    protected open var mItems = mutableListOf<T>()
 
-    protected var loadingDisposable: Disposable? = null
-    protected open fun loadMore(force: Boolean,
-                                resultSubject: CompletableSubject?): Boolean {
-        synchronized(this) {
-            if ((noMoreItems || isLoading) && !force) {
-                return false
+    open val itemsList: List<T>
+        get() = itemsSubject.value ?: listOf()
+
+    protected open val loadingStateManager = LoadingIndicatorManager(
+            showLoading = { isLoading = true },
+            hideLoading = { isLoading = false }
+    )
+
+    open var isLoadingTopPages: Boolean = false
+        protected set
+
+    private var updateResultSubject: CompletableSubject? = null
+    private var loadMoreDuringUpdateDisposable: Disposable? = null
+    override fun update(): Completable = synchronized(this) {
+        isFresh = false
+        mItems.clear()
+        nextCursor = null
+        noMoreItems = false
+
+        val resultSubject = updateResultSubject.let {
+            if (it == null) {
+                val new = CompletableSubject.create()
+                updateResultSubject = new
+                new
+            } else {
+                it
             }
-
-            isLoading = true
-
-            loadingDisposable?.dispose()
-            loadingDisposable = getPage(nextCursor)
-                    .subscribeBy(
-                            onSuccess = {
-                                onNewItems(it.items)
-
-                                isLoading = false
-                                nextCursor = it.nextCursor
-                                noMoreItems = it.isLast
-
-                                updateResultSubject = null
-                                resultSubject?.onComplete()
-                            },
-                            onError = {
-                                isLoading = false
-                                errorsSubject.onNext(it)
-
-                                updateResultSubject = null
-                                resultSubject?.onError(it)
-                            }
-                    )
         }
+
+        val loadMoreSubject = CompletableSubject.create()
+        loadMore(force = true, resultSubject = loadMoreSubject)
+
+        loadMoreDuringUpdateDisposable?.dispose()
+        loadMoreDuringUpdateDisposable = loadMoreSubject
+                .doOnTerminate { updateResultSubject = null }
+                .subscribeBy(
+                        onError = resultSubject::onError,
+                        onComplete = {
+                            isNeverUpdated = false
+                            resultSubject.onComplete()
+                            if (!isFresh && pagingOrder == PagingOrder.DESC) {
+                                loadNewRemoteTopPages()
+                            }
+                        }
+                )
+
+        return@synchronized resultSubject
+    }
+
+    protected open var loadNewRemoteTopPagesDisposable: Disposable? = null
+    /**
+     * Loads new pages to the top of collection if it's in DESC order
+     */
+    open fun loadNewRemoteTopPages() {
+        Log.i(LOG_TAG, "Load new remote top pages")
+        val newestItemId = mItems.firstOrNull()?.getPagingId() ?: 0L
+
+        var nextNewPagesCursor: Long? = newestItemId
+        var noMoreNewPages = false
+
+        isLoadingTopPages = true
+        loadingStateManager.show("new-top-pages")
+
+        val processNextPage = Completable.defer {
+            getAndCacheRemotePage(nextNewPagesCursor, PagingOrder.ASC)
+                    .doOnSuccess { page ->
+                        onNewRemoteTopPage(page)
+                        nextNewPagesCursor = page.nextCursor?.toLong()
+                        noMoreNewPages = page.isLast
+                    }
+                    .ignoreElement()
+        }
+
+        loadNewRemoteTopPagesDisposable?.dispose()
+        loadNewRemoteTopPagesDisposable =
+                processNextPage
+                        .repeatUntil { noMoreNewPages }
+                        .doOnEvent {
+                            isLoadingTopPages = false
+                            loadingStateManager.hide("new-top-pages")
+                        }
+                        .subscribeOn(Schedulers.newThread())
+                        .subscribeBy(
+                                onError = errorsSubject::onNext,
+                                onComplete = {}
+                        )
+    }
+
+    protected open fun onNewRemoteTopPage(page: DataPage<T>) {
+        mItems.addAll(0, page.items.sortedByDescending(PagingRecord::getPagingId))
+        if (page.isLast) {
+            isFresh = true
+        }
+        if (page.items.isNotEmpty()) {
+            broadcast()
+        }
+    }
+
+    /**
+     * Requests next page loading if it's necessary
+     *
+     * @return true if loading will be performed, false otherwise
+     */
+    open fun loadMore(): Boolean =
+            loadMore(force = false, resultSubject = null)
+
+    private var loadingDisposable: Disposable? = null
+    protected open fun loadMore(force: Boolean,
+                                resultSubject: CompletableSubject?): Boolean = synchronized(this) {
+        if ((noMoreItems || (isLoading && !isLoadingTopPages)) && !force) {
+            return false
+        }
+
+        loadingStateManager.show("load-more")
+
+        val getPage: Single<DataPage<T>> =
+                getCachedPage(nextCursor)
+                        .flatMap { cachedPage ->
+                            val wasOnFirstPage = isOnFirstPage
+                            if (cachedPage.isLast) {
+                                Log.i(LOG_TAG, "Cached page is last")
+                                // If cached page is last emmit it
+                                // but ensure that it is true by loading
+                                // the same remote page.
+                                if (cachedPage.items.isNotEmpty()) {
+                                    onNewPage(cachedPage)
+                                }
+                                getAndCacheRemotePage(nextCursor, pagingOrder)
+                                        .doOnSuccess {
+                                            if (wasOnFirstPage) {
+                                                isFresh = true
+                                            }
+                                        }
+                            } else {
+                                Log.i(LOG_TAG, "Accepted cached page")
+                                Single.just(cachedPage)
+                            }
+                        }
+
+        loadingDisposable?.dispose()
+        loadingDisposable = getPage
+                .doOnEvent { _, _ ->
+                    loadingStateManager.hide("load-more")
+                }
+                .compose(ObservableTransformers.defaultSchedulersSingle())
+                .subscribeBy(
+                        onSuccess = {
+                            onNewPage(it)
+                            resultSubject?.onComplete()
+                        },
+                        onError = {
+                            errorsSubject.onNext(it)
+                            resultSubject?.onError(it)
+                        }
+                )
+
+
         return true
     }
 
-    override fun onNewItems(newItems: List<T>) {
-        isNeverUpdated = false
-        if (isOnFirstPage) {
-            isFresh = true
+    protected open fun getAndCacheRemotePage(nextCursor: Long?,
+                                             requiredOrder: PagingOrder): Single<DataPage<T>> {
+        return getRemotePage(nextCursor, requiredOrder)
+                .doOnSuccess(this::cachePage)
+    }
+
+    protected open fun cachePage(page: DataPage<T>) {
+        cache?.cachePage(page)
+    }
+
+    abstract fun getRemotePage(nextCursor: Long?,
+                               requiredOrder: PagingOrder): Single<DataPage<T>>
+
+    open fun getCachedPage(nextCursor: Long?): Single<DataPage<T>> {
+        return cache?.getPage(pageLimit, nextCursor, pagingOrder)
+                ?: Single.just(DataPage(nextCursor?.toString(), emptyList(), true))
+    }
+
+    /**
+     * Called when new page data is loaded, cached or remote.
+     */
+    protected open fun onNewPage(page: DataPage<T>) {
+        mItems.addAll(page.items)
+        nextCursor = page.nextCursor?.toLong()
+        noMoreItems = page.isLast
+        if (noMoreItems) {
+            logDataHash()
         }
-
-        cacheNewItems(newItems)
-
         broadcast()
-
-        if (newItems.isEmpty()) {
-            noMoreItems = true
-        }
     }
 
-    override fun cacheNewItems(newItems: List<T>) {
-        if (isOnFirstPage) {
-            itemsCache.transform(newItems)
-        } else {
-            itemsCache.transform(newItems, { false })
-        }
+    protected open fun broadcast() {
+        itemsSubject.onNext(mItems)
     }
 
-    open fun loadMore(): Boolean {
-        return loadMore(force = false, resultSubject = null)
+    private fun logDataHash() {
+        val hash = mItems
+                .map(PagingRecord::getPagingId)
+                .toTypedArray()
+                .contentHashCode()
+        Log.i(LOG_TAG, "Final data hash is $hash")
     }
 
-    private var updateResultSubject: CompletableSubject? = null
-    private var updateDisposable: Disposable? = null
-
-    override fun update(): Completable {
-        return synchronized(this) {
-            itemsCache.clear()
-            nextCursor = null
-            noMoreItems = false
-
-            isLoading = false
-
-            val resultSubject = updateResultSubject.let {
-                if (it == null) {
-                    val new = CompletableSubject.create()
-                    updateResultSubject = new
-                    new
-                } else {
-                    it
-                }
-            }
-
-            val loadItemsFromDb =
-                    if (isNeverUpdated)
-                        itemsCache.loadFromDb().doOnComplete {
-                            isNeverUpdated = false
-                            broadcast()
-                        }
-                    else
-                        Completable.complete()
-
-            updateDisposable?.dispose()
-            updateDisposable =
-                    loadItemsFromDb
-                            .andThen(Completable.defer {
-                                loadMore(force = true, resultSubject = resultSubject)
-                                Completable.complete()
-                            })
-                            .subscribeBy(
-                                    onComplete = {},
-                                    onError = {}
-                            )
-
-            return@synchronized resultSubject
-        }
-    }
-
-    // TODO: Implement me
-    override fun getItems(): Single<List<T>> {
-        return Single.error(NotImplementedError("Cannot get whole paged resource"))
+    companion object {
+        private const val LOG_TAG = "PagedRepo"
+        const val DEFAULT_PAGE_LIMIT = 20
     }
 }

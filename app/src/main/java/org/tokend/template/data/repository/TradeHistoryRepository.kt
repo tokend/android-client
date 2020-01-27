@@ -8,7 +8,6 @@ import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParams
 import org.tokend.sdk.api.trades.params.OrdersParams
 import org.tokend.template.data.model.TradeHistoryRecord
-import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
 import java.math.BigDecimal
@@ -16,11 +15,12 @@ import java.math.BigDecimal
 class TradeHistoryRepository(
         private val baseAsset: String,
         private val quoteAsset: String,
-        private val apiProvider: ApiProvider,
-        itemsCache: RepositoryCache<TradeHistoryRecord>
-) : PagedDataRepository<TradeHistoryRecord>(itemsCache) {
+        private val apiProvider: ApiProvider
+) : PagedDataRepository<TradeHistoryRecord>(PagingOrder.DESC, null) {
+    override val pageLimit: Int = LIMIT
 
-    override fun getPage(nextCursor: String?): Single<DataPage<TradeHistoryRecord>> {
+    override fun getRemotePage(nextCursor: Long?,
+                               requiredOrder: PagingOrder): Single<DataPage<TradeHistoryRecord>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
@@ -29,9 +29,9 @@ class TradeHistoryRepository(
                 quoteAsset = quoteAsset,
                 orderBookId = 0L,
                 pagingParams = PagingParams(
-                        order = PagingOrder.DESC,
+                        order = requiredOrder,
                         limit = LIMIT,
-                        cursor = nextCursor
+                        cursor = nextCursor?.toString()
                 )
         )
 
@@ -44,11 +44,8 @@ class TradeHistoryRepository(
                 }
     }
 
-    override fun cacheNewItems(newItems: List<TradeHistoryRecord>) {
-        val allItems = itemsCache
-                .items
-                .toMutableList()
-                .also { it.addAll(newItems) }
+    override fun onNewPage(page: DataPage<TradeHistoryRecord>) {
+        val allItems = mItems + page.items
 
         var currentTrendIsPositive = true
         var previousPrice = BigDecimal.ZERO
@@ -64,7 +61,7 @@ class TradeHistoryRepository(
             currentTrendIsPositive = it.hasPositiveTrend
         }
 
-        itemsCache.transform(allItems)
+        super.onNewPage(page)
     }
 
     companion object {

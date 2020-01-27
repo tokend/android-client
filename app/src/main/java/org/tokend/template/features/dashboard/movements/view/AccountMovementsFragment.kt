@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.fragment_account_movements.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.template.R
-import org.tokend.template.data.repository.balancechanges.SuperBalanceChangesRepository
+import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.template.features.wallet.adapter.BalanceChangesAdapter
 import org.tokend.template.fragments.BaseFragment
@@ -27,7 +27,7 @@ class AccountMovementsFragment : BaseFragment() {
             hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
-    private val balanceChangesRepository: SuperBalanceChangesRepository
+    private val balanceChangesRepository: BalanceChangesRepository
         get() = repositoryProvider.balanceChanges(null)
 
     private lateinit var adapter: BalanceChangesAdapter

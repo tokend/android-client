@@ -21,7 +21,7 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.BalancesRepository
-import org.tokend.template.data.repository.balancechanges.SuperBalanceChangesRepository
+import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.template.features.wallet.adapter.BalanceChangesAdapter
 import org.tokend.template.util.Navigator
@@ -41,7 +41,7 @@ class BalanceDetailsActivity : BaseActivity() {
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
 
-    private val balanceChangesRepository: SuperBalanceChangesRepository
+    private val balanceChangesRepository: BalanceChangesRepository
         get() = repositoryProvider.balanceChanges(balanceId)
 
     private val balance: BalanceRecord?

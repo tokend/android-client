@@ -29,6 +29,12 @@ class BalanceChangesPagedDbCache(
     override fun cachePageToDb(page: DataPage<BalanceChange>) =
             dao.insert(*page.items.map(BalanceChangeDbEntity.Companion::fromRecord).toTypedArray())
 
+    override fun updateInDb(items: Collection<BalanceChange>) =
+            dao.update(*items.map(BalanceChangeDbEntity.Companion::fromRecord).toTypedArray())
+
+    override fun deleteFromDb(items: Collection<BalanceChange>) =
+            dao.delete(*items.map(BalanceChangeDbEntity.Companion::fromRecord).toTypedArray())
+
     override fun clearDb() =
             dao.deleteAll()
 }

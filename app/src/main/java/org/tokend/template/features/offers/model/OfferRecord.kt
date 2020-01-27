@@ -1,11 +1,11 @@
 package org.tokend.template.features.offers.model
 
 import org.tokend.sdk.api.generated.resources.OfferResource
-import org.tokend.sdk.utils.ApiDateUtil
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.SimpleAsset
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
+import org.tokend.template.data.repository.base.pagination.PagingRecord
 import org.tokend.wallet.Base32Check
 import java.io.Serializable
 import java.math.BigDecimal
@@ -24,13 +24,15 @@ class OfferRecord(
         var baseBalanceId: String = EMPTY_BALANCE_ID,
         var quoteBalanceId: String = EMPTY_BALANCE_ID,
         val fee: BigDecimal = BigDecimal.ZERO
-) : Serializable {
+) : Serializable, PagingRecord {
 
     val isInvestment: Boolean
         get() = orderBookId != 0L
 
     val isCancellable: Boolean
         get() = baseAmount.signum() > 0
+
+    override fun getPagingId(): Long = id
 
     override fun equals(other: Any?): Boolean {
         return other is OfferRecord && other.id == this.id
