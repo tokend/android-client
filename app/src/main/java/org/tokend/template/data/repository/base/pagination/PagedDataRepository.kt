@@ -74,7 +74,6 @@ abstract class PagedDataRepository<T : PagingRecord>(
                 .subscribeBy(
                         onError = resultSubject::onError,
                         onComplete = {
-                            isNeverUpdated = false
                             resultSubject.onComplete()
                             if (!isFresh && pagingOrder == PagingOrder.DESC) {
                                 loadNewRemoteTopPages()
@@ -126,6 +125,7 @@ abstract class PagedDataRepository<T : PagingRecord>(
 
     protected open fun onNewRemoteTopPage(page: DataPage<T>) {
         mItems.addAll(0, page.items.sortedByDescending(PagingRecord::getPagingId))
+        isNeverUpdated = false
         if (page.isLast) {
             isFresh = true
         }
@@ -221,6 +221,7 @@ abstract class PagedDataRepository<T : PagingRecord>(
         mItems.addAll(page.items)
         nextCursor = page.nextCursor?.toLong()
         noMoreItems = page.isLast
+        isNeverUpdated = false
         if (noMoreItems) {
             logDataHash()
         }
