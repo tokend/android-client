@@ -9,16 +9,18 @@ import org.tokend.template.data.model.AccountRecord
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.model.SystemInfoRecord
+import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
 import org.tokend.template.data.repository.*
 import org.tokend.template.data.repository.assets.AssetChartRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
-import org.tokend.template.data.repository.balancechanges.BalanceChangesCache
+import org.tokend.template.data.repository.balancechanges.BalanceChangesPagedDbCache
 import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.base.MemoryOnlyObjectPersistence
 import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
 import org.tokend.template.data.repository.base.ObjectPersistence
 import org.tokend.template.data.repository.base.ObjectPersistenceOnPrefs
+import org.tokend.template.data.repository.base.pagination.MemoryOnlyPagedDataCache
 import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.db.AppDatabase
 import org.tokend.template.extensions.getOrPut
@@ -31,7 +33,6 @@ import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistence
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.storage.LocalAccountRepository
-import org.tokend.template.features.offers.repository.OffersCache
 import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.polls.repository.PollsCache
 import org.tokend.template.features.polls.repository.PollsRepository
@@ -123,8 +124,8 @@ class RepositoryProviderImpl(
                 walletInfoProvider,
                 apiProvider,
                 urlConfigProvider,
-                mapper,
-                MemoryOnlyRepositoryCache())
+                mapper
+        )
     }
 
     private val filteredSalesRepository: SalesRepository by lazy {
@@ -132,8 +133,8 @@ class RepositoryProviderImpl(
                 walletInfoProvider,
                 apiProvider,
                 urlConfigProvider,
-                mapper,
-                MemoryOnlyRepositoryCache())
+                mapper
+        )
     }
 
     private val contactsRepository: ContactsRepository by lazy {
@@ -217,7 +218,7 @@ class RepositoryProviderImpl(
     override fun offers(onlyPrimaryMarket: Boolean): OffersRepository {
         val key = "$onlyPrimaryMarket"
         return offersRepositories.getOrPut(key) {
-            OffersRepository(apiProvider, walletInfoProvider, onlyPrimaryMarket, OffersCache())
+            OffersRepository(apiProvider, walletInfoProvider, onlyPrimaryMarket)
         }
     }
 
@@ -250,6 +251,12 @@ class RepositoryProviderImpl(
     }
 
     override fun balanceChanges(balanceId: String?): BalanceChangesRepository {
+        val cache =
+                if (database != null)
+                    BalanceChangesPagedDbCache(balanceId, database.balanceChanges)
+                else
+                    MemoryOnlyPagedDataCache<BalanceChange>()
+
         return balanceChangesRepositoriesByBalanceId.getOrPut(balanceId.toString()) {
             BalanceChangesRepository(
                     balanceId,
@@ -257,7 +264,7 @@ class RepositoryProviderImpl(
                     apiProvider,
                     DefaultParticipantEffectConverter(),
                     accountDetails(),
-                    BalanceChangesCache()
+                    cache
             )
         }
     }
@@ -267,8 +274,7 @@ class RepositoryProviderImpl(
             TradeHistoryRepository(
                     base,
                     quote,
-                    apiProvider,
-                    MemoryOnlyRepositoryCache()
+                    apiProvider
             )
         }
     }

@@ -14,7 +14,6 @@ import org.tokend.sdk.api.v3.offers.params.OfferParamsV3
 import org.tokend.sdk.api.v3.offers.params.OffersPageParamsV3
 import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.data.repository.SystemInfoRepository
-import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
@@ -32,10 +31,10 @@ import org.tokend.wallet.xdr.Operation
 class OffersRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
-        private val onlyPrimary: Boolean,
-        itemsCache: RepositoryCache<OfferRecord>
-) : PagedDataRepository<OfferRecord>(itemsCache) {
-    override fun getPage(nextCursor: String?): Single<DataPage<OfferRecord>> {
+        private val onlyPrimary: Boolean
+) : PagedDataRepository<OfferRecord>(PagingOrder.DESC, null) {
+    override fun getRemotePage(nextCursor: Long?,
+                               requiredOrder: PagingOrder): Single<DataPage<OfferRecord>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
@@ -48,8 +47,9 @@ class OffersRepository(
                 quoteAsset = null,
                 isBuy = if (onlyPrimary) true else null,
                 pagingParams = PagingParamsV2(
-                        page = nextCursor,
-                        order = PagingOrder.DESC
+                        page = nextCursor?.toString(),
+                        order = requiredOrder,
+                        limit = pageLimit
                 ),
                 include = listOf(
                         OfferParamsV3.Includes.BASE_ASSET,
@@ -225,9 +225,8 @@ class OffersRepository(
                     isLoading = false
                 }
                 .doOnSuccess {
-                    itemsCache.transform(emptyList()) {
-                        it.id == offer.id
-                    }
+                    mItems.remove(offer)
+                    cache?.delete(offer)
                     broadcast()
                 }
     }

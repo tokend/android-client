@@ -9,7 +9,6 @@ import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.sales.model.SaleState
 import org.tokend.sdk.api.v3.sales.params.SaleParamsV3
 import org.tokend.sdk.api.v3.sales.params.SalesPageParamsV3
-import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
@@ -21,13 +20,14 @@ class SalesRepository(
         private val walletInfoProvider: WalletInfoProvider,
         private val apiProvider: ApiProvider,
         private val urlConfigProvider: UrlConfigProvider,
-        private val mapper: ObjectMapper,
-        itemsCache: RepositoryCache<SaleRecord>
-) : PagedDataRepository<SaleRecord>(itemsCache) {
+        private val mapper: ObjectMapper
+) : PagedDataRepository<SaleRecord>(PagingOrder.DESC, null) {
+    override val pageLimit: Int = LIMIT
 
     private var baseAsset: String? = null
 
-    override fun getPage(nextCursor: String?): Single<DataPage<SaleRecord>> {
+    override fun getRemotePage(nextCursor: Long?,
+                               requiredOrder: PagingOrder): Single<DataPage<SaleRecord>> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
@@ -36,9 +36,9 @@ class SalesRepository(
 
         val requestParams = SalesPageParamsV3(
                 pagingParams = PagingParamsV2(
-                        page = nextCursor,
-                        order = PagingOrder.DESC,
-                        limit = DEFAULT_LIMIT
+                        page = nextCursor?.toString(),
+                        order = requiredOrder,
+                        limit = pageLimit
                 ),
                 state = SaleState.OPEN,
                 baseAsset = baseAsset,
@@ -92,6 +92,6 @@ class SalesRepository(
     }
 
     companion object {
-        private const val DEFAULT_LIMIT = 10
+        private const val LIMIT = 10
     }
 }

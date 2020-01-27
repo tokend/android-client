@@ -19,8 +19,6 @@ import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
-import org.tokend.template.features.signin.logic.PostSignInManager
-import org.tokend.template.features.signin.logic.PostSignInManagerFactory
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.logic.fingerprint.FingerprintAuthManager
 import org.tokend.template.util.Navigator

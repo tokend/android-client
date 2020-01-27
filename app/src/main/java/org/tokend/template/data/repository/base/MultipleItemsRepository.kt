@@ -120,8 +120,10 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
             val loadItemsFromDb =
                     if (isNeverUpdated)
                         itemsCache.loadFromDb().doOnComplete {
-                            isNeverUpdated = false
-                            broadcast()
+                            if (itemsCache.items.isNotEmpty()) {
+                                isNeverUpdated = false
+                                broadcast()
+                            }
                         }
                     else
                         Completable.complete()

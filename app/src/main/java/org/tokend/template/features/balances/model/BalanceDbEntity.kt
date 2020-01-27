@@ -1,18 +1,18 @@
 package org.tokend.template.features.balances.model
 
-import android.arch.persistence.room.*
-import org.tokend.sdk.factory.GsonFactory
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Index
+import android.arch.persistence.room.PrimaryKey
 import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
-import org.tokend.template.data.model.SimpleAsset
 import java.math.BigDecimal
 
 @Entity(
         tableName = "balance",
         indices = [Index("asset_code")]
 )
-@TypeConverters(BalanceDbEntity.Converters::class)
 data class BalanceDbEntity(
         @PrimaryKey
         @ColumnInfo(name = "id")
@@ -28,20 +28,6 @@ data class BalanceDbEntity(
         @ColumnInfo(name = "conversion_asset")
         val conversionAsset: Asset?
 ) {
-    class Converters {
-        private val gson = GsonFactory().getBaseGson()
-
-        @TypeConverter
-        fun assetFromJson(value: String?): Asset? {
-            return value?.let { gson.fromJson(value, SimpleAsset::class.java) }
-        }
-
-        @TypeConverter
-        fun assetToJson(value: Asset?): String? {
-            return value?.let { gson.toJson(SimpleAsset(it)) }
-        }
-    }
-
     fun toRecord(assetsMap: Map<String, AssetRecord>) = BalanceRecord(
             id = id,
             asset = assetsMap.getValue(assetCode),

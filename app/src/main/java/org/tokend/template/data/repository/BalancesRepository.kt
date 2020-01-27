@@ -29,7 +29,6 @@ import org.tokend.wallet.xdr.op_extensions.CreateBalanceOp
 import retrofit2.HttpException
 import java.math.BigDecimal
 import java.math.MathContext
-import java.util.concurrent.TimeUnit
 
 class BalancesRepository(
         private val apiProvider: ApiProvider,

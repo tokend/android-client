@@ -13,7 +13,7 @@ import org.tokend.template.data.model.history.SimpleFeeRecord
 import org.tokend.template.data.model.history.converter.ParticipantEffectConverter
 import org.tokend.template.data.model.history.details.BalanceChangeCause
 import org.tokend.template.data.repository.AccountDetailsRepository
-import org.tokend.template.data.repository.base.RepositoryCache
+import org.tokend.template.data.repository.base.pagination.PagedDataCache
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.features.send.model.PaymentRequest
@@ -32,16 +32,16 @@ class BalanceChangesRepository(
         private val apiProvider: ApiProvider,
         private val participantEffectConverter: ParticipantEffectConverter,
         private val accountDetailsRepository: AccountDetailsRepository?,
-        itemsCache: RepositoryCache<BalanceChange>
-) : PagedDataRepository<BalanceChange>(itemsCache) {
-
+        cache: PagedDataCache<BalanceChange>
+) : PagedDataRepository<BalanceChange>(PagingOrder.DESC, cache) {
     init {
         if (balanceId == null && accountId == null) {
             throw IllegalArgumentException("Balance or account ID must be specified")
         }
     }
 
-    override fun getPage(nextCursor: String?): Single<DataPage<BalanceChange>> {
+    override fun getRemotePage(nextCursor: Long?,
+                               requiredOrder: PagingOrder): Single<DataPage<BalanceChange>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
@@ -57,9 +57,9 @@ class BalanceChangesRepository(
                                 )
                                 .withPagingParams(
                                         PagingParamsV2(
-                                                order = PagingOrder.DESC,
-                                                limit = LIMIT,
-                                                page = nextCursor
+                                                order = requiredOrder,
+                                                limit = pageLimit,
+                                                page = nextCursor?.toString()
                                         )
                                 )
                                 .apply {
@@ -111,9 +111,16 @@ class BalanceChangesRepository(
         }
     }
 
+    override fun cachePage(page: DataPage<BalanceChange>) {
+        // Cache only account-wide movements.
+        if (balanceId == null) {
+            super.cachePage(page)
+        }
+    }
+
     fun addPayment(request: PaymentRequest) {
         val balanceChange = BalanceChange(
-                id = request.reference,
+                id = System.currentTimeMillis(),
                 amount = request.amount,
                 date = Date(),
                 asset = request.asset,
@@ -126,11 +133,7 @@ class BalanceChangesRepository(
                 cause = BalanceChangeCause.Payment(request)
         )
 
-        itemsCache.add(balanceChange)
+        mItems.add(0, balanceChange)
         broadcast()
-    }
-
-    companion object {
-        private const val LIMIT = 20
     }
 }

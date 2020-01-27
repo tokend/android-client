@@ -83,3 +83,6 @@
 
 # Legacy Picasso downloader
 -dontwarn com.squareup.picasso.OkHttpDownloader
+
+# Balance changes caching
+-keepnames class package org.tokend.template.data.model.history.** { *; }

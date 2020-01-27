@@ -7,6 +7,7 @@ import org.tokend.sdk.api.generated.resources.SaleQuoteAssetResource
 import org.tokend.sdk.api.generated.resources.SaleResource
 import org.tokend.sdk.api.sales.model.SaleState
 import org.tokend.template.data.model.*
+import org.tokend.template.data.repository.base.pagination.PagingRecord
 import org.tokend.wallet.xdr.SaleType
 import java.io.Serializable
 import java.math.BigDecimal
@@ -31,7 +32,7 @@ class SaleRecord(
         val currentCap: BigDecimal,
         val youtubeVideo: YoutubeVideo?,
         val ownerAccountId: String
-) : Serializable, RecordWithLogo, RecordWithDescription {
+) : Serializable, RecordWithLogo, RecordWithDescription, PagingRecord {
 
     val isAvailable: Boolean
         get() = !isUpcoming && !isEnded
@@ -47,6 +48,8 @@ class SaleRecord(
 
     val isCanceled: Boolean
         get() = state == SaleState.CANCELED
+
+    override fun getPagingId(): Long = id
 
     override fun equals(other: Any?): Boolean {
         return other is SaleRecord && other.id == this.id
