@@ -10,7 +10,8 @@ import java.math.BigDecimal
 import java.util.*
 
 @Entity(
-        tableName = "balance_change"
+        tableName = "balance_change",
+        indices = [Index("balance_id")]
 )
 @TypeConverters(BalanceChangeDbEntity.Converters::class)
 data class BalanceChangeDbEntity(
@@ -54,10 +55,12 @@ data class BalanceChangeDbEntity(
 
         @TypeConverter
         fun causeToJson(value: BalanceChangeCause?): String? {
-            val container = value?.let { BalanceChangeCauseContainer(
-                    className = it::class.java.name,
-                    data = gson.toJsonTree(it)
-            ) }
+            val container = value?.let {
+                BalanceChangeCauseContainer(
+                        className = it::class.java.name,
+                        data = gson.toJsonTree(it)
+                )
+            }
                     ?: return null
             return gson.toJson(container)
         }
@@ -85,15 +88,17 @@ data class BalanceChangeDbEntity(
     )
 
     companion object {
-        fun fromRecord(record: BalanceChange) = record.run { BalanceChangeDbEntity(
-                id = id,
-                cause = cause,
-                action = action.toString(),
-                fee = fee,
-                amount = amount,
-                asset = asset,
-                balanceId = balanceId,
-                date = date
-        ) }
+        fun fromRecord(record: BalanceChange) = record.run {
+            BalanceChangeDbEntity(
+                    id = id,
+                    cause = cause,
+                    action = action.toString(),
+                    fee = fee,
+                    amount = amount,
+                    asset = asset,
+                    balanceId = balanceId,
+                    date = date
+            )
+        }
     }
 }

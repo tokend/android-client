@@ -1,9 +1,11 @@
 package org.tokend.template.db
 
+import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverter
 import android.arch.persistence.room.TypeConverters
+import android.arch.persistence.room.migration.Migration
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.data.model.Asset
@@ -65,4 +67,26 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val balances: BalancesDao
     abstract val assets: AssetsDao
     abstract val balanceChanges: BalanceChangesDao
+
+    companion object {
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) = database.run {
+                beginTransaction()
+                try {
+                    execSQL("""
+                                    CREATE TABLE `balance_change` (`id` INTEGER NOT NULL, 
+                                    `action` TEXT NOT NULL, 
+                                    `amount` TEXT NOT NULL, `asset` TEXT NOT NULL,
+                                     `balance_id` TEXT NOT NULL, `fee` TEXT NOT NULL,
+                                      `date` INTEGER NOT NULL, `cause` TEXT NOT NULL,
+                                       PRIMARY KEY(`id`))
+                                """.trimIndent())
+                    execSQL("CREATE INDEX `index_balance_change_balance_id` ON `balance_change` (`balance_id`)")
+                    setTransactionSuccessful()
+                } finally {
+                    endTransaction()
+                }
+            }
+        }
+    }
 }
