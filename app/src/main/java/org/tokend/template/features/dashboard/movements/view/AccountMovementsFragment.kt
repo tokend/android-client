@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.fragment_account_movements.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.template.R
-import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.balancechanges.SuperBalanceChangesRepository
 import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
 import org.tokend.template.features.wallet.adapter.BalanceChangesAdapter
@@ -67,6 +66,7 @@ class AccountMovementsFragment : BaseFragment() {
 
         history_list.adapter = adapter
         history_list.layoutManager = LinearLayoutManager(context!!)
+        history_list.setHasFixedSize(true)
 
         history_list.listenBottomReach({ adapter.getDataItemCount() }) {
             balanceChangesRepository.loadMore() || balanceChangesRepository.noMoreItems
@@ -88,10 +88,13 @@ class AccountMovementsFragment : BaseFragment() {
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe { loading ->
                     if (loading) {
-                        if (balanceChangesRepository.isOnFirstPage) {
-                            loadingIndicator.show("transactions")
-                        } else {
+                        if (!balanceChangesRepository.isOnFirstPage) {
                             adapter.showLoadingFooter()
+                        }
+
+                        if (balanceChangesRepository.isOnFirstPage
+                                || balanceChangesRepository.isLoadingTopPages) {
+                            loadingIndicator.show("transactions")
                         }
                     } else {
                         loadingIndicator.hide("transactions")

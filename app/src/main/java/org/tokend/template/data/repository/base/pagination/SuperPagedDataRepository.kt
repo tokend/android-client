@@ -5,11 +5,14 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.CompletableSubject
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.template.data.repository.base.Repository
+import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.view.util.LoadingIndicatorManager
 
 /**
  * Repository that loads and caches paged collection of [T].
@@ -36,13 +39,20 @@ abstract class SuperPagedDataRepository<T : PagingRecord>(
     open val itemsList: List<T>
         get() = itemsSubject.value ?: listOf()
 
+    protected open val loadingStateManager = LoadingIndicatorManager(
+            showLoading = { isLoading = true },
+            hideLoading = { isLoading = false }
+    )
+
+    open var isLoadingTopPages: Boolean = false
+        protected set
+
     private var updateResultSubject: CompletableSubject? = null
     override fun update(): Completable = synchronized(this) {
+        isFresh = false
         mItems.clear()
         nextCursor = null
         noMoreItems = false
-
-        isLoading = false
 
         val resultSubject = updateResultSubject.let {
             if (it == null) {
@@ -54,9 +64,74 @@ abstract class SuperPagedDataRepository<T : PagingRecord>(
             }
         }
 
-        loadMore(force = true, resultSubject = resultSubject)
+        val loadMoreSubject = CompletableSubject.create()
+        loadMore(force = true, resultSubject = loadMoreSubject)
+
+        loadMoreSubject.subscribeBy(
+                onError = resultSubject::onError,
+                onComplete = {
+                    resultSubject.onComplete()
+                    if (itemsList.isNotEmpty() && pagingOrder == PagingOrder.DESC) {
+                        loadNewRemoteTopPages()
+                    }
+                }
+        )
 
         return@synchronized resultSubject
+                .doOnComplete {
+                    isFresh = true
+                    isNeverUpdated = false
+                }
+                .doOnTerminate { updateResultSubject = null }
+    }
+
+    protected open var loadNewRemoteTopPagesDisposable: Disposable? = null
+    /**
+     * Loads new pages to the top of collection if it's in DESC order
+     */
+    open fun loadNewRemoteTopPages() {
+        Log.i(LOG_TAG, "Load new remote top items")
+        val newestItemId = mItems.firstOrNull()?.getPagingId() ?: 0L
+
+        var nextNewPagesCursor: Long? = newestItemId
+        var noMoreNewPages = false
+
+        isLoadingTopPages = true
+        loadingStateManager.show("new-top-pages")
+
+        val processNextPage = Completable.defer {
+            getAndCacheRemotePage(nextNewPagesCursor, PagingOrder.ASC)
+                    .doOnSuccess { page ->
+                        onNewRemoteTopPage(page)
+                        nextNewPagesCursor = page.nextCursor?.toLong()
+                        noMoreNewPages = page.isLast
+                    }
+                    .ignoreElement()
+        }
+
+        loadNewRemoteTopPagesDisposable?.dispose()
+        loadNewRemoteTopPagesDisposable =
+                processNextPage
+                        .repeatUntil { noMoreNewPages }
+                        .doOnEvent {
+                            isLoadingTopPages = false
+                            loadingStateManager.hide("new-top-pages")
+                        }
+                        .subscribeOn(Schedulers.newThread())
+                        .subscribeBy(
+                                onError = errorsSubject::onNext,
+                                onComplete = {}
+                        )
+    }
+
+    protected open fun onNewRemoteTopPage(page: DataPage<T>) {
+        mItems.addAll(0, page.items.sortedByDescending(PagingRecord::getPagingId))
+        if (page.isLast) {
+            isFresh = true
+        }
+        if (page.items.isNotEmpty()) {
+            broadcast()
+        }
     }
 
     /**
@@ -70,49 +145,34 @@ abstract class SuperPagedDataRepository<T : PagingRecord>(
     private var loadingDisposable: Disposable? = null
     protected open fun loadMore(force: Boolean,
                                 resultSubject: CompletableSubject?): Boolean = synchronized(this) {
-        if ((noMoreItems || isLoading) && !force) {
+        if ((noMoreItems || (isLoading && !isLoadingTopPages)) && !force) {
             return false
         }
 
-        isLoading = true
+        loadingStateManager.show("load-more")
 
         val getPage: Single<DataPage<T>> =
-                if (pagingOrder == PagingOrder.DESC && isOnFirstPage)
-                // First page in DESC order is a source of new items,
-                // it must be actual so load the remote one.
-                    getAndCacheRemotePage(nextCursor)
-                            // But if remote loading failed we can display cached one.
-                            .onErrorResumeNext { error ->
-                                getCachedPage(nextCursor)
-                                        .doOnSuccess { cachedPage ->
-                                            if (cachedPage.items.isNotEmpty()) {
-                                                onNewPage(cachedPage)
-                                            }
-                                        }
-                                        .flatMap { Single.error<DataPage<T>>(error) }
-                            }
-                else
-                // Otherwise we prefer lo load cached data as it is immutable.
-                    getCachedPage(nextCursor)
-                            .flatMap { cachedPage ->
-                                if (cachedPage.isLast) {
-                                    // If cached page is last emmit it
-                                    // but ensure that it is true by loading
-                                    // the same remote page.
-                                    if (cachedPage.items.isNotEmpty()) {
-                                        onNewPage(cachedPage)
-                                    }
-                                    getAndCacheRemotePage(nextCursor)
-                                } else {
-                                    Single.just(cachedPage)
+                getCachedPage(nextCursor)
+                        .flatMap { cachedPage ->
+                            if (cachedPage.isLast) {
+                                // If cached page is last emmit it
+                                // but ensure that it is true by loading
+                                // the same remote page.
+                                if (cachedPage.items.isNotEmpty()) {
+                                    onNewPage(cachedPage)
                                 }
+                                getAndCacheRemotePage(nextCursor, pagingOrder)
+                            } else {
+                                Single.just(cachedPage)
                             }
+                        }
 
         loadingDisposable?.dispose()
         loadingDisposable = getPage
                 .doOnEvent { _, _ ->
-                    isLoading = false
+                    loadingStateManager.hide("load-more")
                 }
+                .compose(ObservableTransformers.defaultSchedulersSingle())
                 .subscribeBy(
                         onSuccess = {
                             onNewPage(it)
@@ -128,8 +188,9 @@ abstract class SuperPagedDataRepository<T : PagingRecord>(
         return true
     }
 
-    protected open fun getAndCacheRemotePage(nextCursor: Long?): Single<DataPage<T>> {
-        return getRemotePage(nextCursor)
+    protected open fun getAndCacheRemotePage(nextCursor: Long?,
+                                             requiredOrder: PagingOrder): Single<DataPage<T>> {
+        return getRemotePage(nextCursor, requiredOrder)
                 .doOnSuccess(this::cachePage)
     }
 
@@ -137,7 +198,8 @@ abstract class SuperPagedDataRepository<T : PagingRecord>(
         cache?.cachePage(page)
     }
 
-    abstract fun getRemotePage(nextCursor: Long?): Single<DataPage<T>>
+    abstract fun getRemotePage(nextCursor: Long?,
+                               requiredOrder: PagingOrder): Single<DataPage<T>>
 
     open fun getCachedPage(nextCursor: Long?): Single<DataPage<T>> {
         return cache?.getPage(pageLimit, nextCursor, pagingOrder)
@@ -149,10 +211,6 @@ abstract class SuperPagedDataRepository<T : PagingRecord>(
      */
     protected open fun onNewPage(page: DataPage<T>) {
         mItems.addAll(page.items)
-        isNeverUpdated = false
-        if (isOnFirstPage) {
-            isFresh = true
-        }
         nextCursor = page.nextCursor?.toLong()
         noMoreItems = page.isLast
         if (noMoreItems) {

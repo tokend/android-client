@@ -26,7 +26,9 @@ class MemoryOnlyPagedDataCache<T : PagingRecord> : PagedDataCache<T> {
                         filter { it.getPagingId() > actualCursor }
                 }
                 .toList()
-                .slice(0 until limit)
+                .run {
+                    slice(0 until kotlin.math.min(limit, size))
+                }
 
         return DataPage(
                 nextCursor = pageItems.lastOrNull()?.getPagingId()?.toString()

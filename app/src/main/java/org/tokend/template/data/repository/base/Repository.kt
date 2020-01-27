@@ -1,8 +1,10 @@
 package org.tokend.template.data.repository.base
 
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 /**
  * Contains common repository logic. Is a parent of all repositories.
@@ -14,11 +16,20 @@ abstract class Repository {
     val errorsSubject: PublishSubject<Throwable> =
             PublishSubject.create<Throwable>()
 
+    protected open val mLoadingSubject: BehaviorSubject<Boolean> =
+            BehaviorSubject.createDefault(false)
+
     /**
      * Emits repository loading states.
      * @see Repository.isLoading
      */
-    val loadingSubject: BehaviorSubject<Boolean> = BehaviorSubject.createDefault(false)
+    val loadingSubject: Observable<Boolean> by lazy {
+        var postDebounceValue: Boolean? = null
+        mLoadingSubject
+                .debounce(20, TimeUnit.MILLISECONDS)
+                .filter { it != postDebounceValue }
+                .doOnNext { postDebounceValue = it }
+    }
 
     /**
      * Indicates whether repository is loading something now.
@@ -27,7 +38,7 @@ abstract class Repository {
         protected set(value) {
             if (field != value) {
                 field = value
-                loadingSubject.onNext(value)
+                mLoadingSubject.onNext(value)
             }
             field = value
         }

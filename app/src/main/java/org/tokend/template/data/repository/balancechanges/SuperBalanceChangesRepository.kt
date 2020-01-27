@@ -33,7 +33,8 @@ class SuperBalanceChangesRepository(
         }
     }
 
-    override fun getRemotePage(nextCursor: Long?): Single<DataPage<BalanceChange>> {
+    override fun getRemotePage(nextCursor: Long?,
+                               requiredOrder: PagingOrder): Single<DataPage<BalanceChange>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
@@ -49,7 +50,7 @@ class SuperBalanceChangesRepository(
                                 )
                                 .withPagingParams(
                                         PagingParamsV2(
-                                                order = pagingOrder,
+                                                order = requiredOrder,
                                                 limit = pageLimit,
                                                 page = nextCursor?.toString()
                                         )

@@ -31,7 +31,6 @@ import org.tokend.template.features.kyc.storage.KycStateRepository
 import org.tokend.template.features.polls.view.PollsFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.settings.GeneralSettingsFragment
-import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
 import org.tokend.template.features.trade.pairs.view.TradeAssetPairsFragment
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
