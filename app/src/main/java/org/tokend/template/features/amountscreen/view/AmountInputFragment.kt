@@ -28,12 +28,12 @@ import kotlin.math.roundToInt
 open class AmountInputFragment : BaseFragment() {
     protected lateinit var amountWrapper: AmountEditTextWrapper
 
-    protected open val resultSubject: Subject<in AmountInputResult> = PublishSubject.create()
+    protected open val resultSubject: Subject<AmountInputResult> = PublishSubject.create()
 
     /**
      * Emits entered amount as [AmountInputResult]
      */
-    open val resultObservable: Observable<in AmountInputResult>
+    open val resultObservable: Observable<AmountInputResult>
         get() = resultSubject
 
     protected val balancesRepository: BalancesRepository

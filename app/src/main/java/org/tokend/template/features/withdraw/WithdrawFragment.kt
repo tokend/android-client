@@ -146,7 +146,6 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
         fragment
                 .resultObservable
-                .map { it as AmountInputResult }
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribeBy(
                         onNext = this::onAmountEntered,
