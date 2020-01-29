@@ -7,13 +7,6 @@
 
     <include layout="@layout/appbar" />
 
-    <!--    <org.tokend.template.features.dashboard.view.SwipeTogglingViewPager-->
-    <!--        android:id="@+id/pager"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:layout_above="@id/bottom_tabs"-->
-    <!--        android:layout_below="@id/appbar" />-->
-
     <FrameLayout
         android:id="@+id/fragment_container_layout"
         android:layout_width="match_parent"
