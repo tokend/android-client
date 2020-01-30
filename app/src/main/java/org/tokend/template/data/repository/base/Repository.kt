@@ -24,11 +24,9 @@ abstract class Repository {
      * @see Repository.isLoading
      */
     val loadingSubject: Observable<Boolean> by lazy {
-        var postDebounceValue: Boolean? = null
         mLoadingSubject
                 .debounce(20, TimeUnit.MILLISECONDS)
-                .filter { it != postDebounceValue }
-                .doOnNext { postDebounceValue = it }
+                .map { isLoading }
     }
 
     /**
