@@ -9,11 +9,13 @@ import org.tokend.template.features.localaccount.model.LocalAccount
 
 class LocalAccountRepository(
         private val localAccountPersistence: ObjectPersistence<LocalAccount>
-): SingleItemRepository<LocalAccount>() {
+) : SingleItemRepository<LocalAccount>() {
     override fun getItem(): Maybe<LocalAccount> {
         return Maybe.defer {
             localAccountPersistence.loadItem().toMaybe()
-        }.subscribeOn(Schedulers.newThread())
+        }
+                .subscribeOn(Schedulers.newThread())
+                .doOnComplete { isNeverUpdated = false }
     }
 
     fun useAccount(newAccount: LocalAccount) {
