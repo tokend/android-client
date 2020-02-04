@@ -265,7 +265,7 @@ class AssetChartCard : LinearLayout {
         val dataSet = LineDataSet(chartData, "")
 
         with(dataSet) {
-            color = ContextCompat.getColor(context, R.color.primary)
+            color = ContextCompat.getColor(context, R.color.accent)
             lineWidth = CHART_LINE_WIDTH
 
             setDrawFilled(true)

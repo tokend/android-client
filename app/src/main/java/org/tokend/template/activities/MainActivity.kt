@@ -150,7 +150,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withActivity(this)
                 .withAccountHeader(R.layout.navigation_drawer_header)
                 .withHeaderBackground(
-                        ColorDrawable(ContextCompat.getColor(this, R.color.white))
+                        ColorDrawable(ContextCompat.getColor(this, R.color.material_drawer_background))
                 )
                 .withTextColor(ContextCompat.getColor(this, R.color.primary_text))
                 .withSelectionListEnabledForSingleProfile(false)

@@ -442,7 +442,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         val type = currentAsset?.externalSystemType
                 ?: return
 
-        val progress = ProgressDialogFactory.getDialog(context)
+        val progress = ProgressDialogFactory.getDialog(requireContext())
 
         BindExternalAccountUseCase(
                 asset,

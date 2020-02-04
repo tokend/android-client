@@ -20,21 +20,22 @@
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
-    <style name="SplashTheme" parent="AppTheme.NoActionBar.LightStatusBar">
+    <style name="AppTheme.NoActionBar.TransparentStatusBar" parent="AppTheme.NoActionBar">
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
+    </style>
+
+    <style name="SplashTheme" parent="AppTheme.NoActionBar.TransparentStatusBar">
         <item name="android:windowBackground">@drawable/splash_background</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent
         </item>
     </style>
 
-    <style name="AppTheme.NoActionBar.LightStatusBar" parent="AppTheme.NoActionBar">
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/white</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
-    </style>
-
     <style name="EditText">
+        <item name="met_baseColor">@color/primary_text</item>
+        <item name="met_textColor">@color/primary_text</item>
         <item name="met_textColorHint">@color/secondary_text</item>
         <item name="met_primaryColor">@color/secondary_text</item>
         <item name="met_errorColor">@color/error</item>
@@ -80,7 +81,7 @@
         <item name="android:textSize">@dimen/text_size_hint</item>
     </style>
 
-    <style name="ToolbarStyle.White" parent="ThemeOverlay.AppCompat.Light">
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
         <item name="colorControlNormal">@color/icons</item>
         <item name="android:textColorSecondary">@color/secondary_text</item>
         <item name="android:textColorPrimary">@color/primary_text</item>
@@ -91,18 +92,16 @@
         <item name="subtitleTextAppearance">@style/ToolbarSubtitleAppearance</item>
     </style>
 
-    <style name="AppbarTheme" parent="ThemeOverlay.AppCompat.ActionBar" />
-
-    <style name="AppbarTheme.White" parent="AppbarTheme">
+    <style name="AppbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="elevation">0dp</item>
-        <item name="android:background">@color/white</item>
+        <item name="android:background">@color/primary</item>
     </style>
 
     <style name="TabPicker">
         <item name="tabGravity">fill</item>
         <item name="tabMode">scrollable</item>
-        <item name="tabSelectedTextColor">@color/primary</item>
-        <item name="tabIndicatorColor">@color/primary</item>
+        <item name="tabSelectedTextColor">@color/primary_action</item>
+        <item name="tabIndicatorColor">@color/primary_action</item>
         <item name="tabTextColor">@color/primary_text</item>
         <item name="android:requiresFadingEdge">horizontal</item>
         <item name="android:fadingEdgeLength">@dimen/standard_margin</item>
@@ -115,7 +114,7 @@
 
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/primary_action</item>
-
+        <item name="android:colorBackground">@color/background</item>
         <item name="android:textColor">@null</item>
         <item name="android:textSize">@null</item>
     </style>

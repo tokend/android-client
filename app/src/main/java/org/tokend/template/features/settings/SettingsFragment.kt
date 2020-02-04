@@ -2,7 +2,7 @@ package org.tokend.template.features.settings
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.v4.content.res.ResourcesCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.preference.ListPreference
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
@@ -88,7 +88,7 @@ abstract class SettingsFragment : PreferenceFragmentCompat(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.white, null))
+        view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background))
 
         listView.addItemDecoration(
                 PreferenceDividerDecoration(context,

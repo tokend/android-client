@@ -203,7 +203,7 @@ open class AssetDetailsFragment : BaseFragment() {
     }
 
     private fun createBalance() {
-        val progress = ProgressDialogFactory.getDialog(context)
+        val progress = ProgressDialogFactory.getDialog(requireContext())
 
         CreateBalanceUseCase(
                 asset.code,

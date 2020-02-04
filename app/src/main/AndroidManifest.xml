@@ -25,7 +25,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar.LightStatusBar"
+        android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
@@ -80,18 +80,22 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.withdraw.WithdrawalConfirmationActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.assets.details.view.AssetDetailsActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.send.PaymentConfirmationActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.offers.OfferConfirmationActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.invest.view.InvestmentConfirmationActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.offers.OffersActivity"
@@ -128,33 +132,43 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.AmlAlertDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.IssuanceDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.OfferMatchDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.InvestmentDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.PaymentDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.WithdrawalDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.offers.view.details.PendingOfferDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.offers.view.details.PendingInvestmentDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.AssetPairUpdateDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.wallet.details.DefaultBalanceChangeDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.trade.TradeActivity"
@@ -176,6 +190,7 @@
         <activity
             android:name=".features.signin.unlock.UnlockAppActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".features.qr.CaptureActivityPortrait"
@@ -185,6 +200,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".features.wallet.view.BalanceDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".features.assets.buy.BuyWithAtomicSwapActivity"

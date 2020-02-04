@@ -57,7 +57,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    app:contentScrim="@color/white"
+                    app:contentScrim="@color/background"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed"
                     app:scrimAnimationDuration="@android:integer/config_shortAnimTime"
                     app:titleEnabled="false">

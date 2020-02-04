@@ -98,7 +98,7 @@ open class OfferConfirmationActivity : BaseActivity() {
     }
 
     private fun initToolbar() {
-        toolbar.background = ColorDrawable(Color.WHITE)
+        toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.background))
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener { finish() }
     }

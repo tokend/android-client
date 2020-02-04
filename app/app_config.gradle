@@ -35,10 +35,10 @@ ext {
 
     // Primary color of the brand,
     // can be used as a color of app toolbar
-    color_primary = '#48446a'
+    color_primary = '#ffffff'
     // Primary dark color - darker version of primary color,
     // can be used as a color of app status bar
-    color_primary_dark = '#323051'
+    color_primary_dark = '#ffffff'
 
     // Background color - used as a background color for screens
     color_background = '#ffffff'
@@ -62,7 +62,7 @@ ext {
     color_primary_action = '#6052e4'
     // Primary action disabled - color of disabled action control,
     // usually it's just a Primary action color with some transparency
-    color_primary_action_disabled = '#977fff'
+    color_primary_action_disabled = '#d1cee6'
 
     // Icons - color of all icons in app except menus
     color_icons = '#757575'

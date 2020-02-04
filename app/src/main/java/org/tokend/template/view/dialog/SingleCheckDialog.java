@@ -7,6 +7,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -43,7 +44,10 @@ public class SingleCheckDialog {
         this.context = context;
         this.items = items;
 
-        dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder = new AlertDialog.Builder(
+                new ContextThemeWrapper(context, R.style.AlertDialogStyle),
+                R.style.AlertDialogStyle
+        );
         dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -158,13 +162,13 @@ public class SingleCheckDialog {
 
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 .setTextColor(ContextCompat.getColor(context,
-                        R.color.accent));
+                        R.color.primary_action));
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setTextColor(ContextCompat.getColor(context,
-                        R.color.accent));
+                        R.color.primary_action));
         Button neutralButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
         neutralButton.setTextColor(ContextCompat.getColor(context,
-                R.color.accent));
+                R.color.primary_action));
         if (nonClosingNeutralButtonListener != null) {
             neutralButton.setOnClickListener(nonClosingNeutralButtonListener);
         }

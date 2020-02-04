@@ -9,6 +9,7 @@
     android:paddingEnd="@dimen/standard_margin"
     android:paddingBottom="8dp"
     android:textAppearance="?android:textAppearanceMedium"
+    android:textColor="@color/primary_text"
     tools:text="Choice #1">
 
 </android.support.v7.widget.AppCompatRadioButton>

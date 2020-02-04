@@ -4,5 +4,5 @@
     <corners
         android:topLeftRadius="@dimen/half_standard_padding"
         android:topRightRadius="@dimen/half_standard_padding" />
-    <solid android:color="@color/white" />
+    <solid android:color="@color/background" />
 </shape>

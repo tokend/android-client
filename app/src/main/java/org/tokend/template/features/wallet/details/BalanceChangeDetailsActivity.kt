@@ -3,6 +3,7 @@ package org.tokend.template.features.wallet.details
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import kotlinx.android.synthetic.main.activity_balance_change_details.*
@@ -38,7 +39,7 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
     }
 
     protected open fun initToolbar() {
-        toolbar.background = ColorDrawable(Color.WHITE)
+        toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.background))
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener { finish() }
     }
