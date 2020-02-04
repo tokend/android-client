@@ -229,7 +229,7 @@ abstract class PagedDataRepository<T : PagingRecord>(
     }
 
     protected open fun broadcast() {
-        itemsSubject.onNext(mItems)
+        itemsSubject.onNext(mItems.toList())
     }
 
     private fun logDataHash() {
