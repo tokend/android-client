@@ -1,7 +1,9 @@
 package org.tokend.template.features.kyc.model
 
 import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 import org.tokend.sdk.api.base.model.RemoteFile
+import org.tokend.sdk.api.blobs.model.Blob
 import org.tokend.sdk.api.documents.model.DocumentType
 
 /**
@@ -54,4 +56,22 @@ sealed class KycForm(
      * can't be processed
      */
     object Empty : KycForm()
+
+    companion object {
+        fun fromBlob(blob: Blob): KycForm {
+            val valueJson = JSONObject(blob.valueString)
+
+            val isGeneral = valueJson.has(General.FIRST_NAME_KEY)
+            val isCorporate = valueJson.has(Corporate.COMPANY_KEY)
+
+            return when {
+                isCorporate ->
+                    blob.getValue(Corporate::class.java)
+                isGeneral ->
+                    blob.getValue(General::class.java)
+                else ->
+                    throw IllegalArgumentException("Unknown KYC form type")
+            }
+        }
+    }
 }

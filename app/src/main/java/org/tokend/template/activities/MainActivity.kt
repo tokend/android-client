@@ -26,8 +26,9 @@ import org.tokend.template.features.assets.view.ExploreAssetsFragment
 import org.tokend.template.features.dashboard.view.DashboardFragment
 import org.tokend.template.features.deposit.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
-import org.tokend.template.features.kyc.model.KycState
-import org.tokend.template.features.kyc.storage.KycStateRepository
+import org.tokend.template.features.kyc.model.ActiveKyc
+import org.tokend.template.features.kyc.model.KycRequestState
+import org.tokend.template.features.kyc.storage.ActiveKycRepository
 import org.tokend.template.features.polls.view.PollsFragment
 import org.tokend.template.features.send.model.PaymentRequest
 import org.tokend.template.features.settings.GeneralSettingsFragment
@@ -61,8 +62,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
     private var toolbar: Toolbar? = null
 
-    private val kycStateRepository: KycStateRepository
-        get() = repositoryProvider.kycState()
+    private val activeKycRepository: ActiveKycRepository
+        get() = repositoryProvider.activeKyc()
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
@@ -169,19 +170,18 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     private fun getProfileHeaderItem(email: String?,
-                                     kycState: KycState?): ProfileDrawerItem {
-        val submittedForm = (kycState as? KycState.Submitted<*>)?.formData
-        val isApproved = kycState is KycState.Submitted.Approved<*>
-        val avatarUrl = ProfileUtil.getAvatarUrl(kycState, urlConfigProvider)
+                                     activeKyc: ActiveKyc?): ProfileDrawerItem {
+        val form = (activeKyc as? ActiveKyc.Form)?.formData
+        val avatarUrl = ProfileUtil.getAvatarUrl(activeKyc, urlConfigProvider)
 
         return ProfileDrawerItem()
                 .withIdentifier(1)
                 .withName(email)
                 .withEmail(
                         when {
-                            kycState == null -> getString(R.string.loading_data)
-                            !isApproved -> getString(R.string.unverified_account)
-                            else -> LocalizedName(this).forKycForm(submittedForm)
+                            activeKyc == null -> getString(R.string.loading_data)
+                            form == null -> getString(R.string.unverified_account)
+                            else -> LocalizedName(this).forKycForm(form)
                         }
                 )
                 .apply {
@@ -232,7 +232,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     // endregion
 
     private fun subscribeToKycChanges() {
-        kycStateRepository
+        activeKycRepository
                 .itemSubject
                 .compose(ObservableTransformers.defaultSchedulers())
                 .subscribe { updateProfileHeader() }
@@ -280,9 +280,9 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
     private fun updateProfileHeader() {
         val email = walletInfoProvider.getWalletInfo()?.email
-        val kycState = kycStateRepository.item
+        val activeKyc = activeKycRepository.item
 
-        val h = getProfileHeaderItem(email, kycState)
+        val h = getProfileHeaderItem(email, activeKyc)
         accountHeader?.updateProfile(h)
         landscapeAccountHeader?.updateProfile(h)
     }

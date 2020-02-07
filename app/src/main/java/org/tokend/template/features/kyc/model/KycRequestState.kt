@@ -1,12 +1,12 @@
 package org.tokend.template.features.kyc.model
 
-sealed class KycState {
+sealed class KycRequestState {
 
     sealed class Submitted<FormType : KycForm>(val formData: FormType,
-                                                                                      val requestId: Long) : KycState() {
+                                               val requestId: Long) : KycRequestState() {
 
         class Pending<FormType : KycForm>(formData: FormType,
-                                                                                 requestId: Long) : Submitted<FormType>(formData, requestId)
+                                          requestId: Long) : Submitted<FormType>(formData, requestId)
 
         class Rejected<FormType : KycForm>(
                 formData: FormType,
@@ -15,8 +15,8 @@ sealed class KycState {
         ) : Submitted<FormType>(formData, requestId)
 
         class Approved<FormType : KycForm>(formData: FormType,
-                                                                                  requestId: Long) : Submitted<FormType>(formData, requestId)
+                                           requestId: Long) : Submitted<FormType>(formData, requestId)
     }
 
-    object Empty : KycState()
+    object Empty : KycRequestState()
 }

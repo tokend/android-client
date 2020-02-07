@@ -190,10 +190,6 @@ class App : MultiDexApplication() {
                             listOf("(◕‿◕✿)", "ಠ_ಠ", "(¬_¬)", "email"),
                             "CredentialsPersistence"
                     ))
-                    migrationValues.putAll(dumpAndClearPreferences(
-                            listOf("submitted_kyc"),
-                            "KycStatePersistence"
-                    ))
 
                     persistencePreferences
                             .edit()

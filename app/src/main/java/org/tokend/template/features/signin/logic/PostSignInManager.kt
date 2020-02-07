@@ -49,7 +49,7 @@ class PostSignInManager(
         val performParallelActions = Completable.merge(parallelActions)
         val performSyncActions = Completable.concat(syncActions)
 
-        repositoryProvider.kycState().run {
+        repositoryProvider.activeKyc().run {
             ensureData()
                     .doOnComplete {
                         if (!isFresh) {

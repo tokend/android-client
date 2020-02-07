@@ -8,7 +8,7 @@ import dagger.Provides
 import org.tokend.template.data.repository.base.ObjectPersistence
 import org.tokend.template.db.AppDatabase
 import org.tokend.template.di.providers.*
-import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistence
+import org.tokend.template.features.kyc.storage.ActiveKycPersistence
 import org.tokend.template.features.localaccount.model.LocalAccount
 import javax.inject.Singleton
 
@@ -22,13 +22,13 @@ class RepositoriesModule {
             urlConfigProvider: UrlConfigProvider,
             mapper: ObjectMapper,
             context: Context,
-            kycStatePersistence: SubmittedKycStatePersistence,
+            activeKycPersistence: ActiveKycPersistence,
             localAccountPersistence: ObjectPersistence<LocalAccount>,
             persistencePreferences: SharedPreferences,
             database: AppDatabase
     ): RepositoryProvider {
         return RepositoryProviderImpl(apiProvider, walletInfoProvider, urlConfigProvider,
-                mapper, context, kycStatePersistence, localAccountPersistence,
+                mapper, context, activeKycPersistence, localAccountPersistence,
                 persistencePreferences, database)
     }
 }

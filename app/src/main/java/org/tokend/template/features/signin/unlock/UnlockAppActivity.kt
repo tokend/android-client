@@ -86,7 +86,7 @@ class UnlockAppActivity : BaseActivity() {
         initButtons()
         initErrorEmptyView()
         user_email_text.text = email
-        ProfileUtil.setAvatar(user_logo, email, urlConfigProvider, kycStatePersistence.loadItem())
+        ProfileUtil.setAvatar(user_logo, email, urlConfigProvider, activeKycPersistence.loadItem())
     }
 
     private fun initButtons() {

@@ -4,7 +4,8 @@ import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import org.tokend.template.data.repository.base.ObjectPersistence
-import org.tokend.template.features.kyc.storage.SubmittedKycStatePersistence
+import org.tokend.template.features.kyc.model.ActiveKyc
+import org.tokend.template.features.kyc.storage.ActiveKycPersistence
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.storage.LocalAccountPersistenceOnPrefs
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
@@ -32,8 +33,8 @@ class PersistenceModule(
 
     @Provides
     @Singleton
-    fun kycStatePersistor(): SubmittedKycStatePersistence {
-        return SubmittedKycStatePersistence(persistencePreferences)
+    fun activeKycPersistence(): ActiveKycPersistence {
+        return ActiveKycPersistence(persistencePreferences)
     }
 
     @Provides

@@ -10,19 +10,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import org.tokend.template.R
 import org.tokend.template.di.providers.UrlConfigProvider
-import org.tokend.template.view.util.LogoFactory
+import org.tokend.template.features.kyc.model.ActiveKyc
 import org.tokend.template.features.kyc.model.KycForm
-import org.tokend.template.features.kyc.model.KycState
 import org.tokend.template.view.util.ImageViewUtil
+import org.tokend.template.view.util.LogoFactory
 
 object ProfileUtil {
 
-    fun getAvatarUrl(kycState: KycState?,
+    fun getAvatarUrl(activeKyc: ActiveKyc?,
                      urlConfigProvider: UrlConfigProvider): String? {
-        val submittedForm = (kycState as? KycState.Submitted<*>)?.formData
-        val avatar = when (submittedForm) {
-            is KycForm.Corporate -> submittedForm.avatar
-            is KycForm.General -> submittedForm.avatar
+        val avatar = when (val form = (activeKyc as? ActiveKyc.Form)?.formData) {
+            is KycForm.Corporate -> form.avatar
+            is KycForm.General -> form.avatar
             else -> null
         }
         return avatar?.getUrl(urlConfigProvider.getConfig().storage)
@@ -46,10 +45,10 @@ object ProfileUtil {
     fun setAvatar(view: ImageView,
                   email: String,
                   urlConfigProvider: UrlConfigProvider,
-                  savedKycState: KycState.Submitted<*>?,
+                  activeKyc: ActiveKyc?,
                   sizePx: Int = (view.layoutParams as ViewGroup.LayoutParams).width) {
         val placeholderDrawable = getAvatarPlaceholder(email, view.context, sizePx)
-        val avatarUrl = getAvatarUrl(savedKycState, urlConfigProvider)
+        val avatarUrl = getAvatarUrl(activeKyc, urlConfigProvider)
 
         ImageViewUtil.loadImageCircle(view, avatarUrl, placeholderDrawable)
     }

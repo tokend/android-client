@@ -19,17 +19,16 @@ import org.tokend.template.data.repository.base.SingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.kyc.model.KycForm
-import org.tokend.template.features.kyc.model.KycState
+import org.tokend.template.features.kyc.model.KycRequestState
 
 /**
  * Holds user's KYC data and it's state
  */
-class KycStateRepository(
+class KycRequestStateRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
-        private val submittedStatePersistence: SubmittedKycStatePersistence?,
         private val blobsRepository: BlobsRepository
-) : SingleItemRepository<KycState>() {
+) : SingleItemRepository<KycRequestState>() {
     private class NoRequestFoundException : Exception()
 
     private data class KycRequestAttributes(
@@ -38,29 +37,7 @@ class KycStateRepository(
             val blobId: String?
     )
 
-    // region Persistence
-    override fun getStoredItem(): Maybe<KycState> {
-        return Maybe.defer {
-            val state = submittedStatePersistence?.loadItem()
-
-            if (state != null)
-                Maybe.just(state)
-            else
-                Maybe.empty()
-        }
-    }
-
-    override fun storeItem(item: KycState) {
-        // Store only submitted states as the only valuable ones.
-        if (item !is KycState.Submitted<*>) {
-            return
-        }
-
-        submittedStatePersistence?.saveItem(item)
-    }
-    // endregion
-
-    override fun getItem(): Maybe<KycState> {
+    override fun getItem(): Maybe<KycRequestState> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Maybe.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
@@ -83,19 +60,19 @@ class KycStateRepository(
                                 Triple(state, rejectReason, kycForm)
                             }
                 }
-                .map<KycState> { (state, rejectReason, kycForm) ->
+                .map<KycRequestState> { (state, rejectReason, kycForm) ->
                     when (state) {
                         RequestState.REJECTED ->
-                            KycState.Submitted.Rejected(kycForm, requestId, rejectReason)
+                            KycRequestState.Submitted.Rejected(kycForm, requestId, rejectReason)
                         RequestState.APPROVED ->
-                            KycState.Submitted.Approved(kycForm, requestId)
+                            KycRequestState.Submitted.Approved(kycForm, requestId)
                         else ->
-                            KycState.Submitted.Pending(kycForm, requestId)
+                            KycRequestState.Submitted.Pending(kycForm, requestId)
                     }
                 }
                 .onErrorResumeNext { error ->
                     if (error is NoRequestFoundException)
-                        Single.just(KycState.Empty)
+                        Single.just(KycRequestState.Empty)
                     else
                         Single.error(error)
                 }
