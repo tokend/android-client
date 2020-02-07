@@ -22,7 +22,7 @@ import org.tokend.template.features.kyc.model.KycForm
 import org.tokend.template.features.kyc.model.KycRequestState
 
 /**
- * Holds user's KYC data and it's state
+ * Holds user's KYC request state
  */
 class KycRequestStateRepository(
         private val apiProvider: ApiProvider,
