@@ -7,7 +7,7 @@ import io.reactivex.rxkotlin.addTo
 import org.tokend.template.R
 import org.tokend.template.features.assets.buy.view.AtomicSwapAsksFragment
 import org.tokend.template.features.assets.view.ExploreAssetsFragment
-import org.tokend.template.features.deposit.DepositFragment
+import org.tokend.template.features.deposit.view.DepositFragment
 import org.tokend.template.features.qr.ShareQrFragment
 import org.tokend.template.features.send.SendFragment
 import org.tokend.template.features.send.model.PaymentRequest

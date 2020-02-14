@@ -36,7 +36,9 @@ data class AssetDbEntity(
         @ColumnInfo(name = "trailing_digits")
         val trailingDigitsCount: Int,
         @ColumnInfo(name = "state")
-        val state: String
+        val state: String,
+        @ColumnInfo(name = "is_coinpayments")
+        val isConnectedToCoinpayments: Boolean
 ) {
     class Converters {
         private val gson = GsonFactory().getBaseGson()
@@ -65,7 +67,8 @@ data class AssetDbEntity(
             externalSystemType = externalSystemType,
             issued = issued,
             maximum = maximum,
-            terms = terms
+            terms = terms,
+            isConnectedToCoinpayments = isConnectedToCoinpayments
     )
 
     companion object {
@@ -83,7 +86,8 @@ data class AssetDbEntity(
                     logoUrl = logoUrl,
                     name = name,
                     policy = policy,
-                    trailingDigitsCount = trailingDigits
+                    trailingDigitsCount = trailingDigits,
+                    isConnectedToCoinpayments = isConnectedToCoinpayments
             )
         }
     }

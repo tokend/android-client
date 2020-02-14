@@ -457,6 +457,7 @@
     <string name="error_invalid_pin">Неправильний код</string>
     <string name="creating_local_account_progress">Створення ключа…</string>
     <string name="mnemonic_phrase_description">Більш зручна форма запису вашого секретного ключа</string>
+    <string name="enter_deposit_amount">Введіть суму депозиту</string>
     <string-array name="months">
         <item>Січень</item>
         <item>Лютий</item>

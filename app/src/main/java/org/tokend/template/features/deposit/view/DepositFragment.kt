@@ -1,5 +1,7 @@
-package org.tokend.template.features.deposit
+package org.tokend.template.features.deposit.view
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
@@ -22,10 +24,15 @@ import org.jetbrains.anko.onClick
 import org.jetbrains.anko.runOnUiThread
 import org.tokend.template.R
 import org.tokend.template.data.model.AccountRecord
+import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
+import org.tokend.template.extensions.getBigDecimalExtra
 import org.tokend.template.extensions.withArguments
+import org.tokend.template.features.deposit.logic.BindCoinpaymentsDepositAccountUseCase
+import org.tokend.template.features.deposit.logic.BindDepositAccountUseCase
+import org.tokend.template.features.deposit.logic.BindExternalSystemDepositAccountUseCase
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.TxManager
@@ -41,6 +48,7 @@ import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.formatter.DateFormatter
 import java.lang.ref.WeakReference
+import java.math.BigDecimal
 import java.util.*
 
 class DepositFragment : BaseFragment(), ToolbarProvider {
@@ -50,6 +58,9 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private lateinit var assetsRepository: AssetsRepository
     private lateinit var timer: Timer
     private lateinit var timerTask: TimerTask
+
+    private lateinit var coinpaymentsBindingAsset: Asset
+    private var isCoinpaymentsBindingARenewal = false
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },
@@ -63,10 +74,14 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         }
 
     private val externalAccount: AccountRecord.DepositAccount?
-        get() = accountRepository
-                .item
-                ?.depositAccounts
-                ?.find { it.type == currentAsset?.externalSystemType }
+        get() {
+            val account = accountRepository.item
+                    ?: return null
+            val asset = currentAsset
+                    ?: return null
+
+            return account.getDepositAccount(asset)
+        }
 
     private val requestedAssetCode: String? by lazy {
         arguments?.getString(EXTRA_ASSET)
@@ -186,13 +201,13 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         }
 
         get_address_button.onClick {
-            bindExternalAccount()
+            bindDepositAccount()
         }
     }
 
     private fun initAssets(assets: List<AssetRecord>) {
         val depositableAssets = assets
-                .filter { it.isActive && it.isBackedByExternalSystem }
+                .filter { it.isActive && it.isDepositable }
                 .sortedWith(assetComparator)
 
         if (depositableAssets.isEmpty()) {
@@ -358,7 +373,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                     ExtraViewProvider.getButton(
                             requireContext(),
                             R.string.renew_personal_address_action) {
-                        bindExternalAccount(true)
+                        bindDepositAccount(true)
                     }
 
             adapter.addData(
@@ -436,24 +451,71 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
     // endregion
 
-    private fun bindExternalAccount(isRenewal: Boolean = false) {
-        val asset = currentAsset?.code
-                ?: return
-        val type = currentAsset?.externalSystemType
+    private fun bindDepositAccount(isRenewal: Boolean = false) {
+        val asset = currentAsset
                 ?: return
 
+        when {
+            asset.isConnectedToCoinpayments ->
+                bindCoinpaymentsDepositAccount(asset, isRenewal)
+            asset.isBackedByExternalSystem && asset.externalSystemType != null ->
+                bindExternalSystemDepositAccount(asset.code, asset.externalSystemType, isRenewal)
+        }
+    }
+
+    /**
+     * Will request amount input.
+     */
+    private fun bindCoinpaymentsDepositAccount(asset: Asset,
+                                               isRenewal: Boolean) {
+        coinpaymentsBindingAsset = asset
+        isCoinpaymentsBindingARenewal = isRenewal
+        Navigator.from(this).openDepositAmountInput(asset.code, AMOUNT_REQUEST)
+    }
+
+    /**
+     * Must be called after getting amount, when [coinpaymentsBindingAsset] and
+     * [isCoinpaymentsBindingARenewal] are known
+     */
+    private fun bindCoinpaymentsDepositAccount(amount: BigDecimal) {
+        val useCase = BindCoinpaymentsDepositAccountUseCase(
+                asset = coinpaymentsBindingAsset,
+                amount = amount,
+                apiProvider = apiProvider,
+                amountFormatter = amountFormatter,
+                txManager = TxManager(apiProvider),
+                accountProvider = accountProvider,
+                systemInfoRepository = repositoryProvider.systemInfo(),
+                balancesRepository = repositoryProvider.balances(),
+                accountRepository = accountRepository,
+                walletInfoProvider = walletInfoProvider
+        )
+
+        bindDepositAccount(useCase, isCoinpaymentsBindingARenewal)
+    }
+
+    private fun bindExternalSystemDepositAccount(assetCode: String,
+                                                 externalSystemType: Int,
+                                                 isRenewal: Boolean) {
+        val useCase = BindExternalSystemDepositAccountUseCase(
+                asset = assetCode,
+                externalSystemType = externalSystemType,
+                walletInfoProvider = walletInfoProvider,
+                systemInfoRepository = repositoryProvider.systemInfo(),
+                balancesRepository = repositoryProvider.balances(),
+                accountRepository = accountRepository,
+                accountProvider = accountProvider,
+                txManager = TxManager(apiProvider)
+        )
+
+        bindDepositAccount(useCase, isRenewal)
+    }
+
+    private fun bindDepositAccount(useCase: BindDepositAccountUseCase,
+                                   isRenewal: Boolean) {
         val progress = ProgressDialogFactory.getDialog(requireContext())
 
-        BindExternalAccountUseCase(
-                asset,
-                type,
-                walletInfoProvider,
-                repositoryProvider.systemInfo(),
-                repositoryProvider.balances(),
-                accountRepository,
-                accountProvider,
-                TxManager(apiProvider)
-        )
+        useCase
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
                 .doOnSubscribe {
@@ -469,7 +531,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                             }
                         },
                         onError = {
-                            if (it is BindExternalAccountUseCase.NoAvailableExternalAccountsException) {
+                            if (it is BindDepositAccountUseCase.NoAvailableDepositAccountException) {
                                 displayEmptyPoolError()
                             } else {
                                 errorHandlerFactory.getDefault().handle(it)
@@ -486,11 +548,26 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 .show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                AMOUNT_REQUEST -> {
+                    val amount = data?.getBigDecimalExtra(DepositAmountActivity.RESULT_AMOUNT_EXTRA)
+                            ?.takeIf { it.signum() > 0 }
+                            ?: return
+                    bindCoinpaymentsDepositAccount(amount)
+                }
+            }
+        }
+    }
+
     companion object {
         val ID = "deposit".hashCode().toLong()
         private const val EXPIRATION_WARNING_THRESHOLD = 6 * 60 * 60 * 1000L
         private const val CRITICAL_EXPIRATION_WARNING_THRESHOLD = 30 * 60 * 1000L
         private const val EXTRA_ASSET = "extra_asset"
+        private val AMOUNT_REQUEST = "deposit_amount".hashCode() and 0xffff
 
         private val EXISTING_ADDRESS_ITEM_ID = "existing_address".hashCode().toLong()
         private val PAYLOAD_ITEM_ID = "payload".hashCode().toLong()

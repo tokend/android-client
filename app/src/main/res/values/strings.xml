@@ -459,6 +459,7 @@
     <string name="error_invalid_pin">Invalid PIN</string>
     <string name="creating_local_account_progress">Generating key…</string>
     <string name="mnemonic_phrase_description">Mnemonic phrase is a human readable form of your secret key</string>
+    <string name="enter_deposit_amount">Enter amount to deposit</string>
     <string-array name="months">
         <item>January</item>
         <item>February</item>

@@ -24,10 +24,9 @@ import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.features.assets.view.ExploreAssetsFragment
 import org.tokend.template.features.dashboard.view.DashboardFragment
-import org.tokend.template.features.deposit.DepositFragment
+import org.tokend.template.features.deposit.view.DepositFragment
 import org.tokend.template.features.invest.view.SalesFragment
 import org.tokend.template.features.kyc.model.ActiveKyc
-import org.tokend.template.features.kyc.model.KycRequestState
 import org.tokend.template.features.kyc.storage.ActiveKycRepository
 import org.tokend.template.features.polls.view.PollsFragment
 import org.tokend.template.features.send.model.PaymentRequest

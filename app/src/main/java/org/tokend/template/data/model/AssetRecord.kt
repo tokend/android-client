@@ -22,7 +22,8 @@ class AssetRecord(
         val maximum: BigDecimal,
         val ownerAccountId: String,
         override val trailingDigits: Int,
-        val state: AssetState
+        val state: AssetState,
+        val isConnectedToCoinpayments: Boolean
 ) : Serializable, RecordWithPolicy, Asset, RecordWithLogo, RecordWithDescription {
     val isBackedByExternalSystem: Boolean
         get() = externalSystemType != null
@@ -32,6 +33,9 @@ class AssetRecord(
 
     val isWithdrawable: Boolean
         get() = hasPolicy(org.tokend.wallet.xdr.AssetPolicy.WITHDRAWABLE.value)
+
+    val isDepositable: Boolean
+        get() = isBackedByExternalSystem || isConnectedToCoinpayments
 
     val canBeBaseForAtomicSwap: Boolean
         get() = hasPolicy(org.tokend.wallet.xdr.AssetPolicy.CAN_BE_BASE_IN_ATOMIC_SWAP.value)
@@ -75,6 +79,10 @@ class AssetRecord(
                     ?.asText("")
                     ?.takeIf(String::isNotEmpty)
 
+            val isConnectedToCoinpayments = source.details.get("is_coinpayments")
+                    ?.asBoolean(false)
+                    ?: false
+
             return AssetRecord(
                     code = source.id,
                     policy = source.policies.value
@@ -89,7 +97,8 @@ class AssetRecord(
                     ownerAccountId = source.owner.id,
                     trailingDigits = source.trailingDigits.toInt(),
                     description = description,
-                    state = AssetState.fromValue(source.state.value)
+                    state = AssetState.fromValue(source.state.value),
+                    isConnectedToCoinpayments = isConnectedToCoinpayments
             )
         }
     }

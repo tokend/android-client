@@ -21,12 +21,13 @@ import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
-import org.tokend.template.features.assets.details.view.AssetDetailsActivity
-import org.tokend.template.features.assets.view.ExploreAssetsFragment
 import org.tokend.template.features.assets.buy.BuyWithAtomicSwapActivity
 import org.tokend.template.features.assets.buy.view.AtomicSwapAsksFragment
+import org.tokend.template.features.assets.details.view.AssetDetailsActivity
+import org.tokend.template.features.assets.view.ExploreAssetsFragment
 import org.tokend.template.features.changepassword.ChangePasswordActivity
-import org.tokend.template.features.deposit.DepositFragment
+import org.tokend.template.features.deposit.view.DepositAmountActivity
+import org.tokend.template.features.deposit.view.DepositFragment
 import org.tokend.template.features.fees.view.FeesActivity
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.InvestmentConfirmationActivity
@@ -420,5 +421,12 @@ class Navigator private constructor() {
     fun openLocalAccountImport() {
         context?.intentFor<ImportLocalAccountActivity>()
                 ?.also { performIntent(it) }
+    }
+
+    fun openDepositAmountInput(assetCode: String,
+                               requestCode: Int) {
+        context?.intentFor<DepositAmountActivity>()
+                ?.putExtras(DepositAmountActivity.getBundle(assetCode))
+                ?.also { performIntent(it, requestCode = requestCode) }
     }
 }

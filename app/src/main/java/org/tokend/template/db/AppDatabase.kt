@@ -25,7 +25,7 @@ import java.util.*
             BalanceDbEntity::class,
             BalanceChangeDbEntity::class
         ],
-        version = 2,
+        version = 3,
         exportSchema = false
 )
 @TypeConverters(AppDatabase.Converters::class)
@@ -71,9 +71,7 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) = database.run {
-                beginTransaction()
-                try {
-                    execSQL("""
+                execSQL("""
                                     CREATE TABLE `balance_change` (`id` INTEGER NOT NULL, 
                                     `action` TEXT NOT NULL, 
                                     `amount` TEXT NOT NULL, `asset` TEXT NOT NULL,
@@ -81,11 +79,15 @@ abstract class AppDatabase : RoomDatabase() {
                                       `date` INTEGER NOT NULL, `cause` TEXT NOT NULL,
                                        PRIMARY KEY(`id`))
                                 """.trimIndent())
-                    execSQL("CREATE INDEX `index_balance_change_balance_id` ON `balance_change` (`balance_id`)")
-                    setTransactionSuccessful()
-                } finally {
-                    endTransaction()
-                }
+                execSQL("CREATE INDEX `index_balance_change_balance_id` ON `balance_change` (`balance_id`)")
+            }
+        }
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) = database.run {
+                execSQL("""
+                    ALTER TABLE `asset` 
+                    ADD COLUMN `is_coinpayments` INTEGER NOT NULL DEFAULT 0
+                """.trimIndent())
             }
         }
     }

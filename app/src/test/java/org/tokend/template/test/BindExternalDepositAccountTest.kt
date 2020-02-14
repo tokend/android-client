@@ -6,7 +6,7 @@ import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
-import org.tokend.template.features.deposit.BindExternalAccountUseCase
+import org.tokend.template.features.deposit.logic.BindExternalSystemDepositAccountUseCase
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.TxManager
 import org.tokend.wallet.TransactionBuilder
@@ -14,7 +14,7 @@ import org.tokend.wallet.xdr.CreateExternalSystemAccountIdPoolEntryActionInput
 import org.tokend.wallet.xdr.ManageExternalSystemAccountIdPoolEntryOp
 import org.tokend.wallet.xdr.Operation
 
-class BindExternalAccountTest {
+class BindExternalDepositAccountTest {
     @Test
     fun bindExternalSystemAccount() {
         val urlConfigProvider = Util.getUrlConfigProvider()
@@ -60,15 +60,15 @@ class BindExternalAccountTest {
 
         addNewExternalSystemAddress(asset, repositoryProvider, TxManager(apiProvider))
 
-        val useCase = BindExternalAccountUseCase(
-                asset.code,
-                asset.externalSystemType!!,
-                session,
-                repositoryProvider.systemInfo(),
-                repositoryProvider.balances(),
-                repositoryProvider.account(),
-                session,
-                txManager
+        val useCase = BindExternalSystemDepositAccountUseCase(
+                asset = asset.code,
+                externalSystemType = asset.externalSystemType!!,
+                walletInfoProvider = session,
+                systemInfoRepository = repositoryProvider.systemInfo(),
+                balancesRepository = repositoryProvider.balances(),
+                accountRepository = repositoryProvider.account(),
+                accountProvider = session,
+                txManager = txManager
         )
 
         useCase.perform().blockingAwait()
