@@ -5,7 +5,7 @@
     <color name="colorAccent">@color/accent</color>
     <color name="transparentFloatingViewBackground">#3e000000</color>
     <color name="imagePlaceholder">#E0E0E0</color>
-    <color name="volumeLevel">#EBEBEB</color>
+    <color name="volumeLevel">@color/accent_highlight</color>
 
     <color name="white">#ffffff</color>
     <color name="white_almost">#a0ffffff</color>
