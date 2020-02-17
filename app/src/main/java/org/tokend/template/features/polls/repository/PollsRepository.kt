@@ -62,6 +62,11 @@ class PollsRepository(
 
                         pollsPage.mapItemsNotNull {
                             tryOrNull {
+                                // Ignore cancelled polls.
+                                if (it.pollState.value == 4) {
+                                    return@tryOrNull null
+                                }
+
                                 PollRecord.fromResource(
                                         it,
                                         choiceChangeAllowedType
