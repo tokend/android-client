@@ -458,6 +458,7 @@
     <string name="creating_local_account_progress">Создание ключа…</string>
     <string name="mnemonic_phrase_description">Более удобная форма записи вашего секретного ключа</string>
     <string name="enter_deposit_amount">Введите сумму депозита</string>
+    <string name="balance_is_required_to_see_polls">Опросы доступны только держателям актива</string>
     <string-array name="months">
         <item>Январь</item>
         <item>Февраль</item>

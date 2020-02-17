@@ -460,6 +460,7 @@
     <string name="creating_local_account_progress">Generating key…</string>
     <string name="mnemonic_phrase_description">Mnemonic phrase is a human readable form of your secret key</string>
     <string name="enter_deposit_amount">Enter amount to deposit</string>
+    <string name="balance_is_required_to_see_polls">Only asset holders can see it\'s polls</string>
     <string-array name="months">
         <item>January</item>
         <item>February</item>

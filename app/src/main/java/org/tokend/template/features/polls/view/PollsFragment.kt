@@ -80,6 +80,8 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
         initAssetSelection()
         initSwipeRefresh()
         initList()
+
+        subscribeToBalances()
     }
 
     // region Init
@@ -118,8 +120,13 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
                     .find {
                         it.ownerAccountId == requiredOwnerAccountId
                     }
-                    ?.also {
-                        currentAsset = it
+                    .also { requiredAsset ->
+                        if (requiredAsset != null) {
+                            currentAsset = requiredAsset
+                        } else {
+                            toolbar.subtitle = null
+                            error_empty_view.showEmpty(R.string.balance_is_required_to_see_polls)
+                        }
                     }
         } else {
             assets.firstOrNull().also { firstAsset ->
@@ -136,7 +143,6 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
     private fun initSwipeRefresh() {
         swipe_refresh.setColorSchemeColors(ContextCompat.getColor(requireContext(), R.color.accent))
         swipe_refresh.setOnRefreshListener { update(force = true) }
-
     }
 
     private fun initList() {
@@ -223,6 +229,20 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayPolls(polls: List<PollRecord>) {
         adapter.setData(polls.map(::PollListItem))
+    }
+
+    private fun subscribeToBalances() {
+        balancesRepository
+                .itemsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { onBalancesUpdated() }
+                .addTo(compositeDisposable)
+    }
+
+    private fun onBalancesUpdated() {
+        if (currentAsset == null) {
+            initAssetSelection()
+        }
     }
 
     // region Voting
