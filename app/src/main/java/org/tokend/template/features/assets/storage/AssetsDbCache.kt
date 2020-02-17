@@ -9,21 +9,8 @@ import org.tokend.template.features.assets.model.AssetDbEntity
 class AssetsDbCache(
         private val dao: AssetsDao
 ) : RepositoryCache<AssetRecord>() {
-    override fun isContentSame(first: AssetRecord, second: AssetRecord): Boolean {
-        return first.run {
-            policy == second.policy
-                    && name == second.name
-                    && logoUrl == second.logoUrl
-                    && description == second.description
-                    && externalSystemType == second.externalSystemType
-                    && issued.equalsArithmetically(second.issued)
-                    && available.equalsArithmetically(second.available)
-                    && maximum.equalsArithmetically(second.maximum)
-                    && ownerAccountId == second.ownerAccountId
-                    && trailingDigits == second.trailingDigits
-                    && state == second.state
-        }
-    }
+    override fun isContentSame(first: AssetRecord, second: AssetRecord): Boolean =
+            first.contentEquals(second)
 
     override fun getAllFromDb(): List<AssetRecord> =
             dao.selectAll().mapSuccessful(AssetDbEntity::toRecord)

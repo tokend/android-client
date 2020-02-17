@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.NullNode
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.generated.resources.AssetResource
 import org.tokend.sdk.api.v3.assets.model.AssetState
+import org.tokend.template.extensions.equalsArithmetically
 import org.tokend.template.util.RecordWithPolicy
 import java.io.Serializable
 import java.math.BigDecimal
@@ -24,6 +25,7 @@ class AssetRecord(
         override val trailingDigits: Int,
         val state: AssetState,
         val isConnectedToCoinpayments: Boolean
+        /* Do not forget about contentEquals */
 ) : Serializable, RecordWithPolicy, Asset, RecordWithLogo, RecordWithDescription {
     val isBackedByExternalSystem: Boolean
         get() = externalSystemType != null
@@ -53,6 +55,21 @@ class AssetRecord(
 
     override fun toString(): String {
         return code
+    }
+
+    fun contentEquals(other: AssetRecord): Boolean {
+        return policy == other.policy
+                && name == other.name
+                && logoUrl == other.logoUrl
+                && description == other.description
+                && externalSystemType == other.externalSystemType
+                && issued.equalsArithmetically(other.issued)
+                && available.equalsArithmetically(other.available)
+                && maximum.equalsArithmetically(other.maximum)
+                && ownerAccountId == other.ownerAccountId
+                && trailingDigits == other.trailingDigits
+                && state == other.state
+                && isConnectedToCoinpayments == other.isConnectedToCoinpayments
     }
 
     companion object {

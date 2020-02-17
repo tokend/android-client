@@ -3,7 +3,6 @@ package org.tokend.template.features.balances.storage
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.extensions.equalsArithmetically
 import org.tokend.template.extensions.mapSuccessful
 import org.tokend.template.features.balances.model.BalanceDbEntity
 
@@ -11,16 +10,8 @@ class BalancesDbCache(
         private val dao: BalancesDao,
         private val assetsCache: RepositoryCache<AssetRecord>
 ) : RepositoryCache<BalanceRecord>() {
-    override fun isContentSame(first: BalanceRecord, second: BalanceRecord): Boolean {
-        return first.run {
-            id == second.id
-                    && available.equalsArithmetically(second.available)
-                    && asset == second.asset
-                    && conversionAsset == second.conversionAsset
-                    && convertedAmount.equalsArithmetically(second.convertedAmount)
-                    && conversionPrice.equalsArithmetically(second.conversionPrice)
-        }
-    }
+    override fun isContentSame(first: BalanceRecord, second: BalanceRecord): Boolean =
+            first.contentEquals(second)
 
     override fun getAllFromDb(): List<BalanceRecord> {
         assetsCache.loadFromDb().blockingAwait()

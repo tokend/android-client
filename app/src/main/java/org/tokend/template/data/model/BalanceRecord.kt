@@ -3,6 +3,7 @@ package org.tokend.template.data.model
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.sdk.api.generated.resources.BalanceResource
 import org.tokend.sdk.api.generated.resources.ConvertedBalanceStateResource
+import org.tokend.template.extensions.equalsArithmetically
 import java.io.Serializable
 import java.math.BigDecimal
 
@@ -13,6 +14,7 @@ class BalanceRecord(
         val conversionAsset: Asset?,
         var convertedAmount: BigDecimal?,
         val conversionPrice: BigDecimal?
+        /* Do not forget about contentEquals */
 ) : Serializable {
     constructor(source: BalanceResource, urlConfig: UrlConfig?, mapper: ObjectMapper) : this(
             id = source.id,
@@ -52,5 +54,16 @@ class BalanceRecord(
 
     override fun hashCode(): Int {
         return id.hashCode()
+    }
+
+    fun contentEquals(other: BalanceRecord): Boolean {
+        return available.equalsArithmetically(other.available)
+                && asset.contentEquals(other.asset)
+                &&
+                (conversionAsset == other.conversionAsset
+                        || conversionAsset != null && other.conversionAsset != null
+                        && conversionAsset.contentEquals(other.conversionAsset))
+                && convertedAmount.equalsArithmetically(other.convertedAmount)
+                && conversionPrice.equalsArithmetically(other.conversionPrice)
     }
 }
