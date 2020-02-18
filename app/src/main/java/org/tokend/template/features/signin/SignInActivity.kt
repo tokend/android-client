@@ -33,7 +33,7 @@ import org.tokend.template.features.signin.logic.SignInMethod
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.logic.UrlConfigManager
 import org.tokend.template.logic.fingerprint.FingerprintAuthManager
-import org.tokend.template.util.Navigator
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil

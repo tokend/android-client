@@ -23,7 +23,7 @@ import org.tokend.template.features.trade.pairs.view.adapter.AssetPairItemsAdapt
 import org.tokend.template.features.trade.pairs.view.adapter.AssetPairListItem
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.util.Navigator
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SearchUtil
 import org.tokend.template.view.picker.PickerItem

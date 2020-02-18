@@ -29,7 +29,7 @@ import org.tokend.template.features.tfa.model.TfaFactorRecord
 import org.tokend.template.features.tfa.view.confirmation.TfaConfirmationDialogFactory
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.fingerprint.FingerprintUtil
-import org.tokend.template.util.Navigator
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.dialog.SecretSeedDialog
 import org.tokend.template.view.dialog.SignOutDialogFactory

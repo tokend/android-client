@@ -10,7 +10,7 @@ import org.tokend.sdk.redirects.ClientRedirectPayload
 import org.tokend.sdk.redirects.ClientRedirectType
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.util.Navigator
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 
 class ProcessLinkActivity : BaseActivity() {

@@ -1,4 +1,4 @@
-package org.tokend.template.util
+package org.tokend.template.util.navigation
 
 import android.app.Activity
 import android.content.Context
@@ -60,7 +60,7 @@ import org.tokend.template.features.wallet.view.BalanceDetailsActivity
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
-import org.tokend.template.util.navigator.ActivityRequest
+import org.tokend.template.util.IntentLock
 import java.math.BigDecimal
 
 /**

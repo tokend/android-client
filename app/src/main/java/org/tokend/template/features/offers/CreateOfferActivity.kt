@@ -26,7 +26,7 @@ import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.isMaxPossibleAmount
 import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import org.tokend.template.logic.FeeManager
-import org.tokend.template.util.Navigator
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.ProgressDialogFactory

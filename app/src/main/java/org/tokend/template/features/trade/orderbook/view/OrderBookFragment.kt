@@ -21,7 +21,7 @@ import org.tokend.template.features.trade.orderbook.repository.OrderBookReposito
 import org.tokend.template.features.trade.orderbook.view.adapter.OrderBookEntriesAdapter
 import org.tokend.template.features.trade.orderbook.view.adapter.OrderBookEntryListItem
 import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.util.Navigator
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import java.math.BigDecimal

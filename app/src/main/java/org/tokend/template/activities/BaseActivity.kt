@@ -31,7 +31,7 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.cipher.DataCipher
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.util.locale.AppLocaleManager
-import org.tokend.template.util.navigator.ActivityRequest
+import org.tokend.template.util.navigation.ActivityRequest
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import javax.inject.Inject

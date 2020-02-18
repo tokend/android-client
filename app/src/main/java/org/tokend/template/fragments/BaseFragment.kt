@@ -12,7 +12,7 @@ import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.di.providers.*
 import org.tokend.template.logic.AppTfaCallback
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
-import org.tokend.template.util.navigator.ActivityRequest
+import org.tokend.template.util.navigation.ActivityRequest
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import javax.inject.Inject

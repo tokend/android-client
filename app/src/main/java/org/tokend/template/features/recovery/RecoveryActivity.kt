@@ -22,7 +22,7 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.*
 import org.tokend.template.features.recovery.logic.RecoverPasswordUseCase
 import org.tokend.template.logic.UrlConfigManager
-import org.tokend.template.util.Navigator
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil

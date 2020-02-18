@@ -19,7 +19,7 @@ import org.tokend.template.features.assets.buy.model.AtomicSwapInvoice
 import org.tokend.template.features.assets.buy.view.AtomicSwapAmountFragment
 import org.tokend.template.features.assets.buy.view.quoteasset.AtomicSwapQuoteAssetFragment
 import org.tokend.template.logic.TxManager
-import org.tokend.template.util.Navigator
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory

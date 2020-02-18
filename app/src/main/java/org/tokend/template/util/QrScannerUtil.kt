@@ -5,7 +5,7 @@ import android.content.Intent
 import android.support.v4.app.Fragment
 import com.google.zxing.integration.android.IntentIntegrator
 import org.tokend.template.features.qr.CaptureActivityPortrait
-import org.tokend.template.util.navigator.ActivityRequest
+import org.tokend.template.util.navigation.ActivityRequest
 
 /**
  * Contains utilities to work with QR scanner

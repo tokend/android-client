@@ -18,7 +18,7 @@ import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.offers.view.PendingOfferListItem
 import org.tokend.template.features.offers.view.PendingOffersAdapter
 import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.util.Navigator
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager

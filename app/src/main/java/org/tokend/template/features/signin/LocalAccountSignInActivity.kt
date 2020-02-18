@@ -21,7 +21,7 @@ import org.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
 import org.tokend.template.features.userkey.pin.PinCodeActivity
 import org.tokend.template.features.userkey.pin.SetUpPinCodeActivity
 import org.tokend.template.features.userkey.view.ActivityUserKeyProvider
-import org.tokend.template.util.Navigator
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import java.util.concurrent.TimeUnit
 
