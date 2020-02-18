@@ -7,10 +7,10 @@ import android.view.View
 import io.reactivex.disposables.CompositeDisposable
 import org.tokend.template.App
 import org.tokend.template.activities.OnBackPressedListener
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.di.providers.*
-import org.tokend.template.logic.AppTfaCallback
+import org.tokend.template.features.tfa.logic.AppTfaCallback
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.util.navigation.ActivityRequest
 import org.tokend.template.view.ToastManager

@@ -12,7 +12,7 @@ import org.tokend.sdk.keyserver.models.LoginParams
 import org.tokend.sdk.keyserver.models.SignerData
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.sdk.utils.extentions.isConflict
-import org.tokend.template.data.model.KeyValueEntryRecord
+import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.features.localaccount.logic.LocalAccountRetryDecryptor

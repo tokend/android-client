@@ -19,9 +19,9 @@ import kotlinx.android.synthetic.main.include_error_empty_view.view.*
 import kotlinx.android.synthetic.main.layout_progress.view.*
 import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.BalanceRecord
-import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.balances.model.BalanceRecord
+import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SearchUtil
 import org.tokend.template.view.balancepicker.adapter.BalancePickerItemsAdapter

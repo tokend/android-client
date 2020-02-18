@@ -11,8 +11,8 @@ import kotlinx.android.synthetic.main.fragment_asset_chart.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.jetbrains.anko.dip
 import org.tokend.template.R
-import org.tokend.template.data.model.AssetPairRecord
-import org.tokend.template.data.repository.assets.AssetChartRepository
+import org.tokend.template.features.trade.pairs.model.AssetPairRecord
+import org.tokend.template.features.assets.storage.AssetChartRepository
 import org.tokend.template.extensions.withArguments
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.ObservableTransformers

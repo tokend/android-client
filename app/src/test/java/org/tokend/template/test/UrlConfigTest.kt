@@ -5,7 +5,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.GsonFactory
-import org.tokend.template.data.model.UrlConfig
+import org.tokend.template.features.urlconfig.model.UrlConfig
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class UrlConfigTest {

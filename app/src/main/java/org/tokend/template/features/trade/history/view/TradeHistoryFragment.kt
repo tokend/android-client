@@ -11,8 +11,8 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_trade_history.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.template.R
-import org.tokend.template.data.model.AssetPairRecord
-import org.tokend.template.data.repository.TradeHistoryRepository
+import org.tokend.template.features.trade.pairs.model.AssetPairRecord
+import org.tokend.template.features.trade.history.repository.TradeHistoryRepository
 import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.trade.history.view.adapter.TradeHistoryAdapter
 import org.tokend.template.fragments.BaseFragment

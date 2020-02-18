@@ -1,6 +1,6 @@
 package org.tokend.template.features.assets.adapter
 
-import org.tokend.template.data.model.AssetRecord
+import org.tokend.template.features.assets.model.AssetRecord
 
 class AssetListItem(
         val code: String,

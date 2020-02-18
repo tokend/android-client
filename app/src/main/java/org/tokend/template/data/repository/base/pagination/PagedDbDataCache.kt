@@ -8,8 +8,8 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 abstract class PagedDbDataCache<T : PagingRecord> : PagedDataCache<T> {
-    protected open val executor: ExecutorService = Executors.newSingleThreadExecutor {
-        Thread().apply { name = "PagedDbCacheThread" }
+    protected open val executor: ExecutorService = Executors.newSingleThreadExecutor() {
+        Thread(it).apply { name = "PagedDbCacheThread" }
     }
 
     override fun getPage(limit: Int, cursor: Long?, order: PagingOrder):

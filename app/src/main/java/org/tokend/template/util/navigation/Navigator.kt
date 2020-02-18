@@ -16,11 +16,11 @@ import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.AssetPairRecord
-import org.tokend.template.data.model.AssetRecord
-import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.BalanceChangeCause
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.trade.pairs.model.AssetPairRecord
+import org.tokend.template.features.assets.model.AssetRecord
+import org.tokend.template.features.history.model.BalanceChange
+import org.tokend.template.features.history.model.details.BalanceChangeCause
 import org.tokend.template.extensions.getBigDecimalExtra
 import org.tokend.template.features.assets.buy.BuyWithAtomicSwapActivity
 import org.tokend.template.features.assets.buy.view.AtomicSwapAsksFragment
@@ -34,7 +34,7 @@ import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.view.SaleActivity
 import org.tokend.template.features.invest.view.SaleInvestActivity
-import org.tokend.template.features.limits.LimitsActivity
+import org.tokend.template.features.limits.view.LimitsActivity
 import org.tokend.template.features.localaccount.importt.view.ImportLocalAccountActivity
 import org.tokend.template.features.localaccount.view.LocalAccountDetailsActivity
 import org.tokend.template.features.offers.CreateOfferActivity
@@ -55,8 +55,8 @@ import org.tokend.template.features.signin.SignInActivity
 import org.tokend.template.features.signin.unlock.UnlockAppActivity
 import org.tokend.template.features.signup.SignUpActivity
 import org.tokend.template.features.trade.TradeActivity
-import org.tokend.template.features.wallet.details.*
-import org.tokend.template.features.wallet.view.BalanceDetailsActivity
+import org.tokend.template.features.history.details.*
+import org.tokend.template.features.balances.view.BalanceDetailsActivity
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest

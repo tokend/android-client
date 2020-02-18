@@ -4,13 +4,13 @@ import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import org.tokend.template.data.repository.base.ObjectPersistence
-import org.tokend.template.features.kyc.model.ActiveKyc
 import org.tokend.template.features.kyc.storage.ActiveKycPersistence
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.storage.LocalAccountPersistenceOnPrefs
+import org.tokend.template.features.urlconfig.model.UrlConfig
+import org.tokend.template.features.urlconfig.storage.UrlConfigPersistence
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistenceOnPreferences
-import org.tokend.template.logic.persistence.UrlConfigPersistor
 import javax.inject.Singleton
 
 @Module
@@ -27,8 +27,8 @@ class PersistenceModule(
 
     @Provides
     @Singleton
-    fun urlConfigPresistor(): UrlConfigPersistor {
-        return UrlConfigPersistor(networkPreferences)
+    fun urlConfigPersistence(): ObjectPersistence<UrlConfig> {
+        return UrlConfigPersistence(networkPreferences)
     }
 
     @Provides

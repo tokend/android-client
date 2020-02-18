@@ -27,18 +27,18 @@ import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
 import org.jetbrains.anko.defaultSharedPreferences
-import org.tokend.template.data.model.UrlConfig
 import org.tokend.template.db.AppDatabase
 import org.tokend.template.di.*
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.AppModule
 import org.tokend.template.di.providers.SessionModule
 import org.tokend.template.di.providers.WalletInfoProviderFactory
+import org.tokend.template.features.urlconfig.model.UrlConfig
+import org.tokend.template.features.urlconfig.storage.UrlConfigPersistence
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.persistence.SessionInfoStorage
-import org.tokend.template.logic.persistence.UrlConfigPersistor
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.locale.AppLocaleManager
+import org.tokend.template.util.navigation.Navigator
 import java.io.IOException
 import java.net.SocketException
 import java.util.*
@@ -264,7 +264,7 @@ class App : MultiDexApplication() {
                 .appModule(AppModule(this))
                 .urlConfigProviderModule(UrlConfigProviderModule(
                         if (BuildConfig.IS_NETWORK_SPECIFIED_BY_USER)
-                            UrlConfigPersistor(getNetworkPreferences()).loadConfig()
+                            UrlConfigPersistence(getNetworkPreferences()).loadItem()
                                     ?: defaultUrlConfig
                         else
                             defaultUrlConfig

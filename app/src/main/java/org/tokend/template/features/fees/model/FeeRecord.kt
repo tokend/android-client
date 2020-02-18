@@ -1,8 +1,8 @@
 package org.tokend.template.features.fees.model
 
 import org.tokend.sdk.api.generated.resources.FeeRecordResource
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.SimpleAsset
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.assets.model.SimpleAsset
 import java.io.Serializable
 import java.math.BigDecimal
 

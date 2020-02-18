@@ -14,9 +14,9 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.data.model.BalanceRecord
-import org.tokend.template.data.model.SimpleAsset
-import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.features.balances.model.BalanceRecord
+import org.tokend.template.features.assets.model.SimpleAsset
+import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.invest.logic.InvestmentInfoHolder
 import org.tokend.template.features.invest.model.SaleRecord
@@ -24,7 +24,7 @@ import org.tokend.template.features.invest.repository.InvestmentInfoRepository
 import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.features.offers.model.OfferRequest
-import org.tokend.template.logic.FeeManager
+import org.tokend.template.features.fees.logic.FeeManager
 import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.ContentLoadingProgressBar

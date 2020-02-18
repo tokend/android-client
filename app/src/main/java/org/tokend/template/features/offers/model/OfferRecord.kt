@@ -1,10 +1,10 @@
 package org.tokend.template.features.offers.model
 
 import org.tokend.sdk.api.generated.resources.OfferResource
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.SimpleAsset
-import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.details.BalanceChangeCause
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.assets.model.SimpleAsset
+import org.tokend.template.features.history.model.BalanceChange
+import org.tokend.template.features.history.model.details.BalanceChangeCause
 import org.tokend.template.data.repository.base.pagination.PagingRecord
 import org.tokend.wallet.Base32Check
 import java.io.Serializable

@@ -21,7 +21,7 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.*
 import org.tokend.template.features.recovery.logic.RecoverPasswordUseCase
-import org.tokend.template.logic.UrlConfigManager
+import org.tokend.template.features.urlconfig.logic.UrlConfigManager
 import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
@@ -74,7 +74,7 @@ class RecoveryActivity : BaseActivity() {
         setTitle(R.string.recover_account)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistor)
+        urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistence)
         urlConfigManager.onConfigUpdated {
             initNetworkField()
 

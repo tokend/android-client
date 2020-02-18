@@ -25,8 +25,8 @@ import org.jetbrains.anko.layoutInflater
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.App
 import org.tokend.template.R
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.view.ErrorEmptyView
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal

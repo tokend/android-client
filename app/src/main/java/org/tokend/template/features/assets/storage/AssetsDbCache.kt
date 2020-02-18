@@ -1,8 +1,7 @@
 package org.tokend.template.features.assets.storage
 
-import org.tokend.template.data.model.AssetRecord
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.extensions.equalsArithmetically
 import org.tokend.template.extensions.mapSuccessful
 import org.tokend.template.features.assets.model.AssetDbEntity
 

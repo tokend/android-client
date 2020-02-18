@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import org.tokend.template.R
-import org.tokend.template.data.model.AssetRecord
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.polls.view.PollsFragment
 
 class AssetDetailsPagerAdapter(asset: AssetRecord,

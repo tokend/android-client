@@ -12,8 +12,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_order_book.*
 import org.tokend.template.R
-import org.tokend.template.data.model.AssetPairRecord
-import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.features.trade.pairs.model.AssetPairRecord
+import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.trade.orderbook.model.OrderBook
 import org.tokend.template.features.trade.orderbook.model.OrderBookEntryRecord

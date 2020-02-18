@@ -1,7 +1,7 @@
 package org.tokend.template.util.comparator
 
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.balances.model.BalanceRecord
 import java.math.BigDecimal
 
 /**

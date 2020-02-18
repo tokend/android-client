@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import org.tokend.template.R
-import org.tokend.template.data.model.AssetPairRecord
+import org.tokend.template.features.trade.pairs.model.AssetPairRecord
 import org.tokend.template.features.trade.chart.view.AssetPairChartFragment
 import org.tokend.template.features.trade.history.view.TradeHistoryFragment
 import org.tokend.template.features.trade.offers.view.OffersFragment

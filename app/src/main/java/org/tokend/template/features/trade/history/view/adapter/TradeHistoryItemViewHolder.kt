@@ -5,7 +5,7 @@ import android.view.View
 import kotlinx.android.synthetic.main.list_item_trade_history.view.*
 import org.jetbrains.anko.textColor
 import org.tokend.template.R
-import org.tokend.template.data.model.TradeHistoryRecord
+import org.tokend.template.features.trade.history.model.TradeHistoryRecord
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.formatter.DateFormatter

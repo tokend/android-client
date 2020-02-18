@@ -1,7 +1,7 @@
 package org.tokend.template.features.assets.buy.view.quoteasset.picker
 
 import org.tokend.sdk.utils.BigDecimalUtil
-import org.tokend.template.data.model.Asset
+import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.data.model.AtomicSwapAskRecord
 import java.math.BigDecimal
 

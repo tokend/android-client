@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
-import org.tokend.template.data.model.TradeHistoryRecord
+import org.tokend.template.features.trade.history.model.TradeHistoryRecord
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.PaginationRecyclerAdapter
 import org.tokend.template.view.util.formatter.AmountFormatter

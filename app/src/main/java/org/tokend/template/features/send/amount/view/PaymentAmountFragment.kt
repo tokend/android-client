@@ -19,7 +19,7 @@ import org.tokend.template.features.amountscreen.view.AmountInputFragment
 import org.tokend.template.features.send.amount.logic.PaymentFeeLoader
 import org.tokend.template.features.send.amount.model.PaymentAmountData
 import org.tokend.template.features.send.model.PaymentFee
-import org.tokend.template.logic.FeeManager
+import org.tokend.template.features.fees.logic.FeeManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.balancepicker.BalancePickerBottomDialog
 import org.tokend.wallet.Base32Check

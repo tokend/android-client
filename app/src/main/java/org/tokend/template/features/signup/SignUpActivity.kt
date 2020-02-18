@@ -29,7 +29,7 @@ import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.features.signup.logic.SignUpUseCase
-import org.tokend.template.logic.UrlConfigManager
+import org.tokend.template.features.urlconfig.logic.UrlConfigManager
 import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
@@ -77,7 +77,7 @@ class SignUpActivity : BaseActivity() {
         setTitle(R.string.sign_up)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistor)
+        urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistence)
         urlConfigManager.onConfigUpdated {
             initNetworkField()
 

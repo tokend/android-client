@@ -1,6 +1,6 @@
 package org.tokend.template.features.assets.buy.view.adapter
 
-import org.tokend.template.data.model.Asset
+import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.data.model.AtomicSwapAskRecord
 import java.math.BigDecimal
 

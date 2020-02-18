@@ -4,7 +4,6 @@ import android.arch.persistence.room.*
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.v3.assets.model.AssetState
 import org.tokend.sdk.factory.GsonFactory
-import org.tokend.template.data.model.AssetRecord
 import java.math.BigDecimal
 
 @Entity(tableName = "asset")

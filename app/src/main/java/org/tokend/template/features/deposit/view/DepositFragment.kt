@@ -22,10 +22,10 @@ import org.jetbrains.anko.onClick
 import org.jetbrains.anko.runOnUiThread
 import org.tokend.template.R
 import org.tokend.template.data.model.AccountRecord
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.AssetRecord
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.data.repository.AccountRepository
-import org.tokend.template.data.repository.assets.AssetsRepository
+import org.tokend.template.features.assets.storage.AssetsRepository
 import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.deposit.logic.BindCoinpaymentsDepositAccountUseCase
 import org.tokend.template.features.deposit.logic.BindDepositAccountUseCase

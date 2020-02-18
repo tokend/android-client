@@ -1,19 +1,27 @@
 package org.tokend.template.di.providers
 
 import org.tokend.template.data.repository.*
-import org.tokend.template.data.repository.assets.AssetChartRepository
-import org.tokend.template.data.repository.assets.AssetsRepository
-import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
-import org.tokend.template.data.repository.pairs.AssetPairsRepository
+import org.tokend.template.features.assets.storage.AssetChartRepository
+import org.tokend.template.features.assets.storage.AssetsRepository
+import org.tokend.template.features.history.storage.BalanceChangesRepository
+import org.tokend.template.features.trade.pairs.repository.AssetPairsRepository
+import org.tokend.template.features.balances.storage.BalancesRepository
+import org.tokend.template.data.repository.BlobsRepository
+import org.tokend.template.features.fees.repository.FeesRepository
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.repository.InvestmentInfoRepository
 import org.tokend.template.features.invest.repository.SalesRepository
+import org.tokend.template.features.keyvalue.storage.KeyValueEntriesRepository
+import org.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import org.tokend.template.features.kyc.storage.ActiveKycRepository
 import org.tokend.template.features.kyc.storage.KycRequestStateRepository
+import org.tokend.template.features.limits.repository.LimitsRepository
 import org.tokend.template.features.localaccount.storage.LocalAccountRepository
 import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.polls.repository.PollsRepository
 import org.tokend.template.features.send.recipient.contacts.repository.ContactsRepository
+import org.tokend.template.features.tfa.repository.TfaFactorsRepository
+import org.tokend.template.features.trade.history.repository.TradeHistoryRepository
 import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
 
 interface RepositoryProvider {

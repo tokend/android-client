@@ -1,7 +1,7 @@
 package org.tokend.template.view.util.formatter
 
 import org.tokend.sdk.utils.BigDecimalUtil
-import org.tokend.template.data.model.Asset
+import org.tokend.template.features.assets.model.Asset
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode

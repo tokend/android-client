@@ -6,6 +6,7 @@ import org.tokend.sdk.api.generated.resources.AccountResource
 import org.tokend.sdk.api.generated.resources.ExternalSystemIDResource
 import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.sdk.utils.HashCodes
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.wallet.xdr.ExternalSystemAccountIDPoolEntry
 import java.io.Serializable
 import java.util.*

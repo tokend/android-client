@@ -14,18 +14,19 @@ import org.tokend.sdk.tfa.TfaCallback
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.App
 import org.tokend.template.BuildConfig
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.BalanceRecord
+import org.tokend.template.data.repository.base.ObjectPersistence
 import org.tokend.template.di.providers.*
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.features.kyc.storage.ActiveKycPersistence
 import org.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import org.tokend.template.features.signin.logic.PostSignInManagerFactory
+import org.tokend.template.features.tfa.logic.AppTfaCallback
 import org.tokend.template.features.tfa.view.TfaDialogFactory
-import org.tokend.template.logic.AppTfaCallback
+import org.tokend.template.features.urlconfig.model.UrlConfig
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.logic.persistence.BackgroundLockManager
-import org.tokend.template.logic.persistence.UrlConfigPersistor
 import org.tokend.template.util.ConnectionStateUtil
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.cipher.DataCipher
@@ -52,7 +53,7 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     @Inject
     lateinit var urlConfigProvider: UrlConfigProvider
     @Inject
-    lateinit var urlConfigPersistor: UrlConfigPersistor
+    lateinit var urlConfigPersistence: ObjectPersistence<UrlConfig>
     @Inject
     lateinit var errorHandlerFactory: ErrorHandlerFactory
     @Inject

@@ -8,7 +8,7 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_atomic_swap_quote_asset.*
 import org.tokend.template.R
-import org.tokend.template.data.model.Asset
+import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.data.model.AtomicSwapAskRecord
 import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.assets.buy.view.quoteasset.picker.AtomicSwapQuoteAssetSpinnerItem

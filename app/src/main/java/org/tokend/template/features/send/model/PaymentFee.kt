@@ -1,6 +1,6 @@
 package org.tokend.template.features.send.model
 
-import org.tokend.template.data.model.history.SimpleFeeRecord
+import org.tokend.template.features.history.model.SimpleFeeRecord
 import java.io.Serializable
 import java.math.BigDecimal
 

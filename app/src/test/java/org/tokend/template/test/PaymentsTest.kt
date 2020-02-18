@@ -5,8 +5,8 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.template.data.model.SimpleAsset
-import org.tokend.template.data.model.history.details.BalanceChangeCause
+import org.tokend.template.features.assets.model.SimpleAsset
+import org.tokend.template.features.history.model.details.BalanceChangeCause
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.ApiProviderFactory
 import org.tokend.template.di.providers.RepositoryProviderImpl
@@ -15,7 +15,7 @@ import org.tokend.template.features.send.amount.logic.PaymentFeeLoader
 import org.tokend.template.features.send.logic.ConfirmPaymentRequestUseCase
 import org.tokend.template.features.send.logic.CreatePaymentRequestUseCase
 import org.tokend.template.features.send.recipient.logic.PaymentRecipientLoader
-import org.tokend.template.logic.FeeManager
+import org.tokend.template.features.fees.logic.FeeManager
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.TxManager
 import org.tokend.wallet.Base32Check

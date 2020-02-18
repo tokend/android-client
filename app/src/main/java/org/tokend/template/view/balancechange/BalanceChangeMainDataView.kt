@@ -8,8 +8,8 @@ import android.widget.TextView
 import org.jetbrains.anko.childrenSequence
 import org.jetbrains.anko.dip
 import org.tokend.template.R
-import org.tokend.template.data.model.Asset
-import org.tokend.template.features.wallet.view.ScrimCallbackCollapsingToolbarLayout
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.view.ScrimCallbackCollapsingToolbarLayout
 import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.formatter.DateFormatter

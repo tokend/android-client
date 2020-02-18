@@ -4,7 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.tokend.sdk.api.tfa.model.TfaFactor
-import org.tokend.template.data.repository.TfaFactorsRepository
+import org.tokend.template.features.tfa.repository.TfaFactorsRepository
 import org.tokend.template.features.tfa.model.TfaFactorCreationResult
 import org.tokend.template.util.confirmation.ConfirmationProvider
 

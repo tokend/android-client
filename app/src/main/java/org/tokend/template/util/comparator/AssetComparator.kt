@@ -1,6 +1,6 @@
 package org.tokend.template.util.comparator
 
-import org.tokend.template.data.model.Asset
+import org.tokend.template.features.assets.model.Asset
 
 /**
  * Default asset comparator.

@@ -8,8 +8,8 @@ import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.v3.polls.params.PollsPageParams
 import org.tokend.sdk.api.v3.polls.params.VotesPageParams
 import org.tokend.sdk.utils.SimplePagedResourceLoader
-import org.tokend.template.data.model.KeyValueEntryRecord
-import org.tokend.template.data.repository.KeyValueEntriesRepository
+import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
+import org.tokend.template.features.keyvalue.storage.KeyValueEntriesRepository
 import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.MultipleItemsRepository
 import org.tokend.template.di.providers.ApiProvider

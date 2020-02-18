@@ -2,11 +2,11 @@ package org.tokend.template.view.util
 
 import android.content.Context
 import org.tokend.template.R
-import org.tokend.template.data.model.history.BalanceChangeAction
-import org.tokend.template.data.model.history.details.BalanceChangeCause
+import org.tokend.template.features.history.model.BalanceChangeAction
+import org.tokend.template.features.history.model.details.BalanceChangeCause
 import org.tokend.template.features.fees.adapter.FeeListItem
 import org.tokend.template.features.kyc.model.KycForm
-import org.tokend.template.features.wallet.adapter.BalanceChangeListItem
+import org.tokend.template.features.history.view.adapter.BalanceChangeListItem
 import org.tokend.template.view.assetchart.AssetChartScale
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.StatsOpType

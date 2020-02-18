@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
-import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.features.dashboard.balances.view.adapter.BalanceItemsAdapter
 import org.tokend.template.features.dashboard.balances.view.adapter.BalanceListItem
 import org.tokend.template.fragments.BaseFragment

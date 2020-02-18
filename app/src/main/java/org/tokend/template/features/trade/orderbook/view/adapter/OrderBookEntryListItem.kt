@@ -1,6 +1,6 @@
 package org.tokend.template.features.trade.orderbook.view.adapter
 
-import org.tokend.template.data.model.Asset
+import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.trade.orderbook.model.OrderBookEntryRecord
 import java.math.BigDecimal
 import java.math.MathContext

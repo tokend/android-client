@@ -2,12 +2,12 @@ package org.tokend.template.features.withdraw.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.history.SimpleFeeRecord
-import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.history.model.SimpleFeeRecord
+import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
-import org.tokend.template.logic.FeeManager
+import org.tokend.template.features.fees.logic.FeeManager
 import java.math.BigDecimal
 
 /**

@@ -9,10 +9,10 @@ import org.tokend.sdk.api.base.model.AttributesEntity
 import org.tokend.sdk.api.base.model.DataEntity
 import org.tokend.sdk.utils.extentions.isServerError
 import org.tokend.template.data.model.AccountRecord
-import org.tokend.template.data.model.Asset
+import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.data.repository.AccountRepository
-import org.tokend.template.data.repository.BalancesRepository
-import org.tokend.template.data.repository.SystemInfoRepository
+import org.tokend.template.features.balances.storage.BalancesRepository
+import org.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider

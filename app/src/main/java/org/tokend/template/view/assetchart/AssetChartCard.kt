@@ -27,8 +27,8 @@ import org.jetbrains.anko.textColor
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.App
 import org.tokend.template.R
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.AssetChartData
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.assets.model.AssetChartData
 import org.tokend.template.view.ContentLoadingProgressBar
 import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.formatter.AmountFormatter

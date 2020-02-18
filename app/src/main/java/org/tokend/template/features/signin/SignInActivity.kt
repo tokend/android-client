@@ -31,7 +31,7 @@ import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.signin.logic.ResendVerificationEmailUseCase
 import org.tokend.template.features.signin.logic.SignInMethod
 import org.tokend.template.features.signin.logic.SignInUseCase
-import org.tokend.template.logic.UrlConfigManager
+import org.tokend.template.features.urlconfig.logic.UrlConfigManager
 import org.tokend.template.logic.fingerprint.FingerprintAuthManager
 import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
@@ -79,7 +79,7 @@ class SignInActivity : BaseActivity() {
         setTitle(R.string.sign_in)
 
         fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistence)
-        urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistor)
+        urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistence)
         urlConfigManager.onConfigUpdated {
             initNetworkField()
             password_edit_text.error = null

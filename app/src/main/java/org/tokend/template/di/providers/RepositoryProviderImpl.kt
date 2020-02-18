@@ -6,39 +6,47 @@ import android.support.v4.util.LruCache
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.template.BuildConfig
 import org.tokend.template.data.model.AccountRecord
-import org.tokend.template.data.model.AssetRecord
-import org.tokend.template.data.model.BalanceRecord
-import org.tokend.template.data.model.SystemInfoRecord
-import org.tokend.template.data.model.history.BalanceChange
-import org.tokend.template.data.model.history.converter.DefaultParticipantEffectConverter
+import org.tokend.template.features.systeminfo.model.SystemInfoRecord
 import org.tokend.template.data.repository.*
-import org.tokend.template.data.repository.assets.AssetChartRepository
-import org.tokend.template.data.repository.assets.AssetsRepository
-import org.tokend.template.data.repository.balancechanges.BalanceChangesPagedDbCache
-import org.tokend.template.data.repository.balancechanges.BalanceChangesRepository
 import org.tokend.template.data.repository.base.MemoryOnlyObjectPersistence
 import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
 import org.tokend.template.data.repository.base.ObjectPersistence
 import org.tokend.template.data.repository.base.ObjectPersistenceOnPrefs
 import org.tokend.template.data.repository.base.pagination.MemoryOnlyPagedDataCache
-import org.tokend.template.data.repository.pairs.AssetPairsRepository
 import org.tokend.template.db.AppDatabase
 import org.tokend.template.extensions.getOrPut
+import org.tokend.template.features.assets.model.AssetRecord
+import org.tokend.template.features.assets.storage.AssetChartRepository
 import org.tokend.template.features.assets.storage.AssetsDbCache
+import org.tokend.template.features.assets.storage.AssetsRepository
+import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.features.balances.storage.BalancesDbCache
+import org.tokend.template.features.balances.storage.BalancesRepository
+import org.tokend.template.data.repository.BlobsRepository
+import org.tokend.template.features.fees.repository.FeesRepository
+import org.tokend.template.features.history.logic.DefaultParticipantEffectConverter
+import org.tokend.template.features.history.model.BalanceChange
+import org.tokend.template.features.history.storage.BalanceChangesPagedDbCache
+import org.tokend.template.features.history.storage.BalanceChangesRepository
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.repository.InvestmentInfoRepository
 import org.tokend.template.features.invest.repository.SalesRepository
+import org.tokend.template.features.keyvalue.storage.KeyValueEntriesRepository
+import org.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import org.tokend.template.features.kyc.storage.ActiveKycPersistence
 import org.tokend.template.features.kyc.storage.ActiveKycRepository
 import org.tokend.template.features.kyc.storage.KycRequestStateRepository
+import org.tokend.template.features.limits.repository.LimitsRepository
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.localaccount.storage.LocalAccountRepository
 import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.polls.repository.PollsCache
 import org.tokend.template.features.polls.repository.PollsRepository
 import org.tokend.template.features.send.recipient.contacts.repository.ContactsRepository
+import org.tokend.template.features.tfa.repository.TfaFactorsRepository
+import org.tokend.template.features.trade.history.repository.TradeHistoryRepository
 import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
+import org.tokend.template.features.trade.pairs.repository.AssetPairsRepository
 
 /**
  * @param context if not specified then android-related repositories
@@ -256,13 +264,13 @@ class RepositoryProviderImpl(
     }
 
     override fun balanceChanges(balanceId: String?): BalanceChangesRepository {
-        val cache =
-                if (database != null)
-                    BalanceChangesPagedDbCache(balanceId, database.balanceChanges)
-                else
-                    MemoryOnlyPagedDataCache<BalanceChange>()
-
         return balanceChangesRepositoriesByBalanceId.getOrPut(balanceId.toString()) {
+            val cache =
+                    if (database != null)
+                        BalanceChangesPagedDbCache(balanceId, database.balanceChanges)
+                    else
+                        MemoryOnlyPagedDataCache<BalanceChange>()
+
             BalanceChangesRepository(
                     balanceId,
                     walletInfoProvider.getWalletInfo()?.accountId,

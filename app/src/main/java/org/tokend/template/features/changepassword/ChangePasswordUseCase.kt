@@ -10,7 +10,7 @@ import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.SignerData
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.data.model.KeyValueEntryRecord
+import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.RepositoryProvider

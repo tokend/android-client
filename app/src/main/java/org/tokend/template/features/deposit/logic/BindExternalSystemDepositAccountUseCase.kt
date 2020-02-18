@@ -5,8 +5,8 @@ import io.reactivex.rxkotlin.toSingle
 import org.tokend.sdk.api.transactions.model.TransactionFailedException
 import org.tokend.template.data.model.AccountRecord
 import org.tokend.template.data.repository.AccountRepository
-import org.tokend.template.data.repository.BalancesRepository
-import org.tokend.template.data.repository.SystemInfoRepository
+import org.tokend.template.features.balances.storage.BalancesRepository
+import org.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.tryOrNull

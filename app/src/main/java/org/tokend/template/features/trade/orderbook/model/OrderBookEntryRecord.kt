@@ -1,8 +1,8 @@
 package org.tokend.template.features.trade.orderbook.model
 
 import org.tokend.sdk.api.generated.resources.OrderBookEntryResource
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.SimpleAsset
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.assets.model.SimpleAsset
 import java.math.BigDecimal
 
 class OrderBookEntryRecord(

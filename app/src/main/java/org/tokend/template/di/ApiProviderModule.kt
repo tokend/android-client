@@ -7,7 +7,7 @@ import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.ApiProviderFactory
 import org.tokend.template.di.providers.UrlConfigProvider
-import org.tokend.template.logic.AppTfaCallback
+import org.tokend.template.features.tfa.logic.AppTfaCallback
 import javax.inject.Singleton
 
 @Module

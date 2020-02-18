@@ -85,4 +85,4 @@
 -dontwarn com.squareup.picasso.OkHttpDownloader
 
 # Balance changes caching
--keepnames class org.tokend.template.data.model.history.** { *; }
+-keepnames class org.tokend.template.features.history.model.** { *; }

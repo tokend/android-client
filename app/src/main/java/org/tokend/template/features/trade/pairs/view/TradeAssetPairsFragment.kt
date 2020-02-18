@@ -17,8 +17,8 @@ import kotlinx.android.synthetic.main.fragment_trade_asset_pairs.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
-import org.tokend.template.data.model.AssetPairRecord
-import org.tokend.template.data.repository.pairs.AssetPairsRepository
+import org.tokend.template.features.trade.pairs.model.AssetPairRecord
+import org.tokend.template.features.trade.pairs.repository.AssetPairsRepository
 import org.tokend.template.features.trade.pairs.view.adapter.AssetPairItemsAdapter
 import org.tokend.template.features.trade.pairs.view.adapter.AssetPairListItem
 import org.tokend.template.fragments.BaseFragment

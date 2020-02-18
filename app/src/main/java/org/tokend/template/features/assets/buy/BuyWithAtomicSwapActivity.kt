@@ -10,9 +10,9 @@ import kotlinx.android.synthetic.main.fragment_user_flow.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.data.model.Asset
+import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.data.model.AtomicSwapAskRecord
-import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.features.amountscreen.model.AmountInputResult
 import org.tokend.template.features.assets.buy.logic.CreateAtomicSwapBidUseCase
 import org.tokend.template.features.assets.buy.model.AtomicSwapInvoice

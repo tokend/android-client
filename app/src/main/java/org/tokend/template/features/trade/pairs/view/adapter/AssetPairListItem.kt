@@ -1,7 +1,7 @@
 package org.tokend.template.features.trade.pairs.view.adapter
 
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.AssetPairRecord
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.trade.pairs.model.AssetPairRecord
 import java.math.BigDecimal
 
 data class AssetPairListItem(

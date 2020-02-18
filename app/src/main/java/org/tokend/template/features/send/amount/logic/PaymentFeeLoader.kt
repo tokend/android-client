@@ -2,10 +2,10 @@ package org.tokend.template.features.send.amount.logic
 
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import org.tokend.template.data.model.history.SimpleFeeRecord
+import org.tokend.template.features.history.model.SimpleFeeRecord
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.send.model.PaymentFee
-import org.tokend.template.logic.FeeManager
+import org.tokend.template.features.fees.logic.FeeManager
 import java.math.BigDecimal
 
 /**

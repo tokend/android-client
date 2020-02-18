@@ -2,8 +2,8 @@ package org.tokend.template.features.send.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.repository.BalancesRepository
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.send.model.PaymentFee
 import org.tokend.template.features.send.model.PaymentRecipient

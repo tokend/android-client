@@ -5,14 +5,14 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.template.data.model.SimpleAsset
-import org.tokend.template.data.model.history.details.BalanceChangeCause
+import org.tokend.template.features.assets.model.SimpleAsset
+import org.tokend.template.features.history.model.details.BalanceChangeCause
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
 import org.tokend.template.features.offers.logic.ConfirmOfferRequestUseCase
 import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import org.tokend.template.features.offers.model.OfferRecord
-import org.tokend.template.logic.FeeManager
+import org.tokend.template.features.fees.logic.FeeManager
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.TxManager
 import org.tokend.wallet.TransactionBuilder

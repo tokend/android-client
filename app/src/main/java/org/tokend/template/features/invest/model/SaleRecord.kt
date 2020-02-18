@@ -8,6 +8,9 @@ import org.tokend.sdk.api.generated.resources.SaleResource
 import org.tokend.sdk.api.sales.model.SaleState
 import org.tokend.template.data.model.*
 import org.tokend.template.data.repository.base.pagination.PagingRecord
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.assets.model.SimpleAsset
+import org.tokend.template.features.urlconfig.model.UrlConfig
 import org.tokend.wallet.xdr.SaleType
 import java.io.Serializable
 import java.math.BigDecimal

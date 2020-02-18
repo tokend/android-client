@@ -8,10 +8,10 @@ import android.arch.persistence.room.TypeConverters
 import android.arch.persistence.room.migration.Migration
 import com.google.gson.Gson
 import org.tokend.sdk.utils.BigDecimalUtil
-import org.tokend.template.data.model.Asset
-import org.tokend.template.data.model.SimpleAsset
-import org.tokend.template.data.model.history.BalanceChangeDbEntity
-import org.tokend.template.data.repository.balancechanges.BalanceChangesDao
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.assets.model.SimpleAsset
+import org.tokend.template.features.history.storage.BalanceChangeDbEntity
+import org.tokend.template.features.history.storage.BalanceChangesDao
 import org.tokend.template.features.assets.model.AssetDbEntity
 import org.tokend.template.features.assets.storage.AssetsDao
 import org.tokend.template.features.balances.model.BalanceDbEntity

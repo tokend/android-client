@@ -2,7 +2,7 @@ package org.tokend.template.di
 
 import dagger.Module
 import dagger.Provides
-import org.tokend.template.logic.AppTfaCallback
+import org.tokend.template.features.tfa.logic.AppTfaCallback
 import javax.inject.Singleton
 
 @Module
