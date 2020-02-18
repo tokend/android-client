@@ -1,7 +1,5 @@
 package org.tokend.template.features.send
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
@@ -229,12 +227,13 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun onPaymentRequestCreated(request: PaymentRequest) {
-        Navigator
-                .from(this)
-                .openPaymentConfirmation(
-                        PAYMENT_CONFIRMATION_REQUEST,
-                        request
-                )
+        Navigator.from(this)
+                .openPaymentConfirmation(request)
+                .addTo(activityRequestsBag)
+                .doOnSuccess {
+                    (activity as? WalletEventsListener)
+                            ?.onPaymentRequestConfirmed(request)
+                }
     }
 
     // region Error/empty
@@ -261,30 +260,10 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         return !fragmentDisplayer.tryPopBackStack()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                PAYMENT_CONFIRMATION_REQUEST -> {
-                    val confirmedRequest =
-                            data?.getSerializableExtra(
-                                    PaymentConfirmationActivity.PAYMENT_REQUEST_EXTRA
-                            ) as? PaymentRequest
-                    if (confirmedRequest != null) {
-                        (activity as? WalletEventsListener)
-                                ?.onPaymentRequestConfirmed(confirmedRequest)
-                    }
-                }
-            }
-        }
-    }
-
     companion object {
         private const val ASSET_EXTRA = "asset"
         private const val ALLOW_TOOLBAR_EXTRA = "allow_toolbar"
         const val ID = 1118L
-        val PAYMENT_CONFIRMATION_REQUEST = "confirm_payment".hashCode() and 0xffff
 
         fun newInstance(bundle: Bundle): SendFragment = SendFragment().withArguments(bundle)
 

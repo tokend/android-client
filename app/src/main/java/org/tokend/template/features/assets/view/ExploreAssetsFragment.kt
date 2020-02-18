@@ -1,7 +1,5 @@
 package org.tokend.template.features.assets.view
 
-import android.app.Activity
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -239,9 +237,10 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun openAssetDetails(view: View?, item: AssetListItem) {
-        Navigator.from(this).openAssetDetails(CREATE_REQUEST, item.source,
-                cardView = view
-        )
+        Navigator.from(this)
+                .openAssetDetails(item.source, cardView = view)
+                .addTo(activityRequestsBag)
+                .doOnSuccess { update(force = true) }
     }
 
     private fun createBalance(asset: String) {
@@ -295,13 +294,6 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == CREATE_REQUEST && resultCode == Activity.RESULT_OK) {
-            update(true)
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     override fun onStart() {
         super.onStart()
         assets_recycler_view.isLayoutFrozen = false
@@ -325,7 +317,6 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
     companion object {
         val ID = "explore-assets".hashCode().toLong()
-        const val CREATE_REQUEST = 314
 
         fun newInstance() = ExploreAssetsFragment()
     }

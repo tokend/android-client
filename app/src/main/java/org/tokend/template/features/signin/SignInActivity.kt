@@ -1,8 +1,6 @@
 package org.tokend.template.features.signin
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -183,15 +181,23 @@ class SignInActivity : BaseActivity() {
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
             QrScannerUtil.openScanner(this)
+                    .addTo(activityRequestsBag)
+                    .doOnSuccess { urlConfigManager.setFromJson(it) }
         }
     }
 
     private fun openAuthenticatorSignIn() {
-        Navigator.from(this).openAuthenticatorSignIn(SIGN_IN_WITH_AUTHENTICATOR_REQUEST)
+        Navigator.from(this)
+                .openAuthenticatorSignIn()
+                .addTo(activityRequestsBag)
+                .doOnSuccess { onSignInComplete() }
     }
 
     private fun openLocalAccountSignIn() {
-        Navigator.from(this).openLocalAccountSignIn(SIGN_IN_WITH_LOCAL_ACCOUNT_REQUEST)
+        Navigator.from(this)
+                .openLocalAccountSignIn()
+                .addTo(activityRequestsBag)
+                .doOnSuccess { onSignInComplete() }
     }
 
     private fun updateSignInAvailability() {
@@ -337,29 +343,5 @@ class SignInActivity : BaseActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
-            urlConfigManager.setFromJson(it)
-        }
-
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                SIGN_IN_WITH_AUTHENTICATOR_REQUEST,
-                SIGN_IN_WITH_LOCAL_ACCOUNT_REQUEST -> {
-                    onSignInComplete()
-                }
-            }
-        }
-    }
-
-    companion object {
-        private val SIGN_IN_WITH_AUTHENTICATOR_REQUEST =
-                "sign_in_with_authenticator".hashCode() and 0xffff
-        private val SIGN_IN_WITH_LOCAL_ACCOUNT_REQUEST =
-                "sign_in_with_local_account".hashCode() and 0xffff
     }
 }

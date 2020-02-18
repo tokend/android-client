@@ -1,7 +1,5 @@
 package org.tokend.template.features.invest.view
 
-import android.app.Activity
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -86,7 +84,10 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         error_empty_view.observeAdapter(salesAdapter, R.string.no_sales_found)
 
         salesAdapter.onItemClick { _, sale ->
-            Navigator.from(this).openSale(INVESTMENT_REQUEST, sale)
+            Navigator.from(this)
+                    .openSale(sale)
+                    .addTo(activityRequestsBag)
+                    .doOnSuccess { update(force = true) }
         }
 
         sales_list.apply {
@@ -154,7 +155,10 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         }
 
         pendingOffersItem?.setOnMenuItemClickListener {
-            Navigator.from(this).openPendingOffers(CANCEL_OFFER_REQUEST, true)
+            Navigator.from(this)
+                    .openPendingOffers(true)
+                    .addTo(activityRequestsBag)
+                    .doOnSuccess { update(force = true) }
             true
         }
     }
@@ -182,18 +186,6 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                INVESTMENT_REQUEST,
-                CANCEL_OFFER_REQUEST -> {
-                    update(force = true)
-                }
-            }
-        }
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         layoutManager.spanCount = ColumnCalculator.getColumnCount(requireActivity())
@@ -201,8 +193,6 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
 
     companion object {
         val ID = "sales_fragment".hashCode().toLong()
-        private val INVESTMENT_REQUEST = "invest".hashCode() and 0xfff
-        private val CANCEL_OFFER_REQUEST = "cancel_offer".hashCode() and 0xffff
 
         fun newInstance() = SalesFragment()
     }

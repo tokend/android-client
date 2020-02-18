@@ -158,6 +158,8 @@ class SignUpActivity : BaseActivity() {
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
             QrScannerUtil.openScanner(this)
+                    .addTo(activityRequestsBag)
+                    .doOnSuccess { urlConfigManager.setFromJson(it) }
         }
     }
 
@@ -241,16 +243,8 @@ class SignUpActivity : BaseActivity() {
         cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
-            urlConfigManager.setFromJson(it)
-        }
-    }
-
     private fun onSuccessfulSignUp(walletCreateResult: WalletCreateResult) {
-        if (walletCreateResult.walletData.attributes?.isVerified == true) {
+        if (walletCreateResult.walletData.attributes.isVerified) {
             tryToSignIn()
         } else {
             showNotVerifiedEmailDialogAndFinish()

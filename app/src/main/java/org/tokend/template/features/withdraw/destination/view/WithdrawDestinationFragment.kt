@@ -1,7 +1,6 @@
 package org.tokend.template.features.withdraw.destination.view
 
 import android.Manifest
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -77,6 +76,13 @@ class WithdrawDestinationFragment : BaseFragment() {
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
             QrScannerUtil.openScanner(this)
+                    .addTo(activityRequestsBag)
+                    .doOnSuccess {
+                        destination_edit_text.setText(it)
+                        destination_edit_text.setSelection(destination_edit_text.text?.length ?: 0)
+                        checkDestination()
+                        updateContinueAvailability()
+                    }
         }
     }
 
@@ -105,17 +111,6 @@ class WithdrawDestinationFragment : BaseFragment() {
                 && !destination_edit_text.text.isNullOrBlank()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
-            destination_edit_text.setText(it)
-            destination_edit_text.setSelection(destination_edit_text.text?.length ?: 0)
-            checkDestination()
-            updateContinueAvailability()
-        }
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<out String>,
                                             grantResults: IntArray) {
@@ -124,7 +119,7 @@ class WithdrawDestinationFragment : BaseFragment() {
     }
 
     companion object {
-        private const val AMOUNT_EXTRA = "amount to withdraw"
+        private const val AMOUNT_EXTRA = "amount_to_withdraw"
 
         fun getBundle(amountToWithdraw: String) = Bundle().apply {
             putString(AMOUNT_EXTRA, amountToWithdraw)

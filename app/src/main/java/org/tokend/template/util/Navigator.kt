@@ -21,6 +21,7 @@ import org.tokend.template.data.model.AssetPairRecord
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.model.history.BalanceChange
 import org.tokend.template.data.model.history.details.BalanceChangeCause
+import org.tokend.template.extensions.getBigDecimalExtra
 import org.tokend.template.features.assets.buy.BuyWithAtomicSwapActivity
 import org.tokend.template.features.assets.buy.view.AtomicSwapAsksFragment
 import org.tokend.template.features.assets.details.view.AssetDetailsActivity
@@ -59,6 +60,7 @@ import org.tokend.template.features.wallet.view.BalanceDetailsActivity
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
+import org.tokend.template.util.navigator.ActivityRequest
 import java.math.BigDecimal
 
 /**
@@ -194,41 +196,40 @@ class Navigator private constructor() {
                     shareLabel: String,
                     shareText: String? = data,
                     topText: String? = null,
-                    bottomText: String? = null,
-                    requestCode: Int = 0) {
-
+                    bottomText: String? = null
+    ) = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<SingleFragmentActivity>()
                 ?.putExtras(SingleFragmentActivity.getBundle(
                         ShareQrFragment.ID,
                         ShareQrFragment.getBundle(data, title, shareLabel, shareText, topText, bottomText)
                 ))
-                ?.also { performIntent(it, requestCode = requestCode) }
+                ?.also { performIntent(it, request.code) }
     }
 
-    fun openPasswordChange(requestCode: Int) {
+    fun openPasswordChange() = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<ChangePasswordActivity>()
-                ?.also { performIntent(it, requestCode = requestCode) }
+                ?.also { performIntent(it, request.code) }
     }
 
-    fun openWithdrawalConfirmation(requestCode: Int,
-                                   withdrawalRequest: WithdrawalRequest) {
+    fun openWithdrawalConfirmation(withdrawalRequest: WithdrawalRequest
+    ) = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<WithdrawalConfirmationActivity>()
                 ?.putExtras(WithdrawalConfirmationActivity.getBundle(withdrawalRequest))
-                ?.also { performIntent(it, requestCode = requestCode) }
+                ?.also { performIntent(it, request.code) }
     }
 
-    fun openSend(asset: String? = null, requestCode: Int) {
+    fun openSend(asset: String? = null) = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<SingleFragmentActivity>()
                 ?.putExtras(SingleFragmentActivity.getBundle(
                         SendFragment.ID,
                         SendFragment.getBundle(asset, true)
                 ))
-                ?.also { performIntent(it, requestCode = requestCode) }
+                ?.also { performIntent(it, request.code) }
     }
 
-    fun openAssetDetails(requestCode: Int,
-                         asset: AssetRecord,
-                         cardView: View? = null) {
+    fun openAssetDetails(asset: AssetRecord,
+                         cardView: View? = null
+    ) = ActivityRequest.withoutResultData().also { request ->
         val transitionBundle = activity?.let {
             createTransitionBundle(it,
                     cardView to it.getString(R.string.transition_asset_card)
@@ -240,46 +241,49 @@ class Navigator private constructor() {
         }
         context?.intentFor<AssetDetailsActivity>()
                 ?.putExtras(AssetDetailsActivity.getBundle(asset))
-                ?.also { performIntent(it, requestCode, transitionBundle) }
+                ?.also { performIntent(it, request.code, transitionBundle) }
     }
 
-    fun openPaymentConfirmation(requestCode: Int, paymentRequest: PaymentRequest) {
+    fun openPaymentConfirmation(paymentRequest: PaymentRequest
+    ) = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<PaymentConfirmationActivity>()
                 ?.putExtras(PaymentConfirmationActivity.getBundle(paymentRequest))
-                ?.also { performIntent(it, requestCode = requestCode) }
+                ?.also { performIntent(it, request.code) }
     }
 
-    fun openOfferConfirmation(requestCode: Int, request: OfferRequest) {
+    fun openOfferConfirmation(offerRequest: OfferRequest
+    ) = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<OfferConfirmationActivity>()
-                ?.putExtras(OfferConfirmationActivity.getBundle(request))
-                ?.also { performIntent(it, requestCode = requestCode) }
+                ?.putExtras(OfferConfirmationActivity.getBundle(offerRequest))
+                ?.also { performIntent(it, request.code) }
     }
 
-    fun openInvestmentConfirmation(requestCode: Int,
-                                   request: OfferRequest,
+    fun openInvestmentConfirmation(investmentRequest: OfferRequest,
                                    displayToReceive: Boolean = true,
-                                   saleName: String? = null) {
+                                   saleName: String? = null
+    ) = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<InvestmentConfirmationActivity>()
                 ?.putExtras(InvestmentConfirmationActivity
-                        .getBundle(request, displayToReceive, saleName))
-                ?.also { performIntent(it, requestCode = requestCode) }
+                        .getBundle(investmentRequest, displayToReceive, saleName))
+                ?.also { performIntent(it, request.code) }
     }
 
-    fun openPendingOffers(requestCode: Int = 0, onlyPrimary: Boolean = false) {
+    fun openPendingOffers(onlyPrimary: Boolean = false
+    ) = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<OffersActivity>()
                 ?.putExtras(OffersActivity.getBundle(onlyPrimary))
-                ?.also { performIntent(it, requestCode = requestCode) }
+                ?.also { performIntent(it, request.code) }
     }
 
-    fun openSale(requestCode: Int, sale: SaleRecord) {
+    fun openSale(sale: SaleRecord) = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<SaleActivity>()
                 ?.putExtras(SaleActivity.getBundle(sale))
-                ?.also { performIntent(it, requestCode) }
+                ?.also { performIntent(it, request.code) }
     }
 
-    fun openAuthenticatorSignIn(requestCode: Int) {
+    fun openAuthenticatorSignIn() = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<AuthenticatorSignInActivity>()
-                ?.also { performIntent(it, requestCode = requestCode) }
+                ?.also { performIntent(it, request.code) }
     }
 
     fun openBalanceChangeDetails(change: BalanceChange) {
@@ -303,8 +307,8 @@ class Navigator private constructor() {
                 .also { performIntent(it) }
     }
 
-    fun openPendingOfferDetails(offer: OfferRecord,
-                                requestCode: Int = 0) {
+    fun openPendingOfferDetails(offer: OfferRecord
+    ) = ActivityRequest.withoutResultData().also { request ->
         val activityClass =
                 if (offer.isInvestment)
                     PendingInvestmentDetailsActivity::class.java
@@ -313,7 +317,7 @@ class Navigator private constructor() {
 
         Intent(context, activityClass)
                 .putExtras(PendingOfferDetailsActivity.getBundle(offer))
-                .also { performIntent(it, requestCode = requestCode) }
+                .also { performIntent(it, request.code) }
     }
 
     fun openTrade(assetPair: AssetPairRecord) {
@@ -341,22 +345,22 @@ class Navigator private constructor() {
                 ?.also { performIntent(it) }
     }
 
-    fun openDeposit(requestCode: Int, asset: String) {
+    fun openDeposit(asset: String) = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<SingleFragmentActivity>()
                 ?.putExtras(SingleFragmentActivity.getBundle(
                         DepositFragment.ID,
                         DepositFragment.getBundle(asset)
                 ))
-                ?.also { performIntent(it, requestCode = requestCode) }
+                ?.also { performIntent(it, request.code) }
     }
 
-    fun openWithdraw(requestCode: Int, asset: String) {
+    fun openWithdraw(asset: String) = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<SingleFragmentActivity>()
                 ?.putExtras(SingleFragmentActivity.getBundle(
                         WithdrawFragment.ID,
                         WithdrawFragment.getBundle(asset)
                 ))
-                ?.also { performIntent(it, requestCode = requestCode) }
+                ?.also { performIntent(it, request.code) }
     }
 
     fun openInvest(sale: SaleRecord) {
@@ -384,7 +388,7 @@ class Navigator private constructor() {
         openAccountQrShare(walletInfo.accountId)
     }
 
-    fun openAccountQrShare(accountId: String) {
+    private fun openAccountQrShare(accountId: String) {
         openQrShare(
                 data = accountId,
                 title = context!!.getString(R.string.account_id_title),
@@ -408,9 +412,9 @@ class Navigator private constructor() {
                 ?.also { performIntent(it) }
     }
 
-    fun openLocalAccountSignIn(requestCode: Int) {
+    fun openLocalAccountSignIn() = ActivityRequest.withoutResultData().also { request ->
         context?.intentFor<LocalAccountSignInActivity>()
-                ?.also { performIntent(it, requestCode = requestCode) }
+                ?.also { performIntent(it, request.code) }
     }
 
     fun openLocalAccountDetails() {
@@ -423,10 +427,12 @@ class Navigator private constructor() {
                 ?.also { performIntent(it) }
     }
 
-    fun openDepositAmountInput(assetCode: String,
-                               requestCode: Int) {
+    fun openDepositAmountInput(assetCode: String) = ActivityRequest { intent ->
+        intent?.getBigDecimalExtra(DepositAmountActivity.RESULT_AMOUNT_EXTRA)
+                ?.takeIf { it.signum() > 0 }
+    }.also { request ->
         context?.intentFor<DepositAmountActivity>()
                 ?.putExtras(DepositAmountActivity.getBundle(assetCode))
-                ?.also { performIntent(it, requestCode = requestCode) }
+                ?.also { performIntent(it, request.code) }
     }
 }

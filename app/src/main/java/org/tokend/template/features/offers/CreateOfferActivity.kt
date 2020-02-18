@@ -1,7 +1,5 @@
 package org.tokend.template.features.offers
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -320,25 +318,17 @@ class CreateOfferActivity : BaseActivity() {
                 .doOnEvent { _, _ -> progress.cancel() }
                 .subscribeBy(
                         onSuccess = { offerRequest ->
-                            Navigator.from(this).openOfferConfirmation(
-                                    CREATE_OFFER_REQUEST, offerRequest
-                            )
+                            Navigator.from(this)
+                                    .openOfferConfirmation(offerRequest)
+                                    .addTo(activityRequestsBag)
+                                    .doOnSuccess { finish() }
                         },
                         onError = { errorHandlerFactory.getDefault().handle(it) }
                 )
                 .addTo(compositeDisposable)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == CREATE_OFFER_REQUEST && resultCode == Activity.RESULT_OK) {
-            finish()
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     companion object {
-        private val CREATE_OFFER_REQUEST = "create_offer".hashCode() and 0xffff
-
         private const val BASE_ASSET_EXTRA = "base_asset"
         private const val QUOTE_ASSET_EXTRA = "quote_asset"
         private const val PRICE_STRING_EXTRA = "price"

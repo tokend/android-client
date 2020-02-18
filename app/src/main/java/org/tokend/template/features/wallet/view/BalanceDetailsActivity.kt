@@ -1,9 +1,6 @@
 package org.tokend.template.features.wallet.view
 
 import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -151,7 +148,7 @@ class BalanceDetailsActivity : BaseActivity() {
                     R.drawable.ic_send_fab,
                     {
                         val assetCode = asset?.code ?: return@FloatingActionMenuAction
-                        navigator.openSend(assetCode, 0)
+                        navigator.openSend(assetCode)
                     },
                     isEnabled = asset?.isTransferable == true
             ))
@@ -175,7 +172,7 @@ class BalanceDetailsActivity : BaseActivity() {
                     R.drawable.ic_deposit_fab,
                     {
                         val assetCode = asset?.code ?: return@FloatingActionMenuAction
-                        navigator.openDeposit(0, assetCode)
+                        navigator.openDeposit(assetCode)
                     },
                     isEnabled = asset?.isDepositable == true
             ))
@@ -188,7 +185,7 @@ class BalanceDetailsActivity : BaseActivity() {
                     R.drawable.ic_withdraw_fab,
                     {
                         val assetCode = asset?.code ?: return@FloatingActionMenuAction
-                        navigator.openWithdraw(0, assetCode)
+                        navigator.openWithdraw(assetCode)
                     },
                     isEnabled = asset?.isWithdrawable == true
             ))
@@ -369,7 +366,7 @@ class BalanceDetailsActivity : BaseActivity() {
     private fun openAssetDetails() {
         val asset = balance?.asset ?: return
         menu_fab.close(false)
-        Navigator.from(this).openAssetDetails(ASSET_DETAILS_REQUEST, asset)
+        Navigator.from(this).openAssetDetails(asset)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -387,7 +384,6 @@ class BalanceDetailsActivity : BaseActivity() {
 
     companion object {
         private const val BALANCE_ID_EXTRA = "balance_id"
-        private const val ASSET_DETAILS_REQUEST = 1132
 
         fun getBundle(balanceId: String) = Bundle().apply {
             putString(BALANCE_ID_EXTRA, balanceId)

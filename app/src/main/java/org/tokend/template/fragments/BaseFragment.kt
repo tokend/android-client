@@ -1,5 +1,6 @@
 package org.tokend.template.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.View
@@ -11,6 +12,7 @@ import org.tokend.template.data.model.BalanceRecord
 import org.tokend.template.di.providers.*
 import org.tokend.template.logic.AppTfaCallback
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
+import org.tokend.template.util.navigator.ActivityRequest
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import javax.inject.Inject
@@ -48,6 +50,8 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
      */
     protected lateinit var compositeDisposable: CompositeDisposable
 
+    protected val activityRequestsBag: MutableCollection<ActivityRequest<*>> = mutableSetOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity?.application as? App)?.stateComponent?.inject(this)
@@ -71,4 +75,17 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
      * You must implement your fragment initialization here
      */
     abstract fun onInitAllowed()
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        activityRequestsBag.iterator().also { iterator ->
+            while (iterator.hasNext()) {
+                val request = iterator.next()
+                request.handleActivityResult(requestCode, resultCode, data)
+                if (request.isCompleted) {
+                    iterator.remove()
+                }
+            }
+        }
+    }
 }

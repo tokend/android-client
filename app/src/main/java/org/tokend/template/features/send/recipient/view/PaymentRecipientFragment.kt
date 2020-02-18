@@ -3,7 +3,6 @@ package org.tokend.template.features.send.recipient.view
 import android.Manifest
 import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -69,7 +68,7 @@ class PaymentRecipientFragment : BaseFragment() {
             continue_button.enabled = value
         }
 
-    protected val resultSubject = PublishSubject.create<PaymentRecipient>()
+    private val resultSubject = PublishSubject.create<PaymentRecipient>()
     val resultObservable: Observable<PaymentRecipient> = resultSubject
 
     private var contactsFilter: String? = null
@@ -227,6 +226,12 @@ class PaymentRecipientFragment : BaseFragment() {
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
             QrScannerUtil.openScanner(this)
+                    .addTo(activityRequestsBag)
+                    .doOnSuccess {
+                        recipient_edit_text.setText(it)
+                        recipient_edit_text.setSelection(recipient_edit_text.text?.length ?: 0)
+                        tryToLoadRecipient()
+                    }
         }
     }
 
@@ -317,16 +322,6 @@ class PaymentRecipientFragment : BaseFragment() {
                 errorHandlerFactory.getDefault().handle(e)
         }
         updateContinueAvailability()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        QrScannerUtil.getStringFromResult(requestCode, resultCode, data)?.also {
-            recipient_edit_text.setText(it)
-            recipient_edit_text.setSelection(recipient_edit_text.text?.length ?: 0)
-            tryToLoadRecipient()
-        }
     }
 
     override fun onResume() {

@@ -1,7 +1,5 @@
 package org.tokend.template.features.deposit.view
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GestureDetectorCompat
@@ -28,7 +26,6 @@ import org.tokend.template.data.model.Asset
 import org.tokend.template.data.model.AssetRecord
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.assets.AssetsRepository
-import org.tokend.template.extensions.getBigDecimalExtra
 import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.deposit.logic.BindCoinpaymentsDepositAccountUseCase
 import org.tokend.template.features.deposit.logic.BindDepositAccountUseCase
@@ -470,7 +467,10 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                                                isRenewal: Boolean) {
         coinpaymentsBindingAsset = asset
         isCoinpaymentsBindingARenewal = isRenewal
-        Navigator.from(this).openDepositAmountInput(asset.code, AMOUNT_REQUEST)
+        Navigator.from(this)
+                .openDepositAmountInput(asset.code)
+                .addTo(activityRequestsBag)
+                .doOnSuccess(this::bindCoinpaymentsDepositAccount)
     }
 
     /**
@@ -548,26 +548,11 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 .show()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                AMOUNT_REQUEST -> {
-                    val amount = data?.getBigDecimalExtra(DepositAmountActivity.RESULT_AMOUNT_EXTRA)
-                            ?.takeIf { it.signum() > 0 }
-                            ?: return
-                    bindCoinpaymentsDepositAccount(amount)
-                }
-            }
-        }
-    }
-
     companion object {
         val ID = "deposit".hashCode().toLong()
         private const val EXPIRATION_WARNING_THRESHOLD = 6 * 60 * 60 * 1000L
         private const val CRITICAL_EXPIRATION_WARNING_THRESHOLD = 30 * 60 * 1000L
         private const val EXTRA_ASSET = "extra_asset"
-        private val AMOUNT_REQUEST = "deposit_amount".hashCode() and 0xffff
 
         private val EXISTING_ADDRESS_ITEM_ID = "existing_address".hashCode().toLong()
         private val PAYLOAD_ITEM_ID = "payload".hashCode().toLong()

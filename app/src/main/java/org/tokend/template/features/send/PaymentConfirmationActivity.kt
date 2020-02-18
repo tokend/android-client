@@ -1,8 +1,6 @@
 package org.tokend.template.features.send
 
 import android.app.Activity
-import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -184,13 +182,12 @@ class PaymentConfirmationActivity : BaseActivity() {
     }
 
     private fun finishWithSuccess() {
-        setResult(Activity.RESULT_OK,
-                Intent().putExtra(PAYMENT_REQUEST_EXTRA, request))
+        setResult(Activity.RESULT_OK)
         finish()
     }
 
     companion object {
-        const val PAYMENT_REQUEST_EXTRA = "payment_request"
+        private const val PAYMENT_REQUEST_EXTRA = "payment_request"
         private val RECIPIENT_FEE_ITEM_ID = "recipient_fee".hashCode().toLong()
         private val TO_RECEIVE_AMOUNT_ITEM_ID = "to_receive_amount".hashCode().toLong()
 

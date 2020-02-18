@@ -248,10 +248,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         }
 
         changePasswordPreference?.setOnPreferenceClickListener {
-            activity?.let { parentActivity ->
-                Navigator.from(parentActivity).openPasswordChange(3597)
-            }
-
+            Navigator.from(this).openPasswordChange()
             true
         }
     }

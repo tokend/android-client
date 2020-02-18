@@ -108,7 +108,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun openSend() {
-        Navigator.from(this).openSend(requestCode = 0)
+        Navigator.from(this).openSend()
     }
 
     private fun openReceive() {

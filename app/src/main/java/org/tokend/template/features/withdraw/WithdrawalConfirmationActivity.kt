@@ -1,8 +1,6 @@
 package org.tokend.template.features.withdraw
 
 import android.app.Activity
-import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -130,8 +128,7 @@ class WithdrawalConfirmationActivity : BaseActivity() {
     }
 
     private fun finishWithSuccess() {
-        setResult(Activity.RESULT_OK,
-                Intent().putExtra(WITHDRAWAL_REQUEST_EXTRA, request))
+        setResult(Activity.RESULT_OK)
         finish()
     }
 

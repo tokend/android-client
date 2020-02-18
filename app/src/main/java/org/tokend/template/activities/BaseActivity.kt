@@ -1,6 +1,7 @@
 package org.tokend.template.activities
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -30,6 +31,7 @@ import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.cipher.DataCipher
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.util.locale.AppLocaleManager
+import org.tokend.template.util.navigator.ActivityRequest
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import javax.inject.Inject
@@ -90,6 +92,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
      * Disposable holder which will be disposed on activity destroy
      */
     protected val compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    protected val activityRequestsBag: MutableCollection<ActivityRequest<*>> = mutableSetOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -192,5 +196,18 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     protected fun finishWithMissingArgError(argName: String) {
         errorHandlerFactory.getDefault().handle(IllegalArgumentException("No $argName specified"))
         finish()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        activityRequestsBag.iterator().also { iterator ->
+            while (iterator.hasNext()) {
+                val request = iterator.next()
+                request.handleActivityResult(requestCode, resultCode, data)
+                if (request.isCompleted) {
+                    iterator.remove()
+                }
+            }
+        }
     }
 }
