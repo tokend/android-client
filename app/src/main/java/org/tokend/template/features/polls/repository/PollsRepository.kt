@@ -5,16 +5,17 @@ import io.reactivex.functions.BiFunction
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.v3.polls.model.PollState
 import org.tokend.sdk.api.v3.polls.params.PollsPageParams
 import org.tokend.sdk.api.v3.polls.params.VotesPageParams
 import org.tokend.sdk.utils.SimplePagedResourceLoader
-import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
-import org.tokend.template.features.keyvalue.storage.KeyValueEntriesRepository
-import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.data.repository.base.MultipleItemsRepository
+import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.tryOrNull
+import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
+import org.tokend.template.features.keyvalue.storage.KeyValueEntriesRepository
 import org.tokend.template.features.polls.model.PollRecord
 
 class PollsRepository(
@@ -63,7 +64,7 @@ class PollsRepository(
                         pollsPage.mapItemsNotNull {
                             tryOrNull {
                                 // Ignore cancelled polls.
-                                if (it.pollState.value == 4) {
+                                if (it.pollState.value == PollState.CANCELLED.value) {
                                     return@tryOrNull null
                                 }
 

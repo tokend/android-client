@@ -28,7 +28,7 @@ class AccountRepository(private val apiProvider: ApiProvider,
                         AccountParamsV3(
                                 include = listOf(
                                         AccountParamsV3.Includes.EXTERNAL_SYSTEM_IDS,
-                                        "kyc_data"
+                                        AccountParamsV3.Includes.KYC_DATA
                                 )
                         )
                 )
