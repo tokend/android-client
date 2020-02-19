@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_atomic_swap_asks.*
+import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
@@ -20,8 +21,9 @@ import org.tokend.template.features.assets.buy.view.adapter.AtomicSwapAskListIte
 import org.tokend.template.features.assets.buy.view.adapter.AtomicSwapAsksAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
+import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.SwipeRefreshDependencyUtil
 
@@ -73,6 +75,8 @@ class AtomicSwapAsksFragment : BaseFragment(), ToolbarProvider {
         error_empty_view.setEmptyDrawable(R.drawable.ic_trade)
         error_empty_view.observeAdapter(adapter, R.string.no_offers)
         error_empty_view.setEmptyViewDenial(asksRepository::isNeverUpdated)
+
+        ElevationUtil.initScrollElevation(hint_appbar, appbar_elevation_view)
     }
 
     private fun initSwipeRefresh() {

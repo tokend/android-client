@@ -83,4 +83,11 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/appbar">
+
+        <include layout="@layout/include_appbar_elevation" />
+    </FrameLayout>
 </android.support.constraint.ConstraintLayout>

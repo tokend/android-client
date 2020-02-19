@@ -87,7 +87,6 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
         fragment
                 .resultObservable
                 .compose(ObservableTransformers.defaultSchedulers())
-                .map { it as AmountInputResult }
                 .map(AmountInputResult::amount)
                 .subscribeBy(
                         onNext = this::onAmountEntered,

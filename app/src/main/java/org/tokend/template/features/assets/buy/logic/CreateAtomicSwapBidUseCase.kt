@@ -5,18 +5,13 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
-import io.reactivex.schedulers.Schedulers
 import org.tokend.rx.extensions.toSingle
-import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
-import org.tokend.sdk.api.generated.resources.CreateAtomicSwapBidRequestResource
-import org.tokend.sdk.api.generated.resources.ReviewableRequestResource
 import org.tokend.sdk.api.requests.model.base.RequestState
 import org.tokend.sdk.api.v3.requests.params.RequestParamsV3
 import org.tokend.sdk.api.v3.requests.params.RequestsPageParamsV3
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.sdk.utils.extentions.encodeBase64String
 import org.tokend.template.data.model.AtomicSwapAskRecord
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
@@ -26,12 +21,8 @@ import org.tokend.template.features.assets.buy.model.AtomicSwapInvoice
 import org.tokend.template.logic.TxManager
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.Transaction
-import org.tokend.wallet.xdr.CreateAtomicSwapBidRequest
-import org.tokend.wallet.xdr.CreateAtomicSwapBidRequestOp
-import org.tokend.wallet.xdr.Operation
-import org.tokend.wallet.xdr.ReviewableRequestType
+import org.tokend.wallet.xdr.*
 import java.math.BigDecimal
-import java.security.SecureRandom
 import java.util.concurrent.TimeUnit
 
 /**
@@ -53,9 +44,9 @@ class CreateAtomicSwapBidUseCase(
     private val objectMapper = JsonApiToolsProvider.getObjectMapper()
     private lateinit var accountId: String
     private lateinit var networkParams: NetworkParams
-    private lateinit var reference: String
     private lateinit var transaction: Transaction
-    private lateinit var pendingRequestId: String
+    private lateinit var transactionResultMetaXdr: String
+    private var pendingRequestId: Long = 0L
 
     fun perform(): Single<AtomicSwapInvoice> {
         return getAccountId()
@@ -69,19 +60,16 @@ class CreateAtomicSwapBidUseCase(
                     this.networkParams = networkParams
                 }
                 .flatMap {
-                    getReference()
-                }
-                .doOnSuccess { reference ->
-                    this.reference = reference
-                }
-                .flatMap {
                     getTransaction()
                 }
                 .doOnSuccess { transaction ->
                     this.transaction = transaction
                 }
                 .flatMap {
-                    submitTransaction()
+                    getSubmitTransactionResult()
+                }
+                .doOnSuccess { transactionResultMetaXdr ->
+                    this.transactionResultMetaXdr = transactionResultMetaXdr
                 }
                 .flatMap {
                     getPendingRequestId()
@@ -111,20 +99,13 @@ class CreateAtomicSwapBidUseCase(
                 .getNetworkParams()
     }
 
-    private fun getReference(): Single<String> {
-        return {
-            SecureRandom.getSeed(12).encodeBase64String()
-        }.toSingle().subscribeOn(Schedulers.newThread())
-    }
-
     private fun getTransaction(): Single<Transaction> {
         val op = CreateAtomicSwapBidRequestOp(
                 request = CreateAtomicSwapBidRequest(
                         askID = ask.id.toLong(),
                         quoteAsset = quoteAssetCode,
                         baseAmount = networkParams.amountToPrecised(amount),
-                        // Unique data is required to identify the request
-                        creatorDetails = "{\"$REFERENCE_KEY\":\"$reference\"}",
+                        creatorDetails = "{}",
                         ext = CreateAtomicSwapBidRequest.CreateAtomicSwapBidRequestExt.EmptyVersion()
                 ),
                 ext = CreateAtomicSwapBidRequestOp.CreateAtomicSwapBidRequestOpExt.EmptyVersion()
@@ -137,67 +118,33 @@ class CreateAtomicSwapBidUseCase(
                 Operation.OperationBody.CreateAtomicSwapBidRequest(op))
     }
 
-    private fun submitTransaction(): Single<Boolean> {
+    private fun getSubmitTransactionResult(): Single<String> {
         return txManager
                 .submit(transaction)
-                .map { true }
+                .map { it.resultMetaXdr!! }
     }
 
-    private fun getPendingRequestId(): Single<String> {
-        val signedApi = apiProvider.getSignedApi()
-                ?: return Single.error(IllegalStateException("No signed API instance found"))
+    private fun getPendingRequestId(): Single<Long> = {
+        val meta = TransactionMeta.fromBase64(transactionResultMetaXdr)
+                as? TransactionMeta.EmptyVersion
+                ?: throw IllegalStateException("Unable to parse result meta XDR")
 
-        class NoRequestYetException : Exception()
-
-        val getRequestWithReference = {
-            signedApi
-                    .v3
-                    .requests
-                    .get(
-                            RequestsPageParamsV3(
-                                    requestor = accountId,
-                                    type = ReviewableRequestType.CREATE_ATOMIC_SWAP_BID,
-                                    includes = listOf(RequestParamsV3.Includes.REQUEST_DETAILS),
-                                    pagingParams = PagingParamsV2(
-                                            order = PagingOrder.DESC,
-                                            limit = 3
-                                    )
-                            )
-                    )
-                    .toSingle()
-                    .map(DataPage<ReviewableRequestResource>::items)
-                    .map { recentRequests ->
-                        recentRequests
-                                .find { request ->
-                                    val details = request.requestDetails
-                                    details is CreateAtomicSwapBidRequestResource
-                                            && details.creatorDetails
-                                            .get(REFERENCE_KEY).asText() == reference
-                                }
-                                ?.id
-                                ?: throw NoRequestYetException()
-                    }
-        }
-
-        // Wait for request to appear.
-        return Single.defer(getRequestWithReference)
-                .retryWhen { errors ->
-                    errors.flatMap { error ->
-                        if (error is NoRequestYetException) {
-                            Log.i(LOG_TAG, "No request yet, retry...")
-                            Flowable.just(true)
-                                    .delay(POLL_INTERVAL_MS, TimeUnit.MILLISECONDS)
-                        } else {
-                            Flowable.error(error)
-                        }
-                    }
-                }
-    }
+        meta.operations
+                .first()
+                .changes
+                .asSequence()
+                .filterIsInstance<LedgerEntryChange.Created>()
+                .map { it.created.data }
+                .filterIsInstance<LedgerEntry.LedgerEntryData.ReviewableRequest>()
+                .map { it.reviewableRequest.requestID }
+                .first()
+    }.toSingle()
 
     private fun getInvoiceFromRequest(): Single<AtomicSwapInvoice> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
+        class NoRequestYetException : Exception()
         class NoInvoiceYetException : Exception()
         class RequestRejectedException : Exception()
         class InvoiceParsingException(cause: Exception) : Exception(cause)
@@ -206,11 +153,21 @@ class CreateAtomicSwapBidUseCase(
             signedApi
                     .v3
                     .requests
-                    .getById(
-                            requestorAccount = accountId,
-                            requestId = pendingRequestId
-                    )
+                    .get(RequestsPageParamsV3(
+                            requestor = accountId,
+                            type = ReviewableRequestType.CREATE_ATOMIC_SWAP_BID,
+                            includes = listOf(RequestParamsV3.Includes.REQUEST_DETAILS),
+                            pagingParams = PagingParamsV2(
+                                    page = (pendingRequestId - 1).toString(),
+                                    order = PagingOrder.ASC,
+                                    limit = 1
+                            )
+                    ))
                     .toSingle()
+                    .map { page ->
+                        page.items.firstOrNull()
+                                ?: throw NoRequestYetException()
+                    }
                     .map { request ->
                         if (request.stateI == RequestState.PERMANENTLY_REJECTED.i
                                 || request.stateI == RequestState.REJECTED.i) {
@@ -236,12 +193,21 @@ class CreateAtomicSwapBidUseCase(
         return Single.defer(getInvoiceFromRequest)
                 .retryWhen { errors ->
                     errors.flatMap { error ->
-                        if (error is NoInvoiceYetException) {
-                            Log.i(LOG_TAG, "No invoice yet, retry...")
-                            Flowable.just(true)
-                                    .delay(POLL_INTERVAL_MS, TimeUnit.MILLISECONDS)
-                        } else {
-                            Flowable.error(error)
+                        val retryWithDelay = Flowable.just(true)
+                                .delay(POLL_INTERVAL_MS, TimeUnit.MILLISECONDS)
+
+                        when (error) {
+                            is NoInvoiceYetException -> {
+                                Log.i(LOG_TAG, "No invoice yet, retry...")
+                                retryWithDelay
+                            }
+                            is NoRequestYetException -> {
+                                Log.i(LOG_TAG, "No request yet, retry...")
+                                retryWithDelay
+                            }
+                            else -> {
+                                Flowable.error(error)
+                            }
                         }
                     }
                 }
@@ -252,7 +218,6 @@ class CreateAtomicSwapBidUseCase(
     }
 
     companion object {
-        private const val REFERENCE_KEY = "reference"
         private const val REQUEST_DATA_ARRAY_KEY = "data"
         private const val INVOICE_KEY = "invoice"
         private const val POLL_INTERVAL_MS = 2000L

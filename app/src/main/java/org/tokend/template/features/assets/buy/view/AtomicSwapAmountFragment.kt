@@ -10,6 +10,9 @@ import org.tokend.template.features.amountscreen.view.AmountInputFragment
 class AtomicSwapAmountFragment : AmountInputFragment() {
     private lateinit var ask: AtomicSwapAskRecord
 
+    override val requestedAsset: String?
+        get() = ask.asset.code
+
     override fun onInitAllowed() {
         this.ask = arguments?.getSerializable(ASK_EXTRA) as? AtomicSwapAskRecord
                 ?: throw IllegalArgumentException("No $ASK_EXTRA specified")
