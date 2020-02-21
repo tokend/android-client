@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [1.15.0] 2020-02-21
+
+### Added
+- Ability to unlock the app in offline: balances, assets and movements are cached now
+- Clear button for payment recipient input
+- Binding deposit address for Coinpayments
+
+### Changed
+- Speed up payments a little bit
+- Speed up Dashboard a little bit
+- Improved QR codes readability
+
+### Fixed
+- Google Authenticator market URL
+- Display of non-approved KYC
+- Display of cancelled polls
+- Empty asset polls screen when user has no balance
+- Incorrect asset code on asset buy amount input screen
+
+### Internal
+- Asset model is now used in `AmountInputScreen` instead of code
+- Fixed impossible build without Fabric key
+- Added Room storage
+- Refactored repository and cache for paged data
+- Added `ObjectPersistence` interface for single-object storage and it's implementation for 
+`SharedPreferences`, it is also now a cache for `SingleItemRepository`
+- Fixed styling issues: now it's easy to create a dark theme
+- Separated active and request KYC state repositories
+- **Refactored calling activities for result: created `ActivityRequest` helper that allows
+setting callback for `RESULT_OK` without overriding `onActivityResult`**
+- Made `QrScannerUtil` work with `ActivityRequest`
+- Moved `Navigator`-related things to `navigation` package
+- **Made grand `data` package cleanup**
+
 ## [1.14.0] 2019-12-09
 
 ### Added
@@ -288,7 +322,8 @@ with ability to copy
 
 - Error on sign in when user has balances with unknown asset details
 
-[Unreleased]: https://github.com/tokend/android-client/compare/1.14.0(22)...HEAD
+[Unreleased]: https://github.com/tokend/android-client/compare/1.15.0(23)...HEAD
+[1.15.0]: https://github.com/tokend/android-client/compare/1.14.0(22)...1.15.0(23)
 [1.14.0]: https://github.com/tokend/android-client/compare/1.13.0(21)...1.14.0(22)
 [1.13.0]: https://github.com/tokend/android-client/compare/1.12.0(20)...1.13.0(21)
 [1.12.0]: https://github.com/tokend/android-client/compare/1.11.0(16)...1.12.0(20)
