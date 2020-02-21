@@ -11,7 +11,6 @@ import io.reactivex.subjects.CompletableSubject
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.template.data.repository.base.Repository
-import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
 
 /**
@@ -180,7 +179,7 @@ abstract class PagedDataRepository<T : PagingRecord>(
                 .doOnEvent { _, _ ->
                     loadingStateManager.hide("load-more")
                 }
-                .compose(ObservableTransformers.defaultSchedulersSingle())
+                .subscribeOn(Schedulers.newThread())
                 .subscribeBy(
                         onSuccess = {
                             onNewPage(it)
