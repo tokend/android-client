@@ -1,11 +1,11 @@
 package org.tokend.template.test
 
-import junit.framework.Assert
+import org.junit.Assert
 import org.junit.Test
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.deposit.logic.BindExternalSystemDepositAccountUseCase
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.TxManager
@@ -73,17 +73,20 @@ class BindExternalDepositAccountTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertFalse("Account repository must be invalidated after external account binding",
-                repositoryProvider.account().isFresh)
+        var externalAccount = repositoryProvider.account().item
+                ?.getDepositAccount(asset)
+
+        Assert.assertNotNull("Deposit accounts must contain a newly created account of ${asset.externalSystemType} type",
+                externalAccount)
+
+        Thread.sleep(5000)
 
         repositoryProvider.account().updateDeferred().blockingAwait()
 
-        val externalAccounts = repositoryProvider.account().item?.depositAccounts
-        val externalAccount = externalAccounts?.find {
-            it.type == asset.externalSystemType
-        }
+        externalAccount = repositoryProvider.account().item
+                ?.getDepositAccount(asset)
 
-        Assert.assertNotNull("Deposit accounts must contain a newly created account of ${asset.externalSystemType} type",
+        Assert.assertNotNull("Newly created account must be listed in Horizon",
                 externalAccount)
     }
 
