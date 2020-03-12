@@ -10,10 +10,6 @@ import org.tokend.sdk.api.v3.accounts.AccountsApiV3
 import org.tokend.sdk.api.v3.balances.BalancesApi
 import org.tokend.sdk.api.v3.balances.params.ConvertedBalancesParams
 import org.tokend.sdk.utils.extentions.isNotFound
-import org.tokend.template.features.assets.model.Asset
-import org.tokend.template.features.balances.model.BalanceRecord
-import org.tokend.template.features.assets.model.SimpleAsset
-import org.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import org.tokend.template.data.repository.base.MultipleItemsRepository
 import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.di.providers.AccountProvider
@@ -22,6 +18,10 @@ import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.mapSuccessful
 import org.tokend.template.extensions.tryOrNull
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.assets.model.SimpleAsset
+import org.tokend.template.features.balances.model.BalanceRecord
+import org.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import org.tokend.template.logic.TxManager
 import org.tokend.wallet.*
 import org.tokend.wallet.Transaction
@@ -99,7 +99,7 @@ class BalancesRepository(
                 )
                 .toSingle()
                 .map { convertedBalances ->
-                    conversionAsset = SimpleAsset(convertedBalances.asset)
+                    val conversionAsset = SimpleAsset(convertedBalances.asset)
                     convertedBalances.states.mapSuccessful {
                         BalanceRecord(it, urlConfigProvider.getConfig(),
                                 mapper, conversionAsset)
@@ -119,6 +119,15 @@ class BalancesRepository(
                         BalanceRecord(it, urlConfigProvider.getConfig(), mapper)
                     }
                 }
+    }
+
+    override fun broadcast() {
+        if (conversionAssetCode != null) {
+            conversionAsset = itemsCache.items
+                    .firstOrNull { it.conversionAsset != null }
+                    ?.conversionAsset
+        }
+        super.broadcast()
     }
 
     /**
