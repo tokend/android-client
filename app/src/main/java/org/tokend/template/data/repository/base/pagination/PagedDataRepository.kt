@@ -198,6 +198,7 @@ abstract class PagedDataRepository<T : PagingRecord>(
     protected open fun getAndCacheRemotePage(nextCursor: Long?,
                                              requiredOrder: PagingOrder): Single<DataPage<T>> {
         return getRemotePage(nextCursor, requiredOrder)
+                .subscribeOn(Schedulers.newThread())
                 .doOnSuccess(this::cachePage)
     }
 

@@ -5,6 +5,7 @@ import io.reactivex.Maybe
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.CompletableSubject
 
@@ -92,6 +93,7 @@ abstract class SingleItemRepository<T : Any>(
                             updateDeferred()
                         }
                     })
+                    .subscribeOn(Schedulers.newThread())
                     .subscribeBy(
                             onComplete = {
                                 isNeverUpdated = false
@@ -142,6 +144,7 @@ abstract class SingleItemRepository<T : Any>(
                                         storeItem(it)
                                     }
                     )
+                    .subscribeOn(Schedulers.newThread())
                     .subscribeBy(
                             onNext = { newItem: T ->
                                 isNeverUpdated = false

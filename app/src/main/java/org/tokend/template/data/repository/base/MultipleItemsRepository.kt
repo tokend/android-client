@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.CompletableSubject
 
@@ -82,6 +83,7 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
                             updateDeferred()
                         }
                     })
+                    .subscribeOn(Schedulers.newThread())
                     .subscribeBy(
                             onComplete = {
                                 isNeverUpdated = false
@@ -130,6 +132,7 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
 
             updateDisposable?.dispose()
             updateDisposable = loadItemsFromDb.andThen(getItems())
+                    .subscribeOn(Schedulers.newThread())
                     .subscribeBy(
                             onSuccess = { items ->
                                 onNewItems(items)
