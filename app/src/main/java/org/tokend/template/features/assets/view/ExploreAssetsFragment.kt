@@ -11,10 +11,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
@@ -23,19 +21,19 @@ import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
-import org.tokend.template.features.assets.model.AssetRecord
-import org.tokend.template.features.balances.model.BalanceRecord
-import org.tokend.template.features.balances.storage.BalancesRepository
-import org.tokend.template.features.assets.storage.AssetsRepository
 import org.tokend.template.features.assets.adapter.AssetListItem
 import org.tokend.template.features.assets.adapter.AssetsAdapter
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
+import org.tokend.template.features.assets.model.AssetRecord
+import org.tokend.template.features.assets.storage.AssetsRepository
+import org.tokend.template.features.balances.model.BalanceRecord
+import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.TxManager
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SearchUtil
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.*
 import java.util.concurrent.TimeUnit
 
@@ -148,14 +146,11 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     private fun subscribeToAssets() {
         assetsDisposable?.dispose()
         assetsDisposable = CompositeDisposable(
-                Observable.zip(
-                        assetsRepository.itemsSubject
-                                .filter { !assetsRepository.isNeverUpdated },
+                Observable.concat(
+                        assetsRepository.itemsSubject,
                         balancesRepository.itemsSubject
-                                .filter { !balancesRepository.isNeverUpdated },
-                        BiFunction { _: Any, _: Any -> }
                 )
-                        .debounce(10, TimeUnit.MILLISECONDS)
+                        .debounce(25, TimeUnit.MILLISECONDS)
                         .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe {
                             displayAssets()
@@ -166,8 +161,8 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
                             loadingIndicator.setLoading(it, "assets")
                         },
                 assetsRepository.errorsSubject
-                        .observeOn(AndroidSchedulers.mainThread())
                         .debounce(20, TimeUnit.MILLISECONDS)
+                        .compose(ObservableTransformers.defaultSchedulers())
                         .subscribe { error ->
                             if (!assetsAdapter.hasData) {
                                 error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
