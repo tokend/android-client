@@ -46,6 +46,9 @@ sealed class KycForm(
         val avatar: RemoteFile?
             get() = documents?.get("kyc_avatar")
 
+        val fullName: String
+            get() = "$firstName $lastName"
+
         companion object {
             const val FIRST_NAME_KEY = "first_name"
         }
