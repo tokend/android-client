@@ -146,7 +146,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     private fun subscribeToAssets() {
         assetsDisposable?.dispose()
         assetsDisposable = CompositeDisposable(
-                Observable.concat(
+                Observable.merge(
                         assetsRepository.itemsSubject,
                         balancesRepository.itemsSubject
                 )
