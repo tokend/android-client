@@ -3,6 +3,7 @@ package org.tokend.template.features.history.details
 import android.support.v4.content.ContextCompat
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.toMaybe
 import kotlinx.android.synthetic.main.layout_balance_change_main_data.*
 import org.tokend.template.R
 import org.tokend.template.features.history.model.BalanceChange
@@ -116,11 +117,13 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
 
     private fun loadAndDisplayCounterpartyEmail(cause: BalanceChangeCause.Payment,
                                                 accountId: String) {
-        val counterpartyAccountId = cause.getCounterpartyAccountId(accountId)
-
-        repositoryProvider
-                .accountDetails()
-                .getEmailByAccountId(counterpartyAccountId)
+        cause.getCounterpartyName(accountId)
+                .toMaybe()
+                .switchIfEmpty(
+                        repositoryProvider
+                                .accountDetails()
+                                .getEmailByAccountId(cause.getCounterpartyAccountId(accountId))
+                )
                 .compose(ObservableTransformers.defaultSchedulersSingle())
                 .doOnEvent { _, _ ->
                     counterpartyLoadingFinished = true
