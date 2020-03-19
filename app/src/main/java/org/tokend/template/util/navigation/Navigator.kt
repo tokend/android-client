@@ -16,20 +16,21 @@ import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.R
 import org.tokend.template.activities.MainActivity
 import org.tokend.template.activities.SingleFragmentActivity
-import org.tokend.template.features.assets.model.Asset
-import org.tokend.template.features.trade.pairs.model.AssetPairRecord
-import org.tokend.template.features.assets.model.AssetRecord
-import org.tokend.template.features.history.model.BalanceChange
-import org.tokend.template.features.history.model.details.BalanceChangeCause
 import org.tokend.template.extensions.getBigDecimalExtra
 import org.tokend.template.features.assets.buy.BuyWithAtomicSwapActivity
 import org.tokend.template.features.assets.buy.view.AtomicSwapAsksFragment
 import org.tokend.template.features.assets.details.view.AssetDetailsActivity
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.assets.view.ExploreAssetsFragment
+import org.tokend.template.features.balances.view.BalanceDetailsActivity
 import org.tokend.template.features.changepassword.ChangePasswordActivity
 import org.tokend.template.features.deposit.view.DepositAmountActivity
 import org.tokend.template.features.deposit.view.DepositFragment
 import org.tokend.template.features.fees.view.FeesActivity
+import org.tokend.template.features.history.details.*
+import org.tokend.template.features.history.model.BalanceChange
+import org.tokend.template.features.history.model.details.BalanceChangeCause
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.view.SaleActivity
@@ -55,8 +56,7 @@ import org.tokend.template.features.signin.SignInActivity
 import org.tokend.template.features.signin.unlock.UnlockAppActivity
 import org.tokend.template.features.signup.SignUpActivity
 import org.tokend.template.features.trade.TradeActivity
-import org.tokend.template.features.history.details.*
-import org.tokend.template.features.balances.view.BalanceDetailsActivity
+import org.tokend.template.features.trade.pairs.model.AssetPairRecord
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
@@ -120,6 +120,35 @@ class Navigator private constructor() {
         }
     }
 
+    private fun createAndPerformIntent(activityClass: Class<*>,
+                                       extras: Bundle? = null,
+                                       requestCode: Int? = null,
+                                       transitionBundle: Bundle? = null) {
+        val intent = context?.let { Intent(it, activityClass) }
+                ?: return
+
+        if (extras != null) {
+            intent.putExtras(extras)
+        }
+
+        performIntent(intent, requestCode, transitionBundle)
+    }
+
+    private fun <R : Any> createAndPerformRequest(request: ActivityRequest<R>,
+                                                  activityClass: Class<*>,
+                                                  extras: Bundle? = null,
+                                                  transitionBundle: Bundle? = null
+    ): ActivityRequest<R> {
+        createAndPerformIntent(activityClass, extras, request.code, transitionBundle)
+        return request
+    }
+
+    private fun createAndPerformSimpleRequest(activityClass: Class<*>,
+                                              extras: Bundle? = null,
+                                              transitionBundle: Bundle? = null
+    ) = createAndPerformRequest(ActivityRequest.withoutResultData(),
+            activityClass, extras, transitionBundle)
+
     private fun fadeOut(activity: Activity) {
         ActivityCompat.finishAfterTransition(activity)
         activity.overridePendingTransition(0, R.anim.activity_fade_out)
@@ -149,11 +178,10 @@ class Navigator private constructor() {
                 ?.also { performIntent(it) }
     }
 
-    fun openRecovery(email: String? = null) {
-        context?.intentFor<RecoveryActivity>()
-                ?.putExtras(RecoveryActivity.getBundle(email))
-                ?.also { performIntent(it) }
-    }
+    fun openRecovery(email: String? = null) = createAndPerformIntent(
+            RecoveryActivity::class.java,
+            RecoveryActivity.getBundle(email)
+    )
 
     fun toSignIn(finishAffinity: Boolean = false) {
         context?.intentFor<SignInActivity>()
@@ -197,39 +225,34 @@ class Navigator private constructor() {
                     shareText: String? = data,
                     topText: String? = null,
                     bottomText: String? = null
-    ) = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<SingleFragmentActivity>()
-                ?.putExtras(SingleFragmentActivity.getBundle(
-                        ShareQrFragment.ID,
-                        ShareQrFragment.getBundle(data, title, shareLabel, shareText, topText, bottomText)
-                ))
-                ?.also { performIntent(it, request.code) }
-    }
+    ) = createAndPerformSimpleRequest(
+            SingleFragmentActivity::class.java,
+            SingleFragmentActivity.getBundle(
+                    ShareQrFragment.ID,
+                    ShareQrFragment.getBundle(data, title, shareLabel, shareText, topText, bottomText)
+            )
+    )
 
-    fun openPasswordChange() = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<ChangePasswordActivity>()
-                ?.also { performIntent(it, request.code) }
-    }
+    fun openPasswordChange() = createAndPerformSimpleRequest(
+            ChangePasswordActivity::class.java
+    )
 
     fun openWithdrawalConfirmation(withdrawalRequest: WithdrawalRequest
-    ) = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<WithdrawalConfirmationActivity>()
-                ?.putExtras(WithdrawalConfirmationActivity.getBundle(withdrawalRequest))
-                ?.also { performIntent(it, request.code) }
-    }
+    ) = createAndPerformSimpleRequest(
+            WithdrawalConfirmationActivity::class.java,
+            WithdrawalConfirmationActivity.getBundle(withdrawalRequest)
+    )
 
-    fun openSend(asset: String? = null) = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<SingleFragmentActivity>()
-                ?.putExtras(SingleFragmentActivity.getBundle(
-                        SendFragment.ID,
-                        SendFragment.getBundle(asset, true)
-                ))
-                ?.also { performIntent(it, request.code) }
-    }
+    fun openSend(asset: String? = null) = createAndPerformSimpleRequest(
+            SingleFragmentActivity::class.java,
+            SingleFragmentActivity.getBundle(
+                    SendFragment.ID,
+                    SendFragment.getBundle(asset, true)
+            )
+    )
 
     fun openAssetDetails(asset: AssetRecord,
-                         cardView: View? = null
-    ) = ActivityRequest.withoutResultData().also { request ->
+                         cardView: View? = null): ActivityRequest<Unit> {
         val transitionBundle = activity?.let {
             createTransitionBundle(it,
                     cardView to it.getString(R.string.transition_asset_card)
@@ -239,52 +262,49 @@ class Navigator private constructor() {
                     cardView to it.getString(R.string.transition_asset_card)
             )
         }
-        context?.intentFor<AssetDetailsActivity>()
-                ?.putExtras(AssetDetailsActivity.getBundle(asset))
-                ?.also { performIntent(it, request.code, transitionBundle) }
+
+        return createAndPerformSimpleRequest(
+                AssetDetailsActivity::class.java,
+                AssetDetailsActivity.getBundle(asset),
+                transitionBundle = transitionBundle
+        )
     }
 
     fun openPaymentConfirmation(paymentRequest: PaymentRequest
-    ) = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<PaymentConfirmationActivity>()
-                ?.putExtras(PaymentConfirmationActivity.getBundle(paymentRequest))
-                ?.also { performIntent(it, request.code) }
-    }
+    ) = createAndPerformSimpleRequest(
+            PaymentConfirmationActivity::class.java,
+            PaymentConfirmationActivity.getBundle(paymentRequest)
+    )
 
     fun openOfferConfirmation(offerRequest: OfferRequest
-    ) = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<OfferConfirmationActivity>()
-                ?.putExtras(OfferConfirmationActivity.getBundle(offerRequest))
-                ?.also { performIntent(it, request.code) }
-    }
+    ) = createAndPerformSimpleRequest(
+            OfferConfirmationActivity::class.java,
+            OfferConfirmationActivity.getBundle(offerRequest)
+    )
 
     fun openInvestmentConfirmation(investmentRequest: OfferRequest,
                                    displayToReceive: Boolean = true,
                                    saleName: String? = null
-    ) = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<InvestmentConfirmationActivity>()
-                ?.putExtras(InvestmentConfirmationActivity
-                        .getBundle(investmentRequest, displayToReceive, saleName))
-                ?.also { performIntent(it, request.code) }
-    }
+    ) = createAndPerformSimpleRequest(
+            InvestmentConfirmationActivity::class.java,
+            InvestmentConfirmationActivity
+                    .getBundle(investmentRequest, displayToReceive, saleName)
+    )
 
     fun openPendingOffers(onlyPrimary: Boolean = false
-    ) = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<OffersActivity>()
-                ?.putExtras(OffersActivity.getBundle(onlyPrimary))
-                ?.also { performIntent(it, request.code) }
-    }
+    ) = createAndPerformSimpleRequest(
+            OffersActivity::class.java,
+            OffersActivity.getBundle(onlyPrimary)
+    )
 
-    fun openSale(sale: SaleRecord) = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<SaleActivity>()
-                ?.putExtras(SaleActivity.getBundle(sale))
-                ?.also { performIntent(it, request.code) }
-    }
+    fun openSale(sale: SaleRecord) = createAndPerformSimpleRequest(
+            SaleActivity::class.java,
+            SaleActivity.getBundle(sale)
+    )
 
-    fun openAuthenticatorSignIn() = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<AuthenticatorSignInActivity>()
-                ?.also { performIntent(it, request.code) }
-    }
+    fun openAuthenticatorSignIn() = createAndPerformSimpleRequest(
+            AuthenticatorSignInActivity::class.java
+    )
 
     fun openBalanceChangeDetails(change: BalanceChange) {
         val activityClass = when (change.cause) {
@@ -302,87 +322,81 @@ class Navigator private constructor() {
             else -> DefaultBalanceChangeDetailsActivity::class.java
         }
 
-        Intent(context, activityClass)
-                .putExtras(BalanceChangeDetailsActivity.getBundle(change))
-                .also { performIntent(it) }
+        createAndPerformIntent(
+                activityClass,
+                BalanceChangeDetailsActivity.getBundle(change)
+        )
     }
 
-    fun openPendingOfferDetails(offer: OfferRecord
-    ) = ActivityRequest.withoutResultData().also { request ->
+    fun openPendingOfferDetails(offer: OfferRecord) {
         val activityClass =
                 if (offer.isInvestment)
                     PendingInvestmentDetailsActivity::class.java
                 else
                     PendingOfferDetailsActivity::class.java
 
-        Intent(context, activityClass)
-                .putExtras(PendingOfferDetailsActivity.getBundle(offer))
-                .also { performIntent(it, request.code) }
+        createAndPerformIntent(
+                activityClass,
+                PendingOfferDetailsActivity.getBundle(offer)
+        )
     }
 
-    fun openTrade(assetPair: AssetPairRecord) {
-        context?.intentFor<TradeActivity>()
-                ?.putExtras(TradeActivity.getBundle(assetPair))
-                ?.also { performIntent(it) }
-    }
+    fun openTrade(assetPair: AssetPairRecord) = createAndPerformIntent(
+            TradeActivity::class.java,
+            TradeActivity.getBundle(assetPair)
+    )
 
     fun openCreateOffer(baseAsset: Asset,
                         quoteAsset: Asset,
-                        requiredPrice: BigDecimal? = null) {
-        context?.intentFor<CreateOfferActivity>()
-                ?.putExtras(CreateOfferActivity.getBundle(baseAsset, quoteAsset, requiredPrice))
-                ?.also { performIntent(it) }
-    }
+                        requiredPrice: BigDecimal? = null
+    ) = createAndPerformIntent(
+            CreateOfferActivity::class.java,
+            CreateOfferActivity.getBundle(baseAsset, quoteAsset, requiredPrice)
+    )
 
-    fun openLimits() {
-        context?.intentFor<LimitsActivity>()
-                ?.also { performIntent(it) }
-    }
+    fun openLimits() = createAndPerformIntent(
+            LimitsActivity::class.java
+    )
 
-    fun openFees(asset: String? = null, feeType: Int = -1) {
-        context?.intentFor<FeesActivity>()
-                ?.putExtras(FeesActivity.getBundle(asset, feeType))
-                ?.also { performIntent(it) }
-    }
+    fun openFees(asset: String? = null,
+                 feeType: Int = -1) = createAndPerformIntent(
+            FeesActivity::class.java,
+            FeesActivity.getBundle(asset, feeType)
+    )
 
-    fun openDeposit(asset: String) = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<SingleFragmentActivity>()
-                ?.putExtras(SingleFragmentActivity.getBundle(
-                        DepositFragment.ID,
-                        DepositFragment.getBundle(asset)
-                ))
-                ?.also { performIntent(it, request.code) }
-    }
+    fun openDeposit(asset: String) = createAndPerformSimpleRequest(
+            SingleFragmentActivity::class.java,
+            SingleFragmentActivity.getBundle(
+                    DepositFragment.ID,
+                    DepositFragment.getBundle(asset)
+            )
+    )
 
-    fun openWithdraw(asset: String) = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<SingleFragmentActivity>()
-                ?.putExtras(SingleFragmentActivity.getBundle(
-                        WithdrawFragment.ID,
-                        WithdrawFragment.getBundle(asset)
-                ))
-                ?.also { performIntent(it, request.code) }
-    }
+    fun openWithdraw(asset: String) = createAndPerformSimpleRequest(
+            SingleFragmentActivity::class.java,
+            SingleFragmentActivity.getBundle(
+                    WithdrawFragment.ID,
+                    WithdrawFragment.getBundle(asset)
+            )
+    )
 
-    fun openInvest(sale: SaleRecord) {
-        context?.intentFor<SaleInvestActivity>()
-                ?.putExtras(SaleInvestActivity.getBundle(sale))
-                ?.also { performIntent(it) }
-    }
+    fun openInvest(sale: SaleRecord) = createAndPerformIntent(
+            SaleInvestActivity::class.java,
+            SaleInvestActivity.getBundle(sale)
+    )
 
-    fun openAssetsExplorer() {
-        context?.intentFor<SingleFragmentActivity>()
-                ?.putExtras(SingleFragmentActivity.getBundle(
-                        ExploreAssetsFragment.ID,
-                        null
-                ))
-                ?.also { performIntent(it) }
-    }
+    fun openAssetsExplorer() = createAndPerformIntent(
+            SingleFragmentActivity::class.java,
+            SingleFragmentActivity.getBundle(
+                    ExploreAssetsFragment.ID,
+                    null
+            )
+    )
 
-    fun openBalanceDetails(balanceId: String) {
-        context?.intentFor<BalanceDetailsActivity>()
-                ?.putExtras(BalanceDetailsActivity.getBundle(balanceId))
-                ?.also { performIntent(it) }
-    }
+    fun openBalanceDetails(balanceId: String) = createAndPerformIntent(
+            BalanceDetailsActivity::class.java,
+            BalanceDetailsActivity.getBundle(balanceId)
+    )
 
     fun openAccountQrShare(walletInfo: WalletInfo) {
         openAccountQrShare(walletInfo.accountId)
@@ -397,42 +411,37 @@ class Navigator private constructor() {
     }
 
     fun openAtomicSwapBuy(assetCode: String,
-                          askId: String) {
-        context?.intentFor<BuyWithAtomicSwapActivity>()
-                ?.putExtras(BuyWithAtomicSwapActivity.getBundle(assetCode, askId))
-                ?.also { performIntent(it) }
-    }
+                          askId: String) = createAndPerformIntent(
+            BuyWithAtomicSwapActivity::class.java,
+            BuyWithAtomicSwapActivity.getBundle(assetCode, askId)
+    )
 
-    fun openAtomicSwapsAsks(assetCode: String) {
-        context?.intentFor<SingleFragmentActivity>()
-                ?.putExtras(SingleFragmentActivity.getBundle(
-                        AtomicSwapAsksFragment.ID,
-                        AtomicSwapAsksFragment.getBundle(assetCode)
-                ))
-                ?.also { performIntent(it) }
-    }
+    fun openAtomicSwapsAsks(assetCode: String) = createAndPerformIntent(
+            SingleFragmentActivity::class.java,
+            SingleFragmentActivity.getBundle(
+                    AtomicSwapAsksFragment.ID,
+                    AtomicSwapAsksFragment.getBundle(assetCode)
+            )
+    )
 
-    fun openLocalAccountSignIn() = ActivityRequest.withoutResultData().also { request ->
-        context?.intentFor<LocalAccountSignInActivity>()
-                ?.also { performIntent(it, request.code) }
-    }
+    fun openLocalAccountSignIn() = createAndPerformSimpleRequest(
+            LocalAccountSignInActivity::class.java
+    )
 
-    fun openLocalAccountDetails() {
-        context?.intentFor<LocalAccountDetailsActivity>()
-                ?.also { performIntent(it) }
-    }
+    fun openLocalAccountDetails() = createAndPerformIntent(
+            LocalAccountDetailsActivity::class.java
+    )
 
-    fun openLocalAccountImport() {
-        context?.intentFor<ImportLocalAccountActivity>()
-                ?.also { performIntent(it) }
-    }
+    fun openLocalAccountImport() = createAndPerformIntent(
+            ImportLocalAccountActivity::class.java
+    )
 
-    fun openDepositAmountInput(assetCode: String) = ActivityRequest { intent ->
-        intent?.getBigDecimalExtra(DepositAmountActivity.RESULT_AMOUNT_EXTRA)
-                ?.takeIf { it.signum() > 0 }
-    }.also { request ->
-        context?.intentFor<DepositAmountActivity>()
-                ?.putExtras(DepositAmountActivity.getBundle(assetCode))
-                ?.also { performIntent(it, request.code) }
-    }
+    fun openDepositAmountInput(assetCode: String) = createAndPerformRequest(
+            ActivityRequest { intent ->
+                intent?.getBigDecimalExtra(DepositAmountActivity.RESULT_AMOUNT_EXTRA)
+                        ?.takeIf { it.signum() > 0 }
+            },
+            DepositAmountActivity::class.java,
+            DepositAmountActivity.getBundle(assetCode)
+    )
 }
