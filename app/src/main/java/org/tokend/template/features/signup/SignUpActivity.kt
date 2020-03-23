@@ -26,16 +26,18 @@ import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
-import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.features.signup.logic.SignUpUseCase
 import org.tokend.template.features.urlconfig.logic.UrlConfigManager
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
+import org.tokend.template.util.errorhandler.CompositeErrorHandler
+import org.tokend.template.util.errorhandler.ErrorHandler
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.input.EditTextErrorHandler
 import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
@@ -220,23 +222,24 @@ class SignUpActivity : BaseActivity() {
                 }
                 .subscribeBy(
                         onSuccess = this::onSuccessfulSignUp,
-                        onError = this::handleSignUpError
+                        onError = signUpErrorHandler::handleIfPossible
                 )
                 .addTo(compositeDisposable)
     }
 
-    private fun handleSignUpError(error: Throwable) {
-        error.printStackTrace()
-
-        when (error) {
-            is EmailAlreadyTakenException ->
-                email_edit_text.setErrorAndFocus(R.string.error_email_already_taken)
-            else ->
-                errorHandlerFactory.getDefault().handle(error)
-        }
-
-        updateSignUpAvailability()
-    }
+    private val signUpErrorHandler: ErrorHandler
+        get() = CompositeErrorHandler(
+                EditTextErrorHandler(email_edit_text) { error ->
+                    when (error) {
+                        is EmailAlreadyTakenException ->
+                            getString(R.string.error_email_already_taken)
+                        else ->
+                            null
+                    }
+                },
+                errorHandlerFactory.getDefault()
+        )
+                .doOnSuccessfulHandle(this::updateSignUpAvailability)
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

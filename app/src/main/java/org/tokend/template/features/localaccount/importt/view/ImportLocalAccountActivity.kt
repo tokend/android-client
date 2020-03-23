@@ -12,8 +12,6 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.hasError
-import org.tokend.template.extensions.setErrorAndFocus
-import org.tokend.template.util.cipher.Aes256GcmDataCipher
 import org.tokend.template.features.localaccount.importt.logic.ImportLocalAccountFromMnemonicUseCase
 import org.tokend.template.features.localaccount.importt.logic.ImportLocalAccountFromSecretSeedUseCase
 import org.tokend.template.features.localaccount.mnemonic.logic.MnemonicException
@@ -21,7 +19,10 @@ import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.userkey.pin.SetUpPinCodeActivity
 import org.tokend.template.features.userkey.view.ActivityUserKeyProvider
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.errorhandler.CompositeErrorHandler
+import org.tokend.template.util.errorhandler.ErrorHandler
 import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.input.EditTextErrorHandler
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
 import org.tokend.wallet.Base32Check
@@ -127,21 +128,24 @@ class ImportLocalAccountActivity : BaseActivity() {
                 }
                 .subscribeBy(
                         onSuccess = this::onSuccessfulImport,
-                        onError = this::onImportError
+                        onError = importErrorHandler::handleIfPossible
                 )
                 .addTo(compositeDisposable)
     }
 
-    private fun onImportError(error: Throwable) {
-        when (error) {
-            is MnemonicException -> import_data_edit_text.setErrorAndFocus(
-                    R.string.error_invalid_mnemonic_phrase
-            )
-            else -> errorHandlerFactory.getDefault().handle(error)
-        }
-
-        updateImportAvailability()
-    }
+    private val importErrorHandler: ErrorHandler
+        get() = CompositeErrorHandler(
+                EditTextErrorHandler(import_data_edit_text) { error ->
+                    when (error) {
+                        is MnemonicException ->
+                            getString(R.string.error_invalid_mnemonic_phrase)
+                        else ->
+                            null
+                    }
+                },
+                errorHandlerFactory.getDefault()
+        )
+                .doOnSuccessfulHandle(this::updateImportAvailability)
 
     private fun onSuccessfulImport(localAccount: LocalAccount) {
         setResult(Activity.RESULT_OK)

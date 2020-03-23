@@ -24,6 +24,8 @@ import org.tokend.template.logic.fingerprint.FingerprintAuthManager
 import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ProfileUtil
+import org.tokend.template.util.errorhandler.ErrorHandler
+import org.tokend.template.util.errorhandler.SimpleErrorHandler
 import org.tokend.template.view.FingerprintIndicatorManager
 import org.tokend.template.view.dialog.SignOutDialogFactory
 import org.tokend.template.view.util.LoadingIndicatorManager
