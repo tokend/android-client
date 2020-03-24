@@ -201,10 +201,14 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        activityRequestsBag.forEach { request ->
+            request.handleActivityResult(requestCode, resultCode, data)
+        }
+
         activityRequestsBag.iterator().also { iterator ->
             while (iterator.hasNext()) {
                 val request = iterator.next()
-                request.handleActivityResult(requestCode, resultCode, data)
                 if (request.isCompleted) {
                     iterator.remove()
                 }
