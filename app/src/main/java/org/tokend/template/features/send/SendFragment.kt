@@ -16,11 +16,10 @@ import kotlinx.android.synthetic.main.fragment_user_flow.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
-import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.features.balances.storage.BalancesRepository
-import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.send.amount.model.PaymentAmountData
 import org.tokend.template.features.send.amount.view.PaymentAmountFragment
 import org.tokend.template.features.send.logic.CreatePaymentRequestUseCase
@@ -31,8 +30,8 @@ import org.tokend.template.features.send.recipient.view.PaymentRecipientFragment
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.WalletEventsListener
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.UserFlowFragmentDisplayer
 import org.tokend.template.view.util.input.SoftInputUtil
@@ -63,7 +62,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private var recipient: PaymentRecipient? = null
     private var amount: BigDecimal = BigDecimal.ZERO
-    private var asset: Asset? = null
+    private var balance: BalanceRecord? = null
     private var description: String? = null
     private var fee: PaymentFee? = null
 
@@ -194,7 +193,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private fun onAmountEntered(result: PaymentAmountData) {
         this.amount = result.amount
-        this.asset = result.asset
+        this.balance = result.balance
         this.description = result.description
         this.fee = result.fee
 
@@ -205,17 +204,16 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     private fun createAndConfirmPaymentRequest() {
         val recipient = recipient ?: return
         val fee = fee ?: return
-        val asset = asset ?: return
+        val balance = balance ?: return
 
         paymentRequestDisposable?.dispose()
         paymentRequestDisposable = CreatePaymentRequestUseCase(
                 recipient,
                 amount,
-                asset,
+                balance,
                 description,
                 fee,
-                walletInfoProvider,
-                balancesRepository
+                walletInfoProvider
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersSingle())

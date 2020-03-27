@@ -319,13 +319,11 @@ open class AmountInputFragment : BaseFragment() {
     }
 
     protected open fun postResult() {
-        val asset = balance?.asset
-                ?: return
-
         resultSubject.onNext(
                 AmountInputResult(
                         amount = amountWrapper.scaledAmount,
-                        asset = asset
+                        asset = asset,
+                        balance = balance
                 )
         )
     }

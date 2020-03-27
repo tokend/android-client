@@ -2,12 +2,11 @@ package org.tokend.template.features.withdraw.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import org.tokend.template.features.assets.model.Asset
-import org.tokend.template.features.history.model.SimpleFeeRecord
-import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.di.providers.WalletInfoProvider
-import org.tokend.template.features.withdraw.model.WithdrawalRequest
+import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.features.fees.logic.FeeManager
+import org.tokend.template.features.history.model.SimpleFeeRecord
+import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import java.math.BigDecimal
 
 /**
@@ -16,15 +15,15 @@ import java.math.BigDecimal
  */
 class CreateWithdrawalRequestUseCase(
         private val amount: BigDecimal,
-        private val asset: Asset,
+        private val balance: BalanceRecord,
         private val destinationAddress: String,
         private val walletInfoProvider: WalletInfoProvider,
-        private val balancesRepository: BalancesRepository,
         private val feeManager: FeeManager
 ) {
+    private val asset = balance.asset
+
     private lateinit var account: String
     private lateinit var fee: SimpleFeeRecord
-    private lateinit var balanceId: String
 
     fun perform(): Single<WithdrawalRequest> {
         return getAccount()
@@ -36,12 +35,6 @@ class CreateWithdrawalRequestUseCase(
                 }
                 .doOnSuccess { fee ->
                     this.fee = fee
-                }
-                .flatMap {
-                    getBalanceId()
-                }
-                .doOnSuccess { balanceId ->
-                    this.balanceId = balanceId
                 }
                 .flatMap {
                     getWithdrawalRequest()
@@ -66,24 +59,13 @@ class CreateWithdrawalRequestUseCase(
                 )
     }
 
-    private fun getBalanceId(): Single<String> {
-        return balancesRepository
-                .updateIfNotFreshDeferred()
-                .toSingleDefault(true)
-                .map {
-                    balancesRepository.itemsList.find {
-                        it.assetCode == asset.code
-                    }?.id ?: throw IllegalStateException("No balance found for $asset")
-                }
-    }
-
     private fun getWithdrawalRequest(): Single<WithdrawalRequest> {
         return Single.just(
                 WithdrawalRequest(
                         account,
                         amount,
                         asset,
-                        balanceId,
+                        balance.id,
                         destinationAddress,
                         fee
                 )

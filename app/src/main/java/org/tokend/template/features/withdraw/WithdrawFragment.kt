@@ -15,22 +15,21 @@ import kotlinx.android.synthetic.main.fragment_user_flow.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
-import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.extensions.withArguments
+import org.tokend.template.features.amountscreen.model.AmountInputResult
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.features.balances.storage.BalancesRepository
-import org.tokend.template.extensions.withArguments
-import org.tokend.template.features.amountscreen.model.AmountInputResult
+import org.tokend.template.features.fees.logic.FeeManager
 import org.tokend.template.features.withdraw.amount.view.WithdrawAmountFragment
 import org.tokend.template.features.withdraw.destination.view.WithdrawDestinationFragment
 import org.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
 import org.tokend.template.features.withdraw.logic.WithdrawalAddressUtil
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.features.fees.logic.FeeManager
 import org.tokend.template.logic.WalletEventsListener
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.UserFlowFragmentDisplayer
@@ -53,7 +52,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
     private var destinationAddress: String? = null
     private var amount: BigDecimal = BigDecimal.ZERO
-    private var asset: Asset? = null
+    private var balance: BalanceRecord? = null
 
     private var isWaitingForWithdrawableAssets: Boolean = true
 
@@ -154,13 +153,13 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
     private fun onAmountEntered(result: AmountInputResult) {
         this.amount = result.amount
-        this.asset = result.asset
+        this.balance = result.balance
 
         toDestinationScreen()
     }
 
     private fun toDestinationScreen() {
-        val asset = this.asset ?: return
+        val asset = this.balance?.asset ?: return
         val amountToWithdraw = amountFormatter.formatAssetAmount(amount, asset)
         val fragment = WithdrawDestinationFragment.newInstance(
                 WithdrawDestinationFragment.getBundle(amountToWithdraw)
@@ -193,7 +192,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     private var withdrawRequestDisposable: Disposable? = null
     private fun createAndConfirmWithdrawRequest() {
         val destination = this.destinationAddress ?: return
-        val asset = this.asset ?: return
+        val balance = this.balance ?: return
         val address = destination
                 .trim()
                 .let {
@@ -211,10 +210,9 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         withdrawRequestDisposable?.dispose()
         withdrawRequestDisposable = CreateWithdrawalRequestUseCase(
                 amount,
-                asset,
+                balance,
                 address,
                 walletInfoProvider,
-                balancesRepository,
                 FeeManager(apiProvider)
         )
                 .perform()

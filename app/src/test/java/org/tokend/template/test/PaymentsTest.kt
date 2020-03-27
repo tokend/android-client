@@ -9,7 +9,6 @@ import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.ApiProviderFactory
 import org.tokend.template.di.providers.RepositoryProviderImpl
 import org.tokend.template.di.providers.WalletInfoProviderFactory
-import org.tokend.template.features.assets.model.SimpleAsset
 import org.tokend.template.features.fees.logic.FeeManager
 import org.tokend.template.features.history.model.details.BalanceChangeCause
 import org.tokend.template.features.send.amount.logic.PaymentFeeLoader
@@ -66,14 +65,15 @@ class PaymentsTest {
 
         val fee = feeLoader.load(paymentAmount, asset, recipient.accountId).blockingGet()
 
+        val balance = repositoryProvider.balances().itemsList.first { it.assetCode == asset }
+
         val useCase = CreatePaymentRequestUseCase(
                 recipient,
                 paymentAmount,
-                SimpleAsset(asset),
+                balance,
                 "Test payment",
                 fee,
-                session,
-                repositoryProvider.balances()
+                session
         )
 
         val request = useCase.perform().blockingGet()
@@ -123,14 +123,15 @@ class PaymentsTest {
                 .load(paymentAmount, asset, recipient.accountId)
                 .blockingGet()
 
+        val balance = repositoryProvider.balances().itemsList.first { it.assetCode == asset }
+
         val request = CreatePaymentRequestUseCase(
                 recipient,
                 paymentAmount,
-                SimpleAsset(asset),
+                balance,
                 "Test payment",
                 fee,
-                session,
-                repositoryProvider.balances()
+                session
         ).perform().blockingGet()
 
         ConfirmPaymentRequestUseCase(
@@ -222,14 +223,15 @@ class PaymentsTest {
                 .load(paymentAmount, asset, recipient.accountId)
                 .blockingGet()
 
+        val balance = repositoryProvider.balances().itemsList.first { it.assetCode == asset }
+
         val request = CreatePaymentRequestUseCase(
                 recipient,
                 paymentAmount,
-                SimpleAsset(asset),
+                balance,
                 "Test payment with fee",
                 fee,
-                session,
-                repositoryProvider.balances()
+                session
         ).perform().blockingGet()
 
         Assert.assertTrue("Payment request sender fee must greater than zero",

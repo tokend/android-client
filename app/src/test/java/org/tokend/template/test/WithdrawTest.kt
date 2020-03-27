@@ -10,7 +10,6 @@ import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.ApiProviderFactory
 import org.tokend.template.di.providers.RepositoryProviderImpl
 import org.tokend.template.di.providers.WalletInfoProviderFactory
-import org.tokend.template.features.assets.model.SimpleAsset
 import org.tokend.template.features.fees.logic.FeeManager
 import org.tokend.template.features.history.model.details.BalanceChangeCause
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
@@ -102,12 +101,13 @@ class WithdrawTest {
 
         Util.getSomeMoney(asset, BigDecimal.ONE, repositoryProvider, session, txManager)
 
+        val balance = repositoryProvider.balances().itemsList.first { it.assetCode == asset }
+
         val useCase = CreateWithdrawalRequestUseCase(
                 amount,
-                SimpleAsset(asset),
+                balance,
                 destAddress,
                 session,
-                repositoryProvider.balances(),
                 FeeManager(apiProvider)
         )
 
@@ -152,12 +152,13 @@ class WithdrawTest {
 
         Util.makeAccountGeneral(session, apiProvider, repositoryProvider.systemInfo(), txManager)
 
+        val balance = repositoryProvider.balances().itemsList.first { it.assetCode == asset }
+
         val request = CreateWithdrawalRequestUseCase(
                 amount,
-                SimpleAsset(asset),
+                balance,
                 destAddress,
                 session,
-                repositoryProvider.balances(),
                 FeeManager(apiProvider)
         ).perform().blockingGet()
 
@@ -238,12 +239,13 @@ class WithdrawTest {
 
         Util.makeAccountGeneral(session, apiProvider, repositoryProvider.systemInfo(), txManager)
 
+        val balance = repositoryProvider.balances().itemsList.first { it.assetCode == asset }
+
         val request = CreateWithdrawalRequestUseCase(
                 amount,
-                SimpleAsset(asset),
+                balance,
                 destAddress,
                 session,
-                repositoryProvider.balances(),
                 FeeManager(apiProvider)
         ).perform().blockingGet()
 

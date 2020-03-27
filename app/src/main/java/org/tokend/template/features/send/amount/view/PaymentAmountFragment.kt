@@ -131,13 +131,13 @@ class PaymentAmountFragment : AmountInputFragment() {
                 .takeIf { it.isNotEmpty() }
         val fee = this.fee
                 ?: return
-        val asset = balance?.asset
+        val balance = this.balance
                 ?: return
 
         resultSubject.onNext(
                 PaymentAmountData(
                         amount = amount,
-                        asset = asset,
+                        balance = balance,
                         description = description,
                         fee = fee
                 )
