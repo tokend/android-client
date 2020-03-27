@@ -243,11 +243,11 @@ class Navigator private constructor() {
             WithdrawalConfirmationActivity.getBundle(withdrawalRequest)
     )
 
-    fun openSend(asset: String? = null) = createAndPerformSimpleRequest(
+    fun openSend(balanceId: String? = null) = createAndPerformSimpleRequest(
             SingleFragmentActivity::class.java,
             SingleFragmentActivity.getBundle(
                     SendFragment.ID,
-                    SendFragment.getBundle(asset, true)
+                    SendFragment.getBundle(balanceId, true)
             )
     )
 
@@ -372,11 +372,11 @@ class Navigator private constructor() {
             )
     )
 
-    fun openWithdraw(asset: String) = createAndPerformSimpleRequest(
+    fun openWithdraw(balanceId: String) = createAndPerformSimpleRequest(
             SingleFragmentActivity::class.java,
             SingleFragmentActivity.getBundle(
                     WithdrawFragment.ID,
-                    WithdrawFragment.getBundle(asset)
+                    WithdrawFragment.getBundle(balanceId)
             )
     )
 

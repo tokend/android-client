@@ -48,8 +48,8 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     private val balancesRepository: BalancesRepository
         get() = repositoryProvider.balances()
 
-    private val requiredAsset: String?
-        get() = arguments?.getString(ASSET_EXTRA)
+    private val requiredBalanceId: String?
+        get() = arguments?.getString(REQUIRED_BALANCE_ID_EXTRA)
 
     private var destinationAddress: String? = null
     private var amount: BigDecimal = BigDecimal.ZERO
@@ -138,7 +138,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
     private fun toAmountScreen() {
         val fragment = WithdrawAmountFragment.newInstance(
-                WithdrawAmountFragment.getBundle(requiredAsset)
+                WithdrawAmountFragment.getBundle(requiredBalanceId)
         )
 
         fragment
@@ -265,14 +265,14 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     }
 
     companion object {
-        private const val ASSET_EXTRA = "asset"
+        private const val REQUIRED_BALANCE_ID_EXTRA = "required_balance_id"
         val ID = "withdraw".hashCode().toLong()
 
         fun newInstance(bundle: Bundle): WithdrawFragment =
                 WithdrawFragment().withArguments(bundle)
 
-        fun getBundle(assetCode: String? = null) = Bundle().apply {
-            putString(ASSET_EXTRA, assetCode)
+        fun getBundle(balanceId: String? = null) = Bundle().apply {
+            putString(REQUIRED_BALANCE_ID_EXTRA, balanceId)
         }
     }
 }

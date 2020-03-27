@@ -16,10 +16,10 @@ import org.tokend.template.R
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.amountscreen.view.AmountInputFragment
+import org.tokend.template.features.fees.logic.FeeManager
 import org.tokend.template.features.send.amount.logic.PaymentFeeLoader
 import org.tokend.template.features.send.amount.model.PaymentAmountData
 import org.tokend.template.features.send.model.PaymentFee
-import org.tokend.template.features.fees.logic.FeeManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.balancepicker.BalancePickerBottomDialog
 import org.tokend.wallet.Base32Check
@@ -240,10 +240,10 @@ class PaymentAmountFragment : AmountInputFragment() {
 
         fun getBundle(recipient: String,
                       recipientAccount: String,
-                      requiredAsset: String? = null) = Bundle().apply {
-            putString(ASSET_EXTRA, requiredAsset)
+                      requiredBalanceId: String? = null) = Bundle().apply {
             putString(RECIPIENT_EXTRA, recipient)
             putString(RECIPIENT_ACCOUNT_EXTRA, recipientAccount)
+            putAll(getBundle(requiredBalanceId = requiredBalanceId))
         }
 
         fun newInstance(bundle: Bundle): PaymentAmountFragment =

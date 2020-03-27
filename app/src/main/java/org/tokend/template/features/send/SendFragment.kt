@@ -52,8 +52,8 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     private val balances: List<BalanceRecord>
         get() = balancesRepository.itemsList
 
-    private val requiredAsset: String?
-        get() = arguments?.getString(ASSET_EXTRA)
+    private val requiredBalanceId: String?
+        get() = arguments?.getString(REQUIRED_BALANCE_ID_EXTRA)
 
     private val allowToolbar: Boolean
         get() = arguments?.getBoolean(ALLOW_TOOLBAR_EXTRA) ?: true
@@ -177,7 +177,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
                 ?: return
 
         val fragment = PaymentAmountFragment.newInstance(
-                PaymentAmountFragment.getBundle(recipientNickname, recipientAccount, requiredAsset)
+                PaymentAmountFragment.getBundle(recipientNickname, recipientAccount, requiredBalanceId)
         )
 
         fragment
@@ -261,15 +261,15 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     }
 
     companion object {
-        private const val ASSET_EXTRA = "asset"
+        private const val REQUIRED_BALANCE_ID_EXTRA = "required_balance_id"
         private const val ALLOW_TOOLBAR_EXTRA = "allow_toolbar"
         const val ID = 1118L
 
         fun newInstance(bundle: Bundle): SendFragment = SendFragment().withArguments(bundle)
 
-        fun getBundle(assetCode: String?,
+        fun getBundle(balanceId: String?,
                       allowToolbar: Boolean) = Bundle().apply {
-            putString(ASSET_EXTRA, assetCode)
+            putString(REQUIRED_BALANCE_ID_EXTRA, balanceId)
             putBoolean(ALLOW_TOOLBAR_EXTRA, allowToolbar)
         }
     }

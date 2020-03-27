@@ -21,8 +21,8 @@ import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.features.history.storage.BalanceChangesRepository
 import org.tokend.template.features.history.view.adapter.BalanceChangeListItem
 import org.tokend.template.features.history.view.adapter.BalanceChangesAdapter
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.*
 import org.tokend.template.view.util.fab.FloatingActionMenuAction
 import org.tokend.template.view.util.fab.addActions
@@ -146,10 +146,7 @@ class BalanceDetailsActivity : BaseActivity() {
                     this,
                     R.string.send_title,
                     R.drawable.ic_send_fab,
-                    {
-                        val assetCode = asset?.code ?: return@FloatingActionMenuAction
-                        navigator.openSend(assetCode)
-                    },
+                    { navigator.openSend(balanceId) },
                     isEnabled = asset?.isTransferable == true
             ))
             actions.add(FloatingActionMenuAction(
@@ -183,10 +180,7 @@ class BalanceDetailsActivity : BaseActivity() {
                     this,
                     R.string.withdraw_title,
                     R.drawable.ic_withdraw_fab,
-                    {
-                        val assetCode = asset?.code ?: return@FloatingActionMenuAction
-                        navigator.openWithdraw(assetCode)
-                    },
+                    { navigator.openWithdraw(balanceId) },
                     isEnabled = asset?.isWithdrawable == true
             ))
         }

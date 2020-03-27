@@ -7,7 +7,7 @@ import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.amountscreen.view.AmountInputFragment
 
 class DepositAmountFragment : AmountInputFragment() {
-    override fun initAssetSelection() {
+    override fun initSelection() {
         asset_code_text_view.background = null
     }
 
@@ -17,9 +17,7 @@ class DepositAmountFragment : AmountInputFragment() {
             getString(R.string.enter_deposit_amount)
 
     companion object {
-        fun getBundle(assetCode: String) = Bundle().apply {
-            putString(ASSET_EXTRA, assetCode)
-        }
+        fun getBundle(assetCode: String) = getBundle(requiredAssetCode = assetCode)
 
         fun newInstance(bundle: Bundle): DepositAmountFragment =
                 DepositAmountFragment().withArguments(bundle)

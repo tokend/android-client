@@ -22,9 +22,8 @@ class WithdrawAmountFragment : AmountInputFragment() {
     }
 
     companion object {
-        fun getBundle(requiredAsset: String? = null) = Bundle().apply {
-            putString(ASSET_EXTRA, requiredAsset)
-        }
+        fun getBundle(requiredBalanceId: String? = null) =
+                AmountInputFragment.getBundle(requiredBalanceId = requiredBalanceId)
 
         fun newInstance(bundle: Bundle): WithdrawAmountFragment =
                 WithdrawAmountFragment().withArguments(bundle)

@@ -10,7 +10,7 @@ import org.tokend.template.features.amountscreen.view.AmountInputFragment
 class AtomicSwapAmountFragment : AmountInputFragment() {
     private lateinit var ask: AtomicSwapAskRecord
 
-    override val requestedAsset: String?
+    override val requiredAssetCode: String?
         get() = ask.asset.code
 
     override fun onInitAllowed() {
@@ -19,10 +19,10 @@ class AtomicSwapAmountFragment : AmountInputFragment() {
 
         displayAvailableAmount()
         super.onInitAllowed()
-        onAssetChanged()
+        onPickedItemChanged()
     }
 
-    override fun initAssetSelection() {
+    override fun initSelection() {
         asset_code_text_view.background = null
     }
 
