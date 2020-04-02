@@ -1,6 +1,8 @@
 package org.tokend.template.features.tfa.view
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.AppCompatImageView
 import android.view.View
@@ -8,10 +10,8 @@ import android.view.WindowManager
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.rengwuxian.materialedittext.MaterialEditText
-import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.layoutInflater
-import org.jetbrains.anko.uiThread
 import org.tokend.sdk.tfa.InvalidOtpException
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
@@ -21,6 +21,8 @@ import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.util.errorhandler.ErrorHandler
 import org.tokend.template.view.util.LoadingIndicatorManager
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * Abstract TFA verification dialog with code input.
@@ -34,6 +36,9 @@ abstract class TfaDialog(protected val context: Context,
     protected val messageTextView: TextView
     protected lateinit var progress: ProgressBar
     protected val dialog: AlertDialog
+
+    protected val verificationExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+    protected val mainThreadHandler: Handler = Handler(Looper.getMainLooper())
 
     protected val loadingIndicator = LoadingIndicatorManager(
             showLoading = { progress.visibility = View.VISIBLE },
@@ -57,6 +62,9 @@ abstract class TfaDialog(protected val context: Context,
                 }
                 .setOnCancelListener {
                     tfaVerifierInterface.cancelVerification()
+                }
+                .setOnDismissListener {
+                    verificationExecutor.shutdownNow()
                 }
                 .also {
                     extendDialogBuilder(it)
@@ -106,29 +114,40 @@ abstract class TfaDialog(protected val context: Context,
     protected open fun verify() {
         loadingIndicator.show()
 
-        doAsync {
-            val input = inputEditText.text.getChars()
-            val otp = getOtp(input)
+        val input = inputEditText.text.getChars()
 
-            uiThread {
-                if (!dialog.isShowing) {
-                    return@uiThread
-                }
+        verificationExecutor.submit {
+            tfaVerifierInterface.verify(
+                    otp = getOtp(input),
+                    onSuccess = {
+                        mainThreadHandler.post(this::onSuccessfulVerification)
+                    },
+                    onError = { error ->
+                        mainThreadHandler.post { onVerificationError(error) }
+                    }
+            )
+        }
+    }
 
-                tfaVerifierInterface.verify(otp,
-                        onSuccess = {
-                            loadingIndicator.hide()
-                            dialog.dismiss()
-                        },
-                        onError = { error ->
-                            loadingIndicator.hide()
-                            if (error is InvalidOtpException) {
-                                inputEditText.setErrorAndFocus(getInvalidInputError())
-                            } else if (error != null) {
-                                errorHandler.handle(error)
-                            }
-                        })
-            }
+    protected open fun onSuccessfulVerification() {
+        if (!dialog.isShowing) {
+            return
+        }
+
+        loadingIndicator.hide()
+        dialog.dismiss()
+    }
+
+    protected open fun onVerificationError(error: Throwable?) {
+        if (!dialog.isShowing) {
+            return
+        }
+
+        loadingIndicator.hide()
+        if (error is InvalidOtpException) {
+            inputEditText.setErrorAndFocus(getInvalidInputError())
+        } else if (error != null) {
+            errorHandler.handle(error)
         }
     }
 
