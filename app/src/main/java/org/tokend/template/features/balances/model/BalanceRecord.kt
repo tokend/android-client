@@ -3,12 +3,14 @@ package org.tokend.template.features.balances.model
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.sdk.api.generated.resources.BalanceResource
 import org.tokend.sdk.api.generated.resources.ConvertedBalanceStateResource
+import org.tokend.sdk.utils.BigDecimalUtil
+import org.tokend.template.extensions.equalsArithmetically
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.urlconfig.model.UrlConfig
-import org.tokend.template.extensions.equalsArithmetically
 import java.io.Serializable
 import java.math.BigDecimal
+import java.math.MathContext
 
 class BalanceRecord(
         val id: String,
@@ -43,7 +45,21 @@ class BalanceRecord(
                 null,
             conversionPrice =
             if (source.isConverted)
-                source.price
+                if (source.price == null || source.price.signum() == 0)
+                    if (source.initialAmounts.available.signum() > 0)
+                        source.convertedAmounts.available
+                                .divide(
+                                        source.initialAmounts.available,
+                                        MathContext.DECIMAL64
+                                )
+                                .let {
+                                    BigDecimalUtil.scaleAmount(it, conversionAsset?.trailingDigits
+                                            ?: 6)
+                                }
+                    else
+                        BigDecimal.ONE
+                else
+                    source.price
             else
                 null
     )
