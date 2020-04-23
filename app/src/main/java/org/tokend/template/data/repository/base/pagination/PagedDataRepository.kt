@@ -49,6 +49,7 @@ abstract class PagedDataRepository<T : PagingRecord>(
     private var updateResultSubject: CompletableSubject? = null
     private var loadMoreDuringUpdateDisposable: Disposable? = null
     override fun update(): Completable = synchronized(this) {
+        Log.i(LOG_TAG, "Update")
         isFresh = false
         mItems.clear()
         nextCursor = null
@@ -88,8 +89,9 @@ abstract class PagedDataRepository<T : PagingRecord>(
      * Loads new pages to the top of collection if it's in DESC order
      */
     open fun loadNewRemoteTopPages() {
-        Log.i(LOG_TAG, "Load new remote top pages")
         val newestItemId = mItems.firstOrNull()?.getPagingId() ?: 0L
+
+        Log.i(LOG_TAG, "Load new remote top pages, newest item $newestItemId")
 
         var nextNewPagesCursor: Long? = newestItemId
         var noMoreNewPages = false
@@ -148,12 +150,13 @@ abstract class PagedDataRepository<T : PagingRecord>(
             return false
         }
 
+        Log.i(LOG_TAG, "Load more, cursor $nextCursor")
+
         loadingStateManager.show("load-more")
 
         val getPage: Single<DataPage<T>> =
                 getCachedPage(nextCursor)
                         .flatMap { cachedPage ->
-                            val wasOnFirstPage = isOnFirstPage
                             if (cachedPage.isLast) {
                                 Log.i(LOG_TAG, "Cached page is last")
                                 // If cached page is last emmit it
@@ -162,6 +165,7 @@ abstract class PagedDataRepository<T : PagingRecord>(
                                 if (cachedPage.items.isNotEmpty()) {
                                     onNewPage(cachedPage)
                                 }
+                                val wasOnFirstPage = isOnFirstPage
                                 getAndCacheRemotePage(nextCursor, pagingOrder)
                                         .doOnSuccess {
                                             if (wasOnFirstPage) {
