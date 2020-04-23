@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [1.15.1] 2020-04-23
+
+### Added
+- Ability to decode inverted QR codes
+
+### Fixed
+- Data display issues on asset explorer fragment
+- Missing balance conversion prices when loaded from cache
+- Incorrect local converted balance amounts recalculation
+
+### Removed
+- Outdated TokenD Authenticator sign in method
+
+### Internal
+- Do not load payment counterparty on details screen if it's already set
+- Restructured `Navigator` inner calls
+- Added error handlers composing
+- Fixed possible concurrent modifications of activity request bags
+- Adapted amount input screen for multiple balances per asset
+- Adapted payment and withdrawal use cases for multiple balances per asset
+
 ## [1.15.0] 2020-02-21
 
 ### Added
@@ -322,7 +343,8 @@ with ability to copy
 
 - Error on sign in when user has balances with unknown asset details
 
-[Unreleased]: https://github.com/tokend/android-client/compare/1.15.0(23)...HEAD
+[Unreleased]: https://github.com/tokend/android-client/compare/1.15.1(24)...HEAD
+[1.15.1]: https://github.com/tokend/android-client/compare/1.15.0(23)...1.15.1(24)
 [1.15.0]: https://github.com/tokend/android-client/compare/1.14.0(22)...1.15.0(23)
 [1.14.0]: https://github.com/tokend/android-client/compare/1.13.0(21)...1.14.0(22)
 [1.13.0]: https://github.com/tokend/android-client/compare/1.12.0(20)...1.13.0(21)
