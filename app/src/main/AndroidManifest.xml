@@ -56,9 +56,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".features.signin.AuthenticatorSignInActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
-        <activity
             android:name=".features.signup.SignUpActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />

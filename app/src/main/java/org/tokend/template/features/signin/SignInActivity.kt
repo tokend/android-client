@@ -102,9 +102,6 @@ class SignInActivity : BaseActivity() {
         doAsync { Account.random() }
 
         when (session.lastSignInMethod) {
-            SignInMethod.AUTHENTICATOR -> {
-                openAuthenticatorSignIn()
-            }
             SignInMethod.LOCAL_ACCOUNT -> {
                 openLocalAccountSignIn()
             }
@@ -164,14 +161,6 @@ class SignInActivity : BaseActivity() {
             Navigator.from(this).openRecovery(email_edit_text.text.toString())
         }
 
-        if (BuildConfig.ENABLE_AUTHENTICATOR_AUTH) {
-            sign_in_with_authenticator_button.onClick {
-                openAuthenticatorSignIn()
-            }
-        } else {
-            sign_in_with_authenticator_button.visibility = View.GONE
-        }
-
         if (BuildConfig.ENABLE_LOCAL_ACCOUNT_SIGN_IN) {
             sign_in_with_local_account_button.onClick {
                 openLocalAccountSignIn()
@@ -188,13 +177,6 @@ class SignInActivity : BaseActivity() {
                     .addTo(activityRequestsBag)
                     .doOnSuccess { urlConfigManager.setFromJson(it) }
         }
-    }
-
-    private fun openAuthenticatorSignIn() {
-        Navigator.from(this)
-                .openAuthenticatorSignIn()
-                .addTo(activityRequestsBag)
-                .doOnSuccess { onSignInComplete() }
     }
 
     private fun openLocalAccountSignIn() {
@@ -315,10 +297,8 @@ class SignInActivity : BaseActivity() {
 
     private fun updateAdditionalButtonsState(isEnabled: Boolean) {
         scan_qr_button.isEnabled = isEnabled
-        sign_in_with_authenticator_button.isEnabled = isEnabled
         sign_up_button.isEnabled = isEnabled
         recovery_button.isEnabled = isEnabled
-
     }
 
     private fun displayEmailNotVerifiedDialog(walletId: String) {

@@ -38,12 +38,6 @@ class Session(
         get() = sessionInfoStorage?.loadLastSignInMethod()
 
     /**
-     * @returns true if session was started with TokenD Authenticator auth
-     */
-    val isAuthenticatorUsed
-        get() = signInMethod == SignInMethod.AUTHENTICATOR
-
-    /**
      * @returns true if session was started with [LocalAccount] sign in
      */
     val isLocalAccountUsed

@@ -90,20 +90,11 @@
                     android:text="@string/sign_up" />
 
                 <Button
-                    android:id="@+id/sign_in_with_authenticator_button"
-                    style="@style/SecondaryButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/sign_up_button"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/use_authenticator" />
-
-                <Button
                     android:id="@+id/sign_in_with_local_account_button"
                     style="@style/SecondaryButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/sign_in_with_authenticator_button"
+                    android:layout_below="@id/sign_up_button"
                     android:layout_centerHorizontal="true"
                     android:text="@string/use_local_account_sign_in" />
 

@@ -20,17 +20,17 @@ import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
-import org.tokend.template.features.tfa.repository.TfaFactorsRepository
 import org.tokend.template.features.localaccount.mnemonic.view.MnemonicPhraseDialog
 import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
 import org.tokend.template.features.tfa.logic.EnableTfaUseCase
 import org.tokend.template.features.tfa.model.TfaFactorRecord
+import org.tokend.template.features.tfa.repository.TfaFactorsRepository
 import org.tokend.template.features.tfa.view.confirmation.TfaConfirmationDialogFactory
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.fingerprint.FingerprintUtil
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.dialog.SecretSeedDialog
 import org.tokend.template.view.dialog.SignOutDialogFactory
 import org.tokend.template.view.dialog.SingleCheckDialog
@@ -187,15 +187,11 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     // region Security
     private fun initSecurityCategory() {
-        if (session.isAuthenticatorUsed) {
-            preferenceScreen.removePreference(findPreference("security"))
-        } else {
-            initBackgroundLockItem()
-            initFingerprintItem()
-            initTfaItem()
-            initChangePasswordItem()
-            hideCategoryIfEmpty("security")
-        }
+        initBackgroundLockItem()
+        initFingerprintItem()
+        initTfaItem()
+        initChangePasswordItem()
+        hideCategoryIfEmpty("security")
     }
 
     private fun initBackgroundLockItem() {
