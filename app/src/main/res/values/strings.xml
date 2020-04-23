@@ -1,7 +1,6 @@
 <resources>
     <string name="language_code">en</string>
     <string name="app_name">TokenD</string>
-    <string name="authenticator_app_name">TokenD Authenticator</string>
 
     <string name="sign_up">Sign up</string>
     <string name="sign_in">Sign in</string>
@@ -219,7 +218,6 @@
     <string name="month">Month</string>
     <string name="no_growth">No growth</string>
     <string name="no_data">No data</string>
-    <string name="deployed_hint">deployed</string>
     <string name="asset_price_for_one_part">for 1 %1$s</string>
     <string name="no_price_chart_yet">There is no price history yet</string>
 
@@ -258,7 +256,6 @@
 
     <string name="open_source_licenses_title">Open source licenses</string>
     <string name="settings_information_group">Information</string>
-    <string name="contacts">Contacts</string>
     <string name="no_contacts_message">No contacts available</string>
     <string name="use_fingerprint">Use fingerprint</string>
     <string name="secret_seed">Secret seed</string>
@@ -306,11 +303,6 @@
     <string name="limit_period_annual">Annual</string>
     <string name="template_limit_left_of_total">%1$s left of %2$s</string>
     <string name="limit_unlimited">Unlimited</string>
-
-    <string name="authenticator_hint">Use TokenD Authenticator to set up and access your account</string>
-    <string name="open_authenticator_action">Open authenticator</string>
-    <string name="install_authenticator_action">Install authenticator</string>
-    <string name="use_authenticator">Use authenticator</string>
 
     <string name="error_unauthorized">The session has been expired</string>
 
@@ -413,7 +405,6 @@
     <string name="settings_app_group">App</string>
     <string name="language">Language</string>
     <string name="select_language">Select language</string>
-    <string name="account_created_successfully">Account has been created</string>
     <string name="kyc_recovery_status_dialog_title">Account recovery status</string>
     <string name="kyc_recovery_initiated_message">Account recovery has been initiated. Use web client to complete it</string>
     <string name="kyc_recovery_pending_message">Your request is waiting for review. Wait for notification</string>

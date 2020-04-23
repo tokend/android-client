@@ -1,7 +1,6 @@
 <resources>
     <string name="language_code">ru</string>
     <string name="app_name">TokenD</string>
-    <string name="authenticator_app_name">TokenD Authenticator</string>
 
     <string name="sign_up">Регистрация</string>
     <string name="sign_in">Войти</string>
@@ -218,7 +217,6 @@
     <string name="month">Месяц</string>
     <string name="no_growth">Нет роста</string>
     <string name="no_data">Нет данных</string>
-    <string name="deployed_hint">размещено</string>
     <string name="asset_price_for_one_part">за 1 %1$s</string>
     <string name="no_price_chart_yet">Нет истории цены</string>
 
@@ -257,7 +255,6 @@
 
     <string name="open_source_licenses_title">Лицензии открытого ПО</string>
     <string name="settings_information_group">Информация</string>
-    <string name="contacts">Контакты</string>
     <string name="no_contacts_message">Нет доступных контактов</string>
     <string name="use_fingerprint">Использовать отпечаток пальца</string>
     <string name="secret_seed">Секретный ключ</string>
@@ -306,11 +303,6 @@
     <string name="limit_period_annual">Всего</string>
     <string name="template_limit_left_of_total">%1$s осталось из %2$s</string>
     <string name="limit_unlimited">Не ограничено</string>
-
-    <string name="authenticator_hint">Воспользуйтесь TokenD Authenticator чтобы войти в ваш аккаунт</string>
-    <string name="open_authenticator_action">Открыть Authenticator</string>
-    <string name="install_authenticator_action">Установить Authenticator</string>
-    <string name="use_authenticator">Использовать Authenticator</string>
 
     <string name="error_unauthorized">Сессия закончилась</string>
 
@@ -412,7 +404,6 @@
     <string name="settings_app_group">Приложение</string>
     <string name="language">Язык</string>
     <string name="select_language">Выберите язык</string>
-    <string name="account_created_successfully">Аккаунт создан</string>
     <string name="kyc_recovery_status_dialog_title">Восстановление аккаунта</string>
     <string name="kyc_recovery_initiated_message">Начато восстановление аккаунта. Воспользуйтесь веб-клиентом чтобы закончить процесс</string>
     <string name="kyc_recovery_pending_message">Ваш запрос ожидает рассмотрения. Ожидайте уведомление</string>

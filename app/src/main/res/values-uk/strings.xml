@@ -1,7 +1,6 @@
 <resources>
     <string name="language_code">uk</string>
     <string name="app_name">TokenD</string>
-    <string name="authenticator_app_name">TokenD Authenticator</string>
 
     <string name="sign_up">Реєстрація</string>
     <string name="sign_in">Увійти</string>
@@ -218,7 +217,6 @@
     <string name="month">Місяць</string>
     <string name="no_growth">Немає росту</string>
     <string name="no_data">Немає даних</string>
-    <string name="deployed_hint">розміщено</string>
     <string name="asset_price_for_one_part">за 1 %1$s</string>
     <string name="no_price_chart_yet">Немає історії ціни</string>
 
@@ -257,7 +255,6 @@
 
     <string name="open_source_licenses_title">Ліцензії відкритого ПЗ</string>
     <string name="settings_information_group">Інформація</string>
-    <string name="contacts">Контакти</string>
     <string name="no_contacts_message">Немає доступних контактів</string>
     <string name="use_fingerprint">Використовувати відбиток пальця</string>
     <string name="secret_seed">Секретний ключ</string>
@@ -306,11 +303,6 @@
     <string name="limit_period_annual">Усього</string>
     <string name="template_limit_left_of_total">%1$s залишилось із %2$s</string>
     <string name="limit_unlimited">Не обмежено</string>
-
-    <string name="authenticator_hint">Скористайтеся TokenD Authenticator щоб увійти у ваш акаунт</string>
-    <string name="open_authenticator_action">Відкрити Authenticator</string>
-    <string name="install_authenticator_action">Встановити Authenticator</string>
-    <string name="use_authenticator">Скористатися Authenticator</string>
 
     <string name="error_unauthorized">Сесія закінчилася</string>
 
@@ -412,7 +404,6 @@
     <string name="settings_app_group">Додаток</string>
     <string name="language">Мова</string>
     <string name="select_language">Оберіть мову</string>
-    <string name="account_created_successfully">Акаунт створено</string>
     <string name="kyc_recovery_status_dialog_title">Відновлення акаунта</string>
     <string name="kyc_recovery_initiated_message">Почато відновлення акаунта. Скористайтеся веб-клієнтом щоб завершити процес</string>
     <string name="kyc_recovery_pending_message">Ваш запит очікує розгляду. Чекайте на повідомлення</string>
