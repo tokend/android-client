@@ -32,8 +32,7 @@ The app allows user to specify a TokenD-based system to work with by scanning a 
 To disable system switching you have to set `network_specified_by_user` flag to false. With fixed network config you can also enable opening links from emails in the app by specifying system domain in `app_host` field and uncommenting intent filters in manifest.
 
 ### Analytics
-The application is ready for Crashlytics integration. To enable it you have to create `keystore.properties` file (it is already gitignored) in `app/` directory and specify your organization API key inside as follows:
-`FabricApiKey=xxx`.
+The application is ready for integration.
 
 To enable or disable analytics use `enable_analytics` flag. In the default configuration this flag is enabled for staging and release builds.
 

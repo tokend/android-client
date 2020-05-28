@@ -41,8 +41,8 @@
         </provider>
 
         <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="${fabricApiKey}" />
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
 
         <activity
             android:name=".features.signin.SignInActivity"

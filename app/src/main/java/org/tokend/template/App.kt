@@ -2,16 +2,14 @@ package org.tokend.template
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import androidx.room.Room
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.multidex.MultiDexApplication
-import androidx.core.app.ActivityCompat
-import androidx.appcompat.app.AppCompatDelegate
 import android.util.Log
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
+import androidx.multidex.MultiDexApplication
+import androidx.room.Room
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.CookieCache
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
@@ -22,7 +20,6 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
-import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
@@ -120,19 +117,7 @@ class App : MultiDexApplication() {
         initLocale()
         initState()
         initPicasso()
-        initCrashlytics()
         initRxErrorHandler()
-    }
-
-    private fun initCrashlytics() {
-        val crashlytics = Crashlytics.Builder()
-                .core(
-                        CrashlyticsCore.Builder()
-                                .disabled(!BuildConfig.ENABLE_ANALYTICS)
-                                .build()
-                )
-                .build()
-        Fabric.with(this, crashlytics)
     }
 
     private fun initLocale() {
