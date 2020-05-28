@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.app.Fragment
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
+import androidx.fragment.app.Fragment
 import android.view.View
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
@@ -69,7 +69,7 @@ import java.math.BigDecimal
  */
 class Navigator private constructor() {
     private var activity: Activity? = null
-    private var fragment: Fragment? = null
+    private var fragment: androidx.fragment.app.Fragment? = null
     private var context: Context? = null
 
     companion object {
@@ -80,7 +80,7 @@ class Navigator private constructor() {
             return navigator
         }
 
-        fun from(fragment: Fragment): Navigator {
+        fun from(fragment: androidx.fragment.app.Fragment): Navigator {
             val navigator = Navigator()
             navigator.fragment = fragment
             navigator.context = fragment.requireContext()
@@ -155,12 +155,12 @@ class Navigator private constructor() {
     }
 
     private fun createTransitionBundle(activity: Activity, vararg pairs: Pair<View?, String>): Bundle {
-        val sharedViews = arrayListOf<android.support.v4.util.Pair<View, String>>()
+        val sharedViews = arrayListOf<androidx.core.util.Pair<View, String>>()
 
         pairs.forEach {
             val view = it.first
             if (view != null) {
-                sharedViews.add(android.support.v4.util.Pair(view, it.second))
+                sharedViews.add(androidx.core.util.Pair(view, it.second))
             }
         }
 

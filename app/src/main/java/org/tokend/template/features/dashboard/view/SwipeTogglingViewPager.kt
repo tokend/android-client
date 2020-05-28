@@ -1,7 +1,7 @@
 package org.tokend.template.features.dashboard.view
 
 import android.content.Context
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 import android.util.AttributeSet
 import android.view.MotionEvent
 
@@ -10,7 +10,7 @@ import android.view.MotionEvent
  */
 class SwipeTogglingViewPager
 @JvmOverloads
-constructor(context: Context, attrs: AttributeSet? = null) : ViewPager(context, attrs) {
+constructor(context: Context, attrs: AttributeSet? = null) : androidx.viewpager.widget.ViewPager(context, attrs) {
     var swipesEnabled: Boolean = true
 
     override fun onTouchEvent(ev: MotionEvent?): Boolean {

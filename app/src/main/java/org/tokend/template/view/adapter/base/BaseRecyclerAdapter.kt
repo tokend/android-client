@@ -1,7 +1,7 @@
 package org.tokend.template.view.adapter.base
 
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 
 /**
@@ -10,7 +10,7 @@ import android.view.ViewGroup
  * click listener and optional [DiffUtil.Callback].
  */
 abstract class BaseRecyclerAdapter<ItemType, ViewHolderType>
-    : RecyclerView.Adapter<ViewHolderType>() where ViewHolderType : BaseViewHolder<ItemType> {
+    : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolderType>() where ViewHolderType : BaseViewHolder<ItemType> {
     companion object {
         protected const val VIEW_TYPE_ITEM = 0
     }

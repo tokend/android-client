@@ -1,6 +1,6 @@
 package org.tokend.template.data.repository
 
-import android.support.v4.util.LruCache
+import androidx.collection.LruCache
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
 import org.tokend.rx.extensions.toSingle
@@ -10,7 +10,7 @@ import org.tokend.template.di.providers.ApiProvider
 class BlobsRepository(
         private val apiProvider: ApiProvider
 ) {
-    private val cache = LruCache<String, Blob>(CACHE_SIZE)
+    private val cache = androidx.collection.LruCache<String, Blob>(CACHE_SIZE)
 
     /**
      * @param isPrivate if set to true a signed API instance will be used

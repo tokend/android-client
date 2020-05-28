@@ -1,15 +1,15 @@
 package org.tokend.template.view.util
 
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class ScrollOnTopItemUpdateAdapterObserver(
-    private val layoutManager: LinearLayoutManager
-) : RecyclerView.AdapterDataObserver() {
-    constructor(recyclerView: RecyclerView) : this(
+    private val layoutManager: androidx.recyclerview.widget.LinearLayoutManager
+) : androidx.recyclerview.widget.RecyclerView.AdapterDataObserver() {
+    constructor(recyclerView: androidx.recyclerview.widget.RecyclerView) : this(
         ((recyclerView.layoutManager
             ?: throw IllegalArgumentException("RecyclerView has no LayoutManager"))
-                as? LinearLayoutManager)
+                as? androidx.recyclerview.widget.LinearLayoutManager)
             ?: throw IllegalArgumentException("Recycler view has non-linear LayoutManager ")
     )
 

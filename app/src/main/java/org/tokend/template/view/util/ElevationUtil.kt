@@ -1,8 +1,8 @@
 package org.tokend.template.view.util
 
-import android.support.design.widget.AppBarLayout
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 object ElevationUtil {
@@ -30,14 +30,14 @@ object ElevationUtil {
         }
     }
 
-    fun initScrollElevation(recyclerView: RecyclerView, elevationView: View) {
+    fun initScrollElevation(recyclerView: androidx.recyclerview.widget.RecyclerView, elevationView: View) {
         elevationView.visibility = View.GONE
 
         var onTop = true
         val animationDuration = recyclerView.context.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        recyclerView.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
                 if (dy <= 0 && !recyclerView.canScrollVertically(-1)) {

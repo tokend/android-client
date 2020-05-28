@@ -12,7 +12,7 @@
         android:paddingTop="@dimen/standard_margin"
         android:paddingBottom="@dimen/standard_margin">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/base_asset_logo_image_view"
             android:layout_width="@dimen/asset_list_item_logo_size"
             android:layout_height="@dimen/asset_list_item_logo_size"

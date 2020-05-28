@@ -2,9 +2,9 @@ package org.tokend.template.features.dashboard.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.view.SupportMenuInflater
-import android.support.v7.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.appcompat.view.SupportMenuInflater
+import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -90,7 +90,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     }
 
     @SuppressLint("RestrictedApi")
-    private fun displayFragment(fragment: Fragment) {
+    private fun displayFragment(fragment: androidx.fragment.app.Fragment) {
         // Menu.
         toolbar.menu.clear()
         fragment.onCreateOptionsMenu(

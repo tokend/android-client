@@ -3,14 +3,14 @@ package org.tokend.template.view
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
-import android.support.annotation.ColorInt
-import android.support.annotation.Dimension
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
-import android.support.v4.content.res.ResourcesCompat
-import android.support.v4.widget.ImageViewCompat
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.ColorInt
+import androidx.annotation.Dimension
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.widget.ImageViewCompat
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -259,7 +259,7 @@ class ErrorEmptyView @JvmOverloads constructor(
      * @param adapter adapter to observe
      * @param messageId empty state message id
      */
-    fun observeAdapter(adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
+    fun observeAdapter(adapter: androidx.recyclerview.widget.RecyclerView.Adapter<out androidx.recyclerview.widget.RecyclerView.ViewHolder>,
                        @StringRes messageId: Int,
                        buttonAction: ButtonAction? = null) {
         adapter.registerAdapterDataObserver(
@@ -277,7 +277,7 @@ class ErrorEmptyView @JvmOverloads constructor(
      * @param adapter adapter to observe
      * @param messageProvider provider of the empty state message
      */
-    fun observeAdapter(adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
+    fun observeAdapter(adapter: androidx.recyclerview.widget.RecyclerView.Adapter<out androidx.recyclerview.widget.RecyclerView.ViewHolder>,
                        messageProvider: () -> String,
                        buttonAction: ButtonAction? = null) {
         adapter.registerAdapterDataObserver(
@@ -297,11 +297,11 @@ class ErrorEmptyView @JvmOverloads constructor(
         this.emptyViewDenial = denial
     }
 
-    private fun getEmptyObserver(adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
+    private fun getEmptyObserver(adapter: androidx.recyclerview.widget.RecyclerView.Adapter<out androidx.recyclerview.widget.RecyclerView.ViewHolder>,
                                  messageProvider: () -> String,
                                  buttonAction: ButtonAction?):
-            RecyclerView.AdapterDataObserver {
-        return object : RecyclerView.AdapterDataObserver() {
+            androidx.recyclerview.widget.RecyclerView.AdapterDataObserver {
+        return object : androidx.recyclerview.widget.RecyclerView.AdapterDataObserver() {
             private fun operate() {
                 if (adapter.itemCount > 0) {
                     hide()

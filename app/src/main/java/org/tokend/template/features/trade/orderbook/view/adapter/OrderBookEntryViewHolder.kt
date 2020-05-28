@@ -1,6 +1,6 @@
 package org.tokend.template.features.trade.orderbook.view.adapter
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.TextView
 import org.jetbrains.anko.find

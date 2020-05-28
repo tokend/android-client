@@ -1,8 +1,8 @@
 package org.tokend.template.features.trade.offers.view
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,7 +78,7 @@ class OffersFragment : BaseFragment() {
         error_empty_view.setEmptyViewDenial { offersRepository.isNeverUpdated }
 
         history_list.adapter = adapter
-        history_list.layoutManager = LinearLayoutManager(context)
+        history_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
 
         history_list.listenBottomReach({ adapter.getDataItemCount() }) {
             offersRepository.loadMore() || offersRepository.noMoreItems

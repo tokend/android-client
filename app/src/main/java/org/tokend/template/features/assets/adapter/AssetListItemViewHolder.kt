@@ -1,7 +1,7 @@
 package org.tokend.template.features.assets.adapter
 
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.TooltipCompat
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.TooltipCompat
 import android.view.View
 import android.widget.Button
 import android.widget.TextView

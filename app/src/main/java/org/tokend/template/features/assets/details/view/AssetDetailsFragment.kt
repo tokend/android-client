@@ -2,9 +2,9 @@ package org.tokend.template.features.assets.details.view
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -153,7 +153,7 @@ open class AssetDetailsFragment : BaseFragment() {
                         cards_layout, false)
 
         val fileLayout = fileCardView?.find<View>(R.id.file_content_layout) ?: return
-        (fileCardView as? CardView)?.removeView(fileLayout)
+        (fileCardView as? androidx.cardview.widget.CardView)?.removeView(fileLayout)
 
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)

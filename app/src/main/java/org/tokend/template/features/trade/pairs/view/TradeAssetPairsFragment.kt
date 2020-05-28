@@ -2,11 +2,11 @@ package org.tokend.template.features.trade.pairs.view
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.GestureDetectorCompat
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.SimpleItemAnimator
-import android.support.v7.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.view.GestureDetectorCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -44,7 +44,7 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
     private var searchItem: MenuItem? = null
 
     private lateinit var pairsAdapter: AssetPairItemsAdapter
-    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var layoutManager: androidx.recyclerview.widget.GridLayoutManager
 
     private val comparator = Comparator<AssetPairListItem> { o1, o2 ->
         assetCodeComparator.compare(o1.baseAsset.code, o2.baseAsset.code)
@@ -127,13 +127,13 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initList() {
-        layoutManager = GridLayoutManager(requireContext(), 1)
+        layoutManager = androidx.recyclerview.widget.GridLayoutManager(requireContext(), 1)
         pairsAdapter = AssetPairItemsAdapter(amountFormatter)
         updateListColumnsCount()
 
         asset_pairs_recycler_view.layoutManager = layoutManager
         asset_pairs_recycler_view.adapter = pairsAdapter
-        (asset_pairs_recycler_view.itemAnimator as? SimpleItemAnimator)
+        (asset_pairs_recycler_view.itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)
                 ?.supportsChangeAnimations = false
 
         error_empty_view.setEmptyDrawable(R.drawable.ic_trade)

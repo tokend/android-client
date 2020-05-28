@@ -1,10 +1,10 @@
 package org.tokend.template.view.util
 
-import android.support.annotation.IdRes
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.IdRes
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import androidx.appcompat.app.AppCompatActivity
 
 /**
  * Displays fragments in specified container
@@ -12,7 +12,7 @@ import android.support.v7.app.AppCompatActivity
  */
 class UserFlowFragmentDisplayer
 private constructor(
-        fragmentManagerGetter: () -> FragmentManager,
+        fragmentManagerGetter: () -> androidx.fragment.app.FragmentManager,
         @IdRes
         private val containerId: Int
 ) {
@@ -20,11 +20,11 @@ private constructor(
                 @IdRes
                 containerId: Int) : this({ activity.supportFragmentManager }, containerId)
 
-    constructor(fragment: Fragment,
+    constructor(fragment: androidx.fragment.app.Fragment,
                 @IdRes
                 containerId: Int) : this({ fragment.childFragmentManager }, containerId)
 
-    private val fragmentManager: FragmentManager by lazy(fragmentManagerGetter)
+    private val fragmentManager: androidx.fragment.app.FragmentManager by lazy(fragmentManagerGetter)
 
     /**
      * Displays given [fragment] in the container
@@ -35,16 +35,16 @@ private constructor(
      * null will cause no transition at all
      */
     fun display(
-            fragment: Fragment,
+            fragment: androidx.fragment.app.Fragment,
             tag: String,
             forward: Boolean?
     ) {
         fragmentManager.beginTransaction()
                 .setTransition(
                         when (forward) {
-                            true -> FragmentTransaction.TRANSIT_FRAGMENT_OPEN
-                            false -> FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
-                            null -> FragmentTransaction.TRANSIT_NONE
+                            true -> androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN
+                            false -> androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
+                            null -> androidx.fragment.app.FragmentTransaction.TRANSIT_NONE
                         }
                 )
                 .replace(containerId, fragment)
@@ -69,6 +69,6 @@ private constructor(
      * Clears fragments back stack
      */
     fun clearBackStack() {
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        fragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 }

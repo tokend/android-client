@@ -2,8 +2,8 @@ package org.tokend.template.features.dashboard.balances.view
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.GridLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.*
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_balances.*
@@ -32,7 +32,7 @@ class BalancesFragment : BaseFragment() {
         get() = repositoryProvider.balances()
 
     private lateinit var adapter: BalanceItemsAdapter
-    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var layoutManager: androidx.recyclerview.widget.GridLayoutManager
 
     private var chartEverAnimated = false
 
@@ -57,7 +57,7 @@ class BalancesFragment : BaseFragment() {
 
     // region Init
     private fun initList() {
-        layoutManager = GridLayoutManager(requireContext(), 1)
+        layoutManager = androidx.recyclerview.widget.GridLayoutManager(requireContext(), 1)
         adapter = BalanceItemsAdapter(amountFormatter)
         updateListColumnsCount()
         balances_list.adapter = adapter

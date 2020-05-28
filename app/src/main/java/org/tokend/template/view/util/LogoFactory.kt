@@ -2,10 +2,10 @@ package org.tokend.template.view.util
 
 import android.content.Context
 import android.graphics.*
-import android.support.annotation.ColorInt
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.PaintCompat
-import android.support.v4.util.LruCache
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.PaintCompat
+import androidx.collection.LruCache
 import org.tokend.template.R
 
 /**
@@ -107,6 +107,6 @@ class LogoFactory(private val context: Context) {
     }
 
     private companion object {
-        private val cache = LruCache<String, Bitmap>(25)
+        private val cache = androidx.collection.LruCache<String, Bitmap>(25)
     }
 }

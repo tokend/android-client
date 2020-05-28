@@ -2,7 +2,7 @@ package org.tokend.template.features.userkey.view
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import io.reactivex.Maybe
 import io.reactivex.subjects.MaybeSubject
 import org.tokend.template.features.userkey.logic.UserKeyProvider
@@ -11,7 +11,7 @@ import java.util.*
 class ActivityUserKeyProvider(
         private val activityClass: Class<out UserKeyActivity>,
         private val parentActivity: Activity? = null,
-        private val parentFragment: Fragment? = null
+        private val parentFragment: androidx.fragment.app.Fragment? = null
 ) : UserKeyProvider {
     private var resultSubject: MaybeSubject<CharArray>? = null
     private var requestCode = 0

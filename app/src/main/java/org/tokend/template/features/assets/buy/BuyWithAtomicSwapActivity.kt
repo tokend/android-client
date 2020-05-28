@@ -1,7 +1,7 @@
 package org.tokend.template.features.assets.buy
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.MenuItem
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo

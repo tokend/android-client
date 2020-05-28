@@ -3,9 +3,9 @@ package org.tokend.template.features.offers
 import android.app.Activity
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.widget.LinearLayout
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_balance_change_confirmation.*
@@ -84,7 +84,7 @@ open class OfferConfirmationActivity : BaseActivity() {
 
         mainDataView = BalanceChangeMainDataView(appbar, amountFormatter)
 
-        details_list.layoutManager = LinearLayoutManager(this)
+        details_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         details_list.adapter = adapter
 
         request =

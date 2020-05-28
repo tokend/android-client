@@ -4,9 +4,9 @@ import android.Manifest
 import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SimpleItemAnimator
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
@@ -132,9 +132,9 @@ class PaymentRecipientFragment : BaseFragment() {
 
     private fun initContacts() {
         contacts_list.apply {
-            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this.context, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
             adapter = contactsAdapter
-            (itemAnimator as? SimpleItemAnimator)?.apply {
+            (itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.apply {
                 requireContext()
                         .resources
                         .getInteger(android.R.integer.config_shortAnimTime)

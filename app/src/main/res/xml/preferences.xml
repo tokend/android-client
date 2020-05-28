@@ -1,72 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.v7.preference.PreferenceCategory
+    <androidx.preference.PreferenceCategory
         android:layout="@layout/preference_category_layout_divider"
         android:title="@string/settings_app_group"
         android:key="app">
 
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:icon="@drawable/ic_language"
             android:key="language"
             android:layout="@layout/preference_layout"
             android:title="@string/language" />
 
-    </android.support.v7.preference.PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-    <android.support.v7.preference.PreferenceCategory
+    <androidx.preference.PreferenceCategory
         android:layout="@layout/preference_category_layout"
         android:title="@string/settings_account_group"
         android:key="account">
 
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:icon="@drawable/ic_account"
             android:key="account_id"
             android:layout="@layout/preference_layout"
             android:title="@string/account_id_title" />
 
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:icon="@drawable/ic_account_check"
             android:key="kyc"
             android:layout="@layout/preference_layout"
             android:summary="@string/verification_summary"
             android:title="@string/verification_title" />
 
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:icon="@drawable/ic_account_key"
             android:key="secret_seed"
             android:layout="@layout/preference_layout"
             android:summary="@string/secret_seed_description"
             android:title="@string/secret_seed" />
 
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:icon="@drawable/ic_text"
             android:key="mnemonic"
             android:layout="@layout/preference_layout"
             android:summary="@string/mnemonic_phrase_description"
             android:title="@string/mnemonic_phrase" />
 
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:icon="@drawable/ic_sign_out"
             android:key="sign_out"
             android:layout="@layout/preference_layout"
             android:title="@string/sign_out" />
 
-    </android.support.v7.preference.PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-    <android.support.v7.preference.PreferenceCategory
+    <androidx.preference.PreferenceCategory
         android:key="security"
         android:layout="@layout/preference_category_layout_divider"
         android:title="@string/settings_security_group">
 
-        <android.support.v7.preference.SwitchPreferenceCompat
+        <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_password_lock_preference"
             android:key="background_lock"
             android:layout="@layout/preference_layout"
             android:persistent="false"
             android:title="@string/lock_app_in_background" />
 
-        <android.support.v7.preference.SwitchPreferenceCompat
+        <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:icon="@drawable/ic_fingerprint"
             android:key="fingerprint"
@@ -74,50 +74,50 @@
             android:persistent="true"
             android:title="@string/use_fingerprint" />
 
-        <android.support.v7.preference.SwitchPreferenceCompat
+        <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_security"
             android:key="tfa"
             android:layout="@layout/preference_layout"
             android:persistent="false"
             android:title="@string/tfa_title" />
 
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:icon="@drawable/ic_lock"
             android:key="change_password"
             android:layout="@layout/preference_layout"
             android:title="@string/change_password_title" />
 
-    </android.support.v7.preference.PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-    <android.support.v7.preference.PreferenceCategory
+    <androidx.preference.PreferenceCategory
         android:layout="@layout/preference_category_layout_divider"
         android:title="@string/settings_information_group"
         android:key="info">
 
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:icon="@drawable/ic_insert_chart"
             android:key="limits"
             android:layout="@layout/preference_layout"
             android:title="@string/limits_title" />
 
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:icon="@drawable/ic_flash"
             android:key="fees"
             android:layout="@layout/preference_layout"
             android:title="@string/fees_title" />
 
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:icon="@drawable/ic_text_script"
             android:key="terms"
             android:layout="@layout/preference_layout"
             android:title="@string/terms_of_service" />
 
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:icon="@drawable/ic_legal"
             android:key="open_source_licenses"
             android:layout="@layout/preference_layout"
             android:title="@string/open_source_licenses_title" />
 
-    </android.support.v7.preference.PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

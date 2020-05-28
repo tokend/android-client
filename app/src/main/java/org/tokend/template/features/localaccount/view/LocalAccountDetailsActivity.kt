@@ -2,10 +2,10 @@ package org.tokend.template.features.localaccount.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SimpleItemAnimator
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import android.text.Html
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -66,9 +66,9 @@ class LocalAccountDetailsActivity : BaseActivity() {
     }
 
     private fun initList() {
-        details_list.layoutManager = LinearLayoutManager(this)
+        details_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         details_list.adapter = adapter
-        (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        (details_list.itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
 
         adapter.onItemClick { _, item ->
             when (item.id) {

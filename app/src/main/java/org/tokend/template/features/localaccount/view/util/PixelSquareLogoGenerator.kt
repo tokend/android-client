@@ -1,7 +1,7 @@
 package org.tokend.template.features.localaccount.view.util
 
 import android.graphics.*
-import android.support.v4.util.LruCache
+import androidx.collection.LruCache
 import org.tokend.sdk.utils.extentions.encodeHexString
 import org.tokend.wallet.utils.Hashing
 import kotlin.math.abs
@@ -90,6 +90,6 @@ class PixelSquareLogoGenerator {
         // Must be even number.
         private const val CELLS = 6
 
-        private val cache = LruCache<String, Bitmap>(25)
+        private val cache = androidx.collection.LruCache<String, Bitmap>(25)
     }
 }

@@ -1,6 +1,6 @@
 package org.tokend.template.features.history.details
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe

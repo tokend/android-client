@@ -1,8 +1,8 @@
 package org.tokend.template.view.balancechange
 
-import android.support.design.widget.AppBarLayout
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.Toolbar
+import com.google.android.material.appbar.AppBarLayout
+import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.TextView
 import org.jetbrains.anko.childrenSequence

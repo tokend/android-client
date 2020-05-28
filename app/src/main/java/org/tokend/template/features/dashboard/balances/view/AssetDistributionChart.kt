@@ -3,9 +3,9 @@ package org.tokend.template.features.dashboard.balances.view
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.support.annotation.ColorInt
-import android.support.v4.content.ContextCompat
-import android.support.v7.view.ContextThemeWrapper
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import androidx.appcompat.view.ContextThemeWrapper
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
