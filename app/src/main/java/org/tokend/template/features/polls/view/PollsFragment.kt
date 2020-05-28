@@ -1,9 +1,9 @@
 package org.tokend.template.features.polls.view
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -157,7 +157,7 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
         }
 
         polls_list.adapter = adapter
-        polls_list.layoutManager = LinearLayoutManager(requireContext())
+        polls_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
 
         error_empty_view.setEmptyDrawable(R.drawable.ic_poll)
         error_empty_view.observeAdapter(adapter, R.string.no_polls_found)

@@ -1,6 +1,6 @@
 package org.tokend.template.features.assets.model
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.v3.assets.model.AssetState
 import org.tokend.sdk.factory.GsonFactory

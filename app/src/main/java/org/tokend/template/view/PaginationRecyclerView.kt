@@ -1,14 +1,14 @@
 package org.tokend.template.view
 
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 
 /**
  * RecyclerView with callback for pagination.
  */
-open class PaginationRecyclerView : RecyclerView {
+open class PaginationRecyclerView : androidx.recyclerview.widget.RecyclerView {
     constructor(context: Context, attributeSet: AttributeSet?) :
             super(context, attributeSet)
 
@@ -26,23 +26,23 @@ open class PaginationRecyclerView : RecyclerView {
     override fun setLayoutManager(layoutManager: LayoutManager?) {
         super.setLayoutManager(layoutManager)
 
-        if (layoutManager is LinearLayoutManager) {
+        if (layoutManager is androidx.recyclerview.widget.LinearLayoutManager) {
             enablePagination(layoutManager)
         }
     }
 
-    private fun enablePagination(linearLayoutManager: LinearLayoutManager) {
+    private fun enablePagination(linearLayoutManager: androidx.recyclerview.widget.LinearLayoutManager) {
         paginationScrollListener?.also { removeOnScrollListener(it) }
         paginationScrollListener = getPaginationScrollListener(linearLayoutManager)
                 .also { addOnScrollListener(it) }
     }
 
-    private fun getPaginationScrollListener(linearLayoutManager: LinearLayoutManager)
+    private fun getPaginationScrollListener(linearLayoutManager: androidx.recyclerview.widget.LinearLayoutManager)
             : OnScrollListener {
-        return object : RecyclerView.OnScrollListener() {
+        return object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
             private var scrollingDown = true
 
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
                 if (dy > 2) {

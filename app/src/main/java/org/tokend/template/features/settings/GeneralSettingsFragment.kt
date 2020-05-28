@@ -2,9 +2,9 @@ package org.tokend.template.features.settings
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v7.preference.PreferenceCategory
-import android.support.v7.preference.SwitchPreferenceCompat
-import android.support.v7.widget.Toolbar
+import androidx.preference.PreferenceCategory
+import androidx.preference.SwitchPreferenceCompat
+import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout

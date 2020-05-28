@@ -2,7 +2,7 @@ package org.tokend.template.di.providers
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.support.v4.util.LruCache
+import androidx.collection.LruCache
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.template.BuildConfig
 import org.tokend.template.data.model.AccountRecord
@@ -109,13 +109,13 @@ class RepositoryProviderImpl(
         AssetsRepository(apiProvider, urlConfigProvider, mapper, assetsCache)
     }
     private val orderBookRepositories =
-            LruCache<String, OrderBookRepository>(MAX_SAME_REPOSITORIES_COUNT)
+            androidx.collection.LruCache<String, OrderBookRepository>(MAX_SAME_REPOSITORIES_COUNT)
     private val assetPairsRepository: AssetPairsRepository by lazy {
         AssetPairsRepository(apiProvider, urlConfigProvider, mapper,
                 conversionAssetCode, MemoryOnlyRepositoryCache())
     }
     private val offersRepositories =
-            LruCache<String, OffersRepository>(MAX_SAME_REPOSITORIES_COUNT)
+            androidx.collection.LruCache<String, OffersRepository>(MAX_SAME_REPOSITORIES_COUNT)
     private val accountRepository: AccountRepository by lazy {
         val persistence =
                 if (persistencePreferences != null)
@@ -161,22 +161,22 @@ class RepositoryProviderImpl(
     }
 
     private val balanceChangesRepositoriesByBalanceId =
-            LruCache<String, BalanceChangesRepository>(MAX_SAME_REPOSITORIES_COUNT)
+            androidx.collection.LruCache<String, BalanceChangesRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     private val tradesRepositoriesByAssetPair =
-            LruCache<String, TradeHistoryRepository>(MAX_SAME_REPOSITORIES_COUNT)
+            androidx.collection.LruCache<String, TradeHistoryRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     private val chartRepositoriesByCode =
-            LruCache<String, AssetChartRepository>(MAX_SAME_REPOSITORIES_COUNT)
+            androidx.collection.LruCache<String, AssetChartRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     private val investmentInfoRepositoriesBySaleId =
-            LruCache<Long, InvestmentInfoRepository>(MAX_SAME_REPOSITORIES_COUNT)
+            androidx.collection.LruCache<Long, InvestmentInfoRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     private val pollsRepositoriesByOwnerAccountId =
-            LruCache<String, PollsRepository>(MAX_SAME_REPOSITORIES_COUNT)
+            androidx.collection.LruCache<String, PollsRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     private val atomicSwapRepositoryByAsset =
-            LruCache<String, AtomicSwapAsksRepository>(MAX_SAME_REPOSITORIES_COUNT)
+            androidx.collection.LruCache<String, AtomicSwapAsksRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     private val keyValueEntries: KeyValueEntriesRepository by lazy {
         KeyValueEntriesRepository(apiProvider, MemoryOnlyRepositoryCache())

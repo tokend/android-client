@@ -1,7 +1,7 @@
 package org.tokend.template.view.dialog
 
 import android.content.Context
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.widget.TextView
 import org.jetbrains.anko.clipboardManager
 import org.tokend.template.R

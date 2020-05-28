@@ -2,10 +2,10 @@ package org.tokend.template.features.invest.view
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.SimpleItemAnimator
-import android.support.v7.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -47,7 +47,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         get() = tokenQuery.isNotEmpty()
 
     private lateinit var salesSubscriptionManager: SalesSubscriptionManager
-    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var layoutManager: androidx.recyclerview.widget.GridLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_sales, container, false)
@@ -77,7 +77,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     private fun initSalesList() {
         val columns = ColumnCalculator.getColumnCount(requireActivity())
 
-        layoutManager = GridLayoutManager(context, columns)
+        layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, columns)
 
         salesAdapter = SalesAdapter(urlConfigProvider.getConfig().storage, amountFormatter)
         error_empty_view.setEmptyDrawable(R.drawable.ic_invest)
@@ -95,7 +95,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
             adapter = salesAdapter
 
             setItemViewCacheSize(20)
-            (sales_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+            (sales_list.itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
         }
 
         salesAdapter.registerAdapterDataObserver(

@@ -1,7 +1,7 @@
 package org.tokend.template.view.touchintercepting
 
 import android.content.Context
-import android.support.v4.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import android.util.AttributeSet
 import android.view.MotionEvent
 
@@ -10,7 +10,7 @@ import android.view.MotionEvent
  *
  * @see setTouchEventInterceptor
  */
-class TouchInterceptingSwipeRefreshLayout : SwipeRefreshLayout {
+class TouchInterceptingSwipeRefreshLayout : androidx.swiperefreshlayout.widget.SwipeRefreshLayout {
     constructor(context: Context, attributeSet: AttributeSet?) :
             super(context, attributeSet)
 

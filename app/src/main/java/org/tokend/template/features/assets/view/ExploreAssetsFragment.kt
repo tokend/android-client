@@ -2,10 +2,10 @@ package org.tokend.template.features.assets.view
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -61,7 +61,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
             }
         }
 
-    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var layoutManager: androidx.recyclerview.widget.GridLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_explore, container, false)
@@ -91,7 +91,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     private fun initAssetsList() {
         val columns = ColumnCalculator.getColumnCount(requireActivity())
 
-        layoutManager = GridLayoutManager(context, columns)
+        layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, columns)
         assets_recycler_view.layoutManager = layoutManager
 
         assets_recycler_view.adapter = assetsAdapter

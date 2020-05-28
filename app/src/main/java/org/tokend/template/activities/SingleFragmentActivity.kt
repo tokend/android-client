@@ -2,7 +2,7 @@ package org.tokend.template.activities
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import io.reactivex.rxkotlin.addTo
 import org.tokend.template.R
 import org.tokend.template.features.assets.buy.view.AtomicSwapAsksFragment
@@ -34,7 +34,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         }
     }
 
-    private fun getFragment(): Fragment? {
+    private fun getFragment(): androidx.fragment.app.Fragment? {
         val bundle = intent.getBundleExtra(FRAGMENT_BUNDLE_EXTRA)
 
         return when (screenId) {
@@ -48,7 +48,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         }
     }
 
-    private fun displayFragment(fragment: Fragment) {
+    private fun displayFragment(fragment: androidx.fragment.app.Fragment) {
         supportFragmentManager.beginTransaction()
                 .add(R.id.wallet_fragment_container, fragment)
                 .commit()

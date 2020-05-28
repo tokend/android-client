@@ -1,6 +1,6 @@
 package org.tokend.template.extensions
 
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan

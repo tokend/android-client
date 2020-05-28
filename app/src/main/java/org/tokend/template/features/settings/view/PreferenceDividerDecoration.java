@@ -4,14 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DimenRes;
-import android.support.annotation.DrawableRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceGroup;
-import android.support.v7.preference.PreferenceGroupAdapter;
-import android.support.v7.preference.PreferenceScreen;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.DimenRes;
+import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceGroup;
+import androidx.preference.PreferenceGroupAdapter;
+import androidx.preference.PreferenceScreen;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 /**

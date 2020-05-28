@@ -2,13 +2,13 @@ package org.tokend.template
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.multidex.MultiDexApplication
-import android.support.v4.app.ActivityCompat
-import android.support.v7.app.AppCompatDelegate
+import androidx.multidex.MultiDexApplication
+import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AppCompatDelegate
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore

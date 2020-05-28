@@ -3,8 +3,8 @@ package org.tokend.template.features.tfa.view
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.AppCompatImageView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatImageView
 import android.view.View
 import android.view.WindowManager
 import android.widget.ProgressBar

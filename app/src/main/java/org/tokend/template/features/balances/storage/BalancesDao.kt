@@ -1,6 +1,6 @@
 package org.tokend.template.features.balances.storage
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import org.tokend.template.features.balances.model.BalanceDbEntity
 
 @Dao

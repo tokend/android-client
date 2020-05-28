@@ -2,7 +2,7 @@ package org.tokend.template.features.history.view
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import org.tokend.template.R
 import org.tokend.template.features.history.model.BalanceChange
 import org.tokend.template.features.history.model.BalanceChangeAction

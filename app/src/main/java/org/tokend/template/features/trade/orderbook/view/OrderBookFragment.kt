@@ -1,9 +1,9 @@
 package org.tokend.template.features.trade.orderbook.view
 
 import android.os.Bundle
-import android.support.design.widget.BottomSheetBehavior
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,12 +78,12 @@ class OrderBookFragment : BaseFragment() {
         sellAdapter = OrderBookEntriesAdapter(false, amountFormatter)
 
         buy_entries_recycler_view.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             adapter = buyAdapter
         }
 
         sell_entries_recycler_view.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             adapter = sellAdapter
         }
 

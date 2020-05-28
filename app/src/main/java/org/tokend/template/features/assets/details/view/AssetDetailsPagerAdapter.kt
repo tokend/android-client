@@ -1,17 +1,17 @@
 package org.tokend.template.features.assets.details.view
 
 import android.content.Context
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 import org.tokend.template.R
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.polls.view.PollsFragment
 
 class AssetDetailsPagerAdapter(asset: AssetRecord,
                                context: Context,
-                               fragmentManager: FragmentManager
-) : FragmentPagerAdapter(fragmentManager) {
+                               fragmentManager: androidx.fragment.app.FragmentManager
+) : androidx.fragment.app.FragmentPagerAdapter(fragmentManager) {
 
     private val pages = mutableListOf(
             AssetDetailsFragment.newInstance(AssetDetailsFragment.getBundle(
@@ -24,7 +24,7 @@ class AssetDetailsPagerAdapter(asset: AssetRecord,
             )) to context.getString(R.string.polls_title)
     )
 
-    override fun getItem(position: Int): Fragment? {
+    override fun getItem(position: Int): androidx.fragment.app.Fragment? {
         return pages.getOrNull(position)?.first
     }
 

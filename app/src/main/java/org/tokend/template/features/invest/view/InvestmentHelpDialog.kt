@@ -1,8 +1,8 @@
 package org.tokend.template.features.invest.view
 
 import android.content.Context
-import android.support.annotation.StyleRes
-import android.support.v7.app.AlertDialog
+import androidx.annotation.StyleRes
+import androidx.appcompat.app.AlertDialog
 import android.text.method.ScrollingMovementMethod
 import android.widget.Scroller
 import android.widget.TextView

@@ -1,9 +1,9 @@
 package org.tokend.template.features.trade.history.view
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,7 +65,7 @@ class TradeHistoryFragment : BaseFragment() {
     }
 
     private fun initList() {
-        trade_history_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        trade_history_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context, androidx.recyclerview.widget.RecyclerView.VERTICAL, false)
         adapter = TradeHistoryAdapter(amountFormatter)
         trade_history_list.adapter = adapter
         trade_history_list.listenBottomReach({ adapter.getDataItemCount() }) {

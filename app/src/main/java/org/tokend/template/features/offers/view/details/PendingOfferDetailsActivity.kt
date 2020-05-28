@@ -4,9 +4,9 @@ import android.app.Activity
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.MenuItem
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_balance_change_confirmation.*
@@ -45,7 +45,7 @@ open class PendingOfferDetailsActivity : BaseActivity() {
         initToolbar()
         initMainDataView()
 
-        details_list.layoutManager = LinearLayoutManager(this)
+        details_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         details_list.adapter = adapter
 
         displayDetails(item)

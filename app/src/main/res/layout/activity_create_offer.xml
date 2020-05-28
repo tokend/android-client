@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +8,7 @@
 
     <include layout="@layout/appbar"/>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
         style="@style/LimitedMatchParentWidthConstraint"
         app:layout_constraintTop_toBottomOf="@id/appbar"
@@ -100,7 +100,7 @@
                 android:layout_marginTop="@dimen/standard_padding"
                 android:orientation="horizontal">
 
-                <android.support.v7.widget.AppCompatButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/sell_btn"
                     style="@style/PrimaryButton"
                     android:layout_width="0dp"
@@ -111,7 +111,7 @@
                     android:text="@string/sell_action"
                     android:textAllCaps="true" />
 
-                <android.support.v7.widget.AppCompatButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/buy_btn"
                     style="@style/PrimaryButton"
                     android:layout_width="0dp"
@@ -157,7 +157,7 @@
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -167,4 +167,4 @@
         <include layout="@layout/include_appbar_elevation" />
     </FrameLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,11 +3,11 @@ package org.tokend.template.activities
 import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.view.View
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -239,13 +239,13 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     // region Navigation
-    private fun onNavigationItemSelected(item: IDrawerItem<Any, RecyclerView.ViewHolder>)
+    private fun onNavigationItemSelected(item: IDrawerItem<Any, androidx.recyclerview.widget.RecyclerView.ViewHolder>)
             : Boolean {
         navigateTo(item.identifier)
         return false
     }
 
-    private fun navigateTo(screenIdentifier: Long, fragment: Fragment) {
+    private fun navigateTo(screenIdentifier: Long, fragment: androidx.fragment.app.Fragment) {
         navigationDrawer?.setSelection(screenIdentifier, false)
         landscapeNavigationDrawer?.setSelection(screenIdentifier, false)
 
@@ -257,7 +257,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     private fun navigateTo(screenIdentifier: Long) {
-        val fragment: Fragment =
+        val fragment: androidx.fragment.app.Fragment =
                 when (screenIdentifier) {
                     DashboardFragment.ID -> DashboardFragment.newInstance()
                     WithdrawFragment.ID -> WithdrawFragment.newInstance(WithdrawFragment.getBundle())
@@ -295,7 +295,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     private var fragmentToolbarDisposable: Disposable? = null
-    private fun displayFragment(fragment: Fragment) {
+    private fun displayFragment(fragment: androidx.fragment.app.Fragment) {
         supportFragmentManager.beginTransaction()
                 .disallowAddToBackStack()
                 .setCustomAnimations(R.anim.stay_visible, R.anim.activity_fade_out)
@@ -324,13 +324,13 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
     private fun updateDrawerVisibility() {
         if (tablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            navigationDrawer?.drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            navigationDrawer?.drawerLayout?.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             nav_tablet.visibility = View.VISIBLE
             toolbar?.navigationIcon = null
             side_shadow_view.visibility = View.VISIBLE
 
         } else {
-            navigationDrawer?.drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            navigationDrawer?.drawerLayout?.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_UNLOCKED)
             nav_tablet.visibility = View.GONE
             toolbar?.setNavigationIcon(R.drawable.ic_menu)
             side_shadow_view.visibility = View.GONE

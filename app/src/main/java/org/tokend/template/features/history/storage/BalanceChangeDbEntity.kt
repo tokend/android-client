@@ -1,6 +1,6 @@
 package org.tokend.template.features.history.storage
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.google.gson.JsonObject
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.template.features.assets.model.Asset

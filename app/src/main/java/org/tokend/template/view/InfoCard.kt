@@ -1,7 +1,7 @@
 package org.tokend.template.view
 
-import android.support.annotation.StringRes
-import android.support.v7.widget.SwitchCompat
+import androidx.annotation.StringRes
+import androidx.appcompat.widget.SwitchCompat
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton

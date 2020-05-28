@@ -1,8 +1,8 @@
 package org.tokend.template.features.dashboard.movements.view
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,7 +65,7 @@ class AccountMovementsFragment : BaseFragment() {
         error_empty_view.setEmptyViewDenial { balanceChangesRepository.isNeverUpdated }
 
         history_list.adapter = adapter
-        history_list.layoutManager = LinearLayoutManager(context!!)
+        history_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context!!)
         history_list.setHasFixedSize(true)
 
         history_list.listenBottomReach({ adapter.getDataItemCount() }) {

@@ -1,6 +1,6 @@
 package org.tokend.template.features.dashboard.balances.view.adapter
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.SpannableString
 import android.view.View
 import org.tokend.template.R

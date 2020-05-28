@@ -1,12 +1,12 @@
 package org.tokend.template.features.deposit.view
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.GestureDetectorCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SimpleItemAnimator
-import android.support.v7.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.view.GestureDetectorCompat
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -171,9 +171,9 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initList() {
-        details_list.layoutManager = LinearLayoutManager(context)
+        details_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         details_list.adapter = adapter
-        (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        (details_list.itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
     }
 
     private fun initSwipeRefresh() {

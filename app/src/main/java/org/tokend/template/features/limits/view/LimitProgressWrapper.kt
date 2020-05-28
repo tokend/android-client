@@ -1,7 +1,7 @@
 package org.tokend.template.features.limits.view
 
-import android.support.annotation.StringRes
-import android.support.v4.content.ContextCompat
+import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import android.text.SpannableString
 import android.view.View
 import kotlinx.android.synthetic.main.layout_card_limit.view.*

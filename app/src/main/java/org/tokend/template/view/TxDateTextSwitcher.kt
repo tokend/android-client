@@ -2,8 +2,8 @@ package org.tokend.template.view
 
 import android.content.Context
 import android.os.Handler
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +38,7 @@ class TxDateTextSwitcher : TextSwitcher {
     private var isVisible: Boolean = false
     private var lastTimeoutStartTime: Long = 0
 
-    private var layoutManager: LinearLayoutManager? = null
+    private var layoutManager: androidx.recyclerview.widget.LinearLayoutManager? = null
     private var txAdapter: BaseRecyclerAdapter<out DateProvider, *>? = null
 
     init {
@@ -57,10 +57,10 @@ class TxDateTextSwitcher : TextSwitcher {
         slideOutToBottom = AnimationUtils.loadAnimation(context, R.anim.slide_out_bottom)
     }
 
-    private val scrollListener = object : RecyclerView.OnScrollListener() {
+    private val scrollListener = object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
         private var scrollState: Int = 0
 
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
 
             updateScrollState(scrollState)
@@ -70,11 +70,11 @@ class TxDateTextSwitcher : TextSwitcher {
             updateFirstVisibleTx(firstVisibleItem)
         }
 
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
 
             scrollState = newState
-            if (newState != RecyclerView.SCROLL_STATE_IDLE
+            if (newState != androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
                     && recyclerView.computeVerticalScrollOffset() == 0) {
                 return
             }
@@ -88,7 +88,7 @@ class TxDateTextSwitcher : TextSwitcher {
      * @param recyclerView [RecyclerView] to observe
      * @param adapter data adapter
      */
-    fun init(recyclerView: RecyclerView, adapter: BaseRecyclerAdapter<out DateProvider, *>) {
+    fun init(recyclerView: androidx.recyclerview.widget.RecyclerView, adapter: BaseRecyclerAdapter<out DateProvider, *>) {
         prevHeaderId = java.lang.Long.MAX_VALUE
         prevScrollState = 0
         animateHide()
@@ -96,7 +96,7 @@ class TxDateTextSwitcher : TextSwitcher {
         recyclerView.removeOnScrollListener(scrollListener)
         recyclerView.addOnScrollListener(scrollListener)
 
-        this.layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+        this.layoutManager = recyclerView.layoutManager as? androidx.recyclerview.widget.LinearLayoutManager
         this.txAdapter = adapter
     }
 
@@ -160,7 +160,7 @@ class TxDateTextSwitcher : TextSwitcher {
     private fun updateScrollState(scrollState: Int) {
         if (scrollState != prevScrollState) {
             when (scrollState) {
-                RecyclerView.SCROLL_STATE_IDLE -> {
+                androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE -> {
                     canHide = true
                     setHideTimeout(Date().time)
                 }

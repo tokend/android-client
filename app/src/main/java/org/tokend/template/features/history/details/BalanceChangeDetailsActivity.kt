@@ -2,9 +2,9 @@ package org.tokend.template.features.history.details
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SimpleItemAnimator
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import kotlinx.android.synthetic.main.activity_balance_change_details.*
 import kotlinx.android.synthetic.main.appbar_with_balance_change_main_data.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -48,9 +48,9 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
     }
 
     protected open fun initList() {
-        details_list.layoutManager = LinearLayoutManager(this)
+        details_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         details_list.adapter = adapter
-        (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        (details_list.itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
     }
 
     protected open fun displayDetails(item: BalanceChange) {

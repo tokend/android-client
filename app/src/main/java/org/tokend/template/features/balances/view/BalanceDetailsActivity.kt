@@ -2,8 +2,8 @@ package org.tokend.template.features.balances.view
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.widget.TextView
 import io.reactivex.rxkotlin.addTo
@@ -203,7 +203,7 @@ class BalanceDetailsActivity : BaseActivity() {
         }
 
         history_list.adapter = adapter
-        history_list.layoutManager = LinearLayoutManager(this)
+        history_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         history_list.addOnScrollListener(HideFabScrollListener(menu_fab))
 
         history_list.listenBottomReach({ adapter.getDataItemCount() }) {

@@ -26,7 +26,7 @@
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/text_size_hint" />
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/chart_scale_tabs"
         style="@style/TabPicker"
         android:layout_width="match_parent"

@@ -6,7 +6,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.webkit.MimeTypeMap
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.template.R
@@ -37,7 +37,7 @@ class FileDownloader(
      * Make sure to call [handlePermissionResult]
      * inside [Fragment.onRequestPermissionsResult] for correct work
      */
-    fun download(fragment: Fragment, file: RemoteFile) {
+    fun download(fragment: androidx.fragment.app.Fragment, file: RemoteFile) {
         storagePermission.check(fragment) { downloadFile(context, file) }
     }
 
