@@ -3,7 +3,6 @@ package org.tokend.template.features.kyc.storage
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import org.json.JSONObject
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.TokenDApi
 import org.tokend.sdk.api.base.params.PagingOrder
@@ -34,7 +33,8 @@ class KycRequestStateRepository(
     private data class KycRequestAttributes(
             val state: RequestState,
             val rejectReason: String,
-            val blobId: String?
+            val blobId: String?,
+            val roleToSet: Long
     )
 
     override fun getItem(): Maybe<KycRequestState> {
@@ -45,6 +45,13 @@ class KycRequestStateRepository(
 
         var requestId: Long = 0
 
+        data class FinalComposite(
+                val state: RequestState,
+                val rejectReason: String,
+                val kycForm: KycForm,
+                val roleToSet: Long
+        )
+
         return getLastKycRequest(signedApi, accountId)
                 .switchIfEmpty(Single.error(NoRequestFoundException()))
                 .doOnSuccess { request ->
@@ -54,20 +61,20 @@ class KycRequestStateRepository(
                     getKycRequestAttributes(request)
                             ?: throw InvalidKycDataException()
                 }
-                .flatMap { (state, rejectReason, blobId) ->
+                .flatMap { (state, rejectReason, blobId, roleToSet) ->
                     loadKycFormFromBlob(blobId)
                             .map { kycForm ->
-                                Triple(state, rejectReason, kycForm)
+                                FinalComposite(state, rejectReason, kycForm, roleToSet)
                             }
                 }
-                .map<KycRequestState> { (state, rejectReason, kycForm) ->
+                .map<KycRequestState> { (state, rejectReason, kycForm, roleToSet) ->
                     when (state) {
                         RequestState.REJECTED ->
-                            KycRequestState.Submitted.Rejected(kycForm, requestId, rejectReason)
+                            KycRequestState.Submitted.Rejected(kycForm, requestId, roleToSet, rejectReason)
                         RequestState.APPROVED ->
-                            KycRequestState.Submitted.Approved(kycForm, requestId)
+                            KycRequestState.Submitted.Approved(kycForm, requestId, roleToSet)
                         else ->
-                            KycRequestState.Submitted.Pending(kycForm, requestId)
+                            KycRequestState.Submitted.Pending(kycForm, requestId, roleToSet)
                     }
                 }
                 .onErrorResumeNext { error ->
@@ -108,8 +115,9 @@ class KycRequestStateRepository(
                     .get("blob_id")
                     ?.asText()
             val rejectReason = request.rejectReason ?: ""
+            val roleToSet = request.getTypedRequestDetails<ChangeRoleRequestResource>().accountRoleToSet
 
-            KycRequestAttributes(state, rejectReason, blobId)
+            KycRequestAttributes(state, rejectReason, blobId, roleToSet)
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -125,19 +133,7 @@ class KycRequestStateRepository(
                 .getById(blobId, true)
                 .map { blob ->
                     try {
-                        val valueJson = JSONObject(blob.valueString)
-
-                        val isGeneral = valueJson.has(KycForm.General.FIRST_NAME_KEY)
-                        val isCorporate = valueJson.has(KycForm.Corporate.COMPANY_KEY)
-
-                        when {
-                            isGeneral ->
-                                blob.getValue(KycForm.General::class.java)
-                            isCorporate ->
-                                blob.getValue(KycForm.Corporate::class.java)
-                            else ->
-                                throw IllegalStateException("Unknown KYC form type")
-                        }
+                        KycForm.fromBlob(blob)
                     } catch (e: Exception) {
                         e.printStackTrace()
                         KycForm.Empty

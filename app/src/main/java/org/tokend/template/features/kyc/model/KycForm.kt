@@ -4,28 +4,14 @@ import com.google.gson.annotations.SerializedName
 import org.json.JSONObject
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.blobs.model.Blob
-import org.tokend.sdk.api.documents.model.DocumentType
 
 /**
  * KYC form data with documents
  */
 sealed class KycForm(
         @SerializedName("documents")
-        val documents: MutableMap<String, RemoteFile>? = mutableMapOf()
+        var documents: MutableMap<String, RemoteFile>? = mutableMapOf()
 ) {
-    open fun getDocument(type: DocumentType): RemoteFile? {
-        return documents?.get(type.name.toLowerCase())
-    }
-
-    open fun setDocument(type: DocumentType, file: RemoteFile?) {
-        if (file == null) {
-            documents?.remove(type.name.toLowerCase())
-            return
-        }
-
-        documents?.put(type.name.toLowerCase(), file)
-    }
-
     class Corporate(documents: MutableMap<String, RemoteFile>,
                     @SerializedName(COMPANY_KEY)
                     val company: String
@@ -44,13 +30,14 @@ sealed class KycForm(
                   val lastName: String
     ) : KycForm(null) {
         val avatar: RemoteFile?
-            get() = documents?.get("kyc_avatar")
+            get() = documents?.get(AVATAR_DOCUMENT_KEY)
 
         val fullName: String
             get() = "$firstName $lastName"
 
         companion object {
             const val FIRST_NAME_KEY = "first_name"
+            const val AVATAR_DOCUMENT_KEY = "kyc_avatar"
         }
     }
 
