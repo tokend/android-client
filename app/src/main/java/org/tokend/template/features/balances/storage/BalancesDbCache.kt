@@ -1,10 +1,10 @@
 package org.tokend.template.features.balances.storage
 
-import org.tokend.template.features.assets.model.AssetRecord
-import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.data.repository.base.RepositoryCache
 import org.tokend.template.extensions.mapSuccessful
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.balances.model.BalanceDbEntity
+import org.tokend.template.features.balances.model.BalanceRecord
 
 class BalancesDbCache(
         private val dao: BalancesDao,
@@ -20,19 +20,19 @@ class BalancesDbCache(
     }
 
     override fun addToDb(items: Collection<BalanceRecord>) {
-        val assets = items.map(BalanceRecord::asset)
+        val assets = items.map(BalanceRecord::asset).distinct()
         assetsCache.add(*assets.toTypedArray())
         dao.insert(*items.map(BalanceDbEntity.Companion::fromRecord).toTypedArray())
     }
 
     override fun updateInDb(items: Collection<BalanceRecord>) {
-        val assets = items.map(BalanceRecord::asset)
+        val assets = items.map(BalanceRecord::asset).distinct()
         assetsCache.update(*assets.toTypedArray())
         dao.update(*items.map(BalanceDbEntity.Companion::fromRecord).toTypedArray())
     }
 
     override fun deleteFromDb(items: Collection<BalanceRecord>) {
-        val assets = items.map(BalanceRecord::asset)
+        val assets = items.map(BalanceRecord::asset).distinct()
         assetsCache.delete(*assets.toTypedArray())
         dao.delete(*items.map(BalanceDbEntity.Companion::fromRecord).toTypedArray())
     }

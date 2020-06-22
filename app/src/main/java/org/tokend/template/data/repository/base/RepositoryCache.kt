@@ -36,7 +36,8 @@ abstract class RepositoryCache<T> {
     }
 
     fun add(vararg items: T): Boolean {
-        val itemsToAdd = items.filterNot(mItems::contains)
+        val itemsToAdd = items.distinct()
+                .filterNot(mItems::contains)
         return if (itemsToAdd.isNotEmpty()) {
             addToDbSafe(itemsToAdd)
             mItems.addAll(0, itemsToAdd)
@@ -56,6 +57,7 @@ abstract class RepositoryCache<T> {
 
     fun update(vararg items: T): Boolean {
         val itemsToUpdate = items
+                .distinct()
                 .mapNotNull { item ->
                     val index = mItems.indexOf(item)
                     if (index < 0)
