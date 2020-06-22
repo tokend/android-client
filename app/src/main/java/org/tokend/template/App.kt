@@ -26,7 +26,9 @@ import io.fabric.sdk.android.Fabric
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
+import okhttp3.Cache
 import org.jetbrains.anko.defaultSharedPreferences
+import org.tokend.sdk.factory.HttpClientFactory
 import org.tokend.template.db.AppDatabase
 import org.tokend.template.di.*
 import org.tokend.template.di.providers.AccountProviderFactory
@@ -141,9 +143,20 @@ class App : MultiDexApplication() {
     }
 
     private fun initPicasso() {
+        val httpClient = HttpClientFactory()
+                .getBaseHttpClientBuilder()
+                .addNetworkInterceptor { chain ->
+                    val response = chain.proceed(chain.request())
+                    // All pictures are immutable but S3 does not send Cache-Control, so...
+                    response.newBuilder()
+                            .header("Cache-Control", "immutable")
+                            .build()
+                }
+                .cache(Cache(cacheDir, IMAGE_CACHE_SIZE_MB * 1024 * 1024))
+                .build()
+
         val picasso = Picasso.Builder(this)
-                .downloader(OkHttp3Downloader(cacheDir,
-                        IMAGE_CACHE_SIZE_MB * 1024 * 1024))
+                .downloader(OkHttp3Downloader(httpClient))
                 .build()
         Picasso.setSingletonInstance(picasso)
     }
