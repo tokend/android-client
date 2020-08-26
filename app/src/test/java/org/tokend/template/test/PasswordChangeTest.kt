@@ -58,6 +58,8 @@ class PasswordChangeTest {
 
         useCase.perform().blockingAwait()
 
+        Thread.sleep(5000)
+
         val signers = apiProvider.getApi()
                 .v3
                 .signers

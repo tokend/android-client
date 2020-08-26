@@ -44,6 +44,7 @@
 # Wallet
 # Uncomment this if you would like to decode XDRs
 -keep class org.tokend.wallet.xdr.* { *; }
+-dontnote org.tokend.wallet.xdr.*
 
 # General
 -keepattributes SourceFile,LineNumberTable,*Annotation*,EnclosingMethod,Signature,Exceptions,InnerClasses
