@@ -1,5 +1,6 @@
 package org.tokend.template.features.send.amount.logic
 
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.tokend.template.features.history.model.SimpleFeeRecord

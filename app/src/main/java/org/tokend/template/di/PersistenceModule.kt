@@ -10,7 +10,7 @@ import org.tokend.template.features.localaccount.storage.LocalAccountPersistence
 import org.tokend.template.features.urlconfig.model.UrlConfig
 import org.tokend.template.features.urlconfig.storage.UrlConfigPersistence
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
-import org.tokend.template.logic.credentials.persistence.CredentialsPersistenceOnPreferences
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistenceImpl
 import javax.inject.Singleton
 
 @Module
@@ -22,7 +22,7 @@ class PersistenceModule(
     @Provides
     @Singleton
     fun credentialsPresistor(): CredentialsPersistence {
-        return CredentialsPersistenceOnPreferences(persistencePreferences)
+        return CredentialsPersistenceImpl(persistencePreferences)
     }
 
     @Provides

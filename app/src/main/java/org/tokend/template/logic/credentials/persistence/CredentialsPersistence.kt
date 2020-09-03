@@ -1,11 +1,9 @@
 package org.tokend.template.logic.credentials.persistence
 
-import io.reactivex.Maybe
-import io.reactivex.rxkotlin.toMaybe
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.logic.credentials.SimpleCredentialsProvider
 
-interface CredentialsPersistence: SimpleCredentialsProvider {
+interface CredentialsPersistence : SimpleCredentialsProvider {
     /**
      * @param credentials [WalletInfo] with filled [WalletInfo.secretSeed] field.
      * @param password password for encryption
@@ -26,18 +24,6 @@ interface CredentialsPersistence: SimpleCredentialsProvider {
      * @return saved password or null if it's missing
      */
     fun getSavedPassword(): CharArray?
-
-    /**
-     * @return saved credentials, null if there is no saved credentials or password is incorrect
-     */
-    fun loadCredentials(password: CharArray): WalletInfo?
-
-    /**
-     * @see loadCredentials
-     */
-    fun loadCredentialsMaybe(password: CharArray): Maybe<WalletInfo> = Maybe.defer {
-        loadCredentials(password).toMaybe()
-    }
 
     /**
      * Clears stored credentials

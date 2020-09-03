@@ -11,21 +11,13 @@ import org.tokend.wallet.utils.toCharArray
 /**
  * Represents secure credentials storage based on SharedPreferences.
  */
-class CredentialsPersistenceOnPreferences(
+class CredentialsPersistenceImpl(
         private val preferences: SharedPreferences
 ): CredentialsPersistence {
     private val secureStorage = SecureStorage(preferences)
 
     override fun saveCredentials(credentials: WalletInfo, password: CharArray) {
         val email = credentials.email
-        val nonSensitiveData =
-                GsonFactory().getBaseGson().toJson(
-                        credentials.copy(secretSeed = CharArray(0))
-                ).toByteArray()
-        val sensitiveData = credentials.secretSeed.toByteArray()
-
-        secureStorage.saveWithPassword(sensitiveData, SEED_KEY, password)
-        secureStorage.saveWithPassword(nonSensitiveData, WALLET_INFO_KEY, password)
 
         tryToSavePassword(password)
 
@@ -55,6 +47,7 @@ class CredentialsPersistenceOnPreferences(
         passwordBytes.fill(0)
         return password
     }
+/*
 
     override fun loadCredentials(password: CharArray): WalletInfo? {
         try {
@@ -78,10 +71,9 @@ class CredentialsPersistenceOnPreferences(
             return null
         }
     }
+*/
 
     override fun clear(keepEmail: Boolean) {
-        secureStorage.clear(SEED_KEY)
-        secureStorage.clear(WALLET_INFO_KEY)
         secureStorage.clear(PASSWORD_KEY)
 
         if (!keepEmail) {
@@ -98,8 +90,6 @@ class CredentialsPersistenceOnPreferences(
     }
 
     companion object {
-        private const val SEED_KEY = "(◕‿◕✿)"
-        private const val WALLET_INFO_KEY = "ಠ_ಠ"
         const val PASSWORD_KEY = "(¬_¬)"
         private const val EMAIL_KEY = "email"
     }

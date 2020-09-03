@@ -202,8 +202,8 @@ class SignInTest {
 
         override fun getSavedPassword(): CharArray? = password
 
-        override fun loadCredentials(password: CharArray): WalletInfo? =
-                walletInfo.takeIf { this.password?.contentEquals(password) == true }
+       /* override fun loadCredentials(password: CharArray): WalletInfo? =
+                walletInfo.takeIf { this.password?.contentEquals(password) == true }*/
 
         override fun clear(keepEmail: Boolean) {
             this.walletInfo = null

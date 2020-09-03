@@ -9,6 +9,7 @@ import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
+import org.tokend.template.logic.credentials.persistence.WalletInfoPersistence
 import org.tokend.wallet.Account
 
 /**
@@ -25,6 +26,7 @@ class SignInUseCase(
         private val keyServer: KeyServer,
         private val session: Session,
         private val credentialsPersistence: CredentialsPersistence?,
+        private val walletInfoPersistence: WalletInfoPersistence?,
         private val postSignInActions: (() -> Completable)?
 ) {
     private lateinit var walletInfo: WalletInfo
@@ -60,9 +62,9 @@ class SignInUseCase(
     private fun getWalletInfo(email: String, password: CharArray): Single<WalletInfo> {
         val networkRequest = keyServer.getWalletInfo(email, password).toSingle()
 
-        return credentialsPersistence
-                ?.takeIf { it.getSavedEmail() == email }
-                ?.loadCredentialsMaybe(password)
+        return walletInfoPersistence
+                ?.takeIf { credentialsPersistence?.getSavedEmail() == email }
+                ?.loadWalletInfoMaybe(password)
                 ?.switchIfEmpty(networkRequest)
                 ?: networkRequest
     }
@@ -73,6 +75,7 @@ class SignInUseCase(
 
     private fun updateProviders(): Single<Boolean> {
         session.setWalletInfo(walletInfo)
+        walletInfoPersistence?.saveWalletInfoData(walletInfo, password)
         credentialsPersistence?.saveCredentials(walletInfo, password)
         session.setAccount(account)
         session.signInMethod = SignInMethod.CREDENTIALS
@@ -85,6 +88,7 @@ class SignInUseCase(
                 ?.invoke()
                 ?.doOnError {
                     if (it is PostSignInManager.AuthMismatchException) {
+                        walletInfoPersistence?.clear(keepEmail = true)
                         credentialsPersistence?.clear(keepEmail = true)
                     }
                 }
