@@ -53,6 +53,7 @@ class PasswordChangeTest {
                 session,
                 session,
                 repositoryProvider,
+                null,
                 null
         )
 

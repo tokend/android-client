@@ -3,14 +3,14 @@ package org.tokend.template.logic.fingerprint
 import android.content.Context
 import android.os.Build
 import org.jetbrains.anko.defaultSharedPreferences
-import org.tokend.template.logic.credentials.SimpleCredentialsProvider
+import org.tokend.template.logic.credentials.CredentialsProvider
 
 /**
  * Manages fingerprint auth request to obtain saved credentials.
  */
 class FingerprintAuthManager(
         applicationContext: Context,
-        private val simpleCredentialsProvider: SimpleCredentialsProvider
+        private val simpleCredentialsProvider: CredentialsProvider
 ) {
     private val fingerprintUtil = FingerprintUtil(applicationContext)
     private var isAuthCanceled = false
@@ -23,7 +23,7 @@ class FingerprintAuthManager(
     val isAuthAvailable: Boolean
         get() = preferences.getBoolean("fingerprint", true)
                 && fingerprintUtil.isFingerprintAvailable
-                && simpleCredentialsProvider.hasSimpleCredentials()
+                && simpleCredentialsProvider.hasCredentials()
 
     /**
      * @param onAuthStart will be called when auth is available and started
@@ -53,7 +53,7 @@ class FingerprintAuthManager(
 
             fingerprintUtil.requestAuth(
                     onSuccess = {
-                        val (email, password) = simpleCredentialsProvider.getSimpleCredentials()
+                        val (email, password) = simpleCredentialsProvider.getCredentials()
                         successCallback?.invoke(email, password)
                     },
                     onError = handleErrorMessage,

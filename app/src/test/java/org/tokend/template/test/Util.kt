@@ -52,6 +52,7 @@ object Util {
                 apiProvider.getKeyServer(),
                 session,
                 null,
+                null,
                 repositoryProvider?.let { PostSignInManager(it)::doPostSignIn }
         ).perform().blockingAwait()
 

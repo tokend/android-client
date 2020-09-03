@@ -1,13 +1,13 @@
 package org.tokend.template.features.userkey.logic.persistence
 
 import org.tokend.crypto.ecdsa.erase
-import org.tokend.template.logic.credentials.SimpleCredentialsProvider
+import org.tokend.template.logic.credentials.CredentialsProvider
 
-interface UserKeyPersistor : SimpleCredentialsProvider {
+interface UserKeyPersistor : CredentialsProvider {
     fun save(key: CharArray)
     fun load(): CharArray?
 
-    override fun hasSimpleCredentials(): Boolean {
+    override fun hasCredentials(): Boolean {
         val key = load()
         return if (key != null) {
             key.erase()
@@ -17,7 +17,7 @@ interface UserKeyPersistor : SimpleCredentialsProvider {
         }
     }
 
-    override fun getSimpleCredentials(): Pair<String, CharArray> {
+    override fun getCredentials(): Pair<String, CharArray> {
         return "account@local.device" to load()!!
     }
 }
