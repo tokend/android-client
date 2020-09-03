@@ -47,31 +47,6 @@ class CredentialsPersistenceImpl(
         passwordBytes.fill(0)
         return password
     }
-/*
-
-    override fun loadCredentials(password: CharArray): WalletInfo? {
-        try {
-            val walletInfoBytes = secureStorage.loadWithPassword(WALLET_INFO_KEY, password)
-                    ?: return null
-            val walletInfo = GsonFactory().getBaseGson()
-                    .fromJson(String(walletInfoBytes), WalletInfo::class.java)
-                    .also {
-                        // Will fall with NPE on failed parsing.
-                        it.accountId.length
-                    }
-
-            val seedBytes = secureStorage.loadWithPassword(SEED_KEY, password)
-                    ?: return null
-            walletInfo.secretSeed = seedBytes.toCharArray()
-            seedBytes.fill(0)
-
-            return walletInfo
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
-        }
-    }
-*/
 
     override fun clear(keepEmail: Boolean) {
         secureStorage.clear(PASSWORD_KEY)
