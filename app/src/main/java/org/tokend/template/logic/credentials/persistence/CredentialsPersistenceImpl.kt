@@ -2,7 +2,6 @@ package org.tokend.template.logic.credentials.persistence
 
 import android.content.SharedPreferences
 import android.os.Build
-import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.logic.persistence.SecureStorage
 import org.tokend.wallet.utils.toByteArray
