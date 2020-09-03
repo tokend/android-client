@@ -263,6 +263,7 @@ class UnlockAppActivity : BaseActivity() {
                 apiProvider.getKeyServer(),
                 session,
                 credentialsPersistence,
+                walletInfoPersistence,
                 postSignInManagerFactory.get()::doPostSignIn
         )
                 .perform()

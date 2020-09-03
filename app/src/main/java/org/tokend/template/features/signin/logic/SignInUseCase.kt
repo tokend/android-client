@@ -88,7 +88,7 @@ class SignInUseCase(
                 ?.invoke()
                 ?.doOnError {
                     if (it is PostSignInManager.AuthMismatchException) {
-                        walletInfoPersistence?.clear(keepEmail = true)
+                        walletInfoPersistence?.clear()
                         credentialsPersistence?.clear(keepEmail = true)
                     }
                 }

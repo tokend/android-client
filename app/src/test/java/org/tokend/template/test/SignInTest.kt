@@ -19,6 +19,7 @@ import org.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
 import org.tokend.template.features.userkey.logic.UserKeyProvider
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
+import org.tokend.template.logic.credentials.persistence.WalletInfoPersistence
 import org.tokend.template.util.cipher.Aes256GcmDataCipher
 import org.tokend.wallet.Account
 
@@ -47,6 +48,7 @@ class SignInTest {
                 JsonApiToolsProvider.getObjectMapper())
 
         val credentialsPersistor = getDummyCredentialsStorage()
+        val walletInfoPersistor = getDummyWalletInfoStorage()
 
         val useCase = SignInUseCase(
                 email,
@@ -54,6 +56,7 @@ class SignInTest {
                 apiProvider.getKeyServer(),
                 session,
                 credentialsPersistor,
+                walletInfoPersistor,
                 PostSignInManager(repositoryProvider)::doPostSignIn
         )
 
@@ -70,6 +73,7 @@ class SignInTest {
 
         checkRepositories(repositoryProvider)
     }
+
 
     @Test
     fun bFirstSignInWithLocalAccount() {
@@ -98,10 +102,14 @@ class SignInTest {
             }
         }
 
+        val dummyWalletInfo = WalletInfo("", "", "", charArrayOf(),
+                LoginParams("", 0, KdfAttributes("", 0, 0, 0, 0, byteArrayOf())))
+        val dummyPassword = charArrayOf()
         val credentialsPersistor = getDummyCredentialsStorage().apply {
-            saveCredentials(WalletInfo("", "", "", charArrayOf(),
-                    LoginParams("", 0, KdfAttributes("", 0, 0, 0, 0, byteArrayOf()))),
-                    charArrayOf())
+            saveCredentials(dummyWalletInfo, dummyPassword)
+        }
+        val walletInfoPersistor = getDummyWalletInfoStorage().apply {
+            saveWalletInfoData(dummyWalletInfo, dummyPassword)
         }
 
         val useCase = SignInWithLocalAccountUseCase(
@@ -109,6 +117,7 @@ class SignInTest {
                 userKeyProvider = userKeyProvider,
                 session = session,
                 credentialsPersistence = credentialsPersistor,
+                walletInfoPersistence = walletInfoPersistor,
                 repositoryProvider = repositoryProvider,
                 apiProvider = apiProvider,
                 connectionStateProvider = null,
@@ -171,6 +180,7 @@ class SignInTest {
                 userKeyProvider = userKeyProvider,
                 session = session,
                 credentialsPersistence = null,
+                walletInfoPersistence = null,
                 repositoryProvider = repositoryProvider,
                 apiProvider = apiProvider,
                 connectionStateProvider = null,
@@ -196,18 +206,36 @@ class SignInTest {
             this.password = password
         }
 
-        override fun getSavedEmail(): String?=walletInfo?.email
+        override fun getSavedEmail(): String? = walletInfo?.email
 
         override fun hasSavedPassword(): Boolean = password != null
 
         override fun getSavedPassword(): CharArray? = password
 
-       /* override fun loadCredentials(password: CharArray): WalletInfo? =
-                walletInfo.takeIf { this.password?.contentEquals(password) == true }*/
+        /* override fun loadCredentials(password: CharArray): WalletInfo? =
+                 walletInfo.takeIf { this.password?.contentEquals(password) == true }*/
 
         override fun clear(keepEmail: Boolean) {
             this.walletInfo = null
             this.password = null
+        }
+    }
+
+    private fun getDummyWalletInfoStorage() = object : WalletInfoPersistence {
+        private var walletInfo: WalletInfo? = null
+        private var password: CharArray? = null
+
+        override fun saveWalletInfoData(data: WalletInfo, password: CharArray) {
+            this.walletInfo = data
+            this.password = password
+        }
+
+        override fun loadWalletInfo(password: CharArray): WalletInfo? =
+                walletInfo.takeIf { this.password?.contentEquals(password) == true }
+
+
+        override fun clear() {
+            this.walletInfo = null
         }
     }
 

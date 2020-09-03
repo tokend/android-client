@@ -26,6 +26,7 @@ import org.tokend.template.features.tfa.view.TfaDialogFactory
 import org.tokend.template.features.urlconfig.model.UrlConfig
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
+import org.tokend.template.logic.credentials.persistence.WalletInfoPersistence
 import org.tokend.template.logic.persistence.BackgroundLockManager
 import org.tokend.template.util.ConnectionStateUtil
 import org.tokend.template.util.ObservableTransformers
@@ -50,6 +51,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var repositoryProvider: RepositoryProvider
     @Inject
     lateinit var credentialsPersistence: CredentialsPersistence
+    @Inject
+    lateinit var walletInfoPersistence: WalletInfoPersistence
     @Inject
     lateinit var urlConfigProvider: UrlConfigProvider
     @Inject

@@ -11,6 +11,8 @@ import org.tokend.template.features.urlconfig.model.UrlConfig
 import org.tokend.template.features.urlconfig.storage.UrlConfigPersistence
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistenceImpl
+import org.tokend.template.logic.credentials.persistence.WalletInfoPersistence
+import org.tokend.template.logic.credentials.persistence.WalletInfoPersistenceImpl
 import javax.inject.Singleton
 
 @Module
@@ -23,6 +25,11 @@ class PersistenceModule(
     @Singleton
     fun credentialsPresistor(): CredentialsPersistence {
         return CredentialsPersistenceImpl(persistencePreferences)
+    }
+    @Provides
+    @Singleton
+    fun walletInfoPresistor(): WalletInfoPersistence {
+        return WalletInfoPersistenceImpl(persistencePreferences)
     }
 
     @Provides

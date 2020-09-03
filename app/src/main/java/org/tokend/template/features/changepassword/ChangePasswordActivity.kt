@@ -172,7 +172,8 @@ class ChangePasswordActivity : BaseActivity() {
                 accountProvider,
                 walletInfoProvider,
                 repositoryProvider,
-                credentialsPersistence
+                credentialsPersistence,
+                walletInfoPersistence
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())

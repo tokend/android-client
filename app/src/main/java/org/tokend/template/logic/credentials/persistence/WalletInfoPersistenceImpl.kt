@@ -7,17 +7,20 @@ import org.tokend.template.logic.persistence.SecureStorage
 import org.tokend.wallet.utils.toByteArray
 import org.tokend.wallet.utils.toCharArray
 
+/**
+ * Represents secure walletInfo storage based on SharedPreferences.
+ */
 class WalletInfoPersistenceImpl(
-        private val preferences: SharedPreferences
+        preferences: SharedPreferences
 ) : WalletInfoPersistence{
     private val secureStorage = SecureStorage(preferences)
 
-    override fun saveWalletInfoData(credentials: WalletInfo, password: CharArray) {
+    override fun saveWalletInfoData(data: WalletInfo, password: CharArray) {
         val nonSensitiveData =
                 GsonFactory().getBaseGson().toJson(
-                        credentials.copy(secretSeed = CharArray(0))
+                        data.copy(secretSeed = CharArray(0))
                 ).toByteArray()
-        val sensitiveData = credentials.secretSeed.toByteArray()
+        val sensitiveData = data.secretSeed.toByteArray()
 
         secureStorage.saveWithPassword(sensitiveData, SEED_KEY, password)
         secureStorage.saveWithPassword(nonSensitiveData, WALLET_INFO_KEY, password)
@@ -48,11 +51,11 @@ class WalletInfoPersistenceImpl(
         }
     }
 
-    override fun clear(keepEmail: Boolean) {
+    override fun clear() {
         secureStorage.clear(SEED_KEY)
         secureStorage.clear(WALLET_INFO_KEY)
-
     }
+
     companion object{
         private const val SEED_KEY = "(◕‿◕✿)"
         private const val WALLET_INFO_KEY = "ಠ_ಠ"
