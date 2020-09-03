@@ -2,7 +2,6 @@ package org.tokend.template.logic.credentials.persistence
 
 import android.content.SharedPreferences
 import android.os.Build
-import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.logic.persistence.SecureStorage
 import org.tokend.wallet.utils.toByteArray
 import org.tokend.wallet.utils.toCharArray
@@ -12,11 +11,10 @@ import org.tokend.wallet.utils.toCharArray
  */
 class CredentialsPersistenceImpl(
         private val preferences: SharedPreferences
-): CredentialsPersistence {
+) : CredentialsPersistence {
     private val secureStorage = SecureStorage(preferences)
 
-    override fun saveCredentials(credentials: WalletInfo, password: CharArray) {
-        val email = credentials.email
+    override fun saveCredentials(email: String, password: CharArray) {
 
         tryToSavePassword(password)
 

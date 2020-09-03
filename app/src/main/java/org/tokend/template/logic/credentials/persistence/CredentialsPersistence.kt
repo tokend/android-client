@@ -1,14 +1,13 @@
 package org.tokend.template.logic.credentials.persistence
 
-import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.logic.credentials.SimpleCredentialsProvider
+import org.tokend.template.logic.credentials.CredentialsProvider
 
-interface CredentialsPersistence : SimpleCredentialsProvider {
+interface CredentialsPersistence : CredentialsProvider {
     /**
-     * @param credentials [WalletInfo] with filled [WalletInfo.secretSeed] field.
+     * @param email that is retrieved from corresponding WalletInfo
      * @param password password for encryption
      */
-    fun saveCredentials(credentials: WalletInfo, password: CharArray)
+    fun saveCredentials(email:String, password: CharArray)
 
     /**
      * @return saved email or null if it's missing
@@ -34,11 +33,11 @@ interface CredentialsPersistence : SimpleCredentialsProvider {
      */
     fun clear(keepEmail: Boolean)
 
-    override fun hasSimpleCredentials(): Boolean {
+    override fun hasCredentials(): Boolean {
         return getSavedEmail() != null && hasSavedPassword()
     }
 
-    override fun getSimpleCredentials(): Pair<String, CharArray> {
+    override fun getCredentials(): Pair<String, CharArray> {
         return getSavedEmail()!! to getSavedPassword()!!
     }
 }

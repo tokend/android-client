@@ -61,10 +61,8 @@ class SignInUseCase(
 
     private fun getWalletInfo(email: String, password: CharArray): Single<WalletInfo> {
         val networkRequest = keyServer.getWalletInfo(email, password).toSingle()
-
         return walletInfoPersistence
-                ?.takeIf { credentialsPersistence?.getSavedEmail() == email }
-                ?.loadWalletInfoMaybe(password)
+                ?.loadWalletInfoMaybe(email, password)
                 ?.switchIfEmpty(networkRequest)
                 ?: networkRequest
     }
@@ -75,8 +73,8 @@ class SignInUseCase(
 
     private fun updateProviders(): Single<Boolean> {
         session.setWalletInfo(walletInfo)
-        walletInfoPersistence?.saveWalletInfoData(walletInfo, password)
-        credentialsPersistence?.saveCredentials(walletInfo, password)
+        walletInfoPersistence?.saveWalletInfo(walletInfo, password)
+        credentialsPersistence?.saveCredentials(walletInfo.email, password)
         session.setAccount(account)
         session.signInMethod = SignInMethod.CREDENTIALS
 

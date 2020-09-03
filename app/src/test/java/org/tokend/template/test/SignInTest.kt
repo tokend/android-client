@@ -66,6 +66,8 @@ class SignInTest {
                 walletData.attributes.accountId, session.getWalletInfo()!!.accountId)
         Assert.assertArrayEquals("AccountProvider must hold an actual account",
                 rootAccount.secretSeed, session.getAccount()?.secretSeed)
+        Assert.assertNotEquals("WalletInfo is not saved",
+                walletInfoPersistor.loadWalletInfo(email, password), null)
         Assert.assertEquals("Credentials persistor must hold actual email",
                 email.toLowerCase(), credentialsPersistor.getSavedEmail()?.toLowerCase())
         Assert.assertArrayEquals("Credentials persistor must hold actual password",
@@ -106,11 +108,12 @@ class SignInTest {
                 LoginParams("", 0, KdfAttributes("", 0, 0, 0, 0, byteArrayOf())))
         val dummyPassword = charArrayOf()
         val credentialsPersistor = getDummyCredentialsStorage().apply {
-            saveCredentials(dummyWalletInfo, dummyPassword)
+            saveCredentials(dummyWalletInfo.email, dummyPassword)
         }
         val walletInfoPersistor = getDummyWalletInfoStorage().apply {
-            saveWalletInfoData(dummyWalletInfo, dummyPassword)
+            saveWalletInfo(dummyWalletInfo, dummyPassword)
         }
+
 
         val useCase = SignInWithLocalAccountUseCase(
                 accountCipher = cipher,
@@ -142,7 +145,7 @@ class SignInTest {
         Assert.assertArrayEquals("AccountProvider must hold an actual account",
                 account.secretSeed, session.getAccount()?.secretSeed)
         Assert.assertFalse("Credentials persistor must be cleaned",
-                credentialsPersistor.hasSimpleCredentials() || credentialsPersistor.getSavedEmail() != null
+                credentialsPersistor.hasCredentials() || credentialsPersistor.getSavedEmail() != null
         )
 
         checkRepositories(repositoryProvider)
@@ -198,25 +201,22 @@ class SignInTest {
     }
 
     private fun getDummyCredentialsStorage() = object : CredentialsPersistence {
-        private var walletInfo: WalletInfo? = null
+        private var email: String? = null
         private var password: CharArray? = null
 
-        override fun saveCredentials(credentials: WalletInfo, password: CharArray) {
-            this.walletInfo = credentials
+        override fun saveCredentials(email: String, password: CharArray) {
+            this.email = email
             this.password = password
         }
 
-        override fun getSavedEmail(): String? = walletInfo?.email
+        override fun getSavedEmail(): String? = email
 
         override fun hasSavedPassword(): Boolean = password != null
 
         override fun getSavedPassword(): CharArray? = password
 
-        /* override fun loadCredentials(password: CharArray): WalletInfo? =
-                 walletInfo.takeIf { this.password?.contentEquals(password) == true }*/
-
         override fun clear(keepEmail: Boolean) {
-            this.walletInfo = null
+            this.email = null
             this.password = null
         }
     }
@@ -225,14 +225,13 @@ class SignInTest {
         private var walletInfo: WalletInfo? = null
         private var password: CharArray? = null
 
-        override fun saveWalletInfoData(data: WalletInfo, password: CharArray) {
+        override fun saveWalletInfo(data: WalletInfo, password: CharArray) {
             this.walletInfo = data
             this.password = password
         }
 
-        override fun loadWalletInfo(password: CharArray): WalletInfo? =
+        override fun loadWalletInfo(email: String, password: CharArray): WalletInfo? =
                 walletInfo.takeIf { this.password?.contentEquals(password) == true }
-
 
         override fun clear() {
             this.walletInfo = null

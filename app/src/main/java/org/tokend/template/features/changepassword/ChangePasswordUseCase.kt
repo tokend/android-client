@@ -152,8 +152,8 @@ class ChangePasswordUseCase(
         accountProvider.setAccount(newAccount)
 
         // Update in persistent storage
-        credentialsPersistence?.saveCredentials(newWalletInfo, newPassword)
-        walletInfoPersistence?.saveWalletInfoData(newWalletInfo, newPassword)
+        credentialsPersistence?.saveCredentials(newWalletInfo.email, newPassword)
+        walletInfoPersistence?.saveWalletInfo(newWalletInfo, newPassword)
         newWalletInfo.secretSeed.erase()
     }
 }

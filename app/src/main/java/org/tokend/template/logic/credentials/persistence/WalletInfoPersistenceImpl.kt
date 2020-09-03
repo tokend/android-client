@@ -12,23 +12,22 @@ import org.tokend.wallet.utils.toCharArray
  */
 class WalletInfoPersistenceImpl(
         preferences: SharedPreferences
-) : WalletInfoPersistence{
+) : WalletInfoPersistence {
     private val secureStorage = SecureStorage(preferences)
 
-    override fun saveWalletInfoData(data: WalletInfo, password: CharArray) {
+    override fun saveWalletInfo(data: WalletInfo, password: CharArray) {
         val nonSensitiveData =
                 GsonFactory().getBaseGson().toJson(
                         data.copy(secretSeed = CharArray(0))
                 ).toByteArray()
         val sensitiveData = data.secretSeed.toByteArray()
-
         secureStorage.saveWithPassword(sensitiveData, SEED_KEY, password)
         secureStorage.saveWithPassword(nonSensitiveData, WALLET_INFO_KEY, password)
-
     }
 
 
-    override fun loadWalletInfo(password: CharArray): WalletInfo? {
+
+    override fun loadWalletInfo(email: String, password: CharArray): WalletInfo? {
         try {
             val walletInfoBytes = secureStorage.loadWithPassword(WALLET_INFO_KEY, password)
                     ?: return null
@@ -45,6 +44,8 @@ class WalletInfoPersistenceImpl(
             seedBytes.fill(0)
 
             return walletInfo
+                    ?.takeIf { email == it.email }
+
         } catch (e: Exception) {
             e.printStackTrace()
             return null
@@ -56,9 +57,8 @@ class WalletInfoPersistenceImpl(
         secureStorage.clear(WALLET_INFO_KEY)
     }
 
-    companion object{
+    companion object {
         private const val SEED_KEY = "(◕‿◕✿)"
         private const val WALLET_INFO_KEY = "ಠ_ಠ"
     }
-
 }

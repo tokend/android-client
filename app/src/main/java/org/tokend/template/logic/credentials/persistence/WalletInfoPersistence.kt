@@ -9,18 +9,18 @@ interface WalletInfoPersistence {
      * @param data [WalletInfo] with filled [WalletInfo.secretSeed] field.
      * @param password password for encryption
      */
-    fun saveWalletInfoData(data: WalletInfo, password: CharArray)
+    fun saveWalletInfo(data: WalletInfo, password: CharArray)
 
     /**
      * @return saved data, null if there is no saved data or password is incorrect
      */
-    fun loadWalletInfo(password: CharArray): WalletInfo?
+    fun loadWalletInfo(email: String, password: CharArray): WalletInfo?
 
     /**
      * @see loadWalletInfo
      */
-    fun loadWalletInfoMaybe(password: CharArray): Maybe<WalletInfo> = Maybe.defer {
-        loadWalletInfo(password).toMaybe()
+    fun loadWalletInfoMaybe(email: String, password: CharArray): Maybe<WalletInfo> = Maybe.defer {
+        loadWalletInfo(email, password).toMaybe()
     }
 
     /**
