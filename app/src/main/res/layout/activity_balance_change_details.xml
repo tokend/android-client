@@ -16,7 +16,10 @@
             style="@style/LimitedMatchParentWidthConstraint"
             android:clipToPadding="false"
             android:paddingEnd="@dimen/half_standard_margin"
-            android:paddingBottom="@dimen/standard_margin" />
+            android:paddingBottom="@dimen/standard_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -18,7 +18,10 @@
 
             <org.tokend.template.view.PaginationRecyclerView
                 android:id="@+id/history_list"
-                style="@style/LimitedMatchParentWidthConstraint" />
+                style="@style/LimitedMatchParentWidthConstraint"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <org.tokend.template.view.TxDateTextSwitcher
                 android:id="@+id/date_text_switcher"

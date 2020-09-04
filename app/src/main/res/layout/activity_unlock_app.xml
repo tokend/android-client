@@ -9,7 +9,10 @@
     <ScrollView
         style="@style/LimitedMatchParentWidthConstraint"
         android:overScrollMode="never"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"

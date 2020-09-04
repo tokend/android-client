@@ -12,6 +12,8 @@
         style="@style/LimitedMatchParentWidthConstraint"
         android:orientation="vertical"
         android:padding="@dimen/standard_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar"
         app:layout_constraintTop_toTopOf="@null">
 

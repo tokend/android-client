@@ -7,6 +7,8 @@
 
     <RelativeLayout
         style="@style/LimitedMatchParentWidthConstraint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@null"
         app:layout_constraintBottom_toTopOf="@id/continue_button">
 
@@ -34,6 +36,7 @@
                 android:paddingRight="42dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@null"
                 app:met_floatingLabelAlwaysShown="true"
                 app:met_floatingLabelText="@string/tx_recipient" />
 
