@@ -66,9 +66,9 @@ class LocalAccountDetailsActivity : BaseActivity() {
     }
 
     private fun initList() {
-        details_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        details_list.layoutManager = LinearLayoutManager(this)
         details_list.adapter = adapter
-        (details_list.itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
+        (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
         adapter.onItemClick { _, item ->
             when (item.id) {

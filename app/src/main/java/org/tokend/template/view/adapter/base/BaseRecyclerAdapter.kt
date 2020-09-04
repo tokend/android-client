@@ -10,7 +10,7 @@ import android.view.ViewGroup
  * click listener and optional [DiffUtil.Callback].
  */
 abstract class BaseRecyclerAdapter<ItemType, ViewHolderType>
-    : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolderType>() where ViewHolderType : BaseViewHolder<ItemType> {
+    : RecyclerView.Adapter<ViewHolderType>() where ViewHolderType : BaseViewHolder<ItemType> {
     companion object {
         protected const val VIEW_TYPE_ITEM = 0
     }

@@ -171,9 +171,9 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initList() {
-        details_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+        details_list.layoutManager = LinearLayoutManager(context)
         details_list.adapter = adapter
-        (details_list.itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
+        (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
     }
 
     private fun initSwipeRefresh() {

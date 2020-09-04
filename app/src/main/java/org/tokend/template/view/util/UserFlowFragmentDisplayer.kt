@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
  */
 class UserFlowFragmentDisplayer
 private constructor(
-        fragmentManagerGetter: () -> androidx.fragment.app.FragmentManager,
+        fragmentManagerGetter: () -> FragmentManager,
         @IdRes
         private val containerId: Int
 ) {
@@ -20,11 +20,11 @@ private constructor(
                 @IdRes
                 containerId: Int) : this({ activity.supportFragmentManager }, containerId)
 
-    constructor(fragment: androidx.fragment.app.Fragment,
+    constructor(fragment: Fragment,
                 @IdRes
                 containerId: Int) : this({ fragment.childFragmentManager }, containerId)
 
-    private val fragmentManager: androidx.fragment.app.FragmentManager by lazy(fragmentManagerGetter)
+    private val fragmentManager: FragmentManager by lazy(fragmentManagerGetter)
 
     /**
      * Displays given [fragment] in the container
@@ -35,16 +35,16 @@ private constructor(
      * null will cause no transition at all
      */
     fun display(
-            fragment: androidx.fragment.app.Fragment,
+            fragment: Fragment,
             tag: String,
             forward: Boolean?
     ) {
         fragmentManager.beginTransaction()
                 .setTransition(
                         when (forward) {
-                            true -> androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN
-                            false -> androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
-                            null -> androidx.fragment.app.FragmentTransaction.TRANSIT_NONE
+                            true -> FragmentTransaction.TRANSIT_FRAGMENT_OPEN
+                            false -> FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
+                            null -> FragmentTransaction.TRANSIT_NONE
                         }
                 )
                 .replace(containerId, fragment)
@@ -69,6 +69,6 @@ private constructor(
      * Clears fragments back stack
      */
     fun clearBackStack() {
-        fragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 }

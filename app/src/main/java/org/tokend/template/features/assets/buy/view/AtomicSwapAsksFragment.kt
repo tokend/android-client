@@ -1,12 +1,11 @@
 package org.tokend.template.features.assets.buy.view
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_atomic_swap_asks.*
@@ -33,7 +32,7 @@ class AtomicSwapAsksFragment : BaseFragment(), ToolbarProvider {
             hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
-    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
+    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
 
     private val assetCode: String by lazy {
         arguments?.getString(ASSET_CODE_EXTRA)

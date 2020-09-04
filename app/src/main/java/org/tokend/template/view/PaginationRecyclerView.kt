@@ -8,7 +8,7 @@ import android.util.AttributeSet
 /**
  * RecyclerView with callback for pagination.
  */
-open class PaginationRecyclerView : androidx.recyclerview.widget.RecyclerView {
+open class PaginationRecyclerView : RecyclerView {
     constructor(context: Context, attributeSet: AttributeSet?) :
             super(context, attributeSet)
 
@@ -26,23 +26,23 @@ open class PaginationRecyclerView : androidx.recyclerview.widget.RecyclerView {
     override fun setLayoutManager(layoutManager: LayoutManager?) {
         super.setLayoutManager(layoutManager)
 
-        if (layoutManager is androidx.recyclerview.widget.LinearLayoutManager) {
+        if (layoutManager is LinearLayoutManager) {
             enablePagination(layoutManager)
         }
     }
 
-    private fun enablePagination(linearLayoutManager: androidx.recyclerview.widget.LinearLayoutManager) {
+    private fun enablePagination(linearLayoutManager: LinearLayoutManager) {
         paginationScrollListener?.also { removeOnScrollListener(it) }
         paginationScrollListener = getPaginationScrollListener(linearLayoutManager)
                 .also { addOnScrollListener(it) }
     }
 
-    private fun getPaginationScrollListener(linearLayoutManager: androidx.recyclerview.widget.LinearLayoutManager)
+    private fun getPaginationScrollListener(linearLayoutManager: LinearLayoutManager)
             : OnScrollListener {
-        return object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+        return object : RecyclerView.OnScrollListener() {
             private var scrollingDown = true
 
-            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
                 if (dy > 2) {

@@ -45,7 +45,7 @@ open class PendingOfferDetailsActivity : BaseActivity() {
         initToolbar()
         initMainDataView()
 
-        details_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        details_list.layoutManager = LinearLayoutManager(this)
         details_list.adapter = adapter
 
         displayDetails(item)

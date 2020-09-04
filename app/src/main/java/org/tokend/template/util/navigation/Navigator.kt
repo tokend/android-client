@@ -69,7 +69,7 @@ import java.math.BigDecimal
  */
 class Navigator private constructor() {
     private var activity: Activity? = null
-    private var fragment: androidx.fragment.app.Fragment? = null
+    private var fragment: Fragment? = null
     private var context: Context? = null
 
     companion object {
@@ -80,7 +80,7 @@ class Navigator private constructor() {
             return navigator
         }
 
-        fun from(fragment: androidx.fragment.app.Fragment): Navigator {
+        fun from(fragment: Fragment): Navigator {
             val navigator = Navigator()
             navigator.fragment = fragment
             navigator.context = fragment.requireContext()

@@ -157,7 +157,7 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
         }
 
         polls_list.adapter = adapter
-        polls_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+        polls_list.layoutManager = LinearLayoutManager(requireContext())
 
         error_empty_view.setEmptyDrawable(R.drawable.ic_poll)
         error_empty_view.observeAdapter(adapter, R.string.no_polls_found)

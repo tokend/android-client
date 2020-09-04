@@ -107,6 +107,6 @@ class LogoFactory(private val context: Context) {
     }
 
     private companion object {
-        private val cache = androidx.collection.LruCache<String, Bitmap>(25)
+        private val cache = LruCache<String, Bitmap>(25)
     }
 }

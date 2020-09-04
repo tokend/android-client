@@ -17,7 +17,7 @@ import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
 import javax.inject.Inject
 
-abstract class BaseFragment : androidx.fragment.app.Fragment(), OnBackPressedListener {
+abstract class BaseFragment : Fragment(), OnBackPressedListener {
     @Inject
     lateinit var appTfaCallback: AppTfaCallback
     @Inject

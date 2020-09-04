@@ -1,10 +1,9 @@
 package org.tokend.template.features.dashboard.balances.view
 
-import android.content.res.Configuration
 import android.os.Bundle
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import android.view.*
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_balances.*
 import kotlinx.android.synthetic.main.fragment_balances_collapsing_content.*
@@ -16,8 +15,8 @@ import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.features.dashboard.balances.view.adapter.BalanceItemsAdapter
 import org.tokend.template.features.dashboard.balances.view.adapter.BalanceListItem
 import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.*
 import java.math.BigDecimal
 
@@ -32,7 +31,7 @@ class BalancesFragment : BaseFragment() {
         get() = repositoryProvider.balances()
 
     private lateinit var adapter: BalanceItemsAdapter
-    private lateinit var layoutManager: androidx.recyclerview.widget.GridLayoutManager
+    private lateinit var layoutManager: GridLayoutManager
 
     private var chartEverAnimated = false
 
@@ -57,7 +56,7 @@ class BalancesFragment : BaseFragment() {
 
     // region Init
     private fun initList() {
-        layoutManager = androidx.recyclerview.widget.GridLayoutManager(requireContext(), 1)
+        layoutManager = GridLayoutManager(requireContext(), 1)
         adapter = BalanceItemsAdapter(amountFormatter)
         updateListColumnsCount()
         balances_list.adapter = adapter
@@ -189,11 +188,6 @@ class BalancesFragment : BaseFragment() {
             openAssetsExplorer()
             true
         }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        updateListColumnsCount()
     }
 
     private fun updateListColumnsCount() {

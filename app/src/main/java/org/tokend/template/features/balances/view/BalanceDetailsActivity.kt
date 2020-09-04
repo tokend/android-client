@@ -1,11 +1,10 @@
 package org.tokend.template.features.balances.view
 
-import android.content.res.Configuration
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_balance_details.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
@@ -203,7 +202,7 @@ class BalanceDetailsActivity : BaseActivity() {
         }
 
         history_list.adapter = adapter
-        history_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        history_list.layoutManager = LinearLayoutManager(this)
         history_list.addOnScrollListener(HideFabScrollListener(menu_fab))
 
         history_list.listenBottomReach({ adapter.getDataItemCount() }) {
@@ -361,11 +360,6 @@ class BalanceDetailsActivity : BaseActivity() {
         val asset = balance?.asset ?: return
         menu_fab.close(false)
         Navigator.from(this).openAssetDetails(asset)
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        adjustEmptyViewHeight()
     }
 
     override fun onBackPressed() {

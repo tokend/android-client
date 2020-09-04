@@ -53,7 +53,7 @@ class PermissionManager(private val permission: String,
      * @param action action to invoke if permission is granted
      * @param deniedAction action to invoke if permission is denied
      */
-    fun check(fragment: androidx.fragment.app.Fragment, action: () -> Unit, deniedAction: () -> Unit) {
+    fun check(fragment: Fragment, action: () -> Unit, deniedAction: () -> Unit) {
         this.grantedCallback = action
         this.deniedCallback = deniedAction
         if (ContextCompat.checkSelfPermission(fragment.requireContext(), permission) ==
@@ -69,7 +69,7 @@ class PermissionManager(private val permission: String,
      *
      * @param action action to invoke if permission is granted
      */
-    fun check(fragment: androidx.fragment.app.Fragment, action: () -> Unit) {
+    fun check(fragment: Fragment, action: () -> Unit) {
         this.grantedCallback = action
         if (ContextCompat.checkSelfPermission(fragment.requireContext(), permission) ==
                 PackageManager.PERMISSION_GRANTED) {

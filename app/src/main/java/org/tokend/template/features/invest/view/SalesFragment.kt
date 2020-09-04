@@ -1,15 +1,14 @@
 package org.tokend.template.features.invest.view
 
-import android.content.res.Configuration
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.SimpleItemAnimator
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_sales.*
@@ -22,12 +21,12 @@ import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.invest.view.adapter.SalesAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.*
 
 class SalesFragment : BaseFragment(), ToolbarProvider {
-    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
+    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },
@@ -47,7 +46,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         get() = tokenQuery.isNotEmpty()
 
     private lateinit var salesSubscriptionManager: SalesSubscriptionManager
-    private lateinit var layoutManager: androidx.recyclerview.widget.GridLayoutManager
+    private lateinit var layoutManager: GridLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_sales, container, false)
@@ -77,7 +76,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     private fun initSalesList() {
         val columns = ColumnCalculator.getColumnCount(requireActivity())
 
-        layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, columns)
+        layoutManager = GridLayoutManager(context, columns)
 
         salesAdapter = SalesAdapter(urlConfigProvider.getConfig().storage, amountFormatter)
         error_empty_view.setEmptyDrawable(R.drawable.ic_invest)
@@ -95,7 +94,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
             adapter = salesAdapter
 
             setItemViewCacheSize(20)
-            (sales_list.itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
+            (sales_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         }
 
         salesAdapter.registerAdapterDataObserver(
@@ -184,11 +183,6 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         return searchItem?.isActionViewExpanded == false.also {
             searchItem?.collapseActionView()
         }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        layoutManager.spanCount = ColumnCalculator.getColumnCount(requireActivity())
     }
 
     companion object {

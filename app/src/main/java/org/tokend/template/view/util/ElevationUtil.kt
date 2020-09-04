@@ -30,14 +30,14 @@ object ElevationUtil {
         }
     }
 
-    fun initScrollElevation(recyclerView: androidx.recyclerview.widget.RecyclerView, elevationView: View) {
+    fun initScrollElevation(recyclerView: RecyclerView, elevationView: View) {
         elevationView.visibility = View.GONE
 
         var onTop = true
         val animationDuration = recyclerView.context.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
 
-        recyclerView.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
                 if (dy <= 0 && !recyclerView.canScrollVertically(-1)) {

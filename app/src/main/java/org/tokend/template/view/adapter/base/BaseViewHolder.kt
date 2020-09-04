@@ -8,7 +8,7 @@ import org.jetbrains.anko.onClick
  * Base abstract [RecyclerView.ViewHolder] for item of type [T]
  * with click listener
  */
-abstract class BaseViewHolder<T>(protected val view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+abstract class BaseViewHolder<T>(protected val view: View) : RecyclerView.ViewHolder(view) {
     abstract fun bind(item: T)
 
     open fun bind(item: T, clickListener: SimpleItemClickListener<T>?) {

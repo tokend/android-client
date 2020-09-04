@@ -34,7 +34,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         }
     }
 
-    private fun getFragment(): androidx.fragment.app.Fragment? {
+    private fun getFragment(): Fragment? {
         val bundle = intent.getBundleExtra(FRAGMENT_BUNDLE_EXTRA)
 
         return when (screenId) {
@@ -48,7 +48,7 @@ class SingleFragmentActivity : BaseActivity(), WalletEventsListener {
         }
     }
 
-    private fun displayFragment(fragment: androidx.fragment.app.Fragment) {
+    private fun displayFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
                 .add(R.id.wallet_fragment_container, fragment)
                 .commit()

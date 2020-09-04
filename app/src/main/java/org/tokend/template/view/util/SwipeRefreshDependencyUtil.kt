@@ -5,7 +5,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 object SwipeRefreshDependencyUtil {
 
-    fun addDependency(swipeRefresh: androidx.swiperefreshlayout.widget.SwipeRefreshLayout, appBar: AppBarLayout) {
+    fun addDependency(swipeRefresh: SwipeRefreshLayout, appBar: AppBarLayout) {
         var canRefresh = true
 
         swipeRefresh.setOnChildScrollUpCallback { _, _ ->

@@ -37,7 +37,7 @@ class FileDownloader(
      * Make sure to call [handlePermissionResult]
      * inside [Fragment.onRequestPermissionsResult] for correct work
      */
-    fun download(fragment: androidx.fragment.app.Fragment, file: RemoteFile) {
+    fun download(fragment: Fragment, file: RemoteFile) {
         storagePermission.check(fragment) { downloadFile(context, file) }
     }
 

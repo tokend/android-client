@@ -90,7 +90,7 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     }
 
     @SuppressLint("RestrictedApi")
-    private fun displayFragment(fragment: androidx.fragment.app.Fragment) {
+    private fun displayFragment(fragment: Fragment) {
         // Menu.
         toolbar.menu.clear()
         fragment.onCreateOptionsMenu(

@@ -90,6 +90,6 @@ class PixelSquareLogoGenerator {
         // Must be even number.
         private const val CELLS = 6
 
-        private val cache = androidx.collection.LruCache<String, Bitmap>(25)
+        private val cache = LruCache<String, Bitmap>(25)
     }
 }

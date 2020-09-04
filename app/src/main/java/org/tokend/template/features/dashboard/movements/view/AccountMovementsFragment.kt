@@ -65,7 +65,7 @@ class AccountMovementsFragment : BaseFragment() {
         error_empty_view.setEmptyViewDenial { balanceChangesRepository.isNeverUpdated }
 
         history_list.adapter = adapter
-        history_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context!!)
+        history_list.layoutManager = LinearLayoutManager(context!!)
         history_list.setHasFixedSize(true)
 
         history_list.listenBottomReach({ adapter.getDataItemCount() }) {

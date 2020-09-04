@@ -78,12 +78,12 @@ class OrderBookFragment : BaseFragment() {
         sellAdapter = OrderBookEntriesAdapter(false, amountFormatter)
 
         buy_entries_recycler_view.apply {
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context)
             adapter = buyAdapter
         }
 
         sell_entries_recycler_view.apply {
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context)
             adapter = sellAdapter
         }
 

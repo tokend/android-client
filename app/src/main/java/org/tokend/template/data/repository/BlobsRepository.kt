@@ -10,7 +10,7 @@ import org.tokend.template.di.providers.ApiProvider
 class BlobsRepository(
         private val apiProvider: ApiProvider
 ) {
-    private val cache = androidx.collection.LruCache<String, Blob>(CACHE_SIZE)
+    private val cache = LruCache<String, Blob>(CACHE_SIZE)
 
     /**
      * @param isPrivate if set to true a signed API instance will be used

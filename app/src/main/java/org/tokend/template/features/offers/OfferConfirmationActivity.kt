@@ -84,7 +84,7 @@ open class OfferConfirmationActivity : BaseActivity() {
 
         mainDataView = BalanceChangeMainDataView(appbar, amountFormatter)
 
-        details_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        details_list.layoutManager = LinearLayoutManager(this)
         details_list.adapter = adapter
 
         request =

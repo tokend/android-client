@@ -1,15 +1,14 @@
 package org.tokend.template.features.assets.view
 
-import android.content.res.Configuration
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -38,7 +37,7 @@ import org.tokend.template.view.util.*
 import java.util.concurrent.TimeUnit
 
 class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
-    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
+    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },
@@ -61,7 +60,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
             }
         }
 
-    private lateinit var layoutManager: androidx.recyclerview.widget.GridLayoutManager
+    private lateinit var layoutManager: GridLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_explore, container, false)
@@ -91,7 +90,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     private fun initAssetsList() {
         val columns = ColumnCalculator.getColumnCount(requireActivity())
 
-        layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, columns)
+        layoutManager = GridLayoutManager(context, columns)
         assets_recycler_view.layoutManager = layoutManager
 
         assets_recycler_view.adapter = assetsAdapter
@@ -303,11 +302,6 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         return searchItem?.isActionViewExpanded == false.also {
             searchItem?.collapseActionView()
         }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        layoutManager.spanCount = ColumnCalculator.getColumnCount(requireActivity())
     }
 
     companion object {

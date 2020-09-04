@@ -26,7 +26,7 @@ object QrScannerUtil {
      * Opens QR scanner with the default setup:
      * no beep, no orientation lock, no labels
      */
-    fun openScanner(fragment: androidx.fragment.app.Fragment
+    fun openScanner(fragment: Fragment
     ) = ActivityRequest(IntentIntegrator.REQUEST_CODE, this::getStringFromResult).also {
         IntentIntegrator
                 .forSupportFragment(fragment)

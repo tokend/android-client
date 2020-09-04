@@ -73,7 +73,7 @@ class FeesActivity : BaseActivity() {
     }
 
     private fun initList() {
-        list_fees.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        list_fees.layoutManager = LinearLayoutManager(this)
         list_fees.adapter = feesAdapter
     }
 

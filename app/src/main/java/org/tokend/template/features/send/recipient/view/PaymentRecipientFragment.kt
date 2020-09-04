@@ -132,9 +132,9 @@ class PaymentRecipientFragment : BaseFragment() {
 
     private fun initContacts() {
         contacts_list.apply {
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this.context, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
             adapter = contactsAdapter
-            (itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.apply {
+            (itemAnimator as? SimpleItemAnimator)?.apply {
                 requireContext()
                         .resources
                         .getInteger(android.R.integer.config_shortAnimTime)

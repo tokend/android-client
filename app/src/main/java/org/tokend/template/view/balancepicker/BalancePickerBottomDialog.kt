@@ -182,7 +182,7 @@ open class BalancePickerBottomDialog(
         adapter = BalancePickerItemsAdapter(amountFormatter)
 
         val balancesList = dialogView.balances_list
-        balancesList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+        balancesList.layoutManager = LinearLayoutManager(context)
         balancesList.adapter = adapter
 
         adapter.onItemClick { _, item ->

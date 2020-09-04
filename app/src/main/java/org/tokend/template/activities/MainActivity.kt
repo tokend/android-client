@@ -239,13 +239,13 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     // region Navigation
-    private fun onNavigationItemSelected(item: IDrawerItem<Any, androidx.recyclerview.widget.RecyclerView.ViewHolder>)
+    private fun onNavigationItemSelected(item: IDrawerItem<Any, RecyclerView.ViewHolder>)
             : Boolean {
         navigateTo(item.identifier)
         return false
     }
 
-    private fun navigateTo(screenIdentifier: Long, fragment: androidx.fragment.app.Fragment) {
+    private fun navigateTo(screenIdentifier: Long, fragment: Fragment) {
         navigationDrawer?.setSelection(screenIdentifier, false)
         landscapeNavigationDrawer?.setSelection(screenIdentifier, false)
 
@@ -257,7 +257,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     private fun navigateTo(screenIdentifier: Long) {
-        val fragment: androidx.fragment.app.Fragment =
+        val fragment: Fragment =
                 when (screenIdentifier) {
                     DashboardFragment.ID -> DashboardFragment.newInstance()
                     WithdrawFragment.ID -> WithdrawFragment.newInstance(WithdrawFragment.getBundle())
@@ -295,7 +295,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     private var fragmentToolbarDisposable: Disposable? = null
-    private fun displayFragment(fragment: androidx.fragment.app.Fragment) {
+    private fun displayFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
                 .disallowAddToBackStack()
                 .setCustomAnimations(R.anim.stay_visible, R.anim.activity_fade_out)
@@ -324,13 +324,13 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
     private fun updateDrawerVisibility() {
         if (tablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            navigationDrawer?.drawerLayout?.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            navigationDrawer?.drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             nav_tablet.visibility = View.VISIBLE
             toolbar?.navigationIcon = null
             side_shadow_view.visibility = View.VISIBLE
 
         } else {
-            navigationDrawer?.drawerLayout?.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_UNLOCKED)
+            navigationDrawer?.drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             nav_tablet.visibility = View.GONE
             toolbar?.setNavigationIcon(R.drawable.ic_menu)
             side_shadow_view.visibility = View.GONE
@@ -349,11 +349,6 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     navigateTo(DEFAULT_FRAGMENT_ID)
             }
         }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        updateDrawerVisibility()
     }
 
     override fun onPaymentRequestConfirmed(paymentRequest: PaymentRequest) {

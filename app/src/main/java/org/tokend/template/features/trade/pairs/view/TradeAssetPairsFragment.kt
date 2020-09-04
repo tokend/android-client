@@ -1,16 +1,15 @@
 package org.tokend.template.features.trade.pairs.view
 
-import android.content.res.Configuration
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.core.view.GestureDetectorCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.SimpleItemAnimator
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.view.GestureDetectorCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_trade_asset_pairs.*
@@ -23,9 +22,9 @@ import org.tokend.template.features.trade.pairs.view.adapter.AssetPairItemsAdapt
 import org.tokend.template.features.trade.pairs.view.adapter.AssetPairListItem
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.SearchUtil
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.picker.PickerItem
 import org.tokend.template.view.util.*
 
@@ -39,12 +38,12 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
             hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
-    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
+    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
 
     private var searchItem: MenuItem? = null
 
     private lateinit var pairsAdapter: AssetPairItemsAdapter
-    private lateinit var layoutManager: androidx.recyclerview.widget.GridLayoutManager
+    private lateinit var layoutManager: GridLayoutManager
 
     private val comparator = Comparator<AssetPairListItem> { o1, o2 ->
         assetCodeComparator.compare(o1.baseAsset.code, o2.baseAsset.code)
@@ -127,13 +126,13 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initList() {
-        layoutManager = androidx.recyclerview.widget.GridLayoutManager(requireContext(), 1)
+        layoutManager = GridLayoutManager(requireContext(), 1)
         pairsAdapter = AssetPairItemsAdapter(amountFormatter)
         updateListColumnsCount()
 
         asset_pairs_recycler_view.layoutManager = layoutManager
         asset_pairs_recycler_view.adapter = pairsAdapter
-        (asset_pairs_recycler_view.itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)
+        (asset_pairs_recycler_view.itemAnimator as? SimpleItemAnimator)
                 ?.supportsChangeAnimations = false
 
         error_empty_view.setEmptyDrawable(R.drawable.ic_trade)
@@ -255,11 +254,6 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
         } else {
             assetPairsRepository.update()
         }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        updateListColumnsCount()
     }
 
     private fun updateListColumnsCount() {

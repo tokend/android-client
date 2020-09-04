@@ -153,7 +153,7 @@ open class AssetDetailsFragment : BaseFragment() {
                         cards_layout, false)
 
         val fileLayout = fileCardView?.find<View>(R.id.file_content_layout) ?: return
-        (fileCardView as? androidx.cardview.widget.CardView)?.removeView(fileLayout)
+        (fileCardView as? CardView)?.removeView(fileLayout)
 
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)

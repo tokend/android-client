@@ -10,7 +10,7 @@ import android.view.MotionEvent
  *
  * @see setTouchEventInterceptor
  */
-class TouchInterceptingSwipeRefreshLayout : androidx.swiperefreshlayout.widget.SwipeRefreshLayout {
+class TouchInterceptingSwipeRefreshLayout : SwipeRefreshLayout {
     constructor(context: Context, attributeSet: AttributeSet?) :
             super(context, attributeSet)
 

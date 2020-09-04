@@ -65,7 +65,7 @@ class TradeHistoryFragment : BaseFragment() {
     }
 
     private fun initList() {
-        trade_history_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context, androidx.recyclerview.widget.RecyclerView.VERTICAL, false)
+        trade_history_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         adapter = TradeHistoryAdapter(amountFormatter)
         trade_history_list.adapter = adapter
         trade_history_list.listenBottomReach({ adapter.getDataItemCount() }) {

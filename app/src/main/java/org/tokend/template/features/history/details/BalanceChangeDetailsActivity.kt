@@ -48,9 +48,9 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
     }
 
     protected open fun initList() {
-        details_list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        details_list.layoutManager = LinearLayoutManager(this)
         details_list.adapter = adapter
-        (details_list.itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
+        (details_list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
     }
 
     protected open fun displayDetails(item: BalanceChange) {
@@ -86,7 +86,6 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
 
     companion object {
         private const val BALANCE_CHANGE_EXTRA = "balance_change"
-        private const val LOG_TAG = "BlncChDetailsActivity"
 
         fun getBundle(balanceChange: BalanceChange) = Bundle().apply {
             putSerializable(BALANCE_CHANGE_EXTRA, balanceChange)

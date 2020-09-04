@@ -11,7 +11,7 @@ import java.util.*
 class ActivityUserKeyProvider(
         private val activityClass: Class<out UserKeyActivity>,
         private val parentActivity: Activity? = null,
-        private val parentFragment: androidx.fragment.app.Fragment? = null
+        private val parentFragment: Fragment? = null
 ) : UserKeyProvider {
     private var resultSubject: MaybeSubject<CharArray>? = null
     private var requestCode = 0

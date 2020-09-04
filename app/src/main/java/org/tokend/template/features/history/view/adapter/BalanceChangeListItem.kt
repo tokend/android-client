@@ -46,18 +46,18 @@ class BalanceChangeListItem(
     private companion object {
         private fun getAction(balanceChange: BalanceChange): Action {
             return when (balanceChange.action) {
-                BalanceChangeAction.LOCKED -> BalanceChangeListItem.Action.LOCKED
-                BalanceChangeAction.CHARGED_FROM_LOCKED -> BalanceChangeListItem.Action.CHARGED
+                BalanceChangeAction.LOCKED -> Action.LOCKED
+                BalanceChangeAction.CHARGED_FROM_LOCKED -> Action.CHARGED
                 BalanceChangeAction.CHARGED ->
                     if (balanceChange.cause is BalanceChangeCause.Payment)
-                        BalanceChangeListItem.Action.SENT
+                        Action.SENT
                     else
-                        BalanceChangeListItem.Action.CHARGED
-                BalanceChangeAction.UNLOCKED -> BalanceChangeListItem.Action.UNLOCKED
-                BalanceChangeAction.WITHDRAWN -> BalanceChangeListItem.Action.WITHDRAWN
-                BalanceChangeAction.MATCHED -> BalanceChangeListItem.Action.MATCHED
-                BalanceChangeAction.ISSUED -> BalanceChangeListItem.Action.ISSUED
-                BalanceChangeAction.FUNDED -> BalanceChangeListItem.Action.RECEIVED
+                        Action.CHARGED
+                BalanceChangeAction.UNLOCKED -> Action.UNLOCKED
+                BalanceChangeAction.WITHDRAWN -> Action.WITHDRAWN
+                BalanceChangeAction.MATCHED -> Action.MATCHED
+                BalanceChangeAction.ISSUED -> Action.ISSUED
+                BalanceChangeAction.FUNDED -> Action.RECEIVED
             }
         }
 
