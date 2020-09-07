@@ -1,5 +1,6 @@
 package org.tokend.template.features.dashboard.balances.view
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
@@ -188,6 +189,11 @@ class BalancesFragment : BaseFragment() {
             openAssetsExplorer()
             true
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        updateListColumnsCount()
     }
 
     private fun updateListColumnsCount() {

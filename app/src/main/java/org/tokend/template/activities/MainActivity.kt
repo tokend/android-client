@@ -3,12 +3,12 @@ package org.tokend.template.activities
 import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
-import android.view.View
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
 import com.mikepenz.materialdrawer.Drawer
@@ -36,9 +36,9 @@ import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.WalletEventsListener
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ProfileUtil
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.PicassoDrawerImageLoader
 import org.tokend.template.view.util.input.SoftInputUtil
@@ -349,6 +349,11 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                     navigateTo(DEFAULT_FRAGMENT_ID)
             }
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        updateDrawerVisibility()
     }
 
     override fun onPaymentRequestConfirmed(paymentRequest: PaymentRequest) {

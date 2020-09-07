@@ -1,5 +1,6 @@
 package org.tokend.template.features.balances.view
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -360,6 +361,11 @@ class BalanceDetailsActivity : BaseActivity() {
         val asset = balance?.asset ?: return
         menu_fab.close(false)
         Navigator.from(this).openAssetDetails(asset)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        adjustEmptyViewHeight()
     }
 
     override fun onBackPressed() {

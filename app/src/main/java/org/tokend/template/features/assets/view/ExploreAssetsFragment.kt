@@ -1,5 +1,6 @@
 package org.tokend.template.features.assets.view
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -302,6 +303,11 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         return searchItem?.isActionViewExpanded == false.also {
             searchItem?.collapseActionView()
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        layoutManager.spanCount = ColumnCalculator.getColumnCount(requireActivity())
     }
 
     companion object {
