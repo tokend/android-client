@@ -1,7 +1,7 @@
 package org.tokend.template.features.invest.view.adapter
 
 import android.graphics.drawable.ColorDrawable
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.View
 import kotlinx.android.synthetic.main.layout_sale_picture.view.*
 import kotlinx.android.synthetic.main.list_item_sale.view.*

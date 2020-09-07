@@ -50,7 +50,7 @@ class CreateOfferRequestUseCase(
                 ?.accountId
                 .toMaybe()
                 .switchIfEmpty(
-                        Single.error<String>(
+                        Single.error(
                                 IllegalStateException("Missing wallet info")
                         )
                 )

@@ -1,8 +1,8 @@
 package org.tokend.template.features.tfa.view
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
 import android.text.InputType
 import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.PasswordTfaOtpGenerator

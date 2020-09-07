@@ -1,7 +1,7 @@
 package org.tokend.template.view
 
 import android.content.Context
-import android.support.v7.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatImageView
 import android.view.View
 import android.view.animation.AnimationUtils
 import org.jetbrains.anko.onClick

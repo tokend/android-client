@@ -1,7 +1,7 @@
 package org.tokend.template.view.util
 
-import android.support.design.widget.AppBarLayout
-import android.support.v4.widget.SwipeRefreshLayout
+import com.google.android.material.appbar.AppBarLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 object SwipeRefreshDependencyUtil {
 

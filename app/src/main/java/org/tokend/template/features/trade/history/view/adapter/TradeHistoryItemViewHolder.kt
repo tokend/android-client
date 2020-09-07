@@ -1,6 +1,6 @@
 package org.tokend.template.features.trade.history.view.adapter
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.View
 import kotlinx.android.synthetic.main.list_item_trade_history.view.*
 import org.jetbrains.anko.textColor

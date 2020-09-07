@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.support.annotation.Dimension
-import android.support.v4.content.ContextCompat
+import androidx.annotation.Dimension
+import androidx.core.content.ContextCompat
 import android.view.ViewGroup
 import android.widget.ImageView
 import org.tokend.template.R

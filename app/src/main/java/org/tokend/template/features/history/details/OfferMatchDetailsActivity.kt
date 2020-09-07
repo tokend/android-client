@@ -1,6 +1,6 @@
 package org.tokend.template.features.history.details
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import org.tokend.template.R
 import org.tokend.template.features.assets.model.SimpleAsset
 import org.tokend.template.features.history.model.BalanceChange

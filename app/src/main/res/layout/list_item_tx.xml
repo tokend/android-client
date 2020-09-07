@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/tx_list_item_height">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/tx_icon_image_view"
         android:layout_width="@dimen/tx_list_item_icon_size"
         android:layout_height="@dimen/tx_list_item_icon_size"

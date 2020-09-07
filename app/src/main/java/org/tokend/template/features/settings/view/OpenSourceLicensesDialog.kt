@@ -2,8 +2,8 @@ package org.tokend.template.features.settings.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.annotation.StyleRes
-import android.support.v7.app.AlertDialog
+import androidx.annotation.StyleRes
+import androidx.appcompat.app.AlertDialog
 import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebView

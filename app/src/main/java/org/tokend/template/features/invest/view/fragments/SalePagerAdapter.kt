@@ -1,16 +1,16 @@
 package org.tokend.template.features.invest.view.fragments
 
 import android.content.Context
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 import org.tokend.template.R
 import org.tokend.template.features.invest.model.SaleRecord
 
 class SalePagerAdapter(sale: SaleRecord,
                        context: Context,
                        fragmentManager: FragmentManager
-) : FragmentPagerAdapter(fragmentManager) {
+) : androidx.fragment.app.FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     private val pages = listOf(
             SaleOverviewFragment.newInstance() to context.getString(R.string.sale_overview_title),
 
@@ -19,8 +19,8 @@ class SalePagerAdapter(sale: SaleRecord,
             ) to context.getString(R.string.sale_details_title)
     )
 
-    override fun getItem(position: Int): Fragment? {
-        return pages.getOrNull(position)?.first
+    override fun getItem(position: Int): Fragment {
+        return pages[position].first
     }
 
     override fun getPageTitle(position: Int): CharSequence {

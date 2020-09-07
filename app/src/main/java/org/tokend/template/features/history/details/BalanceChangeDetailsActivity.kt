@@ -2,9 +2,9 @@ package org.tokend.template.features.history.details
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SimpleItemAnimator
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import kotlinx.android.synthetic.main.activity_balance_change_details.*
 import kotlinx.android.synthetic.main.appbar_with_balance_change_main_data.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -86,7 +86,6 @@ abstract class BalanceChangeDetailsActivity : BaseActivity() {
 
     companion object {
         private const val BALANCE_CHANGE_EXTRA = "balance_change"
-        private const val LOG_TAG = "BlncChDetailsActivity"
 
         fun getBundle(balanceChange: BalanceChange) = Bundle().apply {
             putSerializable(BALANCE_CHANGE_EXTRA, balanceChange)

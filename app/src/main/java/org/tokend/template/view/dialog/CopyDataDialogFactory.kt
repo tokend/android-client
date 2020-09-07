@@ -1,10 +1,10 @@
 package org.tokend.template.view.dialog
 
 import android.content.Context
-import android.support.v7.app.AlertDialog
 import android.widget.TextView
-import org.jetbrains.anko.clipboardManager
+import androidx.appcompat.app.AlertDialog
 import org.tokend.template.R
+import org.tokend.template.extensions.clipboardText
 import org.tokend.template.view.ToastManager
 
 object CopyDataDialogFactory {
@@ -26,7 +26,7 @@ object CopyDataDialogFactory {
                     findViewById<TextView>(android.R.id.message)?.setTextIsSelectable(true)
 
                     getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
-                        context.clipboardManager.text = content
+                        context.clipboardText = content
                         toastManager.short(toastMessage)
                     }
                 }

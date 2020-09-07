@@ -2,8 +2,8 @@ package org.tokend.template.view.balancepicker
 
 import android.app.Dialog
 import android.content.Context
-import android.support.design.widget.BottomSheetDialog
-import android.support.v7.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Editable
 import android.util.DisplayMetrics
 import android.view.View

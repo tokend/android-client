@@ -22,8 +22,7 @@ open class ObjectPersistenceOnPrefs<T : Any>(
     override fun loadItem(): T? {
         return loadedItem
                 ?: preferences
-                        .getString(key, "")
-                        .takeIf(String::isNotEmpty)
+                        .getString(key, null)
                         ?.let(this::deserializeItem)
                         ?.also { loadedItem = it }
     }

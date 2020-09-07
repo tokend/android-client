@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="MissingConstraints">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         style="@style/AppbarTheme"
         android:layout_width="match_parent"
@@ -22,7 +24,7 @@
             android:visibility="gone"
             app:tabGravity="fill" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout
         android:id="@+id/swipe_refresh"
@@ -38,7 +40,7 @@
 
             <include layout="@layout/include_error_empty_view" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/asset_pairs_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -56,4 +58,4 @@
         <include layout="@layout/include_appbar_elevation" />
     </FrameLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

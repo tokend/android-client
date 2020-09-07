@@ -2,14 +2,14 @@ package org.tokend.template.features.invest.view
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.SimpleItemAnimator
-import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_sales.*
@@ -22,12 +22,12 @@ import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.invest.view.adapter.SalesAdapter
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.*
 
 class SalesFragment : BaseFragment(), ToolbarProvider {
-    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
+    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },
@@ -186,7 +186,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         layoutManager.spanCount = ColumnCalculator.getColumnCount(requireActivity())
     }

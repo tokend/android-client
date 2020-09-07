@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import org.tokend.crypto.cipher.Aes256GCM
 import org.tokend.kdf.KeyDerivationFunction
 import org.tokend.kdf.ScryptKeyDerivation

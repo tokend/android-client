@@ -1,6 +1,6 @@
 package org.tokend.template.view.details.adapter
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View

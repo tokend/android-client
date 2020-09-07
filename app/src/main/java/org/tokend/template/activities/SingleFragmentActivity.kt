@@ -2,7 +2,7 @@ package org.tokend.template.activities
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import io.reactivex.rxkotlin.addTo
 import org.tokend.template.R
 import org.tokend.template.features.assets.buy.view.AtomicSwapAsksFragment

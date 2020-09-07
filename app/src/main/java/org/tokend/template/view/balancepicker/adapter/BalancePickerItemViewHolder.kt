@@ -1,6 +1,6 @@
 package org.tokend.template.view.balancepicker.adapter
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.View
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
