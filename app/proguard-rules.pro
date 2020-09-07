@@ -70,7 +70,7 @@
 -keep class androidx.appcompat.widget.SearchView  { *; }
 
 # KYC state storage
--keepnames class org.tokend.template.features.kyc.** { *; }
+-keepnames class org.tokend.template.features.kyc.model.** { *; }
 
 # BottomNavigationView shifting hack
 -keepclassmembers class com.google.android.material.bottomnavigation.BottomNavigationView  {
@@ -87,3 +87,14 @@
 
 # Balance changes caching
 -keepnames class org.tokend.template.features.history.model.** { *; }
+
+# ProGuard issue
+# https://sourceforge.net/p/proguard/bugs/573/
+-optimizations !class/unboxing/enum
+
+# These classes are used via kotlin reflection and the keep might not be required anymore once Proguard supports
+# Kotlin reflection directly.
+-keep class kotlin.Metadata
+
+# class [META-INF/versions/9/module-info.class] unexpectedly contains class [module-info]
+-dontwarn module-info
