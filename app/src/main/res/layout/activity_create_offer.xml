@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.offers.CreateOfferActivity">
+    tools:context=".features.offers.CreateOfferActivity"
+    tools:ignore="MissingConstraints">
 
-    <include layout="@layout/appbar"/>
+    <include layout="@layout/appbar" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"

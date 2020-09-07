@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="MissingConstraints">
 
-    <include layout="@layout/appbar_with_tabs"/>
+    <include layout="@layout/appbar_with_tabs" />
 
     <FrameLayout
         android:layout_width="match_parent"

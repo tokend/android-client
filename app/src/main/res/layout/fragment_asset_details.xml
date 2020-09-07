@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cards_container_background"
-    tools:ignore="UnusedAttribute">
+    tools:ignore="UnusedAttribute,MissingConstraints">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"

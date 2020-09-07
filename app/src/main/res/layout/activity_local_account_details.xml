@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.signin.LocalAccountSignInActivity">
+    tools:context=".features.signin.LocalAccountSignInActivity"
+    tools:ignore="MissingConstraints">
 
     <include layout="@layout/appbar" />
 
@@ -12,8 +13,8 @@
         android:id="@+id/details_list"
         style="@style/LimitedMatchParentWidthConstraint"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/appbar"
-        app:layout_constraintTop_toTopOf="@null"
         android:paddingEnd="@dimen/half_standard_margin"
-        android:paddingBottom="@dimen/standard_margin" />
+        android:paddingBottom="@dimen/standard_margin"
+        app:layout_constraintTop_toBottomOf="@id/appbar"
+        app:layout_constraintTop_toTopOf="@null" />
 </androidx.constraintlayout.widget.ConstraintLayout>
