@@ -37,7 +37,7 @@ import org.tokend.template.view.util.input.SoftInputUtil
 import java.math.BigDecimal
 
 class WithdrawFragment : BaseFragment(), ToolbarProvider {
-    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
+    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { swipe_refresh.isRefreshing = true },

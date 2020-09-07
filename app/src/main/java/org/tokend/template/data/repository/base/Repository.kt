@@ -14,7 +14,7 @@ abstract class Repository {
      * Emits repository errors.
      */
     val errorsSubject: PublishSubject<Throwable> =
-            PublishSubject.create<Throwable>()
+            PublishSubject.create()
 
     protected open val mLoadingSubject: BehaviorSubject<Boolean> =
             BehaviorSubject.createDefault(false)

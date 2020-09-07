@@ -50,7 +50,7 @@ import java.util.*
 
 class DepositFragment : BaseFragment(), ToolbarProvider {
 
-    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
+    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
     private lateinit var accountRepository: AccountRepository
     private lateinit var assetsRepository: AssetsRepository
     private lateinit var timer: Timer

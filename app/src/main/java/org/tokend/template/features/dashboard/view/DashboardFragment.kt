@@ -24,7 +24,7 @@ import org.tokend.template.view.util.UserFlowFragmentDisplayer
 import org.tokend.template.view.util.input.SoftInputUtil
 
 class DashboardFragment : BaseFragment(), ToolbarProvider {
-    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
+    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
 
     private val fragmentDisplayer = UserFlowFragmentDisplayer(this, R.id.fragment_container_layout)
     private var backPressedListener: OnBackPressedListener? = null

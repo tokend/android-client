@@ -154,7 +154,7 @@ class OffersRepository(
         return offerToCancel
                 .toMaybe()
                 .toObservable()
-                .map<ManageOfferOp> {
+                .map {
                     ManageOfferOp(
                             baseBalance =
                             PublicKeyFactory.fromBalanceId(it.baseBalanceId),

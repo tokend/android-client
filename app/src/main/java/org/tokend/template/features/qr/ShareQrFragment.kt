@@ -60,7 +60,7 @@ open class ShareQrFragment : BaseFragment(), ToolbarProvider {
         }
     }
 
-    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create<Toolbar>()
+    override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
 
     open val title: String
         get() = arguments?.getString(TITLE_EXTRA) ?: ""
