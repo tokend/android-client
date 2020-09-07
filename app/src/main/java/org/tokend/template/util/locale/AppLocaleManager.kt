@@ -64,8 +64,7 @@ class AppLocaleManager(
 
     private fun loadLocale(): Locale? {
         return preferences
-                .getString(CURRENT_LOCALE_KEY, "")
-                .takeIf(String::isNotEmpty)
+                .getString(CURRENT_LOCALE_KEY, null)
                 ?.let { Locale(it) }
     }
 
