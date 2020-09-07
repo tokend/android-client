@@ -1,12 +1,12 @@
 package org.tokend.template.features.tfa.view
 
 import android.content.Context
-import androidx.appcompat.app.AlertDialog
 import android.text.InputFilter
 import android.text.InputType
-import org.jetbrains.anko.clipboardManager
+import androidx.appcompat.app.AlertDialog
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
+import org.tokend.template.extensions.clipboardText
 import org.tokend.template.util.errorhandler.ErrorHandler
 
 /**
@@ -37,7 +37,7 @@ abstract class TfaOtpDialog(context: Context,
 
         dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
                 .setOnClickListener {
-                    inputEditText.setText(context.clipboardManager.text)
+                    inputEditText.setText(context.clipboardText)
                     inputEditText.requestFocus()
                     inputEditText.setSelection(inputEditText.text?.length ?: 0)
                 }

@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
 import org.jetbrains.anko.browse
-import org.jetbrains.anko.clipboardManager
 import org.tokend.template.R
+import org.tokend.template.extensions.clipboardText
 import org.tokend.template.view.ToastManager
 
 /**
@@ -46,7 +46,7 @@ class TfaTotpConfirmationDialog(
                 .show()
 
         dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
-            context.clipboardManager.text = secret
+            context.clipboardText = secret
             toastManager?.short(R.string.tfa_key_copied)
         }
 
