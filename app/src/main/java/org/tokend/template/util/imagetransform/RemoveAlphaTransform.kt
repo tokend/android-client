@@ -1,7 +1,7 @@
 package org.tokend.template.util.imagetransform
 
 import android.graphics.*
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import com.squareup.picasso.Transformation
 
 /**

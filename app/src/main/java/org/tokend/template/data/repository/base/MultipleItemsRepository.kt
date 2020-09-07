@@ -23,7 +23,7 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
      * initialized with empty list
      */
     val itemsSubject: BehaviorSubject<List<T>> =
-            BehaviorSubject.createDefault<List<T>>(listOf())
+            BehaviorSubject.createDefault(listOf())
 
     /**
      * Repository items

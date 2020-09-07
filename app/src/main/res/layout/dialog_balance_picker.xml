@@ -26,7 +26,7 @@
             app:met_floatingLabel="none"
             app:met_hideUnderline="true" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/search_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
             app:srcCompat="@drawable/ic_search"
             app:tint="@color/icons" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/cancel_search_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
 
             <include layout="@layout/include_error_empty_view" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/balances_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

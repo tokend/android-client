@@ -1,6 +1,6 @@
 package org.tokend.template.data.repository
 
-import android.support.v4.util.LruCache
+import androidx.collection.LruCache
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
 import org.tokend.rx.extensions.toSingle

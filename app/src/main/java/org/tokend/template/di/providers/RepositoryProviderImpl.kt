@@ -2,12 +2,14 @@ package org.tokend.template.di.providers
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.support.v4.util.LruCache
+import androidx.collection.LruCache
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.tokend.template.BuildConfig
 import org.tokend.template.data.model.AccountRecord
-import org.tokend.template.features.systeminfo.model.SystemInfoRecord
-import org.tokend.template.data.repository.*
+import org.tokend.template.data.repository.AccountDetailsRepository
+import org.tokend.template.data.repository.AccountRepository
+import org.tokend.template.data.repository.AtomicSwapAsksRepository
+import org.tokend.template.data.repository.BlobsRepository
 import org.tokend.template.data.repository.base.MemoryOnlyObjectPersistence
 import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
 import org.tokend.template.data.repository.base.ObjectPersistence
@@ -15,24 +17,19 @@ import org.tokend.template.data.repository.base.ObjectPersistenceOnPrefs
 import org.tokend.template.data.repository.base.pagination.MemoryOnlyPagedDataCache
 import org.tokend.template.db.AppDatabase
 import org.tokend.template.extensions.getOrPut
-import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.assets.storage.AssetChartRepository
 import org.tokend.template.features.assets.storage.AssetsDbCache
 import org.tokend.template.features.assets.storage.AssetsRepository
-import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.features.balances.storage.BalancesDbCache
 import org.tokend.template.features.balances.storage.BalancesRepository
-import org.tokend.template.data.repository.BlobsRepository
 import org.tokend.template.features.fees.repository.FeesRepository
 import org.tokend.template.features.history.logic.DefaultParticipantEffectConverter
-import org.tokend.template.features.history.model.BalanceChange
 import org.tokend.template.features.history.storage.BalanceChangesPagedDbCache
 import org.tokend.template.features.history.storage.BalanceChangesRepository
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.repository.InvestmentInfoRepository
 import org.tokend.template.features.invest.repository.SalesRepository
 import org.tokend.template.features.keyvalue.storage.KeyValueEntriesRepository
-import org.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import org.tokend.template.features.kyc.storage.ActiveKycPersistence
 import org.tokend.template.features.kyc.storage.ActiveKycRepository
 import org.tokend.template.features.kyc.storage.KycRequestStateRepository
@@ -43,6 +40,8 @@ import org.tokend.template.features.offers.repository.OffersRepository
 import org.tokend.template.features.polls.repository.PollsCache
 import org.tokend.template.features.polls.repository.PollsRepository
 import org.tokend.template.features.send.recipient.contacts.repository.ContactsRepository
+import org.tokend.template.features.systeminfo.model.SystemInfoRecord
+import org.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import org.tokend.template.features.tfa.repository.TfaFactorsRepository
 import org.tokend.template.features.trade.history.repository.TradeHistoryRepository
 import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
@@ -71,12 +70,12 @@ class RepositoryProviderImpl(
 
     private val assetsCache by lazy {
         database?.let { AssetsDbCache(it.assets) }
-                ?: MemoryOnlyRepositoryCache<AssetRecord>()
+                ?: MemoryOnlyRepositoryCache()
     }
 
     private val balancesCache by lazy {
         database?.let { BalancesDbCache(it.balances, assetsCache) }
-                ?: MemoryOnlyRepositoryCache<BalanceRecord>()
+                ?: MemoryOnlyRepositoryCache()
     }
     private val balancesRepository: BalancesRepository by lazy {
         BalancesRepository(
@@ -94,7 +93,7 @@ class RepositoryProviderImpl(
     private val systemInfoRepository: SystemInfoRepository by lazy {
         val persistence =
                 if (persistencePreferences != null)
-                    ObjectPersistenceOnPrefs.forType<SystemInfoRecord>(
+                    ObjectPersistenceOnPrefs.forType(
                             persistencePreferences,
                             "system_info"
                     )
@@ -119,7 +118,7 @@ class RepositoryProviderImpl(
     private val accountRepository: AccountRepository by lazy {
         val persistence =
                 if (persistencePreferences != null)
-                    ObjectPersistenceOnPrefs.forType<AccountRecord>(
+                    ObjectPersistenceOnPrefs.forType(
                             persistencePreferences,
                             "account_record"
                     )
@@ -269,7 +268,7 @@ class RepositoryProviderImpl(
                     if (database != null)
                         BalanceChangesPagedDbCache(balanceId, database.balanceChanges)
                     else
-                        MemoryOnlyPagedDataCache<BalanceChange>()
+                        MemoryOnlyPagedDataCache()
 
             BalanceChangesRepository(
                     balanceId,

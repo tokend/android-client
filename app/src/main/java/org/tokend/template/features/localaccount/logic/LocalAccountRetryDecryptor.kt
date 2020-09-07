@@ -36,7 +36,7 @@ class LocalAccountRetryDecryptor(
                         Single.just(localAccount)
                     } catch (e: Exception) {
                         isRetry = true
-                        Single.error<LocalAccount>(e)
+                        Single.error(e)
                     }
                 }
                 .retry { error ->

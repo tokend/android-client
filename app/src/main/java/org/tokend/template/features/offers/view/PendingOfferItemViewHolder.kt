@@ -1,7 +1,7 @@
 package org.tokend.template.features.offers.view
 
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.View
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder

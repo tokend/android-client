@@ -2,9 +2,9 @@ package org.tokend.template.features.dashboard.balances.view
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.GridLayoutManager
 import android.view.*
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_balances.*
 import kotlinx.android.synthetic.main.fragment_balances_collapsing_content.*
@@ -16,8 +16,8 @@ import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.features.dashboard.balances.view.adapter.BalanceItemsAdapter
 import org.tokend.template.features.dashboard.balances.view.adapter.BalanceListItem
 import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.*
 import java.math.BigDecimal
 
@@ -191,7 +191,7 @@ class BalancesFragment : BaseFragment() {
         }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         updateListColumnsCount()
     }

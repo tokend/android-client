@@ -1,6 +1,6 @@
 package org.tokend.template.features.invest.view
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.SpannableString
 import android.view.View
 import kotlinx.android.synthetic.main.layout_sale_progress.view.*

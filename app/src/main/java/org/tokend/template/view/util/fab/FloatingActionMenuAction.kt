@@ -2,10 +2,10 @@ package org.tokend.template.view.util.fab
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
-import android.support.annotation.StyleRes
-import android.support.v4.content.ContextCompat
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
+import androidx.core.content.ContextCompat
 import android.view.ContextThemeWrapper
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu

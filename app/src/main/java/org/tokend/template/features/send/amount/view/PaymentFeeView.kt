@@ -1,7 +1,7 @@
 package org.tokend.template.features.send.amount.view
 
 import android.content.Context
-import android.support.v7.widget.SwitchCompat
+import androidx.appcompat.widget.SwitchCompat
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup

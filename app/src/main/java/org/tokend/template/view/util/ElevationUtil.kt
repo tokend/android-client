@@ -1,8 +1,8 @@
 package org.tokend.template.view.util
 
-import android.support.design.widget.AppBarLayout
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 object ElevationUtil {

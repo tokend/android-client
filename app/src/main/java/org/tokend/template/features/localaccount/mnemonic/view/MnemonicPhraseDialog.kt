@@ -1,8 +1,8 @@
 package org.tokend.template.features.localaccount.mnemonic.view
 
 import android.content.Context
-import android.support.annotation.StyleRes
-import android.support.v7.app.AlertDialog
+import androidx.annotation.StyleRes
+import androidx.appcompat.app.AlertDialog
 import org.tokend.template.R
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.dialog.CopyDataDialogFactory

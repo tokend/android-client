@@ -1,20 +1,19 @@
 package org.tokend.template.features.trade
 
 import android.content.Context
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import org.tokend.template.R
-import org.tokend.template.features.trade.pairs.model.AssetPairRecord
 import org.tokend.template.features.trade.chart.view.AssetPairChartFragment
 import org.tokend.template.features.trade.history.view.TradeHistoryFragment
 import org.tokend.template.features.trade.offers.view.OffersFragment
 import org.tokend.template.features.trade.orderbook.view.OrderBookFragment
+import org.tokend.template.features.trade.pairs.model.AssetPairRecord
 
 class TradePagerAdapter(assetPair: AssetPairRecord,
                         context: Context,
                         fragmentManager: FragmentManager
-) : FragmentPagerAdapter(fragmentManager) {
+) : androidx.fragment.app.FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     private val pages = listOf(
             OrderBookFragment.newInstance(OrderBookFragment.getBundle(assetPair)) to
                     context.getString(R.string.trade_order_book_title),
@@ -26,8 +25,8 @@ class TradePagerAdapter(assetPair: AssetPairRecord,
                     context.getString(R.string.trade_offers_title)
     )
 
-    override fun getItem(position: Int): Fragment? {
-        return pages.getOrNull(position)?.first
+    override fun getItem(position: Int): Fragment {
+        return pages[position].first
     }
 
     override fun getPageTitle(position: Int): CharSequence {

@@ -6,7 +6,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.webkit.MimeTypeMap
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.template.R

@@ -1,7 +1,7 @@
 package org.tokend.template.view.dialog
 
 import android.content.Context
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import org.tokend.template.R
 import org.tokend.template.view.ToastManager
 import org.tokend.wallet.Account

@@ -2,9 +2,9 @@ package org.tokend.template.view.details
 
 import android.content.Context
 import android.graphics.PorterDuff
-import android.support.v4.content.ContextCompat
-import android.support.v7.view.ContextThemeWrapper
-import android.support.v7.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.AppCompatImageView
 import android.widget.Button
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.onClick

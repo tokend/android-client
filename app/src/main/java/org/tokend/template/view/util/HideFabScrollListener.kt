@@ -1,6 +1,6 @@
 package org.tokend.template.view.util
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import com.github.clans.fab.FloatingActionMenu
 
 open class HideFabScrollListener(

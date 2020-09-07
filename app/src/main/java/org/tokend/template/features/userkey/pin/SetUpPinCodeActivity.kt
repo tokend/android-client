@@ -2,7 +2,7 @@ package org.tokend.template.features.userkey.pin
 
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_pin_code.*
 import org.jetbrains.anko.textColor
@@ -66,7 +66,7 @@ class SetUpPinCodeActivity : PinCodeActivity() {
                 Snackbar.LENGTH_SHORT
         )
                 .also {
-                    it.view.findViewById<TextView>(android.support.design.R.id.snackbar_text)
+                    it.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
                             .textColor = Color.WHITE
                 }
                 .show()

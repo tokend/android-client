@@ -1,10 +1,10 @@
 package org.tokend.template.features.assets.buy.view.quoteasset.picker
 
 import android.content.Context
-import android.support.v7.widget.AppCompatSpinner
 import android.util.AttributeSet
 import android.view.View
 import android.widget.AdapterView
+import androidx.appcompat.widget.AppCompatSpinner
 import org.tokend.template.view.picker.Picker
 
 class AtomicSwapQuoteAssetPickerSpinner : AppCompatSpinner, Picker<AtomicSwapQuoteAssetSpinnerItem> {
@@ -39,7 +39,7 @@ class AtomicSwapQuoteAssetPickerSpinner : AppCompatSpinner, Picker<AtomicSwapQuo
 
     init {
         adapter = itemsAdapter
-        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(
