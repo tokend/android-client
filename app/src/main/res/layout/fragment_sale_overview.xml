@@ -10,10 +10,7 @@
     <ScrollView
         android:id="@+id/scroll_view"
         style="@style/LimitedMatchParentWidthConstraint"
-        android:clipToPadding="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:clipToPadding="false">
 
         <LinearLayout
             android:id="@+id/cards_layout"
@@ -99,11 +96,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:focusable="true"
-        android:focusableInTouchMode="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        >
+        android:focusableInTouchMode="true">
 
         <requestFocus />
     </View>

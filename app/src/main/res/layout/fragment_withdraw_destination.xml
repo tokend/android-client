@@ -20,9 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/standard_margin"
         android:layout_marginEnd="@dimen/standard_margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/continue_button">
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/destination_edit_text"

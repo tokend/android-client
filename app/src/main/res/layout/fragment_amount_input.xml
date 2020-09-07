@@ -31,8 +31,6 @@
                 android:id="@+id/amount_edit_text_container"
                 style="@style/LimitedMatchParentWidthConstraint"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="@null"
                 app:layout_constraintBottom_toTopOf="@id/extra_view_frame">
 
@@ -46,7 +44,6 @@
                     android:hint="0"
                     android:inputType="numberDecimal"
                     android:textSize="@dimen/text_size_amount_input"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/asset_code_text_view"

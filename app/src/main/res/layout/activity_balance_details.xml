@@ -25,10 +25,7 @@
                     style="@style/LimitedMatchParentWidthConstraint"
                     android:overScrollMode="never"
                     android:paddingStart="@dimen/quarter_standard_margin"
-                    android:paddingEnd="@dimen/quarter_standard_margin"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    android:paddingEnd="@dimen/quarter_standard_margin" />
 
                 <org.tokend.template.view.TxDateTextSwitcher
                     android:id="@+id/date_text_switcher"

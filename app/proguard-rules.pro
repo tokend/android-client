@@ -67,14 +67,14 @@
 -keep class androidx.multidex.**
 
 # Support library
--keep class androidx.appcompat.widget.SearchView  { *; }
+-keep class android.support.v7.widget.SearchView { *; }
 
 # KYC state storage
 -keepnames class org.tokend.template.features.kyc.model.** { *; }
 
 # BottomNavigationView shifting hack
--keepclassmembers class com.google.android.material.bottomnavigation.BottomNavigationView  {
-    boolean isItemHorizontalTranslationEnabled();
+-keepclassmembers class android.support.design.internal.BottomNavigationMenuView {
+    boolean mShiftingMode;
 }
 
 # Keep JsonCreator

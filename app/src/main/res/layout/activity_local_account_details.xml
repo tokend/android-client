@@ -12,8 +12,6 @@
         android:id="@+id/details_list"
         style="@style/LimitedMatchParentWidthConstraint"
         android:clipToPadding="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar"
         app:layout_constraintTop_toTopOf="@null"
         android:paddingEnd="@dimen/half_standard_margin"

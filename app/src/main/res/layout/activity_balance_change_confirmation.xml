@@ -19,13 +19,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/details_list"
                 style="@style/LimitedMatchParentWidthConstraint"
-                android:layout_marginEnd="411dp"
                 android:clipToPadding="false"
                 android:paddingEnd="@dimen/half_standard_margin"
-                android:paddingBottom="@dimen/standard_margin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:paddingBottom="@dimen/standard_margin" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
