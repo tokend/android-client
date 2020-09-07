@@ -2,14 +2,14 @@ package org.tokend.template
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import androidx.room.Room
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.multidex.MultiDexApplication
-import androidx.core.app.ActivityCompat
-import androidx.appcompat.app.AppCompatDelegate
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
+import androidx.multidex.MultiDexApplication
+import androidx.room.Room
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
@@ -178,13 +178,13 @@ class App : MultiDexApplication() {
             if ((e is NullPointerException) || (e is IllegalArgumentException)) {
                 // that's likely a bug in the application
                 Thread.currentThread().uncaughtExceptionHandler
-                        .uncaughtException(Thread.currentThread(), e)
+                        ?.uncaughtException(Thread.currentThread(), e)
                 return@setErrorHandler
             }
             if (e is IllegalStateException) {
                 // that's a bug in RxJava or in a custom operator
                 Thread.currentThread().uncaughtExceptionHandler
-                        .uncaughtException(Thread.currentThread(), e)
+                        ?.uncaughtException(Thread.currentThread(), e)
                 return@setErrorHandler
             }
             Log.w("RxErrorHandler", "Undeliverable exception received, not sure what to do", e)
