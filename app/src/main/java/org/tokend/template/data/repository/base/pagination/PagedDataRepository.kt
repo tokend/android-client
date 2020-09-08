@@ -32,7 +32,7 @@ abstract class PagedDataRepository<T : PagingRecord>(
     var noMoreItems: Boolean = false
         protected set
 
-    open val itemsSubject = BehaviorSubject.create<List<T>>()
+    open val itemsSubject = BehaviorSubject.createDefault(listOf<T>())
     protected open var mItems = mutableListOf<T>()
 
     open val itemsList: List<T>
@@ -49,7 +49,6 @@ abstract class PagedDataRepository<T : PagingRecord>(
     private var updateResultSubject: CompletableSubject? = null
     private var loadMoreDuringUpdateDisposable: Disposable? = null
     override fun update(): Completable = synchronized(this) {
-        Log.i(LOG_TAG, "Update")
         isFresh = false
         mItems.clear()
         nextCursor = null
@@ -85,13 +84,13 @@ abstract class PagedDataRepository<T : PagingRecord>(
     }
 
     protected open var loadNewRemoteTopPagesDisposable: Disposable? = null
+
     /**
      * Loads new pages to the top of collection if it's in DESC order
      */
     open fun loadNewRemoteTopPages() {
+        Log.i(LOG_TAG, "Load new remote top pages")
         val newestItemId = mItems.firstOrNull()?.getPagingId() ?: 0L
-
-        Log.i(LOG_TAG, "Load new remote top pages, newest item $newestItemId")
 
         var nextNewPagesCursor: Long? = newestItemId
         var noMoreNewPages = false
@@ -124,15 +123,8 @@ abstract class PagedDataRepository<T : PagingRecord>(
                         )
     }
 
-    protected open fun onNewRemoteTopPage(page: DataPage<T>) = synchronized(this) {
-        mItems.addAll(
-                0,
-                page.items
-                        .asSequence()
-                        .sortedByDescending(PagingRecord::getPagingId)
-                        .filterNot(mItems::contains)
-                        .toList()
-        )
+    protected open fun onNewRemoteTopPage(page: DataPage<T>) {
+        mItems.addAll(0, page.items.sortedByDescending(PagingRecord::getPagingId))
         isNeverUpdated = false
         if (page.isLast) {
             isFresh = true
@@ -157,20 +149,12 @@ abstract class PagedDataRepository<T : PagingRecord>(
             return false
         }
 
-        Log.i(LOG_TAG, "Load more, cursor $nextCursor")
-
         loadingStateManager.show("load-more")
-
-        // This helps to avoid making any moves when
-        // no one is observing the result.
-        fun resultHasObserversOrNull(): Boolean {
-            return resultSubject == null || resultSubject.hasObservers()
-        }
 
         val getPage: Single<DataPage<T>> =
                 getCachedPage(nextCursor)
                         .flatMap { cachedPage ->
-                            if (resultHasObserversOrNull() && cachedPage.isLast) {
+                            if (cachedPage.isLast) {
                                 Log.i(LOG_TAG, "Cached page is last")
                                 // If cached page is last emmit it
                                 // but ensure that it is true by loading
@@ -180,8 +164,9 @@ abstract class PagedDataRepository<T : PagingRecord>(
                                 }
                                 val wasOnFirstPage = isOnFirstPage
                                 getAndCacheRemotePage(nextCursor, pagingOrder)
-                                        .doOnSuccess {
-                                            if (wasOnFirstPage) {
+                                        .doOnSuccess { page ->
+                                            if ((pagingOrder == PagingOrder.ASC || wasOnFirstPage)
+                                                    && page.isLast) {
                                                 isFresh = true
                                             }
                                         }
@@ -199,10 +184,8 @@ abstract class PagedDataRepository<T : PagingRecord>(
                 .subscribeOn(Schedulers.newThread())
                 .subscribeBy(
                         onSuccess = {
-                            if (resultHasObserversOrNull()) {
-                                onNewPage(it)
-                                resultSubject?.onComplete()
-                            }
+                            onNewPage(it)
+                            resultSubject?.onComplete()
                         },
                         onError = {
                             errorsSubject.onNext(it)
@@ -216,7 +199,6 @@ abstract class PagedDataRepository<T : PagingRecord>(
 
     protected open fun getAndCacheRemotePage(nextCursor: Long?,
                                              requiredOrder: PagingOrder): Single<DataPage<T>> {
-        Log.i(LOG_TAG, "Get and cache remote page from $nextCursor $requiredOrder")
         return getRemotePage(nextCursor, requiredOrder)
                 .subscribeOn(Schedulers.newThread())
                 .doOnSuccess(this::cachePage)
@@ -230,7 +212,6 @@ abstract class PagedDataRepository<T : PagingRecord>(
                                requiredOrder: PagingOrder): Single<DataPage<T>>
 
     open fun getCachedPage(nextCursor: Long?): Single<DataPage<T>> {
-        Log.i(LOG_TAG, "Get and cached page from $nextCursor")
         return cache?.getPage(pageLimit, nextCursor, pagingOrder)
                 ?: Single.just(DataPage(nextCursor?.toString(), emptyList(), true))
     }
@@ -238,8 +219,8 @@ abstract class PagedDataRepository<T : PagingRecord>(
     /**
      * Called when new page data is loaded, cached or remote.
      */
-    protected open fun onNewPage(page: DataPage<T>) = synchronized(this) {
-        mItems.addAll(page.items.filterNot(mItems::contains))
+    protected open fun onNewPage(page: DataPage<T>) {
+        mItems.addAll(page.items)
         nextCursor = page.nextCursor?.toLong()
         noMoreItems = page.isLast
         isNeverUpdated = false

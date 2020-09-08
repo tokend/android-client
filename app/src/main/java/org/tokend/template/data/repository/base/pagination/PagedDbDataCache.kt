@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 abstract class PagedDbDataCache<T : PagingRecord> : PagedDataCache<T> {
-    protected open val executor: ExecutorService = Executors.newSingleThreadExecutor() {
+    protected open val executor: ExecutorService = Executors.newSingleThreadExecutor {
         Thread(it).apply { name = "PagedDbCacheThread" }
     }
 

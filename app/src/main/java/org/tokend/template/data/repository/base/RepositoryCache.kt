@@ -3,12 +3,17 @@ package org.tokend.template.data.repository.base
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import org.jetbrains.anko.doAsync
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * Represents in-memory cache of given type with persistence.
  */
 abstract class RepositoryCache<T> {
+    protected open val executor: ExecutorService = Executors.newSingleThreadExecutor {
+        Thread(it).apply { name = "RepoCacheThread" }
+    }
+
     protected open val mItems = mutableListOf<T>()
     open val items: List<T>
         get() = mItems.toList()
@@ -188,7 +193,7 @@ abstract class RepositoryCache<T> {
     }
 
     private fun addToDbSafe(items: Collection<T>) {
-        doAsync {
+        executor.submit {
             synchronized(this@RepositoryCache) {
                 addToDb(items)
             }
@@ -196,7 +201,7 @@ abstract class RepositoryCache<T> {
     }
 
     private fun updateInDbSafe(items: Collection<T>) {
-        doAsync {
+        executor.submit {
             synchronized(this@RepositoryCache) {
                 updateInDb(items)
             }
@@ -204,7 +209,7 @@ abstract class RepositoryCache<T> {
     }
 
     private fun deleteFromDbSafe(items: List<T>) {
-        doAsync {
+        executor.submit {
             synchronized(this@RepositoryCache) {
                 deleteFromDb(items)
             }
@@ -212,7 +217,7 @@ abstract class RepositoryCache<T> {
     }
 
     private fun clearDbSafe() {
-        doAsync {
+        executor.submit {
             synchronized(this@RepositoryCache) {
                 clearDb()
             }
