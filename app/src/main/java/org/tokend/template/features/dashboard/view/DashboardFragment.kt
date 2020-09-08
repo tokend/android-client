@@ -2,19 +2,18 @@ package org.tokend.template.features.dashboard.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.appcompat.view.SupportMenuInflater
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.view.SupportMenuInflater
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.activities.OnBackPressedListener
-import org.tokend.template.extensions.disableShifting
 import org.tokend.template.features.dashboard.balances.view.BalancesFragment
 import org.tokend.template.features.dashboard.movements.view.AccountMovementsFragment
 import org.tokend.template.fragments.BaseFragment
@@ -48,8 +47,6 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initTabs() {
-        bottom_tabs.disableShifting()
-
         if (!BuildConfig.IS_SEND_ALLOWED) {
             bottom_tabs.menu.removeItem(R.id.send)
             bottom_tabs.menu.removeItem(R.id.receive)
