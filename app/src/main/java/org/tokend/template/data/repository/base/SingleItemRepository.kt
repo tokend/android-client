@@ -2,6 +2,7 @@ package org.tokend.template.data.repository.base
 
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toMaybe
@@ -36,7 +37,7 @@ abstract class SingleItemRepository<T : Any>(
         item?.let { itemSubject.onNext(it) }
     }
 
-    protected abstract fun getItem(): Maybe<T>
+    protected abstract fun getItem(): Single<T>
 
     protected open fun getStoredItem(): Maybe<T> {
         return itemPersistence

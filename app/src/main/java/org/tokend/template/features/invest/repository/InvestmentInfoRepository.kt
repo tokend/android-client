@@ -1,11 +1,9 @@
 package org.tokend.template.features.invest.repository
 
-import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
+import org.tokend.template.data.repository.base.SingleItemRepository
 import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.features.balances.storage.BalancesRepository
-import org.tokend.template.data.repository.base.SingleItemRepository
 import org.tokend.template.features.invest.model.InvestmentInfo
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.offers.model.OfferRecord
@@ -20,18 +18,17 @@ class InvestmentInfoRepository(
         private val offersRepository: OffersRepository,
         private val salesRepository: SalesRepository
 ) : SingleItemRepository<InvestmentInfo>() {
-    override fun getItem(): Maybe<InvestmentInfo> {
+    override fun getItem(): Single<InvestmentInfo> {
         return Single.zip(
                 getDetailedSaleIfNeeded(),
                 getOffersByAsset(),
-                BiFunction { detailedSale: SaleRecord, offers: Map<String, OfferRecord> ->
+                { detailedSale: SaleRecord, offers: Map<String, OfferRecord> ->
                     InvestmentInfo(
                             offers,
                             detailedSale
                     )
                 }
         )
-                .toMaybe()
     }
 
     private fun getOffersByAsset(): Single<Map<String, OfferRecord>> {

@@ -2,13 +2,13 @@ package org.tokend.template.features.localaccount.view
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.SimpleItemAnimator
 import android.text.Html
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -49,7 +49,7 @@ class LocalAccountDetailsActivity : BaseActivity() {
         initToolbar()
         initList()
 
-        val localAccount = repositoryProvider.localAccount().item
+        val localAccount = repositoryProvider.localAccount().presentAccount
         if (localAccount == null) {
             finishWithMissingArgError("There is no local account in the repository")
             return

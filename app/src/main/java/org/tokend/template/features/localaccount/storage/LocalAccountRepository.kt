@@ -1,7 +1,9 @@
 package org.tokend.template.features.localaccount.storage
 
 import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
+import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.template.data.repository.base.ObjectPersistence
 import org.tokend.template.data.repository.base.SingleItemRepository
@@ -9,23 +11,33 @@ import org.tokend.template.features.localaccount.model.LocalAccount
 
 class LocalAccountRepository(
         private val localAccountPersistence: ObjectPersistence<LocalAccount>
-) : SingleItemRepository<LocalAccount>() {
-    override fun getItem(): Maybe<LocalAccount> {
+) : SingleItemRepository<LocalAccountRepository.Item>() {
+    sealed class Item {
+        object Missing: Item()
+        class Present(val localAccount: LocalAccount): Item()
+    }
+
+    val presentAccount: LocalAccount?
+        get() = (item as? Item.Present)?.localAccount
+
+    override fun getItem(): Single<Item> {
         return Maybe.defer {
             localAccountPersistence.loadItem().toMaybe()
         }
+                .map<Item>(Item::Present)
+                .switchIfEmpty(Single.defer{ Item.Missing.toSingle()})
                 .subscribeOn(Schedulers.newThread())
-                .doOnComplete { isNeverUpdated = false }
+                .doOnSuccess { isNeverUpdated = false }
     }
 
     fun useAccount(newAccount: LocalAccount) {
         localAccountPersistence.saveItem(newAccount)
-        onNewItem(newAccount)
+        onNewItem(Item.Present(newAccount))
     }
 
     fun erase() {
         localAccountPersistence.clear()
-        item?.let {
+        (item as? Item.Present)?.localAccount?.let {
             it.isErased = true
             broadcast()
         }

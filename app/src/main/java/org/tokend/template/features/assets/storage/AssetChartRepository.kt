@@ -1,12 +1,11 @@
 package org.tokend.template.features.assets.storage
 
-import io.reactivex.Maybe
 import io.reactivex.Single
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.utils.extentions.isNotFound
-import org.tokend.template.features.assets.model.AssetChartData
 import org.tokend.template.data.repository.base.SingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
+import org.tokend.template.features.assets.model.AssetChartData
 import retrofit2.HttpException
 
 class AssetChartRepository private constructor(
@@ -26,7 +25,7 @@ class AssetChartRepository private constructor(
         this.quoteAssetCode = quoteAssetCode
     }
 
-    override fun getItem(): Maybe<AssetChartData> {
+    override fun getItem(): Single<AssetChartData> {
         val quoteAssetCode = quoteAssetCode
 
         return apiProvider
@@ -46,6 +45,5 @@ class AssetChartRepository private constructor(
                     else
                         Single.error(error)
                 }
-                .toMaybe()
     }
 }

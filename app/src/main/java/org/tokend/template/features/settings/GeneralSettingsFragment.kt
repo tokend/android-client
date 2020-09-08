@@ -2,13 +2,13 @@ package org.tokend.template.features.settings
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.preference.PreferenceCategory
-import androidx.preference.SwitchPreferenceCompat
-import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import androidx.appcompat.widget.Toolbar
+import androidx.preference.PreferenceCategory
+import androidx.preference.SwitchPreferenceCompat
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
@@ -151,7 +151,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun initLocalAccountMnemonicItem() {
         val mnemonicPreference = findPreference("mnemonic") ?: return
 
-        val localAccount = repositoryProvider.localAccount().item
+        val localAccount = repositoryProvider.localAccount().presentAccount
         val entropy =
                 if (localAccount != null && localAccount.hasEntropy && localAccount.isDecrypted)
                     localAccount.entropy

@@ -22,7 +22,7 @@ class ActiveKycRepository(
     val itemFormData: KycForm?
         get() = (item as? ActiveKyc.Form)?.formData
 
-    override fun getItem(): Maybe<ActiveKyc> {
+    override fun getItem(): Single<ActiveKyc> {
         return getAccount()
                 .flatMap { account ->
                     if (account.kycBlob != null)
@@ -30,7 +30,6 @@ class ActiveKycRepository(
                     else
                         Single.just(ActiveKyc.Missing)
                 }
-                .toMaybe()
     }
 
     private fun getAccount(): Single<AccountRecord> {

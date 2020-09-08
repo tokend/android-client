@@ -21,8 +21,8 @@ import org.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
 import org.tokend.template.features.userkey.pin.PinCodeActivity
 import org.tokend.template.features.userkey.pin.SetUpPinCodeActivity
 import org.tokend.template.features.userkey.view.ActivityUserKeyProvider
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import java.util.concurrent.TimeUnit
 
 class LocalAccountSignInActivity : BaseActivity() {
@@ -32,7 +32,7 @@ class LocalAccountSignInActivity : BaseActivity() {
         get() = repositoryProvider.localAccount()
 
     private val localAccount: LocalAccount?
-        get() = localAccountRepository.item
+        get() = localAccountRepository.presentAccount
 
     private var isLoading: Boolean = false
         set(value) {
