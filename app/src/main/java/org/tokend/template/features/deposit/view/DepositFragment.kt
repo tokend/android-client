@@ -1,15 +1,15 @@
 package org.tokend.template.features.deposit.view
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.core.view.GestureDetectorCompat
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.SimpleItemAnimator
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.view.GestureDetectorCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -22,19 +22,19 @@ import org.jetbrains.anko.onClick
 import org.jetbrains.anko.runOnUiThread
 import org.tokend.template.R
 import org.tokend.template.data.model.AccountRecord
+import org.tokend.template.data.repository.AccountRepository
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.assets.model.AssetRecord
-import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.features.assets.storage.AssetsRepository
-import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.deposit.logic.BindCoinpaymentsDepositAccountUseCase
 import org.tokend.template.features.deposit.logic.BindDepositAccountUseCase
 import org.tokend.template.features.deposit.logic.BindExternalSystemDepositAccountUseCase
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.fragments.ToolbarProvider
 import org.tokend.template.logic.TxManager
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.details.DetailsItem
 import org.tokend.template.view.details.ExtraViewProvider
 import org.tokend.template.view.details.adapter.DetailsItemsAdapter
@@ -43,7 +43,7 @@ import org.tokend.template.view.picker.PickerItem
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
-import org.tokend.template.view.util.formatter.DateFormatter
+import org.tokend.template.view.util.formatter.DateFormatters
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
 import java.util.*
@@ -401,7 +401,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         adapter.addOrUpdateItem(
                 DetailsItem(
                         id = EXPIRATION_ITEM_ID,
-                        text = DateFormatter(requireActivity()).formatLong(expirationDate),
+                        text = DateFormatters.long.format(expirationDate, requireActivity()),
                         singleLineText = true,
                         textColor = ContextCompat.getColor(requireContext(), colorId),
                         header = getString(R.string.deposit_address_expiration_date),
@@ -440,7 +440,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
             val expire = externalAccount.expirationDate?.let {
                 getString(R.string.template_deposit_expiration,
-                        DateFormatter(requireActivity()).formatCompact(it))
+                        DateFormatters.compact.format(it, requireActivity()))
             } ?: ""
 
             address + payload + expire
