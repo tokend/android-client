@@ -114,7 +114,7 @@ class BalanceChangeMainDataView(
     }
 
     fun displayDate(date: Date) {
-        topInfoTextView.text = DateFormatters.long.format(date, context)
+        topInfoTextView.text = DateFormatters.long(context).format(date)
     }
 
     fun displayNonZeroFee(fee: BigDecimal,

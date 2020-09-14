@@ -32,7 +32,7 @@ class TradeHistoryItemViewHolder(view: View,
         amountText.text = amountFormatter.formatAssetAmount(item.baseAmount,
                 item.baseAsset, withAssetCode = false, abbreviation = true)
 
-        timeText.text = DateFormatters.timeOrDate.format(item.createdAt, view.context)
+        timeText.text = DateFormatters.timeOrDate(item.createdAt, view.context).format(item.createdAt)
 
         priceText.textColor =
                 if (item.hasPositiveTrend)

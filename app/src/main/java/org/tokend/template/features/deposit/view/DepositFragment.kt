@@ -401,7 +401,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         adapter.addOrUpdateItem(
                 DetailsItem(
                         id = EXPIRATION_ITEM_ID,
-                        text = DateFormatters.long.format(expirationDate, requireActivity()),
+                        text = DateFormatters.long(requireActivity()).format(expirationDate),
                         singleLineText = true,
                         textColor = ContextCompat.getColor(requireContext(), colorId),
                         header = getString(R.string.deposit_address_expiration_date),
@@ -440,7 +440,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
             val expire = externalAccount.expirationDate?.let {
                 getString(R.string.template_deposit_expiration,
-                        DateFormatters.compact.format(it, requireActivity()))
+                        DateFormatters.compact(requireActivity()).format(it))
             } ?: ""
 
             address + payload + expire

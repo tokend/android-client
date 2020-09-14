@@ -11,7 +11,8 @@ import org.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.template.view.util.formatter.DateFormatters
 
 class BalanceChangeItemViewHolder(view: View,
-                                  private val amountFormatter: AmountFormatter
+                                  private val amountFormatter: AmountFormatter,
+                                  private val dateFormatter: DateFormatters
 ) : BaseViewHolder<BalanceChangeListItem>(view),
         HistoryItemView by HistoryItemViewImpl(view) {
 
@@ -78,6 +79,6 @@ class BalanceChangeItemViewHolder(view: View,
 
     private fun displayExtraInfo(item: BalanceChangeListItem) {
         extraInfoTextView.visibility = View.VISIBLE
-        extraInfoTextView.text = DateFormatters.timeOrDate.format(item.date, view.context)
+        extraInfoTextView.text = dateFormatter.timeOrDate(item.date, view.context).format(item.date)
     }
 }

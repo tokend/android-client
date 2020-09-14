@@ -15,6 +15,7 @@ import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.util.navigation.ActivityRequest
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.view.util.formatter.DateFormatters
 import javax.inject.Inject
 
 abstract class BaseFragment : Fragment(), OnBackPressedListener {
@@ -42,6 +43,8 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
     lateinit var balanceComparator: Comparator<BalanceRecord>
     @Inject
     lateinit var amountFormatter: AmountFormatter
+    @Inject
+    lateinit var dateFormatter: DateFormatters
 
     override fun onBackPressed() = true
 

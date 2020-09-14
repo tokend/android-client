@@ -189,7 +189,7 @@ class BalanceDetailsActivity : BaseActivity() {
     }
 
     private fun initHistory() {
-        adapter = BalanceChangesAdapter(amountFormatter)
+        adapter = BalanceChangesAdapter(amountFormatter, dateFormatter)
         adapter.onItemClick { _, item ->
             item.source?.let { Navigator.from(this).openBalanceChangeDetails(it) }
             menu_fab.close(false)

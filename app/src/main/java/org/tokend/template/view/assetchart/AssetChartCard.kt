@@ -333,7 +333,7 @@ class AssetChartCard : LinearLayout {
                 amountFormatter.formatAssetAmount(amount, asset)
         valueHintTextView.text =
                 context.getString(R.string.chart_highlight_at_hint,
-                        valueHint, DateFormatters.compact.format(date, context))
+                        valueHint, DateFormatters.compact(context).format(date))
     }
 
     private fun displayGrowth(growth: BigDecimal, percent: BigDecimal?) {

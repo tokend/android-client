@@ -27,9 +27,9 @@ class SaleDetailsFragment : AssetDetailsFragment() {
 
         card
                 .addRow(getString(R.string.sale_info_start_time),
-                        DateFormatters.compact.format(sale.startDate, requireContext()))
+                        DateFormatters.compact(requireContext()).format(sale.startDate))
                 .addRow(getString(R.string.sale_info_close_time),
-                        DateFormatters.compact.format(sale.endDate, requireContext()))
+                        DateFormatters.compact(requireContext()).format(sale.endDate))
                 .addRow(getString(R.string.sale_info_soft_cap),
                         amountFormatter.formatAssetAmount(sale.softCap, sale.defaultQuoteAsset))
                 .addRow(getString(R.string.sale_info_hard_cap),
