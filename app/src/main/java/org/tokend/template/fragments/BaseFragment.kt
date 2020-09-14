@@ -2,20 +2,19 @@ package org.tokend.template.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
 import io.reactivex.disposables.CompositeDisposable
 import org.tokend.template.App
 import org.tokend.template.activities.OnBackPressedListener
+import org.tokend.template.di.providers.*
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.balances.model.BalanceRecord
-import org.tokend.template.di.providers.*
 import org.tokend.template.features.tfa.logic.AppTfaCallback
 import org.tokend.template.util.errorhandler.ErrorHandlerFactory
 import org.tokend.template.util.navigation.ActivityRequest
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.formatter.DateFormatters
 import javax.inject.Inject
 
 abstract class BaseFragment : Fragment(), OnBackPressedListener {
@@ -43,8 +42,6 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
     lateinit var balanceComparator: Comparator<BalanceRecord>
     @Inject
     lateinit var amountFormatter: AmountFormatter
-    @Inject
-    lateinit var dateFormatter: DateFormatters
 
     override fun onBackPressed() = true
 

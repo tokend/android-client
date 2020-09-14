@@ -8,14 +8,14 @@ import java.util.*
 
 object DateFormatters {
     // Expecting it was set by locale manager.
-    private var locale = Locale.getDefault()
+    private val locale: Locale
+        get() = Locale.getDefault()
 
     /**
      * Formats given date to the long string with date only
      */
-    private val longDateOnly: DateFormat by lazy {
-        SimpleDateFormat("dd MMMM yyyy", locale)
-    }
+    private val longDateOnly: DateFormat
+        get() = SimpleDateFormat("dd MMMM yyyy", locale)
 
     /**
      * Formats given date to the long string with time only:
@@ -41,7 +41,7 @@ object DateFormatters {
      */
     fun compact(context: Context): DateFormat {
         return SimpleDateFormat { date ->
-            formatCompactDateOnly(date) + " " + longTimeOnly(context)
+            compactDateOnly(includeYear = true).format(date) + " " + longTimeOnly(context)
         }
     }
 
@@ -50,21 +50,22 @@ object DateFormatters {
      * Otherwise formats to date with short month name including 2-digits year number
      * if the year is different from the current one.
      */
-    fun timeOrDate(date: Date, context: Context): DateFormat {
-        val currentCalendar = Calendar.getInstance()
-        val currentDay = currentCalendar.get(Calendar.DAY_OF_YEAR)
-        val currentYear = currentCalendar.get(Calendar.YEAR)
+    fun timeOrDate(context: Context): DateFormat {
+        return SimpleDateFormat { date ->
+            val currentCalendar = Calendar.getInstance()
+            val currentDay = currentCalendar.get(Calendar.DAY_OF_YEAR)
+            val currentYear = currentCalendar.get(Calendar.YEAR)
 
-        val actionCalendar = Calendar.getInstance().apply { timeInMillis = date.time }
-        val actionDay = actionCalendar.get(Calendar.DAY_OF_YEAR)
-        val actionYear = actionCalendar.get(Calendar.YEAR)
+            val actionCalendar = Calendar.getInstance().apply { timeInMillis = date.time }
+            val actionDay = actionCalendar.get(Calendar.DAY_OF_YEAR)
+            val actionYear = actionCalendar.get(Calendar.YEAR)
 
-        return when {
-            currentDay == actionDay
-                    && currentYear == actionYear -> longTimeOnly(context)
-            else -> SimpleDateFormat {
-                formatCompactDateOnly(it, includeYear = currentYear != actionYear)
-            }
+            when {
+                currentDay == actionDay && currentYear == actionYear ->
+                    longTimeOnly(context)
+                else ->
+                    compactDateOnly(includeYear = currentYear != actionYear)
+            }.format(date)
         }
     }
 
@@ -72,15 +73,11 @@ object DateFormatters {
      * Formats given date to the long string without time:
      * short month name, 2-digits year number
      */
-    private fun formatCompactDateOnly(date: Date, includeYear: Boolean = true): String {
-        val pattern =
-                if (includeYear)
-                    "dd MMM yy"
-                else
-                    "dd MMM"
-
-        return SimpleDateFormat(pattern, locale)
-                .format(date)
+    private fun compactDateOnly(includeYear: Boolean = true): DateFormat {
+        return if (includeYear)
+            SimpleDateFormat("dd MMM yy", locale)
+        else
+            SimpleDateFormat("dd MMM", locale)
     }
 }
 

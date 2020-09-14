@@ -8,9 +8,11 @@ import org.tokend.template.features.trade.history.model.TradeHistoryRecord
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.PaginationRecyclerAdapter
 import org.tokend.template.view.util.formatter.AmountFormatter
+import java.text.DateFormat
 
 class TradeHistoryAdapter(
-        private val amountFormatter: AmountFormatter
+        private val amountFormatter: AmountFormatter,
+        private val dateFormat: DateFormat
 ) : PaginationRecyclerAdapter<TradeHistoryRecord, BaseViewHolder<TradeHistoryRecord>>() {
 
     private class FooterViewHolder(view: View) : BaseViewHolder<TradeHistoryRecord>(view) {
@@ -26,7 +28,7 @@ class TradeHistoryAdapter(
     override fun createItemViewHolder(parent: ViewGroup): TradeHistoryItemViewHolder {
         val view = parent.context
                 .layoutInflater.inflate(R.layout.list_item_trade_history, parent, false)
-        return TradeHistoryItemViewHolder(view, amountFormatter)
+        return TradeHistoryItemViewHolder(view, amountFormatter, dateFormat)
     }
 
     override fun bindFooterViewHolder(holder: BaseViewHolder<TradeHistoryRecord>) {}

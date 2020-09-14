@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import org.tokend.sdk.tfa.NeedTfaException
@@ -36,7 +36,6 @@ import org.tokend.template.util.locale.AppLocaleManager
 import org.tokend.template.util.navigation.ActivityRequest
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.formatter.DateFormatters
 import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity(), TfaCallback {
@@ -72,8 +71,6 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     lateinit var session: Session
     @Inject
     lateinit var amountFormatter: AmountFormatter
-    @Inject
-    lateinit var dateFormatter: DateFormatters
     @Inject
     lateinit var activeKycPersistence: ActiveKycPersistence
     @Inject

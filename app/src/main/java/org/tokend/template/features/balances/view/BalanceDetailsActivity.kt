@@ -26,6 +26,7 @@ import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.*
 import org.tokend.template.view.util.fab.FloatingActionMenuAction
 import org.tokend.template.view.util.fab.addActions
+import org.tokend.template.view.util.formatter.DateFormatters
 
 class BalanceDetailsActivity : BaseActivity() {
     private val loadingIndicator = LoadingIndicatorManager(
@@ -189,7 +190,7 @@ class BalanceDetailsActivity : BaseActivity() {
     }
 
     private fun initHistory() {
-        adapter = BalanceChangesAdapter(amountFormatter, dateFormatter)
+        adapter = BalanceChangesAdapter(amountFormatter, DateFormatters.timeOrDate(this))
         adapter.onItemClick { _, item ->
             item.source?.let { Navigator.from(this).openBalanceChangeDetails(it) }
             menu_fab.close(false)

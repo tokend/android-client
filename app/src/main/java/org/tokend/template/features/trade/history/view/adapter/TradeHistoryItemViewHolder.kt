@@ -8,10 +8,12 @@ import org.tokend.template.R
 import org.tokend.template.features.trade.history.model.TradeHistoryRecord
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.formatter.DateFormatters
+import java.text.DateFormat
 
-class TradeHistoryItemViewHolder(view: View,
-                                 private val amountFormatter: AmountFormatter
+class TradeHistoryItemViewHolder(
+        view: View,
+        private val amountFormatter: AmountFormatter,
+        private val dateFormat: DateFormat
 ) : BaseViewHolder<TradeHistoryRecord>(view) {
     private val positiveColor: Int by lazy {
         ContextCompat.getColor(view.context, R.color.received)
@@ -32,7 +34,7 @@ class TradeHistoryItemViewHolder(view: View,
         amountText.text = amountFormatter.formatAssetAmount(item.baseAmount,
                 item.baseAsset, withAssetCode = false, abbreviation = true)
 
-        timeText.text = DateFormatters.timeOrDate(item.createdAt, view.context).format(item.createdAt)
+        timeText.text = dateFormat.format(item.createdAt)
 
         priceText.textColor =
                 if (item.hasPositiveTrend)

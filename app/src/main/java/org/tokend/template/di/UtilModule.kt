@@ -91,11 +91,6 @@ class UtilModule {
     fun amountFormatter(): AmountFormatter {
         return DefaultAmountFormatter()
     }
-    @Provides
-    @Singleton
-    fun dateFormatter(): DateFormatters {
-        return DateFormatters
-    }
 
     @Provides
     @Singleton

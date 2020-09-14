@@ -8,12 +8,12 @@ import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.history.HistoryItemView
 import org.tokend.template.view.history.HistoryItemViewImpl
 import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.formatter.DateFormatters
+import java.text.DateFormat
 
 class PendingOfferItemViewHolder(
         view: View,
         private val amountFormatter: AmountFormatter,
-        private val dateFormatter: DateFormatters
+        private val dateFormat: DateFormat
 ) : BaseViewHolder<PendingOfferListItem>(view),
         HistoryItemView by HistoryItemViewImpl(view) {
 
@@ -77,6 +77,6 @@ class PendingOfferItemViewHolder(
 
     private fun displayExtraInfo(item: PendingOfferListItem) {
         extraInfoTextView.visibility = View.VISIBLE
-        extraInfoTextView.text = dateFormatter.timeOrDate(item.date, view.context).format(item.date)
+        extraInfoTextView.text = dateFormat.format(item.date)
     }
 }
