@@ -13,7 +13,7 @@ object DateFormatters {
     /**
      * Formats given date to the long string with date only
      */
-    val longDateOnly: DateFormat by lazy {
+    private val longDateOnly: DateFormat by lazy {
         SimpleDateFormat("dd MMMM yyyy", locale)
     }
 
@@ -21,7 +21,7 @@ object DateFormatters {
      * Formats given date to the long string with time only:
      * 12-/24-hour time based on device preference
      */
-    fun longTimeOnly(context: Context): DateFormat {
+    private fun longTimeOnly(context: Context): DateFormat {
         return android.text.format.DateFormat.getTimeFormat(context)
     }
 
