@@ -8,15 +8,16 @@ import org.tokend.template.view.history.HistoryItemView
 import org.tokend.template.view.history.HistoryItemViewImpl
 import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.formatter.DateFormatter
+import java.text.DateFormat
 
-class BalanceChangeItemViewHolder(view: View,
-                                  private val amountFormatter: AmountFormatter
+class BalanceChangeItemViewHolder(
+        view: View,
+        private val amountFormatter: AmountFormatter,
+        private val dateFormat: DateFormat
 ) : BaseViewHolder<BalanceChangeListItem>(view),
         HistoryItemView by HistoryItemViewImpl(view) {
 
     private val iconFactory = BalanceChangeIconFactory(view.context)
-    private val dateFormatter = DateFormatter(view.context)
 
     override fun bind(item: BalanceChangeListItem) {
         displayIcon(item)
@@ -79,6 +80,6 @@ class BalanceChangeItemViewHolder(view: View,
 
     private fun displayExtraInfo(item: BalanceChangeListItem) {
         extraInfoTextView.visibility = View.VISIBLE
-        extraInfoTextView.text = dateFormatter.formatTimeOrDate(item.date)
+        extraInfoTextView.text = dateFormat.format(item.date)
     }
 }

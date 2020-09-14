@@ -24,6 +24,7 @@ import org.tokend.template.util.errorhandler.ErrorLogger
 import org.tokend.template.util.locale.AppLocaleManager
 import org.tokend.template.view.ToastManager
 import org.tokend.template.view.util.formatter.AmountFormatter
+import org.tokend.template.view.util.formatter.DateFormatters
 import org.tokend.template.view.util.formatter.DefaultAmountFormatter
 import java.util.*
 import javax.inject.Singleton

@@ -3,8 +3,6 @@ package org.tokend.template.view.assetchart
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
-import com.google.android.material.tabs.TabLayout
-import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -12,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
@@ -21,6 +20,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.EntryXComparator
+import com.google.android.material.tabs.TabLayout
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
@@ -32,7 +32,7 @@ import org.tokend.template.features.assets.model.AssetChartData
 import org.tokend.template.view.ContentLoadingProgressBar
 import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.formatter.DateFormatter
+import org.tokend.template.view.util.formatter.DateFormatters
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
@@ -333,7 +333,7 @@ class AssetChartCard : LinearLayout {
                 amountFormatter.formatAssetAmount(amount, asset)
         valueHintTextView.text =
                 context.getString(R.string.chart_highlight_at_hint,
-                        valueHint, DateFormatter(context).formatCompact(date))
+                        valueHint, DateFormatters.compact(context).format(date))
     }
 
     private fun displayGrowth(growth: BigDecimal, percent: BigDecimal?) {

@@ -1,18 +1,19 @@
 package org.tokend.template.features.offers.view
 
 import android.graphics.drawable.Drawable
-import androidx.core.content.ContextCompat
 import android.view.View
+import androidx.core.content.ContextCompat
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.history.HistoryItemView
 import org.tokend.template.view.history.HistoryItemViewImpl
 import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.formatter.DateFormatter
+import java.text.DateFormat
 
 class PendingOfferItemViewHolder(
         view: View,
-        private val amountFormatter: AmountFormatter
+        private val amountFormatter: AmountFormatter,
+        private val dateFormat: DateFormat
 ) : BaseViewHolder<PendingOfferListItem>(view),
         HistoryItemView by HistoryItemViewImpl(view) {
 
@@ -22,7 +23,6 @@ class PendingOfferItemViewHolder(
     private val outgoingIcon: Drawable? =
             ContextCompat.getDrawable(view.context, R.drawable.ic_tx_sent)
 
-    private val dateFormatter = DateFormatter(view.context)
 
     override fun bind(item: PendingOfferListItem) {
         displayIcon(item)
@@ -77,6 +77,6 @@ class PendingOfferItemViewHolder(
 
     private fun displayExtraInfo(item: PendingOfferListItem) {
         extraInfoTextView.visibility = View.VISIBLE
-        extraInfoTextView.text = dateFormatter.formatTimeOrDate(item.date)
+        extraInfoTextView.text = dateFormat.format(item.date)
     }
 }

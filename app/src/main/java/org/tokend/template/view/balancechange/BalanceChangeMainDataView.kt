@@ -1,10 +1,10 @@
 package org.tokend.template.view.balancechange
 
-import com.google.android.material.appbar.AppBarLayout
-import androidx.core.content.ContextCompat
-import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import com.google.android.material.appbar.AppBarLayout
 import org.jetbrains.anko.childrenSequence
 import org.jetbrains.anko.dip
 import org.tokend.template.R
@@ -12,7 +12,7 @@ import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.view.ScrimCallbackCollapsingToolbarLayout
 import org.tokend.template.view.util.AnimationUtil
 import org.tokend.template.view.util.formatter.AmountFormatter
-import org.tokend.template.view.util.formatter.DateFormatter
+import org.tokend.template.view.util.formatter.DateFormatters
 import java.math.BigDecimal
 import java.util.*
 
@@ -114,7 +114,7 @@ class BalanceChangeMainDataView(
     }
 
     fun displayDate(date: Date) {
-        topInfoTextView.text = DateFormatter(context).formatLong(date)
+        topInfoTextView.text = DateFormatters.long(context).format(date)
     }
 
     fun displayNonZeroFee(fee: BigDecimal,

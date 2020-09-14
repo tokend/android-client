@@ -1,11 +1,11 @@
 package org.tokend.template.features.dashboard.movements.view
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_account_movements.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
@@ -15,11 +15,12 @@ import org.tokend.template.features.history.storage.BalanceChangesRepository
 import org.tokend.template.features.history.view.adapter.BalanceChangeListItem
 import org.tokend.template.features.history.view.adapter.BalanceChangesAdapter
 import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.LocalizedName
+import org.tokend.template.view.util.formatter.DateFormatters
 
 class AccountMovementsFragment : BaseFragment() {
     private val loadingIndicator = LoadingIndicatorManager(
@@ -53,7 +54,7 @@ class AccountMovementsFragment : BaseFragment() {
     }
 
     private fun initHistory() {
-        adapter = BalanceChangesAdapter(amountFormatter)
+        adapter = BalanceChangesAdapter(amountFormatter, DateFormatters.timeOrDate(requireContext()))
         adapter.onItemClick { _, item ->
             item.source?.let { Navigator.from(this).openBalanceChangeDetails(it) }
         }

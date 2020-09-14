@@ -8,7 +8,7 @@ import org.tokend.template.features.assets.details.view.AssetDetailsFragment
 import org.tokend.template.features.invest.logic.InvestmentInfoHolder
 import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.view.InfoCard
-import org.tokend.template.view.util.formatter.DateFormatter
+import org.tokend.template.view.util.formatter.DateFormatters
 
 class SaleDetailsFragment : AssetDetailsFragment() {
     private lateinit var sale: SaleRecord
@@ -27,9 +27,9 @@ class SaleDetailsFragment : AssetDetailsFragment() {
 
         card
                 .addRow(getString(R.string.sale_info_start_time),
-                        DateFormatter(requireContext()).formatCompact(sale.startDate))
+                        DateFormatters.compact(requireContext()).format(sale.startDate))
                 .addRow(getString(R.string.sale_info_close_time),
-                        DateFormatter(requireContext()).formatCompact(sale.endDate))
+                        DateFormatters.compact(requireContext()).format(sale.endDate))
                 .addRow(getString(R.string.sale_info_soft_cap),
                         amountFormatter.formatAssetAmount(sale.softCap, sale.defaultQuoteAsset))
                 .addRow(getString(R.string.sale_info_hard_cap),

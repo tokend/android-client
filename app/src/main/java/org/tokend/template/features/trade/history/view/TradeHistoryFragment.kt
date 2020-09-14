@@ -1,23 +1,24 @@
 package org.tokend.template.features.trade.history.view
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_trade_history.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import org.tokend.template.R
-import org.tokend.template.features.trade.pairs.model.AssetPairRecord
-import org.tokend.template.features.trade.history.repository.TradeHistoryRepository
 import org.tokend.template.extensions.withArguments
+import org.tokend.template.features.trade.history.repository.TradeHistoryRepository
 import org.tokend.template.features.trade.history.view.adapter.TradeHistoryAdapter
+import org.tokend.template.features.trade.pairs.model.AssetPairRecord
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.LoadingIndicatorManager
+import org.tokend.template.view.util.formatter.DateFormatters
 
 class TradeHistoryFragment : BaseFragment() {
 
@@ -66,7 +67,7 @@ class TradeHistoryFragment : BaseFragment() {
 
     private fun initList() {
         trade_history_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        adapter = TradeHistoryAdapter(amountFormatter)
+        adapter = TradeHistoryAdapter(amountFormatter, DateFormatters.timeOrDate(requireContext()))
         trade_history_list.adapter = adapter
         trade_history_list.listenBottomReach({ adapter.getDataItemCount() }) {
             tradeHistoryRepository.loadMore() || tradeHistoryRepository.noMoreItems
