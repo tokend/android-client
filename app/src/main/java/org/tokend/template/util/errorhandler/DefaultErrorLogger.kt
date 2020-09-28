@@ -1,6 +1,8 @@
 package org.tokend.template.util.errorhandler
 
-import com.crashlytics.android.Crashlytics
+import android.os.Bundle
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import org.tokend.template.BuildConfig
 import retrofit2.HttpException
 import retrofit2.Response
@@ -8,7 +10,7 @@ import retrofit2.Response
 class DefaultErrorLogger : ErrorLogger {
     override fun log(error: Throwable) {
         var e = error
-        
+
         if (error is HttpException) {
             val rawResponse = error.response().raw()
             val request = rawResponse.request()
@@ -23,8 +25,17 @@ class DefaultErrorLogger : ErrorLogger {
         }
 
         if (BuildConfig.ENABLE_ANALYTICS) {
-            Crashlytics.logException(e)
+            Firebase.analytics.logEvent(EVENT_TYPE, Bundle().apply {
+                putString(MESSAGE, e.message)
+                putString(STACK_TRACE, e.stackTrace.toString())
+            })
         }
         e.printStackTrace()
+    }
+
+    companion object {
+        private const val EVENT_TYPE = "Crash"
+        private const val MESSAGE = "Message"
+        private const val STACK_TRACE = "Stack Trace"
     }
 }
