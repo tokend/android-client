@@ -6,6 +6,7 @@ import com.google.firebase.ktx.Firebase
 import org.tokend.template.BuildConfig
 import retrofit2.HttpException
 import retrofit2.Response
+import java.lang.StringBuilder
 
 class DefaultErrorLogger : ErrorLogger {
     override fun log(error: Throwable) {
@@ -25,16 +26,22 @@ class DefaultErrorLogger : ErrorLogger {
         }
 
         if (BuildConfig.ENABLE_ANALYTICS) {
+            val stringStackTrace = StringBuilder(e.stackTrace[0].toString())
+
+            if (stringStackTrace.length > 100) {
+                stringStackTrace.substring(stringStackTrace.length - 101, stringStackTrace.lastIndex)
+            }
+
             Firebase.analytics.logEvent(EVENT_TYPE, Bundle().apply {
                 putString(MESSAGE, e.message)
-                putString(STACK_TRACE, e.stackTrace.toString())
+                putString(STACK_TRACE, stringStackTrace.toString())
             })
         }
         e.printStackTrace()
     }
 
     companion object {
-        private const val EVENT_TYPE = "Crash"
+        private const val EVENT_TYPE = "Error"
         private const val MESSAGE = "Message"
         private const val STACK_TRACE = "Stack Trace"
     }

@@ -195,4 +195,23 @@ ext.applyAppConfig = { buildConfig ->
     b.resValue "color", "sent", "${color_sent}"
     b.resValue "color", "warning", "${color_warning}"
     b.resValue "color", "avatar_placeholder_background", "${color_avatar_placeholder_background}"
+
+    def keystorePropertiesFile = rootProject.file("app/keystore.properties")
+    def keystoreProperties = new Properties()
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    }
+
+    b.resValue "string", "google_api_key", keystoreProperties['google_api_key'] != null
+            ? keystoreProperties['google_api_key']
+            : "a000000000000000000000000000000000000000"
+
+    b.resValue "string", "google_app_id", keystoreProperties['google_app_id'] != null
+            ? keystoreProperties['google_app_id']
+            : "a000000000000000000000000000000000000000"
+
+    b.resValue "string", "firebase_database_url", keystoreProperties['firebase_database_url'] != null
+            ? keystoreProperties['firebase_database_url']
+            : "a000000000000000000000000000000000000000"
+
 }
