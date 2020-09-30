@@ -141,6 +141,8 @@ ext {
     // Sets asset to convert balance amounts into
     balances_conversion_asset = 'USD'
     // ----------------------
+
+    ENABLE_ANALYTICS_FIELD_KEY = "ENABLE_ANALYTICS"
 }
 
 ext.applyAppConfig = { buildConfig ->
@@ -172,7 +174,7 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'IS_DIRECT_BUY_ALLOWED', "${allow_direct_buy}"
     b.buildConfigField 'Boolean', 'IS_NETWORK_SPECIFIED_BY_USER', "${network_specified_by_user}"
     b.buildConfigField 'Boolean', 'ARE_POLLS_ALLOWED', "${allow_polls}"
-    b.buildConfigField 'Boolean', 'ENABLE_ANALYTICS', "${enable_analytics}"
+    b.buildConfigField 'Boolean', ENABLE_ANALYTICS_FIELD_KEY, "${enable_analytics}"
     b.buildConfigField 'Boolean', 'ENABLE_LOCAL_ACCOUNT_SIGN_IN', "${allow_local_account_sign_in}"
     b.buildConfigField 'Boolean', 'ENABLE_BALANCES_CONVERSION', "${enable_balances_conversion}"
     b.buildConfigField 'String', 'BALANCES_CONVERSION_ASSET', "\"${balances_conversion_asset}\""
@@ -195,27 +197,4 @@ ext.applyAppConfig = { buildConfig ->
     b.resValue "color", "sent", "${color_sent}"
     b.resValue "color", "warning", "${color_warning}"
     b.resValue "color", "avatar_placeholder_background", "${color_avatar_placeholder_background}"
-
-    def keystorePropertiesFile = rootProject.file("app/keystore.properties")
-    def keystoreProperties = new Properties()
-    if (keystorePropertiesFile.exists()) {
-        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-    }
-
-    b.resValue "string", "google_api_key", keystoreProperties['google_api_key'] != null
-            ? keystoreProperties['google_api_key']
-            : "a000000000000000000000000000000000000000"
-
-    b.resValue "string", "google_app_id", keystoreProperties['google_app_id'] != null
-            ? keystoreProperties['google_app_id']
-            : "a000000000000000000000000000000000000000"
-
-    b.resValue "string", "firebase_database_url", keystoreProperties['firebase_database_url'] != null
-            ? keystoreProperties['firebase_database_url']
-            : "a000000000000000000000000000000000000000"
-
-    b.resValue "string", "project_id", keystoreProperties['project_id'] != null
-            ? keystoreProperties['project_id']
-            : "a000000000000000000000000000000000000000"
-
 }

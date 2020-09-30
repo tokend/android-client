@@ -18,8 +18,6 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
@@ -122,20 +120,14 @@ class App : MultiDexApplication() {
         initLocale()
         initState()
         initPicasso()
-        initFirebaseAnalytics()
+        initCrashlytics()
         initRxErrorHandler()
     }
 
-    private fun initFirebaseAnalytics() {
-        val options = FirebaseOptions.Builder()
-                .setApplicationId(resources.getString(R.string.google_app_id))
-                .setApiKey(resources.getString(R.string.google_api_key))
-                .setDatabaseUrl(resources.getString(R.string.firebase_database_url))
-                .setProjectId(resources.getString(R.string.project_id))
-                .build()
-        FirebaseApp.initializeApp(this, options, resources.getString(R.string.app_name))
-        FirebaseCrashlytics.getInstance()
-                .setCrashlyticsCollectionEnabled(true)
+    private fun initCrashlytics() {
+        if (BuildConfig.ENABLE_ANALYTICS) {
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+        }
     }
 
     private fun initLocale() {
