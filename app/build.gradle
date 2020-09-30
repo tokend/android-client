@@ -3,14 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "com.jaredsburrows.license"
-
-def keystorePropertiesFile = rootProject.file("app/keystore.properties")
-def keystoreProperties = new Properties()
-if (keystorePropertiesFile.exists()) {
-    apply plugin: 'io.fabric'
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
-
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 29
@@ -30,11 +23,6 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         resConfigs("en", "ru", "uk")
-        manifestPlaceholders = [
-                fabricApiKey: keystoreProperties['FabricApiKey'] != null
-                        ? keystoreProperties['FabricApiKey']
-                        : "a000000000000000000000000000000000000000"
-        ]
         multiDexKeepFile file('multidex-keep.txt')
 
         javaCompileOptions {
@@ -152,7 +140,7 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'ru.noties:markwon:1.0.1'
     implementation 'ru.noties:markwon-image-loader:1.0.1'
-    implementation 'com.google.firebase:firebase-analytics-ktx:17.5.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:17.2.1'
     implementation 'com.github.clans:fab:1.6.4'
 
     testImplementation 'junit:junit:4.12'

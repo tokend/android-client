@@ -214,4 +214,8 @@ ext.applyAppConfig = { buildConfig ->
             ? keystoreProperties['firebase_database_url']
             : "a000000000000000000000000000000000000000"
 
+    b.resValue "string", "project_id", keystoreProperties['project_id'] != null
+            ? keystoreProperties['project_id']
+            : "a000000000000000000000000000000000000000"
+
 }
