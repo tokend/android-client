@@ -4,13 +4,17 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "com.jaredsburrows.license"
 
-def keystorePropertiesFile = rootProject.file("app/keystore.properties")
-def keystoreProperties = new Properties()
-if (keystorePropertiesFile.exists()) {
-    apply plugin: 'io.fabric'
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+// Only apply Google services plugins if google-services.json file exists
+ext {
+    googleServicesJsonFile = "google-services.json"
+    googleServicesPluginsApplied = false
 }
-
+if (rootProject.file("app/$googleServicesJsonFile").exists()) {
+    System.out.println("Found $googleServicesJsonFile, Google Services plugins applied")
+    apply plugin: 'com.google.gms.google-services'
+    apply plugin: 'com.google.firebase.crashlytics'
+    googleServicesPluginsApplied = true
+}
 
 android {
     compileSdkVersion 29
@@ -30,11 +34,6 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         resConfigs("en", "ru", "uk")
-        manifestPlaceholders = [
-                fabricApiKey: keystoreProperties['FabricApiKey'] != null
-                        ? keystoreProperties['FabricApiKey']
-                        : "a000000000000000000000000000000000000000"
-        ]
         multiDexKeepFile file('multidex-keep.txt')
 
         javaCompileOptions {
@@ -42,6 +41,20 @@ android {
                 arguments += [
                         "room.incremental": "true"
                 ]
+            }
+        }
+
+        applicationVariants.all { variant ->
+            variant.getJavaCompileProvider().configure {
+                it.doFirst {
+                    def buildType = android.buildTypes[variant.getName()]
+                    def enableAnalyticsInThisBuild =
+                            buildType.buildConfigFields[ENABLE_ANALYTICS_FIELD_KEY].value == "true"
+                    if (!googleServicesPluginsApplied && enableAnalyticsInThisBuild) {
+                        throw new IllegalStateException("Cannot have analytics enabled while Google Services plugins are not applied.\n" +
+                                "Provide '$googleServicesJsonFile' file or disable analytics in config")
+                    }
+                }
             }
         }
     }
@@ -152,9 +165,8 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'ru.noties:markwon:1.0.1'
     implementation 'ru.noties:markwon-image-loader:1.0.1'
-    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
-        transitive = true
-    }
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:17.2.1'
+    implementation 'com.google.firebase:firebase-analytics:17.5.0'
     implementation 'com.github.clans:fab:1.6.4'
 
     testImplementation 'junit:junit:4.12'

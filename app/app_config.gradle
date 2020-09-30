@@ -141,6 +141,8 @@ ext {
     // Sets asset to convert balance amounts into
     balances_conversion_asset = 'USD'
     // ----------------------
+
+    ENABLE_ANALYTICS_FIELD_KEY = "ENABLE_ANALYTICS"
 }
 
 ext.applyAppConfig = { buildConfig ->
@@ -172,7 +174,7 @@ ext.applyAppConfig = { buildConfig ->
     b.buildConfigField 'Boolean', 'IS_DIRECT_BUY_ALLOWED', "${allow_direct_buy}"
     b.buildConfigField 'Boolean', 'IS_NETWORK_SPECIFIED_BY_USER', "${network_specified_by_user}"
     b.buildConfigField 'Boolean', 'ARE_POLLS_ALLOWED', "${allow_polls}"
-    b.buildConfigField 'Boolean', 'ENABLE_ANALYTICS', "${enable_analytics}"
+    b.buildConfigField 'Boolean', ENABLE_ANALYTICS_FIELD_KEY, "${enable_analytics}"
     b.buildConfigField 'Boolean', 'ENABLE_LOCAL_ACCOUNT_SIGN_IN', "${allow_local_account_sign_in}"
     b.buildConfigField 'Boolean', 'ENABLE_BALANCES_CONVERSION', "${enable_balances_conversion}"
     b.buildConfigField 'String', 'BALANCES_CONVERSION_ASSET', "\"${balances_conversion_asset}\""

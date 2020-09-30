@@ -40,10 +40,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="${fabricApiKey}" />
-
         <activity
             android:name=".features.signin.SignInActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
