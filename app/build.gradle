@@ -114,16 +114,10 @@ android {
     }
 }
 
-ext {
-    anko_version = '0.10.5'
-    support_lib_version = '28.0.0'
-    room_version = '1.1.1'
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.annotation:annotation:1.1.0'
@@ -135,14 +129,14 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.google.android.material:material:1.2.1'
 
-    implementation 'androidx.room:room-runtime:2.2.5'
-    kapt 'androidx.room:room-compiler:2.2.5'
+    implementation 'androidx.room:room-runtime:2.2.6'
+    kapt 'androidx.room:room-compiler:2.2.6'
 
     implementation 'org.jetbrains.anko:anko-sdk15:0.9.1'
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
     implementation("com.mikepenz:materialdrawer:6.0.9@aar") { transitive = true }
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0@aar'
-    implementation 'com.google.zxing:core:3.3.0'
+    implementation 'com.google.zxing:core:3.3.3'
     implementation 'me.grantland:autofittextview:0.2.1'
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     implementation 'org.apmem.tools:layouts:1.10@aar'
@@ -151,7 +145,7 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.28.3'
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
-    implementation "org.tokend:sdk:3.6.0"
+    implementation "org.tokend:sdk:3.7.0"
     implementation "org.tokend:rx-sdk:2.4.0"
 
     implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'

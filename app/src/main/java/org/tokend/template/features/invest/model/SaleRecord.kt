@@ -5,8 +5,9 @@ import com.fasterxml.jackson.databind.node.NullNode
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.generated.resources.SaleQuoteAssetResource
 import org.tokend.sdk.api.generated.resources.SaleResource
-import org.tokend.sdk.api.sales.model.SaleState
-import org.tokend.template.data.model.*
+import org.tokend.sdk.api.v3.sales.model.SaleState
+import org.tokend.template.data.model.RecordWithDescription
+import org.tokend.template.data.model.RecordWithLogo
 import org.tokend.template.data.repository.base.pagination.PagingRecord
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.assets.model.SimpleAsset

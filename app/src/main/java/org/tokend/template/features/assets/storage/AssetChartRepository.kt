@@ -30,7 +30,7 @@ class AssetChartRepository private constructor(
 
         return apiProvider
                 .getApi()
-                .assets
+                .charts
                 .let {
                     if (quoteAssetCode != null)
                         it.getChart(baseAssetCode, quoteAssetCode)

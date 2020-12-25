@@ -9,7 +9,7 @@ import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.generated.resources.ChangeRoleRequestResource
 import org.tokend.sdk.api.generated.resources.ReviewableRequestResource
-import org.tokend.sdk.api.requests.model.base.RequestState
+import org.tokend.sdk.api.v3.requests.model.RequestState
 import org.tokend.sdk.api.v3.requests.params.ChangeRoleRequestPageParams
 import org.tokend.sdk.api.v3.requests.params.RequestParamsV3
 import org.tokend.sdk.utils.extentions.getTypedRequestDetails

@@ -13,13 +13,13 @@ class AssetChartData(
             val value: BigDecimal,
             val date: Date
     ) {
-        constructor(source: org.tokend.sdk.api.assets.model.AssetChartData.ChartPoint) : this(
+        constructor(source: org.tokend.sdk.api.charts.model.AssetChartData.ChartPoint) : this(
                 value = source.value ?: BigDecimal.ZERO,
                 date = source.date
         )
     }
 
-    constructor(source: org.tokend.sdk.api.assets.model.AssetChartData) : this(
+    constructor(source: org.tokend.sdk.api.charts.model.AssetChartData) : this(
             hour = source.hour?.map(AssetChartData::AssetChartPoint),
             day = source.day?.map(AssetChartData::AssetChartPoint),
             month = source.month?.map(AssetChartData::AssetChartPoint),

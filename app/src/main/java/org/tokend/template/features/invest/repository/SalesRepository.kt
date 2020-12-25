@@ -6,7 +6,7 @@ import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
-import org.tokend.sdk.api.sales.model.SaleState
+import org.tokend.sdk.api.v3.sales.model.SaleState
 import org.tokend.sdk.api.v3.sales.params.SaleParamsV3
 import org.tokend.sdk.api.v3.sales.params.SalesPageParamsV3
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
