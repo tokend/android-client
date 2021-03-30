@@ -1,12 +1,12 @@
 package org.tokend.template.activities
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import org.tokend.sdk.tfa.NeedTfaException
@@ -41,48 +41,70 @@ import javax.inject.Inject
 abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     @Inject
     lateinit var appTfaCallback: AppTfaCallback
+
     @Inject
     lateinit var accountProvider: AccountProvider
+
     @Inject
     lateinit var apiProvider: ApiProvider
+
     @Inject
     lateinit var walletInfoProvider: WalletInfoProvider
+
     @Inject
     lateinit var repositoryProvider: RepositoryProvider
+
     @Inject
     lateinit var credentialsPersistence: CredentialsPersistence
+
     @Inject
     lateinit var walletInfoPersistence: WalletInfoPersistence
+
     @Inject
     lateinit var urlConfigProvider: UrlConfigProvider
+
     @Inject
     lateinit var urlConfigPersistence: ObjectPersistence<UrlConfig>
+
     @Inject
     lateinit var errorHandlerFactory: ErrorHandlerFactory
+
     @Inject
     lateinit var toastManager: ToastManager
+
     @Inject
     lateinit var assetCodeComparator: Comparator<String>
+
     @Inject
     lateinit var assetComparator: Comparator<Asset>
+
     @Inject
     lateinit var balanceComparator: Comparator<BalanceRecord>
+
     @Inject
     lateinit var session: Session
+
     @Inject
     lateinit var amountFormatter: AmountFormatter
+
     @Inject
     lateinit var activeKycPersistence: ActiveKycPersistence
+
     @Inject
     lateinit var localeManager: AppLocaleManager
+
     @Inject
     lateinit var backgroundLockManager: BackgroundLockManager
+
     @Inject
     lateinit var mnemonicCode: MnemonicCode
+
     @Inject
     lateinit var defaultDataCipher: DataCipher
+
     @Inject
     lateinit var postSignInManagerFactory: PostSignInManagerFactory
+
     @Inject
     lateinit var connectionStateUtil: ConnectionStateUtil
 
@@ -98,6 +120,8 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
     protected val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     protected val activityRequestsBag: MutableCollection<ActivityRequest<*>> = mutableSetOf()
+
+    private var baseContextWrappingDelegate: AppCompatDelegate? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -180,9 +204,9 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
                 .addTo(compositeDisposable)
     }
 
-    override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(App.localeManager.getLocalizeContext(newBase))
-    }
+    override fun getDelegate() = baseContextWrappingDelegate
+            ?: App.localeManager.getLocalizeContextWrapperDelegate(super.getDelegate())
+                    .also { baseContextWrappingDelegate = it }
     // endregion
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
