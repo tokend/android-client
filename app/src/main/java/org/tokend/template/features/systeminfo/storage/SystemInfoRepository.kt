@@ -13,8 +13,7 @@ class SystemInfoRepository(
         persistence: ObjectPersistence<SystemInfoRecord>
 ) : SingleItemRepository<SystemInfoRecord>(persistence) {
     override fun getItem(): Single<SystemInfoRecord> {
-        return apiProvider.getApi()
-                .general
+        return apiProvider.getApi().v3.general
                 .getSystemInfo()
                 .toSingle()
                 .map(::SystemInfoRecord)

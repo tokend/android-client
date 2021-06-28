@@ -2,10 +2,9 @@ package org.tokend.template.features.trade.history.model
 
 import org.tokend.sdk.api.trades.model.MatchedOrder
 import org.tokend.sdk.utils.BigDecimalUtil
-import org.tokend.sdk.utils.HashCodes
+import org.tokend.template.data.repository.base.pagination.PagingRecord
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.assets.model.SimpleAsset
-import org.tokend.template.data.repository.base.pagination.PagingRecord
 import java.io.Serializable
 import java.math.BigDecimal
 import java.util.*
@@ -23,13 +22,21 @@ class TradeHistoryRecord(
     override fun getPagingId(): Long = id
 
     override fun equals(other: Any?): Boolean {
-        return other is TradeHistoryRecord
-                && id == other.id
-                && hasPositiveTrend == other.hasPositiveTrend
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as TradeHistoryRecord
+
+        if (id != other.id) return false
+        if (hasPositiveTrend != other.hasPositiveTrend) return false
+
+        return true
     }
 
     override fun hashCode(): Int {
-        return HashCodes.ofMany(id.hashCode(), hasPositiveTrend.hashCode())
+        var result = id.hashCode()
+        result = 31 * result + hasPositiveTrend.hashCode()
+        return result
     }
 
     companion object {

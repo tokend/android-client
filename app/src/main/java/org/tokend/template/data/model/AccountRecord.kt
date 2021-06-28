@@ -5,7 +5,6 @@ import org.tokend.sdk.api.generated.inner.ExternalSystemData
 import org.tokend.sdk.api.generated.resources.AccountResource
 import org.tokend.sdk.api.generated.resources.ExternalSystemIDResource
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.sdk.utils.HashCodes
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.wallet.xdr.ExternalSystemAccountIDPoolEntry
 import java.io.Serializable
@@ -63,12 +62,23 @@ class AccountRecord(
                 payload = data.data.payload
         )
 
-        override fun hashCode(): Int =
-                HashCodes.ofMany(type, address)
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
 
-        override fun equals(other: Any?): Boolean =
-                other is DepositAccount && other.type == this.type
-                        && other.address == this.address
+            other as DepositAccount
+
+            if (type != other.type) return false
+            if (address != other.address) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = type
+            result = 31 * result + address.hashCode()
+            return result
+        }
     }
 
     enum class KycRecoveryStatus {

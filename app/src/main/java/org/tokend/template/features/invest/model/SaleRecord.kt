@@ -133,7 +133,7 @@ class SaleRecord(
                     defaultQuoteAsset = defaultQuoteAsset,
                     description = shortDescription,
                     fullDescriptionBlob = fullDescription,
-                    logoUrl = logo?.getUrl(urlConfig?.storage),
+                    logoUrl = urlConfig?.storage?.let { logo?.getUrl(it) },
                     startDate = source.startTime,
                     endDate = source.endTime,
                     state = SaleState.fromValue(source.saleState.value),

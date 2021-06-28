@@ -7,8 +7,8 @@ import org.tokend.sdk.api.generated.resources.AssetResource
 import org.tokend.sdk.api.v3.assets.model.AssetState
 import org.tokend.template.data.model.RecordWithDescription
 import org.tokend.template.data.model.RecordWithLogo
-import org.tokend.template.features.urlconfig.model.UrlConfig
 import org.tokend.template.extensions.equalsArithmetically
+import org.tokend.template.features.urlconfig.model.UrlConfig
 import org.tokend.template.util.RecordWithPolicy
 import java.io.Serializable
 import java.math.BigDecimal
@@ -108,7 +108,7 @@ class AssetRecord(
                     policy = source.policies.value
                             ?: throw IllegalStateException("Asset must have a policy"),
                     name = name,
-                    logoUrl = logo?.getUrl(urlConfig?.storage),
+                    logoUrl = urlConfig?.storage?.let { logo?.getUrl(it) },
                     terms = terms,
                     externalSystemType = externalSystemType,
                     issued = source.issued,
