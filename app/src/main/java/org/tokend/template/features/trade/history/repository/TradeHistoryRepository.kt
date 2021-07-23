@@ -5,11 +5,11 @@ import org.jetbrains.anko.collections.forEachReversedByIndex
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
-import org.tokend.sdk.api.base.params.PagingParams
-import org.tokend.sdk.api.trades.params.OrdersParams
-import org.tokend.template.features.trade.history.model.TradeHistoryRecord
+import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.v3.orderbook.params.MatchesPageParams
 import org.tokend.template.data.repository.base.pagination.PagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
+import org.tokend.template.features.trade.history.model.TradeHistoryRecord
 import java.math.BigDecimal
 
 class TradeHistoryRepository(
@@ -24,23 +24,21 @@ class TradeHistoryRepository(
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
-        val requestParams = OrdersParams(
+        val requestParams = MatchesPageParams(
                 baseAsset = baseAsset,
                 quoteAsset = quoteAsset,
-                orderBookId = 0L,
-                pagingParams = PagingParams(
+                orderBookId = "0",
+                pagingParams = PagingParamsV2(
                         order = requiredOrder,
                         limit = LIMIT,
-                        cursor = nextCursor?.toString()
+                        page = nextCursor?.toString()
                 )
         )
 
-        return signedApi.trades.getMatchedOrders(requestParams)
+        return signedApi.v3.orderBooks.getMatches(requestParams)
                 .toSingle()
                 .map { page ->
-                    page.mapItems { matchedOrder ->
-                        TradeHistoryRecord.fromMatchedOrder(matchedOrder)
-                    }
+                    page.mapItems(::TradeHistoryRecord)
                 }
     }
 

@@ -1,7 +1,6 @@
 package org.tokend.template.features.trade.history.model
 
-import org.tokend.sdk.api.trades.model.MatchedOrder
-import org.tokend.sdk.utils.BigDecimalUtil
+import org.tokend.sdk.api.generated.resources.MatchResource
 import org.tokend.template.data.repository.base.pagination.PagingRecord
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.assets.model.SimpleAsset
@@ -21,6 +20,17 @@ class TradeHistoryRecord(
 ) : Serializable, PagingRecord {
     override fun getPagingId(): Long = id
 
+    constructor(source: MatchResource): this(
+            id = source.id.toLong(),
+            baseAsset = SimpleAsset(source.baseAsset),
+            quoteAsset = SimpleAsset(source.quoteAsset),
+            baseAmount = source.baseAmount,
+            quoteAmount = source.quoteAmount,
+            price = source.price,
+            createdAt = source.createdAt,
+            hasPositiveTrend = true
+    )
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -37,21 +47,5 @@ class TradeHistoryRecord(
         var result = id.hashCode()
         result = 31 * result + hasPositiveTrend.hashCode()
         return result
-    }
-
-    companion object {
-        @JvmStatic
-        fun fromMatchedOrder(source: MatchedOrder): TradeHistoryRecord {
-            return TradeHistoryRecord(
-                    id = source.id.toLong(),
-                    baseAsset = SimpleAsset(source.baseAsset),
-                    quoteAsset = SimpleAsset(source.quoteAsset),
-                    baseAmount = BigDecimalUtil.valueOf(source.baseAmount),
-                    quoteAmount = BigDecimalUtil.valueOf(source.quoteAmount),
-                    price = BigDecimalUtil.valueOf(source.price),
-                    createdAt = source.createdAt,
-                    hasPositiveTrend = true
-            )
-        }
     }
 }

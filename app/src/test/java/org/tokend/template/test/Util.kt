@@ -1,21 +1,21 @@
 package org.tokend.template.test
 
-import org.tokend.sdk.api.assets.model.AssetDetails
 import org.tokend.sdk.api.base.params.PagingOrder
-import org.tokend.sdk.api.base.params.PagingParams
-import org.tokend.sdk.api.requests.model.base.RequestState
-import org.tokend.sdk.api.requests.params.AssetRequestsParams
+import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.v3.requests.model.RequestState
+import org.tokend.sdk.api.v3.requests.params.AssetRequestPageParams
 import org.tokend.sdk.factory.GsonFactory
 import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.sdk.utils.extentions.bitmask
 import org.tokend.sdk.utils.extentions.decodeHex
 import org.tokend.sdk.utils.extentions.encodeHexString
-import org.tokend.template.features.urlconfig.model.UrlConfig
-import org.tokend.template.features.systeminfo.storage.SystemInfoRepository
+import org.tokend.sdk.utils.extentions.has
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
 import org.tokend.template.features.signin.logic.PostSignInManager
 import org.tokend.template.features.signin.logic.SignInUseCase
+import org.tokend.template.features.systeminfo.storage.SystemInfoRepository
+import org.tokend.template.features.urlconfig.model.UrlConfig
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.TxManager
 import org.tokend.wallet.PublicKeyFactory
@@ -232,18 +232,20 @@ object Util {
 
         val statsAssetExists =
                 apiProvider.getApi()
+                        .v3
                         .assets
                         .get()
                         .execute()
                         .get()
+                        .items
                         .any {
-                            (it.policy and AssetPolicy.STATS_QUOTE_ASSET.value) ==
-                                    AssetPolicy.STATS_QUOTE_ASSET.value
+                            it.policies.has(AssetPolicy.STATS_QUOTE_ASSET.value)
                         }
 
-        val assetDetailsJson = GsonFactory().getBaseGson().toJson(
-                AssetDetails("$code token", null, null, externalSystemType)
-        )
+        val assetDetailsJson = GsonFactory().getBaseGson().toJson(mapOf(
+                "name" to "$code token",
+                "external_system_type" to externalSystemType
+        ))
 
         var policies = listOf(
                 AssetPolicy.TRANSFERABLE.value,
@@ -295,28 +297,28 @@ object Util {
                         account = Config.ADMIN_ACCOUNT
                 )
                         .getSignedApi()!!
+                        .v3
                         .requests
-                        .getAssets(
-                                AssetRequestsParams(
-                                        pagingParams = PagingParams(
-                                                order = PagingOrder.DESC,
-                                                limit = 1
-                                        ),
-                                        asset = code
-                                )
-                        )
+                        .getAssetCreateRequests(AssetRequestPageParams(
+                                assetCode = code,
+                                pagingParams = PagingParamsV2(
+                                        order = PagingOrder.DESC,
+                                        limit = 1
+                                ),
+                                includes = listOf(AssetRequestPageParams.Includes.ASSET)
+                        ))
                         .execute()
                         .get()
                         .items
                         .firstOrNull()
 
-        if (requestToReview != null && requestToReview.state == RequestState.PENDING) {
+        if (requestToReview != null && requestToReview.stateI == RequestState.PENDING.i) {
             val reviewOp = ReviewRequestOp(
-                    requestID = requestToReview.id,
+                    requestID = requestToReview.id.toLong(),
                     requestHash = XdrByteArrayFixed32(requestToReview.hash.decodeHex()),
                     action = ReviewRequestOpAction.APPROVE,
                     reason = "",
-                    reviewDetails = ReviewDetails(0, requestToReview.pendingTasks,
+                    reviewDetails = ReviewDetails(0, requestToReview.pendingTasks.toInt(),
                             "", ReviewDetails.ReviewDetailsExt.EmptyVersion()),
                     ext = ReviewRequestOp.ReviewRequestOpExt.EmptyVersion(),
                     requestDetails = object : ReviewRequestOp.ReviewRequestOpRequestDetails(ReviewableRequestType.CREATE_ASSET) {}

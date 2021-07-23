@@ -78,7 +78,7 @@ class LocalAccountImportTest {
     private fun checkRepositoryAndStorage(storage: ObjectPersistence<LocalAccount>,
                                           repository: LocalAccountRepository,
                                           expectedAccountId: String) {
-        val localAccount = repository.item
+        val localAccount = (repository.item as? LocalAccountRepository.Item.Present)?.localAccount
 
         Assert.assertNotNull("Local account repository must contain an account after import", localAccount)
         localAccount!!

@@ -7,8 +7,8 @@ import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
 import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.WalletCreateResult
-import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import org.tokend.template.di.providers.RepositoryProvider
+import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import org.tokend.wallet.Account
 
 /**
