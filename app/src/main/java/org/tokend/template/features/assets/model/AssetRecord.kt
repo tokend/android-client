@@ -3,11 +3,13 @@ package org.tokend.template.features.assets.model
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.NullNode
 import org.tokend.sdk.api.base.model.RemoteFile
+import org.tokend.sdk.api.base.model.isReallyNullOrNullAccordingToTheJavascript
 import org.tokend.sdk.api.generated.resources.AssetResource
 import org.tokend.sdk.api.v3.assets.model.AssetState
 import org.tokend.template.data.model.RecordWithDescription
 import org.tokend.template.data.model.RecordWithLogo
 import org.tokend.template.extensions.equalsArithmetically
+import org.tokend.template.extensions.tryOrNull
 import org.tokend.template.features.urlconfig.model.UrlConfig
 import org.tokend.template.util.RecordWithPolicy
 import java.io.Serializable
@@ -27,7 +29,7 @@ class AssetRecord(
         val ownerAccountId: String,
         override val trailingDigits: Int,
         val state: AssetState,
-        val isConnectedToCoinpayments: Boolean
+        val isConnectedToCoinpayments: Boolean,
         /* Do not forget about contentEquals */
 ) : Serializable, RecordWithPolicy, Asset, RecordWithLogo, RecordWithDescription {
     val isBackedByExternalSystem: Boolean
@@ -81,12 +83,18 @@ class AssetRecord(
 
             val name = source.details.get("name")?.takeIf { it !is NullNode }?.asText()
 
-            val logo = source.details.get("logo")?.takeIf { it !is NullNode }?.let {
-                mapper.convertValue(it, RemoteFile::class.java)
+            val logo = tryOrNull {
+                source.details.get("logo")
+                        ?.takeIf { it !is NullNode }
+                        ?.let { mapper.convertValue(it, RemoteFile::class.java) }
+                        ?.takeUnless(RemoteFile::isReallyNullOrNullAccordingToTheJavascript)
             }
 
-            val terms = source.details.get("terms")?.takeIf { it !is NullNode }?.let {
-                mapper.convertValue(it, RemoteFile::class.java)
+            val terms = tryOrNull {
+                source.details.get("terms")
+                        ?.takeIf { it !is NullNode }
+                        ?.let { mapper.convertValue(it, RemoteFile::class.java) }
+                        ?.takeUnless(RemoteFile::isReallyNullOrNullAccordingToTheJavascript)
             }
 
             val externalSystemType =
