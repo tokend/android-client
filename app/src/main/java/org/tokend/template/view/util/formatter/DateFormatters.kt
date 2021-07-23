@@ -41,7 +41,9 @@ object DateFormatters {
      */
     fun compact(context: Context): DateFormat {
         return SimpleDateFormat { date ->
-            compactDateOnly(includeYear = true).format(date) + " " + longTimeOnly(context)
+            compactDateOnly(includeYear = true).format(date) + " " + longTimeOnly(context).format(
+                    date
+            )
         }
     }
 
