@@ -79,7 +79,7 @@
                     android:paddingTop="@dimen/half_standard_margin"
                     android:paddingEnd="@dimen/quarter_standard_margin"
                     android:paddingBottom="@dimen/standard_margin"
-                    app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior" />
+                    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
         </LinearLayout>
 
