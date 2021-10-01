@@ -257,7 +257,7 @@
     <string name="open_source_licenses_title">Open source licenses</string>
     <string name="settings_information_group">Information</string>
     <string name="no_contacts_message">No contacts available</string>
-    <string name="use_fingerprint">Use fingerprint</string>
+    <string name="use_biometrics">Use biometrics</string>
     <string name="secret_seed">Secret seed</string>
     <string name="secret_seed_description">Secret seed is a private information that proves you own your account</string>
     <string name="template_offer_creation_price">Price (%1$s for 1 %2$s)</string>
@@ -440,7 +440,7 @@
     <string name="local_account_mnemonic_or_secret_hint">Mnemonic phrase or secret seed</string>
     <string name="local_account_imported">Key has been imported</string>
     <string name="error_invalid_mnemonic_phrase">Invalid mnemonic phrase</string>
-    <string name="or_use_fingerprint">Or use your fingerprint</string>
+    <string name="or_use_biometrics">Or use biometrics</string>
     <string name="pin_code_title">PIN code</string>
     <string name="set_up_pin_code_title">Set up PIN code</string>
     <string name="enter_pin_code">Enter PIN code</string>

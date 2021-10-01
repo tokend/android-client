@@ -72,7 +72,7 @@
             android:key="fingerprint"
             android:layout="@layout/preference_layout"
             android:persistent="true"
-            android:title="@string/use_fingerprint" />
+            android:title="@string/use_biometrics" />
 
         <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_security"

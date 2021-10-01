@@ -28,8 +28,8 @@ import org.tokend.template.features.tfa.model.TfaFactorRecord
 import org.tokend.template.features.tfa.repository.TfaFactorsRepository
 import org.tokend.template.features.tfa.view.confirmation.TfaConfirmationDialogFactory
 import org.tokend.template.fragments.ToolbarProvider
-import org.tokend.template.logic.fingerprint.FingerprintUtil
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.biometric.BiometricAuthManager
 import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.dialog.SecretSeedDialog
 import org.tokend.template.view.dialog.SignOutDialogFactory
@@ -214,7 +214,8 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     private fun initFingerprintItem() {
         fingerprintPreference = findPreference("fingerprint") as? SwitchPreferenceCompat
-        fingerprintPreference?.isVisible = FingerprintUtil(requireContext()).isFingerprintAvailable
+        fingerprintPreference?.isVisible =
+                BiometricAuthManager(this, credentialsPersistence).isHardwareDetected
     }
 
     private fun initTfaItem() {

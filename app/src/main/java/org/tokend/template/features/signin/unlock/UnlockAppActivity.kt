@@ -20,11 +20,10 @@ import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.features.signin.logic.SignInUseCase
-import org.tokend.template.logic.fingerprint.FingerprintAuthManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ProfileUtil
+import org.tokend.template.util.biometric.BiometricAuthManager
 import org.tokend.template.util.navigation.Navigator
-import org.tokend.template.view.FingerprintIndicatorManager
 import org.tokend.template.view.dialog.SignOutDialogFactory
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.SimpleTextWatcher
@@ -33,24 +32,19 @@ import org.tokend.template.view.util.input.SoftInputUtil
 class UnlockAppActivity : BaseActivity() {
     override val allowUnauthorized: Boolean = true
 
-    private lateinit var fingerprintAuthManager: FingerprintAuthManager
-    private lateinit var fingerprintIndicatorManager: FingerprintIndicatorManager
+    private val biometricAuthManager by lazy {
+        BiometricAuthManager(this, credentialsPersistence)
+    }
 
     private val loadingIndicator = LoadingIndicatorManager(
             showLoading = { showLoading() },
-            hideLoading = { /* ;-) */ }
+            hideLoading = { showPasswordUnlock(clear = false) }
     )
 
     private var isLoading: Boolean
         get() = loadingIndicator.isLoading
         set(value) {
             loadingIndicator.setLoading(value)
-        }
-
-    private var unlockMethod: UnlockMethod = UnlockMethod.PASSWORD
-        set(value) {
-            field = value
-            updateUnlockView()
         }
 
     private var canUnlockWithPassword = false
@@ -61,6 +55,7 @@ class UnlockAppActivity : BaseActivity() {
 
     private lateinit var email: String
     private var lastEnteredPassword: CharArray? = null
+    private var lastTimePasswordWasEnteredManually: Boolean = false
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_unlock_app)
@@ -75,11 +70,13 @@ class UnlockAppActivity : BaseActivity() {
         }
         this.email = email
 
-        fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistence)
-        fingerprintIndicatorManager = FingerprintIndicatorManager(this, fingerprint_indicator)
-
         initViews()
-        initUnlockMethod()
+
+        if (!backgroundLockManager.isBackgroundLockEnabled && credentialsPersistence.hasSavedPassword()) {
+            performAutoUnlock()
+        } else if (biometricAuthManager.isAuthPossible) {
+            requestFingerprintAuthIfAvailable()
+        }
     }
 
     private fun initViews() {
@@ -90,12 +87,6 @@ class UnlockAppActivity : BaseActivity() {
     }
 
     private fun initButtons() {
-        use_password_text_button.onClick {
-            password_edit_text?.text?.clear()
-            cancelFingerprintAuth()
-            unlockMethod = UnlockMethod.PASSWORD
-        }
-
         password_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
             override fun afterTextChanged(p0: Editable?) {
                 password_edit_text.error = null
@@ -122,6 +113,15 @@ class UnlockAppActivity : BaseActivity() {
         recovery_button.onClick {
             Navigator.from(this).openRecovery(email)
         }
+
+        fingerprint_button.visibility =
+                if (biometricAuthManager.isAuthPossible)
+                    View.VISIBLE
+                else
+                    View.GONE
+        fingerprint_button.setOnClickListener {
+            requestFingerprintAuthIfAvailable()
+        }
     }
 
     private fun initErrorEmptyView() {
@@ -137,24 +137,6 @@ class UnlockAppActivity : BaseActivity() {
                 }
     }
 
-    private fun initUnlockMethod() {
-        unlockMethod =
-                if (!backgroundLockManager.isBackgroundLockEnabled)
-                    UnlockMethod.AUTO
-                else if (fingerprintAuthManager.isAuthAvailable)
-                    UnlockMethod.FINGERPRINT
-                else
-                    UnlockMethod.PASSWORD
-    }
-
-    private fun updateUnlockView() {
-        when (unlockMethod) {
-            UnlockMethod.PASSWORD -> showPasswordUnlock()
-            UnlockMethod.FINGERPRINT -> showFingerprintUnlock()
-            UnlockMethod.AUTO -> showAutoUnlock()
-        }
-    }
-
     private fun showPasswordUnlock(clear: Boolean = true) {
         if (clear) {
             password_edit_text.text?.clear()
@@ -165,30 +147,14 @@ class UnlockAppActivity : BaseActivity() {
 
         progress.visibility = View.GONE
         password_layout.visibility = View.VISIBLE
-        fingerprint_layout.visibility = View.INVISIBLE
         error_empty_view.hide()
         sign_out_button.visibility = View.VISIBLE
-    }
-
-    private fun showFingerprintUnlock() {
-        requestFingerprintAuthIfAvailable()
-
-        progress.visibility = View.GONE
-        password_layout.visibility = View.INVISIBLE
-        fingerprint_layout.visibility = View.VISIBLE
-        error_empty_view.hide()
-        sign_out_button.visibility = View.VISIBLE
-    }
-
-    private fun showAutoUnlock() {
-        performAutoUnlock()
     }
 
     private fun showLoading() {
         SoftInputUtil.hideSoftInput(this)
         progress.visibility = View.VISIBLE
         password_layout.visibility = View.INVISIBLE
-        fingerprint_layout.visibility = View.INVISIBLE
         error_empty_view.hide()
         sign_out_button.visibility = View.GONE
     }
@@ -196,10 +162,9 @@ class UnlockAppActivity : BaseActivity() {
     private fun showError(error: Throwable) {
         progress.visibility = View.GONE
         password_layout.visibility = View.INVISIBLE
-        fingerprint_layout.visibility = View.INVISIBLE
         error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
             lastEnteredPassword?.also {
-                unlock(email, it)
+                unlock(email, it, isPasswordEnteredManually = lastTimePasswordWasEnteredManually)
             }
         }
         sign_out_button.visibility = View.VISIBLE
@@ -211,20 +176,18 @@ class UnlockAppActivity : BaseActivity() {
     }
 
     private fun requestFingerprintAuthIfAvailable() {
-        fingerprintAuthManager.requestAuthIfAvailable(
-                onAuthStart = {},
+        biometricAuthManager.requestAuthIfPossible(
                 onSuccess = { email, password ->
-                    unlock(email, password)
+                    unlock(email, password, isPasswordEnteredManually = false)
                 },
                 onError = {
-                    toastManager.short(it)
-                    fingerprintIndicatorManager.error()
-                }
+                    toastManager.short(it?.toString())
+                },
         )
     }
 
     private fun cancelFingerprintAuth() {
-        fingerprintAuthManager.cancelAuth()
+        biometricAuthManager.cancelAuth()
     }
 
     private fun tryToUnlockWithPassword() {
@@ -236,24 +199,21 @@ class UnlockAppActivity : BaseActivity() {
 
         if (canUnlockWithPassword) {
             SoftInputUtil.hideSoftInput(this)
-            unlock(email, password_edit_text.text.getChars())
+            unlock(email, password_edit_text.text.getChars(), isPasswordEnteredManually = true)
         }
     }
 
     private fun performAutoUnlock() {
-        val savedPassword = credentialsPersistence.getSavedPassword()
-        if (savedPassword == null) {
-            unlockMethod = UnlockMethod.PASSWORD
-            return
-        }
-        unlock(email, savedPassword)
+        val savedPassword = credentialsPersistence.getSavedPassword()!!
+        unlock(email, savedPassword, isPasswordEnteredManually = false)
     }
 
-    private fun unlock(email: String, password: CharArray) {
+    private fun unlock(email: String, password: CharArray, isPasswordEnteredManually: Boolean) {
         if (lastEnteredPassword !== password) {
             lastEnteredPassword?.erase()
         }
         lastEnteredPassword = password
+        lastTimePasswordWasEnteredManually = isPasswordEnteredManually
 
         SignInUseCase(
                 email,
@@ -276,26 +236,26 @@ class UnlockAppActivity : BaseActivity() {
                         },
                         onError = {
                             isLoading = false
-                            onUnlockError(it)
+                            onUnlockError(it, isPasswordEnteredManually)
                         }
                 )
                 .addTo(compositeDisposable)
     }
 
-    private fun onUnlockError(error: Throwable) {
+    private fun onUnlockError(error: Throwable, isPasswordEnteredManually: Boolean) {
         when {
             error is InvalidCredentialsException -> {
-                if (unlockMethod == UnlockMethod.PASSWORD) {
+                if (isPasswordEnteredManually) {
                     showPasswordUnlock(clear = false)
                     password_edit_text.setErrorAndFocus(R.string.error_invalid_password)
                 } else {
-                    unlockMethod = UnlockMethod.PASSWORD
-                    toastManager.long(R.string.error_password_changed)
+                    showPasswordUnlock(clear = true)
+                    password_edit_text.setErrorAndFocus(R.string.error_password_changed)
                 }
                 updatePasswordUnlockAvailability()
             }
 
-            unlockMethod == UnlockMethod.PASSWORD -> {
+            isPasswordEnteredManually -> {
                 errorHandlerFactory.getDefault().handle(error)
                 showPasswordUnlock(clear = false)
             }
@@ -303,13 +263,6 @@ class UnlockAppActivity : BaseActivity() {
             else -> {
                 showError(error)
             }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (unlockMethod == UnlockMethod.FINGERPRINT && !isLoading) {
-            requestFingerprintAuthIfAvailable()
         }
     }
 
@@ -321,14 +274,5 @@ class UnlockAppActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         lastEnteredPassword?.erase()
-    }
-
-    override fun onBackPressed() {
-        if (!isLoading && unlockMethod == UnlockMethod.PASSWORD
-                && fingerprintAuthManager.isAuthAvailable) {
-            unlockMethod = UnlockMethod.FINGERPRINT
-        } else {
-            super.onBackPressed()
-        }
     }
 }

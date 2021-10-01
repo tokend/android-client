@@ -256,7 +256,7 @@
     <string name="open_source_licenses_title">Ліцензії відкритого ПЗ</string>
     <string name="settings_information_group">Інформація</string>
     <string name="no_contacts_message">Немає доступних контактів</string>
-    <string name="use_fingerprint">Використовувати відбиток пальця</string>
+    <string name="use_biometrics">Скористатися біометрією</string>
     <string name="secret_seed">Секретний ключ</string>
     <string name="secret_seed_description">Поточний приватний ключ вашого акаунта</string>
     <string name="template_offer_creation_price">Ціна (%1$s за 1 %2$s)</string>
@@ -438,7 +438,7 @@
     <string name="local_account_mnemonic_or_secret_hint">Мнемонічна фраза або секрет</string>
     <string name="local_account_imported">Ключ імпортовано</string>
     <string name="error_invalid_mnemonic_phrase">Некоректна мнемонічна фраза</string>
-    <string name="or_use_fingerprint">Або скористайтеся відбитком</string>
+    <string name="or_use_biometrics">Або скористайтеся біометрією</string>
     <string name="pin_code_title">PIN код</string>
     <string name="set_up_pin_code_title">Встановити PIN код</string>
     <string name="enter_pin_code">Введіть PIN код</string>

@@ -30,7 +30,7 @@ class SetUpPinCodeActivity : PinCodeActivity() {
             switchToConfirmationEnter()
         } else {
             if (enteredPin.contentEquals(key)) {
-                userKeyPersistor.save(enteredPin)
+                userKeyPersistence.save(enteredPin)
                 super.onUserKeyEntered(key)
             } else {
                 showConfirmationError()
@@ -73,7 +73,7 @@ class SetUpPinCodeActivity : PinCodeActivity() {
     }
 
     override fun requestFingerprintAuthIfAvailable() {
-        hideFingerprintHint()
+        hideBiometricsHint()
     }
 
     override fun onDestroy() {

@@ -2,16 +2,14 @@ package org.tokend.template.features.userkey.view
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
+import android.view.View
 import com.rengwuxian.materialedittext.MaterialEditText
-import kotlinx.android.synthetic.main.include_fingerprint_field_hint.*
+import kotlinx.android.synthetic.main.include_biometrics_field_hint.*
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.setErrorAndFocus
-import org.tokend.template.features.userkey.logic.persistence.UserKeyPersistor
-import org.tokend.template.logic.fingerprint.FingerprintAuthManager
-import org.tokend.template.view.FingerprintIndicatorManager
-import org.tokend.template.view.util.AnimationUtil
+import org.tokend.template.features.userkey.logic.persistence.UserKeyPersistence
+import org.tokend.template.util.biometric.BiometricAuthManager
 import org.tokend.template.view.util.input.SoftInputUtil
 
 abstract class UserKeyActivity : BaseActivity() {
@@ -20,13 +18,14 @@ abstract class UserKeyActivity : BaseActivity() {
     abstract val errorMessage: String
     abstract val entryEditText: MaterialEditText
 
-    abstract val userKeyPersistor: UserKeyPersistor
+    abstract val userKeyPersistence: UserKeyPersistence
 
     protected val isRetry
         get() = intent.getBooleanExtra(IS_RETRY_EXTRA, false)
 
-    protected lateinit var fingerprintAuthManager: FingerprintAuthManager
-    protected lateinit var fingerprintIndicatorManager: FingerprintIndicatorManager
+    private val biometricAuthManager by lazy {
+        BiometricAuthManager(this, userKeyPersistence)
+    }
 
     protected open fun finishWithKey(key: CharArray) {
         setResult(
@@ -47,10 +46,16 @@ abstract class UserKeyActivity : BaseActivity() {
     }
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        fingerprintAuthManager =
-                FingerprintAuthManager(this, userKeyPersistor)
-        fingerprintIndicatorManager =
-                FingerprintIndicatorManager(this, fingerprint_indicator, toastManager)
+        if (biometricAuthManager.isAuthPossible) {
+            biometrics_hint_layout.visibility = View.VISIBLE
+            biometrics_hint_layout.setOnClickListener {
+                requestFingerprintAuthIfAvailable()
+            }
+            requestFingerprintAuthIfAvailable()
+        } else {
+            biometrics_hint_layout.visibility = View.GONE
+        }
+
         focusOnEditText()
     }
 
@@ -71,28 +76,18 @@ abstract class UserKeyActivity : BaseActivity() {
 
     // region Fingerprint
     protected open fun requestFingerprintAuthIfAvailable() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && fingerprintAuthManager.isAuthAvailable) {
-            requestFingerprintAuth()
-        }
-    }
-
-    protected open fun requestFingerprintAuth() {
-        fingerprintAuthManager.requestAuthIfAvailable(
-                onAuthStart = {
-                    AnimationUtil.fadeInView(fingerprint_hint_layout)
-                    fingerprintIndicatorManager.show()
-                },
-                onSuccess = { _, key -> onFingerprintAuthSuccess(key) },
+        biometricAuthManager.requestAuthIfPossible(
                 onError = {
-                    onFingerprintAuthMessage(it)
-                    fingerprintIndicatorManager.error()
+                    toastManager.short(it?.toString())
+                },
+                onSuccess = { _, key ->
+                    onFingerprintAuthSuccess(key)
                 }
         )
     }
 
-    protected open fun cancelFingerprintAuth() {
-        fingerprintAuthManager.cancelAuth()
+    private fun cancelFingerprintAuth() {
+        biometricAuthManager.cancelAuth()
     }
 
     protected open fun onFingerprintAuthSuccess(userKey: CharArray) {

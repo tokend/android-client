@@ -1,4 +1,4 @@
-<LinearLayout android:id="@+id/fingerprint_hint_layout"
+<LinearLayout android:id="@+id/biometrics_hint_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/half_standard_margin"
@@ -14,7 +14,7 @@
         style="@style/SecondaryText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/or_use_fingerprint" />
+        android:text="@string/or_use_biometrics" />
 
     <Space
         android:layout_width="4sp"

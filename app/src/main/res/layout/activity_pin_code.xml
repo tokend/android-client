@@ -33,7 +33,7 @@
             android:gravity="center_horizontal"
             android:inputType="numberPassword" />
 
-        <include layout="@layout/include_fingerprint_field_hint" />
+        <include layout="@layout/include_biometrics_field_hint" />
 
     </LinearLayout>
 

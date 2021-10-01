@@ -11,9 +11,9 @@ import org.tokend.wallet.utils.toCharArray
  * Saves user key in [SecureStorage].
  * Only operational on Android versions > [Build.VERSION_CODES.M]
  */
-class UserKeyPersistorOnPreferences(
+class UserKeyPersistenceOnPreferences(
         preferences: SharedPreferences
-): UserKeyPersistor {
+): UserKeyPersistence {
     private val secureStorage = SecureStorage(preferences)
 
     override fun save(key: CharArray) {

@@ -1,12 +1,13 @@
 package org.tokend.template.features.signin
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
 import android.text.Editable
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sign_in.*
@@ -32,7 +33,6 @@ import org.tokend.template.features.signin.logic.ResendVerificationEmailUseCase
 import org.tokend.template.features.signin.logic.SignInMethod
 import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.features.urlconfig.logic.UrlConfigManager
-import org.tokend.template.logic.fingerprint.FingerprintAuthManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.PermissionManager
 import org.tokend.template.util.QrScannerUtil
@@ -57,7 +57,6 @@ class SignInActivity : BaseActivity() {
 
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
 
-    private lateinit var fingerprintAuthManager: FingerprintAuthManager
     private lateinit var urlConfigManager: UrlConfigManager
 
     private var isLoading: Boolean = false
@@ -82,7 +81,6 @@ class SignInActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         setTitle(R.string.sign_in)
 
-        fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistence)
         urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistence)
         urlConfigManager.onConfigUpdated {
             initNetworkField()
@@ -112,6 +110,7 @@ class SignInActivity : BaseActivity() {
     }
 
     // region Init
+    @SuppressLint("SetTextI18n")
     private fun initVersion() {
         app_version_text_view.text = "v${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
     }

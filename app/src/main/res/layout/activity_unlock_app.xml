@@ -40,37 +40,6 @@
                 android:animateLayoutChanges="true">
 
                 <LinearLayout
-                    android:id="@+id/fingerprint_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/standard_margin"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/fingerprint_indicator"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        app:srcCompat="@drawable/ic_fingerprint" />
-
-                    <TextView
-                        android:id="@+id/use_fingerprint_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/standard_margin"
-                        android:text="@string/touch_sensor" />
-
-                    <TextView
-                        android:id="@+id/use_password_text_button"
-                        style="@style/PrimaryActionTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/standard_margin"
-                        android:text="@string/use_password" />
-                </LinearLayout>
-
-                <LinearLayout
                     android:id="@+id/password_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -78,14 +47,30 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/password_edit_text"
-                        style="@style/EditText"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/password"
-                        android:inputType="textPassword"
-                        app:met_floatingLabelText="@string/password" />
+                        android:layout_height="wrap_content">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/password_edit_text"
+                            style="@style/EditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/password"
+                            android:inputType="textPassword"
+                            app:met_floatingLabelText="@string/password" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/fingerprint_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="@dimen/half_standard_padding"
+                            android:padding="@dimen/half_standard_margin"
+                            android:visibility="visible"
+                            app:srcCompat="@drawable/ic_fingerprint" />
+                    </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"

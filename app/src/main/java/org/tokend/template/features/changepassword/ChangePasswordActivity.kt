@@ -3,6 +3,7 @@ package org.tokend.template.features.changepassword
 import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
+import android.view.View
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_change_password.*
@@ -22,9 +23,8 @@ import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
-import org.tokend.template.logic.fingerprint.FingerprintAuthManager
 import org.tokend.template.util.ObservableTransformers
-import org.tokend.template.view.FingerprintIndicatorManager
+import org.tokend.template.util.biometric.BiometricAuthManager
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.EditTextHelper
@@ -43,9 +43,6 @@ class ChangePasswordActivity : BaseActivity() {
             updateChangeAvailability()
         }
 
-    private lateinit var fingerprintAuthManager: FingerprintAuthManager
-    private lateinit var fingerprintIndicatorManager: FingerprintIndicatorManager
-
     private var canChange: Boolean = false
         set(value) {
             field = value
@@ -53,6 +50,10 @@ class ChangePasswordActivity : BaseActivity() {
         }
 
     private var passwordsMatch = false
+
+    private val biometricAuthManager by lazy {
+        BiometricAuthManager(this, credentialsPersistence)
+    }
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_change_password)
@@ -63,10 +64,6 @@ class ChangePasswordActivity : BaseActivity() {
         initFields()
         initButtons()
         ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
-
-        fingerprintAuthManager = FingerprintAuthManager(applicationContext, credentialsPersistence)
-        fingerprintIndicatorManager =
-                FingerprintIndicatorManager(applicationContext, fingerprint_indicator, toastManager)
 
         canChange = false
     }
@@ -101,28 +98,35 @@ class ChangePasswordActivity : BaseActivity() {
         change_password_button.onClick {
             tryToChangePassword()
         }
+
+        fingerprint_button.visibility =
+                if (biometricAuthManager.isAuthPossible)
+                    View.VISIBLE
+                else
+                    View.GONE
+
+        fingerprint_button.setOnClickListener {
+            requestFingerprintAuthIfAvailable()
+        }
     }
     // endregion
 
     // region Fingerprint
     private fun requestFingerprintAuthIfAvailable() {
-        fingerprintIndicatorManager.hide()
-        fingerprintAuthManager.requestAuthIfAvailable(
-                onAuthStart = { fingerprintIndicatorManager.show() },
+        biometricAuthManager.requestAuthIfPossible(
                 onSuccess = { _, password ->
                     current_password_edit_text.setText(password, 0, password.size)
                     new_password_edit_text.requestFocus()
                     password.fill('0')
                 },
                 onError = {
-                    toastManager.short(it)
-                    fingerprintIndicatorManager.error()
+                    toastManager.short(it?.toString())
                 }
         )
     }
 
     private fun cancelFingerprintAuth() {
-        fingerprintAuthManager.cancelAuth()
+        biometricAuthManager.cancelAuth()
     }
     // endregion
 
@@ -197,16 +201,20 @@ class ChangePasswordActivity : BaseActivity() {
                 .addTo(compositeDisposable)
     }
 
-    override fun onTfaRequired(exception: NeedTfaException,
-                               verifierInterface: TfaVerifier.Interface) {
+    override fun onTfaRequired(
+            exception: NeedTfaException,
+            verifierInterface: TfaVerifier.Interface,
+    ) {
         when (exception.factorType) {
             TfaFactor.Type.PASSWORD -> verifyPasswordTfaSilently(exception, verifierInterface)
             else -> super.onTfaRequired(exception, verifierInterface)
         }
     }
 
-    private fun verifyPasswordTfaSilently(exception: NeedTfaException,
-                                          verifierInterface: TfaVerifier.Interface) {
+    private fun verifyPasswordTfaSilently(
+            exception: NeedTfaException,
+            verifierInterface: TfaVerifier.Interface,
+    ) {
         walletInfoProvider.getWalletInfo()?.email?.let { email ->
             val passwordChars = current_password_edit_text.text.getChars()
             doAsync {
@@ -234,11 +242,6 @@ class ChangePasswordActivity : BaseActivity() {
     private fun finishWithSuccess() {
         setResult(Activity.RESULT_OK)
         finish()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        requestFingerprintAuthIfAvailable()
     }
 
     override fun onPause() {
