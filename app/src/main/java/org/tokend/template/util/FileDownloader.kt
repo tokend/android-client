@@ -6,8 +6,8 @@ import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import androidx.fragment.app.Fragment
 import android.webkit.MimeTypeMap
+import androidx.fragment.app.Fragment
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.template.R
 import org.tokend.template.view.ToastManager
@@ -51,7 +51,7 @@ class FileDownloader(
     }
 
     private fun downloadFile(context: Context, file: RemoteFile) {
-        val name = file.name ?: "document"
+        val name = file.name
         val extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(file.mimeType)
 
         val saveName =
@@ -62,9 +62,7 @@ class FileDownloader(
 
         val request = DownloadManager.Request(Uri.parse(file.getUrl(storageUrl)))
         request.setTitle(file.name)
-        if (file.mimeType != null) {
-            request.setMimeType(file.mimeType)
-        }
+        request.setMimeType(file.mimeType)
         request.allowScanningByMediaScanner()
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,

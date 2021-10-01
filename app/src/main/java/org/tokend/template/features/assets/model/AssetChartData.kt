@@ -14,7 +14,7 @@ class AssetChartData(
             val date: Date
     ) {
         constructor(source: org.tokend.sdk.api.charts.model.AssetChartData.ChartPoint) : this(
-                value = source.value ?: BigDecimal.ZERO,
+                value = source.value,
                 date = source.date
         )
     }

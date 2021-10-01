@@ -43,7 +43,7 @@ class PixelSquareLogoGenerator {
     private fun drawSide(colorMatrix: List<List<Int>>,
                          cellSizePx: Int): Bitmap {
         val width = colorMatrix.size
-        val height = colorMatrix.minBy(Collection<*>::size)?.size
+        val height = colorMatrix.minByOrNull(Collection<*>::size)?.size
                 ?: throw IllegalArgumentException("Side rows can't be empty")
 
         val bitmap = Bitmap.createBitmap(

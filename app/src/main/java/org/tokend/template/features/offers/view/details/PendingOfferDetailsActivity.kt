@@ -1,13 +1,12 @@
 package org.tokend.template.features.offers.view.details
 
 import android.app.Activity
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_balance_change_confirmation.*
 import kotlinx.android.synthetic.main.activity_balance_details.*
@@ -133,8 +132,8 @@ open class PendingOfferDetailsActivity : BaseActivity() {
         mainDataView.displayDate(item.date)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.cancel_offer -> confirmOfferCancellation()
         }
         return super.onOptionsItemSelected(item)

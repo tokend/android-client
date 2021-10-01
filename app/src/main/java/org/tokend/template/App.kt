@@ -52,7 +52,7 @@ class App : MultiDexApplication() {
 
         /**
          * Emits value when app goes to the background or comes to the foreground.
-         * [true] means that the app is currently in the background.
+         * true means that the app is currently in the background.
          */
         val backgroundStateSubject: BehaviorSubject<Boolean> = BehaviorSubject.createDefault(false)
 
@@ -112,7 +112,7 @@ class App : MultiDexApplication() {
 
             override fun onActivityStopped(a: Activity) {}
 
-            override fun onActivitySaveInstanceState(a: Activity, b: Bundle?) {}
+            override fun onActivitySaveInstanceState(a: Activity, b: Bundle) {}
 
             override fun onActivityDestroyed(a: Activity) {}
         })
@@ -298,7 +298,7 @@ class App : MultiDexApplication() {
     }
 
     /**
-     * @param soft if set to [true] user data will not be cleared.
+     * @param soft if set to true user data will not be cleared.
      */
     @SuppressLint("ApplySharedPref")
     fun signOut(activity: Activity?, soft: Boolean = false) {

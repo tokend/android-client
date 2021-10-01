@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [1.15.3] 2021-10-01
+
+### Fixed
+- Incorrect compact date format output
+- Redemptions caused the history not to be displayed
+- Assets with faulty logos caused a balance not to be displayed
+
 ## [1.15.2] 2021-03-30
 
 ### Added

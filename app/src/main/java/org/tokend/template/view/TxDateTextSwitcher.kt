@@ -2,6 +2,7 @@ package org.tokend.template.view
 
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
@@ -177,7 +178,7 @@ class TxDateTextSwitcher : TextSwitcher {
 
     private fun setHideTimeout(startTime: Long) {
         lastTimeoutStartTime = startTime
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             // Only the last running callback can hide the header.
             if (canHide && startTime == lastTimeoutStartTime) {
                 animateHide()

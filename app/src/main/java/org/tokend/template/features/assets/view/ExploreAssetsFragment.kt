@@ -291,12 +291,12 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
     override fun onStart() {
         super.onStart()
-        assets_recycler_view.isLayoutFrozen = false
+        assets_recycler_view.suppressLayout(false)
     }
 
     override fun onStop() {
         super.onStop()
-        assets_recycler_view.isLayoutFrozen = true
+        assets_recycler_view.suppressLayout(true)
     }
 
     override fun onBackPressed(): Boolean {
