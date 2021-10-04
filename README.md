@@ -57,4 +57,4 @@ for tests because they create a lot of users, assets, asset pairs, etc.
 In order to connect the wallet to your [TokenD Developer edition](https://github.com/tokend/developer-edition) instance follow [this guide](https://mobile-qr.tokend.services/).
 
 ## Credits
-⛏ <a href="https://distributedlab.com/" target="_blank">Distributed Lab</a>, 2020
+⛏ <a href="https://distributedlab.com/" target="_blank">Distributed Lab</a>, 2021
