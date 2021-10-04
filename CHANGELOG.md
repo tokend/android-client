@@ -7,12 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [1.15.3] 2021-10-01
+## [1.15.3] 2021-10-04
+
+### Changed
+- Replace FingerprintAuthManager with standard BiometricPrompt
 
 ### Fixed
 - Incorrect compact date format output
-- Redemptions caused the history not to be displayed
-- Assets with faulty logos caused a balance not to be displayed
+- Redemptions causing the history not to be displayed
+- Assets with faulty logos causing a balance not to be displayed
+- Aggressive validation on Sign up screen
+
+### Internal
+- Refactor repositories to the latest version from Template
+- Simplify `SimpleTextWatcher`
 
 ## [1.15.2] 2021-03-30
 
@@ -373,8 +381,9 @@ with ability to copy
 
 - Error on sign in when user has balances with unknown asset details
 
-[Unreleased]: https://github.com/tokend/android-client/compare/1.15.2(25)...HEAD
-[1.15.2]: https://github.com/tokend/android-client/compare/1.15.1(24)..1.15.2(25)
+[Unreleased]: https://github.com/tokend/android-client/compare/1.15.3(26)...HEAD
+[1.15.3]: https://github.com/tokend/android-client/compare/1.15.2(25)...1.15.3(26)
+[1.15.2]: https://github.com/tokend/android-client/compare/1.15.1(24)...1.15.2(25)
 [1.15.1]: https://github.com/tokend/android-client/compare/1.15.0(23)...1.15.1(24)
 [1.15.0]: https://github.com/tokend/android-client/compare/1.14.0(22)...1.15.0(23)
 [1.14.0]: https://github.com/tokend/android-client/compare/1.13.0(21)...1.14.0(22)
