@@ -13,13 +13,13 @@ import org.tokend.sdk.api.transactions.model.SubmitTransactionResponse
 import org.tokend.sdk.api.v3.offers.params.OfferParamsV3
 import org.tokend.sdk.api.v3.offers.params.OffersPageParamsV3
 import org.tokend.sdk.utils.SimplePagedResourceLoader
-import org.tokend.template.features.systeminfo.storage.SystemInfoRepository
-import org.tokend.template.data.repository.base.pagination.PagedDataRepository
+import org.tokend.template.data.storage.repository.pagination.SimplePagedDataRepository
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.offers.model.OfferRecord
 import org.tokend.template.features.offers.model.OfferRequest
+import org.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import org.tokend.template.logic.TxManager
 import org.tokend.wallet.Account
 import org.tokend.wallet.NetworkParams
@@ -31,10 +31,13 @@ import org.tokend.wallet.xdr.Operation
 class OffersRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
-        private val onlyPrimary: Boolean
-) : PagedDataRepository<OfferRecord>(PagingOrder.DESC, null) {
-    override fun getRemotePage(nextCursor: Long?,
-                               requiredOrder: PagingOrder): Single<DataPage<OfferRecord>> {
+        private val onlyPrimary: Boolean,
+) : SimplePagedDataRepository<OfferRecord>(PagingOrder.DESC) {
+    override fun getPage(
+            limit: Int,
+            page: String?,
+            order: PagingOrder,
+    ): Single<DataPage<OfferRecord>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
@@ -47,9 +50,9 @@ class OffersRepository(
                 quoteAsset = null,
                 isBuy = if (onlyPrimary) true else null,
                 pagingParams = PagingParamsV2(
-                        page = nextCursor?.toString(),
-                        order = requiredOrder,
-                        limit = pageLimit
+                        page = page,
+                        order = order,
+                        limit = limit
                 ),
                 include = listOf(
                         OfferParamsV3.Includes.BASE_ASSET,
@@ -101,7 +104,7 @@ class OffersRepository(
         return loader.loadAll()
                 .toSingle()
                 .map {
-                    it.map { OfferRecord.fromResource(it) }
+                    it.map(OfferRecord.Companion::fromResource)
                 }
     }
 
@@ -110,13 +113,15 @@ class OffersRepository(
      * Submits given offer,
      * triggers repository update on complete
      */
-    fun create(accountProvider: AccountProvider,
-               systemInfoRepository: SystemInfoRepository,
-               txManager: TxManager,
-               baseBalanceId: String,
-               quoteBalanceId: String,
-               offerRequest: OfferRequest,
-               offerToCancel: OfferRecord? = null): Single<SubmitTransactionResponse> {
+    fun create(
+            accountProvider: AccountProvider,
+            systemInfoRepository: SystemInfoRepository,
+            txManager: TxManager,
+            baseBalanceId: String,
+            quoteBalanceId: String,
+            offerRequest: OfferRequest,
+            offerToCancel: OfferRecord? = null,
+    ): Single<SubmitTransactionResponse> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
         val account = accountProvider.getAccount()
@@ -144,13 +149,15 @@ class OffersRepository(
                 }
     }
 
-    private fun createOfferCreationTransaction(networkParams: NetworkParams,
-                                               sourceAccountId: String,
-                                               signer: Account,
-                                               baseBalanceId: String,
-                                               quoteBalanceId: String,
-                                               offerRequest: OfferRequest,
-                                               offerToCancel: OfferRecord?): Single<Transaction> {
+    private fun createOfferCreationTransaction(
+            networkParams: NetworkParams,
+            sourceAccountId: String,
+            signer: Account,
+            baseBalanceId: String,
+            quoteBalanceId: String,
+            offerRequest: OfferRequest,
+            offerToCancel: OfferRecord?,
+    ): Single<Transaction> {
         return offerToCancel
                 .toMaybe()
                 .toObservable()
@@ -202,10 +209,12 @@ class OffersRepository(
      * Cancels given offer,
      * locally removes it from repository on complete
      */
-    fun cancel(accountProvider: AccountProvider,
-               systemInfoRepository: SystemInfoRepository,
-               txManager: TxManager,
-               offer: OfferRecord): Single<SubmitTransactionResponse> {
+    fun cancel(
+            accountProvider: AccountProvider,
+            systemInfoRepository: SystemInfoRepository,
+            txManager: TxManager,
+            offer: OfferRecord,
+    ): Single<SubmitTransactionResponse> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
         val account = accountProvider.getAccount()
@@ -226,15 +235,16 @@ class OffersRepository(
                 }
                 .doOnSuccess {
                     mItems.remove(offer)
-                    cache?.delete(offer)
                     broadcast()
                 }
     }
 
-    private fun createOfferCancellationTransaction(networkParams: NetworkParams,
-                                                   sourceAccountId: String,
-                                                   signer: Account,
-                                                   offer: OfferRecord): Single<Transaction> {
+    private fun createOfferCancellationTransaction(
+            networkParams: NetworkParams,
+            sourceAccountId: String,
+            signer: Account,
+            offer: OfferRecord,
+    ): Single<Transaction> {
         return {
             ManageOfferOp(
                     baseBalance =

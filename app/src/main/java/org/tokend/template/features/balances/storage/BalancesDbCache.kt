@@ -1,6 +1,6 @@
 package org.tokend.template.features.balances.storage
 
-import org.tokend.template.data.repository.base.RepositoryCache
+import org.tokend.template.data.storage.repository.RepositoryCache
 import org.tokend.template.extensions.mapSuccessful
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.balances.model.BalanceDbEntity

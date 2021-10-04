@@ -6,8 +6,8 @@ import io.reactivex.rxkotlin.toMaybe
 import org.tokend.template.data.model.AccountRecord
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.BlobsRepository
-import org.tokend.template.data.repository.base.ObjectPersistence
-import org.tokend.template.data.repository.base.SingleItemRepository
+import org.tokend.template.data.storage.persistence.ObjectPersistence
+import org.tokend.template.data.storage.repository.SingleItemRepository
 import org.tokend.template.features.kyc.model.ActiveKyc
 import org.tokend.template.features.kyc.model.KycForm
 

@@ -1,7 +1,6 @@
 package org.tokend.template.features.polls.repository
 
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
@@ -9,8 +8,8 @@ import org.tokend.sdk.api.v3.polls.model.PollState
 import org.tokend.sdk.api.v3.polls.params.PollsPageParams
 import org.tokend.sdk.api.v3.polls.params.VotesPageParams
 import org.tokend.sdk.utils.SimplePagedResourceLoader
-import org.tokend.template.data.repository.base.MultipleItemsRepository
-import org.tokend.template.data.repository.base.RepositoryCache
+import org.tokend.template.data.storage.repository.MultipleItemsRepository
+import org.tokend.template.data.storage.repository.RepositoryCache
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.extensions.tryOrNull
@@ -23,13 +22,13 @@ class PollsRepository(
         private val apiProvider: ApiProvider,
         private val walletInfoProvider: WalletInfoProvider,
         private val keyValueEntriesRepository: KeyValueEntriesRepository,
-        itemsCache: RepositoryCache<PollRecord>
+        itemsCache: RepositoryCache<PollRecord>,
 ) : MultipleItemsRepository<PollRecord>(itemsCache) {
     override fun getItems(): Single<List<PollRecord>> {
         return Single.zip(
                 getPolls(),
                 getVotes(),
-                BiFunction { polls: List<PollRecord>, votes: Map<String, Int> ->
+                { polls: List<PollRecord>, votes: Map<String, Int> ->
                     polls.forEach {
                         it.currentChoice = votes[it.id]
                     }
@@ -121,8 +120,10 @@ class PollsRepository(
                 }
     }
 
-    fun updatePollChoiceLocally(pollId: String,
-                                choice: Int?) {
+    fun updatePollChoiceLocally(
+            pollId: String,
+            choice: Int?,
+    ) {
         itemsList
                 .find { it.id == pollId }
                 ?.also { pollToUpdate ->

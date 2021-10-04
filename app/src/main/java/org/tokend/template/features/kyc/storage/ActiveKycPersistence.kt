@@ -3,7 +3,7 @@ package org.tokend.template.features.kyc.storage
 import android.content.SharedPreferences
 import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
-import org.tokend.template.data.repository.base.ObjectPersistenceOnPrefs
+import org.tokend.template.data.storage.persistence.ObjectPersistenceOnPrefs
 import org.tokend.template.features.kyc.model.ActiveKyc
 import org.tokend.template.features.kyc.model.KycForm
 

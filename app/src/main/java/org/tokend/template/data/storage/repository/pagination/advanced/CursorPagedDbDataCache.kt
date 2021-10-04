@@ -1,4 +1,4 @@
-package org.tokend.template.data.repository.base.pagination
+package org.tokend.template.data.storage.repository.pagination.advanced
 
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -7,7 +7,7 @@ import org.tokend.sdk.api.base.params.PagingOrder
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-abstract class PagedDbDataCache<T : PagingRecord> : PagedDataCache<T> {
+abstract class CursorPagedDbDataCache<T : CursorPagingRecord> : CursorPagedDataCache<T> {
     protected open val executor: ExecutorService = Executors.newSingleThreadExecutor {
         Thread(it).apply { name = "PagedDbCacheThread" }
     }
@@ -20,14 +20,14 @@ abstract class PagedDbDataCache<T : PagingRecord> : PagedDataCache<T> {
             val isLast = pageItems.size < limit
 
             val page =
-                    if (lastItem == null)
-                        DataPage(cursor?.toString(), pageItems, true)
-                    else
-                        DataPage(lastItem.getPagingId().toString(), pageItems, isLast)
+                if (lastItem == null)
+                    DataPage(cursor?.toString(), pageItems, true)
+                else
+                    DataPage(lastItem.pagingCursor.toString(), pageItems, isLast)
 
             Single.just(page)
         }
-                .subscribeOn(Schedulers.io())
+            .subscribeOn(Schedulers.io())
     }
 
     override fun cachePage(page: DataPage<T>) {
@@ -60,7 +60,11 @@ abstract class PagedDbDataCache<T : PagingRecord> : PagedDataCache<T> {
         }
     }
 
-    protected abstract fun getPageItemsFromDb(limit: Int, cursor: Long?, order: PagingOrder): List<T>
+    protected abstract fun getPageItemsFromDb(
+        limit: Int,
+        cursor: Long?,
+        order: PagingOrder
+    ): List<T>
 
     protected abstract fun cachePageToDb(page: DataPage<T>)
 

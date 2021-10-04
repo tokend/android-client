@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import com.fasterxml.jackson.databind.ObjectMapper
 import dagger.Module
 import dagger.Provides
-import org.tokend.template.data.repository.base.ObjectPersistence
+import org.tokend.template.data.storage.persistence.ObjectPersistence
 import org.tokend.template.db.AppDatabase
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.kyc.storage.ActiveKycPersistence

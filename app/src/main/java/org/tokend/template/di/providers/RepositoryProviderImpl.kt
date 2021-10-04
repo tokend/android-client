@@ -10,11 +10,11 @@ import org.tokend.template.data.repository.AccountDetailsRepository
 import org.tokend.template.data.repository.AccountRepository
 import org.tokend.template.data.repository.AtomicSwapAsksRepository
 import org.tokend.template.data.repository.BlobsRepository
-import org.tokend.template.data.repository.base.MemoryOnlyObjectPersistence
-import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
-import org.tokend.template.data.repository.base.ObjectPersistence
-import org.tokend.template.data.repository.base.ObjectPersistenceOnPrefs
-import org.tokend.template.data.repository.base.pagination.MemoryOnlyPagedDataCache
+import org.tokend.template.data.storage.persistence.MemoryOnlyObjectPersistence
+import org.tokend.template.data.storage.persistence.ObjectPersistence
+import org.tokend.template.data.storage.persistence.ObjectPersistenceOnPrefs
+import org.tokend.template.data.storage.repository.MemoryOnlyRepositoryCache
+import org.tokend.template.data.storage.repository.pagination.advanced.MemoryOnlyCursorCursorPagedDataCache
 import org.tokend.template.db.AppDatabase
 import org.tokend.template.extensions.getOrPut
 import org.tokend.template.features.assets.storage.AssetChartRepository
@@ -268,7 +268,7 @@ class RepositoryProviderImpl(
                     if (database != null)
                         BalanceChangesPagedDbCache(balanceId, database.balanceChanges)
                     else
-                        MemoryOnlyPagedDataCache()
+                        MemoryOnlyCursorCursorPagedDataCache()
 
             BalanceChangesRepository(
                     balanceId,
@@ -333,8 +333,7 @@ class RepositoryProviderImpl(
 
     override fun atomicSwapAsks(asset: String): AtomicSwapAsksRepository {
         return atomicSwapRepositoryByAsset.getOrPut(asset) {
-            AtomicSwapAsksRepository(apiProvider, asset,
-                    MemoryOnlyRepositoryCache())
+            AtomicSwapAsksRepository(apiProvider, asset, MemoryOnlyRepositoryCache())
         }
     }
 

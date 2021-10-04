@@ -1,4 +1,4 @@
-package org.tokend.template.data.repository.base
+package org.tokend.template.data.storage.repository
 
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -14,10 +14,10 @@ abstract class Repository {
      * Emits repository errors.
      */
     val errorsSubject: PublishSubject<Throwable> =
-            PublishSubject.create()
+        PublishSubject.create()
 
     protected open val mLoadingSubject: BehaviorSubject<Boolean> =
-            BehaviorSubject.createDefault(false)
+        BehaviorSubject.createDefault(false)
 
     /**
      * Emits repository loading states.
@@ -25,8 +25,8 @@ abstract class Repository {
      */
     val loadingSubject: Observable<Boolean> by lazy {
         mLoadingSubject
-                .debounce(20, TimeUnit.MILLISECONDS)
-                .map { isLoading }
+            .debounce(20, TimeUnit.MILLISECONDS)
+            .map { isLoading }
     }
 
     /**
@@ -46,6 +46,7 @@ abstract class Repository {
      */
     var isFresh = false
         protected set
+
     /**
      * Indicates whether repository has no data because it was never updated.
      */

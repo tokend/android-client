@@ -8,8 +8,8 @@ import org.tokend.sdk.api.v3.atomicswap.params.AtomicSwapAskParams
 import org.tokend.sdk.api.v3.atomicswap.params.AtomicSwapAsksPageParams
 import org.tokend.sdk.utils.SimplePagedResourceLoader
 import org.tokend.template.data.model.AtomicSwapAskRecord
-import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.data.repository.base.MultipleItemsRepository
+import org.tokend.template.data.storage.repository.MultipleItemsRepository
+import org.tokend.template.data.storage.repository.RepositoryCache
 import org.tokend.template.di.providers.ApiProvider
 
 class AtomicSwapAsksRepository(

@@ -4,12 +4,12 @@ import io.reactivex.Single
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
-import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.base.params.PagingParamsV3
 import org.tokend.sdk.api.v3.history.params.ParticipantEffectsPageParams
 import org.tokend.sdk.api.v3.history.params.ParticipantEffectsParams
 import org.tokend.template.data.repository.AccountDetailsRepository
-import org.tokend.template.data.repository.base.pagination.PagedDataCache
-import org.tokend.template.data.repository.base.pagination.PagedDataRepository
+import org.tokend.template.data.storage.repository.pagination.advanced.AdvancedCursorPagedDataRepository
+import org.tokend.template.data.storage.repository.pagination.advanced.CursorPagedDataCache
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.features.history.logic.ParticipantEffectConverter
 import org.tokend.template.features.history.model.BalanceChange
@@ -32,16 +32,22 @@ class BalanceChangesRepository(
         private val apiProvider: ApiProvider,
         private val participantEffectConverter: ParticipantEffectConverter,
         private val accountDetailsRepository: AccountDetailsRepository?,
-        cache: PagedDataCache<BalanceChange>
-) : PagedDataRepository<BalanceChange>(PagingOrder.DESC, cache) {
+        cache: CursorPagedDataCache<BalanceChange>,
+) : AdvancedCursorPagedDataRepository<BalanceChange>(
+        pagingOrder = PagingOrder.DESC,
+        cache = cache
+) {
     init {
         if (balanceId == null && accountId == null) {
             throw IllegalArgumentException("Balance or account ID must be specified")
         }
     }
 
-    override fun getRemotePage(nextCursor: Long?,
-                               requiredOrder: PagingOrder): Single<DataPage<BalanceChange>> {
+    override fun getRemotePage(
+            limit: Int,
+            cursor: Long?,
+            requiredOrder: PagingOrder,
+    ): Single<DataPage<BalanceChange>> {
         val signedApi = apiProvider.getSignedApi()
                 ?: return Single.error(IllegalStateException("No signed API instance found"))
 
@@ -56,10 +62,10 @@ class BalanceChangesRepository(
                                         ParticipantEffectsParams.Includes.OPERATION_DETAILS
                                 )
                                 .withPagingParams(
-                                        PagingParamsV2(
+                                        PagingParamsV3.withCursor(
                                                 order = requiredOrder,
-                                                limit = pageLimit,
-                                                page = nextCursor?.toString()
+                                                limit = limit,
+                                                cursor = cursor?.toString()
                                         )
                                 )
                                 .apply {

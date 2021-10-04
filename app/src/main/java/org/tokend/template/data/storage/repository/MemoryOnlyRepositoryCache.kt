@@ -1,4 +1,4 @@
-package org.tokend.template.data.repository.base
+package org.tokend.template.data.storage.repository
 
 /**
  * Repository cache without persistence

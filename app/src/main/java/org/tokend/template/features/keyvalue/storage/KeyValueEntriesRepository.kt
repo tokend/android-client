@@ -5,11 +5,11 @@ import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.utils.SimplePagedResourceLoader
-import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
-import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.data.repository.base.MultipleItemsRepository
+import org.tokend.template.data.storage.repository.MultipleItemsRepository
+import org.tokend.template.data.storage.repository.RepositoryCache
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.extensions.mapSuccessful
+import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 
 class KeyValueEntriesRepository(
         private val apiProvider: ApiProvider,

@@ -1,7 +1,7 @@
 package org.tokend.template.features.invest.repository
 
 import io.reactivex.Single
-import org.tokend.template.data.repository.base.SingleItemRepository
+import org.tokend.template.data.storage.repository.SingleItemRepository
 import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.features.invest.model.InvestmentInfo

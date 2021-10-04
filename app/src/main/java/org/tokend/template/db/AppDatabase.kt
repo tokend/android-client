@@ -1,21 +1,21 @@
 package org.tokend.template.db
 
-import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.features.assets.model.Asset
-import org.tokend.template.features.assets.model.SimpleAsset
-import org.tokend.template.features.history.storage.BalanceChangeDbEntity
-import org.tokend.template.features.history.storage.BalanceChangesDao
 import org.tokend.template.features.assets.model.AssetDbEntity
+import org.tokend.template.features.assets.model.SimpleAsset
 import org.tokend.template.features.assets.storage.AssetsDao
 import org.tokend.template.features.balances.model.BalanceDbEntity
 import org.tokend.template.features.balances.storage.BalancesDao
+import org.tokend.template.features.history.storage.BalanceChangeDbEntity
+import org.tokend.template.features.history.storage.BalanceChangesDao
 import java.math.BigDecimal
 import java.util.*
 
@@ -25,7 +25,7 @@ import java.util.*
             BalanceDbEntity::class,
             BalanceChangeDbEntity::class
         ],
-        version = 3,
+        version = 4,
         exportSchema = false
 )
 @TypeConverters(AppDatabase.Converters::class)
@@ -69,26 +69,33 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val balanceChanges: BalanceChangesDao
 
     companion object {
-        val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) = database.run {
-                execSQL("""
-                                    CREATE TABLE `balance_change` (`id` INTEGER NOT NULL, 
-                                    `action` TEXT NOT NULL, 
-                                    `amount` TEXT NOT NULL, `asset` TEXT NOT NULL,
-                                     `balance_id` TEXT NOT NULL, `fee` TEXT NOT NULL,
-                                      `date` INTEGER NOT NULL, `cause` TEXT NOT NULL,
-                                       PRIMARY KEY(`id`))
-                                """.trimIndent())
-                execSQL("CREATE INDEX `index_balance_change_balance_id` ON `balance_change` (`balance_id`)")
-            }
-        }
-        val MIGRATION_2_3 = object : Migration(2, 3) {
-            override fun migrate(database: SupportSQLiteDatabase) = database.run {
-                execSQL("""
-                    ALTER TABLE `asset` 
-                    ADD COLUMN `is_coinpayments` INTEGER NOT NULL DEFAULT 0
-                """.trimIndent())
-            }
-        }
+        val MIGRATIONS = arrayOf(
+                object : Migration(1, 2) {
+                    override fun migrate(database: SupportSQLiteDatabase) = database.run {
+                        execSQL("""
+                            CREATE TABLE `balance_change` (`id` INTEGER NOT NULL, 
+                            `action` TEXT NOT NULL, 
+                            `amount` TEXT NOT NULL, `asset` TEXT NOT NULL,
+                             `balance_id` TEXT NOT NULL, `fee` TEXT NOT NULL,
+                              `date` INTEGER NOT NULL, `cause` TEXT NOT NULL,
+                               PRIMARY KEY(`id`))
+                        """.trimIndent())
+                        execSQL("CREATE INDEX `index_balance_change_balance_id` ON `balance_change` (`balance_id`)")
+                    }
+                },
+                object : Migration(2, 3) {
+                    override fun migrate(database: SupportSQLiteDatabase) = database.run {
+                        execSQL("""
+                            ALTER TABLE `asset` 
+                            ADD COLUMN `is_coinpayments` INTEGER NOT NULL DEFAULT 0
+                        """.trimIndent())
+                    }
+                },
+                object : Migration(3, 4) {
+                    override fun migrate(database: SupportSQLiteDatabase) = database.run {
+                        execSQL("DELETE FROM balance_change")
+                    }
+                }
+        )
     }
 }

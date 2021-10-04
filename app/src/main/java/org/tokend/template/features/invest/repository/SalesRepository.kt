@@ -9,7 +9,7 @@ import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.v3.sales.model.SaleState
 import org.tokend.sdk.api.v3.sales.params.SaleParamsV3
 import org.tokend.sdk.api.v3.sales.params.SalesPageParamsV3
-import org.tokend.template.data.repository.base.pagination.PagedDataRepository
+import org.tokend.template.data.storage.repository.pagination.SimplePagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.di.providers.WalletInfoProvider
@@ -20,14 +20,18 @@ class SalesRepository(
         private val walletInfoProvider: WalletInfoProvider,
         private val apiProvider: ApiProvider,
         private val urlConfigProvider: UrlConfigProvider,
-        private val mapper: ObjectMapper
-) : PagedDataRepository<SaleRecord>(PagingOrder.DESC, null) {
-    override val pageLimit: Int = LIMIT
-
+        private val mapper: ObjectMapper,
+) : SimplePagedDataRepository<SaleRecord>(
+        pagingOrder = PagingOrder.DESC,
+        pageLimit = 10
+) {
     private var baseAsset: String? = null
 
-    override fun getRemotePage(nextCursor: Long?,
-                               requiredOrder: PagingOrder): Single<DataPage<SaleRecord>> {
+    override fun getPage(
+            limit: Int,
+            page: String?,
+            order: PagingOrder,
+    ): Single<DataPage<SaleRecord>> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
                 ?: return Single.error(IllegalStateException("No wallet info found"))
 
@@ -36,9 +40,9 @@ class SalesRepository(
 
         val requestParams = SalesPageParamsV3(
                 pagingParams = PagingParamsV2(
-                        page = nextCursor?.toString(),
-                        order = requiredOrder,
-                        limit = pageLimit
+                        page = page,
+                        order = order,
+                        limit = limit
                 ),
                 state = SaleState.OPEN,
                 baseAsset = baseAsset,
@@ -54,8 +58,8 @@ class SalesRepository(
                 .sales
                 .getForAccount(accountId, requestParams)
                 .toSingle()
-                .map { page ->
-                    page.mapItemsNotNull {
+                .map { dataPage ->
+                    dataPage.mapItemsNotNull {
                         tryOrNull {
                             SaleRecord.fromResource(it, urlConfigProvider.getConfig(), mapper)
                         }
@@ -89,9 +93,5 @@ class SalesRepository(
     fun forQuery(baseAsset: String? = null): SalesRepository {
         this.baseAsset = baseAsset
         return this
-    }
-
-    companion object {
-        private const val LIMIT = 10
     }
 }

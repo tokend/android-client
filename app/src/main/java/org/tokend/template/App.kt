@@ -208,8 +208,10 @@ class App : MultiDexApplication() {
                 }
     }
 
-    private fun dumpAndClearPreferences(keys: Collection<String>,
-                                        preferencesName: String): Map<String, String> {
+    private fun dumpAndClearPreferences(
+            keys: Collection<String>,
+            preferencesName: String,
+    ): Map<String, String> {
         val preferences = getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
         val content = keys
                 .mapNotNull { key ->
@@ -243,10 +245,7 @@ class App : MultiDexApplication() {
                 AppDatabase::class.java,
                 DATABASE_NAME
         )
-                .addMigrations(
-                        AppDatabase.MIGRATION_1_2,
-                        AppDatabase.MIGRATION_2_3
-                )
+                .addMigrations(*AppDatabase.MIGRATIONS)
                 .build()
     }
 

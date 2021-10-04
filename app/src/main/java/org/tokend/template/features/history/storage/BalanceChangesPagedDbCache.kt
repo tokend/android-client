@@ -2,13 +2,13 @@ package org.tokend.template.features.history.storage
 
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
+import org.tokend.template.data.storage.repository.pagination.advanced.CursorPagedDbDataCache
 import org.tokend.template.features.history.model.BalanceChange
-import org.tokend.template.data.repository.base.pagination.PagedDbDataCache
 
 class BalanceChangesPagedDbCache(
         private val balanceId: String?,
         private val dao: BalanceChangesDao
-) : PagedDbDataCache<BalanceChange>() {
+) : CursorPagedDbDataCache<BalanceChange>() {
     override fun getPageItemsFromDb(limit: Int, cursor: Long?, order: PagingOrder): List<BalanceChange> {
         val actualCursor = cursor ?: Long.MAX_VALUE
 

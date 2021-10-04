@@ -5,8 +5,8 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import org.tokend.template.data.repository.base.ObjectPersistence
-import org.tokend.template.data.repository.base.SingleItemRepository
+import org.tokend.template.data.storage.persistence.ObjectPersistence
+import org.tokend.template.data.storage.repository.SingleItemRepository
 import org.tokend.template.features.localaccount.model.LocalAccount
 
 class LocalAccountRepository(

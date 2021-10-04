@@ -4,8 +4,8 @@ import android.content.Context
 import android.provider.ContactsContract
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.data.repository.base.MultipleItemsRepository
+import org.tokend.template.data.storage.repository.MultipleItemsRepository
+import org.tokend.template.data.storage.repository.RepositoryCache
 import org.tokend.template.features.send.recipient.contacts.model.ContactRecord
 
 class ContactsRepository(val context: Context,

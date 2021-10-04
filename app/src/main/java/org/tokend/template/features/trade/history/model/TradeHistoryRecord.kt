@@ -1,7 +1,6 @@
 package org.tokend.template.features.trade.history.model
 
 import org.tokend.sdk.api.generated.resources.MatchResource
-import org.tokend.template.data.repository.base.pagination.PagingRecord
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.assets.model.SimpleAsset
 import java.io.Serializable
@@ -17,9 +16,7 @@ class TradeHistoryRecord(
         val price: BigDecimal,
         val createdAt: Date,
         var hasPositiveTrend: Boolean
-) : Serializable, PagingRecord {
-    override fun getPagingId(): Long = id
-
+) : Serializable {
     constructor(source: MatchResource): this(
             id = source.id.toLong(),
             baseAsset = SimpleAsset(source.baseAsset),

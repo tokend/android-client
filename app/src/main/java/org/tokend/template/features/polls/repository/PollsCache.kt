@@ -1,6 +1,6 @@
 package org.tokend.template.features.polls.repository
 
-import org.tokend.template.data.repository.base.MemoryOnlyRepositoryCache
+import org.tokend.template.data.storage.repository.MemoryOnlyRepositoryCache
 import org.tokend.template.features.polls.model.PollRecord
 
 class PollsCache : MemoryOnlyRepositoryCache<PollRecord>() {

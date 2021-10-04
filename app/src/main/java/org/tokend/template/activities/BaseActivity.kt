@@ -14,7 +14,7 @@ import org.tokend.sdk.tfa.TfaCallback
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.App
 import org.tokend.template.BuildConfig
-import org.tokend.template.data.repository.base.ObjectPersistence
+import org.tokend.template.data.storage.persistence.ObjectPersistence
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.balances.model.BalanceRecord

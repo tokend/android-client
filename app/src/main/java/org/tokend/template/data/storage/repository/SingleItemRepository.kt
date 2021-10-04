@@ -1,4 +1,4 @@
-package org.tokend.template.data.repository.base
+package org.tokend.template.data.storage.repository
 
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -9,12 +9,13 @@ import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.CompletableSubject
+import org.tokend.template.data.storage.persistence.ObjectPersistence
 
 /**
  * Repository that holds a single [T] item.
  */
 abstract class SingleItemRepository<T : Any>(
-        protected open val itemPersistence: ObjectPersistence<T>? = null
+    protected open val itemPersistence: ObjectPersistence<T>? = null
 ) : Repository() {
     private var ensureDataResultSubject: CompletableSubject? = null
     private var ensureDataDisposable: Disposable? = null
@@ -41,12 +42,12 @@ abstract class SingleItemRepository<T : Any>(
 
     protected open fun getStoredItem(): Maybe<T> {
         return itemPersistence
-                ?.let { Maybe.defer { it.loadItem().toMaybe() } }
-                ?: Maybe.empty()
+            ?.let { Maybe.defer { it.loadItem().toMaybe() } }
+            ?: Maybe.empty()
     }
 
     protected open fun storeItem(item: T) =
-            itemPersistence?.saveItem(item)
+        itemPersistence?.saveItem(item)
 
     protected open fun onNewItem(newItem: T) {
         isNeverUpdated = false
@@ -80,35 +81,35 @@ abstract class SingleItemRepository<T : Any>(
 
             ensureDataDisposable?.dispose()
             ensureDataDisposable = getStoredItem()
-                    .doOnSuccess {
-                        item = it
+                .doOnSuccess {
+                    item = it
+                }
+                .toSingle()
+                .ignoreElement()
+                .onErrorComplete()
+                .andThen(Completable.defer {
+                    if (item != null) {
+                        broadcast()
+                        Completable.complete()
+                    } else {
+                        updateDeferred()
                     }
-                    .toSingle()
-                    .ignoreElement()
-                    .onErrorComplete()
-                    .andThen(Completable.defer {
-                        if (item != null) {
-                            broadcast()
-                            Completable.complete()
-                        } else {
-                            updateDeferred()
-                        }
-                    })
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribeBy(
-                            onComplete = {
-                                isNeverUpdated = false
-                                isLoading = false
-                                ensureDataResultSubject = null
-                                resultSubject.onComplete()
-                            },
-                            onError = {
-                                isLoading = false
-                                ensureDataResultSubject = null
-                                errorsSubject.onNext(it)
-                                resultSubject.onError(it)
-                            }
-                    )
+                })
+                .subscribeOn(Schedulers.newThread())
+                .subscribeBy(
+                    onComplete = {
+                        isNeverUpdated = false
+                        isLoading = false
+                        ensureDataResultSubject = null
+                        resultSubject.onComplete()
+                    },
+                    onError = {
+                        isLoading = false
+                        ensureDataResultSubject = null
+                        errorsSubject.onNext(it)
+                        resultSubject.onError(it)
+                    }
+                )
         }
 
         resultSubject
@@ -131,42 +132,47 @@ abstract class SingleItemRepository<T : Any>(
             isLoading = true
 
             val storedItemMaybe =
-                    if (isNeverUpdated)
-                        getStoredItem()
-                    else
-                        Maybe.empty()
+                if (isNeverUpdated)
+                    getStoredItem()
+                else
+                    Maybe.empty()
 
             updateDisposable?.dispose()
             updateDisposable = storedItemMaybe
-                    .toObservable()
-                    .concatWith(
-                            getItem()
-                                    .doOnSuccess {
-                                        storeItem(it)
-                                    }
-                    )
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribeBy(
-                            onNext = { newItem: T ->
-                                isNeverUpdated = false
-                                onNewItem(newItem)
-                            },
-                            onComplete = {
-                                isLoading = false
+                .toObservable()
+                .concatWith(
+                    getItem()
+                        .doOnSuccess {
+                            storeItem(it)
+                        }
+                )
+                .subscribeOn(Schedulers.newThread())
+                .subscribeBy(
+                    onNext = { newItem: T ->
+                        isNeverUpdated = false
+                        onNewItem(newItem)
+                    },
+                    onComplete = {
+                        isLoading = false
 
-                                updateResultSubject = null
-                                resultSubject.onComplete()
-                            },
-                            onError = {
-                                isLoading = false
-                                errorsSubject.onNext(it)
+                        updateResultSubject = null
+                        resultSubject.onComplete()
+                    },
+                    onError = {
+                        isLoading = false
+                        errorsSubject.onNext(it)
 
-                                updateResultSubject = null
-                                resultSubject.onError(it)
-                            }
-                    )
+                        updateResultSubject = null
+                        resultSubject.onError(it)
+                    }
+                )
 
             resultSubject
         }
+    }
+
+    open fun set(item: T) {
+        onNewItem(item)
+        storeItem(item)
     }
 }

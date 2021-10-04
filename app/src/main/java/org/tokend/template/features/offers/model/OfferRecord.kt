@@ -5,7 +5,6 @@ import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.assets.model.SimpleAsset
 import org.tokend.template.features.history.model.BalanceChange
 import org.tokend.template.features.history.model.details.BalanceChangeCause
-import org.tokend.template.data.repository.base.pagination.PagingRecord
 import org.tokend.wallet.Base32Check
 import java.io.Serializable
 import java.math.BigDecimal
@@ -24,15 +23,13 @@ class OfferRecord(
         var baseBalanceId: String = EMPTY_BALANCE_ID,
         var quoteBalanceId: String = EMPTY_BALANCE_ID,
         val fee: BigDecimal = BigDecimal.ZERO
-) : Serializable, PagingRecord {
+) : Serializable {
 
     val isInvestment: Boolean
         get() = orderBookId != 0L
 
     val isCancellable: Boolean
         get() = baseAmount.signum() > 0
-
-    override fun getPagingId(): Long = id
 
     override fun equals(other: Any?): Boolean {
         return other is OfferRecord && other.id == this.id

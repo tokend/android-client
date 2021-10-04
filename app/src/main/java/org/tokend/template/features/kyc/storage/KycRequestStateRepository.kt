@@ -14,7 +14,7 @@ import org.tokend.sdk.api.v3.requests.params.ChangeRoleRequestPageParams
 import org.tokend.sdk.api.v3.requests.params.RequestParamsV3
 import org.tokend.sdk.utils.extentions.getTypedRequestDetails
 import org.tokend.template.data.repository.BlobsRepository
-import org.tokend.template.data.repository.base.SingleItemRepository
+import org.tokend.template.data.storage.repository.SingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.kyc.model.KycForm

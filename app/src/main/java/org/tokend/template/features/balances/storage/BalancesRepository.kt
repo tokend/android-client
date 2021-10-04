@@ -10,8 +10,8 @@ import org.tokend.sdk.api.v3.accounts.AccountsApiV3
 import org.tokend.sdk.api.v3.balances.BalancesApi
 import org.tokend.sdk.api.v3.balances.params.ConvertedBalancesParams
 import org.tokend.sdk.utils.extentions.isNotFound
-import org.tokend.template.data.repository.base.MultipleItemsRepository
-import org.tokend.template.data.repository.base.RepositoryCache
+import org.tokend.template.data.storage.repository.MultipleItemsRepository
+import org.tokend.template.data.storage.repository.RepositoryCache
 import org.tokend.template.di.providers.AccountProvider
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider

@@ -1,8 +1,8 @@
 package org.tokend.template.features.history.model
 
+import org.tokend.template.data.storage.repository.pagination.advanced.CursorPagingRecord
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.history.model.details.BalanceChangeCause
-import org.tokend.template.data.repository.base.pagination.PagingRecord
 import java.io.Serializable
 import java.math.BigDecimal
 import java.util.*
@@ -15,8 +15,8 @@ open class BalanceChange(
         val balanceId: String,
         val fee: SimpleFeeRecord,
         val date: Date,
-        val cause: BalanceChangeCause
-) : PagingRecord, Serializable {
+        val cause: BalanceChangeCause,
+) : CursorPagingRecord, Serializable {
     override fun equals(other: Any?): Boolean {
         return other is BalanceChange && other.id == this.id
     }
@@ -25,7 +25,8 @@ open class BalanceChange(
         return id.hashCode()
     }
 
-    override fun getPagingId(): Long = id
+    override val pagingCursor: Long
+        get() = id
 
     val assetCode: String = asset.code
 

@@ -1,4 +1,4 @@
-package org.tokend.template.data.repository.base
+package org.tokend.template.data.storage.repository
 
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -26,15 +26,15 @@ abstract class RepositoryCache<T> {
     open fun loadFromDb(): Completable {
         synchronized(this) {
             val initSingle =
-                    if (!isLoaded)
-                        getAllFromDbSafe()
-                                .doOnSuccess {
-                                    isLoaded = true
-                                    mItems.clear()
-                                    mItems.addAll(it)
-                                }
-                    else
-                        Single.just(listOf())
+                if (!isLoaded)
+                    getAllFromDbSafe()
+                        .doOnSuccess {
+                            isLoaded = true
+                            mItems.clear()
+                            mItems.addAll(it)
+                        }
+                else
+                    Single.just(listOf())
 
             return Completable.fromSingle(initSingle)
         }
@@ -42,7 +42,7 @@ abstract class RepositoryCache<T> {
 
     fun add(vararg items: T): Boolean {
         val itemsToAdd = items.distinct()
-                .filterNot(mItems::contains)
+            .filterNot(mItems::contains)
         return if (itemsToAdd.isNotEmpty()) {
             addToDbSafe(itemsToAdd)
             mItems.addAll(0, itemsToAdd)
@@ -62,15 +62,15 @@ abstract class RepositoryCache<T> {
 
     fun update(vararg items: T): Boolean {
         val itemsToUpdate = items
-                .distinct()
-                .mapNotNull { item ->
-                    val index = mItems.indexOf(item)
-                    if (index < 0)
-                        null
-                    else
-                        item to index
-                }
-                .toMap()
+            .distinct()
+            .mapNotNull { item ->
+                val index = mItems.indexOf(item)
+                if (index < 0)
+                    null
+                else
+                    item to index
+            }
+            .toMap()
 
         return if (itemsToUpdate.isNotEmpty()) {
             itemsToUpdate.forEach { (item, index) ->
@@ -101,10 +101,10 @@ abstract class RepositoryCache<T> {
         var changesOccurred = false
 
         val operatingItems =
-                if (filter != null)
-                    mItems.filter(filter)
-                else
-                    mItems
+            if (filter != null)
+                mItems.filter(filter)
+            else
+                mItems
 
         if (operatingItems.isEmpty()) {
             if (newStateItems.isNotEmpty()) {

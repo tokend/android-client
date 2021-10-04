@@ -1,4 +1,4 @@
-package org.tokend.template.data.repository.base
+package org.tokend.template.data.storage.repository
 
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -23,7 +23,7 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
      * initialized with empty list
      */
     val itemsSubject: BehaviorSubject<List<T>> =
-            BehaviorSubject.createDefault(listOf())
+        BehaviorSubject.createDefault(listOf())
 
     /**
      * Repository items
@@ -73,31 +73,31 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
 
             ensureDataDisposable?.dispose()
             ensureDataDisposable = itemsCache
-                    .loadFromDb()
-                    .onErrorComplete()
-                    .andThen(Completable.defer {
-                        if (itemsCache.items.isNotEmpty()) {
-                            broadcast()
-                            Completable.complete()
-                        } else {
-                            updateDeferred()
-                        }
-                    })
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribeBy(
-                            onComplete = {
-                                isNeverUpdated = false
-                                isLoading = false
-                                ensureDataResultSubject = null
-                                resultSubject.onComplete()
-                            },
-                            onError = {
-                                isLoading = false
-                                ensureDataResultSubject = null
-                                errorsSubject.onNext(it)
-                                resultSubject.onError(it)
-                            }
-                    )
+                .loadFromDb()
+                .onErrorComplete()
+                .andThen(Completable.defer {
+                    if (itemsCache.items.isNotEmpty()) {
+                        broadcast()
+                        Completable.complete()
+                    } else {
+                        updateDeferred()
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .subscribeBy(
+                    onComplete = {
+                        isNeverUpdated = false
+                        isLoading = false
+                        ensureDataResultSubject = null
+                        resultSubject.onComplete()
+                    },
+                    onError = {
+                        isLoading = false
+                        ensureDataResultSubject = null
+                        errorsSubject.onNext(it)
+                        resultSubject.onError(it)
+                    }
+                )
         }
 
         resultSubject
@@ -120,35 +120,35 @@ abstract class MultipleItemsRepository<T>(val itemsCache: RepositoryCache<T>) : 
             isLoading = true
 
             val loadItemsFromDb =
-                    if (isNeverUpdated)
-                        itemsCache.loadFromDb().doOnComplete {
-                            if (itemsCache.items.isNotEmpty()) {
-                                isNeverUpdated = false
-                                broadcast()
-                            }
+                if (isNeverUpdated)
+                    itemsCache.loadFromDb().doOnComplete {
+                        if (itemsCache.items.isNotEmpty()) {
+                            isNeverUpdated = false
+                            broadcast()
                         }
-                    else
-                        Completable.complete()
+                    }
+                else
+                    Completable.complete()
 
             updateDisposable?.dispose()
             updateDisposable = loadItemsFromDb.andThen(getItems())
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribeBy(
-                            onSuccess = { items ->
-                                onNewItems(items)
+                .subscribeOn(Schedulers.newThread())
+                .subscribeBy(
+                    onSuccess = { items ->
+                        onNewItems(items)
 
-                                isLoading = false
-                                updateResultSubject = null
-                                resultSubject.onComplete()
-                            },
-                            onError = {
-                                isLoading = false
-                                errorsSubject.onNext(it)
+                        isLoading = false
+                        updateResultSubject = null
+                        resultSubject.onComplete()
+                    },
+                    onError = {
+                        isLoading = false
+                        errorsSubject.onNext(it)
 
-                                updateResultSubject = null
-                                resultSubject.onError(it)
-                            }
-                    )
+                        updateResultSubject = null
+                        resultSubject.onError(it)
+                    }
+                )
 
             resultSubject
         }

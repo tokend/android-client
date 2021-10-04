@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import com.google.gson.annotations.SerializedName
 import org.tokend.sdk.utils.extentions.decodeHex
 import org.tokend.sdk.utils.extentions.encodeHexString
-import org.tokend.template.data.repository.base.ObjectPersistenceOnPrefs
+import org.tokend.template.data.storage.persistence.ObjectPersistenceOnPrefs
 import org.tokend.template.features.localaccount.model.LocalAccount
 
 class LocalAccountPersistenceOnPrefs(

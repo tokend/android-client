@@ -2,7 +2,7 @@ package org.tokend.template.features.fees.repository
 
 import io.reactivex.Single
 import org.tokend.rx.extensions.toSingle
-import org.tokend.template.data.repository.base.SingleItemRepository
+import org.tokend.template.data.storage.repository.SingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.fees.model.FeeRecord

@@ -8,12 +8,12 @@ import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.v3.assetpairs.params.AssetPairParams
 import org.tokend.sdk.api.v3.assetpairs.params.AssetPairsPageParams
 import org.tokend.sdk.utils.SimplePagedResourceLoader
-import org.tokend.template.features.trade.pairs.model.AssetPairRecord
-import org.tokend.template.data.repository.base.RepositoryCache
-import org.tokend.template.data.repository.base.MultipleItemsRepository
-import org.tokend.template.features.trade.pairs.logic.AmountConverter
+import org.tokend.template.data.storage.repository.MultipleItemsRepository
+import org.tokend.template.data.storage.repository.RepositoryCache
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.UrlConfigProvider
+import org.tokend.template.features.trade.pairs.logic.AmountConverter
+import org.tokend.template.features.trade.pairs.model.AssetPairRecord
 import java.math.BigDecimal
 import java.math.MathContext
 
