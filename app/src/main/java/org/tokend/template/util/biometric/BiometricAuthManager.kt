@@ -100,7 +100,7 @@ class BiometricAuthManager {
 
             val promptInfo = BiometricPrompt.PromptInfo.Builder()
                     .setAllowedAuthenticators(ALLOWED_AUTHENTICATORS)
-                    .setConfirmationRequired(true)
+                    .setConfirmationRequired(false)
                     .setTitle(context.getString(R.string.use_biometrics))
                     .setNegativeButtonText(context.getString(R.string.use_password))
                     .build()
