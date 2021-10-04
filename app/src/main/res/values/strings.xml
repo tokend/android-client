@@ -142,7 +142,6 @@
 
     <string name="error_cannot_be_empty">Cannot be empty</string>
     <string name="error_invalid_email">Invalid email</string>
-    <string name="error_passwords_mismatch">Password doesn\'t match confirmation</string>
     <string name="error_weak_password">Password is weak</string>
     <string name="error_email_already_taken">Email is already taken</string>
     <string name="error_try_again">An error occurred. Try again later</string>

@@ -3,7 +3,6 @@ package org.tokend.template.features.localaccount.importt.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_import_local_account.*
@@ -72,11 +71,9 @@ class ImportLocalAccountActivity : BaseActivity() {
 
     private fun initFields() {
         SoftInputUtil.showSoftInputOnView(import_data_edit_text)
-        import_data_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
+        import_data_edit_text.addTextChangedListener(SimpleTextWatcher {
                 import_data_edit_text.error = null
                 updateImportAvailability()
-            }
         })
     }
 

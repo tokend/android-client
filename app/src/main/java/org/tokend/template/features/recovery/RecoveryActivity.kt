@@ -3,7 +3,6 @@ package org.tokend.template.features.recovery
 import android.Manifest
 import android.app.Activity
 import android.os.Bundle
-import android.text.Editable
 import android.view.View
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -14,6 +13,7 @@ import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
+import org.tokend.crypto.ecdsa.erase
 import org.tokend.sdk.api.wallets.model.EmailNotVerifiedException
 import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.template.BuildConfig
@@ -31,10 +31,10 @@ import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.util.errorhandler.CompositeErrorHandler
 import org.tokend.template.util.errorhandler.ErrorHandler
 import org.tokend.template.util.navigation.Navigator
+import org.tokend.template.util.validator.PasswordValidator
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.EditTextErrorHandler
-import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
 
@@ -65,8 +65,6 @@ class RecoveryActivity : BaseActivity() {
             field = value
             recovery_button.enabled = value
         }
-
-    private var passwordsMatch = false
 
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
     private lateinit var urlConfigManager: UrlConfigManager
@@ -100,8 +98,6 @@ class RecoveryActivity : BaseActivity() {
     private fun initFields() {
         initNetworkField()
 
-        EditTextHelper.initPasswordEditText(password_edit_text)
-
         if (email.isNotEmpty()) {
             email_edit_text.setText(email)
             email_edit_text.setSelection(email.length)
@@ -110,25 +106,24 @@ class RecoveryActivity : BaseActivity() {
             email_edit_text.requestFocus()
         }
 
-        email_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                email_edit_text.error = null
-                updateRecoveryAvailability()
-            }
+        email_edit_text.addTextChangedListener(SimpleTextWatcher {
+            email_edit_text.error = null
+            updateRecoveryAvailability()
         })
 
-        val passwordTextWatcher = object : SimpleTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                checkPasswordsMatch()
+        password_edit_text.addTextChangedListener(SimpleTextWatcher {
+            password_edit_text.error = null
+            updateRecoveryAvailability()
+        })
+        password_edit_text.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                checkPasswordStrength()
                 updateRecoveryAvailability()
             }
         }
-
-        password_edit_text.addTextChangedListener(passwordTextWatcher)
-        EditTextHelper.initPasswordEditText(password_edit_text)
-
-        confirm_password_edit_text.addTextChangedListener(passwordTextWatcher)
-
+        confirm_password_edit_text.addTextChangedListener(SimpleTextWatcher {
+            updateRecoveryAvailability()
+        })
         confirm_password_edit_text.onEditorAction {
             tryToRecover()
         }
@@ -166,35 +161,37 @@ class RecoveryActivity : BaseActivity() {
         }
     }
 
-    private fun checkPasswordsMatch() {
-        val passwordChars = password_edit_text.text.getChars()
-        val confirmationChars = confirm_password_edit_text.text.getChars()
-
-        passwordsMatch = passwordChars.contentEquals(confirmationChars)
-
-        passwordChars.fill('0')
-        confirmationChars.fill('0')
-
-        if (!passwordsMatch && !confirm_password_edit_text.text.isNullOrEmpty()) {
-            confirm_password_edit_text.error = getString(R.string.error_passwords_mismatch)
+    private fun checkPasswordStrength() {
+        if (!PasswordValidator.isValid(password_edit_text.text)) {
+            password_edit_text.error = getString(R.string.error_weak_password)
         } else {
-            confirm_password_edit_text.error = null
+            password_edit_text.error = null
         }
     }
 
     private fun updateRecoveryAvailability() {
         canRecover = !isLoading
                 && !email_edit_text.text.isNullOrBlank()
-                && passwordsMatch
                 && !password_edit_text.text.isNullOrEmpty()
                 && !email_edit_text.hasError()
                 && !password_edit_text.hasError()
+                && arePasswordsMatch()
                 && urlConfigProvider.hasConfig()
     }
 
+    private fun arePasswordsMatch(): Boolean {
+        val password = password_edit_text.text.getChars()
+        val confirmation = confirm_password_edit_text.text.getChars()
+        return password.contentEquals(confirmation).also {
+            password.erase()
+            confirmation.erase()
+        }
+    }
+
     private fun tryToRecover() {
-        checkPasswordsMatch()
+        checkPasswordStrength()
         updateRecoveryAvailability()
+
         if (canRecover) {
             SoftInputUtil.hideSoftInput(this)
             recover()
@@ -204,8 +201,6 @@ class RecoveryActivity : BaseActivity() {
     private fun recover() {
         val email = email_edit_text.text.toString()
         val password = password_edit_text.text.getChars()
-
-        SoftInputUtil.hideSoftInput(this)
 
         RecoverPasswordUseCase(
                 email,
@@ -219,7 +214,7 @@ class RecoveryActivity : BaseActivity() {
                 }
                 .doOnTerminate {
                     isLoading = false
-                    password.fill('0')
+                    password.erase()
                 }
                 .subscribeBy(
                         onComplete = {

@@ -2,7 +2,6 @@ package org.tokend.template.features.withdraw.destination.view
 
 import android.Manifest
 import android.os.Bundle
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,11 +46,9 @@ class WithdrawDestinationFragment : BaseFragment() {
     }
 
     private fun initFields() {
-        destination_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                destination_edit_text.error = null
-                updateContinueAvailability()
-            }
+        destination_edit_text.addTextChangedListener(SimpleTextWatcher {
+            destination_edit_text.error = null
+            updateContinueAvailability()
         })
         destination_edit_text.onEditorAction {
             tryToContinue()
@@ -111,9 +108,11 @@ class WithdrawDestinationFragment : BaseFragment() {
                 && !destination_edit_text.text.isNullOrBlank()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<out String>,
-                                            grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray,
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
     }

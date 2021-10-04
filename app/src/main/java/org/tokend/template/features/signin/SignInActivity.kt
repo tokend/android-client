@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.text.Editable
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -119,11 +118,9 @@ class SignInActivity : BaseActivity() {
         initNetworkField()
 
         email_edit_text.requestFocus()
-        object : SimpleTextWatcher() {
-            override fun afterTextChanged(p0: Editable?) {
-                password_edit_text.error = null
-                updateSignInAvailability()
-            }
+        SimpleTextWatcher {
+            password_edit_text.error = null
+            updateSignInAvailability()
         }.also {
             email_edit_text.addTextChangedListener(it)
             password_edit_text.addTextChangedListener(it)
@@ -279,7 +276,8 @@ class SignInActivity : BaseActivity() {
                     AccountRecord.KycRecoveryStatus.PENDING ->
                         R.string.kyc_recovery_pending_message
                     AccountRecord.KycRecoveryStatus.REJECTED,
-                    AccountRecord.KycRecoveryStatus.PERMANENTLY_REJECTED ->
+                    AccountRecord.KycRecoveryStatus.PERMANENTLY_REJECTED,
+                    ->
                         R.string.kyc_recovery_rejected_message
                     else ->
                         R.string.kyc_recovery_initiated_message

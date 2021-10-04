@@ -3,9 +3,8 @@ package org.tokend.template.features.signup
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
-import android.text.Editable
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_sign_up.*
@@ -35,10 +34,10 @@ import org.tokend.template.util.QrScannerUtil
 import org.tokend.template.util.errorhandler.CompositeErrorHandler
 import org.tokend.template.util.errorhandler.ErrorHandler
 import org.tokend.template.util.navigation.Navigator
+import org.tokend.template.util.validator.PasswordValidator
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.input.EditTextErrorHandler
-import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
 
@@ -63,8 +62,6 @@ class SignUpActivity : BaseActivity() {
             sign_up_button.enabled = value
         }
 
-    private var passwordsMatch = false
-
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
     private lateinit var urlConfigManager: UrlConfigManager
 
@@ -82,10 +79,6 @@ class SignUpActivity : BaseActivity() {
         urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistence)
         urlConfigManager.onConfigUpdated {
             initNetworkField()
-
-            // Recall validation
-            email_edit_text.text = email_edit_text.text
-
             updateSignUpAvailability()
         }
 
@@ -100,25 +93,25 @@ class SignUpActivity : BaseActivity() {
     private fun initFields() {
         initNetworkField()
 
-        EditTextHelper.initEmailEditText(email_edit_text)
-        EditTextHelper.initPasswordEditText(password_edit_text)
-
         email_edit_text.requestFocus()
-        email_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                updateSignUpAvailability()
-            }
+        email_edit_text.addTextChangedListener(SimpleTextWatcher {
+            email_edit_text.error = null
+            updateSignUpAvailability()
         })
 
-        val passwordTextWatcher = object : SimpleTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                checkPasswordsMatch()
+        password_edit_text.addTextChangedListener(SimpleTextWatcher {
+            password_edit_text.error = null
+            updateSignUpAvailability()
+        })
+        password_edit_text.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                checkPasswordStrength()
                 updateSignUpAvailability()
             }
         }
-
-        password_edit_text.addTextChangedListener(passwordTextWatcher)
-        confirm_password_edit_text.addTextChangedListener(passwordTextWatcher)
+        confirm_password_edit_text.addTextChangedListener(SimpleTextWatcher {
+            updateSignUpAvailability()
+        })
 
         terms_of_service_checkbox.onCheckedChange { _, _ ->
             updateSignUpAvailability()
@@ -165,31 +158,40 @@ class SignUpActivity : BaseActivity() {
         }
     }
 
+    private fun checkPasswordStrength() {
+        if (!PasswordValidator.isValid(password_edit_text.text)) {
+            password_edit_text.error = getString(R.string.error_weak_password)
+        } else {
+            password_edit_text.error = null
+        }
+    }
+
     private fun updateSignUpAvailability() {
         canSignUp = !isLoading
                 && !email_edit_text.text.isNullOrBlank()
-                && passwordsMatch && !password_edit_text.text.isNullOrEmpty()
+                && !password_edit_text.text.isNullOrEmpty()
                 && !email_edit_text.hasError()
                 && !password_edit_text.hasError()
+                && arePasswordsMatch()
                 && terms_of_service_checkbox.isChecked
                 && urlConfigProvider.hasConfig()
     }
 
-    private fun checkPasswordsMatch() {
-        passwordsMatch = password_edit_text.text.toString() ==
-                confirm_password_edit_text.text.toString()
-
-        if (!passwordsMatch && !confirm_password_edit_text.text.isNullOrEmpty()) {
-            confirm_password_edit_text.error = getString(R.string.error_passwords_mismatch)
-        } else {
-            confirm_password_edit_text.error = null
+    private fun arePasswordsMatch(): Boolean {
+        val password = password_edit_text.text.getChars()
+        val confirmation = confirm_password_edit_text.text.getChars()
+        return password.contentEquals(confirmation).also {
+            password.erase()
+            confirmation.erase()
         }
     }
 
     private fun tryToSignUp() {
-        checkPasswordsMatch()
+        checkPasswordStrength()
         updateSignUpAvailability()
+
         if (canSignUp) {
+            SoftInputUtil.hideSoftInput(this)
             signUp()
         }
     }
@@ -204,8 +206,6 @@ class SignUpActivity : BaseActivity() {
         }
         this.password = password
 
-        SoftInputUtil.hideSoftInput(this)
-
         SignUpUseCase(
                 email,
                 password,
@@ -219,6 +219,7 @@ class SignUpActivity : BaseActivity() {
                 }
                 .doOnEvent { _, _ ->
                     isLoading = false
+                    password.erase()
                 }
                 .subscribeBy(
                         onSuccess = this::onSuccessfulSignUp,

@@ -141,7 +141,6 @@
 
     <string name="error_cannot_be_empty">Не може бути порожнім</string>
     <string name="error_invalid_email">Некоректний email</string>
-    <string name="error_passwords_mismatch">Паролі не співпадають</string>
     <string name="error_weak_password">Слабкий пароль</string>
     <string name="error_email_already_taken">Email вже зареєстровано</string>
     <string name="error_try_again">Виникла помилка. Спробуйте пізніше</string>

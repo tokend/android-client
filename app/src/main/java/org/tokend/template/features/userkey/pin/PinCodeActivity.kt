@@ -2,7 +2,6 @@ package org.tokend.template.features.userkey.pin
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
 import android.text.InputFilter
 import android.view.View
 import com.rengwuxian.materialedittext.MaterialEditText
@@ -49,11 +48,9 @@ open class PinCodeActivity : UserKeyActivity() {
         )
 
         pin_code_edit_text.addTextChangedListener(
-                object : SimpleTextWatcher() {
-                    override fun afterTextChanged(s: Editable?) {
-                        if (s != null && s.length == PIN_CODE_LENGTH) {
-                            onUserKeyEntered(s.getChars())
-                        }
+                SimpleTextWatcher { pin ->
+                    if (pin != null && pin.length == PIN_CODE_LENGTH) {
+                        onUserKeyEntered(pin.getChars())
                     }
                 }
         )

@@ -2,13 +2,12 @@ package org.tokend.template.view.balancepicker
 
 import android.app.Dialog
 import android.content.Context
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import androidx.recyclerview.widget.LinearLayoutManager
-import android.text.Editable
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -50,7 +49,7 @@ open class BalancePickerBottomDialog(
         private val balancesComparator: Comparator<BalanceRecord>,
         private val balancesRepository: BalancesRepository,
         private val requiredAssets: Collection<Asset>? = null,
-        private val balancesFilter: ((BalanceRecord) -> Boolean)? = null
+        private val balancesFilter: ((BalanceRecord) -> Boolean)? = null,
 ) {
     protected lateinit var adapter: BalancePickerItemsAdapter
 
@@ -68,8 +67,10 @@ open class BalancePickerBottomDialog(
         show(onItemPicked, null)
     }
 
-    open fun show(onItemPicked: (BalancePickerListItem) -> Unit,
-                  onDismiss: (() -> Unit)?) {
+    open fun show(
+            onItemPicked: (BalancePickerListItem) -> Unit,
+            onDismiss: (() -> Unit)?,
+    ) {
         compositeDisposable = CompositeDisposable()
         filter = null
 
@@ -154,15 +155,19 @@ open class BalancePickerBottomDialog(
                 }
     }
 
-    protected open fun initDialogView(dialog: Dialog,
-                                      dialogView: View,
-                                      callback: (BalancePickerListItem) -> Unit) {
+    protected open fun initDialogView(
+            dialog: Dialog,
+            dialogView: View,
+            callback: (BalancePickerListItem) -> Unit,
+    ) {
         initSearch(dialogView)
         initList(dialog, dialogView, callback)
     }
 
-    protected open fun adjustDialogSize(dialog: Dialog,
-                                        dialogView: View) {
+    protected open fun adjustDialogSize(
+            dialog: Dialog,
+            dialogView: View,
+    ) {
         val displayMetrics = DisplayMetrics()
         dialog.window?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
         val displayHeight = displayMetrics.heightPixels
@@ -176,9 +181,11 @@ open class BalancePickerBottomDialog(
         }
     }
 
-    protected open fun initList(dialog: Dialog,
-                                dialogView: View,
-                                callback: (BalancePickerListItem) -> Unit) {
+    protected open fun initList(
+            dialog: Dialog,
+            dialogView: View,
+            callback: (BalancePickerListItem) -> Unit,
+    ) {
         adapter = BalancePickerItemsAdapter(amountFormatter)
 
         val balancesList = dialogView.balances_list
@@ -217,18 +224,16 @@ open class BalancePickerBottomDialog(
             searchEditText.text?.trim()?.toString()?.takeIf { it.isNotEmpty() }
         }
 
-        searchEditText.addTextChangedListener(object : SimpleTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                val query = getQuery()
-                if (query == null) {
-                    filter = null
-                }
-                cancelSearchButton.visibility =
-                        if (query == null)
-                            View.GONE
-                        else
-                            View.VISIBLE
+        searchEditText.addTextChangedListener(SimpleTextWatcher {
+            val query = getQuery()
+            if (query == null) {
+                filter = null
             }
+            cancelSearchButton.visibility =
+                    if (query == null)
+                        View.GONE
+                    else
+                        View.VISIBLE
         })
 
         RxTextView.textChanges(searchEditText)
@@ -268,8 +273,10 @@ open class BalancePickerBottomDialog(
         displayBalances()
     }
 
-    protected open fun getAvailableAmount(assetCode: String,
-                                          balance: BalanceRecord?): BigDecimal? {
+    protected open fun getAvailableAmount(
+            assetCode: String,
+            balance: BalanceRecord?,
+    ): BigDecimal? {
         return balance?.available ?: BigDecimal.ZERO
     }
 }

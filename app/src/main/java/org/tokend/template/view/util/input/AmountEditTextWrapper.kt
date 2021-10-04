@@ -1,6 +1,5 @@
 package org.tokend.template.view.util.input
 
-import android.text.Editable
 import android.widget.EditText
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.view.util.formatter.AmountFormatter
@@ -12,13 +11,13 @@ typealias AmountChangeListener = (scaled: BigDecimal, raw: BigDecimal) -> Unit
 /**
  * Wraps [EditText] to simplify amount input
  */
-class AmountEditTextWrapper(private val editText: EditText,
-                            maxLength: Boolean = false) {
+class AmountEditTextWrapper(
+        private val editText: EditText,
+        maxLength: Boolean = false,
+) {
     private var amountListener: AmountChangeListener? = null
-    private var textWatcher = object : SimpleTextWatcher() {
-        override fun afterTextChanged(s: Editable?) {
-            updateAmount(s?.toString() ?: "")
-        }
+    private var textWatcher = SimpleTextWatcher {
+        updateAmount(it?.toString() ?: "")
     }
 
     /**

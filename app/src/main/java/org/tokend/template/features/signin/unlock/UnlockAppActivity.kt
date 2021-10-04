@@ -1,7 +1,6 @@
 package org.tokend.template.features.signin.unlock
 
 import android.os.Bundle
-import android.text.Editable
 import android.view.View
 import android.view.ViewGroup
 import io.reactivex.rxkotlin.addTo
@@ -87,11 +86,9 @@ class UnlockAppActivity : BaseActivity() {
     }
 
     private fun initButtons() {
-        password_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
-            override fun afterTextChanged(p0: Editable?) {
-                password_edit_text.error = null
-                updatePasswordUnlockAvailability()
-            }
+        password_edit_text.addTextChangedListener(SimpleTextWatcher {
+            password_edit_text.error = null
+            updatePasswordUnlockAvailability()
         })
 
         password_edit_text.onEditorAction {

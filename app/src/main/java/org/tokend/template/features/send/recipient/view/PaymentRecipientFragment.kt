@@ -2,7 +2,6 @@ package org.tokend.template.features.send.recipient.view
 
 import android.Manifest
 import android.os.Bundle
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -107,12 +106,10 @@ class PaymentRecipientFragment : BaseFragment() {
             showRecipientAutocompleteIfFocused()
         }
 
-        recipient_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
+        recipient_edit_text.addTextChangedListener(SimpleTextWatcher {
                 recipient_edit_text.error = null
                 updateContinueAvailability()
                 updateRecipientAction()
-            }
         })
         recipient_edit_text.onEditorAction {
             tryToLoadRecipient()

@@ -2,7 +2,6 @@ package org.tokend.template.features.changepassword
 
 import android.app.Activity
 import android.os.Bundle
-import android.text.Editable
 import android.view.View
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -13,6 +12,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.enabled
 import org.jetbrains.anko.onClick
+import org.tokend.crypto.ecdsa.erase
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
@@ -25,9 +25,9 @@ import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.setErrorAndFocus
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.biometric.BiometricAuthManager
+import org.tokend.template.util.validator.PasswordValidator
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.LoadingIndicatorManager
-import org.tokend.template.view.util.input.EditTextHelper
 import org.tokend.template.view.util.input.SimpleTextWatcher
 import org.tokend.template.view.util.input.SoftInputUtil
 
@@ -49,8 +49,6 @@ class ChangePasswordActivity : BaseActivity() {
             change_password_button.enabled = value
         }
 
-    private var passwordsMatch = false
-
     private val biometricAuthManager by lazy {
         BiometricAuthManager(this, credentialsPersistence)
     }
@@ -70,25 +68,24 @@ class ChangePasswordActivity : BaseActivity() {
 
     // region Init
     private fun initFields() {
-        EditTextHelper.initPasswordEditText(current_password_edit_text)
-        current_password_edit_text.addTextChangedListener(object : SimpleTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                current_password_edit_text.error = null
-                updateChangeAvailability()
-            }
+        current_password_edit_text.addTextChangedListener(SimpleTextWatcher {
+            current_password_edit_text.error = null
+            updateChangeAvailability()
         })
 
-        val passwordTextWatcher = object : SimpleTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                checkPasswordsMatch()
+        new_password_edit_text.addTextChangedListener(SimpleTextWatcher {
+            new_password_edit_text.error = null
+            updateChangeAvailability()
+        })
+        new_password_edit_text.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                checkPasswordStrength()
                 updateChangeAvailability()
             }
         }
-
-        new_password_edit_text.addTextChangedListener(passwordTextWatcher)
-        EditTextHelper.initPasswordEditText(new_password_edit_text)
-        confirm_password_edit_text.addTextChangedListener(passwordTextWatcher)
-
+        confirm_password_edit_text.addTextChangedListener(SimpleTextWatcher {
+            updateChangeAvailability()
+        })
         confirm_password_edit_text.onEditorAction {
             tryToChangePassword()
         }
@@ -130,19 +127,11 @@ class ChangePasswordActivity : BaseActivity() {
     }
     // endregion
 
-    private fun checkPasswordsMatch() {
-        val passwordChars = new_password_edit_text.text.getChars()
-        val confirmationChars = confirm_password_edit_text.text.getChars()
-
-        passwordsMatch = passwordChars.contentEquals(confirmationChars)
-
-        passwordChars.fill('0')
-        confirmationChars.fill('0')
-
-        if (!passwordsMatch && !confirm_password_edit_text.text.isNullOrEmpty()) {
-            confirm_password_edit_text.error = getString(R.string.error_passwords_mismatch)
+    private fun checkPasswordStrength() {
+        if (!PasswordValidator.isValid(new_password_edit_text.text)) {
+            new_password_edit_text.error = getString(R.string.error_weak_password)
         } else {
-            confirm_password_edit_text.error = null
+            new_password_edit_text.error = null
         }
     }
 
@@ -151,14 +140,23 @@ class ChangePasswordActivity : BaseActivity() {
 
         canChange = !isLoading
                 && !current_password_edit_text.hasError()
-                && passwordsMatch
                 && !new_password_edit_text.text.isNullOrEmpty()
                 && !new_password_edit_text.hasError()
+                && arePasswordsMatch()
                 && !confirm_password_edit_text.hasError()
     }
 
+    private fun arePasswordsMatch(): Boolean {
+        val password = new_password_edit_text.text.getChars()
+        val confirmation = confirm_password_edit_text.text.getChars()
+        return password.contentEquals(confirmation).also {
+            password.erase()
+            confirmation.erase()
+        }
+    }
+
     private fun tryToChangePassword() {
-        checkPasswordsMatch()
+        checkPasswordStrength()
         updateChangeAvailability()
 
         if (canChange) {
@@ -186,7 +184,7 @@ class ChangePasswordActivity : BaseActivity() {
                 }
                 .doOnTerminate {
                     isLoading = false
-                    newPassword.fill('0')
+                    newPassword.erase()
                 }
                 .subscribeBy(
                         onComplete = {
@@ -223,17 +221,17 @@ class ChangePasswordActivity : BaseActivity() {
                 if (!isFinishing) {
                     verifierInterface.verify(otp,
                             onError = {
-                                passwordChars.fill('0')
+                                passwordChars.erase()
                                 current_password_edit_text
                                         .setErrorAndFocus(R.string.error_invalid_password)
                                 verifierInterface.cancelVerification()
                             },
                             onSuccess = {
-                                passwordChars.fill('0')
+                                passwordChars.erase()
                             })
                 } else {
                     verifierInterface.cancelVerification()
-                    passwordChars.fill('0')
+                    passwordChars.erase()
                 }
             }
         }
