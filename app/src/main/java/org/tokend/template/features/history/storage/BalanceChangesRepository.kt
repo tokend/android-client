@@ -117,13 +117,6 @@ class BalanceChangesRepository(
         }
     }
 
-    override fun cachePage(page: DataPage<BalanceChange>) {
-        // Cache only account-wide movements.
-        if (balanceId == null) {
-            super.cachePage(page)
-        }
-    }
-
     fun addPayment(request: PaymentRequest) {
         val balanceChange = BalanceChange(
                 id = System.currentTimeMillis(),

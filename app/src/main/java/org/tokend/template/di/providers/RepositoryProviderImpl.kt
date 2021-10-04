@@ -265,7 +265,8 @@ class RepositoryProviderImpl(
     override fun balanceChanges(balanceId: String?): BalanceChangesRepository {
         return balanceChangesRepositoriesByBalanceId.getOrPut(balanceId.toString()) {
             val cache =
-                    if (database != null)
+                    // Cache only account-wide movements.
+                    if (database != null && balanceId == null)
                         BalanceChangesPagedDbCache(balanceId, database.balanceChanges)
                     else
                         MemoryOnlyCursorCursorPagedDataCache()
