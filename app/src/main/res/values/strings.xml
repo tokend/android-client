@@ -258,6 +258,7 @@
     <string name="settings_information_group">Information</string>
     <string name="no_contacts_message">No contacts available</string>
     <string name="use_biometrics">Use biometrics</string>
+    <string name="use_biometrics_preference_title">@string/use_biometrics</string>
     <string name="secret_seed">Secret seed</string>
     <string name="secret_seed_description">Secret seed is a private information that proves you own your account</string>
     <string name="template_offer_creation_price">Price (%1$s for 1 %2$s)</string>

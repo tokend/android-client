@@ -257,6 +257,7 @@
     <string name="settings_information_group">Інформація</string>
     <string name="no_contacts_message">Немає доступних контактів</string>
     <string name="use_biometrics">Скористатися біометрією</string>
+    <string name="use_biometrics_preference_title">Використовувати біометрією</string>
     <string name="secret_seed">Секретний ключ</string>
     <string name="secret_seed_description">Поточний приватний ключ вашого акаунта</string>
     <string name="template_offer_creation_price">Ціна (%1$s за 1 %2$s)</string>

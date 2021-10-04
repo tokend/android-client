@@ -257,6 +257,7 @@
     <string name="settings_information_group">Информация</string>
     <string name="no_contacts_message">Нет доступных контактов</string>
     <string name="use_biometrics">Использовать биометрию</string>
+    <string name="use_biometrics_preference_title">@string/use_biometrics</string>
     <string name="secret_seed">Секретный ключ</string>
     <string name="secret_seed_description">Текущий приватный ключ вашего аккаунта</string>
     <string name="template_offer_creation_price">Цена (%1$s за 1 %2$s)</string>
