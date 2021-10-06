@@ -3,8 +3,8 @@ package org.tokend.template.test
 import io.reactivex.Maybe
 import org.junit.Assert
 import org.junit.Test
-import org.tokend.template.data.repository.base.MemoryOnlyObjectPersistence
-import org.tokend.template.data.repository.base.ObjectPersistence
+import org.tokend.template.data.storage.persistence.MemoryOnlyObjectPersistence
+import org.tokend.template.data.storage.persistence.ObjectPersistence
 import org.tokend.template.features.localaccount.importt.logic.ImportLocalAccountFromMnemonicUseCase
 import org.tokend.template.features.localaccount.importt.logic.ImportLocalAccountFromSecretSeedUseCase
 import org.tokend.template.features.localaccount.mnemonic.logic.EnglishMnemonicWords

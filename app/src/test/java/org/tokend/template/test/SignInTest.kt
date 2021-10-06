@@ -10,7 +10,7 @@ import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.sdk.keyserver.models.KdfAttributes
 import org.tokend.sdk.keyserver.models.LoginParams
 import org.tokend.sdk.keyserver.models.WalletInfo
-import org.tokend.template.data.repository.base.MemoryOnlyObjectPersistence
+import org.tokend.template.data.storage.persistence.MemoryOnlyObjectPersistence
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.signin.logic.PostSignInManager
