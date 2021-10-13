@@ -86,7 +86,6 @@ class SaleOverviewFragment : SaleFragment() {
                 sale.logoUrl,
                 picturePlaceholder
         ) {
-            fit()
             centerCrop()
         }
 
@@ -111,7 +110,7 @@ class SaleOverviewFragment : SaleFragment() {
                     sale.youtubeVideo?.previewUrl,
                     picturePlaceholder
             ) {
-                resize(width, height)
+                override(width, height)
                 centerCrop()
             }
         }

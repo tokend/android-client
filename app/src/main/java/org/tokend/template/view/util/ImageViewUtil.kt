@@ -2,44 +2,45 @@ package org.tokend.template.view.util
 
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.RequestCreator
-import org.tokend.template.util.imagetransform.CircleTransform
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
 
 object ImageViewUtil {
-    fun loadImage(target: ImageView,
-                  url: String?,
-                  placeholder: Drawable?,
-                  picassoCustomization: RequestCreator.() -> Unit = {}) {
-        val picasso = Picasso.with(target.context)
+    fun loadImage(
+        target: ImageView,
+        url: String?,
+        placeholder: Drawable?,
+        glideCustomization: RequestBuilder<*>.() -> Unit = {}
+    ) {
+        val glide = Glide.with(target.context)
 
         if (placeholder != null) {
             target.setImageDrawable(placeholder)
         }
 
         if (url != null) {
-            picasso
-                    .load(url)
-                    .placeholder(placeholder)
-                    .apply(picassoCustomization)
-                    .into(target)
+            glide
+                .load(url)
+                .placeholder(placeholder)
+                .apply(glideCustomization)
+                .into(target)
         } else {
-            picasso.cancelRequest(target)
+            glide.clear(target)
             if (placeholder != null) {
                 target.setImageDrawable(placeholder)
             }
         }
     }
 
-    fun loadImageCircle(target: ImageView,
-                        url: String?,
-                        placeholder: Drawable?,
-                        picassoCustomization: RequestCreator.() -> Unit = {}) {
+    fun loadImageCircle(
+        target: ImageView,
+        url: String?,
+        placeholder: Drawable?,
+        glideCustomization: RequestBuilder<*>.() -> Unit = {}
+    ) {
         loadImage(target, url, placeholder) {
-            apply(picassoCustomization)
-            transform(CircleTransform())
-            fit()
-            centerCrop()
+            apply(glideCustomization)
+            circleCrop()
         }
     }
 }

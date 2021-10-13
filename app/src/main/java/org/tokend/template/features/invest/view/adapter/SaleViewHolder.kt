@@ -28,7 +28,6 @@ class SaleViewHolder(view: View,
         shortDescriptionTextView.text = item.description
 
         ImageViewUtil.loadImage(pictureImageView, item.logoUrl, picturePlaceholder) {
-            fit()
             centerCrop()
         }
 

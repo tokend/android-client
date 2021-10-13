@@ -39,8 +39,8 @@ import org.tokend.template.logic.WalletEventsListener
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ProfileUtil
 import org.tokend.template.util.navigation.Navigator
+import org.tokend.template.view.util.GlideDrawerImageLoader
 import org.tokend.template.view.util.LocalizedName
-import org.tokend.template.view.util.PicassoDrawerImageLoader
 import org.tokend.template.view.util.input.SoftInputUtil
 
 class MainActivity : BaseActivity(), WalletEventsListener {
@@ -87,7 +87,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         val placeholderDrawable =
                 ProfileUtil.getAvatarPlaceholder(placeholderValue, this, placeholderSize)
         DrawerImageLoader.init(
-                PicassoDrawerImageLoader(this, placeholderDrawable, placeholderBackground)
+                GlideDrawerImageLoader(this, placeholderDrawable, placeholderBackground)
         )
 
         val items = HashMap<Long, PrimaryDrawerItem>()

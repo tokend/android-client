@@ -2,17 +2,19 @@ package org.tokend.template.util.imagetransform
 
 import android.graphics.*
 import androidx.annotation.ColorInt
-import com.squareup.picasso.Transformation
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
+import java.security.MessageDigest
 
 /**
  * Removes alpha channel, replaces it with given background color
  */
 class RemoveAlphaTransform(
-        @ColorInt
-        private val backgroundColor: Int = Color.WHITE
-) : Transformation {
+    @ColorInt
+    private val backgroundColor: Int = Color.WHITE
+) : BitmapTransformation() {
 
-    override fun transform(source: Bitmap): Bitmap {
+    override fun transform(pool: BitmapPool, source: Bitmap, width: Int, height: Int): Bitmap {
         val bitmap = Bitmap.createBitmap(source.width, source.height, source.config)
 
         val canvas = Canvas(bitmap)
@@ -33,7 +35,19 @@ class RemoveAlphaTransform(
         return bitmap
     }
 
-    override fun key(): String {
-        return "remove_alpha"
+    override fun updateDiskCacheKey(digest: MessageDigest) {
+        digest.update(ID.toByteArray(Charsets.UTF_8).plus(backgroundColor.toByte()))
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is RemoveAlphaTransform && other.backgroundColor == this.backgroundColor
+    }
+
+    override fun hashCode(): Int {
+        return ID.hashCode() and backgroundColor.hashCode()
+    }
+
+    private companion object {
+        const val ID = "org.tokend.template.util.imagetransform"
     }
 }

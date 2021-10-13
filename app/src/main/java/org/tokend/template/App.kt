@@ -4,12 +4,18 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.multidex.MultiDexApplication
 import androidx.room.Room
+import com.bumptech.glide.Glide
+import com.bumptech.glide.GlideBuilder
+import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.CookieCache
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
@@ -19,14 +25,10 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.jakewharton.picasso.OkHttp3Downloader
-import com.squareup.picasso.Picasso
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
-import okhttp3.Cache
 import org.jetbrains.anko.defaultSharedPreferences
-import org.tokend.sdk.factory.HttpClientFactory
 import org.tokend.template.db.AppDatabase
 import org.tokend.template.di.*
 import org.tokend.template.di.providers.AccountProviderFactory
@@ -119,7 +121,7 @@ class App : MultiDexApplication() {
 
         initLocale()
         initState()
-        initPicasso()
+        initGlide()
         initCrashlytics()
         initRxErrorHandler()
     }
@@ -135,23 +137,22 @@ class App : MultiDexApplication() {
         localeManager.initLocale()
     }
 
-    private fun initPicasso() {
-        val httpClient = HttpClientFactory()
-                .getBaseHttpClientBuilder()
-                .addNetworkInterceptor { chain ->
-                    val response = chain.proceed(chain.request())
-                    // All pictures are immutable but S3 does not send Cache-Control, so...
-                    response.newBuilder()
-                            .header("Cache-Control", "immutable")
-                            .build()
-                }
-                .cache(Cache(cacheDir, IMAGE_CACHE_SIZE_MB * 1024 * 1024))
-                .build()
-
-        val picasso = Picasso.Builder(this)
-                .downloader(OkHttp3Downloader(httpClient))
-                .build()
-        Picasso.setSingletonInstance(picasso)
+    private fun initGlide() {
+        Glide.init(this, GlideBuilder().apply {
+            setDiskCache(
+                InternalCacheDiskCacheFactory(
+                    this@App,
+                    cacheDir.absolutePath,
+                    IMAGE_CACHE_SIZE_MB * 1024 * 1024
+                )
+            )
+            setDefaultTransitionOptions(
+                Drawable::class.java,
+                DrawableTransitionOptions.withCrossFade(
+                    DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
+                )
+            )
+        })
     }
 
     private fun initRxErrorHandler() {
@@ -171,13 +172,13 @@ class App : MultiDexApplication() {
             if ((e is NullPointerException) || (e is IllegalArgumentException)) {
                 // that's likely a bug in the application
                 Thread.currentThread().uncaughtExceptionHandler
-                        ?.uncaughtException(Thread.currentThread(), e)
+                    ?.uncaughtException(Thread.currentThread(), e)
                 return@setErrorHandler
             }
             if (e is IllegalStateException) {
                 // that's a bug in RxJava or in a custom operator
                 Thread.currentThread().uncaughtExceptionHandler
-                        ?.uncaughtException(Thread.currentThread(), e)
+                    ?.uncaughtException(Thread.currentThread(), e)
                 return@setErrorHandler
             }
             Log.w("RxErrorHandler", "Undeliverable exception received, not sure what to do", e)
@@ -188,50 +189,56 @@ class App : MultiDexApplication() {
     // region Preferences
     private fun getPersistencePreferences(): SharedPreferences {
         return getSharedPreferences("persistence", Context.MODE_PRIVATE)
-                // Migration from separated files.
-                .also { persistencePreferences ->
-                    val migrationValues = mutableMapOf<String, String>()
+            // Migration from separated files.
+            .also { persistencePreferences ->
+                val migrationValues = mutableMapOf<String, String>()
 
-                    migrationValues.putAll(dumpAndClearPreferences(
-                            listOf("(◕‿◕✿)", "ಠ_ಠ", "(¬_¬)", "email"),
-                            "CredentialsPersistence"
-                    ))
+                migrationValues.putAll(
+                    dumpAndClearPreferences(
+                        listOf("(◕‿◕✿)", "ಠ_ಠ", "(¬_¬)", "email"),
+                        "CredentialsPersistence"
+                    )
+                )
 
-                    persistencePreferences
-                            .edit()
-                            .apply {
-                                migrationValues.forEach { (key, value) ->
-                                    putString(key, value)
-                                }
-                            }
-                            .apply()
-                }
+                persistencePreferences
+                    .edit()
+                    .apply {
+                        migrationValues.forEach { (key, value) ->
+                            putString(key, value)
+                        }
+                    }
+                    .apply()
+            }
     }
 
     private fun dumpAndClearPreferences(
-            keys: Collection<String>,
-            preferencesName: String,
+        keys: Collection<String>,
+        preferencesName: String,
     ): Map<String, String> {
         val preferences = getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
         val content = keys
-                .mapNotNull { key ->
-                    preferences.getString(key, null)?.let { value ->
-                        key to value
-                    }
+            .mapNotNull { key ->
+                preferences.getString(key, null)?.let { value ->
+                    key to value
                 }
-                .toMap()
+            }
+            .toMap()
         preferences.edit().clear().apply()
         return content
     }
 
     private fun getNetworkPreferences(): SharedPreferences {
-        return getSharedPreferences("NetworkPersistence",
-                Context.MODE_PRIVATE)
+        return getSharedPreferences(
+            "NetworkPersistence",
+            Context.MODE_PRIVATE
+        )
     }
 
     private fun getLocalAccountPreferences(): SharedPreferences {
-        return getSharedPreferences("LocalAccountPersistence",
-                Context.MODE_PRIVATE)
+        return getSharedPreferences(
+            "LocalAccountPersistence",
+            Context.MODE_PRIVATE
+        )
     }
 
     private fun getAppPreferences(): SharedPreferences {
@@ -241,20 +248,20 @@ class App : MultiDexApplication() {
 
     private fun getDatabase(): AppDatabase {
         return Room.databaseBuilder(
-                this,
-                AppDatabase::class.java,
-                DATABASE_NAME
+            this,
+            AppDatabase::class.java,
+            DATABASE_NAME
         )
-                .addMigrations(*AppDatabase.MIGRATIONS)
-                .build()
+            .addMigrations(*AppDatabase.MIGRATIONS)
+            .build()
     }
 
     private fun initState() {
         sessionInfoStorage = SessionInfoStorage(getAppPreferences())
         session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider(),
-                sessionInfoStorage
+            WalletInfoProviderFactory().createWalletInfoProvider(),
+            AccountProviderFactory().createAccountProvider(),
+            sessionInfoStorage
         )
 
         cookiePersistor = SharedPrefsCookiePersistor(this)
@@ -262,30 +269,38 @@ class App : MultiDexApplication() {
 
         database = getDatabase()
 
-        val defaultUrlConfig = UrlConfig(BuildConfig.API_URL, BuildConfig.STORAGE_URL,
-                BuildConfig.CLIENT_URL)
+        val defaultUrlConfig = UrlConfig(
+            BuildConfig.API_URL, BuildConfig.STORAGE_URL,
+            BuildConfig.CLIENT_URL
+        )
 
         stateComponent = DaggerAppStateComponent.builder()
-                .appModule(AppModule(this))
-                .urlConfigProviderModule(UrlConfigProviderModule(
-                        if (BuildConfig.IS_NETWORK_SPECIFIED_BY_USER)
-                            UrlConfigPersistence(getNetworkPreferences()).loadItem()
-                                    ?: defaultUrlConfig
-                        else
-                            defaultUrlConfig
-                ))
-                .apiProviderModule(ApiProviderModule(
-                        PersistentCookieJar(cookieCache, cookiePersistor)
-                ))
-                .persistenceModule(PersistenceModule(
-                        persistencePreferences = getPersistencePreferences(),
-                        networkPreferences = getNetworkPreferences(),
-                        localAccountPreferences = getLocalAccountPreferences()
-                ))
-                .sessionModule(SessionModule(session))
-                .localeManagerModule(LocaleManagerModule(localeManager))
-                .appDatabaseModule(AppDatabaseModule(database))
-                .build()
+            .appModule(AppModule(this))
+            .urlConfigProviderModule(
+                UrlConfigProviderModule(
+                    if (BuildConfig.IS_NETWORK_SPECIFIED_BY_USER)
+                        UrlConfigPersistence(getNetworkPreferences()).loadItem()
+                            ?: defaultUrlConfig
+                    else
+                        defaultUrlConfig
+                )
+            )
+            .apiProviderModule(
+                ApiProviderModule(
+                    PersistentCookieJar(cookieCache, cookiePersistor)
+                )
+            )
+            .persistenceModule(
+                PersistenceModule(
+                    persistencePreferences = getPersistencePreferences(),
+                    networkPreferences = getNetworkPreferences(),
+                    localAccountPreferences = getLocalAccountPreferences()
+                )
+            )
+            .sessionModule(SessionModule(session))
+            .localeManagerModule(LocaleManagerModule(localeManager))
+            .appDatabaseModule(AppDatabaseModule(database))
+            .build()
     }
 
     private fun clearUserData() {
@@ -369,8 +384,8 @@ class App : MultiDexApplication() {
         Log.d(LOG_TAG, "onAppComesToForeground()")
         backgroundStateSubject.onNext(false)
         session.isExpired =
-                logoutTime != 0L &&
-                        now - lastInForeground > logoutTime
+            logoutTime != 0L &&
+                    now - lastInForeground > logoutTime
         lastInForeground = 0
     }
     // endregion
