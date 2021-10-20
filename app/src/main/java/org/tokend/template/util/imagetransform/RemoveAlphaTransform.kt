@@ -30,8 +30,6 @@ class RemoveAlphaTransform(
 
         canvas.drawRect(0f, 0f, source.width.toFloat(), source.height.toFloat(), overlayPaint)
 
-        source.recycle()
-
         return bitmap
     }
 

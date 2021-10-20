@@ -6,6 +6,7 @@ import android.net.Uri
 import android.widget.ImageView
 import androidx.annotation.ColorInt
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.mikepenz.materialdrawer.util.DrawerImageLoader
 import org.tokend.template.util.imagetransform.RemoveAlphaTransform
 
@@ -29,7 +30,7 @@ class GlideDrawerImageLoader(
                 .with(context)
                 .load(uri)
                 .placeholder(placeholder)
-                .transform(RemoveAlphaTransform(backgroundColor))
+                .transform(RemoveAlphaTransform(backgroundColor), CircleCrop())
                 .into(imageView)
         }
     }
@@ -40,7 +41,7 @@ class GlideDrawerImageLoader(
                 .with(context)
                 .load(uri)
                 .placeholder(placeholder)
-                .transform(RemoveAlphaTransform(backgroundColor))
+                .transform(RemoveAlphaTransform(backgroundColor), CircleCrop())
                 .into(imageView)
         }
     }
