@@ -5,7 +5,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.ViewGroup
 import android.widget.ImageView
-import org.tokend.template.util.imagetransform.CircleTransform
 
 object CircleLogoUtil {
     private fun generateLogo(content: String,
@@ -24,9 +23,8 @@ object CircleLogoUtil {
         val placeholder = generateLogo(content, view.context, sizePx)
 
         ImageViewUtil.loadImage(view, logoUrl, placeholder) {
-            resize(sizePx, sizePx)
-            centerInside()
-            transform(CircleTransform())
+            override(sizePx, sizePx)
+            circleCrop()
         }
     }
 }
