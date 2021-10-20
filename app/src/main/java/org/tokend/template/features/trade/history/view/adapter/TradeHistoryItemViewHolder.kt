@@ -3,7 +3,6 @@ package org.tokend.template.features.trade.history.view.adapter
 import android.view.View
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.list_item_trade_history.view.*
-import org.jetbrains.anko.textColor
 import org.tokend.template.R
 import org.tokend.template.features.trade.history.model.TradeHistoryRecord
 import org.tokend.template.view.adapter.base.BaseViewHolder
@@ -36,10 +35,11 @@ class TradeHistoryItemViewHolder(
 
         timeText.text = dateFormat.format(item.createdAt)
 
-        priceText.textColor =
-                if (item.hasPositiveTrend)
-                    positiveColor
-                else
-                    negativeColor
+        priceText.setTextColor(
+            if (item.hasPositiveTrend)
+                positiveColor
+            else
+                negativeColor
+        )
     }
 }

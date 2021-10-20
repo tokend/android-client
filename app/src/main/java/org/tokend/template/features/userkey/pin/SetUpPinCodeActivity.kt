@@ -5,10 +5,9 @@ import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_pin_code.*
-import org.jetbrains.anko.textColor
-import org.jetbrains.anko.vibrator
 import org.tokend.crypto.ecdsa.erase
 import org.tokend.template.R
+import org.tokend.template.extensions.vibrator
 
 class SetUpPinCodeActivity : PinCodeActivity() {
     private var isFirstEnter = true
@@ -67,7 +66,7 @@ class SetUpPinCodeActivity : PinCodeActivity() {
         )
                 .also {
                     it.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-                            .textColor = Color.WHITE
+                            .setTextColor(Color.WHITE)
                 }
                 .show()
     }

@@ -16,8 +16,8 @@ import kotlinx.android.synthetic.main.dialog_balance_picker.view.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.view.*
 import kotlinx.android.synthetic.main.include_error_empty_view.view.*
 import kotlinx.android.synthetic.main.layout_progress.view.*
-import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.extensions.layoutInflater
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.features.balances.storage.BalancesRepository

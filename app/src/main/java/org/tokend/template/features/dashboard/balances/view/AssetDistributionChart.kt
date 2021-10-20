@@ -20,11 +20,11 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.layoutInflater
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.App
 import org.tokend.template.R
+import org.tokend.template.extensions.dip
+import org.tokend.template.extensions.layoutInflater
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.view.ErrorEmptyView
@@ -240,7 +240,7 @@ class AssetDistributionChart
 
                         background = GradientDrawable().apply {
                             shape = GradientDrawable.OVAL
-                            setStroke(dip(2), color)
+                            setStroke(context.dip(2), color)
                         }
                         tag = color
                     }

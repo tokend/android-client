@@ -11,8 +11,6 @@ import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_network_field.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.enabled
-import org.jetbrains.anko.onClick
 import org.tokend.crypto.ecdsa.erase
 import org.tokend.sdk.api.wallets.model.EmailNotVerifiedException
 import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
@@ -63,7 +61,7 @@ class RecoveryActivity : BaseActivity() {
     private var canRecover: Boolean = false
         set(value) {
             field = value
-            recovery_button.enabled = value
+            recovery_button.isEnabled = value
         }
 
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
@@ -134,7 +132,7 @@ class RecoveryActivity : BaseActivity() {
             network_field_layout.visibility = View.VISIBLE
             urlConfigManager.get()?.also { network_edit_text.setText(it.apiDomain) }
 
-            scan_qr_button.onClick {
+            scan_qr_button.setOnClickListener {
                 tryOpenQrScanner()
             }
         } else {
@@ -143,11 +141,11 @@ class RecoveryActivity : BaseActivity() {
     }
 
     private fun initButtons() {
-        recovery_button.onClick {
+        recovery_button.setOnClickListener {
             tryToRecover()
         }
 
-        sign_in_text_view.onClick {
+        sign_in_text_view.setOnClickListener {
             Navigator.from(this).toSignIn(false)
         }
     }

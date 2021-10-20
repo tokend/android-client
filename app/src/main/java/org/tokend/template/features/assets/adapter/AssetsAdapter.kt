@@ -2,8 +2,8 @@ package org.tokend.template.features.assets.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import android.view.ViewGroup
-import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.extensions.layoutInflater
 import org.tokend.template.view.adapter.base.BaseRecyclerAdapter
 
 class AssetsAdapter : BaseRecyclerAdapter<AssetListItem, AssetListItemViewHolder>() {

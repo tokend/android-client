@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.appcompat.widget.AppCompatImageView
 import android.view.View
 import android.view.animation.AnimationUtils
-import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.view.util.AnimationUtil
 
@@ -15,7 +14,7 @@ class FingerprintIndicatorManager(context: Context,
     private val animation = AnimationUtils.loadAnimation(context, R.anim.shake)
 
     init {
-        fingerprintIndicator.onClick {
+        fingerprintIndicator.setOnClickListener {
             toastManager?.short(R.string.touch_sensor)
         }
     }
