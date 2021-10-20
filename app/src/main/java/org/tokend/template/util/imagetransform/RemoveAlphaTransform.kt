@@ -34,7 +34,7 @@ class RemoveAlphaTransform(
     }
 
     override fun updateDiskCacheKey(digest: MessageDigest) {
-        digest.update(ID.toByteArray(Charsets.UTF_8).plus(backgroundColor.toByte()))
+        digest.update((ID + backgroundColor.toString()).toByteArray(Charsets.UTF_8))
     }
 
     override fun equals(other: Any?): Boolean {
