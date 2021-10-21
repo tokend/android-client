@@ -12,10 +12,6 @@ import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_network_field.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.browse
-import org.jetbrains.anko.enabled
-import org.jetbrains.anko.onCheckedChange
-import org.jetbrains.anko.onClick
 import org.tokend.crypto.ecdsa.erase
 import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
 import org.tokend.sdk.keyserver.KeyServer
@@ -23,6 +19,7 @@ import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.extensions.browse
 import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
 import org.tokend.template.features.signin.logic.SignInUseCase
@@ -59,7 +56,7 @@ class SignUpActivity : BaseActivity() {
     private var canSignUp: Boolean = false
         set(value) {
             field = value
-            sign_up_button.enabled = value
+            sign_up_button.isEnabled = value
         }
 
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
@@ -113,7 +110,7 @@ class SignUpActivity : BaseActivity() {
             updateSignUpAvailability()
         })
 
-        terms_of_service_checkbox.onCheckedChange { _, _ ->
+        terms_of_service_checkbox.setOnCheckedChangeListener { _, _ ->
             updateSignUpAvailability()
         }
     }
@@ -123,7 +120,7 @@ class SignUpActivity : BaseActivity() {
             network_field_layout.visibility = View.VISIBLE
             urlConfigManager.get()?.also { network_edit_text.setText(it.apiDomain) }
 
-            scan_qr_button.onClick {
+            scan_qr_button.setOnClickListener {
                 tryOpenQrScanner()
             }
         } else {
@@ -132,17 +129,17 @@ class SignUpActivity : BaseActivity() {
     }
 
     private fun initButtons() {
-        sign_up_button.onClick {
+        sign_up_button.setOnClickListener {
             tryToSignUp()
         }
 
-        sign_in_text_view.onClick {
+        sign_in_text_view.setOnClickListener {
             Navigator.from(this).toSignIn(false)
         }
 
-        terms_text_view.onClick {
+        terms_text_view.setOnClickListener {
             if (urlConfigProvider.hasConfig()) {
-                browse(urlConfigProvider.getConfig().terms, true)
+                browse(urlConfigProvider.getConfig().terms)
             } else {
                 toastManager.short(R.string.error_network_not_specified)
             }

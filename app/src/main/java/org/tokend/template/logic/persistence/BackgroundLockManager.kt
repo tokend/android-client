@@ -2,7 +2,7 @@ package org.tokend.template.logic.persistence
 
 import android.content.Context
 import android.os.Build
-import org.jetbrains.anko.defaultSharedPreferences
+import org.tokend.template.extensions.defaultSharedPreferences
 
 /**
  * Manages background app lock preference.

@@ -20,8 +20,6 @@ import kotlinx.android.synthetic.main.fragment_asset_details.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.list_item_asset.*
 import kotlinx.android.synthetic.main.list_item_asset.view.*
-import org.jetbrains.anko.find
-import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.extensions.withArguments
@@ -152,21 +150,21 @@ open class AssetDetailsFragment : BaseFragment() {
                 layoutInflater.inflate(R.layout.list_item_remote_file,
                         cards_layout, false)
 
-        val fileLayout = fileCardView?.find<View>(R.id.file_content_layout) ?: return
+        val fileLayout = fileCardView?.findViewById<View>(R.id.file_content_layout) ?: return
         (fileCardView as? CardView)?.removeView(fileLayout)
 
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)
         fileLayout.layoutParams = layoutParams
 
-        fileLayout.onClick {
+        fileLayout.setOnClickListener {
             fileDownloader.download(this, terms)
         }
 
-        val fileNameTextView = fileLayout.find<TextView>(R.id.file_name_text_view)
+        val fileNameTextView = fileLayout.findViewById<TextView>(R.id.file_name_text_view)
         fileNameTextView.text = terms.name
 
-        val fileIconImageView = fileLayout.find<ImageView>(R.id.file_icon_image_view)
+        val fileIconImageView = fileLayout.findViewById<ImageView>(R.id.file_icon_image_view)
         fileIconImageView.setImageDrawable(
                 ContextCompat.getDrawable(this.requireContext(), R.drawable.ic_file_download_outline)
         )
@@ -183,7 +181,7 @@ open class AssetDetailsFragment : BaseFragment() {
         if (balanceId == null && isBalanceCreationEnabled) {
             asset_primary_action_button.visibility = View.VISIBLE
             asset_primary_action_button.text = getString(R.string.create_balance_action)
-            asset_primary_action_button.onClick {
+            asset_primary_action_button.setOnClickListener {
                 createBalanceWithConfirmation()
             }
         } else {

@@ -13,9 +13,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_sale_overview.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.layout_sale_picture.*
-import org.jetbrains.anko.browse
-import org.jetbrains.anko.onClick
 import org.tokend.template.R
+import org.tokend.template.extensions.browse
 import org.tokend.template.features.invest.logic.SaleOverviewMarkdownLoader
 import org.tokend.template.features.invest.view.SaleProgressWrapper
 import org.tokend.template.util.ObservableTransformers
@@ -115,7 +114,7 @@ class SaleOverviewFragment : SaleFragment() {
             }
         }
 
-        video_preview_layout.onClick {
+        video_preview_layout.setOnClickListener {
             sale.youtubeVideo?.url
                     ?.also { url ->
                         requireContext().browse(url)

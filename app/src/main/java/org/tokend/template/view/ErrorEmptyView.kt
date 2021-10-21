@@ -18,7 +18,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RelativeLayout
 import android.widget.TextView
-import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.util.errorhandler.ErrorHandler
 import kotlin.math.roundToInt
@@ -191,7 +190,7 @@ class ErrorEmptyView @JvmOverloads constructor(
         if (buttonAction != null) {
             emptyActionButton.visibility = View.VISIBLE
             emptyActionButton.text = buttonAction.title
-            emptyActionButton.onClick { buttonAction.listener.invoke() }
+            emptyActionButton.setOnClickListener { buttonAction.listener.invoke() }
         } else {
             emptyActionButton.visibility = View.GONE
         }
@@ -245,7 +244,7 @@ class ErrorEmptyView @JvmOverloads constructor(
         if (buttonAction != null) {
             errorActionButton.visibility = View.VISIBLE
             errorActionButton.text = buttonAction.title
-            errorActionButton.onClick { buttonAction.listener.invoke() }
+            errorActionButton.setOnClickListener { buttonAction.listener.invoke() }
         } else {
             errorActionButton.visibility = View.GONE
         }

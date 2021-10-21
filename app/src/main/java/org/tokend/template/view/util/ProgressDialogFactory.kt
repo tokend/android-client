@@ -5,8 +5,8 @@ import android.content.DialogInterface
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import android.widget.TextView
-import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.extensions.layoutInflater
 
 object ProgressDialogFactory {
 

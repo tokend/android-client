@@ -15,11 +15,11 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.include_appbar_elevation.view.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.browse
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.template.App
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
+import org.tokend.template.extensions.browse
 import org.tokend.template.features.localaccount.mnemonic.view.MnemonicPhraseDialog
 import org.tokend.template.features.settings.view.OpenSourceLicensesDialog
 import org.tokend.template.features.tfa.logic.DisableTfaUseCase
@@ -128,9 +128,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun initKycItem() {
         val kycPreference = findPreference("kyc")
         kycPreference?.setOnPreferenceClickListener {
-            activity?.let { parentActivity ->
-                Navigator.from(parentActivity).openSetKyc()
-            }
+            activity?.browse(urlConfigProvider.getConfig().kyc)
             true
         }
     }

@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import org.jetbrains.anko.forEachChildWithIndex
-import org.jetbrains.anko.layoutInflater
-import org.jetbrains.anko.onClick
 import org.tokend.template.R
+import org.tokend.template.extensions.forEachChildWithIndex
+import org.tokend.template.extensions.layoutInflater
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.util.LocalizedName
 import org.tokend.template.view.util.RemainedTimeUtil
@@ -58,7 +57,7 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
             choiceView.tag = i
 
             if (item.canChoose) {
-                choiceView.onClick { onNewChoice(i, item, actionListener) }
+                choiceView.setOnClickListener { onNewChoice(i, item, actionListener) }
             }
 
             val resultData = choice.result

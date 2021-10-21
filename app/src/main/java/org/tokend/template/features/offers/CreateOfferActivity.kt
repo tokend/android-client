@@ -14,7 +14,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_create_offer.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.onClick
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
@@ -169,20 +168,20 @@ class CreateOfferActivity : BaseActivity() {
     }
 
     private fun initButtons() {
-        sell_btn.onClick {
+        sell_btn.setOnClickListener {
             goToOfferConfirmation(false)
         }
 
-        buy_btn.onClick {
+        buy_btn.setOnClickListener {
             goToOfferConfirmation(true)
         }
 
-        max_sell_text_view.onClick {
+        max_sell_text_view.setOnClickListener {
             amount_edit_text.setAmount(baseBalance, baseScale)
             amount_edit_text.requestFocus()
         }
 
-        max_buy_text_view.onClick {
+        max_buy_text_view.setOnClickListener {
             total_edit_text.setAmount(quoteBalance, quoteScale)
             total_edit_text.requestFocus()
         }
