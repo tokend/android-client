@@ -219,8 +219,10 @@ class ChangePasswordActivity : BaseActivity() {
                     verifierInterface.verify(otp,
                             onError = {
                                 passwordChars.erase()
-                                current_password_edit_text
+                                runOnUiThread {
+                                    current_password_edit_text
                                         .setErrorAndFocus(R.string.error_invalid_password)
+                                }
                                 verifierInterface.cancelVerification()
                             },
                             onSuccess = {
