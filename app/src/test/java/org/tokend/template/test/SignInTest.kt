@@ -69,7 +69,7 @@ class SignInTest {
         Assert.assertNotEquals("WalletInfo is not saved",
                 walletInfoPersistor.loadWalletInfo(email, password), null)
         Assert.assertEquals("Credentials persistor must hold actual email",
-                email.toLowerCase(), credentialsPersistor.getSavedEmail()?.toLowerCase())
+                email.toLowerCase(), credentialsPersistor.getSavedLogin()?.toLowerCase())
         Assert.assertArrayEquals("Credentials persistor must hold actual password",
                 password, credentialsPersistor.getSavedPassword())
 
@@ -145,7 +145,7 @@ class SignInTest {
         Assert.assertArrayEquals("AccountProvider must hold an actual account",
                 account.secretSeed, session.getAccount()?.secretSeed)
         Assert.assertFalse("Credentials persistor must be cleaned",
-                credentialsPersistor.hasCredentials() || credentialsPersistor.getSavedEmail() != null
+                credentialsPersistor.hasCredentials() || credentialsPersistor.getSavedLogin() != null
         )
 
         checkRepositories(repositoryProvider)
@@ -204,18 +204,18 @@ class SignInTest {
         private var email: String? = null
         private var password: CharArray? = null
 
-        override fun saveCredentials(email: String, password: CharArray) {
-            this.email = email
+        override fun saveCredentials(login: String, password: CharArray) {
+            this.email = login
             this.password = password
         }
 
-        override fun getSavedEmail(): String? = email
+        override fun getSavedLogin(): String? = email
 
         override fun hasSavedPassword(): Boolean = password != null
 
         override fun getSavedPassword(): CharArray? = password
 
-        override fun clear(keepEmail: Boolean) {
+        override fun clear(keepLogin: Boolean) {
             this.email = null
             this.password = null
         }

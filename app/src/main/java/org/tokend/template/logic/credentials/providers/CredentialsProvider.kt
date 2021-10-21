@@ -1,4 +1,4 @@
-package org.tokend.template.logic.credentials
+package org.tokend.template.logic.credentials.providers
 
 interface CredentialsProvider {
     fun hasCredentials(): Boolean

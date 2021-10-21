@@ -10,20 +10,20 @@ import org.tokend.wallet.utils.toCharArray
  * Represents secure credentials storage based on SharedPreferences.
  */
 class CredentialsPersistenceImpl(
-        private val preferences: SharedPreferences
+    private val preferences: SharedPreferences
 ) : CredentialsPersistence {
     private val secureStorage = SecureStorage(preferences)
 
-    override fun saveCredentials(email: String, password: CharArray) {
+    override fun saveCredentials(login: String, password: CharArray) {
 
         tryToSavePassword(password)
 
-        preferences.edit().putString(EMAIL_KEY, email).apply()
+        preferences.edit().putString(LOGIN_KEY, login).apply()
     }
 
-    override fun getSavedEmail(): String? {
-        return preferences.getString(EMAIL_KEY, "")
-                ?.takeIf { it.isNotEmpty() }
+    override fun getSavedLogin(): String? {
+        return preferences.getString(LOGIN_KEY, "")
+            ?.takeIf { it.isNotEmpty() }
     }
 
     override fun hasSavedPassword(): Boolean {
@@ -39,17 +39,17 @@ class CredentialsPersistenceImpl(
         }
 
         val passwordBytes = secureStorage.load(PASSWORD_KEY)
-                ?: return null
+            ?: return null
         val password = passwordBytes.toCharArray()
         passwordBytes.fill(0)
         return password
     }
 
-    override fun clear(keepEmail: Boolean) {
+    override fun clear(keepLogin: Boolean) {
         secureStorage.clear(PASSWORD_KEY)
 
-        if (!keepEmail) {
-            preferences.edit().remove(EMAIL_KEY).apply()
+        if (!keepLogin) {
+            preferences.edit().remove(LOGIN_KEY).apply()
         }
     }
 
@@ -63,6 +63,6 @@ class CredentialsPersistenceImpl(
 
     companion object {
         const val PASSWORD_KEY = "(¬_¬)"
-        private const val EMAIL_KEY = "email"
+        private const val LOGIN_KEY = "email"
     }
 }

@@ -1,8 +1,8 @@
 package org.tokend.template.di.providers
 
-import org.tokend.sdk.keyserver.models.WalletInfo
+import org.tokend.template.logic.credentials.model.WalletInfoRecord
 
 interface WalletInfoProvider {
-    fun setWalletInfo(walletInfo: WalletInfo?)
-    fun getWalletInfo(): WalletInfo?
+    fun setWalletInfo(walletInfo: WalletInfoRecord?)
+    fun getWalletInfo(): WalletInfoRecord?
 }

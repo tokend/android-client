@@ -1,86 +1,112 @@
 package org.tokend.template.features.signup.logic
 
 import io.reactivex.Single
-import org.tokend.rx.extensions.randomSingle
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
 import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.sdk.keyserver.KeyServer
+import org.tokend.sdk.keyserver.models.SignerData
 import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.template.di.providers.RepositoryProvider
-import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
+import org.tokend.template.features.signin.logic.SignInUseCase
+import org.tokend.template.logic.credentials.model.WalletInfoRecord
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
+import org.tokend.template.logic.credentials.persistence.WalletInfoPersistence
+import org.tokend.template.logic.Session
 import org.tokend.wallet.Account
 
 /**
  * Creates wallet with given credentials and submits it
  */
 class SignUpUseCase(
-        private val email: String,
-        private val password: CharArray,
-        private val keyServer: KeyServer,
-        private val repositoryProvider: RepositoryProvider
+    private val login: String,
+    private val password: CharArray,
+    private val keyServer: KeyServer,
+    private val repositoryProvider: RepositoryProvider,
+    private val session: Session? = null,
+    private val credentialsPersistence: CredentialsPersistence? = null,
+    private val walletInfoPersistence: WalletInfoPersistence? = null,
 ) {
-    private lateinit var rootAccount: Account
-    private var defaultSignerRole: Long = 0
+    private lateinit var accounts: List<Account>
+    private lateinit var signers: Collection<SignerData>
+    private lateinit var walletCreateResult: WalletCreateResult
 
     fun perform(): Single<WalletCreateResult> {
         return ensureEmailIsFree()
-                .flatMap {
-                    getAccount()
+            .flatMap {
+                generateAccounts()
+            }
+            .doOnSuccess { accounts ->
+                this.accounts = accounts
+            }
+            .flatMap {
+                getSigners()
+            }
+            .doOnSuccess { signers ->
+                this.signers = signers
+            }
+            .flatMap {
+                createAndSaveWallet()
+            }
+            .doOnSuccess { walletCreateResult ->
+                this.walletCreateResult = walletCreateResult
+                if (walletCreateResult.walletData.attributes.isVerified) {
+                    setUpProvidersIfPossible()
                 }
-                .doOnSuccess { rootAccount ->
-                    this.rootAccount = rootAccount
-                }
-                .flatMap {
-                    getDefaultSignerRole()
-                }
-                .doOnSuccess { defaultSignerRole ->
-                    this.defaultSignerRole = defaultSignerRole
-                }
-                .flatMap {
-                    createAndSaveWallet()
-                }
+            }
     }
 
     private fun ensureEmailIsFree(): Single<Boolean> {
         return keyServer
-                .getLoginParams(email)
-                .toSingle()
-                .map { false }
-                .onErrorResumeNext { error ->
-                    if (error is InvalidCredentialsException)
-                        Single.just(true)
-                    else
-                        Single.error(error)
-                }
-                .flatMap { isFree ->
-                    if (!isFree)
-                        Single.error(EmailAlreadyTakenException())
-                    else
-                        Single.just(isFree)
-                }
+            .getLoginParams(login)
+            .toSingle()
+            .map { false }
+            .onErrorResumeNext { error ->
+                if (error is InvalidCredentialsException)
+                    Single.just(true)
+                else
+                    Single.error(error)
+            }
+            .flatMap { isFree ->
+                if (!isFree)
+                    Single.error(EmailAlreadyTakenException())
+                else
+                    Single.just(isFree)
+            }
     }
 
-    private fun getAccount(): Single<Account> {
-        return Account.randomSingle()
+    private fun generateAccounts(): Single<List<Account>> {
+        return WalletAccountsUtil.getAccountsForNewWallet()
     }
 
-    private fun getDefaultSignerRole(): Single<Long> {
-        return repositoryProvider
-                .keyValueEntries()
-                .ensureEntries(listOf(KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY))
-                .map {
-                    it[KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY] as KeyValueEntryRecord.Number
-                }
-                .map(KeyValueEntryRecord.Number::value)
+    private fun getSigners(): Single<Collection<SignerData>> {
+        return WalletAccountsUtil.getSignersForNewWallet(
+            orderedAccountIds = accounts.map(Account::accountId),
+            keyValueRepository = repositoryProvider.keyValueEntries()
+        )
     }
 
     private fun createAndSaveWallet(): Single<WalletCreateResult> {
         return keyServer.createAndSaveWallet(
-                email,
-                password,
-                defaultSignerRole,
-                rootAccount
+            email = login,
+            password = password,
+            accounts = accounts,
+            signers = signers
         ).toSingle()
+    }
+
+    private fun setUpProvidersIfPossible() {
+        if (session != null) {
+            SignInUseCase.updateProviders(
+                walletInfo = WalletInfoRecord(walletCreateResult),
+                session = session,
+                login = login,
+                password = password,
+                accounts = accounts,
+                credentialsPersistence = credentialsPersistence,
+                walletInfoPersistence = walletInfoPersistence,
+                signInMethod = null
+            )
+        }
     }
 }

@@ -45,8 +45,8 @@ class SignUpActivity : BaseActivity() {
     override val allowUnauthorized = true
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { progress.show() },
-            hideLoading = { progress.hide() }
+        showLoading = { progress.show() },
+        hideLoading = { progress.hide() }
     )
 
     private var isLoading: Boolean = false
@@ -153,8 +153,8 @@ class SignUpActivity : BaseActivity() {
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
             QrScannerUtil.openScanner(this)
-                    .addTo(activityRequestsBag)
-                    .doOnSuccess { urlConfigManager.setFromJson(it) }
+                .addTo(activityRequestsBag)
+                .doOnSuccess { urlConfigManager.setFromJson(it) }
         }
     }
 
@@ -207,42 +207,48 @@ class SignUpActivity : BaseActivity() {
         this.password = password
 
         SignUpUseCase(
-                email,
-                password,
-                KeyServer(apiProvider.getApi().wallets),
-                repositoryProvider
+            email,
+            password,
+            KeyServer(apiProvider.getApi().wallets),
+            repositoryProvider,
+            session,
+            credentialsPersistence,
+            walletInfoPersistence
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe {
-                    isLoading = true
-                }
-                .doOnEvent { _, _ ->
-                    isLoading = false
-                    password.erase()
-                }
-                .subscribeBy(
-                        onSuccess = this::onSuccessfulSignUp,
-                        onError = signUpErrorHandler::handleIfPossible
-                )
-                .addTo(compositeDisposable)
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersSingle())
+            .doOnSubscribe {
+                isLoading = true
+            }
+            .doOnEvent { _, _ ->
+                isLoading = false
+            }
+            .subscribeBy(
+                onSuccess = this::onSuccessfulSignUp,
+                onError = signUpErrorHandler::handleIfPossible
+            )
+            .addTo(compositeDisposable)
     }
 
     private val signUpErrorHandler: ErrorHandler
         get() = CompositeErrorHandler(
-                EditTextErrorHandler(email_edit_text) { error ->
-                    when (error) {
-                        is EmailAlreadyTakenException ->
-                            getString(R.string.error_email_already_taken)
-                        else ->
-                            null
-                    }
-                },
-                errorHandlerFactory.getDefault()
+            EditTextErrorHandler(email_edit_text) { error ->
+                when (error) {
+                    is EmailAlreadyTakenException ->
+                        getString(R.string.error_email_already_taken)
+                    else ->
+                        null
+                }
+            },
+            errorHandlerFactory.getDefault()
         )
-                .doOnSuccessfulHandle(this::updateSignUpAvailability)
+            .doOnSuccessfulHandle(this::updateSignUpAvailability)
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
     }
@@ -257,25 +263,25 @@ class SignUpActivity : BaseActivity() {
 
     private fun showNotVerifiedEmailDialogAndFinish() {
         AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                .setTitle(R.string.almost_done)
-                .setMessage(R.string.check_your_email_to_verify_account)
-                .setPositiveButton(R.string.ok) { _, _ ->
-                    toSignIn()
-                }
-                .setNeutralButton(R.string.open_email_app) { _, _ ->
-                    toSignInOnResume = true
-                    startActivity(
-                            Intent.createChooser(
-                                    Intent(Intent.ACTION_MAIN)
-                                            .addCategory(Intent.CATEGORY_APP_EMAIL),
-                                    getString(R.string.open_email_app)
-                            )
+            .setTitle(R.string.almost_done)
+            .setMessage(R.string.check_your_email_to_verify_account)
+            .setPositiveButton(R.string.ok) { _, _ ->
+                toSignIn()
+            }
+            .setNeutralButton(R.string.open_email_app) { _, _ ->
+                toSignInOnResume = true
+                startActivity(
+                    Intent.createChooser(
+                        Intent(Intent.ACTION_MAIN)
+                            .addCategory(Intent.CATEGORY_APP_EMAIL),
+                        getString(R.string.open_email_app)
                     )
-                }
-                .setOnCancelListener {
-                    toSignIn()
-                }
-                .show()
+                )
+            }
+            .setOnCancelListener {
+                toSignIn()
+            }
+            .show()
     }
 
     private fun toSignIn() {
@@ -299,27 +305,27 @@ class SignUpActivity : BaseActivity() {
         }
 
         SignInUseCase(
-                email,
-                password,
-                KeyServer(apiProvider.getApi().wallets),
-                session,
-                credentialsPersistence,
-                walletInfoPersistence,
-                postSignInManagerFactory.get()::doPostSignIn
+            email,
+            password,
+            KeyServer(apiProvider.getApi().wallets),
+            session,
+            credentialsPersistence,
+            walletInfoPersistence,
+            postSignInManagerFactory.get()::doPostSignIn
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .doOnSubscribe {
-                    isLoading = true
-                }
-                .doOnDispose {
-                    isLoading = false
-                }
-                .subscribeBy(
-                        onComplete = this::onSuccessfulSignIn,
-                        onError = this::handleSignInError
-                )
-                .addTo(compositeDisposable)
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersCompletable())
+            .doOnSubscribe {
+                isLoading = true
+            }
+            .doOnDispose {
+                isLoading = false
+            }
+            .subscribeBy(
+                onComplete = this::onSuccessfulSignIn,
+                onError = this::handleSignInError
+            )
+            .addTo(compositeDisposable)
     }
 
     private fun onSuccessfulSignIn() {

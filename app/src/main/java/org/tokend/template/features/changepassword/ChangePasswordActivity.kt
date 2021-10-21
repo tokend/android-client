@@ -175,7 +175,8 @@ class ChangePasswordActivity : BaseActivity() {
                 walletInfoProvider,
                 repositoryProvider,
                 credentialsPersistence,
-                walletInfoPersistence
+                walletInfoPersistence,
+                session
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
@@ -213,22 +214,22 @@ class ChangePasswordActivity : BaseActivity() {
             exception: NeedTfaException,
             verifierInterface: TfaVerifier.Interface,
     ) {
-        walletInfoProvider.getWalletInfo()?.email?.let { email ->
+        if(session.login.isNotEmpty()){
             val passwordChars = current_password_edit_text.text.getChars()
             doAsync {
-                val otp = PasswordTfaOtpGenerator().generate(exception, email, passwordChars)
+                val otp = PasswordTfaOtpGenerator().generate(exception, session.login, passwordChars)
 
                 if (!isFinishing) {
                     verifierInterface.verify(otp,
-                            onError = {
-                                passwordChars.erase()
-                                current_password_edit_text
-                                        .setErrorAndFocus(R.string.error_invalid_password)
-                                verifierInterface.cancelVerification()
-                            },
-                            onSuccess = {
-                                passwordChars.erase()
-                            })
+                        onError = {
+                            passwordChars.erase()
+                            current_password_edit_text
+                                .setErrorAndFocus(R.string.error_invalid_password)
+                            verifierInterface.cancelVerification()
+                        },
+                        onSuccess = {
+                            passwordChars.erase()
+                        })
                 } else {
                     verifierInterface.cancelVerification()
                     passwordChars.erase()

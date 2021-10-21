@@ -1,18 +1,18 @@
 package org.tokend.template.logic.credentials.persistence
 
-import org.tokend.template.logic.credentials.CredentialsProvider
+import org.tokend.template.logic.credentials.providers.CredentialsProvider
 
 interface CredentialsPersistence : CredentialsProvider {
     /**
-     * @param email that is retrieved from corresponding WalletInfo
+     * @param login that is retrieved from corresponding WalletInfo
      * @param password password for encryption
      */
-    fun saveCredentials(email:String, password: CharArray)
+    fun saveCredentials(login: String, password: CharArray)
 
     /**
      * @return saved email or null if it's missing
      */
-    fun getSavedEmail(): String?
+    fun getSavedLogin(): String?
 
     /**
      * @return true if there is a securely saved password
@@ -27,17 +27,17 @@ interface CredentialsPersistence : CredentialsProvider {
     /**
      * Clears stored credentials
      *
-     * @param keepEmail if set then email will not be cleared
+     * @param keepLogin if set then login will not be cleared
      *
-     * @see getSavedEmail
+     * @see getSavedLogin
      */
-    fun clear(keepEmail: Boolean)
+    fun clear(keepLogin: Boolean)
 
     override fun hasCredentials(): Boolean {
-        return getSavedEmail() != null && hasSavedPassword()
+        return getSavedLogin() != null && hasSavedPassword()
     }
 
     override fun getCredentials(): Pair<String, CharArray> {
-        return getSavedEmail()!! to getSavedPassword()!!
+        return getSavedLogin()!! to getSavedPassword()!!
     }
 }

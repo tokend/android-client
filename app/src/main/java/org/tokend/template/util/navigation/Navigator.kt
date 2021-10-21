@@ -59,6 +59,7 @@ import org.tokend.template.features.trade.pairs.model.AssetPairRecord
 import org.tokend.template.features.withdraw.WithdrawFragment
 import org.tokend.template.features.withdraw.WithdrawalConfirmationActivity
 import org.tokend.template.features.withdraw.model.WithdrawalRequest
+import org.tokend.template.logic.credentials.model.WalletInfoRecord
 import org.tokend.template.util.IntentLock
 import java.math.BigDecimal
 
@@ -393,7 +394,7 @@ class Navigator private constructor() {
             BalanceDetailsActivity.getBundle(balanceId)
     )
 
-    fun openAccountQrShare(walletInfo: WalletInfo) {
+    fun openAccountQrShare(walletInfo: WalletInfoRecord) {
         openAccountQrShare(walletInfo.accountId)
     }
 

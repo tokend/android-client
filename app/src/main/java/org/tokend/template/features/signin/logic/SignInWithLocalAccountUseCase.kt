@@ -18,6 +18,7 @@ import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import org.tokend.template.features.localaccount.logic.LocalAccountRetryDecryptor
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.userkey.logic.UserKeyProvider
+import org.tokend.template.logic.credentials.model.WalletInfoRecord
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.logic.credentials.persistence.WalletInfoPersistence
@@ -34,15 +35,15 @@ import retrofit2.HttpException
  * @see PostSignInManager
  */
 class SignInWithLocalAccountUseCase(
-        accountCipher: DataCipher,
-        userKeyProvider: UserKeyProvider,
-        private val session: Session,
-        private val credentialsPersistence: CredentialsPersistence?,
-        private val walletInfoPersistence: WalletInfoPersistence?,
-        private val apiProvider: ApiProvider,
-        private val repositoryProvider: RepositoryProvider,
-        private val connectionStateProvider: (() -> Boolean)?,
-        private val postSignInActions: (() -> Completable)?
+    accountCipher: DataCipher,
+    userKeyProvider: UserKeyProvider,
+    private val session: Session,
+    private val credentialsPersistence: CredentialsPersistence?,
+    private val walletInfoPersistence: WalletInfoPersistence?,
+    private val apiProvider: ApiProvider,
+    private val repositoryProvider: RepositoryProvider,
+    private val connectionStateProvider: (() -> Boolean)?,
+    private val postSignInActions: (() -> Completable)?
 ) {
     private val isOnline: Boolean
         get() = connectionStateProvider?.invoke() ?: true
@@ -53,51 +54,52 @@ class SignInWithLocalAccountUseCase(
     private lateinit var localAccount: LocalAccount
     private var defaultSignerRole: Long = 0
     private lateinit var account: Account
-    private lateinit var walletInfo: WalletInfo
+    private lateinit var walletInfo: WalletInfoRecord
+    private lateinit var login: String
 
     fun perform(): Completable {
         return getLocalAccount()
-                .doOnSuccess { localAccount ->
-                    this.localAccount = localAccount
-                }
-                .flatMap {
-                    decryptLocalAccount()
-                }
-                .flatMap {
-                    getDefaultSignerRoleIfOnline()
-                }
-                .doOnSuccess { defaultSignerRole ->
-                    this.defaultSignerRole = defaultSignerRole
-                }
-                .flatMap {
-                    ensureRemoteAccountExistsIfOnline()
-                }
-                .flatMap {
-                    getAccount()
-                }
-                .doOnSuccess { account ->
-                    this.account = account
-                }
-                .flatMap {
-                    getWalletInfo()
-                }
-                .doOnSuccess { walletInfo ->
-                    this.walletInfo = walletInfo
-                }
-                .flatMap {
-                    updateProviders()
-                }
-                .flatMap {
-                    performPostSignIn()
-                }
-                .ignoreElement()
+            .doOnSuccess { localAccount ->
+                this.localAccount = localAccount
+            }
+            .flatMap {
+                decryptLocalAccount()
+            }
+            .flatMap {
+                getDefaultSignerRoleIfOnline()
+            }
+            .doOnSuccess { defaultSignerRole ->
+                this.defaultSignerRole = defaultSignerRole
+            }
+            .flatMap {
+                ensureRemoteAccountExistsIfOnline()
+            }
+            .flatMap {
+                getAccount()
+            }
+            .doOnSuccess { account ->
+                this.account = account
+            }
+            .flatMap {
+                getWalletInfo()
+            }
+            .doOnSuccess { walletInfo ->
+                this.walletInfo = walletInfo
+            }
+            .flatMap {
+                updateProviders()
+            }
+            .flatMap {
+                performPostSignIn()
+            }
+            .ignoreElement()
     }
 
     private fun getLocalAccount(): Single<LocalAccount> {
         return localAccountRepository
-                .presentAccount
-                .toMaybe()
-                .switchIfEmpty(Single.error(IllegalStateException("There is no local account in the repository")))
+            .presentAccount
+            .toMaybe()
+            .switchIfEmpty(Single.error(IllegalStateException("There is no local account in the repository")))
     }
 
     private fun decryptLocalAccount(): Single<LocalAccount> {
@@ -110,33 +112,33 @@ class SignInWithLocalAccountUseCase(
         }
 
         return repositoryProvider
-                .keyValueEntries()
-                .ensureEntries(listOf(KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY))
-                .map {
-                    it[KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY] as KeyValueEntryRecord.Number
-                }
-                .map(KeyValueEntryRecord.Number::value)
+            .keyValueEntries()
+            .ensureEntries(listOf(KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY))
+            .map {
+                it[KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY] as KeyValueEntryRecord.Number
+            }
+            .map(KeyValueEntryRecord.Number::value)
     }
 
     private fun ensureRemoteAccountExistsIfOnline(): Single<Boolean> {
         if (!isOnline) {
             return Single.just(false)
         }
-        
+
         return apiProvider.getApi()
-                .accounts
-                .createAccount(
-                        accountId = localAccount.accountId,
-                        signers = listOf(SignerData(localAccount.accountId, defaultSignerRole))
-                )
-                .toCompletable()
-                .toSingleDefault(true)
-                .onErrorResumeNext { error ->
-                    if (error is HttpException && error.isConflict())
-                        Single.just(true)
-                    else
-                        Single.error(error)
-                }
+            .accounts
+            .createAccount(
+                accountId = localAccount.accountId,
+                signers = listOf(SignerData(localAccount.accountId, defaultSignerRole))
+            )
+            .toCompletable()
+            .toSingleDefault(true)
+            .onErrorResumeNext { error ->
+                if (error is HttpException && error.isConflict())
+                    Single.just(true)
+                else
+                    Single.error(error)
+            }
     }
 
     private fun getAccount(): Single<Account> {
@@ -145,34 +147,42 @@ class SignInWithLocalAccountUseCase(
         }.toSingle().subscribeOn(Schedulers.computation())
     }
 
-    private fun getWalletInfo(): Single<WalletInfo> {
+    private fun getWalletInfo(): Single<WalletInfoRecord> {
         val accountId = account.accountId
 
+        login = accountId.substring(0..3) + "..." +
+                accountId.substring(accountId.length - 4, accountId.length)
+
         return WalletInfo(
-                accountId = accountId,
-                email = accountId.substring(0..3) + "..." +
-                        accountId.substring(accountId.length - 4, accountId.length),
-                secretSeed = charArrayOf(),
-                walletIdHex = "",
-                loginParams = LoginParams("", 0,
-                        KdfAttributes("", 0, 0, 0, 0, byteArrayOf()))
+            accountId = accountId,
+            email = login,
+            secretSeed = charArrayOf(),
+            walletIdHex = "",
+            loginParams = LoginParams(
+                "", 0,
+                KdfAttributes("", 0, 0, 0, 0, byteArrayOf())
+            )
         ).toSingle()
+            .map {
+                WalletInfoRecord(it)
+            }
     }
 
     private fun updateProviders(): Single<Boolean> {
         session.setWalletInfo(walletInfo)
-        walletInfoPersistence?.clear()
+        walletInfoPersistence?.clearWalletInfo(login)
         credentialsPersistence?.clear(false)
-        session.setAccount(account)
+        session.setAccounts(arrayListOf(account))
         session.signInMethod = SignInMethod.LOCAL_ACCOUNT
+        session.login = login
 
         return Single.just(true)
     }
 
     private fun performPostSignIn(): Single<Boolean> {
         return postSignInActions
-                ?.invoke()
-                ?.toSingleDefault(true)
-                ?: Single.just(false)
+            ?.invoke()
+            ?.toSingleDefault(true)
+            ?: Single.just(false)
     }
 }

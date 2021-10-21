@@ -130,8 +130,10 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
 
         if (BuildConfig.SECURE_CONTENT) {
             try {
-                window.setFlags(WindowManager.LayoutParams.FLAG_SECURE,
-                        WindowManager.LayoutParams.FLAG_SECURE)
+                window.setFlags(
+                    WindowManager.LayoutParams.FLAG_SECURE,
+                    WindowManager.LayoutParams.FLAG_SECURE
+                )
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -183,30 +185,34 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
         }
     }
 
-    override fun onTfaRequired(exception: NeedTfaException,
-                               verifierInterface: TfaVerifier.Interface) {
+    override fun onTfaRequired(
+        exception: NeedTfaException,
+        verifierInterface: TfaVerifier.Interface
+    ) {
         runOnUiThread {
-            val email = walletInfoProvider.getWalletInfo()?.email
-            TfaDialogFactory(this, errorHandlerFactory.getDefault(),
-                    credentialsPersistence, toastManager)
-                    .getForException(exception, verifierInterface, email)
-                    ?.show()
-                    ?: verifierInterface.cancelVerification()
+            val login = session.login
+            TfaDialogFactory(
+                this, errorHandlerFactory.getDefault(),
+                credentialsPersistence, toastManager
+            )
+                .getForException(exception, verifierInterface, login)
+                ?.show()
+                ?: verifierInterface.cancelVerification()
         }
     }
 
     // region Locale
     private fun subscribeToLocaleChanges() {
         localeManager
-                .localeChanges
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { recreate() }
-                .addTo(compositeDisposable)
+            .localeChanges
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { recreate() }
+            .addTo(compositeDisposable)
     }
 
     override fun getDelegate() = baseContextWrappingDelegate
-            ?: App.localeManager.getLocalizeContextWrapperDelegate(super.getDelegate())
-                    .also { baseContextWrappingDelegate = it }
+        ?: App.localeManager.getLocalizeContextWrapperDelegate(super.getDelegate())
+            .also { baseContextWrappingDelegate = it }
     // endregion
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
