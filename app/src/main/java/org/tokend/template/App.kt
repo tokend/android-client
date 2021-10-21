@@ -28,13 +28,13 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
-import org.jetbrains.anko.defaultSharedPreferences
 import org.tokend.template.db.AppDatabase
 import org.tokend.template.di.*
 import org.tokend.template.di.providers.AccountProviderFactory
 import org.tokend.template.di.providers.AppModule
 import org.tokend.template.di.providers.SessionModule
 import org.tokend.template.di.providers.WalletInfoProviderFactory
+import org.tokend.template.extensions.defaultSharedPreferences
 import org.tokend.template.features.urlconfig.model.UrlConfig
 import org.tokend.template.features.urlconfig.storage.UrlConfigPersistence
 import org.tokend.template.logic.Session

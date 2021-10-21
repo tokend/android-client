@@ -1,8 +1,8 @@
 package org.tokend.template.features.assets.buy.view.adapter
 
 import android.view.ViewGroup
-import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.extensions.layoutInflater
 import org.tokend.template.view.adapter.base.BaseRecyclerAdapter
 import org.tokend.template.view.util.formatter.AmountFormatter
 

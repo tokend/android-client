@@ -5,9 +5,9 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.AppBarLayout
-import org.jetbrains.anko.childrenSequence
-import org.jetbrains.anko.dip
 import org.tokend.template.R
+import org.tokend.template.extensions.childrenSequence
+import org.tokend.template.extensions.dip
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.view.ScrimCallbackCollapsingToolbarLayout
 import org.tokend.template.view.util.AnimationUtil

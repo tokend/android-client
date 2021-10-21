@@ -4,9 +4,9 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.layout_card_limit.view.*
-import org.jetbrains.anko.layoutInflater
 import org.tokend.sdk.api.accounts.model.limits.LimitEntry
 import org.tokend.template.R
+import org.tokend.template.extensions.layoutInflater
 import org.tokend.template.view.util.ViewProvider
 import org.tokend.template.view.util.formatter.AmountFormatter
 

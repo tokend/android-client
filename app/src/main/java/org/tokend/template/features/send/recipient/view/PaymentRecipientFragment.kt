@@ -19,7 +19,6 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_payment_recipient.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_progress.view.*
-import org.jetbrains.anko.enabled
 import org.tokend.template.R
 import org.tokend.template.extensions.clipboardText
 import org.tokend.template.extensions.hasError
@@ -63,7 +62,7 @@ class PaymentRecipientFragment : BaseFragment() {
     private var canContinue: Boolean = false
         set(value) {
             field = value
-            continue_button.enabled = value
+            continue_button.isEnabled = value
         }
 
     private val resultSubject = PublishSubject.create<PaymentRecipient>()

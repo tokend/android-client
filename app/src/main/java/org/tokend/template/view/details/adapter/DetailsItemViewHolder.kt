@@ -7,20 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import org.jetbrains.anko.find
-import org.jetbrains.anko.textColor
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.details.DetailsItem
 
 class DetailsItemViewHolder(view: View) : BaseViewHolder<DetailsItem>(view) {
-    private val mainTextView: TextView = view.find(android.R.id.title)
-    private val hintTextView: TextView = view.find(android.R.id.summary)
-    private val headerTextView: TextView = view.find(R.id.header_text_view)
-    private val iconImageView: ImageView = view.find(android.R.id.icon)
-    private val dividerView: View = view.find(R.id.divider_view)
-    private val preferenceRoot: ViewGroup = view.find(R.id.preference_root_layout)
-    private val viewFrame: ViewGroup = view.find(android.R.id.widget_frame)
+    private val mainTextView: TextView = view.findViewById(android.R.id.title)
+    private val hintTextView: TextView = view.findViewById(android.R.id.summary)
+    private val headerTextView: TextView = view.findViewById(R.id.header_text_view)
+    private val iconImageView: ImageView = view.findViewById(android.R.id.icon)
+    private val dividerView: View = view.findViewById(R.id.divider_view)
+    private val preferenceRoot: ViewGroup = view.findViewById(R.id.preference_root_layout)
+    private val viewFrame: ViewGroup = view.findViewById(android.R.id.widget_frame)
 
     private val defaultTextColor = ContextCompat.getColor(view.context, R.color.primary_text)
     private val disabledTextColor = ContextCompat.getColor(view.context, R.color.secondary_text)
@@ -65,12 +63,12 @@ class DetailsItemViewHolder(view: View) : BaseViewHolder<DetailsItem>(view) {
         mainTextView.setSingleLine(item.singleLineText)
         mainTextView.text = item.text
 
-        mainTextView.textColor =
-                if (item.isEnabled)
-                    item.textColor ?: defaultTextColor
-                else
-                    disabledTextColor
-
+        mainTextView.setTextColor(
+            if (item.isEnabled)
+                item.textColor ?: defaultTextColor
+            else
+                disabledTextColor
+        )
         if (item.hint != null) {
             hintTextView.visibility = View.VISIBLE
             hintTextView.text = item.hint

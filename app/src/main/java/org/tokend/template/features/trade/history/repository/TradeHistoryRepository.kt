@@ -1,7 +1,6 @@
 package org.tokend.template.features.trade.history.repository
 
 import io.reactivex.Single
-import org.jetbrains.anko.collections.forEachReversedByIndex
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
@@ -9,6 +8,7 @@ import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.v3.orderbook.params.MatchesPageParams
 import org.tokend.template.data.storage.repository.pagination.SimplePagedDataRepository
 import org.tokend.template.di.providers.ApiProvider
+import org.tokend.template.extensions.forEachReversedByIndex
 import org.tokend.template.features.trade.history.model.TradeHistoryRecord
 import java.math.BigDecimal
 

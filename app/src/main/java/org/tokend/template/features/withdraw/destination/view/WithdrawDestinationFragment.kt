@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_withdraw_destination.*
-import org.jetbrains.anko.enabled
 import org.tokend.template.R
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.onEditorAction
@@ -25,7 +24,7 @@ class WithdrawDestinationFragment : BaseFragment() {
     private var canContinue: Boolean = false
         set(value) {
             field = value
-            continue_button.enabled = value
+            continue_button.isEnabled = value
         }
 
     private val resultSubject = PublishSubject.create<String>()

@@ -8,7 +8,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_unlock_app.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.layout_error_empty_view.view.*
-import org.jetbrains.anko.onClick
 import org.tokend.crypto.ecdsa.erase
 import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.template.App
@@ -95,11 +94,11 @@ class UnlockAppActivity : BaseActivity() {
             tryToUnlockWithPassword()
         }
 
-        unlock_button.onClick {
+        unlock_button.setOnClickListener {
             tryToUnlockWithPassword()
         }
 
-        sign_out_button.onClick {
+        sign_out_button.setOnClickListener {
             if (!loadingIndicator.isLoading) {
                 SignOutDialogFactory.getDialog(this) {
                     (application as App).signOut(this)
@@ -107,7 +106,7 @@ class UnlockAppActivity : BaseActivity() {
             }
         }
 
-        recovery_button.onClick {
+        recovery_button.setOnClickListener {
             Navigator.from(this).openRecovery(email)
         }
 

@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import kotlinx.android.synthetic.main.layout_fee_info.view.*
-import org.jetbrains.anko.find
 import org.tokend.template.R
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.util.LocalizedName
@@ -13,9 +12,9 @@ import org.tokend.template.view.util.LocalizedName
 class FeesViewHolder(view: View) : BaseViewHolder<List<FeeListItem>>(view) {
 
     private val localizedName = LocalizedName(view.context)
-    private val feesInfoContainer: LinearLayout = view.find(R.id.fees_info_container)
-    private val feeTypeText: TextView = view.find(R.id.fee_type)
-    private val feeSubtypeText: TextView = view.find(R.id.fee_subtype)
+    private val feesInfoContainer: LinearLayout = view.findViewById(R.id.fees_info_container)
+    private val feeTypeText: TextView = view.findViewById(R.id.fee_type)
+    private val feeSubtypeText: TextView = view.findViewById(R.id.fee_subtype)
 
 
     override fun bind(item: List<FeeListItem>) {

@@ -18,11 +18,10 @@ import kotlinx.android.synthetic.main.appbar_with_tabs.*
 import kotlinx.android.synthetic.main.fragment_deposit.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.onClick
-import org.jetbrains.anko.runOnUiThread
 import org.tokend.template.R
 import org.tokend.template.data.model.AccountRecord
 import org.tokend.template.data.repository.AccountRepository
+import org.tokend.template.extensions.runOnUiThread
 import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.assets.model.AssetRecord
@@ -177,7 +176,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initSwipeRefresh() {
-        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
+        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(requireContext(), R.color.accent))
         swipe_refresh.setOnRefreshListener { update(true) }
     }
 
@@ -197,7 +196,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             }
         }
 
-        get_address_button.onClick {
+        get_address_button.setOnClickListener {
             bindDepositAccount()
         }
     }
@@ -267,7 +266,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private fun initTask() {
         timerTask = object : TimerTask() {
             override fun run() {
-                requireContext().runOnUiThread {
+                runOnUiThread {
                     if (isVisible) {
                         displayAddress()
                     }

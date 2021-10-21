@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import org.jetbrains.anko.find
-import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.extensions.layoutInflater
 
 /**
  * Information card with heading and lot of rows.
@@ -26,7 +25,7 @@ class InfoCard(parent: ViewGroup) {
         view = context.layoutInflater.inflate(R.layout.layout_info_card, parent, false)
         parent.addView(view)
 
-        contentLayout = view.find(R.id.card_content_layout)
+        contentLayout = view.findViewById(R.id.card_content_layout)
     }
 
     /**
@@ -39,9 +38,9 @@ class InfoCard(parent: ViewGroup) {
             contentLayout.addView(mainRow)
         }
 
-        val titleTextView = mainRow?.find<TextView>(R.id.title)
+        val titleTextView = mainRow?.findViewById<TextView>(R.id.title)
         titleTextView?.text = title ?: ""
-        val valueTextView = mainRow?.find<TextView>(R.id.value)
+        val valueTextView = mainRow?.findViewById<TextView>(R.id.value)
         valueTextView?.text = value ?: ""
 
         return this
@@ -61,8 +60,8 @@ class InfoCard(parent: ViewGroup) {
         val rowView =
                 context.layoutInflater.inflate(R.layout.layout_info_card_row, contentLayout, false)
 
-        val titleTextView = rowView.find<TextView>(R.id.title)
-        val valueTextView = rowView.find<TextView>(R.id.value)
+        val titleTextView = rowView.findViewById<TextView>(R.id.title)
+        val valueTextView = rowView.findViewById<TextView>(R.id.value)
 
         if (title.isNullOrBlank()) {
             titleTextView.visibility = View.GONE
@@ -108,8 +107,8 @@ class InfoCard(parent: ViewGroup) {
                 context.layoutInflater.inflate(R.layout.layout_info_card_switch_row, contentLayout,
                         false)
 
-        val titleTextView = rowView.find<TextView>(R.id.title)
-        val switcherView = rowView.find<SwitchCompat>(R.id.switcher)
+        val titleTextView = rowView.findViewById<TextView>(R.id.title)
+        val switcherView = rowView.findViewById<SwitchCompat>(R.id.switcher)
 
         switcherView.isChecked = animate != isChecked
 

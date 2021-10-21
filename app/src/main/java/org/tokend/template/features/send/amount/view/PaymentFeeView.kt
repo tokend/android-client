@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
-import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.extensions.layoutInflater
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.view.util.formatter.AmountFormatter
 import java.math.BigDecimal
