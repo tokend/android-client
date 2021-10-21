@@ -24,7 +24,8 @@
     </style>
 
     <style name="AppTheme.NoActionBar.TransparentStatusBar" parent="AppTheme.NoActionBar">
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent
+        </item>
     </style>
 
     <style name="SplashTheme" parent="AppTheme.NoActionBar.TransparentStatusBar">
@@ -62,6 +63,12 @@
 
     <style name="SecondaryButton" parent="Base.Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/secondary_text</item>
+    </style>
+
+    <style name="TextButton" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="DialogButton" parent="SecondaryButton">

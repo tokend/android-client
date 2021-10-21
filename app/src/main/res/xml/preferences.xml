@@ -29,8 +29,7 @@
             android:icon="@drawable/ic_account_check"
             android:key="kyc"
             android:layout="@layout/preference_layout"
-            android:summary="@string/verification_summary"
-            android:title="@string/verification_title" />
+            android:title="@string/title_kyc" />
 
         <androidx.preference.Preference
             android:icon="@drawable/ic_account_key"

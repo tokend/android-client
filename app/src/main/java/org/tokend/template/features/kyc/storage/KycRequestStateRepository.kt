@@ -17,6 +17,7 @@ import org.tokend.template.data.repository.BlobsRepository
 import org.tokend.template.data.storage.repository.SingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
+import org.tokend.template.features.keyvalue.storage.KeyValueEntriesRepository
 import org.tokend.template.features.kyc.model.KycForm
 import org.tokend.template.features.kyc.model.KycRequestState
 
@@ -24,9 +25,10 @@ import org.tokend.template.features.kyc.model.KycRequestState
  * Holds user's KYC request state
  */
 class KycRequestStateRepository(
-        private val apiProvider: ApiProvider,
-        private val walletInfoProvider: WalletInfoProvider,
-        private val blobsRepository: BlobsRepository
+    private val apiProvider: ApiProvider,
+    private val walletInfoProvider: WalletInfoProvider,
+    private val blobsRepository: BlobsRepository,
+    private val keyValueEntriesRepository: KeyValueEntriesRepository,
 ) : SingleItemRepository<KycRequestState>() {
     private class NoRequestFoundException : Exception()
 
@@ -62,7 +64,7 @@ class KycRequestStateRepository(
                             ?: throw InvalidKycDataException()
                 }
                 .flatMap { (state, rejectReason, blobId, roleToSet) ->
-                    loadKycFormFromBlob(blobId)
+                    loadKycFormFromBlob(blobId, roleToSet)
                             .map { kycForm ->
                                 FinalComposite(state, rejectReason, kycForm, roleToSet)
                             }
@@ -123,20 +125,28 @@ class KycRequestStateRepository(
         }
     }
 
-    private fun loadKycFormFromBlob(blobId: String?): Single<KycForm> {
+    private fun loadKycFormFromBlob(blobId: String?,
+                                    roleId: Long): Single<KycForm> {
         if (blobId == null) {
             return Single.just(KycForm.Empty)
         }
 
         return blobsRepository
-                .getById(blobId, true)
-                .map { blob ->
-                    try {
-                        KycForm.fromBlob(blob)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        KycForm.Empty
+            .getById(blobId, true)
+            .flatMap { blob ->
+                keyValueEntriesRepository
+                    .updateIfNotFreshDeferred()
+                    .toSingle {
+                        blob to keyValueEntriesRepository.itemsList
                     }
+            }
+            .map { (blob, keyValueEntries) ->
+                try {
+                    KycForm.fromBlob(blob, roleId, keyValueEntries)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    KycForm.Empty
                 }
+            }
     }
 }

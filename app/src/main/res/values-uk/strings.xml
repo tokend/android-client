@@ -464,4 +464,20 @@
         <item>Листопад</item>
         <item>Грудень</item>
     </string-array>
+    <string name="title_kyc">Персональна інформація</string>
+    <string name="hint_firstname">Ім\'я</string>
+    <string name="hint_lastname">Прізвище</string>
+    <string name="my_selfie_is_clear">Моє селфі чітке</string>
+    <string name="selfie">Селфі</string>
+    <string name="take_new_selfie">Зробити нове селфі</string>
+    <string name="take_a_shot">Сфотографувати</string>
+    <string name="skip_document_capture">Пропустити</string>
+    <string name="take_a_selfie">Зробити селфі</string>
+    <string name="pick_from_gallery">Вибрати з галереї</string>
+    <string name="action_submit">Підтвердити</string>
+    <string name="waiting_for_file_progress">Очікування файлу</string>
+    <string name="waiting_for_kyc_approval_message">Ваш обліковий запис буде активовано через мить ...</string>
+    <string name="account_setup_completed">Налаштування облікового запису завершена</string>
+    <string name="personal_info_updated">Персональні дані оновлено</string>
+    <string name="personal_info_update_request_created">Запит на зміну персональних даних успішно створено</string>
 </resources>

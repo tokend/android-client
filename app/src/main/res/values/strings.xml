@@ -466,4 +466,22 @@
         <item>November</item>
         <item>December</item>
     </string-array>
+
+    <!--    set KYC screen-->
+    <string name="title_kyc">Personal info</string>
+    <string name="hint_firstname">First name</string>
+    <string name="hint_lastname">Last name</string>
+    <string name="my_selfie_is_clear">My Selfie is Clear</string>
+    <string name="selfie">Selfie</string>
+    <string name="take_new_selfie">Take New Selfie</string>
+    <string name="take_a_shot">Take a shot</string>
+    <string name="skip_document_capture">Skip</string>
+    <string name="take_a_selfie">Take a Selfie</string>
+    <string name="pick_from_gallery">Pick from Gallery</string>
+    <string name="action_submit">Submit</string>
+    <string name="waiting_for_file_progress">Waiting for file…</string>
+    <string name="waiting_for_kyc_approval_message">Your account will be enabled in a moment…</string>
+    <string name="account_setup_completed">Account setup has been completed</string>
+    <string name="personal_info_updated">Personal info updated</string>
+    <string name="personal_info_update_request_created">Personal info update request created successfully</string>
 </resources>

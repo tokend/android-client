@@ -11,55 +11,58 @@ import java.io.Serializable
 import java.util.*
 
 class AccountRecord(
-        val id: String,
-        val kycRecoveryStatus: KycRecoveryStatus,
-        val depositAccounts: MutableSet<DepositAccount>,
-        val kycBlob: String?
+    val id: String,
+    val kycRecoveryStatus: KycRecoveryStatus,
+    val depositAccounts: MutableSet<DepositAccount>,
+    val kycBlob: String?,
+    var roleId: Long
 ) : Serializable {
     constructor(source: AccountResource) : this(
-            id = source.id,
-            kycRecoveryStatus = source
-                    .kycRecoveryStatus
-                    ?.name
-                    ?.toUpperCase(Locale.ENGLISH)
-                    ?.let(KycRecoveryStatus::valueOf)
-                    ?: KycRecoveryStatus.NONE,
-            depositAccounts = source.externalSystemIds?.map(::DepositAccount)?.toHashSet()
-                    ?: mutableSetOf(),
-            kycBlob = source
-                    .kycData
-                    ?.kycData
-                    ?.get("blob_id")
-                    ?.takeIf(JsonNode::isTextual)
-                    ?.asText()
+        id = source.id,
+        kycRecoveryStatus = source
+            .kycRecoveryStatus
+            ?.name
+            ?.toUpperCase(Locale.ENGLISH)
+            ?.let(KycRecoveryStatus::valueOf)
+            ?: KycRecoveryStatus.NONE,
+        depositAccounts = source.externalSystemIds?.map(::DepositAccount)?.toHashSet()
+            ?: mutableSetOf(),
+        kycBlob = source
+            .kycData
+            ?.kycData
+            ?.get("blob_id")
+            ?.takeIf(JsonNode::isTextual)
+            ?.asText(),
+        roleId = source.role.id.toLong()
+
     )
 
     class DepositAccount(
-            val type: Int,
-            val address: String,
-            val payload: String?,
-            val expirationDate: Date?
+        val type: Int,
+        val address: String,
+        val payload: String?,
+        val expirationDate: Date?
     ) : Serializable {
         constructor(source: ExternalSystemIDResource) : this(
-                type = source.externalSystemType,
-                expirationDate = source.expiresAt,
-                data = source.data
+            type = source.externalSystemType,
+            expirationDate = source.expiresAt,
+            data = source.data
         )
 
         constructor(source: ExternalSystemAccountIDPoolEntry) : this(
-                type = source.externalSystemType,
-                expirationDate = Date(source.expiresAt * 1000L),
-                data = JsonApiToolsProvider.getObjectMapper().readValue(
-                        source.data,
-                        ExternalSystemData::class.java
-                )
+            type = source.externalSystemType,
+            expirationDate = Date(source.expiresAt * 1000L),
+            data = JsonApiToolsProvider.getObjectMapper().readValue(
+                source.data,
+                ExternalSystemData::class.java
+            )
         )
 
         constructor(type: Int, expirationDate: Date?, data: ExternalSystemData) : this(
-                type = type,
-                expirationDate = expirationDate,
-                address = data.data.address,
-                payload = data.data.payload
+            type = type,
+            expirationDate = expirationDate,
+            address = data.data.address,
+            payload = data.data.payload
         )
 
         override fun equals(other: Any?): Boolean {
@@ -91,14 +94,14 @@ class AccountRecord(
 
     fun getDepositAccount(asset: AssetRecord): DepositAccount? {
         val type =
-                if (asset.isConnectedToCoinpayments)
-                    asset.code.hashCode()
-                else
-                    asset.externalSystemType
+            if (asset.isConnectedToCoinpayments)
+                asset.code.hashCode()
+            else
+                asset.externalSystemType
 
         type ?: return null
 
         return depositAccounts
-                .find { it.type == type }
+            .find { it.type == type }
     }
 }

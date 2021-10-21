@@ -9,31 +9,32 @@ import org.tokend.template.data.storage.repository.SingleItemRepository
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 
-class AccountRepository(private val apiProvider: ApiProvider,
-                        private val walletInfoProvider: WalletInfoProvider,
-                        itemPersistence: ObjectPersistence<AccountRecord>?)
-    : SingleItemRepository<AccountRecord>(itemPersistence) {
+class AccountRepository(
+    private val apiProvider: ApiProvider,
+    private val walletInfoProvider: WalletInfoProvider,
+    itemPersistence: ObjectPersistence<AccountRecord>?
+) : SingleItemRepository<AccountRecord>(itemPersistence) {
 
     override fun getItem(): Single<AccountRecord> {
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                ?: return Single.error(IllegalStateException("No wallet info found"))
+            ?: return Single.error(IllegalStateException("No wallet info found"))
         val signedApi = apiProvider.getSignedApi()
-                ?: return Single.error(IllegalStateException("No signed API instance found"))
+            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         return signedApi
-                .v3
-                .accounts
-                .getById(
-                        accountId,
-                        AccountParamsV3(
-                                include = listOf(
-                                        AccountParamsV3.Includes.EXTERNAL_SYSTEM_IDS,
-                                        AccountParamsV3.Includes.KYC_DATA
-                                )
-                        )
+            .v3
+            .accounts
+            .getById(
+                accountId,
+                AccountParamsV3(
+                    include = listOf(
+                        AccountParamsV3.Includes.EXTERNAL_SYSTEM_IDS,
+                        AccountParamsV3.Includes.KYC_DATA
+                    )
                 )
-                .toSingle()
-                .map(::AccountRecord)
+            )
+            .toSingle()
+            .map(::AccountRecord)
     }
 
     /**
@@ -41,12 +42,20 @@ class AccountRepository(private val apiProvider: ApiProvider,
      */
     fun addNewDepositAccount(depositAccount: AccountRecord.DepositAccount) {
         val account = item
-                ?: return
+            ?: return
 
         account.depositAccounts.remove(depositAccount)
         account.depositAccounts.add(depositAccount)
 
         storeItem(account)
         onNewItem(account)
+    }
+
+    fun updateRole(newRoleId: Long) {
+        item?.also { account ->
+            account.roleId = newRoleId
+            storeItem(account)
+            broadcast()
+        }
     }
 }
