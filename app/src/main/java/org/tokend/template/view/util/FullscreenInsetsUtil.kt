@@ -3,7 +3,7 @@ package org.tokend.template.view.util
 import android.os.Build
 import android.view.View
 import androidx.core.view.ViewCompat
-import org.jetbrains.anko.dip
+import org.tokend.template.extensions.dip
 
 object FullscreenInsetsUtil {
     /**

@@ -13,9 +13,9 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_set_kyc.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.dip
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.extensions.dip
 import org.tokend.template.features.kyc.capture.model.CameraCaptureResult
 import org.tokend.template.features.kyc.capture.model.CameraCaptureTarget
 import org.tokend.template.features.kyc.files.model.LocalFile

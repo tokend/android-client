@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
-import org.jetbrains.anko.forEachChild
 import org.tokend.template.R
+import org.tokend.template.extensions.forEachChild
 
 enum class CameraCaptureTarget {
     SELFIE,

@@ -12,8 +12,8 @@ import androidx.annotation.ColorRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
-import org.jetbrains.anko.dip
 import org.tokend.template.R
+import org.tokend.template.extensions.dip
 import kotlin.random.Random
 
 class CenteredButtonsDialog(
