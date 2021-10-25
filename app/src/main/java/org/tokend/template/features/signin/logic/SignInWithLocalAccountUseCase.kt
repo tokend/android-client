@@ -169,12 +169,18 @@ class SignInWithLocalAccountUseCase(
     }
 
     private fun updateProviders(): Single<Boolean> {
-        session.setWalletInfo(walletInfo)
+        SignInUseCase.updateProviders(
+            walletInfo = walletInfo,
+            accounts = arrayListOf(account),
+            login = login,
+            password = charArrayOf(),
+            session = session,
+            credentialsPersistence = null,
+            walletInfoPersistence = null,
+            signInMethod = SignInMethod.LOCAL_ACCOUNT
+        )
         walletInfoPersistence?.clearWalletInfo(login)
         credentialsPersistence?.clear(false)
-        session.setAccounts(arrayListOf(account))
-        session.signInMethod = SignInMethod.LOCAL_ACCOUNT
-        session.login = login
 
         return Single.just(true)
     }
