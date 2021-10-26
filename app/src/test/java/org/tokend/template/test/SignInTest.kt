@@ -18,6 +18,7 @@ import org.tokend.template.features.signin.logic.SignInUseCase
 import org.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
 import org.tokend.template.features.userkey.logic.UserKeyProvider
 import org.tokend.template.logic.Session
+import org.tokend.template.logic.credentials.model.WalletInfoRecord
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.logic.credentials.persistence.WalletInfoPersistence
 import org.tokend.template.util.cipher.Aes256GcmDataCipher
@@ -29,8 +30,8 @@ class SignInTest {
     fun aRegularSignIn() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
+            WalletInfoProviderFactory().createWalletInfoProvider(),
+            AccountProviderFactory().createAccountProvider()
         )
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
 
@@ -39,39 +40,39 @@ class SignInTest {
 
         val (walletData, rootAccount)
                 = apiProvider.getKeyServer()
-                .createAndSaveWallet(email, password, apiProvider.getApi().v3.keyValue)
-                .execute().get()
+            .createAndSaveWallet(email, password, apiProvider.getApi().v3.keyValue)
+            .execute().get()
 
         println("Email is $email")
 
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper())
+            JsonApiToolsProvider.getObjectMapper())
 
         val credentialsPersistor = getDummyCredentialsStorage()
         val walletInfoPersistor = getDummyWalletInfoStorage()
 
         val useCase = SignInUseCase(
-                email,
-                password,
-                apiProvider.getKeyServer(),
-                session,
-                credentialsPersistor,
-                walletInfoPersistor,
-                PostSignInManager(repositoryProvider)::doPostSignIn
+            email,
+            password,
+            apiProvider.getKeyServer(),
+            session,
+            credentialsPersistor,
+            walletInfoPersistor,
+            PostSignInManager(repositoryProvider)::doPostSignIn
         )
 
         useCase.perform().blockingAwait()
 
         Assert.assertEquals("WalletInfoProvider must hold an actual wallet data",
-                walletData.attributes.accountId, session.getWalletInfo()!!.accountId)
+            walletData.attributes.accountId, session.getWalletInfo()!!.accountId)
         Assert.assertArrayEquals("AccountProvider must hold an actual account",
-                rootAccount.secretSeed, session.getAccount()?.secretSeed)
+            rootAccount.secretSeed, session.getAccount()?.secretSeed)
         Assert.assertNotEquals("WalletInfo is not saved",
-                walletInfoPersistor.loadWalletInfo(email, password), null)
+            walletInfoPersistor.loadWalletInfo(session.login, password), null)
         Assert.assertEquals("Credentials persistor must hold actual email",
-                email.toLowerCase(), credentialsPersistor.getSavedLogin()?.toLowerCase())
+            email.toLowerCase(), credentialsPersistor.getSavedLogin()?.toLowerCase())
         Assert.assertArrayEquals("Credentials persistor must hold actual password",
-                password, credentialsPersistor.getSavedPassword())
+            password, credentialsPersistor.getSavedPassword())
 
         checkRepositories(repositoryProvider)
     }
@@ -83,20 +84,20 @@ class SignInTest {
 
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
+            WalletInfoProviderFactory().createWalletInfoProvider(),
+            AccountProviderFactory().createAccountProvider()
         )
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
 
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper(),
-                localAccountPersistence = getDummyLocalAccountsStorage())
+            JsonApiToolsProvider.getObjectMapper(),
+            localAccountPersistence = getDummyLocalAccountsStorage())
 
         val userKey = "0000".toCharArray()
         val cipher = Aes256GcmDataCipher()
         val localAccountRepository = repositoryProvider.localAccount()
         localAccountRepository.useAccount(LocalAccount.fromSecretSeed(
-                account.secretSeed!!, cipher, userKey
+            account.secretSeed!!, cipher, userKey
         ))
         val userKeyProvider = object : UserKeyProvider {
             override fun getUserKey(isRetry: Boolean): Maybe<CharArray> {
@@ -104,48 +105,52 @@ class SignInTest {
             }
         }
 
-        val dummyWalletInfo = WalletInfo("", "", "", charArrayOf(),
+        val login = ""
+
+        val dummyWalletInfo = WalletInfoRecord(
+            WalletInfo("", login, "", charArrayOf(),
                 LoginParams("", 0, KdfAttributes("", 0, 0, 0, 0, byteArrayOf())))
+        )
         val dummyPassword = charArrayOf()
         val credentialsPersistor = getDummyCredentialsStorage().apply {
-            saveCredentials(dummyWalletInfo.email, dummyPassword)
+            saveCredentials(login, dummyPassword)
         }
         val walletInfoPersistor = getDummyWalletInfoStorage().apply {
-            saveWalletInfo(dummyWalletInfo, dummyPassword)
+            saveWalletInfo(dummyWalletInfo, login, dummyPassword)
         }
 
 
         val useCase = SignInWithLocalAccountUseCase(
-                accountCipher = cipher,
-                userKeyProvider = userKeyProvider,
-                session = session,
-                credentialsPersistence = credentialsPersistor,
-                walletInfoPersistence = walletInfoPersistor,
-                repositoryProvider = repositoryProvider,
-                apiProvider = apiProvider,
-                connectionStateProvider = null,
-                postSignInActions = PostSignInManager(repositoryProvider)::doPostSignIn
+            accountCipher = cipher,
+            userKeyProvider = userKeyProvider,
+            session = session,
+            credentialsPersistence = credentialsPersistor,
+            walletInfoPersistence = walletInfoPersistor,
+            repositoryProvider = repositoryProvider,
+            apiProvider = apiProvider,
+            connectionStateProvider = null,
+            postSignInActions = PostSignInManager(repositoryProvider)::doPostSignIn
         )
 
         useCase.perform().blockingAwait()
 
         try {
             apiProvider.getApi()
-                    .v3
-                    .accounts
-                    .getById(account.accountId)
-                    .execute()
-                    .get()
+                .v3
+                .accounts
+                .getById(account.accountId)
+                .execute()
+                .get()
         } catch (e: Exception) {
             Assert.fail("Remote account must be created")
         }
 
         Assert.assertEquals("WalletInfoProvider must hold wallet data with actual account ID",
-                account.accountId, session.getWalletInfo()!!.accountId)
+            account.accountId, session.getWalletInfo()!!.accountId)
         Assert.assertArrayEquals("AccountProvider must hold an actual account",
-                account.secretSeed, session.getAccount()?.secretSeed)
+            account.secretSeed, session.getAccount()?.secretSeed)
         Assert.assertFalse("Credentials persistor must be cleaned",
-                credentialsPersistor.hasCredentials() || credentialsPersistor.getSavedLogin() != null
+            credentialsPersistor.hasCredentials() || credentialsPersistor.getSavedLogin() != null
         )
 
         checkRepositories(repositoryProvider)
@@ -157,20 +162,20 @@ class SignInTest {
 
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
+            WalletInfoProviderFactory().createWalletInfoProvider(),
+            AccountProviderFactory().createAccountProvider()
         )
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
 
         val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper(),
-                localAccountPersistence = getDummyLocalAccountsStorage())
+            JsonApiToolsProvider.getObjectMapper(),
+            localAccountPersistence = getDummyLocalAccountsStorage())
 
         val userKey = "0000".toCharArray()
         val cipher = Aes256GcmDataCipher()
         val localAccountRepository = repositoryProvider.localAccount()
         localAccountRepository.useAccount(LocalAccount.fromSecretSeed(
-                account.secretSeed!!, cipher, userKey
+            account.secretSeed!!, cipher, userKey
         ))
         val userKeyProvider = object : UserKeyProvider {
             override fun getUserKey(isRetry: Boolean): Maybe<CharArray> {
@@ -179,15 +184,15 @@ class SignInTest {
         }
 
         val useCase = SignInWithLocalAccountUseCase(
-                accountCipher = cipher,
-                userKeyProvider = userKeyProvider,
-                session = session,
-                credentialsPersistence = null,
-                walletInfoPersistence = null,
-                repositoryProvider = repositoryProvider,
-                apiProvider = apiProvider,
-                connectionStateProvider = null,
-                postSignInActions = PostSignInManager(repositoryProvider)::doPostSignIn
+            accountCipher = cipher,
+            userKeyProvider = userKeyProvider,
+            session = session,
+            credentialsPersistence = null,
+            walletInfoPersistence = null,
+            repositoryProvider = repositoryProvider,
+            apiProvider = apiProvider,
+            connectionStateProvider = null,
+            postSignInActions = PostSignInManager(repositoryProvider)::doPostSignIn
         )
 
         useCase.perform().blockingAwait()
@@ -222,18 +227,25 @@ class SignInTest {
     }
 
     private fun getDummyWalletInfoStorage() = object : WalletInfoPersistence {
-        private var walletInfo: WalletInfo? = null
+        private var walletInfo: WalletInfoRecord? = null
         private var password: CharArray? = null
+        private var login: String? = null
 
-        override fun saveWalletInfo(data: WalletInfo, password: CharArray) {
-            this.walletInfo = data
+        override fun saveWalletInfo(
+            walletInfo: WalletInfoRecord,
+            login: String,
+            password: CharArray
+        ) {
+            this.walletInfo = walletInfo
             this.password = password
+            this.login = login
         }
 
-        override fun loadWalletInfo(email: String, password: CharArray): WalletInfo? =
-                walletInfo.takeIf { this.password?.contentEquals(password) == true }
+        override fun loadWalletInfo(login: String, password: CharArray): WalletInfoRecord?{
+            return walletInfo.takeIf { this.password?.contentEquals(password) == true && this.login == login }
+        }
 
-        override fun clear() {
+        override fun clearWalletInfo(login: String) {
             this.walletInfo = null
         }
     }
@@ -242,8 +254,8 @@ class SignInTest {
 
     private fun checkRepositories(repositoryProvider: RepositoryProvider) {
         Assert.assertTrue("Balances repository must be updated after sign in",
-                repositoryProvider.balances().isFresh)
+            repositoryProvider.balances().isFresh)
         Assert.assertTrue("Account repository must be updated after sign in",
-                repositoryProvider.account().isFresh)
+            repositoryProvider.account().isFresh)
     }
 }

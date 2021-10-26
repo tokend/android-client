@@ -31,6 +31,7 @@ class SignInUseCase(
 ) {
     private lateinit var walletInfo: WalletInfoRecord
     private lateinit var accounts: List<Account>
+    private lateinit var derivedLogin: String
 
     private var ignoreCredentialsPersistence = false
 
@@ -72,6 +73,9 @@ class SignInUseCase(
         val networkRequest = keyServer
             .getWalletInfo(login, password)
             .toSingle()
+            .doOnSuccess {
+                this.derivedLogin = it.email
+            }
             .map(::WalletInfoRecord)
 
         walletInfoPersistence
@@ -89,7 +93,7 @@ class SignInUseCase(
 
     private fun updateProviders(): Single<Boolean> {
         Companion.updateProviders(
-            walletInfo, accounts, login, password,
+            walletInfo, accounts, derivedLogin, password,
             session, credentialsPersistence, walletInfoPersistence, SignInMethod.CREDENTIALS
         )
         return Single.just(true)
