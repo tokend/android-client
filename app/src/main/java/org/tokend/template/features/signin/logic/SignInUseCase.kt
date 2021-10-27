@@ -2,6 +2,7 @@ package org.tokend.template.features.signin.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.rx.extensions.toSingle
@@ -80,9 +81,17 @@ class SignInUseCase(
 
         walletInfoPersistence
             ?.takeIf { !ignoreCredentialsPersistence }
-            ?.loadWalletInfoMaybe(login, password)
-            ?.switchIfEmpty(networkRequest)
-            ?: networkRequest
+            ?.let { persistence ->
+                credentialsPersistence?.getSavedLogin()?.toMaybe()
+                    ?.doOnSuccess { savedLogin ->
+                        this.derivedLogin = savedLogin
+                    }
+                    ?.flatMap {
+                        persistence.loadWalletInfoMaybe(login, password)
+                    }
+                    ?.switchIfEmpty(networkRequest)
+                    ?: networkRequest
+            }
     }
 
     private fun getAccountsFromWalletInfo(): Single<List<Account>> {
