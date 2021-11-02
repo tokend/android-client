@@ -9,9 +9,6 @@ import kotlinx.android.synthetic.main.activity_change_password.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.enabled
-import org.jetbrains.anko.onClick
 import org.tokend.crypto.ecdsa.erase
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.sdk.tfa.NeedTfaException
@@ -46,7 +43,7 @@ class ChangePasswordActivity : BaseActivity() {
     private var canChange: Boolean = false
         set(value) {
             field = value
-            change_password_button.enabled = value
+            change_password_button.isEnabled = value
         }
 
     private val biometricAuthManager by lazy {
@@ -92,7 +89,7 @@ class ChangePasswordActivity : BaseActivity() {
     }
 
     private fun initButtons() {
-        change_password_button.onClick {
+        change_password_button.setOnClickListener {
             tryToChangePassword()
         }
 
@@ -216,25 +213,27 @@ class ChangePasswordActivity : BaseActivity() {
     ) {
         if(session.login.isNotEmpty()){
             val passwordChars = current_password_edit_text.text.getChars()
-            doAsync {
+            Thread {
                 val otp = PasswordTfaOtpGenerator().generate(exception, session.login, passwordChars)
 
                 if (!isFinishing) {
                     verifierInterface.verify(otp,
-                        onError = {
-                            passwordChars.erase()
-                            current_password_edit_text
-                                .setErrorAndFocus(R.string.error_invalid_password)
-                            verifierInterface.cancelVerification()
-                        },
-                        onSuccess = {
-                            passwordChars.erase()
-                        })
+                            onError = {
+                                passwordChars.erase()
+                                runOnUiThread {
+                                    current_password_edit_text
+                                        .setErrorAndFocus(R.string.error_invalid_password)
+                                }
+                                verifierInterface.cancelVerification()
+                            },
+                            onSuccess = {
+                                passwordChars.erase()
+                            })
                 } else {
                     verifierInterface.cancelVerification()
                     passwordChars.erase()
                 }
-            }
+            }.start()
         }
     }
 

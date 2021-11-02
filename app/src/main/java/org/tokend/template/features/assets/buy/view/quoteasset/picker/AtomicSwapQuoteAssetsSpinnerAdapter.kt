@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.list_item_asset_with_amount.view.*
-import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.extensions.layoutInflater
 import org.tokend.template.view.util.formatter.AmountFormatter
 
 class AtomicSwapQuoteAssetsSpinnerAdapter(

@@ -21,12 +21,10 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.EntryXComparator
 import com.google.android.material.tabs.TabLayout
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.find
-import org.jetbrains.anko.textColor
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.App
 import org.tokend.template.R
+import org.tokend.template.extensions.dip
 import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.features.assets.model.AssetChartData
 import org.tokend.template.view.ContentLoadingProgressBar
@@ -84,13 +82,13 @@ class AssetChartCard : LinearLayout {
         removeAllViews()
         LayoutInflater.from(context).inflate(R.layout.layout_asset_chart, this, true)
 
-        chartScaleTabs = find(R.id.chart_scale_tabs)
-        chart = find(R.id.asset_line_chart)
-        valueTextView = find(R.id.issued_text_view)
-        valueHintTextView = find(R.id.issued_hint_text_view)
-        growthTextView = find(R.id.growth_text_view)
-        growthHintTextView = find(R.id.growth_hint_text_view)
-        progressBar = find(R.id.progress)
+        chartScaleTabs = findViewById(R.id.chart_scale_tabs)
+        chart = findViewById(R.id.asset_line_chart)
+        valueTextView = findViewById(R.id.issued_text_view)
+        valueHintTextView = findViewById(R.id.issued_hint_text_view)
+        growthTextView = findViewById(R.id.growth_text_view)
+        growthHintTextView = findViewById(R.id.growth_hint_text_view)
+        progressBar = findViewById(R.id.progress)
 
         initChart()
     }
@@ -155,7 +153,7 @@ class AssetChartCard : LinearLayout {
                 setDrawAxisLine(false)
             }
 
-            setViewPortOffsets(0f, 0f, 0f, dip(20).toFloat())
+            setViewPortOffsets(0f, 0f, 0f, context.dip(20).toFloat())
 
             setDrawMarkers(false)
             legend.isEnabled = false
@@ -351,10 +349,10 @@ class AssetChartCard : LinearLayout {
             if (percent != null) {
                 growthString += " ($sign${BigDecimalUtil.toPlainString(percent)}%)"
             }
-            growthTextView.textColor = color
+            growthTextView.setTextColor(color)
             growthTextView.text = growthString
         } else {
-            growthTextView.textColor = ContextCompat.getColor(context, R.color.secondary_text)
+            growthTextView.setTextColor(ContextCompat.getColor(context, R.color.secondary_text))
             growthTextView.setText(R.string.no_growth)
         }
 
@@ -459,7 +457,7 @@ class AssetChartCard : LinearLayout {
      */
     fun setLimitLines(limitLines: List<Pair<Float?, String>>) {
         val secondaryColor = ContextCompat.getColor(context, R.color.secondary_text)
-        val dash = dip(4).toFloat()
+        val dash = context.dip(4).toFloat()
         chart.axisLeft.removeAllLimitLines()
         limitLines
                 .asSequence()

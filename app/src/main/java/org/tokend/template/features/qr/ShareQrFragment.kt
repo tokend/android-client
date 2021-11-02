@@ -6,10 +6,10 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import androidx.core.content.FileProvider
-import androidx.appcompat.widget.Toolbar
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.FileProvider
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -18,7 +18,6 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_share_qr.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.doAsync
 import org.tokend.template.R
 import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.qr.logic.QrGenerator
@@ -197,7 +196,7 @@ open class ShareQrFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun saveQrCode(bitmap: Bitmap) {
-        doAsync {
+        Thread {
             val imagesFolder = File(requireContext().cacheDir, "shared")
             try {
                 val borderSize = resources.getDimensionPixelSize(R.dimen.standard_padding)
@@ -225,7 +224,7 @@ open class ShareQrFragment : BaseFragment(), ToolbarProvider {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-        }
+        }.start()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

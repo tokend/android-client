@@ -14,20 +14,13 @@ import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_network_field.*
 import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.browse
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.enabled
-import org.jetbrains.anko.onClick
 import org.tokend.sdk.api.wallets.model.EmailNotVerifiedException
 import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.data.model.AccountRecord
-import org.tokend.template.extensions.getChars
-import org.tokend.template.extensions.hasError
-import org.tokend.template.extensions.onEditorAction
-import org.tokend.template.extensions.setErrorAndFocus
+import org.tokend.template.extensions.*
 import org.tokend.template.features.signin.logic.ResendVerificationEmailUseCase
 import org.tokend.template.features.signin.logic.SignInMethod
 import org.tokend.template.features.signin.logic.SignInUseCase
@@ -68,7 +61,7 @@ class SignInActivity : BaseActivity() {
     private var canSignIn: Boolean = false
         set(value) {
             field = value
-            sign_in_button.enabled = value
+            sign_in_button.isEnabled = value
         }
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
@@ -96,7 +89,7 @@ class SignInActivity : BaseActivity() {
         canSignIn = false
 
         // Does nothing but EC engine warm up.
-        doAsync { Account.random() }
+        Thread { Account.random() }.start()
 
         when (session.lastSignInMethod) {
             SignInMethod.LOCAL_ACCOUNT -> {
@@ -136,7 +129,7 @@ class SignInActivity : BaseActivity() {
             network_field_layout.visibility = View.VISIBLE
             urlConfigManager.get()?.also { network_edit_text.setText(it.apiDomain) }
 
-            scan_qr_button.onClick {
+            scan_qr_button.setOnClickListener {
                 tryOpenQrScanner()
             }
         } else {
@@ -145,20 +138,20 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun initButtons() {
-        sign_in_button.onClick {
+        sign_in_button.setOnClickListener {
             tryToSignIn()
         }
 
-        sign_up_button.onClick {
+        sign_up_button.setOnClickListener {
             Navigator.from(this).openSignUp()
         }
 
-        recovery_button.onClick {
+        recovery_button.setOnClickListener {
             Navigator.from(this).openRecovery(email_edit_text.text.toString())
         }
 
         if (BuildConfig.ENABLE_LOCAL_ACCOUNT_SIGN_IN) {
-            sign_in_with_local_account_button.onClick {
+            sign_in_with_local_account_button.setOnClickListener {
                 openLocalAccountSignIn()
             }
         } else {
@@ -286,7 +279,7 @@ class SignInActivity : BaseActivity() {
                 .apply {
                     if (status == AccountRecord.KycRecoveryStatus.INITIATED) {
                         setNeutralButton(R.string.open_action) { _, _ ->
-                            browse(urlConfigProvider.getConfig().client, true)
+                            browse(urlConfigProvider.getConfig().client)
                         }
                     }
                 }

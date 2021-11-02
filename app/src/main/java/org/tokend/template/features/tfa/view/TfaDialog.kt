@@ -10,15 +10,10 @@ import android.view.WindowManager
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.rengwuxian.materialedittext.MaterialEditText
-import org.jetbrains.anko.find
-import org.jetbrains.anko.layoutInflater
 import org.tokend.sdk.tfa.InvalidOtpException
 import org.tokend.sdk.tfa.TfaVerifier
 import org.tokend.template.R
-import org.tokend.template.extensions.getChars
-import org.tokend.template.extensions.hasError
-import org.tokend.template.extensions.onEditorAction
-import org.tokend.template.extensions.setErrorAndFocus
+import org.tokend.template.extensions.*
 import org.tokend.template.util.errorhandler.ErrorHandler
 import org.tokend.template.view.util.LoadingIndicatorManager
 import java.util.concurrent.ExecutorService
@@ -48,10 +43,10 @@ abstract class TfaDialog(protected val context: Context,
     init {
         val view = context.layoutInflater.inflate(R.layout.dialog_tfa, null)
 
-        progress = view.find(R.id.progress)
-        messageTextView = view.find(R.id.tfa_message_text_view)
-        inputEditText = view.find(R.id.tfa_input_edit_text)
-        inputButtonImageView = view.find(R.id.tfa_input_button_image_view)
+        progress = view.findViewById(R.id.progress)
+        messageTextView = view.findViewById(R.id.tfa_message_text_view)
+        inputEditText = view.findViewById(R.id.tfa_input_edit_text)
+        inputButtonImageView = view.findViewById(R.id.tfa_input_button_image_view)
 
         dialog = AlertDialog.Builder(context, R.style.AlertDialogStyle)
                 .setTitle(R.string.tfa_dialog_title)

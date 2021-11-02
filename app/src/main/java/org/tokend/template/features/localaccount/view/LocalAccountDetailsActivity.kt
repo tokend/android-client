@@ -14,9 +14,9 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_local_account_details.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.dip
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.extensions.dip
 import org.tokend.template.features.localaccount.logic.LocalAccountRetryDecryptor
 import org.tokend.template.features.localaccount.mnemonic.view.MnemonicPhraseDialog
 import org.tokend.template.features.localaccount.model.LocalAccount

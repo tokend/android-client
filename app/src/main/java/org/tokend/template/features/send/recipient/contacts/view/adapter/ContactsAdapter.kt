@@ -2,8 +2,8 @@ package org.tokend.template.features.send.recipient.contacts.view.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import android.view.ViewGroup
-import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.extensions.layoutInflater
 import org.tokend.template.features.send.recipient.contacts.model.ContactRecord
 import org.tokend.template.util.SearchUtil
 import org.tokend.template.view.adapter.base.BaseRecyclerAdapter

@@ -8,8 +8,8 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import org.jetbrains.anko.defaultSharedPreferences
 import org.tokend.template.R
+import org.tokend.template.extensions.defaultSharedPreferences
 import org.tokend.template.logic.credentials.providers.CredentialsProvider
 
 /**

@@ -2,8 +2,8 @@ package org.tokend.template.features.offers.view
 
 import android.view.View
 import android.view.ViewGroup
-import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.extensions.layoutInflater
 import org.tokend.template.view.adapter.base.BaseViewHolder
 import org.tokend.template.view.adapter.base.PaginationRecyclerAdapter
 import org.tokend.template.view.history.HistoryItemView

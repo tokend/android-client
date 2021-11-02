@@ -10,9 +10,9 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_amount_input.*
 import kotlinx.android.synthetic.main.layout_payment_description.*
 import kotlinx.android.synthetic.main.layout_payment_description.view.*
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.layoutInflater
 import org.tokend.template.R
+import org.tokend.template.extensions.dip
+import org.tokend.template.extensions.layoutInflater
 import org.tokend.template.extensions.onEditorAction
 import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.amountscreen.view.AmountInputFragment

@@ -11,11 +11,11 @@ import kotlinx.android.synthetic.main.activity_balance_details.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.childrenSequence
-import org.jetbrains.anko.dip
 import org.tokend.template.BuildConfig
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
+import org.tokend.template.extensions.childrenSequence
+import org.tokend.template.extensions.dip
 import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.features.history.storage.BalanceChangesRepository

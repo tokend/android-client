@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.appbar_with_balance_change_main_data.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.layout_balance_change_main_data.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.onClick
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
 import org.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
@@ -95,7 +94,7 @@ class WithdrawalConfirmationActivity : BaseActivity() {
     }
 
     private fun initConfirmButton() {
-        confirm_button.onClick { confirm() }
+        confirm_button.setOnClickListener { confirm() }
     }
 
     private fun confirm() {

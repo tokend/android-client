@@ -34,3 +34,9 @@ fun Intent.getBigDecimalExtra(key: String, default: BigDecimal): BigDecimal {
 fun Intent.getBigDecimalExtra(key: String): BigDecimal {
     return getBigDecimalExtra(key, BigDecimal.ZERO)
 }
+
+fun Intent.newTask() = this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+fun Intent.singleTop() = this.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+
+fun Intent.clearTop() = this.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

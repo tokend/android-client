@@ -3,8 +3,8 @@ package org.tokend.template.features.tfa.view.confirmation
 import android.content.Context
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
-import org.jetbrains.anko.browse
 import org.tokend.template.R
+import org.tokend.template.extensions.browse
 import org.tokend.template.extensions.clipboardText
 import org.tokend.template.view.ToastManager
 
@@ -56,8 +56,8 @@ class TfaTotpConfirmationDialog(
     }
 
     private fun openAuthenticatorOrGooglePlay(uri: String) {
-        if (!context.browse(uri, newTask = true)) {
-            context.browse(GOOGLE_PLAY_AUTHENTICATOR_URI, newTask = true)
+        if (!context.browse(uri)) {
+            context.browse(GOOGLE_PLAY_AUTHENTICATOR_URI)
         }
     }
 
