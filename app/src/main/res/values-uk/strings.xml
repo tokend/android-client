@@ -480,4 +480,5 @@
     <string name="account_setup_completed">Налаштування облікового запису завершена</string>
     <string name="personal_info_updated">Персональні дані оновлено</string>
     <string name="personal_info_update_request_created">Запит на зміну персональних даних успішно створено</string>
+    <string name="template_rejection_reason">Причина відмови: %1$s</string>
 </resources>

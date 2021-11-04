@@ -484,4 +484,5 @@
     <string name="account_setup_completed">Account setup has been completed</string>
     <string name="personal_info_updated">Personal info updated</string>
     <string name="personal_info_update_request_created">Personal info update request created successfully</string>
+    <string name="template_rejection_reason">Rejection reason: %1$s</string>
 </resources>

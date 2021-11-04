@@ -480,4 +480,5 @@
     <string name="account_setup_completed">Настройка учетной записи завершена</string>
     <string name="personal_info_updated">Персональные данные обновлены</string>
     <string name="personal_info_update_request_created">Запрос на изменния персональных данных успешно создан</string>
+    <string name="template_rejection_reason">Причина отказа: %1$s</string>
 </resources>

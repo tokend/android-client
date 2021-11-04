@@ -59,8 +59,6 @@ class SetKycActivity : BaseActivity() {
             updateChangeAvailability()
         }
 
-    private val isRepositoriesUpdating = MutableLiveData<Boolean>().also { it.value = false }
-
     private var canConfirm = false
 
     private val activeKyc
@@ -140,18 +138,6 @@ class SetKycActivity : BaseActivity() {
                     current_lastname_edit_text.setText(formWithName.lastName)
                 }
             }.addTo(compositeDisposable)
-
-        activeKyc.loadingSubject
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                isRepositoriesUpdating.value = kycRequestState.isLoading || it
-            }.addTo(compositeDisposable)
-
-        activeKyc.errorsSubject
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                errorHandlerFactory.getDefault().handle(it)
-            }.addTo(compositeDisposable)
     }
 
     private fun initButtons() {
@@ -190,12 +176,7 @@ class SetKycActivity : BaseActivity() {
 
     private fun initSwipeRefresh() {
         swipe_refresh.setOnRefreshListener {
-            activeKyc.update()
             kycRequestState.update()
-        }
-
-        isRepositoriesUpdating.observe(this) {
-            swipe_refresh.isRefreshing = it
         }
     }
 
@@ -213,7 +194,8 @@ class SetKycActivity : BaseActivity() {
                     kycRejectReasonTextView.visibility = View.VISIBLE
                     kycStatusTextView.text = getString(R.string.kyc_recovery_rejected_message)
                     kycStatusTextView.setTextColor(ContextCompat.getColor(this, R.color.error))
-                    kycRejectReasonTextView.text = it.rejectReason
+                    kycRejectReasonTextView.text =
+                        getString(R.string.template_rejection_reason, it.rejectReason)
                 }
                 else -> {
                     kycRequestStateInfoLayout.visibility = View.GONE
@@ -233,7 +215,7 @@ class SetKycActivity : BaseActivity() {
             .loadingSubject
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                isRepositoriesUpdating.value = activeKyc.isLoading || it
+                swipe_refresh.isRefreshing = it
             }.addTo(compositeDisposable)
     }
 
