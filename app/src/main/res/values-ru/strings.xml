@@ -468,7 +468,7 @@
     <string name="hint_firstname">Имя</string>
     <string name="hint_lastname">Фамилия</string>
     <string name="selfie">Селфи</string>
-    <string name="my_selfie_is_clear">Мое селфи четкое</string>
+    <string name="my_selfie_is_clear">Мое селфи в порядке</string>
     <string name="take_new_selfie">Сделать новое селфи</string>
     <string name="take_a_shot">Сфотографировать</string>
     <string name="skip_document_capture">Пропустить</string>
