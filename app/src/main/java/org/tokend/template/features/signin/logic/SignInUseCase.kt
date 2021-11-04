@@ -90,8 +90,7 @@ class SignInUseCase(
                         persistence.loadWalletInfoMaybe(login, password)
                     }
                     ?.switchIfEmpty(networkRequest)
-                    ?: networkRequest
-            }
+            } ?: networkRequest
     }
 
     private fun getAccountsFromWalletInfo(): Single<List<Account>> {
