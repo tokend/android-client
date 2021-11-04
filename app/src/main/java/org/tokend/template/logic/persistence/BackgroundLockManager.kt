@@ -3,6 +3,7 @@ package org.tokend.template.logic.persistence
 import android.content.Context
 import android.os.Build
 import org.tokend.template.extensions.defaultSharedPreferences
+import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 
 /**
  * Manages background app lock preference.
@@ -13,7 +14,7 @@ class BackgroundLockManager(context: Context) {
     /**
      * Depends on whether secure storage for password is available.
      *
-     * @see CredentialsPersistor
+     * @see CredentialsPersistence
      */
     val canBackgroundLockBeDisabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
 

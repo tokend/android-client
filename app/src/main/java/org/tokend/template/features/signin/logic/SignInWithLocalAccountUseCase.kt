@@ -10,7 +10,6 @@ import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.KdfAttributes
 import org.tokend.sdk.keyserver.models.LoginParams
 import org.tokend.sdk.keyserver.models.SignerData
-import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.sdk.utils.extentions.isConflict
 import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.RepositoryProvider
@@ -18,10 +17,9 @@ import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import org.tokend.template.features.localaccount.logic.LocalAccountRetryDecryptor
 import org.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.template.features.userkey.logic.UserKeyProvider
-import org.tokend.template.logic.credentials.model.WalletInfoRecord
 import org.tokend.template.logic.Session
+import org.tokend.template.logic.credentials.model.WalletInfoRecord
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
-import org.tokend.template.logic.credentials.persistence.WalletInfoPersistence
 import org.tokend.template.util.cipher.DataCipher
 import org.tokend.wallet.Account
 import retrofit2.HttpException
@@ -29,8 +27,8 @@ import retrofit2.HttpException
 /**
  * Performs sign in with given [Account]:
  * requests authorization result for given [Account],
- * sets up WalletInfoProvider and AccountProvider,
- * clears CredentialsPersistor.
+ * sets up [Session],
+ * clears [CredentialsPersistence].
  *
  * @see PostSignInManager
  */
@@ -39,7 +37,6 @@ class SignInWithLocalAccountUseCase(
     userKeyProvider: UserKeyProvider,
     private val session: Session,
     private val credentialsPersistence: CredentialsPersistence?,
-    private val walletInfoPersistence: WalletInfoPersistence?,
     private val apiProvider: ApiProvider,
     private val repositoryProvider: RepositoryProvider,
     private val connectionStateProvider: (() -> Boolean)?,
@@ -55,7 +52,6 @@ class SignInWithLocalAccountUseCase(
     private var defaultSignerRole: Long = 0
     private lateinit var account: Account
     private lateinit var walletInfo: WalletInfoRecord
-    private lateinit var login: String
 
     fun perform(): Completable {
         return getLocalAccount()
@@ -150,36 +146,29 @@ class SignInWithLocalAccountUseCase(
     private fun getWalletInfo(): Single<WalletInfoRecord> {
         val accountId = account.accountId
 
-        login = accountId.substring(0..3) + "..." +
-                accountId.substring(accountId.length - 4, accountId.length)
-
-        return WalletInfo(
+        return WalletInfoRecord(
+            walletId = "",
             accountId = accountId,
-            email = login,
-            secretSeed = charArrayOf(),
-            walletIdHex = "",
+            login = accountId.substring(0..3) + "..." +
+                    accountId.substring(accountId.length - 4, accountId.length),
             loginParams = LoginParams(
                 "", 0,
                 KdfAttributes("", 0, 0, 0, 0, byteArrayOf())
-            )
+            ),
+            seeds = emptyList()
         ).toSingle()
-            .map {
-                WalletInfoRecord(it)
-            }
     }
 
     private fun updateProviders(): Single<Boolean> {
         SignInUseCase.updateProviders(
             walletInfo = walletInfo,
             accounts = arrayListOf(account),
-            login = login,
             password = charArrayOf(),
             session = session,
             credentialsPersistence = null,
             walletInfoPersistence = null,
             signInMethod = SignInMethod.LOCAL_ACCOUNT
         )
-        walletInfoPersistence?.clearWalletInfo(login)
         credentialsPersistence?.clear(false)
 
         return Single.just(true)

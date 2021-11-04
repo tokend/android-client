@@ -13,7 +13,6 @@ interface WalletInfoPersistence {
      */
     fun saveWalletInfo(
         walletInfo: WalletInfoRecord,
-        login: String,
         password: CharArray
     )
 

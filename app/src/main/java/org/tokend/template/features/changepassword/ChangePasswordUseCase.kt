@@ -137,7 +137,7 @@ class ChangePasswordUseCase(
 
         return KeyServer(signedApi.wallets)
             .updateWalletPassword(
-                currentWalletInfo = currentWalletInfo.toSdkWalletInfo(session.login),
+                currentWalletInfo = currentWalletInfo.toSdkWalletInfo(),
                 currentAccount = currentAccount,
                 currentSigners = currentSigners,
                 defaultSignerRole = defaultSignerRole,
@@ -160,7 +160,7 @@ class ChangePasswordUseCase(
 
         // Update in persistent storage
         credentialsPersistence?.saveCredentials(session.login, newPassword)
-        walletInfoPersistence?.saveWalletInfo(newWalletInfo, session.login, newPassword)
+        walletInfoPersistence?.saveWalletInfo(newWalletInfo, newPassword)
         newWalletInfo.eraseSeeds()
     }
 }

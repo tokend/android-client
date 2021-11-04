@@ -2,7 +2,6 @@ package org.tokend.template.features.signin.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import org.tokend.rx.extensions.toSingle
@@ -16,8 +15,8 @@ import org.tokend.wallet.Account
 /**
  * Performs sign in with given credentials:
  * performs keypair loading and decryption,
- * sets up [WalletInfoProvider] and [AccountProvider], updates [CredentialsPersistence] if it is set.
- * If [CredentialsPersistence] contains saved credentials no network calls will be performed.
+ * sets up [Session], updates [CredentialsPersistence] and [WalletInfoPersistence] if any is set.
+ * If [WalletInfoPersistence] contains saved credentials no network calls will be performed.
  *
  * @see PostSignInManager
  */
@@ -32,9 +31,8 @@ class SignInUseCase(
 ) {
     private lateinit var walletInfo: WalletInfoRecord
     private lateinit var accounts: List<Account>
-    private lateinit var derivedLogin: String
 
-    private var ignoreCredentialsPersistence = false
+    private var ignoreWalletInfoPersistence = false
 
     fun perform(): Completable {
         val scheduler = Schedulers.newThread()
@@ -61,7 +59,7 @@ class SignInUseCase(
                 // In this case it is possible that password had been changed
                 // to the same one, so we can try one more time.
                 if (error is PostSignInManager.AuthMismatchException) {
-                    ignoreCredentialsPersistence = true
+                    ignoreWalletInfoPersistence = true
                 }
             }
             .retry { attempt, error ->
@@ -74,23 +72,13 @@ class SignInUseCase(
         val networkRequest = keyServer
             .getWalletInfo(login, password)
             .toSingle()
-            .doOnSuccess {
-                this.derivedLogin = it.email
-            }
             .map(::WalletInfoRecord)
 
         walletInfoPersistence
-            ?.takeIf { !ignoreCredentialsPersistence }
-            ?.let { persistence ->
-                credentialsPersistence?.getSavedLogin()?.toMaybe()
-                    ?.doOnSuccess { savedLogin ->
-                        this.derivedLogin = savedLogin
-                    }
-                    ?.flatMap {
-                        persistence.loadWalletInfoMaybe(login, password)
-                    }
-                    ?.switchIfEmpty(networkRequest)
-            } ?: networkRequest
+            ?.takeIf { !ignoreWalletInfoPersistence }
+            ?.loadWalletInfoMaybe(login, password)
+            ?.switchIfEmpty(networkRequest)
+            ?: networkRequest
     }
 
     private fun getAccountsFromWalletInfo(): Single<List<Account>> {
@@ -101,8 +89,8 @@ class SignInUseCase(
 
     private fun updateProviders(): Single<Boolean> {
         Companion.updateProviders(
-            walletInfo, accounts, derivedLogin, password,
-            session, credentialsPersistence, walletInfoPersistence, SignInMethod.CREDENTIALS
+            walletInfo, accounts, password, session,
+                credentialsPersistence, walletInfoPersistence, SignInMethod.CREDENTIALS
         )
         return Single.just(true)
     }
@@ -123,20 +111,18 @@ class SignInUseCase(
         fun updateProviders(
             walletInfo: WalletInfoRecord,
             accounts: List<Account>,
-            login: String,
             password: CharArray,
             session: Session,
             credentialsPersistence: CredentialsPersistence?,
             walletInfoPersistence: WalletInfoPersistence?,
             signInMethod: SignInMethod?
         ) {
-            session.login = login
             session.setWalletInfo(walletInfo)
             session.setAccounts(accounts)
             session.signInMethod = signInMethod
 
-            credentialsPersistence?.saveCredentials(login, password)
-            walletInfoPersistence?.saveWalletInfo(walletInfo, login, password)
+            credentialsPersistence?.saveCredentials(walletInfo.login, password)
+            walletInfoPersistence?.saveWalletInfo(walletInfo, password)
         }
     }
 }

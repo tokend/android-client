@@ -100,7 +100,6 @@ class SignUpUseCase(
             SignInUseCase.updateProviders(
                 walletInfo = WalletInfoRecord(walletCreateResult),
                 session = session,
-                login = walletCreateResult.walletData.attributes.email,
                 password = password,
                 accounts = accounts,
                 credentialsPersistence = credentialsPersistence,

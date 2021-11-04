@@ -7,9 +7,6 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.sdk.keyserver.models.KdfAttributes
-import org.tokend.sdk.keyserver.models.LoginParams
-import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.template.data.storage.persistence.MemoryOnlyObjectPersistence
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.localaccount.model.LocalAccount
@@ -67,8 +64,8 @@ class SignInTest {
             walletData.attributes.accountId, session.getWalletInfo()!!.accountId)
         Assert.assertArrayEquals("AccountProvider must hold an actual account",
             rootAccount.secretSeed, session.getAccount()?.secretSeed)
-        Assert.assertNotEquals("WalletInfo is not saved",
-            walletInfoPersistor.loadWalletInfo(session.login, password), null)
+        Assert.assertNotEquals("WalletInfo must be saved for the actual email",
+            walletInfoPersistor.loadWalletInfo(email.toLowerCase(), password), null)
         Assert.assertEquals("Credentials persistor must hold actual email",
             email.toLowerCase(), credentialsPersistor.getSavedLogin()?.toLowerCase())
         Assert.assertArrayEquals("Credentials persistor must hold actual password",
@@ -107,25 +104,16 @@ class SignInTest {
 
         val login = ""
 
-        val dummyWalletInfo = WalletInfoRecord(
-            WalletInfo("", login, "", charArrayOf(),
-                LoginParams("", 0, KdfAttributes("", 0, 0, 0, 0, byteArrayOf())))
-        )
         val dummyPassword = charArrayOf()
         val credentialsPersistor = getDummyCredentialsStorage().apply {
             saveCredentials(login, dummyPassword)
         }
-        val walletInfoPersistor = getDummyWalletInfoStorage().apply {
-            saveWalletInfo(dummyWalletInfo, login, dummyPassword)
-        }
-
 
         val useCase = SignInWithLocalAccountUseCase(
             accountCipher = cipher,
             userKeyProvider = userKeyProvider,
             session = session,
             credentialsPersistence = credentialsPersistor,
-            walletInfoPersistence = walletInfoPersistor,
             repositoryProvider = repositoryProvider,
             apiProvider = apiProvider,
             connectionStateProvider = null,
@@ -188,7 +176,6 @@ class SignInTest {
             userKeyProvider = userKeyProvider,
             session = session,
             credentialsPersistence = null,
-            walletInfoPersistence = null,
             repositoryProvider = repositoryProvider,
             apiProvider = apiProvider,
             connectionStateProvider = null,
@@ -229,20 +216,17 @@ class SignInTest {
     private fun getDummyWalletInfoStorage() = object : WalletInfoPersistence {
         private var walletInfo: WalletInfoRecord? = null
         private var password: CharArray? = null
-        private var login: String? = null
 
         override fun saveWalletInfo(
             walletInfo: WalletInfoRecord,
-            login: String,
             password: CharArray
         ) {
             this.walletInfo = walletInfo
             this.password = password
-            this.login = login
         }
 
         override fun loadWalletInfo(login: String, password: CharArray): WalletInfoRecord?{
-            return walletInfo.takeIf { this.password?.contentEquals(password) == true && this.login == login }
+            return walletInfo.takeIf { this.password?.contentEquals(password) == true && this.walletInfo?.login == login }
         }
 
         override fun clearWalletInfo(login: String) {

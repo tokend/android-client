@@ -9,17 +9,20 @@ import org.tokend.wallet.Account
 
 data class WalletInfoRecord(
     @SerializedName("wallet_id")
-    var walletId: String,
+    val walletId: String,
     @SerializedName("account_id")
     val accountId: String,
+    @SerializedName("login")
+    val login: String,
     @SerializedName("login_params")
-    var loginParams: LoginParams,
+    val loginParams: LoginParams,
     @SerializedName("seeds")
     var seeds: List<CharArray>
 ) {
     constructor(walletInfo: WalletInfo) : this(
         walletId = walletInfo.walletIdHex,
         accountId = walletInfo.accountId,
+        login = walletInfo.email,
         loginParams = walletInfo.loginParams,
         seeds = walletInfo.secretSeeds
     )
@@ -28,6 +31,7 @@ data class WalletInfoRecord(
         accountId = walletCreateResult.walletData.attributes.accountId,
         seeds = walletCreateResult.accounts.map { it.secretSeed!! },
         walletId = walletCreateResult.walletId,
+        login = walletCreateResult.walletData.attributes.email,
         loginParams = walletCreateResult.loginParams
     )
 
@@ -37,7 +41,7 @@ data class WalletInfoRecord(
     fun withoutSeeds(): WalletInfoRecord =
         copy(seeds = emptyList())
 
-    fun toSdkWalletInfo(login: String) = WalletInfo(
+    fun toSdkWalletInfo() = WalletInfo(
         accountId = accountId,
         email = login,
         loginParams = loginParams,

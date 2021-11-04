@@ -19,7 +19,6 @@ class WalletInfoPersistenceImpl(
 
     override fun saveWalletInfo(
         walletInfo: WalletInfoRecord,
-        login: String,
         password: CharArray
     ) {
         val safeWalletInfoBytes = GsonFactory().getBaseGson().toJson(walletInfo.withoutSeeds())
@@ -33,7 +32,7 @@ class WalletInfoPersistenceImpl(
         )
         secureStorage.saveWithPassword(
             data = safeWalletInfoBytes,
-            key = getWalletInfoKey(login),
+            key = getWalletInfoKey(walletInfo.login),
             password = password
         )
     }
