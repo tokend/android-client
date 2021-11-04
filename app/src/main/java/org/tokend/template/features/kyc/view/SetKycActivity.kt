@@ -20,7 +20,7 @@ import org.tokend.template.features.kyc.capture.model.CameraCaptureResult
 import org.tokend.template.features.kyc.capture.model.CameraCaptureTarget
 import org.tokend.template.features.kyc.files.model.LocalFile
 import org.tokend.template.features.kyc.files.util.WaitForFilePickForegroundService
-import org.tokend.template.features.kyc.logic.SetKycUseCase
+import org.tokend.template.features.kyc.logic.UpdateCurrentKycRequestUseCase
 import org.tokend.template.features.kyc.model.ActiveKyc
 import org.tokend.template.features.kyc.model.KycForm
 import org.tokend.template.features.kyc.model.KycFormWithName
@@ -48,6 +48,10 @@ class SetKycActivity : BaseActivity() {
         it.value = null
     }
 
+    private val kycRequestStateLiveData = MutableLiveData<KycRequestState>().also {
+        it.value = null
+    }
+
     private var isLoading: Boolean = false
         set(value) {
             field = value
@@ -55,10 +59,15 @@ class SetKycActivity : BaseActivity() {
             updateChangeAvailability()
         }
 
+    private val isRepositoriesUpdating = MutableLiveData<Boolean>().also { it.value = false }
+
     private var canConfirm = false
 
     private val activeKyc
         get() = repositoryProvider.activeKyc()
+
+    private val kycRequestState
+        get() = repositoryProvider.kycRequestState()
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_set_kyc)
@@ -67,6 +76,11 @@ class SetKycActivity : BaseActivity() {
         initTextFields()
         initFilePicker()
         initButtons()
+        initSwipeRefresh()
+        subscribeToKycRequestState()
+        subscribeToKyc()
+
+        kycRequestState.updateIfNotFresh()
 
         ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
     }
@@ -90,20 +104,6 @@ class SetKycActivity : BaseActivity() {
             pickAvatar()
         }
 
-        activeKyc.itemSubject
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                avatar.value = ProfileUtil.getAvatarUrl(
-                    it,
-                    urlConfigProvider
-                )?.let { url -> AvatarFile.Remote(url) }
-
-                (activeKyc.itemFormData as? KycFormWithName)?.let { formWithName ->
-                    current_firstname_edit_text.setText(formWithName.firstName)
-                    current_lastname_edit_text.setText(formWithName.lastName)
-                }
-            }.addTo(compositeDisposable)
-
         avatar.observe(this) {
             ImageViewUtil.loadImageCircle(
                 avatarImageView,
@@ -124,6 +124,34 @@ class SetKycActivity : BaseActivity() {
                 }
             )
         }
+    }
+
+    private fun subscribeToKyc() {
+        activeKyc.itemSubject
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                avatar.value = ProfileUtil.getAvatarUrl(
+                    it,
+                    urlConfigProvider
+                )?.let { url -> AvatarFile.Remote(url) }
+
+                (activeKyc.itemFormData as? KycFormWithName)?.let { formWithName ->
+                    current_firstname_edit_text.setText(formWithName.firstName)
+                    current_lastname_edit_text.setText(formWithName.lastName)
+                }
+            }.addTo(compositeDisposable)
+
+        activeKyc.loadingSubject
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                isRepositoriesUpdating.value = kycRequestState.isLoading || it
+            }.addTo(compositeDisposable)
+
+        activeKyc.errorsSubject
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                errorHandlerFactory.getDefault().handle(it)
+            }.addTo(compositeDisposable)
     }
 
     private fun initButtons() {
@@ -158,6 +186,55 @@ class SetKycActivity : BaseActivity() {
                     1 -> pickAvatarFromGallery()
                 }
             }
+    }
+
+    private fun initSwipeRefresh() {
+        swipe_refresh.setOnRefreshListener {
+            activeKyc.update()
+            kycRequestState.update()
+        }
+
+        isRepositoriesUpdating.observe(this) {
+            swipe_refresh.isRefreshing = it
+        }
+    }
+
+    private fun subscribeToKycRequestState() {
+        kycRequestStateLiveData.observe(this) {
+            when {
+                it != null && it is KycRequestState.Submitted.Pending<*> -> {
+                    kycRequestStateInfoLayout.visibility = View.VISIBLE
+                    kycRejectReasonTextView.visibility = View.GONE
+                    kycStatusTextView.text = getString(R.string.kyc_recovery_pending_message)
+                    kycStatusTextView.setTextColor(ContextCompat.getColor(this, R.color.orange))
+                }
+                it != null && it is KycRequestState.Submitted.Rejected<*> -> {
+                    kycRequestStateInfoLayout.visibility = View.VISIBLE
+                    kycRejectReasonTextView.visibility = View.VISIBLE
+                    kycStatusTextView.text = getString(R.string.kyc_recovery_rejected_message)
+                    kycStatusTextView.setTextColor(ContextCompat.getColor(this, R.color.error))
+                    kycRejectReasonTextView.text = it.rejectReason
+                }
+                else -> {
+                    kycRequestStateInfoLayout.visibility = View.GONE
+                    kycRejectReasonTextView.visibility = View.GONE
+                }
+            }
+        }
+
+        kycRequestState
+            .itemSubject
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                kycRequestStateLiveData.value = it
+            }.addTo(compositeDisposable)
+
+        kycRequestState
+            .loadingSubject
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                isRepositoriesUpdating.value = activeKyc.isLoading || it
+            }.addTo(compositeDisposable)
     }
 
     private fun captureAvatarFromCamera() {
@@ -204,7 +281,7 @@ class SetKycActivity : BaseActivity() {
 
         SoftInputUtil.hideSoftInput(this)
 
-        SetKycUseCase(
+        UpdateCurrentKycRequestUseCase(
             form,
             walletInfoProvider,
             accountProvider,
@@ -233,7 +310,7 @@ class SetKycActivity : BaseActivity() {
     }
 
     private fun onFormSubmitted(form: KycForm) {
-        if (repositoryProvider.kycRequestState().item is KycRequestState.Submitted.Approved<*>) {
+        if (kycRequestState.item is KycRequestState.Submitted.Approved<*>) {
             toastManager.long(R.string.personal_info_updated)
             repositoryProvider
                 .activeKyc()

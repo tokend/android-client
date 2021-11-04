@@ -73,6 +73,8 @@ class KycRequestStateRepository(
                     when (state) {
                         RequestState.REJECTED ->
                             KycRequestState.Submitted.Rejected(kycForm, requestId, roleToSet, rejectReason)
+                        RequestState.PERMANENTLY_REJECTED->
+                            KycRequestState.Submitted.PermanentlyRejected(kycForm, requestId, roleToSet, rejectReason)
                         RequestState.APPROVED ->
                             KycRequestState.Submitted.Approved(kycForm, requestId, roleToSet)
                         else ->

@@ -29,7 +29,7 @@ import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.*
 import java.util.*
 
-class SetKycUseCase(
+class SubmitKycRequestUseCase(
     private val form: KycForm,
     private val walletInfoProvider: WalletInfoProvider,
     private val accountProvider: AccountProvider,
