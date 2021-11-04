@@ -146,7 +146,8 @@ class VotingTest {
 
     private fun createPoll(repositoryProvider: RepositoryProvider,
                            apiProvider: ApiProvider,
-                           session: Session) {
+                           session: Session
+    ) {
         setKeyValueTasks(repositoryProvider)
 
         val netParams = repositoryProvider

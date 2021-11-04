@@ -77,9 +77,9 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
     // region Init
     private fun initNavigation() {
-        val email = walletInfoProvider.getWalletInfo()?.email
+        val login = session.login
 
-        val placeholderValue = (email ?: getString(R.string.app_name)).toUpperCase()
+        val placeholderValue = (login ?: getString(R.string.app_name)).toUpperCase()
         val placeholderSize =
                 resources.getDimensionPixelSize(R.dimen.material_drawer_item_profile_icon_width)
         val placeholderBackground =
@@ -134,8 +134,8 @@ class MainActivity : BaseActivity(), WalletEventsListener {
                 .withIcon(R.drawable.ic_settings)
                 .also { items[GeneralSettingsFragment.ID] = it }
 
-        val accountHeader = getHeaderInstance(email)
-        val landscapeAccountHeader = getHeaderInstance(email)
+        val accountHeader = getHeaderInstance(login)
+        val landscapeAccountHeader = getHeaderInstance(login)
 
         navigationDrawer = initDrawerBuilder(items, accountHeader).build()
         landscapeNavigationDrawer = initDrawerBuilder(items, landscapeAccountHeader).buildView()
@@ -278,10 +278,10 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     // endregion
 
     private fun updateProfileHeader() {
-        val email = walletInfoProvider.getWalletInfo()?.email
+        val login = session.login
         val activeKyc = activeKycRepository.item
 
-        val h = getProfileHeaderItem(email, activeKyc)
+        val h = getProfileHeaderItem(login, activeKyc)
         accountHeader?.updateProfile(h)
         landscapeAccountHeader?.updateProfile(h)
     }

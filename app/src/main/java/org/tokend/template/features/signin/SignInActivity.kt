@@ -95,7 +95,7 @@ class SignInActivity : BaseActivity() {
             SignInMethod.LOCAL_ACCOUNT -> {
                 openLocalAccountSignIn()
             }
-            else -> credentialsPersistence.getSavedEmail()?.let {
+            else -> credentialsPersistence.getSavedLogin()?.let {
                 Navigator.from(this).toUnlock()
             }
         }

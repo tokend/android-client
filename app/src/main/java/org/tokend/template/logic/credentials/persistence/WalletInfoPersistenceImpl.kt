@@ -2,63 +2,112 @@ package org.tokend.template.logic.credentials.persistence
 
 import android.content.SharedPreferences
 import org.tokend.sdk.factory.GsonFactory
-import org.tokend.sdk.keyserver.models.WalletInfo
+import org.tokend.template.logic.credentials.model.WalletInfoRecord
 import org.tokend.template.logic.persistence.SecureStorage
-import org.tokend.wallet.utils.toByteArray
-import org.tokend.wallet.utils.toCharArray
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.DataInputStream
+import java.io.DataOutputStream
 
 /**
  * Represents secure walletInfo storage based on SharedPreferences.
  */
 class WalletInfoPersistenceImpl(
-        preferences: SharedPreferences
+    preferences: SharedPreferences
 ) : WalletInfoPersistence {
     private val secureStorage = SecureStorage(preferences)
 
-    override fun saveWalletInfo(data: WalletInfo, password: CharArray) {
-        val nonSensitiveData =
-                GsonFactory().getBaseGson().toJson(
-                        data.copy(secretSeed = CharArray(0))
-                ).toByteArray()
-        val sensitiveData = data.secretSeed.toByteArray()
-        secureStorage.saveWithPassword(sensitiveData, SEED_KEY, password)
-        secureStorage.saveWithPassword(nonSensitiveData, WALLET_INFO_KEY, password)
+    override fun saveWalletInfo(
+        walletInfo: WalletInfoRecord,
+        password: CharArray
+    ) {
+        val safeWalletInfoBytes = GsonFactory().getBaseGson().toJson(walletInfo.withoutSeeds())
+            .toByteArray(Charsets.UTF_8)
+        val seedsBytes = serializeSeeds(walletInfo.seeds)
+
+        secureStorage.saveWithPassword(
+            data = seedsBytes,
+            key = getSeedsKeyKey(walletInfo.walletId),
+            password = password
+        )
+        secureStorage.saveWithPassword(
+            data = safeWalletInfoBytes,
+            key = getWalletInfoKey(walletInfo.login),
+            password = password
+        )
     }
 
+    override fun loadWalletInfo(login: String, password: CharArray): WalletInfoRecord? {
+        val safeWalletInfoBytes = secureStorage.loadWithPassword(
+            key = getWalletInfoKey(login),
+            password = password
+        ) ?: return null
 
+        val walletInfo = GsonFactory().getBaseGson().fromJson(
+            String(safeWalletInfoBytes, Charsets.UTF_8),
+            WalletInfoRecord::class.java
+        )
 
-    override fun loadWalletInfo(email: String, password: CharArray): WalletInfo? {
-        try {
-            val walletInfoBytes = secureStorage.loadWithPassword(WALLET_INFO_KEY, password)
-                    ?: return null
-            val walletInfo = GsonFactory().getBaseGson()
-                    .fromJson(String(walletInfoBytes), WalletInfo::class.java)
-                    .also {
-                        // Will fall with NPE on failed parsing.
-                        it.accountId.length
-                    }
+        val seeds = secureStorage.loadWithPassword(
+            key = getSeedsKeyKey(walletInfo.walletId),
+            password = password
+        )?.let(this::deserializeSeeds) ?: return null
 
-            val seedBytes = secureStorage.loadWithPassword(SEED_KEY, password)
-                    ?: return null
-            walletInfo.secretSeed = seedBytes.toCharArray()
-            seedBytes.fill(0)
+        walletInfo.seeds = seeds
 
-            return walletInfo
-                    ?.takeIf { email == it.email }
+        return walletInfo
+    }
 
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
+    override fun clearWalletInfo(login: String) {
+        secureStorage.clear(getWalletInfoKey(login))
+    }
+
+    private fun getWalletInfoKey(login: String): String {
+        return WALLET_INFO_KEY_PREFIX + "_" + login.hashCode()
+    }
+
+    private fun getSeedsKeyKey(walletId: String): String {
+        return SEEDS_KEY_PREFIX + "_" + walletId.hashCode()
+    }
+
+    private fun serializeSeeds(seeds: List<CharArray>): ByteArray {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        DataOutputStream(byteArrayOutputStream).apply {
+            use {
+                writeByte(SEEDS_SERIALIZATION_VERSION)
+                seeds.forEach { seed ->
+                    writeInt(seed.size)
+                    seed.forEach { writeChar(it.toInt()) }
+                }
+            }
         }
+        return byteArrayOutputStream.toByteArray()
     }
 
-    override fun clear() {
-        secureStorage.clear(SEED_KEY)
-        secureStorage.clear(WALLET_INFO_KEY)
+    private fun deserializeSeeds(serialized: ByteArray): List<CharArray> {
+        val result = mutableListOf<CharArray>()
+        val byteArrayInputStream = ByteArrayInputStream(serialized)
+        DataInputStream(byteArrayInputStream).apply {
+            use {
+                require(readByte() == SEEDS_SERIALIZATION_VERSION.toByte()) {
+                    "Unknown seeds serialization version"
+                }
+
+                while (available() > 0) {
+                    val buffer = CharArray(readInt())
+                    (buffer.indices).forEach { i ->
+                        buffer[i] = readChar()
+                    }
+                    result.add(buffer)
+                }
+            }
+        }
+        return result
     }
 
     companion object {
-        private const val SEED_KEY = "(◕‿◕✿)"
-        private const val WALLET_INFO_KEY = "ಠ_ಠ"
+        private const val SEEDS_SERIALIZATION_VERSION = 1
+        private const val SEEDS_KEY_PREFIX = "(◕‿◕✿)"
+        private const val WALLET_INFO_KEY_PREFIX = "ಠ_ಠ"
     }
 }

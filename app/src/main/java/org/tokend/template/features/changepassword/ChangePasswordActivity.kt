@@ -172,7 +172,8 @@ class ChangePasswordActivity : BaseActivity() {
                 walletInfoProvider,
                 repositoryProvider,
                 credentialsPersistence,
-                walletInfoPersistence
+                walletInfoPersistence,
+                session
         )
                 .perform()
                 .compose(ObservableTransformers.defaultSchedulersCompletable())
@@ -210,10 +211,10 @@ class ChangePasswordActivity : BaseActivity() {
             exception: NeedTfaException,
             verifierInterface: TfaVerifier.Interface,
     ) {
-        walletInfoProvider.getWalletInfo()?.email?.let { email ->
+        if(session.login.isNotEmpty()){
             val passwordChars = current_password_edit_text.text.getChars()
             Thread {
-                val otp = PasswordTfaOtpGenerator().generate(exception, email, passwordChars)
+                val otp = PasswordTfaOtpGenerator().generate(exception, session.login, passwordChars)
 
                 if (!isFinishing) {
                     verifierInterface.verify(otp,

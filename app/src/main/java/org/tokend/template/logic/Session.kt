@@ -10,10 +10,12 @@ import org.tokend.template.logic.persistence.SessionInfoStorage
  * Holds session data
  */
 class Session(
-        walletInfoProvider: WalletInfoProvider,
-        accountProvider: AccountProvider,
-        private val sessionInfoStorage: SessionInfoStorage? = null
+    walletInfoProvider: WalletInfoProvider,
+    accountProvider: AccountProvider,
+    private val sessionInfoStorage: SessionInfoStorage? = null
 ) : WalletInfoProvider by walletInfoProvider, AccountProvider by accountProvider {
+    val login: String
+        get() = getWalletInfo()?.login ?: ""
 
     /**
      * @returns true if session is expired and so sign out is required
@@ -51,6 +53,6 @@ class Session(
         signInMethod = null
 
         setWalletInfo(null)
-        setAccount(null)
+        setAccounts(emptyList())
     }
 }

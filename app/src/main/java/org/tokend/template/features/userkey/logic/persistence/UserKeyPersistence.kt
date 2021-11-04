@@ -1,7 +1,7 @@
 package org.tokend.template.features.userkey.logic.persistence
 
 import org.tokend.crypto.ecdsa.erase
-import org.tokend.template.logic.credentials.CredentialsProvider
+import org.tokend.template.logic.credentials.providers.CredentialsProvider
 
 interface UserKeyPersistence : CredentialsProvider {
     fun save(key: CharArray)

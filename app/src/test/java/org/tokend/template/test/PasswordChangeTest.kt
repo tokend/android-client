@@ -33,7 +33,7 @@ class PasswordChangeTest {
                                        verifierInterface: TfaVerifier.Interface) {
                 Assert.assertEquals(TfaFactor.Type.PASSWORD, exception.factorType)
                 verifierInterface.verify(PasswordTfaOtpGenerator().generate(
-                        exception, session.getWalletInfo()!!.email, password
+                        exception, session.login, password
                 ))
             }
         }
@@ -54,7 +54,8 @@ class PasswordChangeTest {
                 session,
                 repositoryProvider,
                 null,
-                null
+                null,
+                session
         )
 
         useCase.perform().blockingAwait()
@@ -87,7 +88,7 @@ class PasswordChangeTest {
 
         // Check that wallet info has been updated to the actual.
         Assert.assertNotEquals("Wallet info in WalletInfoProvider must be updated",
-                originalWalletData.id, session.getWalletInfo()!!.walletIdHex)
+                originalWalletData.id, session.getWalletInfo()!!.walletId)
 
         // Check that we after all can sign in with new password.
         Assert.assertNotNull("Sign in with a new password must complete",

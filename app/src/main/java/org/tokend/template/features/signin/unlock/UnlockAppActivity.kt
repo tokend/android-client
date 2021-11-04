@@ -51,22 +51,22 @@ class UnlockAppActivity : BaseActivity() {
             unlock_button.isEnabled = value
         }
 
-    private lateinit var email: String
+    private lateinit var login: String
     private var lastEnteredPassword: CharArray? = null
     private var lastTimePasswordWasEnteredManually: Boolean = false
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_unlock_app)
 
-        val email = credentialsPersistence.getSavedEmail()
-        if (email == null) {
+        val login = credentialsPersistence.getSavedLogin()
+        if (login == null) {
             errorHandlerFactory.getDefault().handle(
                     IllegalStateException("No saved email, unlock is not possible")
             )
             (application as? App)?.signOut(this)
             return
         }
-        this.email = email
+        this.login = login
 
         initViews()
 
@@ -80,8 +80,8 @@ class UnlockAppActivity : BaseActivity() {
     private fun initViews() {
         initButtons()
         initErrorEmptyView()
-        user_email_text.text = email
-        ProfileUtil.setAvatar(user_logo, email, urlConfigProvider, activeKycPersistence.loadItem())
+        user_email_text.text = login
+        ProfileUtil.setAvatar(user_logo, login, urlConfigProvider, activeKycPersistence.loadItem())
     }
 
     private fun initButtons() {
@@ -107,7 +107,7 @@ class UnlockAppActivity : BaseActivity() {
         }
 
         recovery_button.setOnClickListener {
-            Navigator.from(this).openRecovery(email)
+            Navigator.from(this).openRecovery(login)
         }
 
         fingerprint_button.visibility =
@@ -160,7 +160,7 @@ class UnlockAppActivity : BaseActivity() {
         password_layout.visibility = View.INVISIBLE
         error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
             lastEnteredPassword?.also {
-                unlock(email, it, isPasswordEnteredManually = lastTimePasswordWasEnteredManually)
+                unlock(login, it, isPasswordEnteredManually = lastTimePasswordWasEnteredManually)
             }
         }
         sign_out_button.visibility = View.VISIBLE
@@ -195,13 +195,13 @@ class UnlockAppActivity : BaseActivity() {
 
         if (canUnlockWithPassword) {
             SoftInputUtil.hideSoftInput(this)
-            unlock(email, password_edit_text.text.getChars(), isPasswordEnteredManually = true)
+            unlock(login, password_edit_text.text.getChars(), isPasswordEnteredManually = true)
         }
     }
 
     private fun performAutoUnlock() {
         val savedPassword = credentialsPersistence.getSavedPassword()!!
-        unlock(email, savedPassword, isPasswordEnteredManually = false)
+        unlock(login, savedPassword, isPasswordEnteredManually = false)
     }
 
     private fun unlock(email: String, password: CharArray, isPasswordEnteredManually: Boolean) {

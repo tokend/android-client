@@ -210,7 +210,6 @@ class LocalAccountSignInActivity : BaseActivity() {
                 pinCodeProvider,
                 session,
                 credentialsPersistence,
-                walletInfoPersistence,
                 apiProvider,
                 repositoryProvider,
                 connectionStateUtil::isOnline,

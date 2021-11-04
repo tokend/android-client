@@ -7,7 +7,7 @@ class AccountProviderFactory {
         return AccountProviderImpl()
     }
 
-    fun createAccountProvider(account: Account?): AccountProvider {
-        return createAccountProvider().apply { setAccount(account) }
+    fun createAccountProvider(accounts: List<Account>): AccountProvider {
+        return createAccountProvider().apply { setAccounts(accounts) }
     }
 }

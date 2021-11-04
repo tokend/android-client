@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import org.tokend.template.R
 import org.tokend.template.extensions.defaultSharedPreferences
-import org.tokend.template.logic.credentials.CredentialsProvider
+import org.tokend.template.logic.credentials.providers.CredentialsProvider
 
 /**
  * Manages biometric auth request to obtain saved credentials.
@@ -27,8 +27,8 @@ class BiometricAuthManager {
     private var userCancelCallback: (() -> Unit)? = null
 
     constructor(
-            activity: FragmentActivity,
-            credentialsProvider: CredentialsProvider,
+        activity: FragmentActivity,
+        credentialsProvider: CredentialsProvider,
     ) {
         this.context = activity
         this.appSharedPreferences = this.context.defaultSharedPreferences
@@ -41,8 +41,8 @@ class BiometricAuthManager {
     }
 
     constructor(
-            fragment: Fragment,
-            credentialsProvider: CredentialsProvider,
+        fragment: Fragment,
+        credentialsProvider: CredentialsProvider,
     ) {
         this.context = fragment.requireContext()
         this.appSharedPreferences = this.context.defaultSharedPreferences
@@ -118,8 +118,8 @@ class BiometricAuthManager {
     private fun getAuthCallback(credentialsProvider: CredentialsProvider) =
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    val (email, password) = credentialsProvider.getCredentials()
-                    successCallback?.invoke(email, password)
+                    val (login, password) = credentialsProvider.getCredentials()
+                    successCallback?.invoke(login, password)
                 }
 
                 override fun onAuthenticationError(

@@ -2,30 +2,36 @@ package org.tokend.template.logic.credentials.persistence
 
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.toMaybe
-import org.tokend.sdk.keyserver.models.WalletInfo
+import org.tokend.template.logic.credentials.model.WalletInfoRecord
 
 interface WalletInfoPersistence {
     /**
-     * @param data [WalletInfo] with filled [WalletInfo.secretSeed] field.
+     * Saves given [walletInfo] by [login] and encrypts it with [password]
+     *
+     * @param walletInfo [WalletInfoRecord] with filled [WalletInfoRecord.seeds] field.
      * @param password password for encryption
      */
-    fun saveWalletInfo(data: WalletInfo, password: CharArray)
+    fun saveWalletInfo(
+        walletInfo: WalletInfoRecord,
+        password: CharArray
+    )
 
     /**
-     * @return saved data, null if there is no saved data or password is incorrect
+     * @return saved data, null if there is no saved data for [login]
+     * or [password] is incorrect
      */
-    fun loadWalletInfo(email: String, password: CharArray): WalletInfo?
+    fun loadWalletInfo(login: String, password: CharArray): WalletInfoRecord?
 
     /**
      * @see loadWalletInfo
      */
-    fun loadWalletInfoMaybe(email: String, password: CharArray): Maybe<WalletInfo> = Maybe.defer {
-        loadWalletInfo(email, password).toMaybe()
-    }
+    fun loadWalletInfoMaybe(login: String, password: CharArray): Maybe<WalletInfoRecord> =
+        Maybe.defer {
+            loadWalletInfo(login, password).toMaybe()
+        }
 
     /**
      * Clears stored data
      */
-    fun clear()
-
+    fun clearWalletInfo(login: String)
 }
