@@ -141,7 +141,7 @@ class PaymentsTest {
                 txManager
         ).perform().blockingAwait()
 
-        Thread.sleep(500)
+        Thread.sleep(2000)
 
         repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
 

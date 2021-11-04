@@ -178,7 +178,7 @@ class WithdrawTest {
         Assert.assertEquals("Result balance must be lower than the initial one by withdrawal amount",
                 0, currentBalance.compareTo(expectedBalance))
 
-        Thread.sleep(500)
+        Thread.sleep(2000)
 
         val historyRepository = repositoryProvider.balanceChanges(request.balanceId)
         historyRepository.updateIfNotFreshDeferred().blockingAwait()
@@ -259,7 +259,7 @@ class WithdrawTest {
                 TxManager(apiProvider)
         ).perform().blockingAwait()
 
-        Thread.sleep(500)
+        Thread.sleep(2000)
 
         repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
 

@@ -5,14 +5,14 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.factory.JsonApiToolsProvider
-import org.tokend.template.features.assets.model.SimpleAsset
-import org.tokend.template.features.history.model.details.BalanceChangeCause
 import org.tokend.template.di.providers.*
+import org.tokend.template.features.assets.model.SimpleAsset
+import org.tokend.template.features.fees.logic.FeeManager
+import org.tokend.template.features.history.model.details.BalanceChangeCause
 import org.tokend.template.features.offers.logic.CancelOfferUseCase
 import org.tokend.template.features.offers.logic.ConfirmOfferRequestUseCase
 import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import org.tokend.template.features.offers.model.OfferRecord
-import org.tokend.template.features.fees.logic.FeeManager
 import org.tokend.template.logic.Session
 import org.tokend.template.logic.TxManager
 import org.tokend.wallet.TransactionBuilder
@@ -107,10 +107,7 @@ class OffersTest {
 
         val offersRepository = repositoryProvider.offers(false)
 
-        Assert.assertFalse("Offers repository must be invalidated after offer submitting",
-                offersRepository.isFresh)
-
-        Thread.sleep(500)
+        Thread.sleep(2000)
 
         offersRepository.updateIfNotFreshDeferred().blockingAwait()
 
@@ -172,7 +169,7 @@ class OffersTest {
 
         val offersRepository = repositoryProvider.offers(false)
 
-        Thread.sleep(500)
+        Thread.sleep(2000)
 
         offersRepository.updateIfNotFreshDeferred().blockingAwait()
 
@@ -190,7 +187,7 @@ class OffersTest {
         Assert.assertTrue("Offers repository must be empty after the only offer cancellation",
                 offersRepository.itemsList.isEmpty())
 
-        Thread.sleep(500)
+        Thread.sleep(2000)
 
         repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
 
@@ -236,7 +233,7 @@ class OffersTest {
 
         val offersRepository = repositoryProvider.offers(false)
 
-        Thread.sleep(500)
+        Thread.sleep(2000)
 
         offersRepository.updateIfNotFreshDeferred().blockingAwait()
 
@@ -244,7 +241,7 @@ class OffersTest {
 
         submitBuyOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider, offerToCancel)
 
-        Thread.sleep(500)
+        Thread.sleep(2000)
 
         offersRepository.updateIfNotFreshDeferred().blockingAwait()
 

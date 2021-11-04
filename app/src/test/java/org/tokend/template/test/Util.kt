@@ -2,6 +2,7 @@ package org.tokend.template.test
 
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.v3.assets.params.AssetsPageParams
 import org.tokend.sdk.api.v3.requests.model.RequestState
 import org.tokend.sdk.api.v3.requests.params.AssetRequestPageParams
 import org.tokend.sdk.factory.GsonFactory
@@ -9,7 +10,6 @@ import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.sdk.utils.extentions.bitmask
 import org.tokend.sdk.utils.extentions.decodeHex
 import org.tokend.sdk.utils.extentions.encodeHexString
-import org.tokend.sdk.utils.extentions.has
 import org.tokend.template.di.providers.*
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
 import org.tokend.template.features.signin.logic.PostSignInManager
@@ -234,13 +234,11 @@ object Util {
                 apiProvider.getApi()
                         .v3
                         .assets
-                        .get()
+                        .get(params = AssetsPageParams(policies = setOf(AssetPolicy.STATS_QUOTE_ASSET)))
                         .execute()
                         .get()
                         .items
-                        .any {
-                            it.policies.has(AssetPolicy.STATS_QUOTE_ASSET.value)
-                        }
+                        .isNotEmpty()
 
         val assetDetailsJson = GsonFactory().getBaseGson().toJson(mapOf(
                 "name" to "$code token",
