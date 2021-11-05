@@ -476,7 +476,6 @@
     <string name="pick_from_gallery">Выбрать из галереи</string>
     <string name="action_submit">Подтвердить</string>
     <string name="waiting_for_file_progress">Ожидание файла</string>
-    <string name="waiting_for_kyc_approval_message">Ваша учетная запись будет активирована через мгновение…</string>
     <string name="account_setup_completed">Настройка учетной записи завершена</string>
     <string name="personal_info_updated">Персональные данные обновлены</string>
     <string name="personal_info_update_request_created">Запрос на изменния персональных данных успешно создан</string>

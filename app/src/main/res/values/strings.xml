@@ -480,7 +480,6 @@
     <string name="pick_from_gallery">Pick from gallery</string>
     <string name="action_submit">Submit</string>
     <string name="waiting_for_file_progress">Waiting for file…</string>
-    <string name="waiting_for_kyc_approval_message">Your account will be enabled in a moment…</string>
     <string name="account_setup_completed">Account setup has been completed</string>
     <string name="personal_info_updated">Personal info updated</string>
     <string name="personal_info_update_request_created">Personal info update request created successfully</string>

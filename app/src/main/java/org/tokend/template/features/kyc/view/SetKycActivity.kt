@@ -48,10 +48,6 @@ class SetKycActivity : BaseActivity() {
         it.value = null
     }
 
-    private val kycRequestStateLiveData = MutableLiveData<KycRequestState>().also {
-        it.value = null
-    }
-
     private var isLoading: Boolean = false
         set(value) {
             field = value
@@ -181,34 +177,30 @@ class SetKycActivity : BaseActivity() {
     }
 
     private fun subscribeToKycRequestState() {
-        kycRequestStateLiveData.observe(this) {
-            when {
-                it != null && it is KycRequestState.Submitted.Pending<*> -> {
-                    kycRequestStateInfoLayout.visibility = View.VISIBLE
-                    kycRejectReasonTextView.visibility = View.GONE
-                    kycStatusTextView.text = getString(R.string.kyc_recovery_pending_message)
-                    kycStatusTextView.setTextColor(ContextCompat.getColor(this, R.color.orange))
-                }
-                it != null && it is KycRequestState.Submitted.Rejected<*> -> {
-                    kycRequestStateInfoLayout.visibility = View.VISIBLE
-                    kycRejectReasonTextView.visibility = View.VISIBLE
-                    kycStatusTextView.text = getString(R.string.kyc_recovery_rejected_message)
-                    kycStatusTextView.setTextColor(ContextCompat.getColor(this, R.color.error))
-                    kycRejectReasonTextView.text =
-                        getString(R.string.template_rejection_reason, it.rejectReason)
-                }
-                else -> {
-                    kycRequestStateInfoLayout.visibility = View.GONE
-                    kycRejectReasonTextView.visibility = View.GONE
-                }
-            }
-        }
-
         kycRequestState
             .itemSubject
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                kycRequestStateLiveData.value = it
+                when {
+                    it != null && it is KycRequestState.Submitted.Pending<*> -> {
+                        kycRequestStateInfoLayout.visibility = View.VISIBLE
+                        kycRejectReasonTextView.visibility = View.GONE
+                        kycStatusTextView.text = getString(R.string.kyc_recovery_pending_message)
+                        kycStatusTextView.setTextColor(ContextCompat.getColor(this, R.color.orange))
+                    }
+                    it != null && it is KycRequestState.Submitted.Rejected<*> -> {
+                        kycRequestStateInfoLayout.visibility = View.VISIBLE
+                        kycRejectReasonTextView.visibility = View.VISIBLE
+                        kycStatusTextView.text = getString(R.string.kyc_recovery_rejected_message)
+                        kycStatusTextView.setTextColor(ContextCompat.getColor(this, R.color.error))
+                        kycRejectReasonTextView.text =
+                            getString(R.string.template_rejection_reason, it.rejectReason)
+                    }
+                    else -> {
+                        kycRequestStateInfoLayout.visibility = View.GONE
+                        kycRejectReasonTextView.visibility = View.GONE
+                    }
+                }
             }.addTo(compositeDisposable)
 
         kycRequestState
@@ -216,6 +208,13 @@ class SetKycActivity : BaseActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 swipe_refresh.isRefreshing = it
+            }.addTo(compositeDisposable)
+
+        kycRequestState
+            .errorsSubject
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                errorHandlerFactory.getDefault().handle(it)
             }.addTo(compositeDisposable)
     }
 
