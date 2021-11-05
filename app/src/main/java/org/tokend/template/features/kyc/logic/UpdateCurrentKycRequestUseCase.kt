@@ -12,6 +12,7 @@ import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.kyc.files.model.LocalFile
 import org.tokend.template.features.kyc.model.KycForm
 import org.tokend.template.features.kyc.model.KycRequestState
+import org.tokend.template.features.kyc.storage.KycRequestStateRepository
 import org.tokend.template.logic.TxManager
 
 /**
