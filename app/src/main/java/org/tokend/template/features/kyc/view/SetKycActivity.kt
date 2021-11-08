@@ -21,10 +21,7 @@ import org.tokend.template.features.kyc.capture.model.CameraCaptureTarget
 import org.tokend.template.features.kyc.files.model.LocalFile
 import org.tokend.template.features.kyc.files.util.WaitForFilePickForegroundService
 import org.tokend.template.features.kyc.logic.UpdateCurrentKycRequestUseCase
-import org.tokend.template.features.kyc.model.ActiveKyc
-import org.tokend.template.features.kyc.model.KycForm
-import org.tokend.template.features.kyc.model.KycFormWithName
-import org.tokend.template.features.kyc.model.KycRequestState
+import org.tokend.template.features.kyc.model.*
 import org.tokend.template.logic.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ProfileUtil
@@ -57,11 +54,11 @@ class SetKycActivity : BaseActivity() {
 
     private var canConfirm = false
 
-    private val activeKyc
-        get() = repositoryProvider.activeKyc()
-
     private val kycRequestState
         get() = repositoryProvider.kycRequestState()
+
+    private val activeKyc
+        get() = repositoryProvider.activeKyc()
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_set_kyc)
@@ -72,7 +69,6 @@ class SetKycActivity : BaseActivity() {
         initButtons()
         initSwipeRefresh()
         subscribeToKycRequestState()
-        subscribeToKyc()
 
         kycRequestState.updateIfNotFresh()
 
@@ -120,22 +116,6 @@ class SetKycActivity : BaseActivity() {
         }
     }
 
-    private fun subscribeToKyc() {
-        activeKyc.itemSubject
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                avatar.value = ProfileUtil.getAvatarUrl(
-                    it,
-                    urlConfigProvider
-                )?.let { url -> AvatarFile.Remote(url) }
-
-                (activeKyc.itemFormData as? KycFormWithName)?.let { formWithName ->
-                    current_firstname_edit_text.setText(formWithName.firstName)
-                    current_lastname_edit_text.setText(formWithName.lastName)
-                }
-            }.addTo(compositeDisposable)
-    }
-
     private fun initButtons() {
         confirm_kyc_button.setOnClickListener {
             submitForm()
@@ -181,25 +161,10 @@ class SetKycActivity : BaseActivity() {
             .itemSubject
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                when {
-                    it != null && it is KycRequestState.Submitted.Pending<*> -> {
-                        kycRequestStateInfoLayout.visibility = View.VISIBLE
-                        kycRejectReasonTextView.visibility = View.GONE
-                        kycStatusTextView.text = getString(R.string.kyc_recovery_pending_message)
-                        kycStatusTextView.setTextColor(ContextCompat.getColor(this, R.color.orange))
-                    }
-                    it != null && it is KycRequestState.Submitted.Rejected<*> -> {
-                        kycRequestStateInfoLayout.visibility = View.VISIBLE
-                        kycRejectReasonTextView.visibility = View.VISIBLE
-                        kycStatusTextView.text = getString(R.string.kyc_recovery_rejected_message)
-                        kycStatusTextView.setTextColor(ContextCompat.getColor(this, R.color.error))
-                        kycRejectReasonTextView.text =
-                            getString(R.string.template_rejection_reason, it.rejectReason)
-                    }
-                    else -> {
-                        kycRequestStateInfoLayout.visibility = View.GONE
-                        kycRejectReasonTextView.visibility = View.GONE
-                    }
+                initKycRequestView(it)
+                (it as? KycRequestState.Submitted<*>?).let { kycRequest ->
+                    initKycView(kycRequest?.formData)
+                    updateKyc(kycRequest)
                 }
             }.addTo(compositeDisposable)
 
@@ -218,6 +183,57 @@ class SetKycActivity : BaseActivity() {
             }.addTo(compositeDisposable)
     }
 
+    private fun initKycRequestView(it: KycRequestState?) {
+        when {
+            it != null && it is KycRequestState.Submitted.Pending<*> -> {
+                kycRequestStateInfoLayout.visibility = View.VISIBLE
+                kycRejectReasonTextView.visibility = View.GONE
+                kycStatusTextView.text = getString(R.string.kyc_recovery_pending_message)
+                kycStatusTextView.setTextColor(ContextCompat.getColor(this, R.color.orange))
+            }
+            it != null && it is KycRequestState.Submitted.Rejected<*> -> {
+                showRejectView(it.rejectReason)
+                kycStatusTextView.text = getString(R.string.kyc_recovery_rejected_message)
+            }
+            it != null && it is KycRequestState.Submitted.PermanentlyRejected<*> -> {
+                showRejectView(it.rejectReason)
+                kycStatusTextView.text =
+                    getString(R.string.kyc_recovery_permanently_rejected_message)
+            }
+            else -> {
+                kycRequestStateInfoLayout.visibility = View.GONE
+                kycRejectReasonTextView.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun showRejectView(rejectReason: String) {
+        kycRequestStateInfoLayout.visibility = View.VISIBLE
+        kycRejectReasonTextView.visibility = View.VISIBLE
+        kycStatusTextView.setTextColor(ContextCompat.getColor(this, R.color.error))
+        kycRejectReasonTextView.text =
+            getString(R.string.template_rejection_reason, rejectReason)
+    }
+
+    private fun initKycView(kycForm: KycForm?) {
+        avatar.value = ProfileUtil.getAvatarUrl(
+            kycForm,
+            urlConfigProvider
+        )?.let { url -> AvatarFile.Remote(url) }
+
+        (kycForm as? KycFormWithName)?.let { formWithName ->
+            current_firstname_edit_text.setText(formWithName.firstName)
+            current_lastname_edit_text.setText(formWithName.lastName)
+        }
+    }
+
+    private fun updateKyc(kycRequestState: KycRequestState.Submitted<*>?) {
+        val kycForm = kycRequestState?.formData
+        if (kycForm != null && kycForm != activeKyc.itemFormData && kycRequestState is KycRequestState.Submitted.Approved<*>) {
+            activeKyc.set(ActiveKyc.Form(kycForm))
+        }
+    }
+
     private fun captureAvatarFromCamera() {
         Navigator.from(this)
             .openCameraCapture(
@@ -234,7 +250,7 @@ class SetKycActivity : BaseActivity() {
 
     private fun pickAvatarFromGallery() {
         startWaitingService()
-        FilePickerUtil.pickFile(this, ALLOWED_MIME_TYPES, false)
+        FilePickerUtil.pickFile(this, getAllowedMimeTypes(), false)
             .doOnSuccess {
                 avatar.value = AvatarFile.Local(it)
             }
@@ -257,7 +273,7 @@ class SetKycActivity : BaseActivity() {
         }
 
         val submittedDocuments = (avatar.value as? AvatarFile.Remote?)?.let {
-            activeKyc.itemFormData?.documents
+            (kycRequestState.item as? KycRequestState.Submitted<*>)?.formData?.documents
         }
 
         SoftInputUtil.hideSoftInput(this)
@@ -344,9 +360,7 @@ class SetKycActivity : BaseActivity() {
         stopService(Intent(this, WaitForFilePickForegroundService::class.java))
     }
 
-    companion object {
-        private val ALLOWED_MIME_TYPES = arrayOf("image/jpg", "image/jpeg", "image/png")
-    }
+    private fun getAllowedMimeTypes() = arrayOf("image/jpg", "image/jpeg", "image/png")
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

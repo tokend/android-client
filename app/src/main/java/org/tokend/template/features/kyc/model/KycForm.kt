@@ -20,11 +20,19 @@ sealed class KycForm(
         documents: MutableMap<String, RemoteFile>,
         @SerializedName(COMPANY_KEY)
         val company: String
-    ) : KycForm(documents) {
-        val avatar: RemoteFile?
+    ) : KycForm(documents), KycFormWithAvatar {
+        override val avatar: RemoteFile?
             get() = documents?.get("kyc_avatar")
 
         override fun getRoleKey() = General.ROLE_KEY
+
+        override fun equals(other: Any?): Boolean {
+            return other is Corporate && this.company == other.company && this.documents == other.documents
+        }
+
+        override fun hashCode(): Int {
+            return company.hashCode() + documents.hashCode()
+        }
 
         companion object {
             const val ROLE_KEY = "$ROLE_KEY_PREFIX:corporate"
@@ -37,14 +45,25 @@ sealed class KycForm(
         override val firstName: String,
         @SerializedName("last_name")
         override val lastName: String
-    ) : KycForm(null), KycFormWithName {
-        val avatar: RemoteFile?
+    ) : KycForm(null), KycFormWithName, KycFormWithAvatar {
+        override val avatar: RemoteFile?
             get() = documents?.get(AVATAR_DOCUMENT_KEY)
 
         override val fullName: String
             get() = "$firstName $lastName"
 
         override fun getRoleKey() = ROLE_KEY
+
+        override fun equals(other: Any?): Boolean {
+            return other is General &&
+                    this.firstName == other.firstName &&
+                    this.lastName == other.lastName &&
+                    this.documents == other.documents
+        }
+
+        override fun hashCode(): Int {
+            return firstName.hashCode() + lastName.hashCode() + documents.hashCode()
+        }
 
         companion object {
             const val ROLE_KEY = "$ROLE_KEY_PREFIX:general"
