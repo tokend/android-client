@@ -9,6 +9,7 @@ import io.tokend.template.extensions.tryOrNull
 import io.tokend.template.features.urlconfig.model.UrlConfig
 import io.tokend.template.util.RecordWithPolicy
 import org.tokend.sdk.api.base.model.RemoteFile
+import org.tokend.sdk.api.base.model.isReallyNullOrNullAccordingToTheJavascript
 import org.tokend.sdk.api.generated.resources.AssetResource
 import org.tokend.sdk.api.v3.assets.model.AssetState
 import java.io.Serializable
