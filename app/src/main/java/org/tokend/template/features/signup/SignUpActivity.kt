@@ -22,7 +22,7 @@ import org.tokend.template.activities.BaseActivity
 import org.tokend.template.extensions.browse
 import org.tokend.template.extensions.getChars
 import org.tokend.template.extensions.hasError
-import org.tokend.template.features.signin.logic.SignInUseCase
+import org.tokend.template.features.signup.logic.AfterSignUpSignInUseCase
 import org.tokend.template.features.signup.logic.SignUpUseCase
 import org.tokend.template.features.urlconfig.logic.UrlConfigManager
 import org.tokend.template.util.ObservableTransformers
@@ -63,9 +63,6 @@ class SignUpActivity : BaseActivity() {
     private lateinit var urlConfigManager: UrlConfigManager
 
     private var toSignInOnResume: Boolean = false
-
-    private var email: String? = null
-    private var password: CharArray? = null
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_sign_up)
@@ -194,23 +191,14 @@ class SignUpActivity : BaseActivity() {
     }
 
     private fun signUp() {
-        val email = email_edit_text.text.toString()
-        this.email = email
-
         val password = password_edit_text.text.getChars()
-        if (this.password !== password) {
-            this.password?.erase()
-        }
-        this.password = password
 
         SignUpUseCase(
-            email,
-            password,
-            KeyServer(apiProvider.getApi().wallets),
-            repositoryProvider,
-            session,
-            credentialsPersistence,
-            walletInfoPersistence
+            login = email_edit_text.text.toString().trim(),
+            password = password,
+            keyServer = KeyServer(apiProvider.getApi().wallets),
+            repositoryProvider = repositoryProvider,
+            session = session,
         )
             .perform()
             .compose(ObservableTransformers.defaultSchedulersSingle())
@@ -218,6 +206,7 @@ class SignUpActivity : BaseActivity() {
                 isLoading = true
             }
             .doOnEvent { _, _ ->
+                password.erase()
                 isLoading = false
             }
             .subscribeBy(
@@ -293,22 +282,15 @@ class SignUpActivity : BaseActivity() {
     }
 
     private fun tryToSignIn() {
-        val email = this.email
-        val password = this.password
+        val password = password_edit_text.text.getChars()
 
-        if (email == null || password == null) {
-            toSignIn()
-            return
-        }
-
-        SignInUseCase(
-            email,
-            password,
-            KeyServer(apiProvider.getApi().wallets),
-            session,
-            credentialsPersistence,
-            walletInfoPersistence,
-            postSignInManagerFactory.get()::doPostSignIn
+        AfterSignUpSignInUseCase(
+            login = email_edit_text.text!!.toString(),
+            password = password,
+            session = session,
+            credentialsPersistence = credentialsPersistence,
+            walletInfoPersistence = walletInfoPersistence,
+            postSignInActions = postSignInManagerFactory.get()::doPostSignIn
         )
             .perform()
             .compose(ObservableTransformers.defaultSchedulersCompletable())
@@ -317,6 +299,7 @@ class SignUpActivity : BaseActivity() {
             }
             .doOnDispose {
                 isLoading = false
+                password.erase()
             }
             .subscribeBy(
                 onComplete = this::onSuccessfulSignIn,
@@ -332,10 +315,5 @@ class SignUpActivity : BaseActivity() {
     private fun handleSignInError(error: Throwable) {
         errorHandlerFactory.getDefault().handle(error)
         toSignIn()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        password?.erase()
     }
 }
