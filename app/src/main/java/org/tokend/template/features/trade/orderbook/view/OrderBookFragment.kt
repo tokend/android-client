@@ -1,28 +1,28 @@
 package org.tokend.template.features.trade.orderbook.view
 
 import android.os.Bundle
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_order_book.*
 import org.tokend.template.R
-import org.tokend.template.features.trade.pairs.model.AssetPairRecord
-import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.extensions.withArguments
+import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.features.trade.orderbook.model.OrderBook
 import org.tokend.template.features.trade.orderbook.model.OrderBookEntryRecord
 import org.tokend.template.features.trade.orderbook.repository.OrderBookRepository
 import org.tokend.template.features.trade.orderbook.view.adapter.OrderBookEntriesAdapter
 import org.tokend.template.features.trade.orderbook.view.adapter.OrderBookEntryListItem
+import org.tokend.template.features.trade.pairs.model.AssetPairRecord
 import org.tokend.template.fragments.BaseFragment
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.LoadingIndicatorManager
 import java.math.BigDecimal
 
@@ -31,12 +31,12 @@ class OrderBookFragment : BaseFragment() {
     private lateinit var assetPair: AssetPairRecord
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private val balancesRepository: BalancesRepository
-        get() = repositoryProvider.balances()
+        get() = repositoryProvider.balances
 
     private val orderBookRepository: OrderBookRepository
         get() = repositoryProvider.orderBook(assetPair.base.code, assetPair.quote.code)
@@ -50,14 +50,16 @@ class OrderBookFragment : BaseFragment() {
     private var isBottomSheetExpanded = false
     private lateinit var bottomSheet: BottomSheetBehavior<LinearLayout>
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_order_book, container, false)
     }
 
     override fun onInitAllowed() {
         this.assetPair = arguments?.getSerializable(ASSET_PAIR_EXTRA) as? AssetPairRecord
-                ?: return
+            ?: return
 
         initLists()
         initSwipeRefresh()
@@ -114,12 +116,12 @@ class OrderBookFragment : BaseFragment() {
     private fun subscribeToBalances() {
         balancesDisposable?.dispose()
         balancesDisposable = CompositeDisposable(
-                balancesRepository.itemsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe(),
-                balancesRepository.loadingSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { loadingIndicator.setLoading(it, "balances") }
+            balancesRepository.itemsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe(),
+            balancesRepository.loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { loadingIndicator.setLoading(it, "balances") }
         ).also { it.addTo(compositeDisposable) }
     }
     // endregion
@@ -134,18 +136,18 @@ class OrderBookFragment : BaseFragment() {
     private fun subscribeToOrderBook() {
         orderBookDisposable?.dispose()
         orderBookDisposable = CompositeDisposable(
-                orderBookRepository
-                        .itemSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { displayOrderBook() },
-                orderBookRepository
-                        .loadingSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { loadingIndicator.setLoading(it, "order_book") },
-                orderBookRepository
-                        .errorsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { errorHandlerFactory.getDefault().handle(it) }
+            orderBookRepository
+                .itemSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { displayOrderBook() },
+            orderBookRepository
+                .loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { loadingIndicator.setLoading(it, "order_book") },
+            orderBookRepository
+                .errorsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { errorHandlerFactory.getDefault().handle(it) }
         ).also { it.addTo(compositeDisposable) }
     }
 
@@ -155,8 +157,10 @@ class OrderBookFragment : BaseFragment() {
         displaySellEntries(orderBook?.sellEntries ?: emptyList(), maxVolume)
     }
 
-    private fun displayBuyEntries(items: Collection<OrderBookEntryRecord>,
-                                  maxVolume: BigDecimal) {
+    private fun displayBuyEntries(
+        items: Collection<OrderBookEntryRecord>,
+        maxVolume: BigDecimal
+    ) {
         buyAdapter.setData(items.map { OrderBookEntryListItem(it, maxVolume) })
         if (items.isEmpty() && !orderBookRepository.isNeverUpdated) {
             bids_empty_view.visibility = View.VISIBLE
@@ -165,8 +169,10 @@ class OrderBookFragment : BaseFragment() {
         }
     }
 
-    private fun displaySellEntries(items: Collection<OrderBookEntryRecord>,
-                                   maxVolume: BigDecimal) {
+    private fun displaySellEntries(
+        items: Collection<OrderBookEntryRecord>,
+        maxVolume: BigDecimal
+    ) {
         sellAdapter.setData(items.map { OrderBookEntryListItem(it, maxVolume) })
         if (items.isEmpty() && !orderBookRepository.isNeverUpdated) {
             asks_empty_view.visibility = View.VISIBLE
@@ -178,8 +184,8 @@ class OrderBookFragment : BaseFragment() {
 
     private fun update(force: Boolean = false) {
         listOf(
-                balancesRepository,
-                orderBookRepository
+            balancesRepository,
+            orderBookRepository
         ).forEach {
             if (!force) {
                 it.updateIfNotFresh()
@@ -194,12 +200,12 @@ class OrderBookFragment : BaseFragment() {
         val orderBook = this.orderBook ?: return
 
         Navigator
-                .from(this)
-                .openCreateOffer(
-                        baseAsset = orderBook.baseAsset,
-                        quoteAsset = orderBook.quoteAsset,
-                        requiredPrice = price
-                )
+            .from(this)
+            .openCreateOffer(
+                baseAsset = orderBook.baseAsset,
+                quoteAsset = orderBook.quoteAsset,
+                requiredPrice = price
+            )
     }
     // endregion
 
@@ -218,7 +224,7 @@ class OrderBookFragment : BaseFragment() {
         const val ID = 1115L
 
         fun newInstance(bundle: Bundle): OrderBookFragment =
-                OrderBookFragment().withArguments(bundle)
+            OrderBookFragment().withArguments(bundle)
 
         fun getBundle(assetPair: AssetPairRecord) = Bundle().apply {
             putSerializable(ASSET_PAIR_EXTRA, assetPair)

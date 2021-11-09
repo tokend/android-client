@@ -29,7 +29,7 @@ class LocalAccountSignInActivity : BaseActivity() {
     override val allowUnauthorized = true
 
     private val localAccountRepository: LocalAccountRepository
-        get() = repositoryProvider.localAccount()
+        get() = repositoryProvider.localAccount
 
     private val localAccount: LocalAccount?
         get() = localAccountRepository.presentAccount
@@ -45,15 +45,15 @@ class LocalAccountSignInActivity : BaseActivity() {
         }
 
     private val setUpPinCodeProvider = ActivityUserKeyProvider(
-            SetUpPinCodeActivity::class.java,
-            this,
-            null
+        SetUpPinCodeActivity::class.java,
+        this,
+        null
     )
 
     private val pinCodeProvider = ActivityUserKeyProvider(
-            PinCodeActivity::class.java,
-            this,
-            null
+        PinCodeActivity::class.java,
+        this,
+        null
     )
 
     private var quickSignInRequired = false
@@ -98,26 +98,26 @@ class LocalAccountSignInActivity : BaseActivity() {
         val localAccountUpdatesSubject = PublishSubject.create<Boolean>()
 
         localAccountRepository
-                .itemSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { localAccountUpdatesSubject.onNext(true) }
-                .addTo(compositeDisposable)
+            .itemSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { localAccountUpdatesSubject.onNext(true) }
+            .addTo(compositeDisposable)
 
         localAccountRepository
-                .loadingSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { isLoading ->
-                    if (!isLoading) {
-                        localAccountUpdatesSubject.onNext(true)
-                    }
+            .loadingSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { isLoading ->
+                if (!isLoading) {
+                    localAccountUpdatesSubject.onNext(true)
                 }
-                .addTo(compositeDisposable)
+            }
+            .addTo(compositeDisposable)
 
         localAccountUpdatesSubject
-                .debounce(50, TimeUnit.MILLISECONDS)
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { onLocalAccountUpdated() }
-                .addTo(compositeDisposable)
+            .debounce(50, TimeUnit.MILLISECONDS)
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { onLocalAccountUpdated() }
+            .addTo(compositeDisposable)
 
         localAccountUpdatesSubject.onNext(true)
     }
@@ -166,7 +166,7 @@ class LocalAccountSignInActivity : BaseActivity() {
 
     private fun displayLocalAccountInfo() {
         val localAccount = this.localAccount
-                ?: return
+            ?: return
 
         LocalAccountLogoUtil.setLogo(account_logo_image_view, localAccount)
         local_account_name_text_view.text = localAccount.accountId
@@ -177,24 +177,24 @@ class LocalAccountSignInActivity : BaseActivity() {
         generatingDisposable?.dispose()
 
         generatingDisposable = CreateLocalAccountUseCase(
-                defaultDataCipher,
-                setUpPinCodeProvider,
-                localAccountRepository
+            defaultDataCipher,
+            setUpPinCodeProvider,
+            localAccountRepository
         )
-                .perform()
-                .delay(GENERATION_VISUAL_DELAY_MS, TimeUnit.MILLISECONDS)
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe {
-                    isLoading = true
-                    loading_message_text_view.text =
-                            getString(R.string.creating_local_account_progress)
-                }
-                .doOnEvent { _, _ ->
-                    isLoading = false
-                }
-                .subscribeBy(
-                        onError = { errorHandlerFactory.getDefault().handle(it) })
-                .addTo(compositeDisposable)
+            .perform()
+            .delay(GENERATION_VISUAL_DELAY_MS, TimeUnit.MILLISECONDS)
+            .compose(ObservableTransformers.defaultSchedulersSingle())
+            .doOnSubscribe {
+                isLoading = true
+                loading_message_text_view.text =
+                    getString(R.string.creating_local_account_progress)
+            }
+            .doOnEvent { _, _ ->
+                isLoading = false
+            }
+            .subscribeBy(
+                onError = { errorHandlerFactory.getDefault().handle(it) })
+            .addTo(compositeDisposable)
     }
 
     private fun doQuickSignInIfRequired() {
@@ -206,28 +206,28 @@ class LocalAccountSignInActivity : BaseActivity() {
 
     private fun signIn() {
         SignInWithLocalAccountUseCase(
-                defaultDataCipher,
-                pinCodeProvider,
-                session,
-                credentialsPersistence,
-                apiProvider,
-                repositoryProvider,
-                connectionStateUtil::isOnline,
-                postSignInManagerFactory.get()::doPostSignIn
+            defaultDataCipher,
+            pinCodeProvider,
+            session,
+            credentialsPersistence,
+            apiProvider,
+            repositoryProvider,
+            connectionStateUtil::isOnline,
+            postSignInManagerFactory.get()::doPostSignIn
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .doOnSubscribe {
-                    isLoading = true
-                    loading_message_text_view.text = getString(R.string.loading_data)
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersCompletable())
+            .doOnSubscribe {
+                isLoading = true
+                loading_message_text_view.text = getString(R.string.loading_data)
+            }
+            .subscribeBy(
+                onComplete = this::onSignInCompleted,
+                onError = {
+                    isLoading = false
+                    errorHandlerFactory.getDefault().handle(it)
                 }
-                .subscribeBy(
-                        onComplete = this::onSignInCompleted,
-                        onError = {
-                            isLoading = false
-                            errorHandlerFactory.getDefault().handle(it)
-                        }
-                )
+            )
     }
 
     private fun onSignInCompleted() {

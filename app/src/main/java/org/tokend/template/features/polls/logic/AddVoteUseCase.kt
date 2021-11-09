@@ -20,72 +20,72 @@ import org.tokend.wallet.xdr.*
  * @param choiceIndex index of choice, starts from 0
  */
 class AddVoteUseCase(
-        private val pollId: String,
-        private val pollOwnerAccountId: String,
-        private val choiceIndex: Int,
-        private val accountProvider: AccountProvider,
-        private val walletInfoProvider: WalletInfoProvider,
-        private val repositoryProvider: RepositoryProvider,
-        private val txManager: TxManager
+    private val pollId: String,
+    private val pollOwnerAccountId: String,
+    private val choiceIndex: Int,
+    private val accountProvider: AccountProvider,
+    private val walletInfoProvider: WalletInfoProvider,
+    private val repositoryProvider: RepositoryProvider,
+    private val txManager: TxManager
 ) {
     private lateinit var networkParams: NetworkParams
 
     fun perform(): Completable {
         return getNetworkParams()
-                .doOnSuccess { networkParams ->
-                    this.networkParams = networkParams
-                }
-                .flatMap {
-                    getTransaction()
-                }
-                .flatMap { transaction ->
-                    txManager.submit(transaction, waitForIngest = false)
-                }
-                .doOnSuccess {
-                    updateRepository()
-                }
-                .ignoreElement()
+            .doOnSuccess { networkParams ->
+                this.networkParams = networkParams
+            }
+            .flatMap {
+                getTransaction()
+            }
+            .flatMap { transaction ->
+                txManager.submit(transaction, waitForIngest = false)
+            }
+            .doOnSuccess {
+                updateRepository()
+            }
+            .ignoreElement()
     }
 
     private fun getNetworkParams(): Single<NetworkParams> {
         return repositoryProvider
-                .systemInfo()
-                .getNetworkParams()
+            .systemInfo
+            .getNetworkParams()
     }
 
     private fun getTransaction(): Single<Transaction> {
         return Single.defer {
             val operation = ManageVoteOp(
-                    data = ManageVoteOp.ManageVoteOpData.Create(
-                            CreateVoteData(
-                                    pollId.toLong(),
-                                    VoteData.SingleChoice(
-                                            SingleChoiceVote(
-                                                    choiceIndex + 1,
-                                                    EmptyExt.EmptyVersion()
-                                            )
-                                    ),
-                                    CreateVoteData.CreateVoteDataExt.EmptyVersion()
+                data = ManageVoteOp.ManageVoteOpData.Create(
+                    CreateVoteData(
+                        pollId.toLong(),
+                        VoteData.SingleChoice(
+                            SingleChoiceVote(
+                                choiceIndex + 1,
+                                EmptyExt.EmptyVersion()
                             )
-                    ),
-                    ext = ManageVoteOp.ManageVoteOpExt.EmptyVersion()
+                        ),
+                        CreateVoteData.CreateVoteDataExt.EmptyVersion()
+                    )
+                ),
+                ext = ManageVoteOp.ManageVoteOpExt.EmptyVersion()
             )
 
             val account = accountProvider.getAccount()
-                    ?: return@defer Single.error<Transaction>(
-                            IllegalStateException("Cannot obtain current account")
-                    )
+                ?: return@defer Single.error<Transaction>(
+                    IllegalStateException("Cannot obtain current account")
+                )
 
             val sourceAccountId = walletInfoProvider.getWalletInfo()?.accountId
-                    ?: return@defer Single.error<Transaction>(
-                            IllegalStateException("No wallet info found")
-                    )
+                ?: return@defer Single.error<Transaction>(
+                    IllegalStateException("No wallet info found")
+                )
 
             val transaction =
-                    TransactionBuilder(networkParams, sourceAccountId)
-                            .addOperation(Operation.OperationBody.ManageVote(operation))
-                            .addSigner(account)
-                            .build()
+                TransactionBuilder(networkParams, sourceAccountId)
+                    .addOperation(Operation.OperationBody.ManageVote(operation))
+                    .addSigner(account)
+                    .build()
 
             Single.just(transaction)
         }.subscribeOn(Schedulers.newThread())
@@ -93,7 +93,7 @@ class AddVoteUseCase(
 
     private fun updateRepository() {
         repositoryProvider
-                .polls(pollOwnerAccountId)
-                .updatePollChoiceLocally(pollId, choiceIndex)
+            .polls(pollOwnerAccountId)
+            .updatePollChoiceLocally(pollId, choiceIndex)
     }
 }

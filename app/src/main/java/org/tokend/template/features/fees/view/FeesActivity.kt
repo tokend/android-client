@@ -1,10 +1,10 @@
 package org.tokend.template.features.fees.view
 
 import android.os.Bundle
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import android.view.View
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_fees.*
@@ -13,9 +13,9 @@ import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.features.fees.repository.FeesRepository
 import org.tokend.template.features.fees.adapter.FeeListItem
 import org.tokend.template.features.fees.adapter.FeesAdapter
+import org.tokend.template.features.fees.repository.FeesRepository
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
@@ -24,12 +24,12 @@ import java.lang.ref.WeakReference
 class FeesActivity : BaseActivity() {
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private val feesRepository: FeesRepository
-        get() = repositoryProvider.fees()
+        get() = repositoryProvider.fees
 
     private val assets: Set<String>
         get() = feesRepository.item?.feesAssetMap?.keys ?: emptySet()
@@ -89,12 +89,12 @@ class FeesActivity : BaseActivity() {
         val weakTabs = WeakReference(appbar_tabs)
 
         val gestureDetector = GestureDetectorCompat(this, HorizontalSwipesGestureDetector(
-                onSwipeToLeft = {
-                    weakTabs.get()?.apply { selectedItemIndex++ }
-                },
-                onSwipeToRight = {
-                    weakTabs.get()?.apply { selectedItemIndex-- }
-                }
+            onSwipeToLeft = {
+                weakTabs.get()?.apply { selectedItemIndex++ }
+            },
+            onSwipeToRight = {
+                weakTabs.get()?.apply { selectedItemIndex-- }
+            }
         ))
 
         swipe_refresh.setTouchEventInterceptor(gestureDetector::onTouchEvent)
@@ -115,27 +115,27 @@ class FeesActivity : BaseActivity() {
     private fun subscribeToFees() {
         feesDisposable?.dispose()
         feesDisposable = CompositeDisposable(
-                feesRepository.itemSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            onFeesUpdated()
-                        },
-                feesRepository.loadingSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { isLoading ->
-                            loadingIndicator.setLoading(isLoading, "fees")
-                        },
-                feesRepository.errorsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { error ->
-                            if (feesRepository.isNeverUpdated) {
-                                error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
-                                    update(true)
-                                }
-                            } else {
-                                errorHandlerFactory.getDefault().handle(error)
-                            }
+            feesRepository.itemSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    onFeesUpdated()
+                },
+            feesRepository.loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { isLoading ->
+                    loadingIndicator.setLoading(isLoading, "fees")
+                },
+            feesRepository.errorsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { error ->
+                    if (feesRepository.isNeverUpdated) {
+                        error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
+                            update(true)
                         }
+                    } else {
+                        errorHandlerFactory.getDefault().handle(error)
+                    }
+                }
         ).also { it.addTo(compositeDisposable) }
     }
 
@@ -156,7 +156,7 @@ class FeesActivity : BaseActivity() {
 
             val forceUpdate = asset == requestedAssetCode
             appbar_tabs.selectedItemIndex =
-                    sortedAssets.indexOfFirst { it == requestedAssetCode }
+                sortedAssets.indexOfFirst { it == requestedAssetCode }
 
             if (forceUpdate) {
                 updateFeeCards()
@@ -181,7 +181,7 @@ class FeesActivity : BaseActivity() {
 
             if (toRequestedItems) {
                 list_fees.scrollToPosition(
-                        sortedData.indexOfFirst { it.first().type.value == requestedType }
+                    sortedData.indexOfFirst { it.first().type.value == requestedType }
                 )
                 toRequestedItems = false
             }
@@ -200,8 +200,10 @@ class FeesActivity : BaseActivity() {
         private const val EXTRA_ASSET = "extra_asset"
         private const val EXTRA_TYPE = "extra_type"
 
-        fun getBundle(assetCode: String?,
-                      feeType: Int?) = Bundle().apply {
+        fun getBundle(
+            assetCode: String?,
+            feeType: Int?
+        ) = Bundle().apply {
             putString(EXTRA_ASSET, assetCode)
             putInt(EXTRA_TYPE, feeType ?: -1)
         }

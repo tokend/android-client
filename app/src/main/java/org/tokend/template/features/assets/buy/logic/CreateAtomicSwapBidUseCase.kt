@@ -32,14 +32,14 @@ import java.util.concurrent.TimeUnit
  * Updates asks repository on success
  */
 class CreateAtomicSwapBidUseCase(
-        private val amount: BigDecimal,
-        private val quoteAssetCode: String,
-        private val ask: AtomicSwapAskRecord,
-        private val apiProvider: ApiProvider,
-        private val repositoryProvider: RepositoryProvider,
-        private val walletInfoProvider: WalletInfoProvider,
-        private val accountProvider: AccountProvider,
-        private val txManager: TxManager
+    private val amount: BigDecimal,
+    private val quoteAssetCode: String,
+    private val ask: AtomicSwapAskRecord,
+    private val apiProvider: ApiProvider,
+    private val repositoryProvider: RepositoryProvider,
+    private val walletInfoProvider: WalletInfoProvider,
+    private val accountProvider: AccountProvider,
+    private val txManager: TxManager
 ) {
     private val objectMapper = JsonApiToolsProvider.getObjectMapper()
     private lateinit var accountId: String
@@ -50,99 +50,101 @@ class CreateAtomicSwapBidUseCase(
 
     fun perform(): Single<AtomicSwapInvoice> {
         return getAccountId()
-                .doOnSuccess { accountId ->
-                    this.accountId = accountId
-                }
-                .flatMap {
-                    getNetworkParams()
-                }
-                .doOnSuccess { networkParams ->
-                    this.networkParams = networkParams
-                }
-                .flatMap {
-                    getTransaction()
-                }
-                .doOnSuccess { transaction ->
-                    this.transaction = transaction
-                }
-                .flatMap {
-                    getSubmitTransactionResult()
-                }
-                .doOnSuccess { transactionResultMetaXdr ->
-                    this.transactionResultMetaXdr = transactionResultMetaXdr
-                }
-                .flatMap {
-                    getPendingRequestId()
-                }
-                .doOnSuccess { pendingRequestId ->
-                    this.pendingRequestId = pendingRequestId
-                }
-                .flatMap {
-                    getInvoiceFromRequest()
-                }
-                .doOnSuccess {
-                    updateRepositories()
-                }
+            .doOnSuccess { accountId ->
+                this.accountId = accountId
+            }
+            .flatMap {
+                getNetworkParams()
+            }
+            .doOnSuccess { networkParams ->
+                this.networkParams = networkParams
+            }
+            .flatMap {
+                getTransaction()
+            }
+            .doOnSuccess { transaction ->
+                this.transaction = transaction
+            }
+            .flatMap {
+                getSubmitTransactionResult()
+            }
+            .doOnSuccess { transactionResultMetaXdr ->
+                this.transactionResultMetaXdr = transactionResultMetaXdr
+            }
+            .flatMap {
+                getPendingRequestId()
+            }
+            .doOnSuccess { pendingRequestId ->
+                this.pendingRequestId = pendingRequestId
+            }
+            .flatMap {
+                getInvoiceFromRequest()
+            }
+            .doOnSuccess {
+                updateRepositories()
+            }
     }
 
     private fun getAccountId(): Single<String> {
         return walletInfoProvider
-                .getWalletInfo()
-                ?.accountId
-                .toMaybe()
-                .switchIfEmpty(Single.error(IllegalStateException("Missing account ID")))
+            .getWalletInfo()
+            ?.accountId
+            .toMaybe()
+            .switchIfEmpty(Single.error(IllegalStateException("Missing account ID")))
     }
 
     private fun getNetworkParams(): Single<NetworkParams> {
         return repositoryProvider
-                .systemInfo()
-                .getNetworkParams()
+            .systemInfo
+            .getNetworkParams()
     }
 
     private fun getTransaction(): Single<Transaction> {
         val op = CreateAtomicSwapBidRequestOp(
-                request = CreateAtomicSwapBidRequest(
-                        askID = ask.id.toLong(),
-                        quoteAsset = quoteAssetCode,
-                        baseAmount = networkParams.amountToPrecised(amount),
-                        creatorDetails = "{}",
-                        ext = CreateAtomicSwapBidRequest.CreateAtomicSwapBidRequestExt.EmptyVersion()
-                ),
-                ext = CreateAtomicSwapBidRequestOp.CreateAtomicSwapBidRequestOpExt.EmptyVersion()
+            request = CreateAtomicSwapBidRequest(
+                askID = ask.id.toLong(),
+                quoteAsset = quoteAssetCode,
+                baseAmount = networkParams.amountToPrecised(amount),
+                creatorDetails = "{}",
+                ext = CreateAtomicSwapBidRequest.CreateAtomicSwapBidRequestExt.EmptyVersion()
+            ),
+            ext = CreateAtomicSwapBidRequestOp.CreateAtomicSwapBidRequestOpExt.EmptyVersion()
         )
 
         val account = accountProvider.getAccount()
-                ?: return Single.error(IllegalStateException("Cannot obtain current account"))
+            ?: return Single.error(IllegalStateException("Cannot obtain current account"))
 
-        return TxManager.createSignedTransaction(networkParams, accountId, account,
-                Operation.OperationBody.CreateAtomicSwapBidRequest(op))
+        return TxManager.createSignedTransaction(
+            networkParams, accountId, account,
+            Operation.OperationBody.CreateAtomicSwapBidRequest(op)
+        )
     }
 
     private fun getSubmitTransactionResult(): Single<String> {
         return txManager
-                .submit(transaction)
-                .map { it.resultMetaXdr!! }
+            .submit(transaction)
+            .map { it.resultMetaXdr!! }
     }
 
     private fun getPendingRequestId(): Single<Long> = {
         val meta = TransactionMeta.fromBase64(transactionResultMetaXdr)
                 as? TransactionMeta.EmptyVersion
-                ?: throw IllegalStateException("Unable to parse result meta XDR")
+            ?: throw IllegalStateException("Unable to parse result meta XDR")
 
         meta.operations
-                .first()
-                .changes
-                .asSequence()
-                .filterIsInstance<LedgerEntryChange.Created>()
-                .map { it.created.data }
-                .filterIsInstance<LedgerEntry.LedgerEntryData.ReviewableRequest>()
-                .map { it.reviewableRequest.requestID }
-                .first()
+            .first()
+            .changes
+            .asSequence()
+            .filterIsInstance<LedgerEntryChange.Created>()
+            .map { it.created.data }
+            .filterIsInstance<LedgerEntry.LedgerEntryData.ReviewableRequest>()
+            .map { it.reviewableRequest.requestID }
+            .first()
     }.toSingle()
 
     private fun getInvoiceFromRequest(): Single<AtomicSwapInvoice> {
         val signedApi = apiProvider.getSignedApi()
-                ?: return Single.error(IllegalStateException("No signed API instance found"))
+            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         class NoRequestYetException : Exception()
         class NoInvoiceYetException : Exception()
@@ -151,66 +153,69 @@ class CreateAtomicSwapBidUseCase(
 
         val getInvoiceFromRequest = {
             signedApi
-                    .v3
-                    .requests
-                    .get(RequestsPageParamsV3(
-                            requestor = accountId,
-                            type = ReviewableRequestType.CREATE_ATOMIC_SWAP_BID,
-                            includes = listOf(RequestParamsV3.Includes.REQUEST_DETAILS),
-                            pagingParams = PagingParamsV2(
-                                    page = (pendingRequestId - 1).toString(),
-                                    order = PagingOrder.ASC,
-                                    limit = 1
-                            )
-                    ))
-                    .toSingle()
-                    .map { page ->
-                        page.items.firstOrNull()
-                                ?: throw NoRequestYetException()
+                .v3
+                .requests
+                .get(
+                    RequestsPageParamsV3(
+                        requestor = accountId,
+                        type = ReviewableRequestType.CREATE_ATOMIC_SWAP_BID,
+                        includes = listOf(RequestParamsV3.Includes.REQUEST_DETAILS),
+                        pagingParams = PagingParamsV2(
+                            page = (pendingRequestId - 1).toString(),
+                            order = PagingOrder.ASC,
+                            limit = 1
+                        )
+                    )
+                )
+                .toSingle()
+                .map { page ->
+                    page.items.firstOrNull()
+                        ?: throw NoRequestYetException()
+                }
+                .map { request ->
+                    if (request.stateI == RequestState.PERMANENTLY_REJECTED.i
+                        || request.stateI == RequestState.REJECTED.i
+                    ) {
+                        throw RequestRejectedException()
                     }
-                    .map { request ->
-                        if (request.stateI == RequestState.PERMANENTLY_REJECTED.i
-                                || request.stateI == RequestState.REJECTED.i) {
-                            throw RequestRejectedException()
-                        }
 
-                        request.externalDetails
-                                ?.withArray(REQUEST_DATA_ARRAY_KEY)
-                                ?.get(0)
-                                ?.get(INVOICE_KEY)
-                                ?: throw NoInvoiceYetException()
+                    request.externalDetails
+                        ?.withArray(REQUEST_DATA_ARRAY_KEY)
+                        ?.get(0)
+                        ?.get(INVOICE_KEY)
+                        ?: throw NoInvoiceYetException()
+                }
+                .map { invoiceJson ->
+                    try {
+                        objectMapper.treeToValue(invoiceJson, AtomicSwapInvoice::class.java)
+                    } catch (e: Exception) {
+                        throw InvoiceParsingException(e)
                     }
-                    .map { invoiceJson ->
-                        try {
-                            objectMapper.treeToValue(invoiceJson, AtomicSwapInvoice::class.java)
-                        } catch (e: Exception) {
-                            throw InvoiceParsingException(e)
-                        }
-                    }
+                }
         }
 
         // Wait for invoice to appear in the request.
         return Single.defer(getInvoiceFromRequest)
-                .retryWhen { errors ->
-                    errors.flatMap { error ->
-                        val retryWithDelay = Flowable.just(true)
-                                .delay(POLL_INTERVAL_MS, TimeUnit.MILLISECONDS)
+            .retryWhen { errors ->
+                errors.flatMap { error ->
+                    val retryWithDelay = Flowable.just(true)
+                        .delay(POLL_INTERVAL_MS, TimeUnit.MILLISECONDS)
 
-                        when (error) {
-                            is NoInvoiceYetException -> {
-                                Log.i(LOG_TAG, "No invoice yet, retry...")
-                                retryWithDelay
-                            }
-                            is NoRequestYetException -> {
-                                Log.i(LOG_TAG, "No request yet, retry...")
-                                retryWithDelay
-                            }
-                            else -> {
-                                Flowable.error(error)
-                            }
+                    when (error) {
+                        is NoInvoiceYetException -> {
+                            Log.i(LOG_TAG, "No invoice yet, retry...")
+                            retryWithDelay
+                        }
+                        is NoRequestYetException -> {
+                            Log.i(LOG_TAG, "No request yet, retry...")
+                            retryWithDelay
+                        }
+                        else -> {
+                            Flowable.error(error)
                         }
                     }
                 }
+            }
     }
 
     private fun updateRepositories() {

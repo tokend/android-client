@@ -30,14 +30,14 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private val salesRepository: SalesRepository
-        get() = repositoryProvider.sales()
+        get() = repositoryProvider.sales
     private val filterSalesRepository: SalesRepository
-        get() = repositoryProvider.filteredSales()
+        get() = repositoryProvider.filteredSales
 
     private lateinit var salesAdapter: SalesAdapter
 
@@ -49,7 +49,11 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     private lateinit var salesSubscriptionManager: SalesSubscriptionManager
     private lateinit var layoutManager: GridLayoutManager
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_sales, container, false)
     }
 
@@ -85,9 +89,9 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
 
         salesAdapter.onItemClick { _, sale ->
             Navigator.from(this)
-                    .openSale(sale)
-                    .addTo(activityRequestsBag)
-                    .doOnSuccess { update(force = true) }
+                .openSale(sale)
+                .addTo(activityRequestsBag)
+                .doOnSuccess { update(force = true) }
         }
 
         sales_list.apply {
@@ -99,7 +103,7 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
         }
 
         salesAdapter.registerAdapterDataObserver(
-                ScrollOnTopItemUpdateAdapterObserver(sales_list)
+            ScrollOnTopItemUpdateAdapterObserver(sales_list)
         )
 
         ElevationUtil.initScrollElevation(sales_list, appbar_elevation_view)
@@ -107,12 +111,12 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
 
     private fun initSubscriptionManager() {
         salesSubscriptionManager = SalesSubscriptionManager(
-                sales_list,
-                salesAdapter,
-                loadingIndicator,
-                error_empty_view,
-                compositeDisposable,
-                errorHandlerFactory
+            sales_list,
+            salesAdapter,
+            loadingIndicator,
+            error_empty_view,
+            compositeDisposable,
+            errorHandlerFactory
         ) {
             update()
         }
@@ -144,21 +148,21 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
 
             searchManager.queryHint = getString(R.string.sales_search_asset_hint)
             searchManager
-                    .queryChanges
-                    .compose(ObservableTransformers.defaultSchedulers())
-                    .subscribe { newValue ->
-                        updateFilter(newValue)
-                    }
-                    .addTo(compositeDisposable)
+                .queryChanges
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { newValue ->
+                    updateFilter(newValue)
+                }
+                .addTo(compositeDisposable)
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
         pendingOffersItem?.setOnMenuItemClickListener {
             Navigator.from(this)
-                    .openPendingOffers(true)
-                    .addTo(activityRequestsBag)
-                    .doOnSuccess { update(force = true) }
+                .openPendingOffers(true)
+                .addTo(activityRequestsBag)
+                .doOnSuccess { update(force = true) }
             true
         }
     }
@@ -167,16 +171,17 @@ class SalesFragment : BaseFragment(), ToolbarProvider {
     private fun update(force: Boolean = false) {
         if (!hasFilter) {
             salesSubscriptionManager
-                    .subscribeTo(
-                            repository = salesRepository,
-                            force = force)
+                .subscribeTo(
+                    repository = salesRepository,
+                    force = force
+                )
         } else {
             salesSubscriptionManager
-                    .subscribeTo(
-                            filterSalesRepository,
-                            tokenQuery,
-                            force
-                    )
+                .subscribeTo(
+                    filterSalesRepository,
+                    tokenQuery,
+                    force
+                )
         }
     }
 

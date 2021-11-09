@@ -53,10 +53,10 @@ class UpdateCurrentKycRequestUseCase(
     }
 
     private fun getCurrentRequestAttributes(): Single<CurrentRequestAttributes> {
-        return repositoryProvider.kycRequestState()
+        return repositoryProvider.kycRequestState
             .updateIfNotFreshDeferred()
             .andThen(Single.defer {
-                val currentState = (repositoryProvider.kycRequestState().item
+                val currentState = (repositoryProvider.kycRequestState.item
                         as? KycRequestState.Submitted<*>)
                     ?.takeIf { it !is KycRequestState.Submitted.Approved<*> && it !is KycRequestState.Submitted.PermanentlyRejected<*> }
 

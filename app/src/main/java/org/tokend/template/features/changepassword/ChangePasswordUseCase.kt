@@ -2,7 +2,6 @@ package org.tokend.template.features.changepassword
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.toMaybe
 import org.tokend.rx.extensions.randomSingle
 import org.tokend.rx.extensions.toSingle
@@ -13,10 +12,10 @@ import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
+import org.tokend.template.logic.Session
 import org.tokend.template.logic.credentials.model.WalletInfoRecord
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.logic.credentials.persistence.WalletInfoPersistence
-import org.tokend.template.logic.Session
 import org.tokend.wallet.Account
 import org.tokend.wallet.NetworkParams
 
@@ -66,9 +65,9 @@ class ChangePasswordUseCase(
                     getDefaultSignerRole(),
                     getCurrentSigners(),
                     getNetworkParams(),
-                    Function3 { defaultSignerRole: Long,
-                                currentSigners: List<SignerData>,
-                                networkParams: NetworkParams ->
+                    { defaultSignerRole: Long,
+                      currentSigners: List<SignerData>,
+                      networkParams: NetworkParams ->
                         this.defaultSignerRole = defaultSignerRole
                         this.currentSigners = currentSigners
                         this.networkParams = networkParams
@@ -106,7 +105,7 @@ class ChangePasswordUseCase(
 
     private fun getDefaultSignerRole(): Single<Long> {
         return repositoryProvider
-            .keyValueEntries()
+            .keyValueEntries
             .ensureEntries(listOf(KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY))
             .map {
                 it[KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY] as KeyValueEntryRecord.Number
@@ -127,7 +126,7 @@ class ChangePasswordUseCase(
 
     private fun getNetworkParams(): Single<NetworkParams> {
         return repositoryProvider
-            .systemInfo()
+            .systemInfo
             .getNetworkParams()
     }
 

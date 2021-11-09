@@ -30,14 +30,14 @@ import org.tokend.template.view.util.formatter.DateFormatters
 
 class BalanceDetailsActivity : BaseActivity() {
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private lateinit var balanceId: String
 
     private val balancesRepository: BalancesRepository
-        get() = repositoryProvider.balances()
+        get() = repositoryProvider.balances
 
     private val balanceChangesRepository: BalanceChangesRepository
         get() = repositoryProvider.balanceChanges(balanceId)
@@ -97,8 +97,8 @@ class BalanceDetailsActivity : BaseActivity() {
         toolbar.subtitle = "*"
 
         val fadingToolbarViews = toolbar
-                .childrenSequence()
-                .filter { it is TextView }
+            .childrenSequence()
+            .filter { it is TextView }
 
         val fadeInDuration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
         val fadeOutDuration = collapsing_toolbar.scrimAnimationDuration
@@ -130,7 +130,8 @@ class BalanceDetailsActivity : BaseActivity() {
         val actions = mutableListOf<FloatingActionMenuAction>()
 
         if (BuildConfig.IS_DIRECT_BUY_ALLOWED) {
-            actions.add(FloatingActionMenuAction(
+            actions.add(
+                FloatingActionMenuAction(
                     this,
                     R.string.buy,
                     R.drawable.ic_buy_fab,
@@ -139,32 +140,38 @@ class BalanceDetailsActivity : BaseActivity() {
                         navigator.openAtomicSwapsAsks(assetCode)
                     },
                     isEnabled = asset?.canBeBaseForAtomicSwap == true
-            ))
+                )
+            )
         }
 
         if (BuildConfig.IS_SEND_ALLOWED) {
-            actions.add(FloatingActionMenuAction(
+            actions.add(
+                FloatingActionMenuAction(
                     this,
                     R.string.send_title,
                     R.drawable.ic_send_fab,
                     { navigator.openSend(balanceId) },
                     isEnabled = asset?.isTransferable == true
-            ))
-            actions.add(FloatingActionMenuAction(
+                )
+            )
+            actions.add(
+                FloatingActionMenuAction(
                     this,
                     R.string.receive_title,
                     R.drawable.ic_receive_fab,
                     {
                         val walletInfo = walletInfoProvider.getWalletInfo()
-                                ?: return@FloatingActionMenuAction
+                            ?: return@FloatingActionMenuAction
                         navigator.openAccountQrShare(walletInfo)
                     },
                     isEnabled = asset?.isTransferable == true
-            ))
+                )
+            )
         }
 
         if (BuildConfig.IS_DEPOSIT_ALLOWED) {
-            actions.add(FloatingActionMenuAction(
+            actions.add(
+                FloatingActionMenuAction(
                     this,
                     R.string.deposit_title,
                     R.drawable.ic_deposit_fab,
@@ -173,17 +180,20 @@ class BalanceDetailsActivity : BaseActivity() {
                         navigator.openDeposit(assetCode)
                     },
                     isEnabled = asset?.isDepositable == true
-            ))
+                )
+            )
         }
 
         if (BuildConfig.IS_WITHDRAW_ALLOWED) {
-            actions.add(FloatingActionMenuAction(
+            actions.add(
+                FloatingActionMenuAction(
                     this,
                     R.string.withdraw_title,
                     R.drawable.ic_withdraw_fab,
                     { navigator.openWithdraw(balanceId) },
                     isEnabled = asset?.isWithdrawable == true
-            ))
+                )
+            )
         }
 
         return actions
@@ -225,9 +235,9 @@ class BalanceDetailsActivity : BaseActivity() {
 
         val offset = -dip(32)
         swipe_refresh.setProgressViewOffset(
-                false,
-                swipe_refresh.progressViewStartOffset + offset,
-                swipe_refresh.progressViewEndOffset + offset
+            false,
+            swipe_refresh.progressViewStartOffset + offset,
+            swipe_refresh.progressViewEndOffset + offset
         )
 
         SwipeRefreshDependencyUtil.addDependency(swipe_refresh, appbar)
@@ -246,87 +256,88 @@ class BalanceDetailsActivity : BaseActivity() {
 
     private fun subscribeToBalances() {
         balancesRepository
-                .itemsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { displayBalance() }
-                .addTo(compositeDisposable)
+            .itemsSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { displayBalance() }
+            .addTo(compositeDisposable)
 
         balancesRepository
-                .loadingSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { loadingIndicator.setLoading(it, "balances") }
-                .addTo(compositeDisposable)
+            .loadingSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { loadingIndicator.setLoading(it, "balances") }
+            .addTo(compositeDisposable)
     }
 
     private fun subscribeToBalanceChanges() {
         balanceChangesRepository
-                .itemsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { displayHistory() }
-                .addTo(compositeDisposable)
+            .itemsSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { displayHistory() }
+            .addTo(compositeDisposable)
 
         balanceChangesRepository.loadingSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { loading ->
-                    if (loading) {
-                        if (balanceChangesRepository.isOnFirstPage) {
-                            loadingIndicator.show("history")
-                        } else {
-                            adapter.showLoadingFooter()
-                        }
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { loading ->
+                if (loading) {
+                    if (balanceChangesRepository.isOnFirstPage) {
+                        loadingIndicator.show("history")
                     } else {
-                        loadingIndicator.hide("history")
-                        adapter.hideLoadingFooter()
+                        adapter.showLoadingFooter()
                     }
+                } else {
+                    loadingIndicator.hide("history")
+                    adapter.hideLoadingFooter()
                 }
-                .addTo(compositeDisposable)
+            }
+            .addTo(compositeDisposable)
 
         balanceChangesRepository.errorsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { error ->
-                    if (!adapter.hasData) {
-                        error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
-                            update(true)
-                        }
-                    } else {
-                        errorHandlerFactory.getDefault().handle(error)
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { error ->
+                if (!adapter.hasData) {
+                    error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
+                        update(true)
                     }
+                } else {
+                    errorHandlerFactory.getDefault().handle(error)
                 }
-                .addTo(compositeDisposable)
+            }
+            .addTo(compositeDisposable)
     }
 
     // region Display
     private fun displayBalance() {
         val balance = this.balance
-                ?: return
+            ?: return
 
         val availableString =
-                amountFormatter.formatAssetAmount(
-                        balance.available,
-                        balance.asset
-                )
+            amountFormatter.formatAssetAmount(
+                balance.available,
+                balance.asset
+            )
         balance_available_text_view.text = availableString
         toolbar.title = availableString
 
         asset_name_text_view.text = balance.asset.name ?: balance.assetCode
 
         CircleLogoUtil.setLogo(
-                asset_logo_image_view,
-                balance.assetCode,
-                balance.asset.logoUrl
+            asset_logo_image_view,
+            balance.assetCode,
+            balance.asset.logoUrl
         )
 
         if (balance.convertedAmount != null
-                && balance.conversionAsset != null
-                && balance.conversionAsset.code != balance.assetCode) {
+            && balance.conversionAsset != null
+            && balance.conversionAsset.code != balance.assetCode
+        ) {
             val convertedString =
-                    getString(
-                            R.string.template_converted_amount,
-                            amountFormatter.formatAssetAmount(
-                                    balance.convertedAmount,
-                                    balance.conversionAsset
-                            )
+                getString(
+                    R.string.template_converted_amount,
+                    amountFormatter.formatAssetAmount(
+                        balance.convertedAmount,
+                        balance.conversionAsset
                     )
+                )
             balance_converted_text_view.visibility = View.VISIBLE
             balance_converted_text_view.text = convertedString
             toolbar.subtitle = convertedString
@@ -339,7 +350,7 @@ class BalanceDetailsActivity : BaseActivity() {
     private fun displayHistory() {
         val localizedName = LocalizedName(this)
         val accountId = walletInfoProvider.getWalletInfo()?.accountId
-                ?: return
+            ?: return
 
         adapter.setData(balanceChangesRepository.itemsList.map { balanceChange ->
             BalanceChangeListItem(balanceChange, accountId, localizedName)
@@ -350,10 +361,7 @@ class BalanceDetailsActivity : BaseActivity() {
     private fun adjustEmptyViewHeight() {
         root_layout.post {
             error_empty_view.layoutParams = error_empty_view.layoutParams.apply {
-                height = Math.max(
-                        root_layout.height - appbar.height,
-                        dip(256)
-                )
+                height = (root_layout.height - appbar.height).coerceAtLeast(dip(256))
             }
         }
     }

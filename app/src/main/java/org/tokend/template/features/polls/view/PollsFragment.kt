@@ -1,13 +1,13 @@
 package org.tokend.template.features.polls.view
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -19,10 +19,10 @@ import kotlinx.android.synthetic.main.include_appbar_elevation.*
 import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
+import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.features.balances.model.BalanceRecord
 import org.tokend.template.features.balances.storage.BalancesRepository
-import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.polls.logic.AddVoteUseCase
 import org.tokend.template.features.polls.logic.RemoveVoteUseCase
 import org.tokend.template.features.polls.model.PollRecord
@@ -43,8 +43,8 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject = BehaviorSubject.create<Toolbar>()
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private val allowToolbar: Boolean by lazy {
@@ -56,7 +56,7 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private val balancesRepository: BalancesRepository
-        get() = repositoryProvider.balances()
+        get() = repositoryProvider.balances
 
     private var currentAsset: AssetRecord? = null
         set(value) {
@@ -66,12 +66,16 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
 
     private val pollsRepository: PollsRepository?
         get() = currentAsset
-                ?.ownerAccountId
-                ?.let { repositoryProvider.polls(it) }
+            ?.ownerAccountId
+            ?.let { repositoryProvider.polls(it) }
 
     private val adapter = PollsAdapter()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_polls, container, false)
     }
 
@@ -112,22 +116,22 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
         val requiredOwnerAccountId = this.requiredOwnerAccountId
 
         val assets = balancesRepository
-                .itemsList
-                .map(BalanceRecord::asset)
+            .itemsList
+            .map(BalanceRecord::asset)
 
         if (requiredOwnerAccountId != null) {
             assets
-                    .find {
-                        it.ownerAccountId == requiredOwnerAccountId
+                .find {
+                    it.ownerAccountId == requiredOwnerAccountId
+                }
+                .also { requiredAsset ->
+                    if (requiredAsset != null) {
+                        currentAsset = requiredAsset
+                    } else {
+                        toolbar.subtitle = null
+                        error_empty_view.showEmpty(R.string.balance_is_required_to_see_polls)
                     }
-                    .also { requiredAsset ->
-                        if (requiredAsset != null) {
-                            currentAsset = requiredAsset
-                        } else {
-                            toolbar.subtitle = null
-                            error_empty_view.showEmpty(R.string.balance_is_required_to_see_polls)
-                        }
-                    }
+                }
         } else {
             assets.firstOrNull().also { firstAsset ->
                 if (firstAsset != null) {
@@ -167,18 +171,20 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
 
     private fun openAssetPicker() {
         object : BalancePickerBottomDialog(
-                requireContext(),
-                amountFormatter,
-                balanceComparator,
-                balancesRepository
+            requireContext(),
+            amountFormatter,
+            balanceComparator,
+            balancesRepository
         ) {
             // Available amounts are useless on this screen.
-            override fun getAvailableAmount(assetCode: String,
-                                            balance: BalanceRecord?): BigDecimal? = null
+            override fun getAvailableAmount(
+                assetCode: String,
+                balance: BalanceRecord?
+            ): BigDecimal? = null
         }
-                .show {
-                    currentAsset = it.source?.asset
-                }
+            .show {
+                currentAsset = it.source?.asset
+            }
     }
 
     private fun onAssetChanged() {
@@ -200,30 +206,32 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
         pollsDisposable?.dispose()
 
         val repository = pollsRepository
-                ?: return
+            ?: return
 
         pollsDisposable = CompositeDisposable(
-                repository
-                        .itemsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe(this::displayPolls),
-                repository
-                        .loadingSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { loadingIndicator.setLoading(it, "polls") },
-                repository
-                        .errorsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { error ->
-                            if (!adapter.hasData) {
-                                error_empty_view.showError(error,
-                                        errorHandlerFactory.getDefault()) {
-                                    update(true)
-                                }
-                            } else {
-                                errorHandlerFactory.getDefault().handle(error)
-                            }
+            repository
+                .itemsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe(this::displayPolls),
+            repository
+                .loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { loadingIndicator.setLoading(it, "polls") },
+            repository
+                .errorsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { error ->
+                    if (!adapter.hasData) {
+                        error_empty_view.showError(
+                            error,
+                            errorHandlerFactory.getDefault()
+                        ) {
+                            update(true)
                         }
+                    } else {
+                        errorHandlerFactory.getDefault().handle(error)
+                    }
+                }
         )
     }
 
@@ -233,10 +241,10 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
 
     private fun subscribeToBalances() {
         balancesRepository
-                .itemsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { onBalancesUpdated() }
-                .addTo(compositeDisposable)
+            .itemsSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { onBalancesUpdated() }
+            .addTo(compositeDisposable)
     }
 
     private fun onBalancesUpdated() {
@@ -246,75 +254,77 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
     }
 
     // region Voting
-    private fun submitVote(poll: PollRecord,
-                           choice: Int) {
+    private fun submitVote(
+        poll: PollRecord,
+        choice: Int
+    ) {
         var disposable: Disposable? = null
 
         val progress = ProgressDialogFactory.getDialog(
-                requireContext(),
-                cancelListener = { disposable?.dispose() })
+            requireContext(),
+            cancelListener = { disposable?.dispose() })
 
         disposable = AddVoteUseCase(
-                pollId = poll.id,
-                pollOwnerAccountId = poll.ownerAccountId,
-                choiceIndex = choice,
-                accountProvider = accountProvider,
-                walletInfoProvider = walletInfoProvider,
-                repositoryProvider = repositoryProvider,
-                txManager = TxManager(apiProvider)
+            pollId = poll.id,
+            pollOwnerAccountId = poll.ownerAccountId,
+            choiceIndex = choice,
+            accountProvider = accountProvider,
+            walletInfoProvider = walletInfoProvider,
+            repositoryProvider = repositoryProvider,
+            txManager = TxManager(apiProvider)
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .doOnSubscribe {
-                    progress.show()
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersCompletable())
+            .doOnSubscribe {
+                progress.show()
+            }
+            .doOnTerminate {
+                progress.dismiss()
+            }
+            .subscribeBy(
+                onComplete = {
+                    toastManager.short(R.string.vote_has_been_submitted)
+                },
+                onError = {
+                    errorHandlerFactory.getDefault().handle(it)
                 }
-                .doOnTerminate {
-                    progress.dismiss()
-                }
-                .subscribeBy(
-                        onComplete = {
-                            toastManager.short(R.string.vote_has_been_submitted)
-                        },
-                        onError = {
-                            errorHandlerFactory.getDefault().handle(it)
-                        }
-                )
-                .addTo(compositeDisposable)
+            )
+            .addTo(compositeDisposable)
     }
 
     private fun removeVote(poll: PollRecord) {
         var disposable: Disposable? = null
 
         val progress = ProgressDialogFactory.getDialog(
-                requireContext(),
-                cancelListener = { disposable?.dispose() }
+            requireContext(),
+            cancelListener = { disposable?.dispose() }
         )
 
         disposable = RemoveVoteUseCase(
-                pollId = poll.id,
-                pollOwnerAccountId = poll.ownerAccountId,
-                accountProvider = accountProvider,
-                walletInfoProvider = walletInfoProvider,
-                repositoryProvider = repositoryProvider,
-                txManager = TxManager(apiProvider)
+            pollId = poll.id,
+            pollOwnerAccountId = poll.ownerAccountId,
+            accountProvider = accountProvider,
+            walletInfoProvider = walletInfoProvider,
+            repositoryProvider = repositoryProvider,
+            txManager = TxManager(apiProvider)
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .doOnSubscribe {
-                    progress.show()
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersCompletable())
+            .doOnSubscribe {
+                progress.show()
+            }
+            .doOnTerminate {
+                progress.dismiss()
+            }
+            .subscribeBy(
+                onComplete = {
+                    toastManager.short(R.string.vote_has_been_removed)
+                },
+                onError = {
+                    errorHandlerFactory.getDefault().handle(it)
                 }
-                .doOnTerminate {
-                    progress.dismiss()
-                }
-                .subscribeBy(
-                        onComplete = {
-                            toastManager.short(R.string.vote_has_been_removed)
-                        },
-                        onError = {
-                            errorHandlerFactory.getDefault().handle(it)
-                        }
-                )
-                .addTo(compositeDisposable)
+            )
+            .addTo(compositeDisposable)
     }
     // endregion
 
@@ -325,8 +335,10 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
 
         fun newInstance(bundle: Bundle): PollsFragment = PollsFragment().withArguments(bundle)
 
-        fun getBundle(allowToolbar: Boolean,
-                      ownerAccountId: String?) = Bundle().apply {
+        fun getBundle(
+            allowToolbar: Boolean,
+            ownerAccountId: String?
+        ) = Bundle().apply {
             putString(OWNER_ACCOUNT_ID_EXTRA, ownerAccountId)
             putBoolean(ALLOW_TOOLBAR_EXTRA, allowToolbar)
         }

@@ -1,9 +1,9 @@
 package org.tokend.template.features.limits.view
 
 import android.os.Bundle
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
-import android.view.View
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_limits.*
@@ -13,8 +13,8 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.sdk.api.accounts.model.limits.LimitEntry
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.features.limits.repository.LimitsRepository
 import org.tokend.template.extensions.isMaxPossibleAmount
+import org.tokend.template.features.limits.repository.LimitsRepository
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.view.util.HorizontalSwipesGestureDetector
 import org.tokend.template.view.util.LoadingIndicatorManager
@@ -23,23 +23,23 @@ import java.lang.ref.WeakReference
 class LimitsActivity : BaseActivity() {
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private val limitsRepository: LimitsRepository
-        get() = repositoryProvider.limits()
+        get() = repositoryProvider.limits
 
     private val assets: Map<String, List<LimitEntry>>
         get() = limitsRepository.item?.entriesByAssetMap
-                ?.filter {
-                    it.value.any { entry ->
-                        !entry.limit.daily.isMaxPossibleAmount()
-                                || !entry.limit.weekly.isMaxPossibleAmount()
-                                || !entry.limit.monthly.isMaxPossibleAmount()
-                                || !entry.limit.annual.isMaxPossibleAmount()
-                    }
-                } ?: emptyMap()
+            ?.filter {
+                it.value.any { entry ->
+                    !entry.limit.daily.isMaxPossibleAmount()
+                            || !entry.limit.weekly.isMaxPossibleAmount()
+                            || !entry.limit.monthly.isMaxPossibleAmount()
+                            || !entry.limit.annual.isMaxPossibleAmount()
+                }
+            } ?: emptyMap()
 
     private var asset: String = ""
         set(value) {
@@ -70,7 +70,12 @@ class LimitsActivity : BaseActivity() {
 
     private fun initEmptyErrorView() {
         error_empty_view.setEmptyDrawable(R.drawable.ic_insert_chart)
-        error_empty_view.setPadding(0, resources.getDimensionPixelSize(R.dimen.standard_padding), 0, 0)
+        error_empty_view.setPadding(
+            0,
+            resources.getDimensionPixelSize(R.dimen.standard_padding),
+            0,
+            0
+        )
     }
 
     private fun initSwipeRefresh() {
@@ -83,12 +88,12 @@ class LimitsActivity : BaseActivity() {
         val weakTabs = WeakReference(appbar_tabs)
 
         val gestureDetector = GestureDetectorCompat(this, HorizontalSwipesGestureDetector(
-                onSwipeToLeft = {
-                    weakTabs.get()?.apply { selectedItemIndex++ }
-                },
-                onSwipeToRight = {
-                    weakTabs.get()?.apply { selectedItemIndex-- }
-                }
+            onSwipeToLeft = {
+                weakTabs.get()?.apply { selectedItemIndex++ }
+            },
+            onSwipeToRight = {
+                weakTabs.get()?.apply { selectedItemIndex-- }
+            }
         ))
 
         swipe_refresh.setTouchEventInterceptor(gestureDetector::onTouchEvent)
@@ -107,10 +112,10 @@ class LimitsActivity : BaseActivity() {
     private fun updateCards(asset: String) {
         limit_cards_holder.removeAllViews()
         limitsRepository.item?.getAssetEntries(asset)
-                ?.let { entries ->
-                    LimitCardsProvider(this, asset, entries, amountFormatter)
-                            .addTo(limit_cards_holder)
-                }
+            ?.let { entries ->
+                LimitCardsProvider(this, asset, entries, amountFormatter)
+                    .addTo(limit_cards_holder)
+            }
     }
 
     private fun onLimitsUpdated() {
@@ -129,27 +134,27 @@ class LimitsActivity : BaseActivity() {
     private fun subscribeLimits() {
         limitsDisposable?.dispose()
         limitsDisposable = CompositeDisposable(
-                limitsRepository.itemSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            onLimitsUpdated()
-                        },
-                limitsRepository.errorsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { error ->
-                            if (limitsRepository.isNeverUpdated) {
-                                error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
-                                    update(true)
-                                }
-                            } else {
-                                errorHandlerFactory.getDefault().handle(error)
-                            }
-                        },
-                limitsRepository.loadingSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { isLoading ->
-                            loadingIndicator.setLoading(isLoading, "limits")
+            limitsRepository.itemSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    onLimitsUpdated()
+                },
+            limitsRepository.errorsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { error ->
+                    if (limitsRepository.isNeverUpdated) {
+                        error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
+                            update(true)
                         }
+                    } else {
+                        errorHandlerFactory.getDefault().handle(error)
+                    }
+                },
+            limitsRepository.loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { isLoading ->
+                    loadingIndicator.setLoading(isLoading, "limits")
+                }
         ).also { it.addTo(compositeDisposable) }
     }
 

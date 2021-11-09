@@ -32,11 +32,11 @@ import org.tokend.template.view.util.*
 class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
 
     private val assetPairsRepository: AssetPairsRepository
-        get() = repositoryProvider.assetPairs()
+        get() = repositoryProvider.assetPairs
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
@@ -66,7 +66,11 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
             }
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_trade_asset_pairs, container, false)
     }
 
@@ -103,12 +107,12 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
 
             searchManager.queryHint = getString(R.string.search)
             searchManager
-                    .queryChanges
-                    .compose(ObservableTransformers.defaultSchedulers())
-                    .subscribe { newValue ->
-                        filter = newValue.takeIf { it.isNotEmpty() }
-                    }
-                    .addTo(compositeDisposable)
+                .queryChanges
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { newValue ->
+                    filter = newValue.takeIf { it.isNotEmpty() }
+                }
+                .addTo(compositeDisposable)
 
             this.searchItem = searchItem
         } catch (e: Exception) {
@@ -134,14 +138,14 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
         asset_pairs_recycler_view.layoutManager = layoutManager
         asset_pairs_recycler_view.adapter = pairsAdapter
         (asset_pairs_recycler_view.itemAnimator as? SimpleItemAnimator)
-                ?.supportsChangeAnimations = false
+            ?.supportsChangeAnimations = false
 
         error_empty_view.setEmptyDrawable(R.drawable.ic_trade)
         error_empty_view.observeAdapter(pairsAdapter, R.string.error_no_tradeable_pairs)
         error_empty_view.setEmptyViewDenial { assetPairsRepository.isNeverUpdated }
 
         pairsAdapter.registerAdapterDataObserver(
-                ScrollOnTopItemUpdateAdapterObserver(asset_pairs_recycler_view)
+            ScrollOnTopItemUpdateAdapterObserver(asset_pairs_recycler_view)
         )
         pairsAdapter.onItemClick { _, item ->
             item.source?.let { assetPair ->
@@ -159,14 +163,15 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun initHorizontalSwipes() {
-        val gestureDetector = GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
+        val gestureDetector =
+            GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
                 onSwipeToLeft = {
                     pairs_tabs.apply { selectedItemIndex++ }
                 },
                 onSwipeToRight = {
                     pairs_tabs.apply { selectedItemIndex-- }
                 }
-        ))
+            ))
 
         swipe_refresh.setTouchEventInterceptor { motionEvent ->
             gestureDetector.onTouchEvent(motionEvent)
@@ -177,30 +182,30 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
 
     private fun subscribeToAssetPairs() {
         assetPairsRepository
-                .loadingSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { loadingIndicator.setLoading(it) }
-                .addTo(compositeDisposable)
+            .loadingSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { loadingIndicator.setLoading(it) }
+            .addTo(compositeDisposable)
 
         assetPairsRepository
-                .errorsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { error ->
-                    if (!pairsAdapter.hasData) {
-                        error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
-                            update(true)
-                        }
-                    } else {
-                        errorHandlerFactory.getDefault().handle(error)
+            .errorsSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { error ->
+                if (!pairsAdapter.hasData) {
+                    error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
+                        update(true)
                     }
+                } else {
+                    errorHandlerFactory.getDefault().handle(error)
                 }
-                .addTo(compositeDisposable)
+            }
+            .addTo(compositeDisposable)
 
         assetPairsRepository
-                .itemsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { displayQuotes() }
-                .addTo(compositeDisposable)
+            .itemsSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { displayQuotes() }
+            .addTo(compositeDisposable)
     }
 
     private fun onFilterChanged() {
@@ -213,31 +218,31 @@ class TradeAssetPairsFragment : BaseFragment(), ToolbarProvider {
 
     private fun displayPairs() {
         val items = assetPairsRepository
-                .itemsList
-                .filter { it.isTradeable() && it.quote.code == quoteAsset }
-                .map(::AssetPairListItem)
-                .sortedWith(comparator)
-                .let { items ->
-                    filter?.let {
-                        items.filter { item ->
-                            SearchUtil.isMatchGeneralCondition(
-                                    it,
-                                    item.baseAsset.code
-                            )
-                        }
-                    } ?: items
-                }
+            .itemsList
+            .filter { it.isTradeable() && it.quote.code == quoteAsset }
+            .map(::AssetPairListItem)
+            .sortedWith(comparator)
+            .let { items ->
+                filter?.let {
+                    items.filter { item ->
+                        SearchUtil.isMatchGeneralCondition(
+                            it,
+                            item.baseAsset.code
+                        )
+                    }
+                } ?: items
+            }
 
         pairsAdapter.setData(items)
     }
 
     private fun displayQuotes() {
         val quotes = assetPairsRepository
-                .itemsList
-                .filter { it.isTradeable() }
-                .map(AssetPairRecord::quote)
-                .distinct()
-                .sortedWith(assetComparator)
+            .itemsList
+            .filter { it.isTradeable() }
+            .map(AssetPairRecord::quote)
+            .distinct()
+            .sortedWith(assetComparator)
 
         if (quotes.isEmpty()) {
             pairs_tabs.visibility = View.GONE

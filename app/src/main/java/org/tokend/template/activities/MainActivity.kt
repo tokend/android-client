@@ -62,7 +62,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     private var toolbar: Toolbar? = null
 
     private val activeKycRepository: ActiveKycRepository
-        get() = repositoryProvider.activeKyc()
+        get() = repositoryProvider.activeKyc
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)

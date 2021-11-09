@@ -59,8 +59,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private var isCoinpaymentsBindingARenewal = false
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private var currentAsset: AssetRecord? = null
@@ -72,9 +72,9 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private val externalAccount: AccountRecord.DepositAccount?
         get() {
             val account = accountRepository.item
-                    ?: return null
+                ?: return null
             val asset = currentAsset
-                    ?: return null
+                ?: return null
 
             return account.getDepositAccount(asset)
         }
@@ -87,14 +87,18 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     private val adapter = DetailsItemsAdapter()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_deposit, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        accountRepository = repositoryProvider.account()
-        assetsRepository = repositoryProvider.assets()
+        accountRepository = repositoryProvider.account
+        assetsRepository = repositoryProvider.assets
     }
 
     override fun onInitAllowed() {
@@ -117,21 +121,21 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private fun subscribeToAccount() {
         accountDisposable?.dispose()
         accountDisposable = CompositeDisposable(
-                accountRepository.itemSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            displayAddress()
-                        },
-                accountRepository.loadingSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            loadingIndicator.setLoading(it, "account")
-                        },
-                accountRepository.errorsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            errorHandlerFactory.getDefault().handle(it)
-                        }
+            accountRepository.itemSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    displayAddress()
+                },
+            accountRepository.loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    loadingIndicator.setLoading(it, "account")
+                },
+            accountRepository.errorsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    errorHandlerFactory.getDefault().handle(it)
+                }
         ).also { it.addTo(compositeDisposable) }
     }
 
@@ -139,27 +143,27 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private fun subscribeToAssets() {
         assetsDisposable?.dispose()
         assetsDisposable = CompositeDisposable(
-                assetsRepository.itemsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            initAssets(it)
-                        },
-                assetsRepository.loadingSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            loadingIndicator.setLoading(it, "assets")
-                        },
-                assetsRepository.errorsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            if (assetsRepository.isNeverUpdated) {
-                                error_empty_view.showError(it, errorHandlerFactory.getDefault()) {
-                                    update()
-                                }
-                            } else {
-                                errorHandlerFactory.getDefault().handle(it)
-                            }
+            assetsRepository.itemsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    initAssets(it)
+                },
+            assetsRepository.loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    loadingIndicator.setLoading(it, "assets")
+                },
+            assetsRepository.errorsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    if (assetsRepository.isNeverUpdated) {
+                        error_empty_view.showError(it, errorHandlerFactory.getDefault()) {
+                            update()
                         }
+                    } else {
+                        errorHandlerFactory.getDefault().handle(it)
+                    }
+                }
         ).also { it.addTo(compositeDisposable) }
     }
     // endregion
@@ -186,11 +190,11 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
                 EXISTING_ADDRESS_ITEM_ID -> {
                     val content = item.text ?: return@onItemClick
                     CopyDataDialogFactory.getDialog(
-                            requireContext(),
-                            content,
-                            getString(R.string.personal_address),
-                            toastManager,
-                            getString(R.string.deposit_address_copied)
+                        requireContext(),
+                        content,
+                        getString(R.string.personal_address),
+                        toastManager,
+                        getString(R.string.deposit_address_copied)
                     )
                 }
             }
@@ -203,8 +207,8 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     private fun initAssets(assets: List<AssetRecord>) {
         val depositableAssets = assets
-                .filter { it.isActive && it.isDepositable }
-                .sortedWith(assetComparator)
+            .filter { it.isActive && it.isDepositable }
+            .sortedWith(assetComparator)
 
         if (depositableAssets.isEmpty()) {
             appbar_tabs.visibility = View.GONE
@@ -226,15 +230,15 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         }
 
         appbar_tabs.setItems(
-                depositableAssets.map {
-                    PickerItem(it.code, it)
-                },
-                depositableAssets.indexOfFirst { it.code == currentAsset?.code }
+            depositableAssets.map {
+                PickerItem(it.code, it)
+            },
+            depositableAssets.indexOfFirst { it.code == currentAsset?.code }
         )
 
         if (!requestedAssetSet) {
             appbar_tabs.selectedItemIndex =
-                    depositableAssets.indexOfFirst { it.code == requestedAssetCode }
+                depositableAssets.indexOfFirst { it.code == requestedAssetCode }
             requestedAssetSet = true
         }
     }
@@ -242,14 +246,15 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private fun initHorizontalSwipes() {
         val weakTabs = WeakReference(appbar_tabs)
 
-        val gestureDetector = GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
+        val gestureDetector =
+            GestureDetectorCompat(requireContext(), HorizontalSwipesGestureDetector(
                 onSwipeToLeft = {
                     weakTabs.get()?.apply { selectedItemIndex++ }
                 },
                 onSwipeToRight = {
                     weakTabs.get()?.apply { selectedItemIndex-- }
                 }
-        ))
+            ))
 
         swipe_refresh.setTouchEventInterceptor { motionEvent ->
             gestureDetector.onTouchEvent(motionEvent)
@@ -330,25 +335,25 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         no_address_layout.visibility = View.GONE
         details_list.visibility = View.VISIBLE
         adapter.addOrUpdateItem(
-                DetailsItem(
-                        id = EXISTING_ADDRESS_ITEM_ID,
-                        text = address,
-                        singleLineText = true,
-                        hint = getString(R.string.to_make_deposit_send_asset, currentAsset?.code),
-                        header = getString(R.string.personal_address),
-                        icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_forward)
-                )
+            DetailsItem(
+                id = EXISTING_ADDRESS_ITEM_ID,
+                text = address,
+                singleLineText = true,
+                hint = getString(R.string.to_make_deposit_send_asset, currentAsset?.code),
+                header = getString(R.string.personal_address),
+                icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_forward)
+            )
         )
 
         if (payload != null) {
             adapter.addOrUpdateItem(
-                    DetailsItem(
-                            id = PAYLOAD_ITEM_ID,
-                            text = payload,
-                            singleLineText = true,
-                            hint = getString(R.string.address_payload),
-                            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_package)
-                    )
+                DetailsItem(
+                    id = PAYLOAD_ITEM_ID,
+                    text = payload,
+                    singleLineText = true,
+                    hint = getString(R.string.address_payload),
+                    icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_package)
+                )
             )
         }
 
@@ -356,27 +361,28 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             openQr()
         }
         adapter.addData(
-                DetailsItem(
-                        id = SHARE_ITEM__ID,
-                        extraView = shareButton
-                )
+            DetailsItem(
+                id = SHARE_ITEM__ID,
+                extraView = shareButton
+            )
         )
 
         if (expirationDate != null) {
             updateExpirationDate(expirationDate)
 
             val renewButton =
-                    ExtraViewProvider.getButton(
-                            requireContext(),
-                            R.string.renew_personal_address_action) {
-                        bindDepositAccount(true)
-                    }
+                ExtraViewProvider.getButton(
+                    requireContext(),
+                    R.string.renew_personal_address_action
+                ) {
+                    bindDepositAccount(true)
+                }
 
             adapter.addData(
-                    DetailsItem(
-                            id = RENEW_ITEM_ID,
-                            extraView = renewButton
-                    )
+                DetailsItem(
+                    id = RENEW_ITEM_ID,
+                    extraView = renewButton
+                )
             )
         }
     }
@@ -385,7 +391,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         details_list.visibility = View.GONE
         no_address_layout.visibility = View.VISIBLE
         no_address_text_view.text = getString(
-                R.string.template_no_personal_asset_address, currentAsset?.code
+            R.string.template_no_personal_asset_address, currentAsset?.code
         )
     }
 
@@ -398,14 +404,14 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         }
 
         adapter.addOrUpdateItem(
-                DetailsItem(
-                        id = EXPIRATION_ITEM_ID,
-                        text = DateFormatters.long(requireActivity()).format(expirationDate),
-                        singleLineText = true,
-                        textColor = ContextCompat.getColor(requireContext(), colorId),
-                        header = getString(R.string.deposit_address_expiration_date),
-                        icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_calendar)
-                )
+            DetailsItem(
+                id = EXPIRATION_ITEM_ID,
+                text = DateFormatters.long(requireActivity()).format(expirationDate),
+                singleLineText = true,
+                textColor = ContextCompat.getColor(requireContext(), colorId),
+                header = getString(R.string.deposit_address_expiration_date),
+                icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_calendar)
+            )
         )
     }
 
@@ -417,12 +423,12 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
             }
 
             Navigator.from(this).openQrShare(
-                    title =
-                    "${getString(R.string.deposit_title)} ${appbar_tabs.selectedItem?.text}",
-                    data = it.address,
-                    shareLabel = getString(R.string.share_address_label),
-                    shareText = getAddressShareMessage(),
-                    bottomText = payload
+                title =
+                "${getString(R.string.deposit_title)} ${appbar_tabs.selectedItem?.text}",
+                data = it.address,
+                shareLabel = getString(R.string.share_address_label),
+                shareText = getAddressShareMessage(),
+                bottomText = payload
             )
         }
     }
@@ -430,16 +436,20 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     private fun getAddressShareMessage(): String? {
         return externalAccount?.let { externalAccount ->
 
-            val address = getString(R.string.template_deposit_address,
-                    currentAsset?.code, externalAccount.address)
+            val address = getString(
+                R.string.template_deposit_address,
+                currentAsset?.code, externalAccount.address
+            )
 
             val payload = externalAccount.payload?.let {
                 getString(R.string.template_deposit_payload, it)
             } ?: ""
 
             val expire = externalAccount.expirationDate?.let {
-                getString(R.string.template_deposit_expiration,
-                        DateFormatters.compact(requireActivity()).format(it))
+                getString(
+                    R.string.template_deposit_expiration,
+                    DateFormatters.compact(requireActivity()).format(it)
+                )
             } ?: ""
 
             address + payload + expire
@@ -449,7 +459,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
 
     private fun bindDepositAccount(isRenewal: Boolean = false) {
         val asset = currentAsset
-                ?: return
+            ?: return
 
         when {
             asset.isConnectedToCoinpayments ->
@@ -462,14 +472,16 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
     /**
      * Will request amount input.
      */
-    private fun bindCoinpaymentsDepositAccount(asset: Asset,
-                                               isRenewal: Boolean) {
+    private fun bindCoinpaymentsDepositAccount(
+        asset: Asset,
+        isRenewal: Boolean
+    ) {
         coinpaymentsBindingAsset = asset
         isCoinpaymentsBindingARenewal = isRenewal
         Navigator.from(this)
-                .openDepositAmountInput(asset.code)
-                .addTo(activityRequestsBag)
-                .doOnSuccess(this::bindCoinpaymentsDepositAccount)
+            .openDepositAmountInput(asset.code)
+            .addTo(activityRequestsBag)
+            .doOnSuccess(this::bindCoinpaymentsDepositAccount)
     }
 
     /**
@@ -478,73 +490,77 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
      */
     private fun bindCoinpaymentsDepositAccount(amount: BigDecimal) {
         val useCase = BindCoinpaymentsDepositAccountUseCase(
-                asset = coinpaymentsBindingAsset,
-                amount = amount,
-                apiProvider = apiProvider,
-                amountFormatter = amountFormatter,
-                txManager = TxManager(apiProvider),
-                accountProvider = accountProvider,
-                systemInfoRepository = repositoryProvider.systemInfo(),
-                balancesRepository = repositoryProvider.balances(),
-                accountRepository = accountRepository,
-                walletInfoProvider = walletInfoProvider
+            asset = coinpaymentsBindingAsset,
+            amount = amount,
+            apiProvider = apiProvider,
+            amountFormatter = amountFormatter,
+            txManager = TxManager(apiProvider),
+            accountProvider = accountProvider,
+            systemInfoRepository = repositoryProvider.systemInfo,
+            balancesRepository = repositoryProvider.balances,
+            accountRepository = accountRepository,
+            walletInfoProvider = walletInfoProvider
         )
 
         bindDepositAccount(useCase, isCoinpaymentsBindingARenewal)
     }
 
-    private fun bindExternalSystemDepositAccount(assetCode: String,
-                                                 externalSystemType: Int,
-                                                 isRenewal: Boolean) {
+    private fun bindExternalSystemDepositAccount(
+        assetCode: String,
+        externalSystemType: Int,
+        isRenewal: Boolean
+    ) {
         val useCase = BindExternalSystemDepositAccountUseCase(
-                asset = assetCode,
-                externalSystemType = externalSystemType,
-                walletInfoProvider = walletInfoProvider,
-                systemInfoRepository = repositoryProvider.systemInfo(),
-                balancesRepository = repositoryProvider.balances(),
-                accountRepository = accountRepository,
-                accountProvider = accountProvider,
-                txManager = TxManager(apiProvider)
+            asset = assetCode,
+            externalSystemType = externalSystemType,
+            walletInfoProvider = walletInfoProvider,
+            systemInfoRepository = repositoryProvider.systemInfo,
+            balancesRepository = repositoryProvider.balances,
+            accountRepository = accountRepository,
+            accountProvider = accountProvider,
+            txManager = TxManager(apiProvider)
         )
 
         bindDepositAccount(useCase, isRenewal)
     }
 
-    private fun bindDepositAccount(useCase: BindDepositAccountUseCase,
-                                   isRenewal: Boolean) {
+    private fun bindDepositAccount(
+        useCase: BindDepositAccountUseCase,
+        isRenewal: Boolean
+    ) {
         val progress = ProgressDialogFactory.getDialog(requireContext())
 
         useCase
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .doOnSubscribe {
-                    progress.show()
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersCompletable())
+            .doOnSubscribe {
+                progress.show()
+            }
+            .doOnTerminate {
+                progress.dismiss()
+            }
+            .subscribeBy(
+                onComplete = {
+                    if (isRenewal) {
+                        toastManager.long(getString(R.string.deposit_address_renewed))
+                    }
+                },
+                onError = {
+                    if (it is BindDepositAccountUseCase.NoAvailableDepositAccountException) {
+                        displayEmptyPoolError()
+                    } else {
+                        errorHandlerFactory.getDefault().handle(it)
+                    }
                 }
-                .doOnTerminate {
-                    progress.dismiss()
-                }
-                .subscribeBy(
-                        onComplete = {
-                            if (isRenewal) {
-                                toastManager.long(getString(R.string.deposit_address_renewed))
-                            }
-                        },
-                        onError = {
-                            if (it is BindDepositAccountUseCase.NoAvailableDepositAccountException) {
-                                displayEmptyPoolError()
-                            } else {
-                                errorHandlerFactory.getDefault().handle(it)
-                            }
-                        }
-                )
+            )
     }
 
     private fun displayEmptyPoolError() {
         AlertDialog.Builder(requireContext(), R.style.AlertDialogStyle)
-                .setTitle(R.string.no_addresses_in_pool_title)
-                .setMessage(R.string.no_addresses_in_pool_explanation)
-                .setPositiveButton(R.string.ok, null)
-                .show()
+            .setTitle(R.string.no_addresses_in_pool_title)
+            .setMessage(R.string.no_addresses_in_pool_explanation)
+            .setPositiveButton(R.string.ok, null)
+            .show()
     }
 
     companion object {
@@ -560,7 +576,7 @@ class DepositFragment : BaseFragment(), ToolbarProvider {
         private val RENEW_ITEM_ID = "renew".hashCode().toLong()
 
         fun newInstance(bundle: Bundle): DepositFragment =
-                DepositFragment().withArguments(bundle)
+            DepositFragment().withArguments(bundle)
 
         fun getBundle(assetCode: String? = null) = Bundle().apply {
             putString(EXTRA_ASSET, assetCode)

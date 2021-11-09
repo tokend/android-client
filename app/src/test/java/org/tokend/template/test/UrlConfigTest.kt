@@ -19,8 +19,10 @@ class UrlConfigTest {
 
         val config = GsonFactory().getBaseGson().fromJson(source, UrlConfig::class.java)
 
-        Assert.assertEquals("Client URL must be obtained from legacy field",
-                client, config.client)
+        Assert.assertEquals(
+            "Client URL must be obtained from legacy field",
+            client, config.client
+        )
     }
 
     @Test
@@ -34,10 +36,14 @@ class UrlConfigTest {
 
         val config = GsonFactory().getBaseGson().fromJson(source, UrlConfig::class.java)
 
-        Assert.assertEquals("Client URL must be obtained from JSON",
-                client, config.client)
-        Assert.assertEquals("Terms URL must be created from client URL",
-                terms, config.terms)
+        Assert.assertEquals(
+            "Client URL must be obtained from JSON",
+            client, config.client
+        )
+        Assert.assertEquals(
+            "Terms URL must be created from client URL",
+            terms, config.terms
+        )
     }
 
     @Test
@@ -47,12 +53,18 @@ class UrlConfigTest {
 
         val config = UrlConfig(source, source, source)
 
-        Assert.assertTrue("Protocol is required for API URL",
-                config.api.startsWith(protocolPrefix))
-        Assert.assertTrue("Protocol is required for storage URL",
-                config.storage.startsWith(protocolPrefix))
-        Assert.assertTrue("Protocol is required for client URL",
-                config.client.startsWith(protocolPrefix))
+        Assert.assertTrue(
+            "Protocol is required for API URL",
+            config.api.startsWith(protocolPrefix)
+        )
+        Assert.assertTrue(
+            "Protocol is required for storage URL",
+            config.storage.startsWith(protocolPrefix)
+        )
+        Assert.assertTrue(
+            "Protocol is required for client URL",
+            config.client.startsWith(protocolPrefix)
+        )
     }
 
     @Test
@@ -62,12 +74,18 @@ class UrlConfigTest {
 
         val config = UrlConfig(source, source, source)
 
-        Assert.assertTrue("Protocol must be saved in API URL",
-                config.api.startsWith(protocolPrefix))
-        Assert.assertTrue("Protocol must be saved in storage URL",
-                config.storage.startsWith(protocolPrefix))
-        Assert.assertTrue("Protocol must be saved in client URL",
-                config.client.startsWith(protocolPrefix))
+        Assert.assertTrue(
+            "Protocol must be saved in API URL",
+            config.api.startsWith(protocolPrefix)
+        )
+        Assert.assertTrue(
+            "Protocol must be saved in storage URL",
+            config.storage.startsWith(protocolPrefix)
+        )
+        Assert.assertTrue(
+            "Protocol must be saved in client URL",
+            config.client.startsWith(protocolPrefix)
+        )
     }
 
     @Test
@@ -76,12 +94,18 @@ class UrlConfigTest {
 
         val config = UrlConfig(source, source, source)
 
-        Assert.assertTrue("Trailing slash is required for API URL",
-                config.api.endsWith('/'))
-        Assert.assertTrue("Trailing slash is required for storage URL",
-                config.storage.endsWith('/'))
-        Assert.assertTrue("Trailing slash is required for client URL",
-                config.client.endsWith('/'))
+        Assert.assertTrue(
+            "Trailing slash is required for API URL",
+            config.api.endsWith('/')
+        )
+        Assert.assertTrue(
+            "Trailing slash is required for storage URL",
+            config.storage.endsWith('/')
+        )
+        Assert.assertTrue(
+            "Trailing slash is required for client URL",
+            config.client.endsWith('/')
+        )
     }
 
     @Test
@@ -90,11 +114,17 @@ class UrlConfigTest {
 
         val config = UrlConfig(source, source, source)
 
-        Assert.assertEquals("No modifications are required for the source API URL",
-                source, config.api)
-        Assert.assertEquals("No modifications are required for the source storage URL",
-                source, config.storage)
-        Assert.assertEquals("No modifications are required for the source client URL",
-                source, config.client)
+        Assert.assertEquals(
+            "No modifications are required for the source API URL",
+            source, config.api
+        )
+        Assert.assertEquals(
+            "No modifications are required for the source storage URL",
+            source, config.storage
+        )
+        Assert.assertEquals(
+            "No modifications are required for the source client URL",
+            source, config.client
+        )
     }
 }

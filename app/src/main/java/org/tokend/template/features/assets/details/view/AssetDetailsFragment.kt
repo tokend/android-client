@@ -2,9 +2,6 @@ package org.tokend.template.features.assets.details.view
 
 import android.app.Activity
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
-import androidx.cardview.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +9,9 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -21,11 +21,11 @@ import kotlinx.android.synthetic.main.layout_progress.*
 import kotlinx.android.synthetic.main.list_item_asset.*
 import kotlinx.android.synthetic.main.list_item_asset.view.*
 import org.tokend.template.R
-import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.extensions.withArguments
 import org.tokend.template.features.assets.adapter.AssetListItem
 import org.tokend.template.features.assets.adapter.AssetListItemViewHolder
 import org.tokend.template.features.assets.logic.CreateBalanceUseCase
+import org.tokend.template.features.assets.model.AssetRecord
 import org.tokend.template.fragments.BaseFragment
 import org.tokend.template.logic.TxManager
 import org.tokend.template.util.FileDownloader
@@ -46,17 +46,21 @@ open class AssetDetailsFragment : BaseFragment() {
     }
 
     protected val balanceId: String?
-        get() = repositoryProvider.balances().itemsList
-                .find { it.assetCode == asset.code }?.id
+        get() = repositoryProvider.balances.itemsList
+            .find { it.assetCode == asset.code }?.id
 
     private lateinit var fileDownloader: FileDownloader
 
     protected val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { progress.show() },
-            hideLoading = { progress.hide() }
+        showLoading = { progress.show() },
+        hideLoading = { progress.hide() }
     )
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_asset_details, container, false)
         val card = view.asset_card
         card.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
@@ -67,38 +71,38 @@ open class AssetDetailsFragment : BaseFragment() {
             }
         })
         fileDownloader = FileDownloader(
-                requireActivity(),
-                urlConfigProvider.getConfig().storage,
-                toastManager
+            requireActivity(),
+            urlConfigProvider.getConfig().storage,
+            toastManager
         )
         return view
     }
 
     override fun onInitAllowed() {
         getAsset()
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe { loadingIndicator.show() }
-                .doOnEvent { _, _ -> loadingIndicator.hide() }
-                .subscribeBy(
-                        onSuccess = {
-                            asset = it
-                            displayDetails()
-                            initButtons()
-                        },
-                        onError = {
-                            errorHandlerFactory.getDefault().handle(it)
-                        }
-                )
-                .addTo(compositeDisposable)
+            .compose(ObservableTransformers.defaultSchedulersSingle())
+            .doOnSubscribe { loadingIndicator.show() }
+            .doOnEvent { _, _ -> loadingIndicator.hide() }
+            .subscribeBy(
+                onSuccess = {
+                    asset = it
+                    displayDetails()
+                    initButtons()
+                },
+                onError = {
+                    errorHandlerFactory.getDefault().handle(it)
+                }
+            )
+            .addTo(compositeDisposable)
     }
 
     private fun getAsset(): Single<AssetRecord> {
         return (arguments?.getSerializable(ASSET_EXTRA) as? AssetRecord)
-                .toMaybe()
-                .switchIfEmpty(
-                        assetCode?.let { repositoryProvider.assets().getSingle(it) }
-                                ?: Single.error(IllegalStateException("Unable to obtain asset"))
-                )
+            .toMaybe()
+            .switchIfEmpty(
+                assetCode?.let { repositoryProvider.assets.getSingle(it) }
+                    ?: Single.error(IllegalStateException("Unable to obtain asset"))
+            )
     }
 
     // region Display
@@ -110,22 +114,34 @@ open class AssetDetailsFragment : BaseFragment() {
 
     private fun displayLogoAndName() {
         AssetListItemViewHolder(asset_card).bind(
-                AssetListItem(asset, balanceId)
+            AssetListItem(asset, balanceId)
         )
     }
 
     protected open fun displaySummary() {
         val card = InfoCard(cards_layout)
-                .setHeading(R.string.asset_summary_title, null)
-                .addRow(R.string.asset_available,
-                        amountFormatter.formatAssetAmount(asset.available, asset,
-                                withAssetCode = false))
-                .addRow(R.string.asset_issued,
-                        amountFormatter.formatAssetAmount(asset.issued, asset,
-                                withAssetCode = false))
-                .addRow(R.string.asset_maximum,
-                        amountFormatter.formatAssetAmount(asset.maximum, asset,
-                                withAssetCode = false))
+            .setHeading(R.string.asset_summary_title, null)
+            .addRow(
+                R.string.asset_available,
+                amountFormatter.formatAssetAmount(
+                    asset.available, asset,
+                    withAssetCode = false
+                )
+            )
+            .addRow(
+                R.string.asset_issued,
+                amountFormatter.formatAssetAmount(
+                    asset.issued, asset,
+                    withAssetCode = false
+                )
+            )
+            .addRow(
+                R.string.asset_maximum,
+                amountFormatter.formatAssetAmount(
+                    asset.maximum, asset,
+                    withAssetCode = false
+                )
+            )
 
         card.addRow("", null)
 
@@ -143,18 +159,22 @@ open class AssetDetailsFragment : BaseFragment() {
     }
 
     private fun displayTermsIfNeeded() {
-        val terms = asset.terms?.takeIf { !it.name.isNullOrEmpty() }
-                ?: return
+        val terms = asset.terms?.takeIf { it.name.isNotEmpty() }
+            ?: return
 
         val fileCardView =
-                layoutInflater.inflate(R.layout.list_item_remote_file,
-                        cards_layout, false)
+            layoutInflater.inflate(
+                R.layout.list_item_remote_file,
+                cards_layout, false
+            )
 
         val fileLayout = fileCardView?.findViewById<View>(R.id.file_content_layout) ?: return
         (fileCardView as? CardView)?.removeView(fileLayout)
 
-        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT)
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
         fileLayout.layoutParams = layoutParams
 
         fileLayout.setOnClickListener {
@@ -166,12 +186,12 @@ open class AssetDetailsFragment : BaseFragment() {
 
         val fileIconImageView = fileLayout.findViewById<ImageView>(R.id.file_icon_image_view)
         fileIconImageView.setImageDrawable(
-                ContextCompat.getDrawable(this.requireContext(), R.drawable.ic_file_download_outline)
+            ContextCompat.getDrawable(this.requireContext(), R.drawable.ic_file_download_outline)
         )
 
         InfoCard(cards_layout)
-                .setHeading(R.string.asset_terms_of_use, null)
-                .addView(fileLayout)
+            .setHeading(R.string.asset_terms_of_use, null)
+            .addView(fileLayout)
     }
     // endregion
 
@@ -192,38 +212,38 @@ open class AssetDetailsFragment : BaseFragment() {
 
     private fun createBalanceWithConfirmation() {
         AlertDialog.Builder(this.requireContext(), R.style.AlertDialogStyle)
-                .setMessage(resources.getString(R.string.create_balance_confirmation, asset.code))
-                .setPositiveButton(R.string.yes) { _, _ ->
-                    createBalance()
-                }
-                .setNegativeButton(R.string.no, null)
-                .show()
+            .setMessage(resources.getString(R.string.create_balance_confirmation, asset.code))
+            .setPositiveButton(R.string.yes) { _, _ ->
+                createBalance()
+            }
+            .setNegativeButton(R.string.no, null)
+            .show()
     }
 
     private fun createBalance() {
         val progress = ProgressDialogFactory.getDialog(requireContext())
 
         CreateBalanceUseCase(
-                asset.code,
-                repositoryProvider.balances(),
-                repositoryProvider.systemInfo(),
-                accountProvider,
-                TxManager(apiProvider)
+            asset.code,
+            repositoryProvider.balances,
+            repositoryProvider.systemInfo,
+            accountProvider,
+            TxManager(apiProvider)
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .doOnSubscribe {
-                    progress.show()
-                }
-                .doOnTerminate {
-                    progress.dismiss()
-                }
-                .subscribeBy(
-                        onComplete = {
-                            onBalanceCreated()
-                        },
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersCompletable())
+            .doOnSubscribe {
+                progress.show()
+            }
+            .doOnTerminate {
+                progress.dismiss()
+            }
+            .subscribeBy(
+                onComplete = {
+                    onBalanceCreated()
+                },
+                onError = { errorHandlerFactory.getDefault().handle(it) }
+            )
 
     }
 
@@ -235,7 +255,11 @@ open class AssetDetailsFragment : BaseFragment() {
         initButtons()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         fileDownloader.handlePermissionResult(requestCode, permissions, grantResults)
     }
@@ -246,7 +270,7 @@ open class AssetDetailsFragment : BaseFragment() {
         const val BALANCE_CREATION_EXTRA = "balance_creation"
 
         fun newInstance(bundle: Bundle): AssetDetailsFragment =
-                AssetDetailsFragment().withArguments(bundle)
+            AssetDetailsFragment().withArguments(bundle)
 
         fun getBundle(assetCode: String, balanceCreation: Boolean) = Bundle().apply {
             putSerializable(ASSET_CODE_EXTRA, assetCode)

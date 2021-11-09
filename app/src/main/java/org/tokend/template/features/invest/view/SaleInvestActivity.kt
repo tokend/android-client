@@ -47,19 +47,19 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
 
 
     private val mainLoading = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private val investLoading = LoadingIndicatorManager(
-            showLoading = { (invest_progress as? ContentLoadingProgressBar)?.show() },
-            hideLoading = { (invest_progress as? ContentLoadingProgressBar)?.hide() }
+        showLoading = { (invest_progress as? ContentLoadingProgressBar)?.show() },
+        hideLoading = { (invest_progress as? ContentLoadingProgressBar)?.hide() }
     )
 
     private lateinit var amountWrapper: AmountEditTextWrapper
 
     private val balancesRepository: BalancesRepository
-        get() = repositoryProvider.balances()
+        get() = repositoryProvider.balances
 
     private val existingOffers: Map<String, OfferRecord>?
         get() = investmentInfoRepository.item?.offersByAsset
@@ -72,22 +72,22 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
 
     private val currentPrice: BigDecimal
         get() = sale.quoteAssets
-                .find {
-                    it.code == investAsset
-                }
-                ?.price
-                ?: BigDecimal.ONE
+            .find {
+                it.code == investAsset
+            }
+            ?.price
+            ?: BigDecimal.ONE
 
     private val maxInvestAmount: BigDecimal
         get() = investmentInfoRepository
-                .getMaxInvestmentAmount(investAsset, balancesRepository)
+            .getMaxInvestmentAmount(investAsset, balancesRepository)
 
     private val receiveAmount: BigDecimal
         get() {
             val quoteAmount = amountWrapper.scaledAmount
             return BigDecimalUtil.scaleAmount(
-                    quoteAmount.divide(currentPrice, MathContext.DECIMAL128),
-                    sale.baseAsset.trailingDigits
+                quoteAmount.divide(currentPrice, MathContext.DECIMAL128),
+                sale.baseAsset.trailingDigits
             )
         }
 
@@ -130,20 +130,23 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
 
     private fun initAssetSelection() {
         val quoteAssets = sale
-                .quoteAssets
-                .sortedWith(assetComparator)
+            .quoteAssets
+            .sortedWith(assetComparator)
 
         val picker = object : BalancePickerBottomDialog(
-                this,
-                amountFormatter,
-                balanceComparator,
-                balancesRepository,
-                quoteAssets,
-                { balance ->
-                    quoteAssets.any { it.code == balance.assetCode }
-                }
+            this,
+            amountFormatter,
+            balanceComparator,
+            balancesRepository,
+            quoteAssets,
+            { balance ->
+                quoteAssets.any { it.code == balance.assetCode }
+            }
         ) {
-            override fun getAvailableAmount(assetCode: String, balance: BalanceRecord?): BigDecimal {
+            override fun getAvailableAmount(
+                assetCode: String,
+                balance: BalanceRecord?
+            ): BigDecimal {
                 return getAvailableBalance(assetCode)
             }
         }
@@ -155,8 +158,10 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
         }
 
         val dropDownArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_drop_down)
-        asset_edit_text.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null,
-                dropDownArrow, null)
+        asset_edit_text.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            null, null,
+            dropDownArrow, null
+        )
 
         investAsset = quoteAssets.first().code
     }
@@ -188,40 +193,40 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
 
     private fun subscribeToInvestmentInfo() {
         investmentInfoRepository
-                .itemSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    onInvestmentInfoUpdated()
-                }
-                .addTo(compositeDisposable)
+            .itemSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe {
+                onInvestmentInfoUpdated()
+            }
+            .addTo(compositeDisposable)
 
         investmentInfoRepository
-                .loadingSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    mainLoading.setLoading(it)
-                    updateInvestAvailability()
-                }
-                .addTo(compositeDisposable)
+            .loadingSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe {
+                mainLoading.setLoading(it)
+                updateInvestAvailability()
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun subscribeToBalances() {
         balancesRepository
-                .itemsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    onInvestmentInfoUpdated()
-                }
-                .addTo(compositeDisposable)
+            .itemsSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe {
+                onInvestmentInfoUpdated()
+            }
+            .addTo(compositeDisposable)
 
         balancesRepository
-                .loadingSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    mainLoading.setLoading(it, "balances")
-                    updateInvestAvailability()
-                }
-                .addTo(compositeDisposable)
+            .loadingSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe {
+                mainLoading.setLoading(it, "balances")
+                updateInvestAvailability()
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun update() {
@@ -244,7 +249,7 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
 
     private fun displayExistingInvestmentAmount() {
         val existingInvestmentAmount =
-                investmentInfoRepository.getExistingInvestmentAmount(investAsset)
+            investmentInfoRepository.getExistingInvestmentAmount(investAsset)
 
         amountWrapper.maxPlacesAfterComa = SimpleAsset(investAsset).trailingDigits
 
@@ -259,13 +264,17 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
     private fun updateInvestHelperAndError() {
         val asset = SimpleAsset(investAsset)
         if (amountWrapper.scaledAmount > maxInvestAmount) {
-            amount_edit_text.error = getString(R.string.template_sale_max_investment,
-                    amountFormatter.formatAssetAmount(maxInvestAmount, asset))
+            amount_edit_text.error = getString(
+                R.string.template_sale_max_investment,
+                amountFormatter.formatAssetAmount(maxInvestAmount, asset)
+            )
         } else {
             amount_edit_text.error = null
             amount_edit_text.setHelperText(
-                    getString(R.string.template_available,
-                            amountFormatter.formatAssetAmount(getAvailableBalance(investAsset), asset))
+                getString(
+                    R.string.template_available,
+                    amountFormatter.formatAssetAmount(getAvailableBalance(investAsset), asset)
+                )
             )
         }
     }
@@ -338,46 +347,46 @@ class SaleInvestActivity : BaseActivity(), InvestmentInfoHolder {
         val offerToCancel = existingOffers?.get(asset)
 
         investDisposable =
-                CreateOfferRequestUseCase(
-                        baseAmount = if (cancel) BigDecimal.ZERO else receiveAmount,
-                        baseAsset = sale.baseAsset,
-                        quoteAsset = SimpleAsset(asset),
-                        price = price,
-                        isBuy = true,
-                        orderBookId = orderBookId,
-                        offerToCancel = offerToCancel,
-                        walletInfoProvider = walletInfoProvider,
-                        feeManager = FeeManager(apiProvider)
+            CreateOfferRequestUseCase(
+                baseAmount = if (cancel) BigDecimal.ZERO else receiveAmount,
+                baseAsset = sale.baseAsset,
+                quoteAsset = SimpleAsset(asset),
+                price = price,
+                isBuy = true,
+                orderBookId = orderBookId,
+                offerToCancel = offerToCancel,
+                walletInfoProvider = walletInfoProvider,
+                feeManager = FeeManager(apiProvider)
+            )
+                .perform()
+                .compose(ObservableTransformers.defaultSchedulersSingle())
+                .doOnSubscribe {
+                    investLoading.show()
+                    updateInvestAvailability()
+                }
+                .doOnEvent { _, _ ->
+                    investLoading.hide()
+                    updateInvestAvailability()
+                }
+                .subscribeBy(
+                    onSuccess = this::onInvestmentRequestCreated,
+                    onError = {
+                        errorHandlerFactory.getDefault().handle(it)
+                    }
                 )
-                        .perform()
-                        .compose(ObservableTransformers.defaultSchedulersSingle())
-                        .doOnSubscribe {
-                            investLoading.show()
-                            updateInvestAvailability()
-                        }
-                        .doOnEvent { _, _ ->
-                            investLoading.hide()
-                            updateInvestAvailability()
-                        }
-                        .subscribeBy(
-                                onSuccess = this::onInvestmentRequestCreated,
-                                onError = {
-                                    errorHandlerFactory.getDefault().handle(it)
-                                }
-                        )
-                        .addTo(compositeDisposable)
+                .addTo(compositeDisposable)
     }
 
     private fun onInvestmentRequestCreated(request: OfferRequest) {
         Navigator.from(this)
-                .openInvestmentConfirmation(
-                        investmentRequest = request,
-                        saleName = sale.name,
-                        displayToReceive =
-                        sale.type.value == SaleType.BASIC_SALE.value
-                )
-                .addTo(activityRequestsBag)
-                .doOnSuccess { investmentInfoRepository.update() }
+            .openInvestmentConfirmation(
+                investmentRequest = request,
+                saleName = sale.name,
+                displayToReceive =
+                sale.type.value == SaleType.BASIC_SALE.value
+            )
+            .addTo(activityRequestsBag)
+            .doOnSuccess { investmentInfoRepository.update() }
     }
     // endregion
 

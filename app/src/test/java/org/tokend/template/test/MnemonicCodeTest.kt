@@ -16,15 +16,22 @@ class MnemonicCodeTest {
         val entropy = "e48a6da6bcd758d1f37d49e2b89e0019"
         val expected = "tonight fat have keen intact happy social powder tired shaft length cram"
 
-        Assert.assertEquals(expected, englishMnemonic.toMnemonic(entropy.decodeHex()).joinToString(" "))
+        Assert.assertEquals(
+            expected,
+            englishMnemonic.toMnemonic(entropy.decodeHex()).joinToString(" ")
+        )
     }
 
     @Test
     fun mnemonicToEntropy() {
-        val mnemonic = "panel inspire unfold trap blanket carry drum giraffe soda practice spider path"
+        val mnemonic =
+            "panel inspire unfold trap blanket carry drum giraffe soda practice spider path"
         val expected = "9f8eabb4f3a17445d0e311ce352f46d0"
 
-        Assert.assertEquals(expected, englishMnemonic.toEntropy(mnemonic.split(" ")).encodeHexString())
+        Assert.assertEquals(
+            expected,
+            englishMnemonic.toEntropy(mnemonic.split(" ")).encodeHexString()
+        )
     }
 
     @Test

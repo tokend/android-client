@@ -21,65 +21,65 @@ import org.tokend.wallet.xdr.RemoveVoteData
  * Updates polls repository on success.
  */
 class RemoveVoteUseCase(
-        private val pollId: String,
-        private val pollOwnerAccountId: String,
-        private val accountProvider: AccountProvider,
-        private val walletInfoProvider: WalletInfoProvider,
-        private val repositoryProvider: RepositoryProvider,
-        private val txManager: TxManager
+    private val pollId: String,
+    private val pollOwnerAccountId: String,
+    private val accountProvider: AccountProvider,
+    private val walletInfoProvider: WalletInfoProvider,
+    private val repositoryProvider: RepositoryProvider,
+    private val txManager: TxManager
 ) {
     private lateinit var networkParams: NetworkParams
 
     fun perform(): Completable {
         return getNetworkParams()
-                .doOnSuccess { networkParams ->
-                    this.networkParams = networkParams
-                }
-                .flatMap {
-                    getTransaction()
-                }
-                .flatMap { transaction ->
-                    txManager.submit(transaction, waitForIngest = false)
-                }
-                .doOnSuccess {
-                    updateRepository()
-                }
-                .ignoreElement()
+            .doOnSuccess { networkParams ->
+                this.networkParams = networkParams
+            }
+            .flatMap {
+                getTransaction()
+            }
+            .flatMap { transaction ->
+                txManager.submit(transaction, waitForIngest = false)
+            }
+            .doOnSuccess {
+                updateRepository()
+            }
+            .ignoreElement()
     }
 
     private fun getNetworkParams(): Single<NetworkParams> {
         return repositoryProvider
-                .systemInfo()
-                .getNetworkParams()
+            .systemInfo
+            .getNetworkParams()
     }
 
     private fun getTransaction(): Single<Transaction> {
         return Single.defer {
             val operation = ManageVoteOp(
-                    data = ManageVoteOp.ManageVoteOpData.Remove(
-                            RemoveVoteData(
-                                    pollId.toLong(),
-                                    RemoveVoteData.RemoveVoteDataExt.EmptyVersion()
-                            )
-                    ),
-                    ext = ManageVoteOp.ManageVoteOpExt.EmptyVersion()
+                data = ManageVoteOp.ManageVoteOpData.Remove(
+                    RemoveVoteData(
+                        pollId.toLong(),
+                        RemoveVoteData.RemoveVoteDataExt.EmptyVersion()
+                    )
+                ),
+                ext = ManageVoteOp.ManageVoteOpExt.EmptyVersion()
             )
 
             val account = accountProvider.getAccount()
-                    ?: return@defer Single.error<Transaction>(
-                            IllegalStateException("Cannot obtain current account")
-                    )
+                ?: return@defer Single.error<Transaction>(
+                    IllegalStateException("Cannot obtain current account")
+                )
 
             val sourceAccountId = walletInfoProvider.getWalletInfo()?.accountId
-                    ?: return@defer Single.error<Transaction>(
-                            IllegalStateException("No wallet info found")
-                    )
+                ?: return@defer Single.error<Transaction>(
+                    IllegalStateException("No wallet info found")
+                )
 
             val transaction =
-                    TransactionBuilder(networkParams, sourceAccountId)
-                            .addOperation(Operation.OperationBody.ManageVote(operation))
-                            .addSigner(account)
-                            .build()
+                TransactionBuilder(networkParams, sourceAccountId)
+                    .addOperation(Operation.OperationBody.ManageVote(operation))
+                    .addSigner(account)
+                    .build()
 
             Single.just(transaction)
         }.subscribeOn(Schedulers.newThread())
@@ -87,7 +87,7 @@ class RemoveVoteUseCase(
 
     private fun updateRepository() {
         repositoryProvider
-                .polls(pollOwnerAccountId)
-                .updatePollChoiceLocally(pollId, null)
+            .polls(pollOwnerAccountId)
+            .updatePollChoiceLocally(pollId, null)
     }
 }

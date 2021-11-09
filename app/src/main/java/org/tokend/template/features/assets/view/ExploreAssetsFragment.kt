@@ -41,16 +41,16 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private var searchItem: MenuItem? = null
 
     private val assetsRepository: AssetsRepository
-        get() = repositoryProvider.assets()
+        get() = repositoryProvider.assets
     private val balancesRepository: BalancesRepository
-        get() = repositoryProvider.balances()
+        get() = repositoryProvider.balances
 
     private val assetsAdapter = AssetsAdapter()
     private var filter: String? = null
@@ -63,7 +63,11 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
     private lateinit var layoutManager: GridLayoutManager
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_explore, container, false)
     }
 
@@ -84,7 +88,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
     // region Init
     private fun initSwipeRefresh() {
-        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(context!!, R.color.accent))
+        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(requireContext(), R.color.accent))
         swipe_refresh.setOnRefreshListener { update(force = true) }
     }
 
@@ -109,7 +113,7 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
         }
 
         assetsAdapter.registerAdapterDataObserver(
-                ScrollOnTopItemUpdateAdapterObserver(assets_recycler_view)
+            ScrollOnTopItemUpdateAdapterObserver(assets_recycler_view)
         )
 
         ElevationUtil.initScrollElevation(assets_recycler_view, appbar_elevation_view)
@@ -127,12 +131,12 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
             searchManager.queryHint = getString(R.string.search)
             searchManager
-                    .queryChanges
-                    .compose(ObservableTransformers.defaultSchedulers())
-                    .subscribe { newValue ->
-                        filter = newValue.takeIf { it.isNotEmpty() }
-                    }
-                    .addTo(compositeDisposable)
+                .queryChanges
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { newValue ->
+                    filter = newValue.takeIf { it.isNotEmpty() }
+                }
+                .addTo(compositeDisposable)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -146,62 +150,62 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     private fun subscribeToAssets() {
         assetsDisposable?.dispose()
         assetsDisposable = CompositeDisposable(
-                Observable.merge(
-                        assetsRepository.itemsSubject,
-                        balancesRepository.itemsSubject
-                )
-                        .debounce(25, TimeUnit.MILLISECONDS)
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            displayAssets()
-                        },
-                assetsRepository.loadingSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            loadingIndicator.setLoading(it, "assets")
-                        },
-                assetsRepository.errorsSubject
-                        .debounce(20, TimeUnit.MILLISECONDS)
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { error ->
-                            if (!assetsAdapter.hasData) {
-                                error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
-                                    update(true)
-                                }
-                            } else {
-                                errorHandlerFactory.getDefault().handle(error)
-                            }
+            Observable.merge(
+                assetsRepository.itemsSubject,
+                balancesRepository.itemsSubject
+            )
+                .debounce(25, TimeUnit.MILLISECONDS)
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    displayAssets()
+                },
+            assetsRepository.loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    loadingIndicator.setLoading(it, "assets")
+                },
+            assetsRepository.errorsSubject
+                .debounce(20, TimeUnit.MILLISECONDS)
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { error ->
+                    if (!assetsAdapter.hasData) {
+                        error_empty_view.showError(error, errorHandlerFactory.getDefault()) {
+                            update(true)
                         }
+                    } else {
+                        errorHandlerFactory.getDefault().handle(error)
+                    }
+                }
         ).also { it.addTo(compositeDisposable) }
     }
 
     private fun displayAssets() {
         val balancesMap = balancesRepository
-                .itemsList
-                .associateBy(BalanceRecord::assetCode)
+            .itemsList
+            .associateBy(BalanceRecord::assetCode)
 
         val items = assetsRepository.itemsList
-                .asSequence()
-                .filter(AssetRecord::isActive)
-                .map { asset ->
-                    AssetListItem(
-                            asset,
-                            balancesMap[asset.code]?.id
-                    )
-                }
-                .sortedWith(Comparator { o1, o2 ->
-                    return@Comparator o1.balanceExists.compareTo(o2.balanceExists)
-                            .takeIf { it != 0 }
-                            ?: assetCodeComparator.compare(o1.code, o2.code)
-                })
-                .toList()
-                .let { items ->
-                    filter?.let {
-                        items.filter { item ->
-                            SearchUtil.isMatchGeneralCondition(it, item.code, item.name)
-                        }
-                    } ?: items
-                }
+            .asSequence()
+            .filter(AssetRecord::isActive)
+            .map { asset ->
+                AssetListItem(
+                    asset,
+                    balancesMap[asset.code]?.id
+                )
+            }
+            .sortedWith(Comparator { o1, o2 ->
+                return@Comparator o1.balanceExists.compareTo(o2.balanceExists)
+                    .takeIf { it != 0 }
+                    ?: assetCodeComparator.compare(o1.code, o2.code)
+            })
+            .toList()
+            .let { items ->
+                filter?.let {
+                    items.filter { item ->
+                        SearchUtil.isMatchGeneralCondition(it, item.code, item.name)
+                    }
+                } ?: items
+            }
 
         assetsAdapter.setData(items)
     }
@@ -215,12 +219,12 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
     private fun subscribeToBalances() {
         balancesDisposable?.dispose()
         balancesDisposable =
-                balancesRepository.loadingSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            loadingIndicator.setLoading(it, "balances")
-                        }
-                        .addTo(compositeDisposable)
+            balancesRepository.loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    loadingIndicator.setLoading(it, "balances")
+                }
+                .addTo(compositeDisposable)
     }
 
     private fun performPrimaryAssetAction(item: AssetListItem) {
@@ -233,50 +237,50 @@ class ExploreAssetsFragment : BaseFragment(), ToolbarProvider {
 
     private fun openAssetDetails(view: View?, item: AssetListItem) {
         Navigator.from(this)
-                .openAssetDetails(item.source, cardView = view)
-                .addTo(activityRequestsBag)
-                .doOnSuccess { update(force = true) }
+            .openAssetDetails(item.source, cardView = view)
+            .addTo(activityRequestsBag)
+            .doOnSuccess { update(force = true) }
     }
 
     private fun createBalance(asset: String) {
         val progress = ProgressDialogFactory.getDialog(requireContext())
 
         CreateBalanceUseCase(
-                asset,
-                repositoryProvider.balances(),
-                repositoryProvider.systemInfo(),
-                accountProvider,
-                TxManager(apiProvider)
+            asset,
+            repositoryProvider.balances,
+            repositoryProvider.systemInfo,
+            accountProvider,
+            TxManager(apiProvider)
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .doOnSubscribe {
-                    progress.show()
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersCompletable())
+            .doOnSubscribe {
+                progress.show()
+            }
+            .doOnTerminate {
+                progress.dismiss()
+            }
+            .subscribeBy(
+                onComplete = {
+                    toastManager.short(
+                        getString(R.string.template_asset_balance_created, asset)
+                    )
+                    displayAssets()
+                },
+                onError = {
+                    errorHandlerFactory.getDefault().handle(it)
                 }
-                .doOnTerminate {
-                    progress.dismiss()
-                }
-                .subscribeBy(
-                        onComplete = {
-                            toastManager.short(
-                                    getString(R.string.template_asset_balance_created, asset)
-                            )
-                            displayAssets()
-                        },
-                        onError = {
-                            errorHandlerFactory.getDefault().handle(it)
-                        }
-                )
+            )
     }
 
     private fun createBalanceWithConfirmation(asset: String) {
-        AlertDialog.Builder(this.context!!, R.style.AlertDialogStyle)
-                .setMessage(resources.getString(R.string.create_balance_confirmation, asset))
-                .setPositiveButton(R.string.yes) { _, _ ->
-                    createBalance(asset)
-                }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
+        AlertDialog.Builder(requireContext(), R.style.AlertDialogStyle)
+            .setMessage(resources.getString(R.string.create_balance_confirmation, asset))
+            .setPositiveButton(R.string.yes) { _, _ ->
+                createBalance(asset)
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     fun update(force: Boolean = false) {

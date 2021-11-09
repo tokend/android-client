@@ -43,8 +43,8 @@ class SignInActivity : BaseActivity() {
     override val allowUnauthorized = true
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { progress.show() },
-            hideLoading = { progress.hide() }
+        showLoading = { progress.show() },
+        hideLoading = { progress.hide() }
     )
 
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
@@ -65,9 +65,11 @@ class SignInActivity : BaseActivity() {
         }
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
-        window.setBackgroundDrawable(ColorDrawable(
+        window.setBackgroundDrawable(
+            ColorDrawable(
                 ContextCompat.getColor(this, R.color.background)
-        ))
+            )
+        )
 
         setContentView(R.layout.activity_sign_in)
         setSupportActionBar(toolbar)
@@ -163,16 +165,16 @@ class SignInActivity : BaseActivity() {
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
             QrScannerUtil.openScanner(this)
-                    .addTo(activityRequestsBag)
-                    .doOnSuccess { urlConfigManager.setFromJson(it) }
+                .addTo(activityRequestsBag)
+                .doOnSuccess { urlConfigManager.setFromJson(it) }
         }
     }
 
     private fun openLocalAccountSignIn() {
         Navigator.from(this)
-                .openLocalAccountSignIn()
-                .addTo(activityRequestsBag)
-                .doOnSuccess { onSignInComplete() }
+            .openLocalAccountSignIn()
+            .addTo(activityRequestsBag)
+            .doOnSuccess { onSignInComplete() }
     }
 
     private fun updateSignInAvailability() {
@@ -202,35 +204,35 @@ class SignInActivity : BaseActivity() {
         val password = password_edit_text.text.getChars()
 
         SignInUseCase(
-                email,
-                password,
-                apiProvider.getKeyServer(),
-                session,
-                credentialsPersistence,
-                walletInfoPersistence,
-                postSignInManagerFactory.get()::doPostSignIn
+            email,
+            password,
+            apiProvider.getKeyServer(),
+            session,
+            credentialsPersistence,
+            walletInfoPersistence,
+            postSignInManagerFactory.get()::doPostSignIn
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .doOnSubscribe {
-                    isLoading = true
-                    updateAdditionalButtonsState(false)
-                }
-                .doOnTerminate {
-                    isLoading = false
-                    updateAdditionalButtonsState(true)
-                    password_edit_text.text.getChars()
-                }
-                .subscribeBy(
-                        onComplete = this::onSignInComplete,
-                        onError = signInErrorHandler::handleIfPossible
-                )
-                .addTo(compositeDisposable)
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersCompletable())
+            .doOnSubscribe {
+                isLoading = true
+                updateAdditionalButtonsState(false)
+            }
+            .doOnTerminate {
+                isLoading = false
+                updateAdditionalButtonsState(true)
+                password_edit_text.text.getChars()
+            }
+            .subscribeBy(
+                onComplete = this::onSignInComplete,
+                onError = signInErrorHandler::handleIfPossible
+            )
+            .addTo(compositeDisposable)
     }
 
     private fun onSignInComplete() {
         // KYC recovery check.
-        val kycRecoveryStatus = repositoryProvider.account().item?.kycRecoveryStatus
+        val kycRecoveryStatus = repositoryProvider.account.item?.kycRecoveryStatus
         if (kycRecoveryStatus != null && kycRecoveryStatus != AccountRecord.KycRecoveryStatus.NONE) {
             showKycRecoveryStatusDialog(kycRecoveryStatus)
         } else {
@@ -241,31 +243,32 @@ class SignInActivity : BaseActivity() {
 
     private val signInErrorHandler: ErrorHandler
         get() = CompositeErrorHandler(
-                EditTextErrorHandler(password_edit_text) { error ->
-                    when (error) {
-                        is InvalidCredentialsException ->
-                            getString(R.string.error_invalid_password)
-                        else ->
-                            null
+            EditTextErrorHandler(password_edit_text) { error ->
+                when (error) {
+                    is InvalidCredentialsException ->
+                        getString(R.string.error_invalid_password)
+                    else ->
+                        null
+                }
+            },
+            SimpleErrorHandler { error ->
+                when (error) {
+                    is EmailNotVerifiedException -> {
+                        displayEmailNotVerifiedDialog(error.walletId)
+                        true
                     }
-                },
-                SimpleErrorHandler { error ->
-                    when (error) {
-                        is EmailNotVerifiedException -> {
-                            displayEmailNotVerifiedDialog(error.walletId)
-                            true
-                        }
-                        else -> false
-                    }
-                },
-                errorHandlerFactory.getDefault()
+                    else -> false
+                }
+            },
+            errorHandlerFactory.getDefault()
         )
-                .doOnSuccessfulHandle(this::updateSignInAvailability)
+            .doOnSuccessfulHandle(this::updateSignInAvailability)
 
     private fun showKycRecoveryStatusDialog(status: AccountRecord.KycRecoveryStatus) {
         AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                .setTitle(R.string.kyc_recovery_status_dialog_title)
-                .setMessage(when (status) {
+            .setTitle(R.string.kyc_recovery_status_dialog_title)
+            .setMessage(
+                when (status) {
                     AccountRecord.KycRecoveryStatus.PENDING ->
                         R.string.kyc_recovery_pending_message
                     AccountRecord.KycRecoveryStatus.REJECTED,
@@ -274,16 +277,17 @@ class SignInActivity : BaseActivity() {
                         R.string.kyc_recovery_rejected_message
                     else ->
                         R.string.kyc_recovery_initiated_message
-                })
-                .setPositiveButton(R.string.ok, null)
-                .apply {
-                    if (status == AccountRecord.KycRecoveryStatus.INITIATED) {
-                        setNeutralButton(R.string.open_action) { _, _ ->
-                            browse(urlConfigProvider.getConfig().client)
-                        }
+                }
+            )
+            .setPositiveButton(R.string.ok, null)
+            .apply {
+                if (status == AccountRecord.KycRecoveryStatus.INITIATED) {
+                    setNeutralButton(R.string.open_action) { _, _ ->
+                        browse(urlConfigProvider.getConfig().client)
                     }
                 }
-                .show()
+            }
+            .show()
     }
 
     private fun updateAdditionalButtonsState(isEnabled: Boolean) {
@@ -294,31 +298,31 @@ class SignInActivity : BaseActivity() {
 
     private fun displayEmailNotVerifiedDialog(walletId: String) {
         AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                .setTitle(R.string.error_email_not_verified)
-                .setMessage(R.string.email_not_verified_explanation)
-                .setPositiveButton(R.string.ok, null)
-                .setNeutralButton(R.string.resend_letter) { _, _ ->
-                    resendVerificationEmail(walletId)
-                }
-                .show()
+            .setTitle(R.string.error_email_not_verified)
+            .setMessage(R.string.email_not_verified_explanation)
+            .setPositiveButton(R.string.ok, null)
+            .setNeutralButton(R.string.resend_letter) { _, _ ->
+                resendVerificationEmail(walletId)
+            }
+            .show()
     }
 
     private fun resendVerificationEmail(walletId: String) {
         ResendVerificationEmailUseCase(
-                walletId,
-                apiProvider.getApi()
+            walletId,
+            apiProvider.getApi()
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .subscribeBy(
-                        onComplete = {
-                            toastManager.long(R.string.check_your_email_to_verify_account)
-                        },
-                        onError = {
-                            errorHandlerFactory.getDefault().handle(it)
-                        }
-                )
-                .addTo(compositeDisposable)
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersCompletable())
+            .subscribeBy(
+                onComplete = {
+                    toastManager.long(R.string.check_your_email_to_verify_account)
+                },
+                onError = {
+                    errorHandlerFactory.getDefault().handle(it)
+                }
+            )
+            .addTo(compositeDisposable)
     }
 
     override fun onResume() {
@@ -326,7 +330,11 @@ class SignInActivity : BaseActivity() {
         initNetworkField()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
     }

@@ -20,66 +20,66 @@ import org.tokend.wallet.xdr.Operation
  * Updates related repositories: balances, transactions
  */
 class ConfirmWithdrawalRequestUseCase(
-        private val request: WithdrawalRequest,
-        private val accountProvider: AccountProvider,
-        private val repositoryProvider: RepositoryProvider,
-        private val txManager: TxManager
+    private val request: WithdrawalRequest,
+    private val accountProvider: AccountProvider,
+    private val repositoryProvider: RepositoryProvider,
+    private val txManager: TxManager
 ) {
     private lateinit var networkParams: NetworkParams
     private lateinit var resultMeta: String
 
     fun perform(): Completable {
         return getNetworkParams()
-                .doOnSuccess { networkParams ->
-                    this.networkParams = networkParams
-                }
-                .flatMap {
-                    getTransaction()
-                }
-                .flatMap { transaction ->
-                    txManager.submit(transaction, waitForIngest = false)
-                }
-                .doOnSuccess { result ->
-                    this.resultMeta = result.resultMetaXdr!!
-                }
-                .doOnSuccess {
-                    updateRepositories()
-                }
-                .ignoreElement()
+            .doOnSuccess { networkParams ->
+                this.networkParams = networkParams
+            }
+            .flatMap {
+                getTransaction()
+            }
+            .flatMap { transaction ->
+                txManager.submit(transaction, waitForIngest = false)
+            }
+            .doOnSuccess { result ->
+                this.resultMeta = result.resultMetaXdr!!
+            }
+            .doOnSuccess {
+                updateRepositories()
+            }
+            .ignoreElement()
     }
 
     private fun getNetworkParams(): Single<NetworkParams> {
         return repositoryProvider
-                .systemInfo()
-                .getNetworkParams()
+            .systemInfo
+            .getNetworkParams()
     }
 
     private fun getTransaction(): Single<Transaction> {
         return Single.defer {
             val precisedAmount = networkParams.amountToPrecised(request.amount)
             val operation = CreateWithdrawalRequestOp(
-                    request = org.tokend.wallet.xdr.WithdrawalRequest(
-                            balance = PublicKeyFactory.fromBalanceId(request.balanceId),
-                            amount = precisedAmount,
-                            fee = request.fee.toXdrFee(networkParams),
-                            universalAmount = 0,
-                            creatorDetails = "{\"address\":\"${request.destinationAddress}\"}",
-                            ext = org.tokend.wallet.xdr.WithdrawalRequest
-                                    .WithdrawalRequestExt.EmptyVersion()
-                    ),
-                    ext = CreateWithdrawalRequestOp.CreateWithdrawalRequestOpExt.EmptyVersion(),
-                    allTasks = null
+                request = org.tokend.wallet.xdr.WithdrawalRequest(
+                    balance = PublicKeyFactory.fromBalanceId(request.balanceId),
+                    amount = precisedAmount,
+                    fee = request.fee.toXdrFee(networkParams),
+                    universalAmount = 0,
+                    creatorDetails = "{\"address\":\"${request.destinationAddress}\"}",
+                    ext = org.tokend.wallet.xdr.WithdrawalRequest
+                        .WithdrawalRequestExt.EmptyVersion()
+                ),
+                ext = CreateWithdrawalRequestOp.CreateWithdrawalRequestOpExt.EmptyVersion(),
+                allTasks = null
             )
 
             val transaction =
-                    TransactionBuilder(networkParams, request.accountId)
-                            .addOperation(Operation.OperationBody.CreateWithdrawalRequest(operation))
-                            .build()
+                TransactionBuilder(networkParams, request.accountId)
+                    .addOperation(Operation.OperationBody.CreateWithdrawalRequest(operation))
+                    .build()
 
             val account = accountProvider.getAccount()
-                    ?: return@defer Single.error<Transaction>(
-                            IllegalStateException("Cannot obtain current account")
-                    )
+                ?: return@defer Single.error<Transaction>(
+                    IllegalStateException("Cannot obtain current account")
+                )
 
             transaction.addSignature(account)
 
@@ -88,7 +88,7 @@ class ConfirmWithdrawalRequestUseCase(
     }
 
     private fun updateRepositories() {
-        repositoryProvider.balances().apply {
+        repositoryProvider.balances.apply {
             if (!updateBalancesByTransactionResultMeta(resultMeta, networkParams))
                 updateIfEverUpdated()
         }

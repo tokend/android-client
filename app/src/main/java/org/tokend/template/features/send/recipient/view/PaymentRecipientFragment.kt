@@ -42,20 +42,20 @@ import java.util.concurrent.TimeUnit
 
 class PaymentRecipientFragment : BaseFragment() {
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { (main_progress as? ContentLoadingProgressBar)?.show() },
-            hideLoading = { (main_progress as? ContentLoadingProgressBar)?.hide() }
+        showLoading = { (main_progress as? ContentLoadingProgressBar)?.show() },
+        hideLoading = { (main_progress as? ContentLoadingProgressBar)?.hide() }
     )
 
     private val contactsLoadingIndicator = LoadingIndicatorManager(
-            showLoading = { contacts_layout.progress.show() },
-            hideLoading = { contacts_layout.progress.hide() }
+        showLoading = { contacts_layout.progress.show() },
+        hideLoading = { contacts_layout.progress.hide() }
     )
 
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
     private val contactsPermission = PermissionManager(Manifest.permission.READ_CONTACTS, 606)
 
     private val contactsRepository: ContactsRepository
-        get() = repositoryProvider.contacts()
+        get() = repositoryProvider.contacts
 
     private val contactsAdapter = ContactsAdapter()
 
@@ -79,7 +79,11 @@ class PaymentRecipientFragment : BaseFragment() {
             }
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_payment_recipient, container, false)
     }
 
@@ -106,9 +110,9 @@ class PaymentRecipientFragment : BaseFragment() {
         }
 
         recipient_edit_text.addTextChangedListener(SimpleTextWatcher {
-                recipient_edit_text.error = null
-                updateContinueAvailability()
-                updateRecipientAction()
+            recipient_edit_text.error = null
+            updateContinueAvailability()
+            updateRecipientAction()
         })
         recipient_edit_text.onEditorAction {
             tryToLoadRecipient()
@@ -131,13 +135,13 @@ class PaymentRecipientFragment : BaseFragment() {
             adapter = contactsAdapter
             (itemAnimator as? SimpleItemAnimator)?.apply {
                 requireContext()
-                        .resources
-                        .getInteger(android.R.integer.config_shortAnimTime)
-                        .toLong()
-                        .also { requiredDuration ->
-                            addDuration = requiredDuration
-                            removeDuration = requiredDuration
-                        }
+                    .resources
+                    .getInteger(android.R.integer.config_shortAnimTime)
+                    .toLong()
+                    .also { requiredDuration ->
+                        addDuration = requiredDuration
+                        removeDuration = requiredDuration
+                    }
             }
         }
 
@@ -152,39 +156,39 @@ class PaymentRecipientFragment : BaseFragment() {
         }
 
         RxTextView.textChanges(recipient_edit_text)
-                .skipInitialValue()
-                .debounce(FILTER_DEBOUNCE_MS, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { query ->
-                    contactsFilter = query.trim().toString().takeIf(String::isNotBlank)
-                }
-                .addTo(compositeDisposable)
+            .skipInitialValue()
+            .debounce(FILTER_DEBOUNCE_MS, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { query ->
+                contactsFilter = query.trim().toString().takeIf(String::isNotBlank)
+            }
+            .addTo(compositeDisposable)
     }
     // endregion
 
     // region Contacts
     private fun subscribeToContacts() {
         contactsRepository.itemsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { displayContacts() }
-                .addTo(compositeDisposable)
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { displayContacts() }
+            .addTo(compositeDisposable)
 
         contactsRepository.loadingSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    contactsLoadingIndicator.setLoading(it)
-                }
-                .addTo(compositeDisposable)
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe {
+                contactsLoadingIndicator.setLoading(it)
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun displayContacts() {
         val contacts = contactsRepository.itemsList
         contactsAdapter.setData(contacts, contactsFilter)
         contacts_empty_view.visibility =
-                if (!contactsAdapter.hasData && !contactsRepository.isNeverUpdated)
-                    View.VISIBLE
-                else
-                    View.GONE
+            if (!contactsAdapter.hasData && !contactsRepository.isNeverUpdated)
+                View.VISIBLE
+            else
+                View.GONE
     }
 
     private fun tryUpdateContacts() {
@@ -202,10 +206,10 @@ class PaymentRecipientFragment : BaseFragment() {
 
     private fun updateRecipientAction() {
         val icon =
-                if (recipient_edit_text.text.isNullOrBlank())
-                    R.drawable.ic_qr_code_scan
-                else
-                    R.drawable.ic_close
+            if (recipient_edit_text.text.isNullOrBlank())
+                R.drawable.ic_qr_code_scan
+            else
+                R.drawable.ic_close
 
         recipient_action_button.setImageDrawable(ContextCompat.getDrawable(requireContext(), icon))
     }
@@ -221,23 +225,25 @@ class PaymentRecipientFragment : BaseFragment() {
     private fun tryOpenQrScanner() {
         cameraPermission.check(this) {
             QrScannerUtil.openScanner(this)
-                    .addTo(activityRequestsBag)
-                    .doOnSuccess {
-                        recipient_edit_text.setText(it)
-                        recipient_edit_text.setSelection(recipient_edit_text.text?.length ?: 0)
-                        tryToLoadRecipient()
-                    }
+                .addTo(activityRequestsBag)
+                .doOnSuccess {
+                    recipient_edit_text.setText(it)
+                    recipient_edit_text.setSelection(recipient_edit_text.text?.length ?: 0)
+                    tryToLoadRecipient()
+                }
         }
     }
 
     private fun readRecipient(raw: CharSequence): String? {
         val filtered = raw
-                .trim()
-                .split(' ', '\r', '\n')
-                .first()
+            .trim()
+            .split(' ', '\r', '\n')
+            .first()
 
-        val validAccountId = Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID,
-                filtered.toCharArray())
+        val validAccountId = Base32Check.isValid(
+            Base32Check.VersionByte.ACCOUNT_ID,
+            filtered.toCharArray()
+        )
         val validEmail = EmailValidator.isValid(filtered)
 
         return when {
@@ -278,24 +284,24 @@ class PaymentRecipientFragment : BaseFragment() {
 
         recipientLoadingDisposable?.dispose()
         recipientLoadingDisposable =
-                PaymentRecipientLoader(
-                        repositoryProvider.accountDetails()
+            PaymentRecipientLoader(
+                repositoryProvider.accountDetails
+            )
+                .load(recipient)
+                .compose(ObservableTransformers.defaultSchedulersSingle())
+                .doOnSubscribe {
+                    loadingIndicator.show("recipient")
+                    updateContinueAvailability()
+                }
+                .doOnEvent { _, _ ->
+                    loadingIndicator.hide("recipient")
+                    updateContinueAvailability()
+                }
+                .subscribeBy(
+                    onSuccess = this::onRecipientLoaded,
+                    onError = this::onRecipientLoadingError
                 )
-                        .load(recipient)
-                        .compose(ObservableTransformers.defaultSchedulersSingle())
-                        .doOnSubscribe {
-                            loadingIndicator.show("recipient")
-                            updateContinueAvailability()
-                        }
-                        .doOnEvent { _, _ ->
-                            loadingIndicator.hide("recipient")
-                            updateContinueAvailability()
-                        }
-                        .subscribeBy(
-                                onSuccess = this::onRecipientLoaded,
-                                onError = this::onRecipientLoadingError
-                        )
-                        .addTo(compositeDisposable)
+                .addTo(compositeDisposable)
     }
 
     private fun onRecipientLoaded(recipient: PaymentRecipient) {
@@ -331,8 +337,10 @@ class PaymentRecipientFragment : BaseFragment() {
             field = value
             if (value != null) {
                 if (!sameAsBefore) {
-                    val adapter = ArrayAdapter(requireContext(),
-                            android.R.layout.simple_list_item_1, arrayOf(value))
+                    val adapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_list_item_1, arrayOf(value)
+                    )
                     recipient_edit_text.setAdapter(adapter)
                     adapter.notifyDataSetChanged()
                     showRecipientAutocompleteIfFocused()
@@ -344,7 +352,7 @@ class PaymentRecipientFragment : BaseFragment() {
 
     private fun checkClipboardForRecipient() {
         val clipboardText = requireContext().clipboardText
-                ?: return
+            ?: return
         recipientSuggestion = readRecipient(clipboardText)?.takeIf(String::isNotEmpty)
     }
 
@@ -357,9 +365,11 @@ class PaymentRecipientFragment : BaseFragment() {
     }
     // endregion
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<out String>,
-                                            grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
         contactsPermission.handlePermissionResult(requestCode, permissions, grantResults)

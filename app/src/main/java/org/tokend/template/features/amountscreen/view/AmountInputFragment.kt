@@ -37,7 +37,7 @@ open class AmountInputFragment : BaseFragment() {
         get() = resultSubject
 
     protected val balancesRepository: BalancesRepository
-        get() = repositoryProvider.balances()
+        get() = repositoryProvider.balances
 
     protected var mPickedItem: BalancePickerListItem? = null
         set(value) {

@@ -3,11 +3,11 @@ package org.tokend.template.features.invest.view.fragments
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.core.content.ContextCompat
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_sale_overview.*
@@ -24,15 +24,19 @@ import ru.noties.markwon.Markwon
 
 class SaleOverviewFragment : SaleFragment() {
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { progress.show() },
-            hideLoading = { progress.hide() }
+        showLoading = { progress.show() },
+        hideLoading = { progress.hide() }
     )
 
     private val picturePlaceholder: Drawable by lazy {
         ColorDrawable(ContextCompat.getColor(requireContext(), R.color.imagePlaceholder))
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_sale_overview, container, false)
     }
 
@@ -47,24 +51,24 @@ class SaleOverviewFragment : SaleFragment() {
 
     private fun subscribeToInvestmentInfo() {
         investmentInfoRepository
-                .itemSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    displayChangeableSaleInfo()
-                }
-                .addTo(compositeDisposable)
+            .itemSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe {
+                displayChangeableSaleInfo()
+            }
+            .addTo(compositeDisposable)
 
         investmentInfoRepository
-                .loadingSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { loadingIndicator.setLoading(it) }
-                .addTo(compositeDisposable)
+            .loadingSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { loadingIndicator.setLoading(it) }
+            .addTo(compositeDisposable)
     }
 
     // region Info display
     private fun displaySaleInfo() {
         sale_name_text_view.text =
-                getString(R.string.template_sale_name_asset, sale.name, sale.baseAsset.code)
+            getString(R.string.template_sale_name_asset, sale.name, sale.baseAsset.code)
         sale_description_text_view.text = sale.description
 
         if (sale.youtubeVideo != null) {
@@ -81,9 +85,9 @@ class SaleOverviewFragment : SaleFragment() {
 
     private fun displaySalePhoto() {
         ImageViewUtil.loadImage(
-                sale_picture_image_view,
-                sale.logoUrl,
-                picturePlaceholder
+            sale_picture_image_view,
+            sale.logoUrl,
+            picturePlaceholder
         ) {
             centerCrop()
         }
@@ -105,9 +109,9 @@ class SaleOverviewFragment : SaleFragment() {
             video_preview_image_view.layoutParams = RelativeLayout.LayoutParams(width, height)
 
             ImageViewUtil.loadImage(
-                    video_preview_image_view,
-                    sale.youtubeVideo?.previewUrl,
-                    picturePlaceholder
+                video_preview_image_view,
+                sale.youtubeVideo?.previewUrl,
+                picturePlaceholder
             ) {
                 override(width, height)
                 centerCrop()
@@ -116,9 +120,9 @@ class SaleOverviewFragment : SaleFragment() {
 
         video_preview_layout.setOnClickListener {
             sale.youtubeVideo?.url
-                    ?.also { url ->
-                        requireContext().browse(url)
-                    }
+                ?.also { url ->
+                    requireContext().browse(url)
+                }
         }
     }
     // endregion
@@ -126,31 +130,31 @@ class SaleOverviewFragment : SaleFragment() {
     // region Overview blob
     private fun loadOverview() {
         val blobId = sale.fullDescriptionBlob
-                ?: return
+            ?: return
 
         SaleOverviewMarkdownLoader(
-                requireContext(),
-                repositoryProvider.blobs()
+            requireContext(),
+            repositoryProvider.blobs
         )
-                .load(blobId)
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe {
-                    loadingIndicator.show("overview")
+            .load(blobId)
+            .compose(ObservableTransformers.defaultSchedulersSingle())
+            .doOnSubscribe {
+                loadingIndicator.show("overview")
+            }
+            .doOnEvent { _, _ ->
+                loadingIndicator.hide("overview")
+            }
+            .subscribeBy(
+                onSuccess = {
+                    Markwon.setText(sale_overview_text_view, it)
+                },
+                onError = {
+                    sale_overview_text_view.text =
+                        errorHandlerFactory.getDefault()
+                            .getErrorMessage(it)
                 }
-                .doOnEvent { _, _ ->
-                    loadingIndicator.hide("overview")
-                }
-                .subscribeBy(
-                        onSuccess = {
-                            Markwon.setText(sale_overview_text_view, it)
-                        },
-                        onError = {
-                            sale_overview_text_view.text =
-                                    errorHandlerFactory.getDefault()
-                                            .getErrorMessage(it)
-                        }
-                )
-                .addTo(compositeDisposable)
+            )
+            .addTo(compositeDisposable)
     }
     // endregion
 

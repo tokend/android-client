@@ -52,176 +52,150 @@ import org.tokend.template.features.trade.pairs.repository.AssetPairsRepository
  * will be unavailable
  */
 class RepositoryProviderImpl(
-        private val apiProvider: ApiProvider,
-        private val walletInfoProvider: WalletInfoProvider,
-        private val urlConfigProvider: UrlConfigProvider,
-        private val mapper: ObjectMapper,
-        private val context: Context? = null,
-        private val activeKycPersistence: ActiveKycPersistence? = null,
-        private val localAccountPersistence: ObjectPersistence<LocalAccount>? = null,
-        private val persistencePreferences: SharedPreferences? = null,
-        private val database: AppDatabase? = null
+    private val apiProvider: ApiProvider,
+    private val walletInfoProvider: WalletInfoProvider,
+    private val urlConfigProvider: UrlConfigProvider,
+    private val mapper: ObjectMapper,
+    private val context: Context? = null,
+    private val activeKycPersistence: ActiveKycPersistence? = null,
+    private val localAccountPersistence: ObjectPersistence<LocalAccount>? = null,
+    private val persistencePreferences: SharedPreferences? = null,
+    private val database: AppDatabase? = null
 ) : RepositoryProvider {
     private val conversionAssetCode =
-            if (BuildConfig.ENABLE_BALANCES_CONVERSION)
-                BuildConfig.BALANCES_CONVERSION_ASSET
-            else
-                null
+        if (BuildConfig.ENABLE_BALANCES_CONVERSION)
+            BuildConfig.BALANCES_CONVERSION_ASSET
+        else
+            null
 
     private val assetsCache by lazy {
         database?.let { AssetsDbCache(it.assets) }
-                ?: MemoryOnlyRepositoryCache()
+            ?: MemoryOnlyRepositoryCache()
     }
 
     private val balancesCache by lazy {
         database?.let { BalancesDbCache(it.balances, assetsCache) }
-                ?: MemoryOnlyRepositoryCache()
+            ?: MemoryOnlyRepositoryCache()
     }
-    private val balancesRepository: BalancesRepository by lazy {
+
+    override val balances: BalancesRepository by lazy {
         BalancesRepository(
-                apiProvider,
-                walletInfoProvider,
-                urlConfigProvider,
-                mapper,
-                conversionAssetCode,
-                balancesCache
+            apiProvider,
+            walletInfoProvider,
+            urlConfigProvider,
+            mapper,
+            conversionAssetCode,
+            balancesCache
         )
     }
-    private val accountDetails: AccountDetailsRepository by lazy {
+
+    override val accountDetails: AccountDetailsRepository by lazy {
         AccountDetailsRepository(apiProvider)
     }
-    private val systemInfoRepository: SystemInfoRepository by lazy {
+
+    override val systemInfo: SystemInfoRepository by lazy {
         val persistence =
-                if (persistencePreferences != null)
-                    ObjectPersistenceOnPrefs.forType(
-                            persistencePreferences,
-                            "system_info"
-                    )
-                else
-                    MemoryOnlyObjectPersistence<SystemInfoRecord>()
+            if (persistencePreferences != null)
+                ObjectPersistenceOnPrefs.forType(
+                    persistencePreferences,
+                    "system_info"
+                )
+            else
+                MemoryOnlyObjectPersistence<SystemInfoRecord>()
         SystemInfoRepository(apiProvider, persistence)
     }
-    private val tfaFactorsRepository: TfaFactorsRepository by lazy {
+
+    override val tfaFactors: TfaFactorsRepository by lazy {
         TfaFactorsRepository(apiProvider, walletInfoProvider, MemoryOnlyRepositoryCache())
     }
-    private val assetsRepository: AssetsRepository by lazy {
+
+    override val assets: AssetsRepository by lazy {
         AssetsRepository(apiProvider, urlConfigProvider, mapper, assetsCache)
     }
-    private val orderBookRepositories =
-            LruCache<String, OrderBookRepository>(MAX_SAME_REPOSITORIES_COUNT)
-    private val assetPairsRepository: AssetPairsRepository by lazy {
-        AssetPairsRepository(apiProvider, urlConfigProvider, mapper,
-                conversionAssetCode, MemoryOnlyRepositoryCache())
+
+    override val assetPairs: AssetPairsRepository by lazy {
+        AssetPairsRepository(
+            apiProvider, urlConfigProvider, mapper,
+            conversionAssetCode, MemoryOnlyRepositoryCache()
+        )
     }
-    private val offersRepositories =
-            LruCache<String, OffersRepository>(MAX_SAME_REPOSITORIES_COUNT)
-    private val accountRepository: AccountRepository by lazy {
+
+    override val account: AccountRepository by lazy {
         val persistence =
-                if (persistencePreferences != null)
-                    ObjectPersistenceOnPrefs.forType(
-                            persistencePreferences,
-                            "account_record"
-                    )
-                else
-                    MemoryOnlyObjectPersistence<AccountRecord>()
+            if (persistencePreferences != null)
+                ObjectPersistenceOnPrefs.forType(
+                    persistencePreferences,
+                    "account_record"
+                )
+            else
+                MemoryOnlyObjectPersistence<AccountRecord>()
 
         AccountRepository(apiProvider, walletInfoProvider, persistence)
     }
-    private val salesRepository: SalesRepository by lazy {
+
+    override val sales: SalesRepository by lazy {
         SalesRepository(
-                walletInfoProvider,
-                apiProvider,
-                urlConfigProvider,
-                mapper
+            walletInfoProvider,
+            apiProvider,
+            urlConfigProvider,
+            mapper
         )
     }
 
-    private val filteredSalesRepository: SalesRepository by lazy {
+    override val filteredSales: SalesRepository by lazy {
         SalesRepository(
-                walletInfoProvider,
-                apiProvider,
-                urlConfigProvider,
-                mapper
+            walletInfoProvider,
+            apiProvider,
+            urlConfigProvider,
+            mapper
         )
     }
 
-    private val contactsRepository: ContactsRepository by lazy {
-        context ?: throw IllegalStateException("This provider has no context " +
-                "required to provide contacts repository")
+    override val contacts: ContactsRepository by lazy {
+        context ?: throw IllegalStateException(
+            "This provider has no context " +
+                    "required to provide contacts repository"
+        )
         ContactsRepository(context, MemoryOnlyRepositoryCache())
     }
 
-    private val limitsRepository: LimitsRepository by lazy {
+    override val limits: LimitsRepository by lazy {
         LimitsRepository(apiProvider, walletInfoProvider)
     }
 
-    private val feesRepository: FeesRepository by lazy {
+    override val fees: FeesRepository by lazy {
         FeesRepository(apiProvider, walletInfoProvider)
     }
 
-    private val balanceChangesRepositoriesByBalanceId =
-            LruCache<String, BalanceChangesRepository>(MAX_SAME_REPOSITORIES_COUNT)
-
-    private val tradesRepositoriesByAssetPair =
-            LruCache<String, TradeHistoryRepository>(MAX_SAME_REPOSITORIES_COUNT)
-
-    private val chartRepositoriesByCode =
-            LruCache<String, AssetChartRepository>(MAX_SAME_REPOSITORIES_COUNT)
-
-    private val investmentInfoRepositoriesBySaleId =
-            LruCache<Long, InvestmentInfoRepository>(MAX_SAME_REPOSITORIES_COUNT)
-
-    private val pollsRepositoriesByOwnerAccountId =
-            LruCache<String, PollsRepository>(MAX_SAME_REPOSITORIES_COUNT)
-
-    private val atomicSwapRepositoryByAsset =
-            LruCache<String, AtomicSwapAsksRepository>(MAX_SAME_REPOSITORIES_COUNT)
-
-    private val keyValueEntries: KeyValueEntriesRepository by lazy {
+    override val keyValueEntries: KeyValueEntriesRepository by lazy {
         KeyValueEntriesRepository(apiProvider, MemoryOnlyRepositoryCache())
     }
 
-    private val blobs: BlobsRepository by lazy {
+    override val blobs: BlobsRepository by lazy {
         BlobsRepository(apiProvider, walletInfoProvider)
     }
 
-    private val localAccount: LocalAccountRepository by lazy {
+    override val localAccount: LocalAccountRepository by lazy {
         val persistence = localAccountPersistence
-                ?: throw IllegalStateException("Local account persistence is required for this repo")
+            ?: throw IllegalStateException("Local account persistence is required for this repo")
         LocalAccountRepository(persistence)
     }
 
-    override fun balances(): BalancesRepository {
-        return balancesRepository
-    }
+    private val orderBookRepositories =
+        LruCache<String, OrderBookRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
-    override fun accountDetails(): AccountDetailsRepository {
-        return accountDetails
-    }
-
-    override fun systemInfo(): SystemInfoRepository {
-        return systemInfoRepository
-    }
-
-    override fun tfaFactors(): TfaFactorsRepository {
-        return tfaFactorsRepository
-    }
-
-    override fun assets(): AssetsRepository {
-        return assetsRepository
-    }
-
-    override fun assetPairs(): AssetPairsRepository {
-        return assetPairsRepository
-    }
-
-    override fun orderBook(baseAsset: String,
-                           quoteAsset: String): OrderBookRepository {
+    override fun orderBook(
+        baseAsset: String,
+        quoteAsset: String
+    ): OrderBookRepository {
         val key = "$baseAsset.$quoteAsset"
         return orderBookRepositories.getOrPut(key) {
             OrderBookRepository(apiProvider, baseAsset, quoteAsset)
         }
     }
+
+    private val offersRepositories =
+        LruCache<String, OffersRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     override fun offers(onlyPrimaryMarket: Boolean): OffersRepository {
         val key = "$onlyPrimaryMarket"
@@ -230,73 +204,58 @@ class RepositoryProviderImpl(
         }
     }
 
-    private val kycRequestStateRepository: KycRequestStateRepository by lazy {
-        KycRequestStateRepository(apiProvider, walletInfoProvider, blobs(), keyValueEntries)
+    override val kycRequestState: KycRequestStateRepository by lazy {
+        KycRequestStateRepository(apiProvider, walletInfoProvider, blobs, keyValueEntries)
     }
 
-    private val activeKycRepository: ActiveKycRepository by lazy {
-        ActiveKycRepository(account(), blobs(), keyValueEntries, activeKycPersistence)
+    override val activeKyc: ActiveKycRepository by lazy {
+        ActiveKycRepository(account, blobs, keyValueEntries, activeKycPersistence)
     }
 
-    override fun account(): AccountRepository {
-        return accountRepository
-    }
-
-    override fun sales(): SalesRepository {
-        return salesRepository
-    }
-
-    override fun filteredSales(): SalesRepository {
-        return filteredSalesRepository
-    }
-
-    override fun contacts(): ContactsRepository {
-        return contactsRepository
-    }
-
-    override fun limits(): LimitsRepository {
-        return limitsRepository
-    }
-
-    override fun fees(): FeesRepository {
-        return feesRepository
-    }
+    private val balanceChangesRepositoriesByBalanceId =
+        LruCache<String, BalanceChangesRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     override fun balanceChanges(balanceId: String?): BalanceChangesRepository {
         return balanceChangesRepositoriesByBalanceId.getOrPut(balanceId.toString()) {
             val cache =
-                    // Cache only account-wide movements.
-                    if (database != null && balanceId == null)
-                        BalanceChangesPagedDbCache(balanceId, database.balanceChanges)
-                    else
-                        MemoryOnlyCursorCursorPagedDataCache()
+                // Cache only account-wide movements.
+                if (database != null && balanceId == null)
+                    BalanceChangesPagedDbCache(balanceId, database.balanceChanges)
+                else
+                    MemoryOnlyCursorCursorPagedDataCache()
 
             BalanceChangesRepository(
-                    balanceId,
-                    walletInfoProvider.getWalletInfo()?.accountId,
-                    apiProvider,
-                    DefaultParticipantEffectConverter(),
-                    accountDetails(),
-                    cache
+                balanceId,
+                walletInfoProvider.getWalletInfo()?.accountId,
+                apiProvider,
+                DefaultParticipantEffectConverter(),
+                accountDetails,
+                cache
             )
         }
     }
+
+    private val tradesRepositoriesByAssetPair =
+        LruCache<String, TradeHistoryRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     override fun tradeHistory(base: String, quote: String): TradeHistoryRepository {
         return tradesRepositoriesByAssetPair.getOrPut("$base:$quote") {
             TradeHistoryRepository(
-                    base,
-                    quote,
-                    apiProvider
+                base,
+                quote,
+                apiProvider
             )
         }
     }
 
+    private val chartRepositoriesByCode =
+        LruCache<String, AssetChartRepository>(MAX_SAME_REPOSITORIES_COUNT)
+
     override fun assetChart(asset: String): AssetChartRepository {
         return chartRepositoriesByCode.getOrPut(asset) {
             AssetChartRepository(
-                    asset,
-                    apiProvider
+                asset,
+                apiProvider
             )
         }
     }
@@ -304,50 +263,41 @@ class RepositoryProviderImpl(
     override fun assetChart(baseAsset: String, quoteAsset: String): AssetChartRepository {
         return chartRepositoriesByCode.getOrPut("$baseAsset-$quoteAsset") {
             AssetChartRepository(
-                    baseAsset,
-                    quoteAsset,
-                    apiProvider
+                baseAsset,
+                quoteAsset,
+                apiProvider
             )
         }
     }
 
-    override fun kycRequestState(): KycRequestStateRepository {
-        return kycRequestStateRepository
-    }
-
-    override fun activeKyc(): ActiveKycRepository {
-        return activeKycRepository
-    }
+    private val investmentInfoRepositoriesBySaleId =
+        LruCache<Long, InvestmentInfoRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     override fun investmentInfo(sale: SaleRecord): InvestmentInfoRepository {
         return investmentInfoRepositoriesBySaleId.getOrPut(sale.id) {
-            InvestmentInfoRepository(sale, offers(), sales())
+            InvestmentInfoRepository(sale, offers(), sales)
         }
     }
 
+    private val pollsRepositoriesByOwnerAccountId =
+        LruCache<String, PollsRepository>(MAX_SAME_REPOSITORIES_COUNT)
+
     override fun polls(ownerAccountId: String): PollsRepository {
         return pollsRepositoriesByOwnerAccountId.getOrPut(ownerAccountId) {
-            PollsRepository(ownerAccountId, apiProvider, walletInfoProvider,
-                    keyValueEntries(), PollsCache())
+            PollsRepository(
+                ownerAccountId, apiProvider, walletInfoProvider,
+                keyValueEntries, PollsCache()
+            )
         }
     }
+
+    private val atomicSwapRepositoryByAsset =
+        LruCache<String, AtomicSwapAsksRepository>(MAX_SAME_REPOSITORIES_COUNT)
 
     override fun atomicSwapAsks(asset: String): AtomicSwapAsksRepository {
         return atomicSwapRepositoryByAsset.getOrPut(asset) {
             AtomicSwapAsksRepository(apiProvider, asset, MemoryOnlyRepositoryCache())
         }
-    }
-
-    override fun keyValueEntries(): KeyValueEntriesRepository {
-        return keyValueEntries
-    }
-
-    override fun blobs(): BlobsRepository {
-        return blobs
-    }
-
-    override fun localAccount(): LocalAccountRepository {
-        return localAccount
     }
 
     companion object {

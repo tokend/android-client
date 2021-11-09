@@ -46,7 +46,7 @@ class SignInWithLocalAccountUseCase(
         get() = connectionStateProvider?.invoke() ?: true
 
     private val accountDecryptor = LocalAccountRetryDecryptor(userKeyProvider, accountCipher)
-    private val localAccountRepository = repositoryProvider.localAccount()
+    private val localAccountRepository = repositoryProvider.localAccount
 
     private lateinit var localAccount: LocalAccount
     private var defaultSignerRole: Long = 0
@@ -108,7 +108,7 @@ class SignInWithLocalAccountUseCase(
         }
 
         return repositoryProvider
-            .keyValueEntries()
+            .keyValueEntries
             .ensureEntries(listOf(KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY))
             .map {
                 it[KeyServer.DEFAULT_SIGNER_ROLE_KEY_VALUE_KEY] as KeyValueEntryRecord.Number

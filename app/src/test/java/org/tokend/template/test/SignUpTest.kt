@@ -18,22 +18,28 @@ class SignUpTest {
         val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, WalletInfoProviderImpl(),
-                urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper())
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, WalletInfoProviderImpl(),
+            urlConfigProvider,
+            JsonApiToolsProvider.getObjectMapper()
+        )
 
-        val useCase = SignUpUseCase(email, password, KeyServer(apiProvider.getApi().wallets),
-                repositoryProvider)
+        val useCase = SignUpUseCase(
+            email, password, KeyServer(apiProvider.getApi().wallets),
+            repositoryProvider
+        )
 
         useCase.perform().blockingGet()
 
         try {
             val walletInfo = KeyServer(apiProvider.getApi().wallets)
-                    .getWalletInfo(email, password, false)
-                    .execute().get()
+                .getWalletInfo(email, password, false)
+                .execute().get()
 
-            Assert.assertTrue("Wallet email must be the same as the used one for sign up",
-                    email.equals(walletInfo.email, true))
+            Assert.assertTrue(
+                "Wallet email must be the same as the used one for sign up",
+                email.equals(walletInfo.email, true)
+            )
         } catch (e: Exception) {
             Assert.fail("Wallet must be accessible with specified credentials")
         }
@@ -46,12 +52,16 @@ class SignUpTest {
         val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, WalletInfoProviderImpl(),
-                urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper())
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, WalletInfoProviderImpl(),
+            urlConfigProvider,
+            JsonApiToolsProvider.getObjectMapper()
+        )
 
-        val useCase = SignUpUseCase(email, password, KeyServer(apiProvider.getApi().wallets),
-                repositoryProvider)
+        val useCase = SignUpUseCase(
+            email, password, KeyServer(apiProvider.getApi().wallets),
+            repositoryProvider
+        )
 
         try {
             useCase.perform().blockingGet()
@@ -66,8 +76,10 @@ class SignUpTest {
                 // Nice.
             } else {
                 e.printStackTrace()
-                Assert.fail("${EmailAlreadyTakenException::class.java.name} expected " +
-                        "but ${e::class.java.name} occurred")
+                Assert.fail(
+                    "${EmailAlreadyTakenException::class.java.name} expected " +
+                            "but ${e::class.java.name} occurred"
+                )
             }
 
             return

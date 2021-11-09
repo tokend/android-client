@@ -19,59 +19,59 @@ import org.tokend.wallet.xdr.op_extensions.SimplePaymentOp
  * Updates related repositories: balances, transactions
  */
 class ConfirmPaymentRequestUseCase(
-        private val request: PaymentRequest,
-        private val accountProvider: AccountProvider,
-        private val repositoryProvider: RepositoryProvider,
-        private val txManager: TxManager
+    private val request: PaymentRequest,
+    private val accountProvider: AccountProvider,
+    private val repositoryProvider: RepositoryProvider,
+    private val txManager: TxManager
 ) {
     private lateinit var networkParams: NetworkParams
     private lateinit var resultMetaXdr: String
 
     fun perform(): Completable {
         return getNetworkParams()
-                .doOnSuccess { networkParams ->
-                    this.networkParams = networkParams
-                }
-                .flatMap {
-                    getTransaction()
-                }
-                .flatMap { transaction ->
-                    txManager.submit(transaction, waitForIngest = false)
-                }
-                .doOnSuccess { response ->
-                    this.resultMetaXdr = response.resultMetaXdr!!
-                }
-                .doOnSuccess {
-                    updateRepositories()
-                }
-                .ignoreElement()
+            .doOnSuccess { networkParams ->
+                this.networkParams = networkParams
+            }
+            .flatMap {
+                getTransaction()
+            }
+            .flatMap { transaction ->
+                txManager.submit(transaction, waitForIngest = false)
+            }
+            .doOnSuccess { response ->
+                this.resultMetaXdr = response.resultMetaXdr!!
+            }
+            .doOnSuccess {
+                updateRepositories()
+            }
+            .ignoreElement()
     }
 
     private fun getTransaction(): Single<Transaction> {
         return Single.defer {
             val operation = SimplePaymentOp(
-                    sourceBalanceId = request.senderBalanceId,
-                    destAccountId = request.recipient.accountId,
-                    amount = networkParams.amountToPrecised(request.amount),
-                    subject = request.paymentSubject ?: "",
-                    reference = request.reference,
-                    feeData = PaymentFeeData(
-                            sourceFee = request.fee.senderFee.toXdrFee(networkParams),
-                            destinationFee = request.fee.recipientFee.toXdrFee(networkParams),
-                            sourcePaysForDest = request.fee.senderPaysForRecipient,
-                            ext = PaymentFeeData.PaymentFeeDataExt.EmptyVersion()
-                    )
+                sourceBalanceId = request.senderBalanceId,
+                destAccountId = request.recipient.accountId,
+                amount = networkParams.amountToPrecised(request.amount),
+                subject = request.paymentSubject ?: "",
+                reference = request.reference,
+                feeData = PaymentFeeData(
+                    sourceFee = request.fee.senderFee.toXdrFee(networkParams),
+                    destinationFee = request.fee.recipientFee.toXdrFee(networkParams),
+                    sourcePaysForDest = request.fee.senderPaysForRecipient,
+                    ext = PaymentFeeData.PaymentFeeDataExt.EmptyVersion()
+                )
             )
 
             val transaction =
-                    TransactionBuilder(networkParams, request.senderAccountId)
-                            .addOperation(Operation.OperationBody.Payment(operation))
-                            .build()
+                TransactionBuilder(networkParams, request.senderAccountId)
+                    .addOperation(Operation.OperationBody.Payment(operation))
+                    .build()
 
             val account = accountProvider.getAccount()
-                    ?: return@defer Single.error<Transaction>(
-                            IllegalStateException("Cannot obtain current account")
-                    )
+                ?: return@defer Single.error<Transaction>(
+                    IllegalStateException("Cannot obtain current account")
+                )
 
             transaction.addSignature(account)
 
@@ -81,12 +81,12 @@ class ConfirmPaymentRequestUseCase(
 
     private fun getNetworkParams(): Single<NetworkParams> {
         return repositoryProvider
-                .systemInfo()
-                .getNetworkParams()
+            .systemInfo
+            .getNetworkParams()
     }
 
     private fun updateRepositories() {
-        repositoryProvider.balances().apply {
+        repositoryProvider.balances.apply {
             if (!updateBalancesByTransactionResultMeta(resultMetaXdr, networkParams))
                 updateIfEverUpdated()
         }

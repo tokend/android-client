@@ -59,10 +59,10 @@ class SetKycActivity : BaseActivity() {
     private var canConfirm = false
 
     private val kycRequestStateRepository
-        get() = repositoryProvider.kycRequestState()
+        get() = repositoryProvider.kycRequestState
 
     private val activeKyc
-        get() = repositoryProvider.activeKyc()
+        get() = repositoryProvider.activeKyc
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_set_kyc)

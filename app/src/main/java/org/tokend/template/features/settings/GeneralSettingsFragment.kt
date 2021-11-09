@@ -46,7 +46,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private var fingerprintPreference: SwitchPreferenceCompat? = null
 
     private val tfaRepository: TfaFactorsRepository
-        get() = repositoryProvider.tfaFactors()
+        get() = repositoryProvider.tfaFactors
     private var tfaPreference: SwitchPreferenceCompat? = null
     private val tfaFactor: TfaFactorRecord?
         get() = tfaRepository.itemsList.find { it.type == TFA_FACTOR_TYPE }
@@ -54,8 +54,8 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         get() = tfaFactor?.let { it.priority > 0 } ?: false
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { progress?.show() },
-            hideLoading = { progress?.hide() }
+        showLoading = { progress?.show() },
+        hideLoading = { progress?.hide() }
     )
 
     @SuppressLint("InlinedApi")
@@ -115,7 +115,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         val accountIdPreference = findPreference("account_id")
         accountIdPreference?.setOnPreferenceClickListener {
             val walletInfo = walletInfoProvider.getWalletInfo()
-                    ?: return@setOnPreferenceClickListener false
+                ?: return@setOnPreferenceClickListener false
 
             activity?.let { parentActivity ->
                 Navigator.from(parentActivity).openAccountQrShare(walletInfo)
@@ -141,9 +141,9 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
         seedPreference.setOnPreferenceClickListener {
             SecretSeedDialog(
-                    requireContext(),
-                    account,
-                    toastManager
+                requireContext(),
+                account,
+                toastManager
             ).show()
 
             true
@@ -153,12 +153,12 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun initLocalAccountMnemonicItem() {
         val mnemonicPreference = findPreference("mnemonic") ?: return
 
-        val localAccount = repositoryProvider.localAccount().presentAccount
+        val localAccount = repositoryProvider.localAccount.presentAccount
         val entropy =
-                if (localAccount != null && localAccount.hasEntropy && localAccount.isDecrypted)
-                    localAccount.entropy
-                else
-                    null
+            if (localAccount != null && localAccount.hasEntropy && localAccount.isDecrypted)
+                localAccount.entropy
+            else
+                null
 
         if (!session.isLocalAccountUsed || entropy == null) {
             mnemonicPreference.isVisible = false
@@ -167,9 +167,9 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
         mnemonicPreference.setOnPreferenceClickListener {
             MnemonicPhraseDialog(
-                    requireContext(),
-                    mnemonicCode.toMnemonic(entropy).joinToString(" "),
-                    toastManager
+                requireContext(),
+                mnemonicCode.toMnemonic(entropy).joinToString(" "),
+                toastManager
             ).show()
 
             true
@@ -199,7 +199,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun initBackgroundLockItem() {
         val lockPreference = findPreference("background_lock")
                 as? SwitchPreferenceCompat
-                ?: return
+            ?: return
 
         if (session.isLocalAccountUsed) {
             lockPreference.isVisible = false
@@ -217,7 +217,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun initFingerprintItem() {
         fingerprintPreference = findPreference("fingerprint") as? SwitchPreferenceCompat
         fingerprintPreference?.isVisible =
-                BiometricAuthManager(this, credentialsPersistence).isHardwareDetected
+            BiometricAuthManager(this, credentialsPersistence).isHardwareDetected
     }
 
     private fun initTfaItem() {
@@ -256,19 +256,19 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     // region TFA
     private fun subscribeToTfaFactors() {
         tfaRepository.itemsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    updateTfaPreference()
-                }
-                .addTo(compositeDisposable)
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe {
+                updateTfaPreference()
+            }
+            .addTo(compositeDisposable)
 
         tfaRepository.loadingSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    loadingIndicator.setLoading(it, "tfa")
-                    updateTfaPreference()
-                }
-                .addTo(compositeDisposable)
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe {
+                loadingIndicator.setLoading(it, "tfa")
+                updateTfaPreference()
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun updateTfaPreference() {
@@ -286,36 +286,36 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     private fun disableTfa() {
         DisableTfaUseCase(
-                TFA_FACTOR_TYPE,
-                tfaRepository
+            TFA_FACTOR_TYPE,
+            tfaRepository
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .subscribeBy(
-                        onError = {
-                            errorHandlerFactory.getDefault().handle(it)
-                        }
-                )
-                .addTo(compositeDisposable)
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersCompletable())
+            .subscribeBy(
+                onError = {
+                    errorHandlerFactory.getDefault().handle(it)
+                }
+            )
+            .addTo(compositeDisposable)
     }
 
     private fun addAndEnableNewTfaFactor() {
         val confirmationDialogFactory =
-                TfaConfirmationDialogFactory(requireContext(), toastManager)
+            TfaConfirmationDialogFactory(requireContext(), toastManager)
 
         EnableTfaUseCase(
-                TFA_FACTOR_TYPE,
-                tfaRepository,
-                confirmationDialogFactory
+            TFA_FACTOR_TYPE,
+            tfaRepository,
+            confirmationDialogFactory
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersCompletable())
-                .subscribeBy(
-                        onError = {
-                            errorHandlerFactory.getDefault().handle(it)
-                        }
-                )
-                .addTo(compositeDisposable)
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersCompletable())
+            .subscribeBy(
+                onError = {
+                    errorHandlerFactory.getDefault().handle(it)
+                }
+            )
+            .addTo(compositeDisposable)
     }
 // endregion
 
@@ -336,7 +336,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         }
         if (!BuildConfig.IS_LIMITS_ALLOWED) {
             (findPreference("info") as? PreferenceCategory)
-                    ?.removePreference(limitsPreference)
+                ?.removePreference(limitsPreference)
         }
     }
 
@@ -348,7 +348,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         }
         if (!BuildConfig.IS_FEES_ALLOWED) {
             (findPreference("info") as? PreferenceCategory)
-                    ?.removePreference(feesPreference)
+                ?.removePreference(feesPreference)
         }
     }
 
@@ -363,7 +363,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         val openSourceLicensesPreference = findPreference("open_source_licenses")
         openSourceLicensesPreference?.setOnPreferenceClickListener {
             OpenSourceLicensesDialog(requireContext(), R.style.AlertDialogStyle)
-                    .show()
+                .show()
 
             true
         }
@@ -378,7 +378,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     private fun initLanguageItem() {
         val languagePreference = findPreference("language")
-                ?: return
+            ?: return
 
         val currentLocale = localeManager.getLocale()
         val availableLocales = localeManager.availableLocales
@@ -387,14 +387,14 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         languagePreference.summary = localizedName.forLocale(currentLocale)
 
         val dialog = SingleCheckDialog(
-                requireContext(),
-                availableLocales.map(localizedName::forLocale)
+            requireContext(),
+            availableLocales.map(localizedName::forLocale)
         )
         dialog.setDefaultCheckIndex(availableLocales.indexOf(currentLocale))
         dialog.setPositiveButtonListener { _, index ->
             availableLocales
-                    .getOrNull(index)
-                    ?.also(localeManager::setLocale)
+                .getOrNull(index)
+                ?.also(localeManager::setLocale)
         }
         dialog.setTitle(R.string.select_language)
 

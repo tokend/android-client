@@ -42,103 +42,112 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         loadAndDisplayCounterpartyEmail(details, accountId)
     }
 
-    private fun displayFeePaidBySenderIfNeeded(item: BalanceChange,
-                                               details: BalanceChangeCause.Payment) {
+    private fun displayFeePaidBySenderIfNeeded(
+        item: BalanceChange,
+        details: BalanceChangeCause.Payment
+    ) {
         if (item.isReceived == true
-                && details.destFee.total.signum() > 0
-                && details.isDestFeePaidBySource) {
+            && details.destFee.total.signum() > 0
+            && details.isDestFeePaidBySource
+        ) {
             bottom_info_text_view.text = getString(R.string.fee_paid_by_sender)
         }
     }
 
-    private fun initCounterpartyClick(cause: BalanceChangeCause.Payment,
-                                      accountId: String) {
+    private fun initCounterpartyClick(
+        cause: BalanceChangeCause.Payment,
+        accountId: String
+    ) {
         adapter.onItemClick { _, item ->
             if (item.id == COUNTERPARTY_ITEM_ID) {
                 val counterpartyAccount = cause.getCounterpartyAccountId(accountId)
                 val counterpartyEmail = cause.getCounterpartyName(accountId)
 
                 val content =
-                        if (counterpartyLoadingFinished && counterpartyEmail != null)
-                            counterpartyEmail + "\n\n" + counterpartyAccount
-                        else
-                            counterpartyAccount
+                    if (counterpartyLoadingFinished && counterpartyEmail != null)
+                        counterpartyEmail + "\n\n" + counterpartyAccount
+                    else
+                        counterpartyAccount
 
                 CopyDataDialogFactory.getDialog(
-                        this,
-                        content,
-                        item.hint,
-                        toastManager,
-                        getString(R.string.data_has_been_copied)
+                    this,
+                    content,
+                    item.hint,
+                    toastManager,
+                    getString(R.string.data_has_been_copied)
                 )
             }
         }
     }
 
-    private fun displayCounterparty(cause: BalanceChangeCause.Payment,
-                                    accountId: String) {
+    private fun displayCounterparty(
+        cause: BalanceChangeCause.Payment,
+        accountId: String
+    ) {
         val counterpartyAccount = cause.getCounterpartyAccountId(accountId)
         val counterpartyEmail = cause.getCounterpartyName(accountId)
         val isReceived = cause.isReceived(accountId)
 
         val accountIdHintStringRes =
-                if (isReceived)
-                    R.string.tx_sender
-                else
-                    R.string.tx_recipient
+            if (isReceived)
+                R.string.tx_sender
+            else
+                R.string.tx_recipient
 
         adapter.addOrUpdateItem(
-                DetailsItem(
-                        id = COUNTERPARTY_ITEM_ID,
-                        text =
-                        if (!counterpartyLoadingFinished)
-                            getString(R.string.loading_data)
-                        else
-                            counterpartyEmail ?: counterpartyAccount,
-                        hint = getString(accountIdHintStringRes),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_account),
-                        singleLineText = true
-                )
+            DetailsItem(
+                id = COUNTERPARTY_ITEM_ID,
+                text =
+                if (!counterpartyLoadingFinished)
+                    getString(R.string.loading_data)
+                else
+                    counterpartyEmail ?: counterpartyAccount,
+                hint = getString(accountIdHintStringRes),
+                icon = ContextCompat.getDrawable(this, R.drawable.ic_account),
+                singleLineText = true
+            )
         )
     }
 
     private fun displaySubject(cause: BalanceChangeCause.Payment) {
         val subject = cause.subject?.takeIf { it.isNotBlank() }
-                ?: return
+            ?: return
 
         adapter.addData(
-                DetailsItem(
-                        text = subject,
-                        hint = getString(R.string.payment_description),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_label_outline)
-                )
+            DetailsItem(
+                text = subject,
+                hint = getString(R.string.payment_description),
+                icon = ContextCompat.getDrawable(this, R.drawable.ic_label_outline)
+            )
         )
     }
 
-    private fun loadAndDisplayCounterpartyEmail(cause: BalanceChangeCause.Payment,
-                                                accountId: String) {
+    private fun loadAndDisplayCounterpartyEmail(
+        cause: BalanceChangeCause.Payment,
+        accountId: String
+    ) {
         cause.getCounterpartyName(accountId)
-                .toMaybe()
-                .switchIfEmpty(
-                        repositoryProvider
-                                .accountDetails()
-                                .getEmailByAccountId(cause.getCounterpartyAccountId(accountId))
-                )
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnEvent { _, _ ->
-                    counterpartyLoadingFinished = true
+            .toMaybe()
+            .switchIfEmpty(
+                repositoryProvider
+                    .accountDetails
+                    .getEmailByAccountId(cause.getCounterpartyAccountId(accountId))
+            )
+            .compose(ObservableTransformers.defaultSchedulersSingle())
+            .doOnEvent { _, _ ->
+                counterpartyLoadingFinished = true
+            }
+            .subscribeBy(
+                onSuccess = { email ->
+                    cause.setCounterpartyName(accountId, email)
+                    displayCounterparty(cause, accountId)
+                },
+                onError = {
+                    // Not critical.
+                    displayCounterparty(cause, accountId)
                 }
-                .subscribeBy(
-                        onSuccess = { email ->
-                            cause.setCounterpartyName(accountId, email)
-                            displayCounterparty(cause, accountId)
-                        },
-                        onError = {
-                            // Not critical.
-                            displayCounterparty(cause, accountId)
-                        }
-                )
-                .addTo(compositeDisposable)
+            )
+            .addTo(compositeDisposable)
     }
 
     companion object {

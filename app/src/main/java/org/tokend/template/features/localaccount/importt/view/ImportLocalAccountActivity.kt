@@ -31,8 +31,8 @@ class ImportLocalAccountActivity : BaseActivity() {
     override val allowUnauthorized = true
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { progress.show() },
-            hideLoading = { progress.hide() }
+        showLoading = { progress.show() },
+        hideLoading = { progress.hide() }
     )
 
     private var canImport: Boolean = false
@@ -42,9 +42,9 @@ class ImportLocalAccountActivity : BaseActivity() {
         }
 
     private val setUpPinCodeProvider = ActivityUserKeyProvider(
-            SetUpPinCodeActivity::class.java,
-            this,
-            null
+        SetUpPinCodeActivity::class.java,
+        this,
+        null
     )
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
@@ -72,8 +72,8 @@ class ImportLocalAccountActivity : BaseActivity() {
     private fun initFields() {
         SoftInputUtil.showSoftInputOnView(import_data_edit_text)
         import_data_edit_text.addTextChangedListener(SimpleTextWatcher {
-                import_data_edit_text.error = null
-                updateImportAvailability()
+            import_data_edit_text.error = null
+            updateImportAvailability()
         })
     }
 
@@ -85,64 +85,64 @@ class ImportLocalAccountActivity : BaseActivity() {
 
     private fun importAccount() {
         val importData = import_data_edit_text
-                .text
-                ?.trim()
-                ?.toString()
-                ?: return
+            .text
+            ?.trim()
+            ?.toString()
+            ?: return
 
         val importDataChars = importData.toCharArray()
         val dataIsSeed = Base32Check.isValid(Base32Check.VersionByte.SEED, importDataChars)
 
         val importUseCase =
-                if (dataIsSeed) {
-                    ImportLocalAccountFromSecretSeedUseCase(
-                            importDataChars,
-                            defaultDataCipher,
-                            setUpPinCodeProvider,
-                            repositoryProvider.localAccount()
-                    )
-                } else {
-                    ImportLocalAccountFromMnemonicUseCase(
-                            importData,
-                            mnemonicCode,
-                            defaultDataCipher,
-                            setUpPinCodeProvider,
-                            repositoryProvider.localAccount()
-                    )
-                }
+            if (dataIsSeed) {
+                ImportLocalAccountFromSecretSeedUseCase(
+                    importDataChars,
+                    defaultDataCipher,
+                    setUpPinCodeProvider,
+                    repositoryProvider.localAccount
+                )
+            } else {
+                ImportLocalAccountFromMnemonicUseCase(
+                    importData,
+                    mnemonicCode,
+                    defaultDataCipher,
+                    setUpPinCodeProvider,
+                    repositoryProvider.localAccount
+                )
+            }
 
         importUseCase
-                .perform()
-                .delay(IMPORT_VISUAL_DELAY_MS, TimeUnit.MILLISECONDS)
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe {
-                    loadingIndicator.show()
-                    updateImportAvailability()
-                }
-                .doOnEvent { _, _ ->
-                    loadingIndicator.hide()
-                    updateImportAvailability()
-                }
-                .subscribeBy(
-                        onSuccess = this::onSuccessfulImport,
-                        onError = importErrorHandler::handleIfPossible
-                )
-                .addTo(compositeDisposable)
+            .perform()
+            .delay(IMPORT_VISUAL_DELAY_MS, TimeUnit.MILLISECONDS)
+            .compose(ObservableTransformers.defaultSchedulersSingle())
+            .doOnSubscribe {
+                loadingIndicator.show()
+                updateImportAvailability()
+            }
+            .doOnEvent { _, _ ->
+                loadingIndicator.hide()
+                updateImportAvailability()
+            }
+            .subscribeBy(
+                onSuccess = this::onSuccessfulImport,
+                onError = importErrorHandler::handleIfPossible
+            )
+            .addTo(compositeDisposable)
     }
 
     private val importErrorHandler: ErrorHandler
         get() = CompositeErrorHandler(
-                EditTextErrorHandler(import_data_edit_text) { error ->
-                    when (error) {
-                        is MnemonicException ->
-                            getString(R.string.error_invalid_mnemonic_phrase)
-                        else ->
-                            null
-                    }
-                },
-                errorHandlerFactory.getDefault()
+            EditTextErrorHandler(import_data_edit_text) { error ->
+                when (error) {
+                    is MnemonicException ->
+                        getString(R.string.error_invalid_mnemonic_phrase)
+                    else ->
+                        null
+                }
+            },
+            errorHandlerFactory.getDefault()
         )
-                .doOnSuccessfulHandle(this::updateImportAvailability)
+            .doOnSuccessfulHandle(this::updateImportAvailability)
 
     private fun onSuccessfulImport(localAccount: LocalAccount) {
         setResult(Activity.RESULT_OK)

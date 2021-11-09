@@ -38,9 +38,9 @@ class LocalAccountDetailsActivity : BaseActivity() {
     private lateinit var localAccount: LocalAccount
 
     private val pinCodeProvider = ActivityUserKeyProvider(
-            PinCodeActivity::class.java,
-            this,
-            null
+        PinCodeActivity::class.java,
+        this,
+        null
     )
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
@@ -49,7 +49,7 @@ class LocalAccountDetailsActivity : BaseActivity() {
         initToolbar()
         initList()
 
-        val localAccount = repositoryProvider.localAccount().presentAccount
+        val localAccount = repositoryProvider.localAccount.presentAccount
         if (localAccount == null) {
             finishWithMissingArgError("There is no local account in the repository")
             return
@@ -82,44 +82,45 @@ class LocalAccountDetailsActivity : BaseActivity() {
 
     private fun displayDetails() {
         val extraImageView = ImageView(this)
-                .apply {
-                    layoutParams = ViewGroup.LayoutParams(dip(32), dip(32))
-                }
+            .apply {
+                layoutParams = ViewGroup.LayoutParams(dip(32), dip(32))
+            }
 
         LocalAccountLogoUtil.setLogo(extraImageView, localAccount)
 
         adapter.addData(
-                DetailsItem(
-                        id = ACCOUNT_ID_ITEM_ID,
-                        text = localAccount.accountId,
-                        singleLineText = true,
-                        extraView = extraImageView,
-                        hint = getString(R.string.local_account_public_key),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_account)
-                ),
-                DetailsItem(
-                        header = getString(R.string.local_account_actions),
-                        id = SECRET_SEED_ITEM_ID,
-                        text = getString(R.string.show_secret_seed),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_account_key)
-                )
+            DetailsItem(
+                id = ACCOUNT_ID_ITEM_ID,
+                text = localAccount.accountId,
+                singleLineText = true,
+                extraView = extraImageView,
+                hint = getString(R.string.local_account_public_key),
+                icon = ContextCompat.getDrawable(this, R.drawable.ic_account)
+            ),
+            DetailsItem(
+                header = getString(R.string.local_account_actions),
+                id = SECRET_SEED_ITEM_ID,
+                text = getString(R.string.show_secret_seed),
+                icon = ContextCompat.getDrawable(this, R.drawable.ic_account_key)
+            )
         )
 
         if (localAccount.hasEntropy) {
-            adapter.addData(DetailsItem(
+            adapter.addData(
+                DetailsItem(
                     id = MNEMONIC_PHRASE_ITEM_ID,
                     text = getString(R.string.show_mnemonic_phrase),
                     icon = ContextCompat.getDrawable(this, R.drawable.ic_text)
-            )
+                )
             )
         }
 
         adapter.addData(
-                DetailsItem(
-                        id = ERASE_ACCOUNT_ITEM_ID,
-                        text = getString(R.string.erase_local_account),
-                        icon = ContextCompat.getDrawable(this, R.drawable.ic_delete)
-                )
+            DetailsItem(
+                id = ERASE_ACCOUNT_ITEM_ID,
+                text = getString(R.string.erase_local_account),
+                icon = ContextCompat.getDrawable(this, R.drawable.ic_delete)
+            )
         )
     }
 
@@ -136,36 +137,36 @@ class LocalAccountDetailsActivity : BaseActivity() {
         })
 
         disposable = LocalAccountRetryDecryptor(pinCodeProvider, defaultDataCipher)
-                .decrypt(localAccount)
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe {
-                    progress.show()
-                }
-                .doOnEvent { _, _ ->
-                    progress.dismiss()
-                }
-                .subscribeBy(
-                        onSuccess = { callback() },
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
-                .addTo(compositeDisposable)
+            .decrypt(localAccount)
+            .compose(ObservableTransformers.defaultSchedulersSingle())
+            .doOnSubscribe {
+                progress.show()
+            }
+            .doOnEvent { _, _ ->
+                progress.dismiss()
+            }
+            .subscribeBy(
+                onSuccess = { callback() },
+                onError = { errorHandlerFactory.getDefault().handle(it) }
+            )
+            .addTo(compositeDisposable)
     }
 
     private fun showSecretSeedWithConfirmation() {
         SecretSeedDialog(
-                this,
-                localAccount.account,
-                toastManager
+            this,
+            localAccount.account,
+            toastManager
         ).show()
     }
 
     private fun showAccountId() {
         CopyDataDialogFactory.getDialog(
-                this,
-                localAccount.accountId,
-                getString(R.string.local_account_public_key),
-                toastManager,
-                getString(R.string.data_has_been_copied)
+            this,
+            localAccount.accountId,
+            getString(R.string.local_account_public_key),
+            toastManager,
+            getString(R.string.data_has_been_copied)
         )
     }
 
@@ -179,19 +180,21 @@ class LocalAccountDetailsActivity : BaseActivity() {
 
     private fun eraseAccountWithConfirmation() {
         AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                .setTitle(R.string.erase_local_account)
-                .setMessage(Html.fromHtml(
-                        getString(R.string.erase_local_account_confirmation)
-                ))
-                .setPositiveButton(R.string.yes) { _, _ ->
-                    eraseAccountAndFinish()
-                }
-                .setNegativeButton(R.string.no, null)
-                .show()
+            .setTitle(R.string.erase_local_account)
+            .setMessage(
+                Html.fromHtml(
+                    getString(R.string.erase_local_account_confirmation)
+                )
+            )
+            .setPositiveButton(R.string.yes) { _, _ ->
+                eraseAccountAndFinish()
+            }
+            .setNegativeButton(R.string.no, null)
+            .show()
     }
 
     private fun eraseAccountAndFinish() {
-        repositoryProvider.localAccount().erase()
+        repositoryProvider.localAccount.erase()
         toastManager.short(R.string.local_account_erased)
         finish()
     }

@@ -2,11 +2,11 @@ package org.tokend.template.features.offers
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.DynamicDrawableSpan
 import android.text.style.ImageSpan
+import androidx.core.content.ContextCompat
 import com.rengwuxian.materialedittext.MaterialEditText
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -17,16 +17,16 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.sdk.utils.BigDecimalUtil
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.features.assets.model.Asset
-import org.tokend.template.features.balances.model.BalanceRecord
-import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.extensions.getBigDecimalExtra
 import org.tokend.template.extensions.hasError
 import org.tokend.template.extensions.isMaxPossibleAmount
-import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.balances.model.BalanceRecord
+import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.features.fees.logic.FeeManager
-import org.tokend.template.util.navigation.Navigator
+import org.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.ElevationUtil
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.input.AmountEditTextWrapper
@@ -36,7 +36,7 @@ import java.math.MathContext
 class CreateOfferActivity : BaseActivity() {
 
     private val balancesRepository: BalancesRepository
-        get() = repositoryProvider.balances()
+        get() = repositoryProvider.balances
 
     private lateinit var baseAsset: Asset
     private lateinit var quoteAsset: Asset
@@ -64,9 +64,9 @@ class CreateOfferActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         baseAsset = intent.getSerializableExtra(BASE_ASSET_EXTRA) as? Asset
-                ?: return
+            ?: return
         quoteAsset = intent.getSerializableExtra(QUOTE_ASSET_EXTRA) as? Asset
-                ?: return
+            ?: return
         requiredPrice = intent.getBigDecimalExtra(PRICE_STRING_EXTRA)
 
         initViews()
@@ -89,14 +89,16 @@ class CreateOfferActivity : BaseActivity() {
 
         price_edit_text.setAmount(requiredPrice, quoteScale)
         price_edit_text.floatingLabelText =
-                getString(R.string.template_offer_creation_price,
-                        quoteAsset.code, baseAsset.code)
+            getString(
+                R.string.template_offer_creation_price,
+                quoteAsset.code, baseAsset.code
+            )
 
         amount_edit_text.floatingLabelText =
-                getString(R.string.template_amount_hint, baseAsset.code)
+            getString(R.string.template_amount_hint, baseAsset.code)
 
         total_edit_text.floatingLabelText =
-                getString(R.string.template_total_hint, quoteAsset.code)
+            getString(R.string.template_total_hint, quoteAsset.code)
 
         if (requiredPrice.signum() == 0) {
             price_edit_text.requestFocus()
@@ -137,9 +139,9 @@ class CreateOfferActivity : BaseActivity() {
                 onInputUpdated {
                     val price = priceEditTextWrapper.rawAmount
                     val unscaledAmount =
-                            if (price.signum() > 0) {
-                                rawAmount.divide(price, MathContext.DECIMAL128)
-                            } else BigDecimal.ZERO
+                        if (price.signum() > 0) {
+                            rawAmount.divide(price, MathContext.DECIMAL128)
+                        } else BigDecimal.ZERO
 
                     amount_edit_text.setAmount(unscaledAmount, baseScale)
                 }
@@ -199,12 +201,12 @@ class CreateOfferActivity : BaseActivity() {
 
     private fun updateActionHints() {
         val amount = amountFormatter.formatAssetAmount(
-                amountEditTextWrapper.rawAmount,
-                baseAsset
+            amountEditTextWrapper.rawAmount,
+            baseAsset
         )
         val total = amountFormatter.formatAssetAmount(
-                totalEditTextWrapper.rawAmount,
-                quoteAsset
+            totalEditTextWrapper.rawAmount,
+            quoteAsset
         )
 
         sell_hint.text = getActionHintString(amount, total)
@@ -222,10 +224,10 @@ class CreateOfferActivity : BaseActivity() {
         val template = SpannableString("$from * $to")
         arrow?.also {
             template.setSpan(
-                    ImageSpan(it, DynamicDrawableSpan.ALIGN_BASELINE),
-                    from.length + 1,
-                    from.length + 2,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ImageSpan(it, DynamicDrawableSpan.ALIGN_BASELINE),
+                from.length + 1,
+                from.length + 2,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
 
@@ -234,37 +236,45 @@ class CreateOfferActivity : BaseActivity() {
 
     private fun updateAvailable(balances: List<BalanceRecord>) {
         baseBalance = balances.find { it.assetCode == baseAsset.code }?.available
-                ?: BigDecimal.ZERO
+            ?: BigDecimal.ZERO
         quoteBalance = balances.find { it.assetCode == quoteAsset.code }?.available
-                ?: BigDecimal.ZERO
+            ?: BigDecimal.ZERO
 
         amount_edit_text.setHelperText(
-                getString(R.string.template_available,
-                        amountFormatter.formatAssetAmount(baseBalance,
-                                baseAsset, withAssetCode = false))
+            getString(
+                R.string.template_available,
+                amountFormatter.formatAssetAmount(
+                    baseBalance,
+                    baseAsset, withAssetCode = false
+                )
+            )
         )
 
         total_edit_text.setHelperText(
-                getString(R.string.template_available,
-                        amountFormatter.formatAssetAmount(quoteBalance,
-                                quoteAsset, withAssetCode = false))
+            getString(
+                R.string.template_available,
+                amountFormatter.formatAssetAmount(
+                    quoteBalance,
+                    quoteAsset, withAssetCode = false
+                )
+            )
         )
     }
 
     private fun subscribeToBalances() {
         balancesRepository.itemsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    updateAvailable(it)
-                }
-                .addTo(compositeDisposable)
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe {
+                updateAvailable(it)
+            }
+            .addTo(compositeDisposable)
 
         balancesRepository.errorsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    errorHandlerFactory.getDefault().handle(it)
-                }
-                .addTo(compositeDisposable)
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe {
+                errorHandlerFactory.getDefault().handle(it)
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun update(force: Boolean = false) {
@@ -294,37 +304,37 @@ class CreateOfferActivity : BaseActivity() {
         val amount = amountEditTextWrapper.scaledAmount
 
         val progress = ProgressDialogFactory.getDialog(
-                this,
-                R.string.loading_data
+            this,
+            R.string.loading_data
         ) {
             offerCreationDisposable?.dispose()
         }
 
         offerCreationDisposable = CreateOfferRequestUseCase(
-                baseAmount = amount,
-                isBuy = isBuy,
-                price = price,
-                orderBookId = 0,
-                baseAsset = baseAsset,
-                quoteAsset = quoteAsset,
-                offerToCancel = null,
-                walletInfoProvider = walletInfoProvider,
-                feeManager = FeeManager(apiProvider)
+            baseAmount = amount,
+            isBuy = isBuy,
+            price = price,
+            orderBookId = 0,
+            baseAsset = baseAsset,
+            quoteAsset = quoteAsset,
+            offerToCancel = null,
+            walletInfoProvider = walletInfoProvider,
+            feeManager = FeeManager(apiProvider)
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe { progress.show() }
-                .doOnEvent { _, _ -> progress.cancel() }
-                .subscribeBy(
-                        onSuccess = { offerRequest ->
-                            Navigator.from(this)
-                                    .openOfferConfirmation(offerRequest)
-                                    .addTo(activityRequestsBag)
-                                    .doOnSuccess { finish() }
-                        },
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
-                .addTo(compositeDisposable)
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersSingle())
+            .doOnSubscribe { progress.show() }
+            .doOnEvent { _, _ -> progress.cancel() }
+            .subscribeBy(
+                onSuccess = { offerRequest ->
+                    Navigator.from(this)
+                        .openOfferConfirmation(offerRequest)
+                        .addTo(activityRequestsBag)
+                        .doOnSuccess { finish() }
+                },
+                onError = { errorHandlerFactory.getDefault().handle(it) }
+            )
+            .addTo(compositeDisposable)
     }
 
     companion object {
@@ -332,9 +342,11 @@ class CreateOfferActivity : BaseActivity() {
         private const val QUOTE_ASSET_EXTRA = "quote_asset"
         private const val PRICE_STRING_EXTRA = "price"
 
-        fun getBundle(baseAsset: Asset,
-                      quoteAsset: Asset,
-                      requiredPrice: BigDecimal?) = Bundle().apply {
+        fun getBundle(
+            baseAsset: Asset,
+            quoteAsset: Asset,
+            requiredPrice: BigDecimal?
+        ) = Bundle().apply {
             putSerializable(BASE_ASSET_EXTRA, baseAsset)
             putSerializable(QUOTE_ASSET_EXTRA, quoteAsset)
             putString(PRICE_STRING_EXTRA, BigDecimalUtil.toPlainString(requiredPrice))

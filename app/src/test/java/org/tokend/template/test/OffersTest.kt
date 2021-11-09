@@ -32,34 +32,36 @@ class OffersTest {
     fun aCreateOffer() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
+            WalletInfoProviderFactory().createWalletInfoProvider(),
+            AccountProviderFactory().createAccountProvider()
         )
 
         val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
 
         val apiProvider =
-                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper())
+            ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, session, urlConfigProvider,
+            JsonApiToolsProvider.getObjectMapper()
+        )
 
         Util.getVerifiedWallet(
-                email, password, apiProvider, session, repositoryProvider
+            email, password, apiProvider, session, repositoryProvider
         )
 
         val quoteAsset = Util.createAsset(apiProvider, TxManager(apiProvider))
 
         val useCase = CreateOfferRequestUseCase(
-                baseAsset = SimpleAsset("ETH"),
-                quoteAsset = SimpleAsset(quoteAsset),
-                isBuy = false,
-                baseAmount = baseAmount,
-                price = price,
-                orderBookId = 0,
-                offerToCancel = null,
-                walletInfoProvider = session,
-                feeManager = FeeManager(apiProvider)
+            baseAsset = SimpleAsset("ETH"),
+            quoteAsset = SimpleAsset(quoteAsset),
+            isBuy = false,
+            baseAmount = baseAmount,
+            price = price,
+            orderBookId = 0,
+            offerToCancel = null,
+            walletInfoProvider = session,
+            feeManager = FeeManager(apiProvider)
         )
 
         val request = useCase.perform().blockingGet()
@@ -71,20 +73,22 @@ class OffersTest {
     fun bConfirmOffer() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
+            WalletInfoProviderFactory().createWalletInfoProvider(),
+            AccountProviderFactory().createAccountProvider()
         )
 
         val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
 
         val apiProvider =
-                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper())
+            ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, session, urlConfigProvider,
+            JsonApiToolsProvider.getObjectMapper()
+        )
 
         Util.getVerifiedWallet(
-                email, password, apiProvider, session, repositoryProvider
+            email, password, apiProvider, session, repositoryProvider
         )
 
         val txManager = TxManager(apiProvider)
@@ -95,15 +99,19 @@ class OffersTest {
 
         createAssetPair(baseAsset, quoteAsset, apiProvider, txManager)
 
-        val initialQuoteBalance = Util.getSomeMoney(quoteAsset, emissionAmount,
-                repositoryProvider, session, txManager)
+        val initialQuoteBalance = Util.getSomeMoney(
+            quoteAsset, emissionAmount,
+            repositoryProvider, session, txManager
+        )
 
         submitBuyOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
 
-        val currentQuoteBalance = repositoryProvider.balances().itemsList
-                .first { it.assetCode == quoteAsset }.available
-        Assert.assertEquals("Quote balance must be lower that the initial one by offer quote amount",
-                0, currentQuoteBalance.compareTo(initialQuoteBalance - price * baseAmount))
+        val currentQuoteBalance = repositoryProvider.balances.itemsList
+            .first { it.assetCode == quoteAsset }.available
+        Assert.assertEquals(
+            "Quote balance must be lower that the initial one by offer quote amount",
+            0, currentQuoteBalance.compareTo(initialQuoteBalance - price * baseAmount)
+        )
 
         val offersRepository = repositoryProvider.offers(false)
 
@@ -111,8 +119,10 @@ class OffersTest {
 
         offersRepository.updateIfNotFreshDeferred().blockingAwait()
 
-        Assert.assertTrue("There must be a newly created offer in offers repository",
-                offersRepository.itemsList.isNotEmpty())
+        Assert.assertTrue(
+            "There must be a newly created offer in offers repository",
+            offersRepository.itemsList.isNotEmpty()
+        )
 
         val offer = offersRepository.itemsList.first()
 
@@ -120,17 +130,21 @@ class OffersTest {
         historyRepository.updateIfNotFreshDeferred().blockingAwait()
         val transactions = historyRepository.itemsList
 
-        Assert.assertTrue("History must not be empty after withdrawal sending",
-                transactions.isNotEmpty())
-        Assert.assertTrue("First history entry must be offer-related after offer sending",
-                transactions.first().cause is BalanceChangeCause.Offer)
+        Assert.assertTrue(
+            "History must not be empty after withdrawal sending",
+            transactions.isNotEmpty()
+        )
+        Assert.assertTrue(
+            "First history entry must be offer-related after offer sending",
+            transactions.first().cause is BalanceChangeCause.Offer
+        )
         Assert.assertEquals("Offer-related history entry must have the same id with sent offer",
-                offer.id,
-                transactions
-                        .first()
-                        .cause
-                        .let { it as BalanceChangeCause.Offer }
-                        .offerId
+            offer.id,
+            transactions
+                .first()
+                .cause
+                .let { it as BalanceChangeCause.Offer }
+                .offerId
         )
     }
 
@@ -138,20 +152,22 @@ class OffersTest {
     fun cCancelOffer() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
+            WalletInfoProviderFactory().createWalletInfoProvider(),
+            AccountProviderFactory().createAccountProvider()
         )
 
         val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
 
         val apiProvider =
-                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper())
+            ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, session, urlConfigProvider,
+            JsonApiToolsProvider.getObjectMapper()
+        )
 
         Util.getVerifiedWallet(
-                email, password, apiProvider, session, repositoryProvider
+            email, password, apiProvider, session, repositoryProvider
         )
 
         val txManager = TxManager(apiProvider)
@@ -162,8 +178,10 @@ class OffersTest {
 
         createAssetPair(baseAsset, quoteAsset, apiProvider, txManager)
 
-        val initialBalance = Util.getSomeMoney(quoteAsset, emissionAmount,
-                repositoryProvider, session, txManager)
+        val initialBalance = Util.getSomeMoney(
+            quoteAsset, emissionAmount,
+            repositoryProvider, session, txManager
+        )
 
         submitBuyOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
 
@@ -176,46 +194,52 @@ class OffersTest {
         val offerToCancel = offersRepository.itemsList.first()
 
         val useCase = CancelOfferUseCase(
-                offerToCancel,
-                repositoryProvider,
-                session,
-                TxManager(apiProvider)
+            offerToCancel,
+            repositoryProvider,
+            session,
+            TxManager(apiProvider)
         )
 
         useCase.perform().blockingAwait()
 
-        Assert.assertTrue("Offers repository must be empty after the only offer cancellation",
-                offersRepository.itemsList.isEmpty())
+        Assert.assertTrue(
+            "Offers repository must be empty after the only offer cancellation",
+            offersRepository.itemsList.isEmpty()
+        )
 
         Thread.sleep(2000)
 
-        repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
+        repositoryProvider.balances.updateIfNotFreshDeferred().blockingAwait()
 
-        val currentBalance = repositoryProvider.balances().itemsList
-                .find { it.assetCode == quoteAsset }!!.available
+        val currentBalance = repositoryProvider.balances.itemsList
+            .find { it.assetCode == quoteAsset }!!.available
 
-        Assert.assertEquals("Balance after offer cancellation must be equal to the initial one",
-                0, initialBalance.compareTo(currentBalance))
+        Assert.assertEquals(
+            "Balance after offer cancellation must be equal to the initial one",
+            0, initialBalance.compareTo(currentBalance)
+        )
     }
 
     @Test
     fun dConfirmOfferCancelPrevious() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
+            WalletInfoProviderFactory().createWalletInfoProvider(),
+            AccountProviderFactory().createAccountProvider()
         )
 
         val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
 
         val apiProvider =
-                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper())
+            ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, session, urlConfigProvider,
+            JsonApiToolsProvider.getObjectMapper()
+        )
 
         Util.getVerifiedWallet(
-                email, password, apiProvider, session, repositoryProvider
+            email, password, apiProvider, session, repositoryProvider
         )
 
         val txManager = TxManager(apiProvider)
@@ -226,8 +250,10 @@ class OffersTest {
 
         createAssetPair(baseAsset, quoteAsset, apiProvider, txManager)
 
-        Util.getSomeMoney(quoteAsset, emissionAmount,
-                repositoryProvider, session, txManager)
+        Util.getSomeMoney(
+            quoteAsset, emissionAmount,
+            repositoryProvider, session, txManager
+        )
 
         submitBuyOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider)
 
@@ -239,84 +265,97 @@ class OffersTest {
 
         val offerToCancel = offersRepository.itemsList.first()
 
-        submitBuyOffer(baseAsset, quoteAsset, session, apiProvider, repositoryProvider, offerToCancel)
+        submitBuyOffer(
+            baseAsset,
+            quoteAsset,
+            session,
+            apiProvider,
+            repositoryProvider,
+            offerToCancel
+        )
 
         Thread.sleep(2000)
 
         offersRepository.updateIfNotFreshDeferred().blockingAwait()
 
-        Assert.assertTrue("There must be a newly created offer in offers repository",
-                offersRepository.itemsList.isNotEmpty())
+        Assert.assertTrue(
+            "There must be a newly created offer in offers repository",
+            offersRepository.itemsList.isNotEmpty()
+        )
         Assert.assertFalse("There must not be a cancelled offer in offers repository",
-                offersRepository.itemsList.any {
-                    it.id == offerToCancel.id
-                })
+            offersRepository.itemsList.any {
+                it.id == offerToCancel.id
+            })
     }
 
-    private fun submitBuyOffer(baseAsset: String, quoteAsset: String,
-                               session: Session, apiProvider: ApiProvider,
-                               repositoryProvider: RepositoryProvider,
-                               offerToCancel: OfferRecord? = null) {
+    private fun submitBuyOffer(
+        baseAsset: String, quoteAsset: String,
+        session: Session, apiProvider: ApiProvider,
+        repositoryProvider: RepositoryProvider,
+        offerToCancel: OfferRecord? = null
+    ) {
         val request = CreateOfferRequestUseCase(
-                baseAsset = SimpleAsset(baseAsset),
-                quoteAsset = SimpleAsset(quoteAsset),
-                isBuy = true,
-                baseAmount = baseAmount,
-                price = price,
-                orderBookId = 0,
-                offerToCancel = offerToCancel,
-                walletInfoProvider = session,
-                feeManager = FeeManager(apiProvider)
+            baseAsset = SimpleAsset(baseAsset),
+            quoteAsset = SimpleAsset(quoteAsset),
+            isBuy = true,
+            baseAmount = baseAmount,
+            price = price,
+            orderBookId = 0,
+            offerToCancel = offerToCancel,
+            walletInfoProvider = session,
+            feeManager = FeeManager(apiProvider)
         ).perform().blockingGet()
 
         val useCase = ConfirmOfferRequestUseCase(
-                request,
-                session,
-                repositoryProvider,
-                TxManager(apiProvider)
+            request,
+            session,
+            repositoryProvider,
+            TxManager(apiProvider)
         )
 
         useCase.perform().blockingAwait()
     }
 
-    private fun createAssetPair(baseAsset: String, quoteAsset: String,
-                                apiProvider: ApiProvider, txManager: TxManager) {
+    private fun createAssetPair(
+        baseAsset: String, quoteAsset: String,
+        apiProvider: ApiProvider, txManager: TxManager
+    ) {
         val sourceAccount = Config.ADMIN_ACCOUNT
 
         val systemInfo =
-                apiProvider.getApi()
-                        .general
-                        .getSystemInfo()
-                        .execute()
-                        .get()
+            apiProvider.getApi()
+                .general
+                .getSystemInfo()
+                .execute()
+                .get()
         val netParams = systemInfo.toNetworkParams()
 
         val createOp = ManageAssetPairOp(
-                base = baseAsset,
-                quote = quoteAsset,
-                physicalPrice = netParams.amountToPrecised(price),
-                physicalPriceCorrection = 0,
-                maxPriceStep = netParams.amountToPrecised(BigDecimal.TEN),
-                policies = AssetPairPolicy.TRADEABLE_SECONDARY_MARKET.value,
-                action = ManageAssetPairAction.CREATE,
-                ext = ManageAssetPairOp.ManageAssetPairOpExt.EmptyVersion()
+            base = baseAsset,
+            quote = quoteAsset,
+            physicalPrice = netParams.amountToPrecised(price),
+            physicalPriceCorrection = 0,
+            maxPriceStep = netParams.amountToPrecised(BigDecimal.TEN),
+            policies = AssetPairPolicy.TRADEABLE_SECONDARY_MARKET.value,
+            action = ManageAssetPairAction.CREATE,
+            ext = ManageAssetPairOp.ManageAssetPairOpExt.EmptyVersion()
         )
 
         val updateOp = ManageAssetPairOp(
-                base = baseAsset,
-                quote = quoteAsset,
-                physicalPrice = netParams.amountToPrecised(price),
-                physicalPriceCorrection = 0,
-                maxPriceStep = netParams.amountToPrecised(BigDecimal.TEN),
-                policies = AssetPairPolicy.TRADEABLE_SECONDARY_MARKET.value,
-                action = ManageAssetPairAction.UPDATE_POLICIES,
-                ext = ManageAssetPairOp.ManageAssetPairOpExt.EmptyVersion()
+            base = baseAsset,
+            quote = quoteAsset,
+            physicalPrice = netParams.amountToPrecised(price),
+            physicalPriceCorrection = 0,
+            maxPriceStep = netParams.amountToPrecised(BigDecimal.TEN),
+            policies = AssetPairPolicy.TRADEABLE_SECONDARY_MARKET.value,
+            action = ManageAssetPairAction.UPDATE_POLICIES,
+            ext = ManageAssetPairOp.ManageAssetPairOpExt.EmptyVersion()
         )
 
         val tx = TransactionBuilder(netParams, sourceAccount.accountId)
-                .addOperation(Operation.OperationBody.ManageAssetPair(createOp))
-                .addOperation(Operation.OperationBody.ManageAssetPair(updateOp))
-                .build()
+            .addOperation(Operation.OperationBody.ManageAssetPair(createOp))
+            .addOperation(Operation.OperationBody.ManageAssetPair(updateOp))
+            .build()
 
         tx.addSignature(sourceAccount)
 

@@ -31,8 +31,8 @@ class PaymentsTest {
     fun aCreatePayment() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
+            WalletInfoProviderFactory().createWalletInfoProvider(),
+            AccountProviderFactory().createAccountProvider()
         )
 
         val email = Util.getEmail()
@@ -40,56 +40,67 @@ class PaymentsTest {
         val recipientEmail = Util.getEmail()
 
         val apiProvider =
-                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper())
+            ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, session, urlConfigProvider,
+            JsonApiToolsProvider.getObjectMapper()
+        )
 
         val (_) = Util.getVerifiedWallet(
-                recipientEmail, password, apiProvider, session, null
+            recipientEmail, password, apiProvider, session, null
         )
 
         Util.getVerifiedWallet(
-                email, password, apiProvider, session, repositoryProvider
+            email, password, apiProvider, session, repositoryProvider
         )
 
         val txManager = TxManager(apiProvider)
         val asset = Util.createAsset(apiProvider, txManager)
-        Util.getSomeMoney(asset, emissionAmount,
-                repositoryProvider, session, txManager)
+        Util.getSomeMoney(
+            asset, emissionAmount,
+            repositoryProvider, session, txManager
+        )
 
-        val recipient = PaymentRecipientLoader(repositoryProvider.accountDetails())
-                .load(recipientEmail)
-                .blockingGet()
+        val recipient = PaymentRecipientLoader(repositoryProvider.accountDetails)
+            .load(recipientEmail)
+            .blockingGet()
 
         val feeLoader = PaymentFeeLoader(session, FeeManager(apiProvider))
 
         val fee = feeLoader.load(paymentAmount, asset, recipient.accountId).blockingGet()
 
-        val balance = repositoryProvider.balances().itemsList.first { it.assetCode == asset }
+        val balance = repositoryProvider.balances.itemsList.first { it.assetCode == asset }
 
         val useCase = CreatePaymentRequestUseCase(
-                recipient,
-                paymentAmount,
-                balance,
-                "Test payment",
-                fee,
-                session
+            recipient,
+            paymentAmount,
+            balance,
+            "Test payment",
+            fee,
+            session
         )
 
         val request = useCase.perform().blockingGet()
 
-        Assert.assertEquals("Payment request amount must be equal to the requested amount",
-                paymentAmount, request.amount)
-        Assert.assertTrue("Payment request recipient must be a valid account ID",
-                Base32Check.isValid(Base32Check.VersionByte.ACCOUNT_ID, recipient.accountId.toCharArray()))
+        Assert.assertEquals(
+            "Payment request amount must be equal to the requested amount",
+            paymentAmount, request.amount
+        )
+        Assert.assertTrue(
+            "Payment request recipient must be a valid account ID",
+            Base32Check.isValid(
+                Base32Check.VersionByte.ACCOUNT_ID,
+                recipient.accountId.toCharArray()
+            )
+        )
     }
 
     @Test
     fun bConfirmPayment() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
+            WalletInfoProviderFactory().createWalletInfoProvider(),
+            AccountProviderFactory().createAccountProvider()
         )
 
         val email = Util.getEmail()
@@ -97,75 +108,85 @@ class PaymentsTest {
         val recipientEmail = Util.getEmail()
 
         val apiProvider =
-                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper())
+            ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, session, urlConfigProvider,
+            JsonApiToolsProvider.getObjectMapper()
+        )
 
         val (_) = Util.getVerifiedWallet(
-                recipientEmail, password, apiProvider, session, null
+            recipientEmail, password, apiProvider, session, null
         )
 
         Util.getVerifiedWallet(
-                email, password, apiProvider, session, repositoryProvider
+            email, password, apiProvider, session, repositoryProvider
         )
 
         val txManager = TxManager(apiProvider)
 
         val asset = Util.createAsset(apiProvider, txManager)
-        val initialBalance = Util.getSomeMoney(asset, emissionAmount,
-                repositoryProvider, session, txManager)
+        val initialBalance = Util.getSomeMoney(
+            asset, emissionAmount,
+            repositoryProvider, session, txManager
+        )
 
-        val recipient = PaymentRecipientLoader(repositoryProvider.accountDetails())
-                .load(recipientEmail)
-                .blockingGet()
+        val recipient = PaymentRecipientLoader(repositoryProvider.accountDetails)
+            .load(recipientEmail)
+            .blockingGet()
 
         val fee = PaymentFeeLoader(session, FeeManager(apiProvider))
-                .load(paymentAmount, asset, recipient.accountId)
-                .blockingGet()
+            .load(paymentAmount, asset, recipient.accountId)
+            .blockingGet()
 
-        val balance = repositoryProvider.balances().itemsList.first { it.assetCode == asset }
+        val balance = repositoryProvider.balances.itemsList.first { it.assetCode == asset }
 
         val request = CreatePaymentRequestUseCase(
-                recipient,
-                paymentAmount,
-                balance,
-                "Test payment",
-                fee,
-                session
+            recipient,
+            paymentAmount,
+            balance,
+            "Test payment",
+            fee,
+            session
         ).perform().blockingGet()
 
         ConfirmPaymentRequestUseCase(
-                request,
-                session,
-                repositoryProvider,
-                txManager
+            request,
+            session,
+            repositoryProvider,
+            txManager
         ).perform().blockingAwait()
 
         Thread.sleep(2000)
 
-        repositoryProvider.balances().updateIfNotFreshDeferred().blockingAwait()
+        repositoryProvider.balances.updateIfNotFreshDeferred().blockingAwait()
 
-        val currentBalance = repositoryProvider.balances().itemsList
-                .find { it.assetCode == asset }!!.available
+        val currentBalance = repositoryProvider.balances.itemsList
+            .find { it.assetCode == asset }!!.available
 
-        Assert.assertNotEquals("Balance must be changed after the payment sending",
-                0, initialBalance.compareTo(currentBalance))
+        Assert.assertNotEquals(
+            "Balance must be changed after the payment sending",
+            0, initialBalance.compareTo(currentBalance)
+        )
 
         val historyRepository = repositoryProvider.balanceChanges(request.senderBalanceId)
         historyRepository.updateIfNotFreshDeferred().blockingAwait()
         val transactions = historyRepository.itemsList
 
-        Assert.assertTrue("History must not be empty after the payment sending",
-                transactions.isNotEmpty())
-        Assert.assertTrue("First history entry must be a payment after the payment sending",
-                transactions.first().cause is BalanceChangeCause.Payment)
+        Assert.assertTrue(
+            "History must not be empty after the payment sending",
+            transactions.isNotEmpty()
+        )
+        Assert.assertTrue(
+            "First history entry must be a payment after the payment sending",
+            transactions.first().cause is BalanceChangeCause.Payment
+        )
         Assert.assertEquals("Payment history entry must have a requested destination account id",
-                request.recipient.accountId,
-                transactions
-                        .first()
-                        .cause
-                        .let { it as BalanceChangeCause.Payment }
-                        .destAccountId
+            request.recipient.accountId,
+            transactions
+                .first()
+                .cause
+                .let { it as BalanceChangeCause.Payment }
+                .destAccountId
         )
     }
 
@@ -173,8 +194,8 @@ class PaymentsTest {
     fun cPaymentWithFee() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
+            WalletInfoProviderFactory().createWalletInfoProvider(),
+            AccountProviderFactory().createAccountProvider()
         )
 
         val email = Util.getEmail()
@@ -182,16 +203,18 @@ class PaymentsTest {
         val recipientEmail = Util.getEmail()
 
         val apiProvider =
-                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper())
+            ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, session, urlConfigProvider,
+            JsonApiToolsProvider.getObjectMapper()
+        )
 
         val (_, _) = Util.getVerifiedWallet(
-                recipientEmail, password, apiProvider, session, null
+            recipientEmail, password, apiProvider, session, null
         )
 
         val (_, rootAccount) = Util.getVerifiedWallet(
-                email, password, apiProvider, session, repositoryProvider
+            email, password, apiProvider, session, repositoryProvider
         )
 
         val txManager = TxManager(apiProvider)
@@ -202,54 +225,60 @@ class PaymentsTest {
         val feeSubType = PaymentFeeType.OUTGOING.value
 
         val result = Util.addFeeForAccount(
-                rootAccount.accountId,
-                apiProvider,
-                txManager,
-                feeType,
-                feeSubType,
-                asset
+            rootAccount.accountId,
+            apiProvider,
+            txManager,
+            feeType,
+            feeSubType,
+            asset
         )
 
         Assert.assertTrue("Fee must be added successfully", result)
 
-        val initialBalance = Util.getSomeMoney(asset, emissionAmount,
-                repositoryProvider, session, txManager)
+        val initialBalance = Util.getSomeMoney(
+            asset, emissionAmount,
+            repositoryProvider, session, txManager
+        )
 
-        val recipient = PaymentRecipientLoader(repositoryProvider.accountDetails())
-                .load(recipientEmail)
-                .blockingGet()
+        val recipient = PaymentRecipientLoader(repositoryProvider.accountDetails)
+            .load(recipientEmail)
+            .blockingGet()
 
         val fee = PaymentFeeLoader(session, FeeManager(apiProvider))
-                .load(paymentAmount, asset, recipient.accountId)
-                .blockingGet()
+            .load(paymentAmount, asset, recipient.accountId)
+            .blockingGet()
 
-        val balance = repositoryProvider.balances().itemsList.first { it.assetCode == asset }
+        val balance = repositoryProvider.balances.itemsList.first { it.assetCode == asset }
 
         val request = CreatePaymentRequestUseCase(
-                recipient,
-                paymentAmount,
-                balance,
-                "Test payment with fee",
-                fee,
-                session
+            recipient,
+            paymentAmount,
+            balance,
+            "Test payment with fee",
+            fee,
+            session
         ).perform().blockingGet()
 
-        Assert.assertTrue("Payment request sender fee must greater than zero",
-                request.fee.senderFee.total > BigDecimal.ZERO)
+        Assert.assertTrue(
+            "Payment request sender fee must greater than zero",
+            request.fee.senderFee.total > BigDecimal.ZERO
+        )
 
         ConfirmPaymentRequestUseCase(
-                request,
-                session,
-                repositoryProvider,
-                txManager
+            request,
+            session,
+            repositoryProvider,
+            txManager
         ).perform().blockingAwait()
 
-        val currentBalance = repositoryProvider.balances().itemsList
-                .find { it.assetCode == asset }!!.available
+        val currentBalance = repositoryProvider.balances.itemsList
+            .find { it.assetCode == asset }!!.available
 
         val expected = initialBalance - paymentAmount - request.fee.senderFee.total
 
-        Assert.assertEquals("Result balance must be lower than the initial one by payment amount and fee",
-                0, currentBalance.compareTo(expected))
+        Assert.assertEquals(
+            "Result balance must be lower than the initial one by payment amount and fee",
+            0, currentBalance.compareTo(expected)
+        )
     }
 }

@@ -1,11 +1,11 @@
 package org.tokend.template.features.send
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -41,12 +41,12 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private val balancesRepository: BalancesRepository
-        get() = repositoryProvider.balances()
+        get() = repositoryProvider.balances
 
     private val balances: List<BalanceRecord>
         get() = balancesRepository.itemsList
@@ -58,7 +58,7 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         get() = arguments?.getBoolean(ALLOW_TOOLBAR_EXTRA) ?: true
 
     private val fragmentDisplayer =
-            UserFlowFragmentDisplayer(this, R.id.fragment_container_layout)
+        UserFlowFragmentDisplayer(this, R.id.fragment_container_layout)
 
     private var recipient: PaymentRecipient? = null
     private var amount: BigDecimal = BigDecimal.ZERO
@@ -69,8 +69,10 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     private var isWaitingForTransferableAssets: Boolean = true
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_user_flow, container, false)
     }
 
@@ -103,23 +105,23 @@ class SendFragment : BaseFragment(), ToolbarProvider {
     private fun subscribeToBalances() {
         balancesDisposable?.dispose()
         balancesDisposable = CompositeDisposable(
-                balancesRepository.itemsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            onBalancesUpdated()
-                        },
-                balancesRepository.loadingSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { loadingIndicator.setLoading(it, "balances") },
-                balancesRepository.errorsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            if (isWaitingForTransferableAssets) {
-                                toErrorView(it)
-                            } else {
-                                errorHandlerFactory.getDefault().handle(it)
-                            }
-                        }
+            balancesRepository.itemsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    onBalancesUpdated()
+                },
+            balancesRepository.loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { loadingIndicator.setLoading(it, "balances") },
+            balancesRepository.errorsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    if (isWaitingForTransferableAssets) {
+                        toErrorView(it)
+                    } else {
+                        errorHandlerFactory.getDefault().handle(it)
+                    }
+                }
         ).also { it.addTo(compositeDisposable) }
     }
 
@@ -133,8 +135,8 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private fun onBalancesUpdated() {
         val anyTransferableAssets = balances
-                .map(BalanceRecord::asset)
-                .any(AssetRecord::isTransferable)
+            .map(BalanceRecord::asset)
+            .any(AssetRecord::isTransferable)
 
         if (anyTransferableAssets) {
             if (isWaitingForTransferableAssets) {
@@ -153,13 +155,13 @@ class SendFragment : BaseFragment(), ToolbarProvider {
         val fragment = PaymentRecipientFragment()
 
         fragment
-                .resultObservable
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribeBy(
-                        onNext = this::onRecipientSelected,
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
-                .addTo(compositeDisposable)
+            .resultObservable
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribeBy(
+                onNext = this::onRecipientSelected,
+                onError = { errorHandlerFactory.getDefault().handle(it) }
+            )
+            .addTo(compositeDisposable)
 
         fragmentDisplayer.display(fragment, "recipient", null)
     }
@@ -171,22 +173,22 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
     private fun toAmountScreen() {
         val recipientNickname = recipient?.displayedValue
-                ?: return
+            ?: return
         val recipientAccount = recipient?.accountId
-                ?: return
+            ?: return
 
         val fragment = PaymentAmountFragment.newInstance(
-                PaymentAmountFragment.getBundle(recipientNickname, recipientAccount, requiredBalanceId)
+            PaymentAmountFragment.getBundle(recipientNickname, recipientAccount, requiredBalanceId)
         )
 
         fragment
-                .resultObservable
-                .map { it as PaymentAmountData }
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribeBy(
-                        onNext = this::onAmountEntered,
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
+            .resultObservable
+            .map { it as PaymentAmountData }
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribeBy(
+                onNext = this::onAmountEntered,
+                onError = { errorHandlerFactory.getDefault().handle(it) }
+            )
 
         fragmentDisplayer.display(fragment, "amount", true)
     }
@@ -208,30 +210,30 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
         paymentRequestDisposable?.dispose()
         paymentRequestDisposable = CreatePaymentRequestUseCase(
-                recipient,
-                amount,
-                balance,
-                description,
-                fee,
-                walletInfoProvider
+            recipient,
+            amount,
+            balance,
+            description,
+            fee,
+            walletInfoProvider
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .subscribeBy(
-                        onSuccess = this::onPaymentRequestCreated,
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
-                .addTo(compositeDisposable)
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersSingle())
+            .subscribeBy(
+                onSuccess = this::onPaymentRequestCreated,
+                onError = { errorHandlerFactory.getDefault().handle(it) }
+            )
+            .addTo(compositeDisposable)
     }
 
     private fun onPaymentRequestCreated(request: PaymentRequest) {
         Navigator.from(this)
-                .openPaymentConfirmation(request)
-                .addTo(activityRequestsBag)
-                .doOnSuccess {
-                    (activity as? WalletEventsListener)
-                            ?.onPaymentRequestConfirmed(request)
-                }
+            .openPaymentConfirmation(request)
+            .addTo(activityRequestsBag)
+            .doOnSuccess {
+                (activity as? WalletEventsListener)
+                    ?.onPaymentRequestConfirmed(request)
+            }
     }
 
     // region Error/empty
@@ -265,8 +267,10 @@ class SendFragment : BaseFragment(), ToolbarProvider {
 
         fun newInstance(bundle: Bundle): SendFragment = SendFragment().withArguments(bundle)
 
-        fun getBundle(balanceId: String?,
-                      allowToolbar: Boolean) = Bundle().apply {
+        fun getBundle(
+            balanceId: String?,
+            allowToolbar: Boolean
+        ) = Bundle().apply {
             putString(REQUIRED_BALANCE_ID_EXTRA, balanceId)
             putBoolean(ALLOW_TOOLBAR_EXTRA, allowToolbar)
         }

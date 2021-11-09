@@ -35,18 +35,20 @@ class LocalAccountImportTest {
         val repository = LocalAccountRepository(storage)
 
         val account = ImportLocalAccountFromMnemonicUseCase(
-                mnemonic,
-                code,
-                Aes256GcmDataCipher(),
-                getDummyUserKeyProvider(),
-                repository
+            mnemonic,
+            code,
+            Aes256GcmDataCipher(),
+            getDummyUserKeyProvider(),
+            repository
         )
-                .perform()
-                .blockingGet()
+            .perform()
+            .blockingGet()
 
         Assert.assertEquals(expectedAccountId, account.accountId)
-        Assert.assertNotNull("Account must have an entropy if it's imported from mnemonic",
-                account.entropy)
+        Assert.assertNotNull(
+            "Account must have an entropy if it's imported from mnemonic",
+            account.entropy
+        )
         checkRepositoryAndStorage(storage, repository, expectedAccountId)
 
     }
@@ -60,27 +62,34 @@ class LocalAccountImportTest {
         val repository = LocalAccountRepository(storage)
 
         val account = ImportLocalAccountFromSecretSeedUseCase(
-                seed,
-                Aes256GcmDataCipher(),
-                getDummyUserKeyProvider(),
-                repository
+            seed,
+            Aes256GcmDataCipher(),
+            getDummyUserKeyProvider(),
+            repository
         )
-                .perform()
-                .blockingGet()
+            .perform()
+            .blockingGet()
 
         Assert.assertEquals(expectedAccountId, account.accountId)
-        Assert.assertNull("Account must not have an entropy if it's imported from seed",
-                account.entropy)
+        Assert.assertNull(
+            "Account must not have an entropy if it's imported from seed",
+            account.entropy
+        )
         checkRepositoryAndStorage(storage, repository, expectedAccountId)
 
     }
 
-    private fun checkRepositoryAndStorage(storage: ObjectPersistence<LocalAccount>,
-                                          repository: LocalAccountRepository,
-                                          expectedAccountId: String) {
+    private fun checkRepositoryAndStorage(
+        storage: ObjectPersistence<LocalAccount>,
+        repository: LocalAccountRepository,
+        expectedAccountId: String
+    ) {
         val localAccount = (repository.item as? LocalAccountRepository.Item.Present)?.localAccount
 
-        Assert.assertNotNull("Local account repository must contain an account after import", localAccount)
+        Assert.assertNotNull(
+            "Local account repository must contain an account after import",
+            localAccount
+        )
         localAccount!!
 
         Assert.assertEquals(expectedAccountId, localAccount.accountId)

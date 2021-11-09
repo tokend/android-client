@@ -9,10 +9,10 @@ import org.tokend.sdk.keyserver.models.SignerData
 import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.features.signin.logic.SignInUseCase
+import org.tokend.template.logic.Session
 import org.tokend.template.logic.credentials.model.WalletInfoRecord
 import org.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import org.tokend.template.logic.credentials.persistence.WalletInfoPersistence
-import org.tokend.template.logic.Session
 import org.tokend.wallet.Account
 
 /**
@@ -82,7 +82,7 @@ class SignUpUseCase(
     private fun getSigners(): Single<Collection<SignerData>> {
         return WalletAccountsUtil.getSignersForNewWallet(
             orderedAccountIds = accounts.map(Account::accountId),
-            keyValueRepository = repositoryProvider.keyValueEntries()
+            keyValueRepository = repositoryProvider.keyValueEntries
         )
     }
 

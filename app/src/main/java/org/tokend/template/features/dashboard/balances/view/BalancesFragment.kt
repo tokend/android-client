@@ -24,19 +24,23 @@ import java.math.BigDecimal
 
 class BalancesFragment : BaseFragment() {
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private val balancesRepository: BalancesRepository
-        get() = repositoryProvider.balances()
+        get() = repositoryProvider.balances
 
     private lateinit var adapter: BalanceItemsAdapter
     private lateinit var layoutManager: GridLayoutManager
 
     private var chartEverAnimated = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_balances, container, false)
     }
 
@@ -93,16 +97,16 @@ class BalancesFragment : BaseFragment() {
 
     private fun subscribeToBalances() {
         balancesRepository
-                .itemsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { onBalancesUpdated() }
-                .addTo(compositeDisposable)
+            .itemsSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { onBalancesUpdated() }
+            .addTo(compositeDisposable)
 
         balancesRepository
-                .loadingSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { loadingIndicator.setLoading(it) }
-                .addTo(compositeDisposable)
+            .loadingSubject
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { loadingIndicator.setLoading(it) }
+            .addTo(compositeDisposable)
     }
 
     private fun onBalancesUpdated() {
@@ -126,9 +130,9 @@ class BalancesFragment : BaseFragment() {
     // region Display
     private fun displayBalances() {
         val items = balancesRepository
-                .itemsList
-                .sortedWith(balanceComparator)
-                .map(::BalanceListItem)
+            .itemsList
+            .sortedWith(balanceComparator)
+            .map(::BalanceListItem)
 
         adapter.setData(items)
     }
@@ -143,9 +147,9 @@ class BalancesFragment : BaseFragment() {
 
         distribution_chart.apply {
             setData(
-                    balancesRepository.itemsList,
-                    conversionAsset,
-                    !chartEverAnimated
+                balancesRepository.itemsList,
+                conversionAsset,
+                !chartEverAnimated
             )
             chartEverAnimated = true
             visibility = if (isEmpty) View.GONE else View.VISIBLE
@@ -161,10 +165,10 @@ class BalancesFragment : BaseFragment() {
         }
 
         val total = balancesRepository
-                .itemsList
-                .fold(BigDecimal.ZERO) { sum, balance ->
-                    sum.add(balance.convertedAmount ?: BigDecimal.ZERO)
-                }
+            .itemsList
+            .fold(BigDecimal.ZERO) { sum, balance ->
+                sum.add(balance.convertedAmount ?: BigDecimal.ZERO)
+            }
 
         total_text_view.visibility = View.VISIBLE
         total_text_view.text = amountFormatter.formatAssetAmount(total, conversionAssetCode)

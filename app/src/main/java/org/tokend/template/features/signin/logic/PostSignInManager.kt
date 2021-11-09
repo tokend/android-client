@@ -14,8 +14,8 @@ import retrofit2.HttpException
  * in case of missing internet connection
  */
 class PostSignInManager(
-        private val repositoryProvider: RepositoryProvider,
-        private val connectionStateProvider: (() -> Boolean)? = null
+    private val repositoryProvider: RepositoryProvider,
+    private val connectionStateProvider: (() -> Boolean)? = null
 ) {
     class AuthMismatchException : Exception()
 
@@ -27,49 +27,49 @@ class PostSignInManager(
      */
     fun doPostSignIn(): Completable {
         val parallelActions = listOf(
-                // Added actions will be performed simultaneously.
-                repositoryProvider.balances().ensureData(),
+            // Added actions will be performed simultaneously.
+            repositoryProvider.balances.ensureData(),
 
-                // Actual account info is required to handle KYC recovery,
-                // but we can use cached if there is no connection.
-                Completable.defer {
-                    repositoryProvider.account().run {
-                        if (isOnline)
-                            updateDeferred()
-                        else
-                            ensureData()
-                    }
+            // Actual account info is required to handle KYC recovery,
+            // but we can use cached if there is no connection.
+            Completable.defer {
+                repositoryProvider.account.run {
+                    if (isOnline)
+                        updateDeferred()
+                    else
+                        ensureData()
                 }
+            }
         )
         val syncActions = listOf<Completable>(
-                // Added actions will be performed on after another in
-                // provided order.
+            // Added actions will be performed on after another in
+            // provided order.
         )
 
         val performParallelActions = Completable.merge(parallelActions)
         val performSyncActions = Completable.concat(syncActions)
 
-        repositoryProvider.activeKyc().run {
+        repositoryProvider.activeKyc.run {
             ensureData()
-                    .doOnComplete {
-                        if (!isFresh) {
-                            update()
-                        }
+                .doOnComplete {
+                    if (!isFresh) {
+                        update()
                     }
+                }
         }
-                .subscribeBy(onError = {
-                    it.printStackTrace()
-                })
+            .subscribeBy(onError = {
+                it.printStackTrace()
+            })
 
-        repositoryProvider.tfaFactors().invalidate()
+        repositoryProvider.tfaFactors.invalidate()
 
         return performSyncActions
-                .andThen(performParallelActions)
-                .onErrorResumeNext {
-                    if (it is HttpException && it.isUnauthorized())
-                        Completable.error(AuthMismatchException())
-                    else
-                        Completable.error(it)
-                }
+            .andThen(performParallelActions)
+            .onErrorResumeNext {
+                if (it is HttpException && it.isUnauthorized())
+                    Completable.error(AuthMismatchException())
+                else
+                    Completable.error(it)
+            }
     }
 }

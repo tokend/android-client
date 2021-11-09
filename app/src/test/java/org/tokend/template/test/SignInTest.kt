@@ -42,8 +42,10 @@ class SignInTest {
 
         println("Email is $email")
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper())
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, session, urlConfigProvider,
+            JsonApiToolsProvider.getObjectMapper()
+        )
 
         val credentialsPersistor = getDummyCredentialsStorage()
         val walletInfoPersistor = getDummyWalletInfoStorage()
@@ -60,16 +62,26 @@ class SignInTest {
 
         useCase.perform().blockingAwait()
 
-        Assert.assertEquals("WalletInfoProvider must hold an actual wallet data",
-            walletData.attributes.accountId, session.getWalletInfo()!!.accountId)
-        Assert.assertArrayEquals("AccountProvider must hold an actual account",
-            rootAccount.secretSeed, session.getAccount()?.secretSeed)
-        Assert.assertNotEquals("WalletInfo must be saved for the actual email",
-            walletInfoPersistor.loadWalletInfo(email.toLowerCase(), password), null)
-        Assert.assertEquals("Credentials persistor must hold actual email",
-            email.toLowerCase(), credentialsPersistor.getSavedLogin()?.toLowerCase())
-        Assert.assertArrayEquals("Credentials persistor must hold actual password",
-            password, credentialsPersistor.getSavedPassword())
+        Assert.assertEquals(
+            "WalletInfoProvider must hold an actual wallet data",
+            walletData.attributes.accountId, session.getWalletInfo()!!.accountId
+        )
+        Assert.assertArrayEquals(
+            "AccountProvider must hold an actual account",
+            rootAccount.secretSeed, session.getAccount()?.secretSeed
+        )
+        Assert.assertNotEquals(
+            "WalletInfo must be saved for the actual email",
+            walletInfoPersistor.loadWalletInfo(email.toLowerCase(), password), null
+        )
+        Assert.assertEquals(
+            "Credentials persistor must hold actual email",
+            email.toLowerCase(), credentialsPersistor.getSavedLogin()?.toLowerCase()
+        )
+        Assert.assertArrayEquals(
+            "Credentials persistor must hold actual password",
+            password, credentialsPersistor.getSavedPassword()
+        )
 
         checkRepositories(repositoryProvider)
     }
@@ -86,16 +98,20 @@ class SignInTest {
         )
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, session, urlConfigProvider,
             JsonApiToolsProvider.getObjectMapper(),
-            localAccountPersistence = getDummyLocalAccountsStorage())
+            localAccountPersistence = getDummyLocalAccountsStorage()
+        )
 
         val userKey = "0000".toCharArray()
         val cipher = Aes256GcmDataCipher()
-        val localAccountRepository = repositoryProvider.localAccount()
-        localAccountRepository.useAccount(LocalAccount.fromSecretSeed(
-            account.secretSeed!!, cipher, userKey
-        ))
+        val localAccountRepository = repositoryProvider.localAccount
+        localAccountRepository.useAccount(
+            LocalAccount.fromSecretSeed(
+                account.secretSeed!!, cipher, userKey
+            )
+        )
         val userKeyProvider = object : UserKeyProvider {
             override fun getUserKey(isRetry: Boolean): Maybe<CharArray> {
                 return userKey.toMaybe()
@@ -133,11 +149,16 @@ class SignInTest {
             Assert.fail("Remote account must be created")
         }
 
-        Assert.assertEquals("WalletInfoProvider must hold wallet data with actual account ID",
-            account.accountId, session.getWalletInfo()!!.accountId)
-        Assert.assertArrayEquals("AccountProvider must hold an actual account",
-            account.secretSeed, session.getAccount()?.secretSeed)
-        Assert.assertFalse("Credentials persistor must be cleaned",
+        Assert.assertEquals(
+            "WalletInfoProvider must hold wallet data with actual account ID",
+            account.accountId, session.getWalletInfo()!!.accountId
+        )
+        Assert.assertArrayEquals(
+            "AccountProvider must hold an actual account",
+            account.secretSeed, session.getAccount()?.secretSeed
+        )
+        Assert.assertFalse(
+            "Credentials persistor must be cleaned",
             credentialsPersistor.hasCredentials() || credentialsPersistor.getSavedLogin() != null
         )
 
@@ -155,16 +176,20 @@ class SignInTest {
         )
         val apiProvider = ApiProviderFactory().createApiProvider(urlConfigProvider, session)
 
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, session, urlConfigProvider,
             JsonApiToolsProvider.getObjectMapper(),
-            localAccountPersistence = getDummyLocalAccountsStorage())
+            localAccountPersistence = getDummyLocalAccountsStorage()
+        )
 
         val userKey = "0000".toCharArray()
         val cipher = Aes256GcmDataCipher()
-        val localAccountRepository = repositoryProvider.localAccount()
-        localAccountRepository.useAccount(LocalAccount.fromSecretSeed(
-            account.secretSeed!!, cipher, userKey
-        ))
+        val localAccountRepository = repositoryProvider.localAccount
+        localAccountRepository.useAccount(
+            LocalAccount.fromSecretSeed(
+                account.secretSeed!!, cipher, userKey
+            )
+        )
         val userKeyProvider = object : UserKeyProvider {
             override fun getUserKey(isRetry: Boolean): Maybe<CharArray> {
                 return userKey.toMaybe()
@@ -225,7 +250,7 @@ class SignInTest {
             this.password = password
         }
 
-        override fun loadWalletInfo(login: String, password: CharArray): WalletInfoRecord?{
+        override fun loadWalletInfo(login: String, password: CharArray): WalletInfoRecord? {
             return walletInfo.takeIf { this.password?.contentEquals(password) == true && this.walletInfo?.login == login }
         }
 
@@ -237,9 +262,13 @@ class SignInTest {
     private fun getDummyLocalAccountsStorage() = MemoryOnlyObjectPersistence<LocalAccount>()
 
     private fun checkRepositories(repositoryProvider: RepositoryProvider) {
-        Assert.assertTrue("Balances repository must be updated after sign in",
-            repositoryProvider.balances().isFresh)
-        Assert.assertTrue("Account repository must be updated after sign in",
-            repositoryProvider.account().isFresh)
+        Assert.assertTrue(
+            "Balances repository must be updated after sign in",
+            repositoryProvider.balances.isFresh
+        )
+        Assert.assertTrue(
+            "Account repository must be updated after sign in",
+            repositoryProvider.account.isFresh
+        )
     }
 }

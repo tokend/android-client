@@ -1,8 +1,8 @@
 package org.tokend.template.features.assets.buy
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.view.MenuItem
+import androidx.core.content.ContextCompat
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -10,17 +10,17 @@ import kotlinx.android.synthetic.main.fragment_user_flow.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
-import org.tokend.template.features.assets.model.Asset
 import org.tokend.template.data.model.AtomicSwapAskRecord
-import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.features.amountscreen.model.AmountInputResult
 import org.tokend.template.features.assets.buy.logic.CreateAtomicSwapBidUseCase
 import org.tokend.template.features.assets.buy.model.AtomicSwapInvoice
 import org.tokend.template.features.assets.buy.view.AtomicSwapAmountFragment
 import org.tokend.template.features.assets.buy.view.quoteasset.AtomicSwapQuoteAssetFragment
+import org.tokend.template.features.assets.model.Asset
+import org.tokend.template.features.balances.storage.BalancesRepository
 import org.tokend.template.logic.TxManager
-import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.util.ObservableTransformers
+import org.tokend.template.util.navigation.Navigator
 import org.tokend.template.view.util.LoadingIndicatorManager
 import org.tokend.template.view.util.ProgressDialogFactory
 import org.tokend.template.view.util.UserFlowFragmentDisplayer
@@ -28,15 +28,15 @@ import java.math.BigDecimal
 
 class BuyWithAtomicSwapActivity : BaseActivity() {
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private val balancesRepository: BalancesRepository
-        get() = repositoryProvider.balances()
+        get() = repositoryProvider.balances
 
     private val fragmentDisplayer =
-            UserFlowFragmentDisplayer(this, R.id.fragment_container_layout)
+        UserFlowFragmentDisplayer(this, R.id.fragment_container_layout)
 
     private lateinit var ask: AtomicSwapAskRecord
     private var amount: BigDecimal = BigDecimal.ZERO
@@ -52,8 +52,8 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
         }
         val askId = intent.getStringExtra(ASK_ID_EXTRA)
         val ask = repositoryProvider.atomicSwapAsks(assetCode)
-                .itemsList
-                .find { it.id == askId }
+            .itemsList
+            .find { it.id == askId }
         if (ask == null) {
             finishWithError(IllegalArgumentException("No ask found for ID $askId from $ASK_ID_EXTRA"))
             return
@@ -81,18 +81,18 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
 
     private fun toAmountScreen() {
         val fragment = AtomicSwapAmountFragment.newInstance(
-                AtomicSwapAmountFragment.getBundle(ask)
+            AtomicSwapAmountFragment.getBundle(ask)
         )
 
         fragment
-                .resultObservable
-                .compose(ObservableTransformers.defaultSchedulers())
-                .map(AmountInputResult::amount)
-                .subscribeBy(
-                        onNext = this::onAmountEntered,
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
-                .addTo(compositeDisposable)
+            .resultObservable
+            .compose(ObservableTransformers.defaultSchedulers())
+            .map(AmountInputResult::amount)
+            .subscribeBy(
+                onNext = this::onAmountEntered,
+                onError = { errorHandlerFactory.getDefault().handle(it) }
+            )
+            .addTo(compositeDisposable)
         fragmentDisplayer.display(fragment, "amount", null)
     }
 
@@ -103,17 +103,17 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
 
     private fun toQuoteAssetScreen() {
         val fragment = AtomicSwapQuoteAssetFragment.newInstance(
-                AtomicSwapQuoteAssetFragment.getBundle(ask, amount)
+            AtomicSwapQuoteAssetFragment.getBundle(ask, amount)
         )
 
         fragment
-                .resultObservable
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribeBy(
-                        onNext = this::onQuoteAssetSelected,
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
-                .addTo(compositeDisposable)
+            .resultObservable
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribeBy(
+                onNext = this::onQuoteAssetSelected,
+                onError = { errorHandlerFactory.getDefault().handle(it) }
+            )
+            .addTo(compositeDisposable)
         fragmentDisplayer.display(fragment, "quote-asset", true)
     }
 
@@ -124,34 +124,34 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
 
     private fun submitBid() {
         val assetCode = asset?.code
-                ?: return
+            ?: return
 
         var disposable: Disposable? = null
 
         val progress = ProgressDialogFactory.getDialog(
-                this,
-                cancelListener = { disposable?.dispose() }
+            this,
+            cancelListener = { disposable?.dispose() }
         )
 
         disposable = CreateAtomicSwapBidUseCase(
-                amount = amount,
-                quoteAssetCode = assetCode,
-                ask = ask,
-                repositoryProvider = repositoryProvider,
-                walletInfoProvider = walletInfoProvider,
-                accountProvider = accountProvider,
-                apiProvider = apiProvider,
-                txManager = TxManager(apiProvider)
+            amount = amount,
+            quoteAssetCode = assetCode,
+            ask = ask,
+            repositoryProvider = repositoryProvider,
+            walletInfoProvider = walletInfoProvider,
+            accountProvider = accountProvider,
+            apiProvider = apiProvider,
+            txManager = TxManager(apiProvider)
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe { progress.show() }
-                .doOnEvent { _, _ -> progress.dismiss() }
-                .subscribeBy(
-                        onSuccess = this::onBidSubmitted,
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
-                .addTo(compositeDisposable)
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersSingle())
+            .doOnSubscribe { progress.show() }
+            .doOnEvent { _, _ -> progress.dismiss() }
+            .subscribeBy(
+                onSuccess = this::onBidSubmitted,
+                onError = { errorHandlerFactory.getDefault().handle(it) }
+            )
+            .addTo(compositeDisposable)
     }
 
     private fun onBidSubmitted(invoice: AtomicSwapInvoice) {
@@ -160,16 +160,16 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
         val receiveAmountString = amountFormatter.formatAssetAmount(amount, ask.asset)
 
         Navigator.from(this).openQrShare(
-                title = this.title.toString(),
-                shareLabel = getString(R.string.share_address_label),
-                data = invoice.address,
-                shareText = getString(
-                        R.string.template_atomic_swap_invoice_share_text,
-                        sendAmountString,
-                        receiveAmountString,
-                        invoice.address
-                ),
-                topText = getString(R.string.template_send_to_address, sendAmountString)
+            title = this.title.toString(),
+            shareLabel = getString(R.string.share_address_label),
+            data = invoice.address,
+            shareText = getString(
+                R.string.template_atomic_swap_invoice_share_text,
+                sendAmountString,
+                receiveAmountString,
+                invoice.address
+            ),
+            topText = getString(R.string.template_send_to_address, sendAmountString)
         )
 
         finish()
@@ -177,16 +177,16 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
 
     private fun subscribeToBalances() {
         balancesRepository.loadingSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe { loadingIndicator.setLoading(it, "balances") }
-                .addTo(compositeDisposable)
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe { loadingIndicator.setLoading(it, "balances") }
+            .addTo(compositeDisposable)
 
         balancesRepository.errorsSubject
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribe {
-                    errorHandlerFactory.getDefault().handle(it)
-                }
-                .addTo(compositeDisposable)
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribe {
+                errorHandlerFactory.getDefault().handle(it)
+            }
+            .addTo(compositeDisposable)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -207,8 +207,10 @@ class BuyWithAtomicSwapActivity : BaseActivity() {
         private const val ASSET_CODE_EXTRA = "asset_code"
         private const val ASK_ID_EXTRA = "ask_id"
 
-        fun getBundle(assetCode: String,
-                      askId: String) = Bundle().apply {
+        fun getBundle(
+            assetCode: String,
+            askId: String
+        ) = Bundle().apply {
             putString(ASSET_CODE_EXTRA, assetCode)
             putString(ASK_ID_EXTRA, askId)
         }

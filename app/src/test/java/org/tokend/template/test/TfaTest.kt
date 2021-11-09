@@ -46,7 +46,7 @@ class TfaTest {
                 verifierInterface: TfaVerifier.Interface
             ) {
                 when (exception.factorType) {
-                    TfaFactor.Type.PASSWORD ->{
+                    TfaFactor.Type.PASSWORD -> {
                         verifierInterface.verify(
                             PasswordTfaOtpGenerator()
                                 .generate(exception, session.login, password)
@@ -90,14 +90,14 @@ class TfaTest {
         }
         val useCase = EnableTfaUseCase(
             factorType,
-            repositoryProvider.tfaFactors(),
+            repositoryProvider.tfaFactors,
             confirmation
         )
 
         useCase.perform().blockingAwait()
 
         Assert.assertTrue("TFA factors repository must contain a newly created active factor of type $factorType",
-            repositoryProvider.tfaFactors().itemsList.any {
+            repositoryProvider.tfaFactors.itemsList.any {
                 it.type == factorType && it.priority > 0
             })
     }
@@ -160,20 +160,20 @@ class TfaTest {
         }
         EnableTfaUseCase(
             factorType,
-            repositoryProvider.tfaFactors(),
+            repositoryProvider.tfaFactors,
             confirmation
         ).perform().blockingAwait()
 
         val useCase = DisableTfaUseCase(
             factorType,
-            repositoryProvider.tfaFactors()
+            repositoryProvider.tfaFactors
         )
 
         useCase.perform().blockingAwait()
 
         Assert.assertFalse(
             "TFA factors repository must not contain an active factor of type $factorType",
-            repositoryProvider.tfaFactors().itemsList.any {
+            repositoryProvider.tfaFactors.itemsList.any {
                 it.type == factorType && it.priority > 0
             })
     }

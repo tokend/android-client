@@ -17,10 +17,10 @@ import org.tokend.template.di.providers.ApiProvider
 import org.tokend.template.di.providers.RepositoryProvider
 import org.tokend.template.di.providers.WalletInfoProvider
 import org.tokend.template.features.keyvalue.model.KeyValueEntryRecord
+import org.tokend.template.features.kyc.files.model.LocalFile
 import org.tokend.template.features.kyc.model.ActiveKyc
 import org.tokend.template.features.kyc.model.KycForm
 import org.tokend.template.features.kyc.model.KycRequestState
-import org.tokend.template.features.kyc.files.model.LocalFile
 import org.tokend.template.logic.TxManager
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.PublicKeyFactory
@@ -113,7 +113,7 @@ class SubmitKycRequestUseCase(
 
         val key = form.getRoleKey()
         return repositoryProvider
-            .keyValueEntries()
+            .keyValueEntries
             .ensureEntries(listOf(key))
             .map { it[key] }
             .map { it as KeyValueEntryRecord.Number }
@@ -188,14 +188,14 @@ class SubmitKycRequestUseCase(
         val formJson = GsonFactory().getBaseGson().toJson(form)
 
         return repositoryProvider
-            .blobs()
+            .blobs
             .create(Blob(BlobType.KYC_FORM, formJson))
             .map(Blob::id)
     }
 
     private fun getNetworkParams(): Single<NetworkParams> {
         return repositoryProvider
-            .systemInfo()
+            .systemInfo
             .getNetworkParams()
     }
 
@@ -264,16 +264,16 @@ class SubmitKycRequestUseCase(
 
     private fun updateRepositories(): Single<Boolean> {
         repositoryProvider
-            .kycRequestState()
+            .kycRequestState
             .set(newKycRequestState)
 
         if (!submittedRequestAttributes.isReviewRequired) {
             repositoryProvider
-                .activeKyc()
+                .activeKyc
                 .set(ActiveKyc.Form(form))
 
             repositoryProvider
-                .account()
+                .account
                 .updateRole(roleToSet)
         }
 

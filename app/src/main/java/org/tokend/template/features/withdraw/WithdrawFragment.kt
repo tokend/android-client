@@ -1,11 +1,11 @@
 package org.tokend.template.features.withdraw
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -40,12 +40,12 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     override val toolbarSubject: BehaviorSubject<Toolbar> = BehaviorSubject.create()
 
     private val loadingIndicator = LoadingIndicatorManager(
-            showLoading = { swipe_refresh.isRefreshing = true },
-            hideLoading = { swipe_refresh.isRefreshing = false }
+        showLoading = { swipe_refresh.isRefreshing = true },
+        hideLoading = { swipe_refresh.isRefreshing = false }
     )
 
     private val balancesRepository: BalancesRepository
-        get() = repositoryProvider.balances()
+        get() = repositoryProvider.balances
 
     private val requiredBalanceId: String?
         get() = arguments?.getString(REQUIRED_BALANCE_ID_EXTRA)
@@ -57,10 +57,12 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     private var isWaitingForWithdrawableAssets: Boolean = true
 
     private val fragmentDisplayer =
-            UserFlowFragmentDisplayer(this, R.id.fragment_container_layout)
+        UserFlowFragmentDisplayer(this, R.id.fragment_container_layout)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_user_flow, container, false)
     }
 
@@ -94,32 +96,32 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
     private fun subscribeToBalances() {
         balancesDisposable?.dispose()
         balancesDisposable = CompositeDisposable(
-                balancesRepository.itemsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            onBalancesUpdated()
-                        },
-                balancesRepository.loadingSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe { loadingIndicator.setLoading(it, "balances") },
-                balancesRepository.errorsSubject
-                        .compose(ObservableTransformers.defaultSchedulers())
-                        .subscribe {
-                            if (isWaitingForWithdrawableAssets) {
-                                toErrorView(it)
-                            } else {
-                                errorHandlerFactory.getDefault().handle(it)
-                            }
-                        }
+            balancesRepository.itemsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    onBalancesUpdated()
+                },
+            balancesRepository.loadingSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe { loadingIndicator.setLoading(it, "balances") },
+            balancesRepository.errorsSubject
+                .compose(ObservableTransformers.defaultSchedulers())
+                .subscribe {
+                    if (isWaitingForWithdrawableAssets) {
+                        toErrorView(it)
+                    } else {
+                        errorHandlerFactory.getDefault().handle(it)
+                    }
+                }
         ).also { it.addTo(compositeDisposable) }
     }
 
     private fun onBalancesUpdated() {
         val anyTransferableAssets =
-                balancesRepository
-                        .itemsList
-                        .map(BalanceRecord::asset)
-                        .any(AssetRecord::isWithdrawable)
+            balancesRepository
+                .itemsList
+                .map(BalanceRecord::asset)
+                .any(AssetRecord::isWithdrawable)
 
         if (anyTransferableAssets) {
             if (isWaitingForWithdrawableAssets) {
@@ -137,16 +139,16 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
 
     private fun toAmountScreen() {
         val fragment = WithdrawAmountFragment.newInstance(
-                WithdrawAmountFragment.getBundle(requiredBalanceId)
+            WithdrawAmountFragment.getBundle(requiredBalanceId)
         )
 
         fragment
-                .resultObservable
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribeBy(
-                        onNext = this::onAmountEntered,
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
+            .resultObservable
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribeBy(
+                onNext = this::onAmountEntered,
+                onError = { errorHandlerFactory.getDefault().handle(it) }
+            )
 
         fragmentDisplayer.display(fragment, "amount", null)
     }
@@ -162,16 +164,16 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         val asset = this.balance?.asset ?: return
         val amountToWithdraw = amountFormatter.formatAssetAmount(amount, asset)
         val fragment = WithdrawDestinationFragment.newInstance(
-                WithdrawDestinationFragment.getBundle(amountToWithdraw)
+            WithdrawDestinationFragment.getBundle(amountToWithdraw)
         )
 
         fragment
-                .resultObservable
-                .compose(ObservableTransformers.defaultSchedulers())
-                .subscribeBy(
-                        onNext = this::onDestinationEntered,
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
+            .resultObservable
+            .compose(ObservableTransformers.defaultSchedulers())
+            .subscribeBy(
+                onNext = this::onDestinationEntered,
+                onError = { errorHandlerFactory.getDefault().handle(it) }
+            )
         fragmentDisplayer.display(fragment, "destination", true)
     }
 
@@ -194,48 +196,48 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         val destination = this.destinationAddress ?: return
         val balance = this.balance ?: return
         val address = destination
-                .trim()
-                .let {
-                    WithdrawalAddressUtil().extractAddressFromInvoice(it)
-                            ?: it
-                }
+            .trim()
+            .let {
+                WithdrawalAddressUtil().extractAddressFromInvoice(it)
+                    ?: it
+            }
 
         val progress = ProgressDialogFactory.getDialog(
-                requireContext(),
-                R.string.loading_data
+            requireContext(),
+            R.string.loading_data
         ) {
             withdrawRequestDisposable?.dispose()
         }
 
         withdrawRequestDisposable?.dispose()
         withdrawRequestDisposable = CreateWithdrawalRequestUseCase(
-                amount,
-                balance,
-                address,
-                walletInfoProvider,
-                FeeManager(apiProvider)
+            amount,
+            balance,
+            address,
+            walletInfoProvider,
+            FeeManager(apiProvider)
         )
-                .perform()
-                .compose(ObservableTransformers.defaultSchedulersSingle())
-                .doOnSubscribe {
-                    progress.show()
-                }
-                .doOnEvent { _, _ ->
-                    progress.hide()
-                }
-                .subscribeBy(
-                        onSuccess = { request ->
-                            Navigator.from(this)
-                                    .openWithdrawalConfirmation(request)
-                                    .addTo(activityRequestsBag)
-                                    .doOnSuccess {
-                                        (activity as? WalletEventsListener)
-                                                ?.onWithdrawalRequestConfirmed(request)
-                                    }
-                        },
-                        onError = { errorHandlerFactory.getDefault().handle(it) }
-                )
-                .addTo(compositeDisposable)
+            .perform()
+            .compose(ObservableTransformers.defaultSchedulersSingle())
+            .doOnSubscribe {
+                progress.show()
+            }
+            .doOnEvent { _, _ ->
+                progress.hide()
+            }
+            .subscribeBy(
+                onSuccess = { request ->
+                    Navigator.from(this)
+                        .openWithdrawalConfirmation(request)
+                        .addTo(activityRequestsBag)
+                        .doOnSuccess {
+                            (activity as? WalletEventsListener)
+                                ?.onWithdrawalRequestConfirmed(request)
+                        }
+                },
+                onError = { errorHandlerFactory.getDefault().handle(it) }
+            )
+            .addTo(compositeDisposable)
     }
 
     // region Error/empty
@@ -267,7 +269,7 @@ class WithdrawFragment : BaseFragment(), ToolbarProvider {
         val ID = "withdraw".hashCode().toLong()
 
         fun newInstance(bundle: Bundle): WithdrawFragment =
-                WithdrawFragment().withArguments(bundle)
+            WithdrawFragment().withArguments(bundle)
 
         fun getBundle(balanceId: String? = null) = Bundle().apply {
             putString(REQUIRED_BALANCE_ID_EXTRA, balanceId)

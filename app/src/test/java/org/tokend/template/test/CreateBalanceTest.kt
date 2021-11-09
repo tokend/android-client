@@ -16,20 +16,22 @@ class CreateBalanceTest {
     fun createBalance() {
         val urlConfigProvider = Util.getUrlConfigProvider()
         val session = Session(
-                WalletInfoProviderFactory().createWalletInfoProvider(),
-                AccountProviderFactory().createAccountProvider()
+            WalletInfoProviderFactory().createWalletInfoProvider(),
+            AccountProviderFactory().createAccountProvider()
         )
 
         val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
 
         val apiProvider =
-                ApiProviderFactory().createApiProvider(urlConfigProvider, session)
-        val repositoryProvider = RepositoryProviderImpl(apiProvider, session, urlConfigProvider,
-                JsonApiToolsProvider.getObjectMapper())
+            ApiProviderFactory().createApiProvider(urlConfigProvider, session)
+        val repositoryProvider = RepositoryProviderImpl(
+            apiProvider, session, urlConfigProvider,
+            JsonApiToolsProvider.getObjectMapper()
+        )
 
         Util.getVerifiedWallet(
-                email, password, apiProvider, session, repositoryProvider
+            email, password, apiProvider, session, repositoryProvider
         )
 
         val txManager = TxManager(apiProvider)
@@ -37,20 +39,20 @@ class CreateBalanceTest {
         val assetCode = Util.createAsset(apiProvider, txManager)
 
         val useCase = CreateBalanceUseCase(
-                assetCode,
-                repositoryProvider.balances(),
-                repositoryProvider.systemInfo(),
-                session,
-                txManager
+            assetCode,
+            repositoryProvider.balances,
+            repositoryProvider.systemInfo,
+            session,
+            txManager
         )
 
         useCase.perform().blockingAwait()
 
         Assert.assertTrue("Balances must contain a newly created balance of $assetCode asset",
-                repositoryProvider.balances().itemsList
-                        .any {
-                            it.assetCode == assetCode
-                        }
+            repositoryProvider.balances.itemsList
+                .any {
+                    it.assetCode == assetCode
+                }
         )
     }
 }
