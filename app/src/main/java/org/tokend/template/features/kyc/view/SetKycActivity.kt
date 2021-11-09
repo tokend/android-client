@@ -105,7 +105,7 @@ class SetKycActivity : BaseActivity() {
                 avatarImageView,
                 it?.uri,
                 ProfileUtil.getAvatarPlaceholder(
-                    session.getWalletInfo()!!.email,
+                    session.login,
                     this,
                     dip(150)
                 )
