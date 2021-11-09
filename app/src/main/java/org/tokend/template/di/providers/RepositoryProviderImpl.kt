@@ -182,7 +182,7 @@ class RepositoryProviderImpl(
     }
 
     private val blobs: BlobsRepository by lazy {
-        BlobsRepository(apiProvider)
+        BlobsRepository(apiProvider, walletInfoProvider)
     }
 
     private val localAccount: LocalAccountRepository by lazy {
@@ -231,11 +231,11 @@ class RepositoryProviderImpl(
     }
 
     private val kycRequestStateRepository: KycRequestStateRepository by lazy {
-        KycRequestStateRepository(apiProvider, walletInfoProvider, blobs())
+        KycRequestStateRepository(apiProvider, walletInfoProvider, blobs(), keyValueEntries)
     }
 
     private val activeKycRepository: ActiveKycRepository by lazy {
-        ActiveKycRepository(account(), blobs(), activeKycPersistence)
+        ActiveKycRepository(account(), blobs(), keyValueEntries, activeKycPersistence)
     }
 
     override fun account(): AccountRepository {

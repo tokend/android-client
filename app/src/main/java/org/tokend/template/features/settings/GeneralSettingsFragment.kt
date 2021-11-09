@@ -128,7 +128,9 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
     private fun initKycItem() {
         val kycPreference = findPreference("kyc")
         kycPreference?.setOnPreferenceClickListener {
-            activity?.browse(urlConfigProvider.getConfig().kyc)
+            activity?.let { parentActivity ->
+                Navigator.from(parentActivity).openSetKyc()
+            }
             true
         }
     }

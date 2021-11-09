@@ -64,4 +64,6 @@
     <dimen name="elevated_round_button_stroke_width">1dp</dimen>
 
     <dimen name="local_account_logo_size">56dp</dimen>
+
+    <dimen name="big_primary_button_height">60dp</dimen>
 </resources>

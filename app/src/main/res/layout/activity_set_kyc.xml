@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".features.kyc.view.SetKycActivity">
+
+    <include layout="@layout/appbar" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/include_error_empty_view" />
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/kycRequestStateInfoLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/kycStatusTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/standard_margin"
+                            android:layout_marginVertical="@dimen/standard_margin"
+                            android:gravity="center"
+                            android:textSize="@dimen/text_size_heading"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0" />
+
+                        <TextView
+                            android:id="@+id/kycRejectReasonTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/standard_margin"
+                            android:layout_marginTop="@dimen/half_standard_margin"
+                            android:layout_marginBottom="@dimen/standard_margin"
+                            android:gravity="center"
+                            android:textSize="@dimen/text_size_default"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/kycStatusTextView" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/standard_margin"
+                        android:orientation="vertical"
+                        app:layout_constrainedHeight="true"
+                        app:layout_constraintTop_toBottomOf="@+id/kycRequestStateInfoLayout">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/avatarImageView"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_margin="@dimen/standard_margin"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/removeImageButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/circle"
+                            android:padding="@dimen/half_standard_margin"
+                            android:visibility="gone"
+                            app:backgroundTint="@color/background"
+                            app:layout_constraintEnd_toEndOf="@+id/avatarImageView"
+                            app:layout_constraintTop_toTopOf="@+id/avatarImageView"
+                            app:srcCompat="@drawable/ic_delete_outline"
+                            app:tint="@color/accent" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/selectImageButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/circle"
+                            android:padding="@dimen/half_standard_margin"
+                            app:backgroundTint="@color/background"
+                            app:layout_constraintBottom_toBottomOf="@+id/avatarImageView"
+                            app:layout_constraintEnd_toEndOf="@+id/avatarImageView"
+                            app:srcCompat="@drawable/ic_plus_white"
+                            app:tint="@color/accent" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/current_firstname_edit_text"
+                            style="@style/EditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/standard_margin"
+                            android:hint="@string/hint_firstname"
+                            android:inputType="textCapSentences|textPersonName"
+                            app:layout_constraintTop_toBottomOf="@+id/avatarImageView"
+                            app:met_floatingLabelText="@string/hint_firstname" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/current_lastname_edit_text"
+                            style="@style/EditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/standard_margin"
+                            android:hint="@string/hint_lastname"
+                            android:inputType="textCapSentences|textPersonName"
+                            app:layout_constraintTop_toBottomOf="@+id/current_firstname_edit_text"
+                            app:met_floatingLabelText="@string/hint_lastname" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <org.tokend.template.view.ContentLoadingProgressBar
+                        android:id="@+id/progress"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+                        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                        tools:visibility="visible" />
+
+                    <Button
+                        android:id="@+id/confirm_kyc_button"
+                        style="@style/PrimaryButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/standard_margin"
+                        android:text="@string/action_submit"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+                        app:layout_constraintHorizontal_bias="1"
+                        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+                        app:layout_constraintTop_toBottomOf="@+id/progress"
+                        app:layout_constraintVertical_bias="0" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/appbar">
+
+        <include layout="@layout/include_appbar_elevation" />
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

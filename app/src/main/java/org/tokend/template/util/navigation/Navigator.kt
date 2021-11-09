@@ -31,6 +31,10 @@ import org.tokend.template.features.invest.model.SaleRecord
 import org.tokend.template.features.invest.view.InvestmentConfirmationActivity
 import org.tokend.template.features.invest.view.SaleActivity
 import org.tokend.template.features.invest.view.SaleInvestActivity
+import org.tokend.template.features.kyc.capture.model.CameraCaptureResult
+import org.tokend.template.features.kyc.capture.model.CameraCaptureTarget
+import org.tokend.template.features.kyc.capture.view.CameraCaptureActivity
+import org.tokend.template.features.kyc.view.SetKycActivity
 import org.tokend.template.features.limits.view.LimitsActivity
 import org.tokend.template.features.localaccount.importt.view.ImportLocalAccountActivity
 import org.tokend.template.features.localaccount.view.LocalAccountDetailsActivity
@@ -435,5 +439,21 @@ class Navigator private constructor() {
             },
             DepositAmountActivity::class.java,
             DepositAmountActivity.getBundle(assetCode)
+    )
+
+    fun openCameraCapture(
+        target: CameraCaptureTarget,
+        canSkip: Boolean
+    ) = createAndPerformRequest(
+        ActivityRequest { data ->
+            data?.getSerializableExtra(CameraCaptureActivity.CAPTURE_RESULT_EXTRA)
+                    as? CameraCaptureResult
+        },
+        CameraCaptureActivity::class.java,
+        CameraCaptureActivity.getBundle(target, canSkip)
+    )
+
+    fun openSetKyc() = createAndPerformSimpleRequest(
+        SetKycActivity::class.java
     )
 }

@@ -464,4 +464,21 @@
         <item>Ноябрь</item>
         <item>Декабрь</item>
     </string-array>
+    <string name="title_kyc">Персональная информация</string>
+    <string name="hint_firstname">Имя</string>
+    <string name="hint_lastname">Фамилия</string>
+    <string name="selfie">Селфи</string>
+    <string name="my_selfie_is_clear">Мое селфи в порядке</string>
+    <string name="take_new_selfie">Сделать новое селфи</string>
+    <string name="take_a_shot">Сфотографировать</string>
+    <string name="skip_document_capture">Пропустить</string>
+    <string name="take_a_selfie">Сделать селфи</string>
+    <string name="pick_from_gallery">Выбрать из галереи</string>
+    <string name="action_submit">Подтвердить</string>
+    <string name="waiting_for_file_progress">Ожидание файла</string>
+    <string name="account_setup_completed">Настройка учетной записи завершена</string>
+    <string name="personal_info_updated">Персональные данные обновлены</string>
+    <string name="personal_info_update_request_created">Запрос на изменния персональных данных успешно создан</string>
+    <string name="template_rejection_reason">Причина отказа: %1$s</string>
+    <string name="kyc_recovery_permanently_rejected_message">Ваш запрос был окончательно отклонен. Попробуйте снова</string>
 </resources>

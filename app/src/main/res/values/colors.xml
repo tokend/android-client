@@ -11,11 +11,13 @@
     <color name="white_almost">#a0ffffff</color>
 
     <!-- Uncomment to override dividers color -->
-<!--    <color name="material_drawer_divider">@color/white_almost</color>-->
+    <!--    <color name="material_drawer_divider">@color/white_almost</color>-->
 
     <!-- Navigation drawer overrides -->
     <color name="material_drawer_primary_text">@color/primary_text</color>
     <color name="material_drawer_selected_text">@color/primary_text</color>
     <color name="material_drawer_background">@color/background</color>
     <color name="material_drawer_selected">@color/accent_highlight</color>
+
+    <color name="orange">#E7A634</color>
 </resources>

@@ -12,41 +12,50 @@ import org.tokend.template.R
 import org.tokend.template.di.providers.UrlConfigProvider
 import org.tokend.template.features.kyc.model.ActiveKyc
 import org.tokend.template.features.kyc.model.KycForm
+import org.tokend.template.features.kyc.model.KycFormWithAvatar
 import org.tokend.template.view.util.ImageViewUtil
 import org.tokend.template.view.util.LogoFactory
 
 object ProfileUtil {
 
-    fun getAvatarUrl(activeKyc: ActiveKyc?,
-                     urlConfigProvider: UrlConfigProvider): String? {
-        val avatar = when (val form = (activeKyc as? ActiveKyc.Form)?.formData) {
-            is KycForm.Corporate -> form.avatar
-            is KycForm.General -> form.avatar
-            else -> null
-        }
-        return avatar?.getUrl(urlConfigProvider.getConfig().storage)
+    fun getAvatarUrl(
+        activeKyc: ActiveKyc?,
+        urlConfigProvider: UrlConfigProvider
+    ): String? {
+        return getAvatarUrl((activeKyc as? ActiveKyc.Form)?.formData, urlConfigProvider)
     }
 
-    fun getAvatarPlaceholder(email: String,
-                             context: Context,
-                             @Dimension
-                             sizePx: Int): Drawable {
+    fun getAvatarUrl(
+        kycForm: KycForm?,
+        urlConfigProvider: UrlConfigProvider
+    ): String? {
+        return (kycForm as? KycFormWithAvatar)?.avatar?.getUrl(urlConfigProvider.getConfig().storage)
+    }
+
+    fun getAvatarPlaceholder(
+        email: String,
+        context: Context,
+        @Dimension
+        sizePx: Int
+    ): Drawable {
         val placeholderImage = LogoFactory(context)
-                .getForValue(
-                        email.toUpperCase(),
-                        sizePx,
-                        ContextCompat.getColor(context, R.color.avatar_placeholder_background),
-                        Color.WHITE
-                )
+            .getForValue(
+                email.toUpperCase(),
+                sizePx,
+                ContextCompat.getColor(context, R.color.avatar_placeholder_background),
+                Color.WHITE
+            )
 
         return BitmapDrawable(context.resources, placeholderImage)
     }
 
-    fun setAvatar(view: ImageView,
-                  email: String,
-                  urlConfigProvider: UrlConfigProvider,
-                  activeKyc: ActiveKyc?,
-                  sizePx: Int = (view.layoutParams as ViewGroup.LayoutParams).width) {
+    fun setAvatar(
+        view: ImageView,
+        email: String,
+        urlConfigProvider: UrlConfigProvider,
+        activeKyc: ActiveKyc?,
+        sizePx: Int = (view.layoutParams as ViewGroup.LayoutParams).width
+    ) {
         val placeholderDrawable = getAvatarPlaceholder(email, view.context, sizePx)
         val avatarUrl = getAvatarUrl(activeKyc, urlConfigProvider)
 

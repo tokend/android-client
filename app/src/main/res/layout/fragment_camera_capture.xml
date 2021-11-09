@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@mipmap/product_logo">
+
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cameraAudio="off"
+        app:cameraGestureTap="autoFocus"
+        app:cameraMode="picture"
+        app:cameraUseDeviceOrientation="false" />
+
+    <View
+        android:id="@+id/top_safe_zone_space"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#80000000" />
+
+    <FrameLayout
+        android:id="@+id/overlay_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_content_layout"
+        android:layout_below="@id/top_safe_zone_space" />
+
+    <LinearLayout
+        android:id="@+id/bottom_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="#80000000"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/capture_hint_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:gravity="center"
+            android:paddingTop="@dimen/standard_margin"
+            android:textColor="@color/white"
+            tools:text="Place the document into the frame" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/capture_button"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/standard_margin"
+                android:background="@drawable/camera_capture_button_background"
+                android:contentDescription="@string/take_a_shot" />
+
+            <Button
+                android:id="@+id/skip_capture_button"
+                style="@style/TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/capture_button"
+                android:layout_alignBottom="@id/capture_button"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/capture_button"
+                android:text="@string/skip_document_capture"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
+        <Space
+            android:id="@+id/bottom_safe_zone_space"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/standard_margin" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -466,4 +466,23 @@
         <item>November</item>
         <item>December</item>
     </string-array>
+
+    <!--    set KYC screen-->
+    <string name="title_kyc">Personal info</string>
+    <string name="hint_firstname">First name</string>
+    <string name="hint_lastname">Last name</string>
+    <string name="my_selfie_is_clear">My selfie is clear</string>
+    <string name="selfie">Selfie</string>
+    <string name="take_new_selfie">Take new selfie</string>
+    <string name="take_a_shot">Take a shot</string>
+    <string name="skip_document_capture">Skip</string>
+    <string name="take_a_selfie">Take a selfie</string>
+    <string name="pick_from_gallery">Pick from gallery</string>
+    <string name="action_submit">Submit</string>
+    <string name="waiting_for_file_progress">Waiting for file…</string>
+    <string name="account_setup_completed">Account setup has been completed</string>
+    <string name="personal_info_updated">Personal info updated</string>
+    <string name="personal_info_update_request_created">Personal info update request created successfully</string>
+    <string name="template_rejection_reason">Rejection reason: %1$s</string>
+    <string name="kyc_recovery_permanently_rejected_message">Your request has been permanently rejected. Try again</string>
 </resources>

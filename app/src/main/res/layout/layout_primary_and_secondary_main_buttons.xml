@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/secondary_action_button"
+        style="@style/TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/big_primary_button_height"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:paddingTop="@dimen/half_standard_margin"
+        android:textAllCaps="false"
+        tools:text="@string/cancel" />
+
+    <Button
+        android:id="@+id/primary_action_button"
+        style="@style/PrimaryButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/big_primary_button_height"
+        android:layout_margin="@dimen/standard_margin"
+        android:textAllCaps="false"
+        tools:text="Take a shot" />
+</LinearLayout>
