@@ -123,12 +123,12 @@ class LocalizedName(private val context: Context) {
             TimeUnit.DAYS -> context.resources.getQuantityString(R.plurals.day, absoluteValue)
             TimeUnit.HOURS -> context.resources.getQuantityString(R.plurals.hour, absoluteValue)
             TimeUnit.MINUTES -> context.resources.getQuantityString(R.plurals.minute, absoluteValue)
-            else -> unit.name.toLowerCase()
+            else -> unit.name.toLowerCase(Locale.getDefault())
         }
     }
 
     fun forLocale(locale: Locale): String {
-        return locale.getDisplayLanguage(locale).toLowerCase().capitalize()
+        return locale.getDisplayLanguage(locale).toLowerCase(locale).capitalize(locale)
     }
 
     fun forAssetChartScaleLast(scale: AssetChartScale): String {
@@ -146,7 +146,7 @@ class LocalizedName(private val context: Context) {
             AssetChartScale.DAY -> context.getString(R.string.day)
             AssetChartScale.MONTH -> context.getString(R.string.month)
             AssetChartScale.YEAR -> context.getString(R.string.year)
-        }).first().toString().toUpperCase()
+        }).first().toString().toUpperCase(Locale.getDefault())
     }
 
     fun forMonth(numberFromZero: Int): String {

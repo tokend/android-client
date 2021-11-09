@@ -7,6 +7,7 @@ import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.identity.params.IdentitiesPageParams
 import retrofit2.HttpException
 import java.net.HttpURLConnection
+import java.util.*
 
 class AccountDetailsRepository(
     private val apiProvider: ApiProvider
@@ -22,7 +23,7 @@ class AccountDetailsRepository(
      * @see NoIdentityAvailableException
      */
     fun getAccountIdByEmail(email: String): Single<String> {
-        val formattedEmail = email.toLowerCase()
+        val formattedEmail = email.toLowerCase(Locale.ENGLISH)
         val existing = identities.find { it.email == formattedEmail }?.accountId
         if (existing != null) {
             return Single.just(existing)

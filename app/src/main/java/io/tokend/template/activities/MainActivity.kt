@@ -42,6 +42,8 @@ import io.tokend.template.view.util.GlideDrawerImageLoader
 import io.tokend.template.view.util.LocalizedName
 import io.tokend.template.view.util.input.SoftInputUtil
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+import kotlin.collections.HashMap
 
 class MainActivity : BaseActivity(), WalletEventsListener {
     companion object {
@@ -79,7 +81,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     private fun initNavigation() {
         val login = session.login
 
-        val placeholderValue = login.toUpperCase()
+        val placeholderValue = login.toUpperCase(Locale.ENGLISH)
         val placeholderSize =
             resources.getDimensionPixelSize(R.dimen.material_drawer_item_profile_icon_width)
         val placeholderBackground =

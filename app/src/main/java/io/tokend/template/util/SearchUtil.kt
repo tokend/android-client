@@ -1,5 +1,7 @@
 package io.tokend.template.util
 
+import java.util.*
+
 /**
  * Contains different conditions of matching some query with given fields.
  */
@@ -21,12 +23,12 @@ object SearchUtil {
     fun isMatchGeneralCondition(query: String, vararg fields: String?): Boolean {
         val unmatchedFieldsParts = fields.fold(mutableSetOf<String>()) { acc, item ->
             if (item != null) {
-                acc.addAll(splitByWhitespace(item.toLowerCase()))
+                acc.addAll(splitByWhitespace(item.toLowerCase(Locale.getDefault())))
             }
             acc
         }
 
-        val unmatchedQueryParts = splitByWhitespace(query.toLowerCase()).toMutableList()
+        val unmatchedQueryParts = splitByWhitespace(query.toLowerCase(Locale.getDefault())).toMutableList()
         var unmatchedChanged = true
         while (unmatchedFieldsParts.isNotEmpty()
             && unmatchedQueryParts.isNotEmpty()

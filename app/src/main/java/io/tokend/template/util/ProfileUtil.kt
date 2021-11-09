@@ -15,6 +15,7 @@ import io.tokend.template.features.kyc.model.KycForm
 import io.tokend.template.features.kyc.model.KycFormWithAvatar
 import io.tokend.template.view.util.ImageViewUtil
 import io.tokend.template.view.util.LogoFactory
+import java.util.*
 
 object ProfileUtil {
 
@@ -33,14 +34,14 @@ object ProfileUtil {
     }
 
     fun getAvatarPlaceholder(
-        email: String,
+        login: String,
         context: Context,
         @Dimension
         sizePx: Int
     ): Drawable {
         val placeholderImage = LogoFactory(context)
             .getForValue(
-                email.toUpperCase(),
+                login.toUpperCase(Locale.ENGLISH),
                 sizePx,
                 ContextCompat.getColor(context, R.color.avatar_placeholder_background),
                 Color.WHITE
