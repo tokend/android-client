@@ -35,6 +35,6 @@
         android:textSize="@dimen/text_size_order_book"
         android:paddingStart="@dimen/quarter_standard_margin"
         android:paddingEnd="@dimen/quarter_standard_margin"
-        android:background="@drawable/clip_bid_volume_level"/>
+        android:background="@drawable/clip_bid_volume_level" />
 
 </LinearLayout>

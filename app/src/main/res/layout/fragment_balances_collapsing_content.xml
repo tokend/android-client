@@ -22,7 +22,7 @@
         android:textSize="@dimen/text_size_heading_large"
         tools:text="14,221.5 USD" />
 
-    <org.tokend.template.features.dashboard.balances.view.AssetDistributionChart
+    <io.tokend.template.features.dashboard.balances.view.AssetDistributionChart
         android:id="@+id/distribution_chart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

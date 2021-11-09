@@ -8,7 +8,7 @@
 
     <include layout="@layout/toolbar" />
 
-    <org.tokend.template.view.picker.PickerTabLayout
+    <io.tokend.template.view.picker.PickerTabLayout
         android:id="@+id/appbar_tabs"
         style="@style/TabPicker"
         android:layout_width="match_parent"

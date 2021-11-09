@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/standard_margin"
             android:layout_marginTop="@dimen/quarter_standard_margin"
-            android:layout_marginEnd="@dimen/standard_margin"/>
+            android:layout_marginEnd="@dimen/standard_margin" />
 
         <LinearLayout
             android:id="@+id/choices_layout"

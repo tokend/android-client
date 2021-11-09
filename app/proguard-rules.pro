@@ -70,7 +70,7 @@
 -keep class androidx.appcompat.widget.SearchView { *; }
 
 # KYC state storage
--keepnames class org.tokend.template.features.kyc.model.** { *; }
+-keepnames class io.tokend.template.features.kyc.model.** { *; }
 
 # Keep JsonCreator
 -keepclassmembers class * {
@@ -81,7 +81,7 @@
 -dontwarn com.squareup.picasso.OkHttpDownloader
 
 # Balance changes caching
--keepnames class org.tokend.template.features.history.model.** { *; }
+-keepnames class io.tokend.template.features.history.model.** { *; }
 
 # ProGuard issue
 # https://sourceforge.net/p/proguard/bugs/573/

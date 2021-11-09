@@ -6,7 +6,7 @@
 
     <include layout="@layout/include_error_empty_view" />
 
-    <org.tokend.template.view.assetchart.AssetChartCard
+    <io.tokend.template.view.assetchart.AssetChartCard
         android:id="@+id/chart"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

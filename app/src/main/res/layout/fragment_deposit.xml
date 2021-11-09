@@ -18,7 +18,7 @@
         <include layout="@layout/include_appbar_elevation" />
     </FrameLayout>
 
-    <org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout
+    <io.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         style="@style/LimitedMatchParentWidthConstraint"
         app:layout_constraintTop_toBottomOf="@id/appbar"
@@ -67,5 +67,5 @@
                 android:paddingBottom="@dimen/standard_margin" />
 
         </LinearLayout>
-    </org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
+    </io.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

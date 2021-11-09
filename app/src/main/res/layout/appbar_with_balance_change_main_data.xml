@@ -6,7 +6,7 @@
     android:background="@android:color/transparent"
     app:elevation="0dp">
 
-    <org.tokend.template.view.ScrimCallbackCollapsingToolbarLayout
+    <io.tokend.template.view.ScrimCallbackCollapsingToolbarLayout
         android:id="@+id/collapsing_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,5 +63,5 @@
                 <include layout="@layout/include_appbar_elevation" />
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
-    </org.tokend.template.view.ScrimCallbackCollapsingToolbarLayout>
+    </io.tokend.template.view.ScrimCallbackCollapsingToolbarLayout>
 </com.google.android.material.appbar.AppBarLayout>

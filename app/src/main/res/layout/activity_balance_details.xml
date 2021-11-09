@@ -21,14 +21,14 @@
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <org.tokend.template.view.PaginationRecyclerView
+                <io.tokend.template.view.PaginationRecyclerView
                     android:id="@+id/history_list"
                     style="@style/LimitedMatchParentWidthConstraint"
                     android:overScrollMode="never"
                     android:paddingStart="@dimen/quarter_standard_margin"
                     android:paddingEnd="@dimen/quarter_standard_margin" />
 
-                <org.tokend.template.view.TxDateTextSwitcher
+                <io.tokend.template.view.TxDateTextSwitcher
                     android:id="@+id/date_text_switcher"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
                 android:background="@android:color/transparent"
                 app:elevation="0dp">
 
-                <org.tokend.template.view.ScrimCallbackCollapsingToolbarLayout
+                <io.tokend.template.view.ScrimCallbackCollapsingToolbarLayout
                     android:id="@+id/collapsing_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
 
                     <include layout="@layout/toolbar" />
 
-                </org.tokend.template.view.ScrimCallbackCollapsingToolbarLayout>
+                </io.tokend.template.view.ScrimCallbackCollapsingToolbarLayout>
             </com.google.android.material.appbar.AppBarLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

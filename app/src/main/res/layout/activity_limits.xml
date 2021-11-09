@@ -10,7 +10,7 @@
 
     <include layout="@layout/appbar_with_tabs" />
 
-    <org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout
+    <io.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         style="@style/LimitedMatchParentWidthConstraint"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -43,7 +43,7 @@
             </androidx.core.widget.NestedScrollView>
 
         </LinearLayout>
-    </org.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
+    </io.tokend.template.view.touchintercepting.TouchInterceptingSwipeRefreshLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -102,7 +102,7 @@
                     </RelativeLayout>
                 </LinearLayout>
 
-                <org.tokend.template.view.ContentLoadingProgressBar
+                <io.tokend.template.view.ContentLoadingProgressBar
                     android:id="@+id/progress"
                     style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"

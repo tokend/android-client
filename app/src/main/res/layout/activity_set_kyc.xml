@@ -140,7 +140,7 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <org.tokend.template.view.ContentLoadingProgressBar
+                    <io.tokend.template.view.ContentLoadingProgressBar
                         android:id="@+id/progress"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="0dp"

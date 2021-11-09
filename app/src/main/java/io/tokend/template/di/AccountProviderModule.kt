@@ -1,0 +1,16 @@
+package io.tokend.template.di
+
+import dagger.Module
+import dagger.Provides
+import io.tokend.template.di.providers.AccountProvider
+import io.tokend.template.logic.Session
+import javax.inject.Singleton
+
+@Module
+class AccountProviderModule {
+    @Provides
+    @Singleton
+    fun accountProvider(session: Session): AccountProvider {
+        return session
+    }
+}

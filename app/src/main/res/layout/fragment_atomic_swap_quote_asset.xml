@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/double_padding">
 
-            <org.tokend.template.features.assets.buy.view.quoteasset.picker.AtomicSwapQuoteAssetPickerSpinner
+            <io.tokend.template.features.assets.buy.view.quoteasset.picker.AtomicSwapQuoteAssetPickerSpinner
                 android:id="@+id/quote_assets_spinner"
                 style="@style/Widget.AppCompat.Spinner.DropDown"
                 android:layout_width="match_parent"
