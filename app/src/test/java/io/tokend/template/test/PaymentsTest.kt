@@ -10,7 +10,7 @@ import io.tokend.template.features.send.amount.logic.PaymentFeeLoader
 import io.tokend.template.features.send.logic.ConfirmPaymentRequestUseCase
 import io.tokend.template.features.send.logic.CreatePaymentRequestUseCase
 import io.tokend.template.features.send.recipient.logic.PaymentRecipientLoader
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
 import org.junit.Assert
 import org.junit.FixMethodOrder

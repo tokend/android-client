@@ -2,7 +2,7 @@ package io.tokend.template.logic.credentials.persistence
 
 import android.content.SharedPreferences
 import io.tokend.template.logic.credentials.model.WalletInfoRecord
-import io.tokend.template.logic.persistence.SecureStorage
+import io.tokend.template.data.storage.persistence.SecureStorage
 import org.tokend.sdk.factory.GsonFactory
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream

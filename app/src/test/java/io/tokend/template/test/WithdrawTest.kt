@@ -8,7 +8,7 @@ import io.tokend.template.features.fees.logic.FeeManager
 import io.tokend.template.features.history.model.details.BalanceChangeCause
 import io.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
 import io.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
 import junit.framework.Assert
 import org.junit.BeforeClass

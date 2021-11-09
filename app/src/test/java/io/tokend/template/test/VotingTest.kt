@@ -3,7 +3,7 @@ package io.tokend.template.test
 import io.tokend.template.di.providers.*
 import io.tokend.template.features.polls.logic.AddVoteUseCase
 import io.tokend.template.features.polls.logic.RemoveVoteUseCase
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
 import org.junit.Assert
 import org.junit.FixMethodOrder

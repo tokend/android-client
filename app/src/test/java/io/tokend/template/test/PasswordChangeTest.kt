@@ -5,7 +5,7 @@ import io.tokend.template.di.providers.ApiProviderFactory
 import io.tokend.template.di.providers.RepositoryProviderImpl
 import io.tokend.template.di.providers.WalletInfoProviderFactory
 import io.tokend.template.features.changepassword.ChangePasswordUseCase
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import org.junit.Assert
 import org.junit.Test
 import org.tokend.sdk.api.tfa.model.TfaFactor

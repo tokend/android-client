@@ -11,7 +11,7 @@ import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import io.tokend.template.features.localaccount.logic.LocalAccountRetryDecryptor
 import io.tokend.template.features.localaccount.model.LocalAccount
 import io.tokend.template.features.userkey.logic.UserKeyProvider
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.credentials.model.WalletInfoRecord
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import io.tokend.template.util.cipher.DataCipher

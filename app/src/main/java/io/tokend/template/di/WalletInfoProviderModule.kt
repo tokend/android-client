@@ -3,7 +3,7 @@ package io.tokend.template.di
 import dagger.Module
 import dagger.Provides
 import io.tokend.template.di.providers.WalletInfoProvider
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import javax.inject.Singleton
 
 @Module

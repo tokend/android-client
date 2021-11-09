@@ -2,7 +2,7 @@ package io.tokend.template.features.userkey.logic.persistence
 
 import android.content.SharedPreferences
 import android.os.Build
-import io.tokend.template.logic.persistence.SecureStorage
+import io.tokend.template.data.storage.persistence.SecureStorage
 import org.tokend.crypto.ecdsa.erase
 import org.tokend.wallet.utils.toByteArray
 import org.tokend.wallet.utils.toCharArray

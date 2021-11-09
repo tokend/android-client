@@ -3,7 +3,7 @@ package io.tokend.template.features.signup.logic
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.credentials.model.WalletInfoRecord
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import io.tokend.template.logic.credentials.persistence.WalletInfoPersistence

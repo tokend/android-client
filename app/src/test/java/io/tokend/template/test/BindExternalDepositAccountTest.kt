@@ -4,7 +4,7 @@ import io.tokend.template.di.providers.*
 import io.tokend.template.features.assets.logic.CreateBalanceUseCase
 import io.tokend.template.features.assets.model.AssetRecord
 import io.tokend.template.features.deposit.logic.BindExternalSystemDepositAccountUseCase
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
 import org.junit.Assert
 import org.junit.Test

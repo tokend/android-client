@@ -5,7 +5,7 @@ import io.tokend.template.di.providers.ApiProviderFactory
 import io.tokend.template.di.providers.RepositoryProviderImpl
 import io.tokend.template.di.providers.WalletInfoProviderFactory
 import io.tokend.template.features.assets.logic.CreateBalanceUseCase
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
 import org.junit.Assert
 import org.junit.Test

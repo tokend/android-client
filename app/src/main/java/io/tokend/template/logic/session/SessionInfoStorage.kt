@@ -1,4 +1,4 @@
-package io.tokend.template.logic.persistence
+package io.tokend.template.logic.session
 
 import android.content.SharedPreferences
 import io.tokend.template.features.signin.logic.SignInMethod

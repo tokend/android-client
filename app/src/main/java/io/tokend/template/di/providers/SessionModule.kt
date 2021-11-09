@@ -2,7 +2,7 @@ package io.tokend.template.di.providers
 
 import dagger.Module
 import dagger.Provides
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import javax.inject.Singleton
 
 @Module

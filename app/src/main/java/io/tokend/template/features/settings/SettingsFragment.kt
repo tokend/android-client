@@ -17,7 +17,7 @@ import io.tokend.template.di.providers.UrlConfigProvider
 import io.tokend.template.di.providers.WalletInfoProvider
 import io.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import io.tokend.template.features.settings.view.PreferenceDividerDecoration
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import io.tokend.template.logic.persistence.BackgroundLockManager
 import io.tokend.template.util.errorhandler.ErrorHandlerFactory

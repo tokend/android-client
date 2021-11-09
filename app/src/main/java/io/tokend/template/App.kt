@@ -37,8 +37,8 @@ import io.tokend.template.di.providers.WalletInfoProviderFactory
 import io.tokend.template.extensions.defaultSharedPreferences
 import io.tokend.template.features.urlconfig.model.UrlConfig
 import io.tokend.template.features.urlconfig.storage.UrlConfigPersistence
-import io.tokend.template.logic.Session
-import io.tokend.template.logic.persistence.SessionInfoStorage
+import io.tokend.template.logic.session.Session
+import io.tokend.template.logic.session.SessionInfoStorage
 import io.tokend.template.util.locale.AppLocaleManager
 import io.tokend.template.util.navigation.Navigator
 import java.io.IOException

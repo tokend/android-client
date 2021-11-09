@@ -9,7 +9,7 @@ import io.tokend.template.di.providers.WalletInfoProviderFactory
 import io.tokend.template.features.tfa.logic.DisableTfaUseCase
 import io.tokend.template.features.tfa.logic.EnableTfaUseCase
 import io.tokend.template.features.tfa.model.TfaFactorCreationResult
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.util.confirmation.ConfirmationProvider
 import junit.framework.Assert
 import org.junit.FixMethodOrder

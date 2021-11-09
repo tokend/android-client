@@ -21,7 +21,7 @@ import io.tokend.template.features.signin.logic.PostSignInManagerFactory
 import io.tokend.template.features.tfa.logic.AppTfaCallback
 import io.tokend.template.features.tfa.view.TfaDialogFactory
 import io.tokend.template.features.urlconfig.model.UrlConfig
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import io.tokend.template.logic.credentials.persistence.WalletInfoPersistence
 import io.tokend.template.logic.persistence.BackgroundLockManager

@@ -6,7 +6,7 @@ import io.tokend.template.features.signin.logic.PostSignInManager
 import io.tokend.template.features.signin.logic.SignInUseCase
 import io.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import io.tokend.template.features.urlconfig.model.UrlConfig
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2

@@ -9,7 +9,7 @@ import io.tokend.template.features.signin.logic.PostSignInManager
 import io.tokend.template.features.signin.logic.SignInUseCase
 import io.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
 import io.tokend.template.features.userkey.logic.UserKeyProvider
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.credentials.model.WalletInfoRecord
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import io.tokend.template.logic.credentials.persistence.WalletInfoPersistence

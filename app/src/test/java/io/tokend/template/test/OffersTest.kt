@@ -8,7 +8,7 @@ import io.tokend.template.features.offers.logic.CancelOfferUseCase
 import io.tokend.template.features.offers.logic.ConfirmOfferRequestUseCase
 import io.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import io.tokend.template.features.offers.model.OfferRecord
-import io.tokend.template.logic.Session
+import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
 import junit.framework.Assert
 import org.junit.FixMethodOrder

@@ -1,10 +1,9 @@
-package io.tokend.template.logic
+package io.tokend.template.logic.session
 
 import io.tokend.template.di.providers.AccountProvider
 import io.tokend.template.di.providers.WalletInfoProvider
 import io.tokend.template.features.localaccount.model.LocalAccount
 import io.tokend.template.features.signin.logic.SignInMethod
-import io.tokend.template.logic.persistence.SessionInfoStorage
 
 /**
  * Holds session data
