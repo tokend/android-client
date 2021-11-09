@@ -12,6 +12,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_set_kyc.*
 import kotlinx.android.synthetic.main.include_appbar_elevation.*
+import kotlinx.android.synthetic.main.include_error_empty_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.template.R
 import org.tokend.template.activities.BaseActivity
@@ -57,7 +58,7 @@ class SetKycActivity : BaseActivity() {
 
     private var canConfirm = false
 
-    private val kycRequestState
+    private val kycRequestStateRepository
         get() = repositoryProvider.kycRequestState()
 
     private val activeKyc
@@ -71,17 +72,19 @@ class SetKycActivity : BaseActivity() {
         initFilePicker()
         initButtons()
         initSwipeRefresh()
+        initEmptyView()
+
         subscribeToKycRequestState()
 
-        kycRequestState.updateIfNotFresh()
-
-        ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
+        update()
     }
 
     private fun initToolbar() {
         setSupportActionBar(toolbar)
         setTitle(R.string.title_kyc)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        ElevationUtil.initScrollElevation(scroll_view, appbar_elevation_view)
     }
 
     private fun initFilePicker() {
@@ -125,6 +128,10 @@ class SetKycActivity : BaseActivity() {
         }
     }
 
+    private fun initEmptyView() {
+        error_empty_view.showEmpty(getString(R.string.loading_data))
+    }
+
     private fun pickAvatar() {
         CenteredButtonsDialog(
             context = this,
@@ -154,16 +161,25 @@ class SetKycActivity : BaseActivity() {
     }
 
     private fun initSwipeRefresh() {
-        swipe_refresh.setOnRefreshListener {
-            kycRequestState.update()
+        swipe_refresh.setColorSchemeColors(ContextCompat.getColor(this, R.color.accent))
+        swipe_refresh.setOnRefreshListener { update(force = true) }
+    }
+
+    private fun update(force: Boolean = false) {
+        if (force) {
+            kycRequestStateRepository.update()
+        } else {
+            kycRequestStateRepository.updateIfNotFresh()
         }
     }
 
     private fun subscribeToKycRequestState() {
-        kycRequestState
+        kycRequestStateRepository
             .itemSubject
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
+                error_empty_view.hide()
+
                 initKycRequestView(it)
                 (it as? KycRequestState.Submitted<*>?).let { kycRequest ->
                     initKycView(kycRequest?.formData)
@@ -171,18 +187,24 @@ class SetKycActivity : BaseActivity() {
                 }
             }.addTo(compositeDisposable)
 
-        kycRequestState
+        kycRequestStateRepository
             .loadingSubject
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 swipe_refresh.isRefreshing = it
             }.addTo(compositeDisposable)
 
-        kycRequestState
+        kycRequestStateRepository
             .errorsSubject
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                errorHandlerFactory.getDefault().handle(it)
+                if (kycRequestStateRepository.isNeverUpdated) {
+                    error_empty_view.showError(it, errorHandlerFactory.getDefault()) {
+                        update()
+                    }
+                } else {
+                    errorHandlerFactory.getDefault().handle(it)
+                }
             }.addTo(compositeDisposable)
     }
 
@@ -276,7 +298,7 @@ class SetKycActivity : BaseActivity() {
         }
 
         val submittedDocuments = (avatar.value as? AvatarFile.Remote?)?.let {
-            (kycRequestState.item as? KycRequestState.Submitted<*>)?.formData?.documents
+            (kycRequestStateRepository.item as? KycRequestState.Submitted<*>)?.formData?.documents
         }
 
         SoftInputUtil.hideSoftInput(this)
@@ -308,7 +330,7 @@ class SetKycActivity : BaseActivity() {
     }
 
     private fun onFormSubmitted() {
-        if (kycRequestState.item is KycRequestState.Submitted.Approved<*>) {
+        if (kycRequestStateRepository.item is KycRequestState.Submitted.Approved<*>) {
             toastManager.long(R.string.personal_info_updated)
         } else {
             toastManager.long(R.string.personal_info_update_request_created)
