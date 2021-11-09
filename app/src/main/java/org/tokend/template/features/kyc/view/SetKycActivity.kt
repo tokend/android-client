@@ -21,7 +21,10 @@ import org.tokend.template.features.kyc.capture.model.CameraCaptureTarget
 import org.tokend.template.features.kyc.files.model.LocalFile
 import org.tokend.template.features.kyc.files.util.WaitForFilePickForegroundService
 import org.tokend.template.features.kyc.logic.UpdateCurrentKycRequestUseCase
-import org.tokend.template.features.kyc.model.*
+import org.tokend.template.features.kyc.model.ActiveKyc
+import org.tokend.template.features.kyc.model.KycForm
+import org.tokend.template.features.kyc.model.KycFormWithName
+import org.tokend.template.features.kyc.model.KycRequestState
 import org.tokend.template.logic.TxManager
 import org.tokend.template.util.ObservableTransformers
 import org.tokend.template.util.ProfileUtil
@@ -298,20 +301,15 @@ class SetKycActivity : BaseActivity() {
                 isLoading = false
             }
             .subscribeBy(
-                onComplete = {
-                    onFormSubmitted(form)
-                },
+                onComplete = this::onFormSubmitted,
                 onError = { errorHandlerFactory.getDefault().handle(it) }
             )
             .addTo(compositeDisposable)
     }
 
-    private fun onFormSubmitted(form: KycForm) {
+    private fun onFormSubmitted() {
         if (kycRequestState.item is KycRequestState.Submitted.Approved<*>) {
             toastManager.long(R.string.personal_info_updated)
-            repositoryProvider
-                .activeKyc()
-                .set(ActiveKyc.Form(form))
         } else {
             toastManager.long(R.string.personal_info_update_request_created)
         }
@@ -320,11 +318,11 @@ class SetKycActivity : BaseActivity() {
 
     private fun initTextFields() {
         confirm_kyc_button.isEnabled = canConfirm
-        current_firstname_edit_text.addTextChangedListener(SimpleTextWatcher() {
+        current_firstname_edit_text.addTextChangedListener(SimpleTextWatcher {
             checkField(current_firstname_edit_text)
             updateChangeAvailability()
         })
-        current_lastname_edit_text.addTextChangedListener(SimpleTextWatcher() {
+        current_lastname_edit_text.addTextChangedListener(SimpleTextWatcher {
             checkField(current_lastname_edit_text)
             updateChangeAvailability()
         })
