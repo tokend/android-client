@@ -10,7 +10,7 @@ import io.reactivex.rxkotlin.addTo
 import io.tokend.template.BuildConfig
 import io.tokend.template.R
 import io.tokend.template.activities.BaseActivity
-import io.tokend.template.extensions.childrenSequence
+import io.tokend.template.extensions.children
 import io.tokend.template.extensions.dip
 import io.tokend.template.features.balances.model.BalanceRecord
 import io.tokend.template.features.balances.storage.BalancesRepository
@@ -97,8 +97,8 @@ class BalanceDetailsActivity : BaseActivity() {
         toolbar.subtitle = "*"
 
         val fadingToolbarViews = toolbar
-            .childrenSequence()
-            .filter { it is TextView }
+            .children
+            .filterIsInstance<TextView>()
 
         val fadeInDuration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
         val fadeOutDuration = collapsing_toolbar.scrimAnimationDuration

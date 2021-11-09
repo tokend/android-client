@@ -6,7 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.AppBarLayout
 import io.tokend.template.R
-import io.tokend.template.extensions.childrenSequence
+import io.tokend.template.extensions.children
 import io.tokend.template.extensions.dip
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.view.ScrimCallbackCollapsingToolbarLayout
@@ -44,8 +44,8 @@ class BalanceChangeMainDataView(
         toolbar.subtitle = "*"
 
         val fadingToolbarViews = toolbar
-            .childrenSequence()
-            .filter { it is TextView }
+            .children
+            .filterIsInstance<TextView>()
 
         val fadeDuration = collapsingToolbarLayout.scrimAnimationDuration
 
