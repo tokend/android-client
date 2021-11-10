@@ -2,14 +2,14 @@ package io.tokend.template.features.deposit.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
-import io.tokend.template.data.model.AccountRecord
-import io.tokend.template.data.repository.AccountRepository
-import io.tokend.template.logic.providers.AccountProvider
-import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.extensions.tryOrNull
+import io.tokend.template.features.account.data.model.AccountRecord
+import io.tokend.template.features.account.data.storage.AccountRepository
 import io.tokend.template.features.balances.storage.BalancesRepository
 import io.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import io.tokend.template.logic.TxManager
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import org.tokend.sdk.api.transactions.model.TransactionFailedException
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.Transaction

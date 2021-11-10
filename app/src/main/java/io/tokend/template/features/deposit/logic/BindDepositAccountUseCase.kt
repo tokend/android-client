@@ -4,10 +4,10 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
-import io.tokend.template.data.model.AccountRecord
-import io.tokend.template.data.repository.AccountRepository
-import io.tokend.template.logic.providers.WalletInfoProvider
+import io.tokend.template.features.account.data.model.AccountRecord
+import io.tokend.template.features.account.data.storage.AccountRepository
 import io.tokend.template.features.balances.storage.BalancesRepository
+import io.tokend.template.logic.providers.WalletInfoProvider
 
 /**
  * Binds deposit account to user's account. Creates balance if needed

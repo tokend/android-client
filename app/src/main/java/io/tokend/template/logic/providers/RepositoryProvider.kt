@@ -1,9 +1,9 @@
 package io.tokend.template.logic.providers
 
 import io.tokend.template.data.repository.AccountDetailsRepository
-import io.tokend.template.data.repository.AccountRepository
 import io.tokend.template.data.repository.AtomicSwapAsksRepository
 import io.tokend.template.data.repository.BlobsRepository
+import io.tokend.template.features.account.data.storage.AccountRepository
 import io.tokend.template.features.assets.storage.AssetChartRepository
 import io.tokend.template.features.assets.storage.AssetsRepository
 import io.tokend.template.features.balances.storage.BalancesRepository

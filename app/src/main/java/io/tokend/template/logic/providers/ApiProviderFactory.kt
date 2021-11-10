@@ -1,5 +1,6 @@
 package io.tokend.template.logic.providers
 
+import io.tokend.template.logic.session.Session
 import okhttp3.CookieJar
 import org.tokend.sdk.tfa.TfaCallback
 import org.tokend.wallet.Account
@@ -32,6 +33,21 @@ class ApiProviderFactory {
             urlConfigProvider,
             accountProvider,
             walletInfoProvider,
+            tfaCallback,
+            cookieJar
+        )
+    }
+
+    fun createApiProvider(
+        urlConfigProvider: UrlConfigProvider,
+        session: Session,
+        tfaCallback: TfaCallback? = null,
+        cookieJar: CookieJar? = null
+    ): ApiProvider {
+        return ApiProviderImpl(
+            urlConfigProvider,
+            session,
+            session,
             tfaCallback,
             cookieJar
         )

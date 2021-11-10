@@ -5,9 +5,7 @@ import android.content.SharedPreferences
 import androidx.collection.LruCache
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.tokend.template.BuildConfig
-import io.tokend.template.data.model.AccountRecord
 import io.tokend.template.data.repository.AccountDetailsRepository
-import io.tokend.template.data.repository.AccountRepository
 import io.tokend.template.data.repository.AtomicSwapAsksRepository
 import io.tokend.template.data.repository.BlobsRepository
 import io.tokend.template.data.storage.persistence.MemoryOnlyObjectPersistence
@@ -17,6 +15,8 @@ import io.tokend.template.data.storage.repository.MemoryOnlyRepositoryCache
 import io.tokend.template.data.storage.repository.pagination.advanced.MemoryOnlyCursorCursorPagedDataCache
 import io.tokend.template.db.AppDatabase
 import io.tokend.template.extensions.getOrPut
+import io.tokend.template.features.account.data.model.AccountRecord
+import io.tokend.template.features.account.data.storage.AccountRepository
 import io.tokend.template.features.assets.storage.AssetChartRepository
 import io.tokend.template.features.assets.storage.AssetsDbCache
 import io.tokend.template.features.assets.storage.AssetsRepository

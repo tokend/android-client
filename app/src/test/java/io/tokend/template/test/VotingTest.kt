@@ -172,8 +172,8 @@ class VotingTest {
             .getNetworkParams()
             .blockingGet()
 
-        val accountId = session.getWalletInfo()!!.accountId
-        val account = session.getDefaultAccount()!!
+        val accountId = session.getWalletInfo().accountId
+        val account = session.getDefaultAccount()
 
         val choices =
             "[{\"number\":1,\"description\":\"Yes\"},{\"number\":2,\"description\":\"No\"}]"
@@ -217,7 +217,8 @@ class VotingTest {
         val apiProvider =
             ApiProviderFactory().createApiProvider(
                 Util.getUrlConfigProvider(),
-                AccountProviderFactory().createAccountProvider()
+                AccountProviderFactory().createAccountProvider(),
+                WalletInfoProviderFactory().createWalletInfoProvider()
             )
 
         val op = ManageKeyValueOp(

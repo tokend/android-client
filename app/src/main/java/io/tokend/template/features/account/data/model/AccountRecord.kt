@@ -1,6 +1,7 @@
-package io.tokend.template.data.model
+package io.tokend.template.features.account.data.model
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.google.gson.annotations.SerializedName
 import io.tokend.template.features.assets.model.AssetRecord
 import org.tokend.sdk.api.generated.inner.ExternalSystemData
 import org.tokend.sdk.api.generated.resources.AccountResource
@@ -11,31 +12,17 @@ import java.io.Serializable
 import java.util.*
 
 class AccountRecord(
+    @SerializedName("id")
     val id: String,
-    val kycRecoveryStatus: KycRecoveryStatus,
-    val depositAccounts: MutableSet<DepositAccount>,
+    @SerializedName("role_id")
+    var roleId: Long,
+    @SerializedName("kyc_recovery_status")
+    var kycRecoveryStatus: KycRecoveryStatus,
+    @SerializedName("kyc_blob_id")
     val kycBlob: String?,
-    var roleId: Long
+    @SerializedName("deposit_accounts")
+    val depositAccounts: MutableSet<DepositAccount>
 ) : Serializable {
-    constructor(source: AccountResource) : this(
-        id = source.id,
-        kycRecoveryStatus = source
-            .kycRecoveryStatus
-            ?.name
-            ?.toUpperCase(Locale.ENGLISH)
-            ?.let(KycRecoveryStatus::valueOf)
-            ?: KycRecoveryStatus.NONE,
-        depositAccounts = source.externalSystemIds?.map(::DepositAccount)?.toHashSet()
-            ?: mutableSetOf(),
-        kycBlob = source
-            .kycData
-            ?.kycData
-            ?.get("blob_id")
-            ?.takeIf(JsonNode::isTextual)
-            ?.asText(),
-        roleId = source.role.id.toLong()
-
-    )
 
     class DepositAccount(
         val type: Int,
@@ -83,6 +70,25 @@ class AccountRecord(
             return result
         }
     }
+
+    constructor(source: AccountResource) : this(
+        id = source.id,
+        roleId = source.role.id.toLong(),
+        kycRecoveryStatus = source
+            .kycRecoveryStatus
+            ?.name
+            ?.toUpperCase(Locale.ENGLISH)
+            ?.let(KycRecoveryStatus::valueOf)
+            ?: KycRecoveryStatus.NONE,
+        kycBlob = source
+            .kycData
+            ?.kycData
+            ?.get("blob_id")
+            ?.takeIf(JsonNode::isTextual)
+            ?.asText(),
+        depositAccounts = source.externalSystemIds?.map(::DepositAccount)?.toHashSet()
+            ?: mutableSetOf()
+    )
 
     enum class KycRecoveryStatus {
         NONE,

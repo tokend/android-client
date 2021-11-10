@@ -15,10 +15,10 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.tokend.template.R
-import io.tokend.template.data.model.AccountRecord
-import io.tokend.template.data.repository.AccountRepository
 import io.tokend.template.extensions.runOnUiThread
 import io.tokend.template.extensions.withArguments
+import io.tokend.template.features.account.data.model.AccountRecord
+import io.tokend.template.features.account.data.storage.AccountRepository
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.assets.model.AssetRecord
 import io.tokend.template.features.assets.storage.AssetsRepository

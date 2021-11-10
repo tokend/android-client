@@ -3,11 +3,11 @@ package io.tokend.template.features.kyc.storage
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import io.tokend.template.data.model.AccountRecord
-import io.tokend.template.data.repository.AccountRepository
 import io.tokend.template.data.repository.BlobsRepository
 import io.tokend.template.data.storage.persistence.ObjectPersistence
 import io.tokend.template.data.storage.repository.SingleItemRepository
+import io.tokend.template.features.account.data.model.AccountRecord
+import io.tokend.template.features.account.data.storage.AccountRepository
 import io.tokend.template.features.keyvalue.storage.KeyValueEntriesRepository
 import io.tokend.template.features.kyc.model.ActiveKyc
 import io.tokend.template.features.kyc.model.KycForm

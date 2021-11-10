@@ -1,9 +1,9 @@
-package io.tokend.template.data.repository
+package io.tokend.template.features.account.data.storage
 
 import io.reactivex.Single
-import io.tokend.template.data.model.AccountRecord
 import io.tokend.template.data.storage.persistence.ObjectPersistence
 import io.tokend.template.data.storage.repository.SingleItemRepository
+import io.tokend.template.features.account.data.model.AccountRecord
 import io.tokend.template.logic.providers.ApiProvider
 import io.tokend.template.logic.providers.WalletInfoProvider
 import org.tokend.rx.extensions.toSingle
@@ -26,13 +26,28 @@ class AccountRepository(
                 accountId,
                 AccountParamsV3(
                     include = listOf(
-                        AccountParamsV3.Includes.EXTERNAL_SYSTEM_IDS,
                         AccountParamsV3.Includes.KYC_DATA
                     )
                 )
             )
             .toSingle()
             .map(::AccountRecord)
+    }
+
+    fun updateKycRecoveryStatus(newStatus: AccountRecord.KycRecoveryStatus) {
+        item?.also { account ->
+            account.kycRecoveryStatus = newStatus
+            storeItem(account)
+            broadcast()
+        }
+    }
+
+    fun updateRole(newRoleId: Long) {
+        item?.also { account ->
+            account.roleId = newRoleId
+            storeItem(account)
+            broadcast()
+        }
     }
 
     /**
@@ -47,13 +62,5 @@ class AccountRepository(
 
         storeItem(account)
         onNewItem(account)
-    }
-
-    fun updateRole(newRoleId: Long) {
-        item?.also { account ->
-            account.roleId = newRoleId
-            storeItem(account)
-            broadcast()
-        }
     }
 }

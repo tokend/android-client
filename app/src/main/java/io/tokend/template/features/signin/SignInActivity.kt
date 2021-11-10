@@ -12,8 +12,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.tokend.template.BuildConfig
 import io.tokend.template.R
 import io.tokend.template.activities.BaseActivity
-import io.tokend.template.data.model.AccountRecord
 import io.tokend.template.extensions.*
+import io.tokend.template.features.account.data.model.AccountRecord
 import io.tokend.template.features.signin.logic.ResendVerificationEmailUseCase
 import io.tokend.template.features.signin.logic.SignInMethod
 import io.tokend.template.features.signin.logic.SignInUseCase

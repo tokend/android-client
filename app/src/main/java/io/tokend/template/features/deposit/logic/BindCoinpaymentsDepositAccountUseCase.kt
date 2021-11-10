@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
-import io.tokend.template.data.model.AccountRecord
-import io.tokend.template.data.repository.AccountRepository
+import io.tokend.template.features.account.data.model.AccountRecord
+import io.tokend.template.features.account.data.storage.AccountRepository
 import io.tokend.template.logic.providers.AccountProvider
 import io.tokend.template.logic.providers.ApiProvider
 import io.tokend.template.logic.providers.WalletInfoProvider
