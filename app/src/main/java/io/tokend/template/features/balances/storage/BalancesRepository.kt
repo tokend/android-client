@@ -7,10 +7,10 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import io.tokend.template.data.storage.repository.MultipleItemsRepository
 import io.tokend.template.data.storage.repository.RepositoryCache
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.UrlConfigProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.UrlConfigProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.extensions.mapSuccessful
 import io.tokend.template.extensions.tryOrNull
 import io.tokend.template.features.assets.model.Asset
@@ -45,9 +45,7 @@ class BalancesRepository(
 
     override fun getItems(): Single<List<BalanceRecord>> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
 
         return if (conversionAssetCode != null)
             getConvertedBalances(
@@ -148,10 +146,8 @@ class BalancesRepository(
         txManager: TxManager,
         vararg assets: String
     ): Completable {
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Completable.error(IllegalStateException("No wallet info found"))
-        val account = accountProvider.getAccount()
-            ?: return Completable.error(IllegalStateException("Cannot obtain current account"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
+        val account = accountProvider.getDefaultAccount()
 
         return systemInfoRepository.getNetworkParams()
             .flatMap { netParams ->

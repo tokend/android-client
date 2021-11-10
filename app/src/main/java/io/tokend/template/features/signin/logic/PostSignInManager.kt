@@ -2,7 +2,7 @@ package io.tokend.template.features.signin.logic
 
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.subscribeBy
-import io.tokend.template.di.providers.RepositoryProvider
+import io.tokend.template.logic.providers.RepositoryProvider
 import org.tokend.sdk.utils.extentions.isUnauthorized
 import retrofit2.HttpException
 

@@ -3,7 +3,7 @@ package io.tokend.template.features.systeminfo.storage
 import io.reactivex.Single
 import io.tokend.template.data.storage.persistence.ObjectPersistence
 import io.tokend.template.data.storage.repository.SingleItemRepository
-import io.tokend.template.di.providers.ApiProvider
+import io.tokend.template.logic.providers.ApiProvider
 import io.tokend.template.features.systeminfo.model.SystemInfoRecord
 import org.tokend.rx.extensions.toSingle
 import org.tokend.wallet.NetworkParams

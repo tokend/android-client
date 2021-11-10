@@ -5,8 +5,8 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.tokend.template.data.storage.repository.MultipleItemsRepository
 import io.tokend.template.data.storage.repository.RepositoryCache
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.UrlConfigProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.UrlConfigProvider
 import io.tokend.template.features.trade.pairs.logic.AmountConverter
 import io.tokend.template.features.trade.pairs.model.AssetPairRecord
 import org.tokend.rx.extensions.toSingle

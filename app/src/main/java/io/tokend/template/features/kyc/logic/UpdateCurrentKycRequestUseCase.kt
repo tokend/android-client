@@ -4,10 +4,10 @@ import android.content.ContentResolver
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.RepositoryProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.RepositoryProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.kyc.files.model.LocalFile
 import io.tokend.template.features.kyc.model.KycForm
 import io.tokend.template.features.kyc.model.KycRequestState

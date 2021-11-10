@@ -1,4 +1,4 @@
-package io.tokend.template.di.providers
+package io.tokend.template.di
 
 import android.content.Context
 import dagger.Module

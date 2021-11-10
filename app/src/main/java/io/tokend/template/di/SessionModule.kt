@@ -1,4 +1,4 @@
-package io.tokend.template.di.providers
+package io.tokend.template.di
 
 import dagger.Module
 import dagger.Provides

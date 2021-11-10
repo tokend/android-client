@@ -3,7 +3,6 @@ package io.tokend.template.test
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.toMaybe
 import io.tokend.template.data.storage.persistence.MemoryOnlyObjectPersistence
-import io.tokend.template.di.providers.*
 import io.tokend.template.features.localaccount.model.LocalAccount
 import io.tokend.template.features.signin.logic.PostSignInManager
 import io.tokend.template.features.signin.logic.SignInUseCase
@@ -13,6 +12,7 @@ import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.credentials.model.WalletInfoRecord
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import io.tokend.template.logic.credentials.persistence.WalletInfoPersistence
+import io.tokend.template.logic.providers.*
 import io.tokend.template.util.cipher.Aes256GcmDataCipher
 import org.junit.Assert
 import org.junit.FixMethodOrder
@@ -68,7 +68,7 @@ class SignInTest {
         )
         Assert.assertArrayEquals(
             "AccountProvider must hold an actual account",
-            rootAccount.secretSeed, session.getAccount()?.secretSeed
+            rootAccount.secretSeed, session.getDefaultAccount()?.secretSeed
         )
         Assert.assertNotEquals(
             "WalletInfo must be saved for the actual email",
@@ -155,7 +155,7 @@ class SignInTest {
         )
         Assert.assertArrayEquals(
             "AccountProvider must hold an actual account",
-            account.secretSeed, session.getAccount()?.secretSeed
+            account.secretSeed, session.getDefaultAccount()?.secretSeed
         )
         Assert.assertFalse(
             "Credentials persistor must be cleaned",

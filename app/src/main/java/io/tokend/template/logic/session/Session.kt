@@ -1,7 +1,7 @@
 package io.tokend.template.logic.session
 
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.localaccount.model.LocalAccount
 import io.tokend.template.features.signin.logic.SignInMethod
 
@@ -14,7 +14,7 @@ class Session(
     private val sessionInfoStorage: SessionInfoStorage? = null
 ) : WalletInfoProvider by walletInfoProvider, AccountProvider by accountProvider {
     val login: String
-        get() = getWalletInfo()?.login ?: ""
+        get() = getWalletInfo().login
 
     /**
      * @returns true if session is expired and so sign out is required

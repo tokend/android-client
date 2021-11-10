@@ -4,7 +4,7 @@ import io.reactivex.Single
 import io.tokend.template.data.repository.AccountDetailsRepository
 import io.tokend.template.data.storage.repository.pagination.advanced.AdvancedCursorPagedDataRepository
 import io.tokend.template.data.storage.repository.pagination.advanced.CursorPagedDataCache
-import io.tokend.template.di.providers.ApiProvider
+import io.tokend.template.logic.providers.ApiProvider
 import io.tokend.template.features.history.logic.ParticipantEffectConverter
 import io.tokend.template.features.history.model.BalanceChange
 import io.tokend.template.features.history.model.BalanceChangeAction
@@ -49,7 +49,6 @@ class BalanceChangesRepository(
         requiredOrder: PagingOrder,
     ): Single<DataPage<BalanceChange>> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         return signedApi
             .v3

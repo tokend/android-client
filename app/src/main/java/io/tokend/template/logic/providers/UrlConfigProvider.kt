@@ -1,4 +1,4 @@
-package io.tokend.template.di.providers
+package io.tokend.template.logic.providers
 
 import io.tokend.template.features.urlconfig.model.UrlConfig
 

@@ -1,9 +1,9 @@
 package io.tokend.template.test
 
-import io.tokend.template.di.providers.AccountProviderFactory
-import io.tokend.template.di.providers.ApiProviderFactory
-import io.tokend.template.di.providers.RepositoryProviderImpl
-import io.tokend.template.di.providers.WalletInfoProviderFactory
+import io.tokend.template.logic.providers.AccountProviderFactory
+import io.tokend.template.logic.providers.ApiProviderFactory
+import io.tokend.template.logic.providers.RepositoryProviderImpl
+import io.tokend.template.logic.providers.WalletInfoProviderFactory
 import io.tokend.template.features.fees.logic.FeeManager
 import io.tokend.template.features.history.model.details.BalanceChangeCause
 import io.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase

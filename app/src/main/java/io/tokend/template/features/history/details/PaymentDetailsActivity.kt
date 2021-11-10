@@ -26,12 +26,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
             return
         }
 
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-
-        if (accountId == null) {
-            finishWithError(IllegalStateException("No wallet info found"))
-            return
-        }
+        val accountId = walletInfoProvider.getWalletInfo().accountId
 
         initCounterpartyClick(details, accountId)
 

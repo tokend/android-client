@@ -6,9 +6,9 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
 import io.tokend.template.data.model.AccountRecord
 import io.tokend.template.data.repository.AccountRepository
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.balances.storage.BalancesRepository
 import io.tokend.template.features.systeminfo.storage.SystemInfoRepository
@@ -91,7 +91,6 @@ class BindCoinpaymentsDepositAccountUseCase(
 
     private fun getDepositAccountFromCoinpayments(): Single<AccountRecord.DepositAccount> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         return signedApi
             .customRequests

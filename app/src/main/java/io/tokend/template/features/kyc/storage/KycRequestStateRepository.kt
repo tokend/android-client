@@ -5,8 +5,8 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.tokend.template.data.repository.BlobsRepository
 import io.tokend.template.data.storage.repository.SingleItemRepository
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.keyvalue.storage.KeyValueEntriesRepository
 import io.tokend.template.features.kyc.model.KycForm
 import io.tokend.template.features.kyc.model.KycRequestState
@@ -41,9 +41,7 @@ class KycRequestStateRepository(
 
     override fun getItem(): Single<KycRequestState> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
 
         var requestId: Long = 0
 

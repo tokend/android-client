@@ -129,8 +129,7 @@ class AccountMovementsFragment : BaseFragment() {
 
     private fun displayHistory() {
         val localizedName = LocalizedName(requireContext())
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return
+        val accountId = walletInfoProvider.getWalletInfo().accountId
 
         adapter.setData(balanceChangesRepository.itemsList.map { balanceChange ->
             BalanceChangeListItem(balanceChange, accountId, localizedName)

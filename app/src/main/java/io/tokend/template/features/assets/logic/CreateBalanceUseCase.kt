@@ -2,7 +2,7 @@ package io.tokend.template.features.assets.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.tokend.template.di.providers.AccountProvider
+import io.tokend.template.logic.providers.AccountProvider
 import io.tokend.template.features.balances.storage.BalancesRepository
 import io.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import io.tokend.template.logic.TxManager

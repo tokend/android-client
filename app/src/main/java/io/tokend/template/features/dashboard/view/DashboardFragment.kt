@@ -112,7 +112,6 @@ class DashboardFragment : BaseFragment(), ToolbarProvider {
 
     private fun openReceive() {
         val walletInfo = walletInfoProvider.getWalletInfo()
-            ?: return
         Navigator.from(this).openAccountQrShare(walletInfo)
     }
     // endregion

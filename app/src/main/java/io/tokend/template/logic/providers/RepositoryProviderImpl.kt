@@ -1,4 +1,4 @@
-package io.tokend.template.di.providers
+package io.tokend.template.logic.providers
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -226,7 +226,7 @@ class RepositoryProviderImpl(
 
             BalanceChangesRepository(
                 balanceId,
-                walletInfoProvider.getWalletInfo()?.accountId,
+                walletInfoProvider.getWalletInfo().accountId,
                 apiProvider,
                 DefaultParticipantEffectConverter(),
                 accountDetails,

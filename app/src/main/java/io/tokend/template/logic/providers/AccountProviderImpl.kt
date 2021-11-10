@@ -1,12 +1,13 @@
-package io.tokend.template.di.providers
+package io.tokend.template.logic.providers
 
 import org.tokend.wallet.Account
 
 class AccountProviderImpl : AccountProvider {
     private var accounts: List<Account> = emptyList()
 
-    override fun getAccount(): Account? {
+    override fun getDefaultAccount(): Account {
         return accounts.firstOrNull()
+            ?: throw NoSuchElementException("The list of accounts is empty")
     }
 
     override fun getAccount(accountId: String): Account? {

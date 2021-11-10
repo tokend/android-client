@@ -161,7 +161,6 @@ class BalanceDetailsActivity : BaseActivity() {
                     R.drawable.ic_receive_fab,
                     {
                         val walletInfo = walletInfoProvider.getWalletInfo()
-                            ?: return@FloatingActionMenuAction
                         navigator.openAccountQrShare(walletInfo)
                     },
                     isEnabled = asset?.isTransferable == true
@@ -349,8 +348,7 @@ class BalanceDetailsActivity : BaseActivity() {
 
     private fun displayHistory() {
         val localizedName = LocalizedName(this)
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return
+        val accountId = walletInfoProvider.getWalletInfo().accountId
 
         adapter.setData(balanceChangesRepository.itemsList.map { balanceChange ->
             BalanceChangeListItem(balanceChange, accountId, localizedName)

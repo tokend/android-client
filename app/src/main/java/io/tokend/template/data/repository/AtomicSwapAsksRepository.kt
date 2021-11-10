@@ -4,7 +4,7 @@ import io.reactivex.Single
 import io.tokend.template.data.model.AtomicSwapAskRecord
 import io.tokend.template.data.storage.repository.MultipleItemsRepository
 import io.tokend.template.data.storage.repository.RepositoryCache
-import io.tokend.template.di.providers.ApiProvider
+import io.tokend.template.logic.providers.ApiProvider
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
@@ -20,7 +20,6 @@ class AtomicSwapAsksRepository(
 
     override fun getItems(): Single<List<AtomicSwapAskRecord>> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         val loader = SimplePagedResourceLoader({ nextCursor ->
             signedApi.v3.atomicSwaps.getAtomicSwapAsks(

@@ -58,7 +58,7 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
     }
 
     private fun initInvestButton() {
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
+        val accountId = walletInfoProvider.getWalletInfo().accountId
 
         val canInvest = sale.isAvailable
                 && sale.ownerAccountId != accountId

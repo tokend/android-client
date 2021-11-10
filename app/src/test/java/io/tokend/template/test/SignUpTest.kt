@@ -1,8 +1,8 @@
 package io.tokend.template.test
 
-import io.tokend.template.di.providers.ApiProviderFactory
-import io.tokend.template.di.providers.RepositoryProviderImpl
-import io.tokend.template.di.providers.WalletInfoProviderImpl
+import io.tokend.template.logic.providers.ApiProviderFactory
+import io.tokend.template.logic.providers.RepositoryProviderImpl
+import io.tokend.template.logic.providers.WalletInfoProviderImpl
 import io.tokend.template.features.signup.logic.SignUpUseCase
 import org.junit.Assert
 import org.junit.Test

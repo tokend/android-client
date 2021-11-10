@@ -6,10 +6,10 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.RepositoryProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.RepositoryProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import io.tokend.template.features.kyc.files.model.LocalFile
 import io.tokend.template.features.kyc.model.ActiveKyc
@@ -144,9 +144,7 @@ class SubmitKycRequestUseCase(
 
     private fun uploadFile(type: DocumentType, local: LocalFile): Single<RemoteFile> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
         val contentResolver = this.contentResolver
             ?: return Single.error(IllegalStateException("Content resolver is required to upload files"))
 
@@ -200,10 +198,8 @@ class SubmitKycRequestUseCase(
     }
 
     private fun getTransaction(): Single<Transaction> {
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
-        val account = accountProvider.getAccount()
-            ?: return Single.error(IllegalStateException("Cannot obtain current account"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
+        val account = accountProvider.getDefaultAccount()
 
         return Single.defer {
             val operation = CreateChangeRoleRequestOp(

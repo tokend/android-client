@@ -7,9 +7,9 @@ import dagger.Module
 import dagger.Provides
 import io.tokend.template.data.storage.persistence.ObjectPersistence
 import io.tokend.template.db.AppDatabase
-import io.tokend.template.di.providers.*
 import io.tokend.template.features.kyc.storage.ActiveKycPersistence
 import io.tokend.template.features.localaccount.model.LocalAccount
+import io.tokend.template.logic.providers.*
 import javax.inject.Singleton
 
 @Module

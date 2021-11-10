@@ -7,10 +7,10 @@ import androidx.fragment.app.Fragment
 import io.reactivex.disposables.CompositeDisposable
 import io.tokend.template.App
 import io.tokend.template.activities.OnBackPressedListener
-import io.tokend.template.di.providers.*
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.balances.model.BalanceRecord
 import io.tokend.template.features.tfa.logic.AppTfaCallback
+import io.tokend.template.logic.providers.*
 import io.tokend.template.util.errorhandler.ErrorHandlerFactory
 import io.tokend.template.util.navigation.ActivityRequest
 import io.tokend.template.view.ToastManager

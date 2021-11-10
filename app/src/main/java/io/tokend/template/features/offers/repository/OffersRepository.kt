@@ -6,9 +6,9 @@ import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
 import io.tokend.template.data.storage.repository.pagination.SimplePagedDataRepository
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.offers.model.OfferRecord
 import io.tokend.template.features.offers.model.OfferRequest
 import io.tokend.template.features.systeminfo.storage.SystemInfoRepository
@@ -39,9 +39,7 @@ class OffersRepository(
         order: PagingOrder,
     ): Single<DataPage<OfferRecord>> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
 
         val requestParams = OffersPageParamsV3(
             ownerAccount = accountId,
@@ -83,9 +81,7 @@ class OffersRepository(
 
     fun getForSale(saleId: Long): Single<List<OfferRecord>> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
 
         val loader = SimplePagedResourceLoader({ nextCursor ->
             signedApi.v3.offers.get(
@@ -122,10 +118,8 @@ class OffersRepository(
         offerRequest: OfferRequest,
         offerToCancel: OfferRecord? = null,
     ): Single<SubmitTransactionResponse> {
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
-        val account = accountProvider.getAccount()
-            ?: return Single.error(IllegalStateException("Cannot obtain current account"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
+        val account = accountProvider.getDefaultAccount()
 
         return systemInfoRepository.getNetworkParams()
             .flatMap { netParams ->
@@ -217,10 +211,8 @@ class OffersRepository(
         txManager: TxManager,
         offer: OfferRecord,
     ): Single<SubmitTransactionResponse> {
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
-        val account = accountProvider.getAccount()
-            ?: return Single.error(IllegalStateException("Cannot obtain current account"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
+        val account = accountProvider.getDefaultAccount()
 
         return systemInfoRepository.getNetworkParams()
             .flatMap { netParams ->

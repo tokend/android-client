@@ -2,8 +2,8 @@ package io.tokend.template.features.offers.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.RepositoryProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.RepositoryProvider
 import io.tokend.template.features.balances.storage.BalancesRepository
 import io.tokend.template.features.offers.model.OfferRequest
 import io.tokend.template.features.offers.repository.OffersRepository

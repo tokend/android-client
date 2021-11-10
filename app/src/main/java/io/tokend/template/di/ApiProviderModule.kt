@@ -2,11 +2,8 @@ package io.tokend.template.di
 
 import dagger.Module
 import dagger.Provides
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.ApiProviderFactory
-import io.tokend.template.di.providers.UrlConfigProvider
 import io.tokend.template.features.tfa.logic.AppTfaCallback
+import io.tokend.template.logic.providers.*
 import okhttp3.CookieJar
 import javax.inject.Singleton
 
@@ -19,9 +16,16 @@ class ApiProviderModule(
     fun apiProvider(
         urlConfigProvider: UrlConfigProvider,
         accountProvider: AccountProvider,
+        walletInfoProvider: WalletInfoProvider,
         tfaCallback: AppTfaCallback
     ): ApiProvider {
         return ApiProviderFactory()
-            .createApiProvider(urlConfigProvider, accountProvider, tfaCallback, cookieJar)
+            .createApiProvider(
+                urlConfigProvider,
+                accountProvider,
+                walletInfoProvider,
+                tfaCallback,
+                cookieJar
+            )
     }
 }

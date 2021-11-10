@@ -3,10 +3,10 @@ package io.tokend.template.features.changepassword
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.RepositoryProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.RepositoryProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.credentials.model.WalletInfoRecord
@@ -94,7 +94,7 @@ class ChangePasswordUseCase(
     }
 
     private fun getCurrentAccount(): Single<Account> {
-        return accountProvider.getAccount()
+        return accountProvider.getDefaultAccount()
             .toMaybe()
             .switchIfEmpty(Single.error(IllegalStateException("No account found")))
     }
@@ -132,7 +132,6 @@ class ChangePasswordUseCase(
 
     private fun updateWallet(): Single<WalletInfoRecord> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         return KeyServer(signedApi.wallets)
             .updateWalletPassword(

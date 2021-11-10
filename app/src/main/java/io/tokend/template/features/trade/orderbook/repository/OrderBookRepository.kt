@@ -2,7 +2,7 @@ package io.tokend.template.features.trade.orderbook.repository
 
 import io.reactivex.Single
 import io.tokend.template.data.storage.repository.SingleItemRepository
-import io.tokend.template.di.providers.ApiProvider
+import io.tokend.template.logic.providers.ApiProvider
 import io.tokend.template.features.trade.orderbook.model.OrderBook
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.v3.orderbook.params.OrderBookParamsV3

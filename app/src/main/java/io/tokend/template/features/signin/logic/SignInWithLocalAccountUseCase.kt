@@ -5,8 +5,8 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.RepositoryProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.RepositoryProvider
 import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import io.tokend.template.features.localaccount.logic.LocalAccountRetryDecryptor
 import io.tokend.template.features.localaccount.model.LocalAccount

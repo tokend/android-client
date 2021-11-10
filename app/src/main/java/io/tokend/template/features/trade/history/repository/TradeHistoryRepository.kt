@@ -2,7 +2,7 @@ package io.tokend.template.features.trade.history.repository
 
 import io.reactivex.Single
 import io.tokend.template.data.storage.repository.pagination.SimplePagedDataRepository
-import io.tokend.template.di.providers.ApiProvider
+import io.tokend.template.logic.providers.ApiProvider
 import io.tokend.template.extensions.forEachReversedByIndex
 import io.tokend.template.features.trade.history.model.TradeHistoryRecord
 import org.tokend.rx.extensions.toSingle
@@ -26,7 +26,6 @@ class TradeHistoryRepository(
         order: PagingOrder,
     ): Single<DataPage<TradeHistoryRecord>> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         val requestParams = MatchesPageParams(
             baseAsset = baseAsset,

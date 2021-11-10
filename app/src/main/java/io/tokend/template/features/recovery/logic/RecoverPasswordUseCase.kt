@@ -2,7 +2,7 @@ package io.tokend.template.features.recovery.logic
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.tokend.template.di.providers.ApiProvider
+import io.tokend.template.logic.providers.ApiProvider
 import org.tokend.rx.extensions.randomSingle
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.keyserver.KeyServer

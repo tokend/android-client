@@ -305,7 +305,7 @@ class PaymentRecipientFragment : BaseFragment() {
     }
 
     private fun onRecipientLoaded(recipient: PaymentRecipient) {
-        val currentAccountId = walletInfoProvider.getWalletInfo()?.accountId
+        val currentAccountId = walletInfoProvider.getWalletInfo().accountId
 
         if (currentAccountId == recipient.accountId) {
             recipient_edit_text.error = getString(R.string.error_cannot_send_to_yourself)

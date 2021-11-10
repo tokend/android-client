@@ -1,10 +1,10 @@
 package io.tokend.template.test
 
-import io.tokend.template.di.providers.*
 import io.tokend.template.features.polls.logic.AddVoteUseCase
 import io.tokend.template.features.polls.logic.RemoveVoteUseCase
 import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
+import io.tokend.template.logic.providers.*
 import org.junit.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -173,7 +173,7 @@ class VotingTest {
             .blockingGet()
 
         val accountId = session.getWalletInfo()!!.accountId
-        val account = session.getAccount()!!
+        val account = session.getDefaultAccount()!!
 
         val choices =
             "[{\"number\":1,\"description\":\"Yes\"},{\"number\":2,\"description\":\"No\"}]"

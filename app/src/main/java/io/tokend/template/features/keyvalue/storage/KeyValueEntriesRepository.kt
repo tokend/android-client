@@ -3,7 +3,7 @@ package io.tokend.template.features.keyvalue.storage
 import io.reactivex.Single
 import io.tokend.template.data.storage.repository.MultipleItemsRepository
 import io.tokend.template.data.storage.repository.RepositoryCache
-import io.tokend.template.di.providers.ApiProvider
+import io.tokend.template.logic.providers.ApiProvider
 import io.tokend.template.extensions.mapSuccessful
 import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import org.tokend.rx.extensions.toSingle

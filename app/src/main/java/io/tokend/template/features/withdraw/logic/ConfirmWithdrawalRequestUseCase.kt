@@ -3,8 +3,8 @@ package io.tokend.template.features.withdraw.logic
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.RepositoryProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.RepositoryProvider
 import io.tokend.template.features.withdraw.model.WithdrawalRequest
 import io.tokend.template.logic.TxManager
 import org.tokend.wallet.NetworkParams
@@ -76,10 +76,7 @@ class ConfirmWithdrawalRequestUseCase(
                     .addOperation(Operation.OperationBody.CreateWithdrawalRequest(operation))
                     .build()
 
-            val account = accountProvider.getAccount()
-                ?: return@defer Single.error<Transaction>(
-                    IllegalStateException("Cannot obtain current account")
-                )
+            val account = accountProvider.getDefaultAccount()
 
             transaction.addSignature(account)
 

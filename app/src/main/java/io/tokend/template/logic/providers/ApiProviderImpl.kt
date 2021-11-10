@@ -1,4 +1,4 @@
-package io.tokend.template.di.providers
+package io.tokend.template.logic.providers
 
 import io.tokend.template.BuildConfig
 import okhttp3.CookieJar
@@ -11,6 +11,7 @@ import org.tokend.sdk.utils.CookieJarProvider
 class ApiProviderImpl(
     private val urlConfigProvider: UrlConfigProvider,
     private val accountProvider: AccountProvider,
+    private val walletInfoProvider: WalletInfoProvider,
     private val tfaCallback: TfaCallback?,
     cookieJar: CookieJar?
 ) : ApiProvider {
@@ -56,8 +57,9 @@ class ApiProviderImpl(
         return KeyServer(getApi().wallets)
     }
 
-    override fun getSignedApi(): TokenDApi? = synchronized(this) {
-        val account = accountProvider.getAccount() ?: return null
+    override fun getSignedApi(): TokenDApi = synchronized(this) {
+        val account = accountProvider.getDefaultAccount()
+        val originalAccountId = walletInfoProvider.getWalletInfo().accountId
         val hash = arrayOf(account.accountId, url).contentHashCode()
 
         val signedApi =
@@ -68,7 +70,7 @@ class ApiProviderImpl(
                 ?.second
                 ?: TokenDApi(
                     url,
-                    AccountRequestSigner(account),
+                    AccountRequestSigner(account, originalAccountId),
                     tfaCallback,
                     cookieJarProvider,
                     withLogs = withLogs
@@ -79,7 +81,7 @@ class ApiProviderImpl(
         return signedApi
     }
 
-    override fun getSignedKeyServer(): KeyServer? {
-        return getSignedApi()?.let { KeyServer(it.wallets) }
+    override fun getSignedKeyServer(): KeyServer {
+        return KeyServer(getSignedApi().wallets)
     }
 }

@@ -3,9 +3,9 @@ package io.tokend.template.features.polls.logic
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.RepositoryProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.RepositoryProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.logic.TxManager
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.Transaction
@@ -65,15 +65,9 @@ class RemoveVoteUseCase(
                 ext = ManageVoteOp.ManageVoteOpExt.EmptyVersion()
             )
 
-            val account = accountProvider.getAccount()
-                ?: return@defer Single.error<Transaction>(
-                    IllegalStateException("Cannot obtain current account")
-                )
+            val account = accountProvider.getDefaultAccount()
 
-            val sourceAccountId = walletInfoProvider.getWalletInfo()?.accountId
-                ?: return@defer Single.error<Transaction>(
-                    IllegalStateException("No wallet info found")
-                )
+            val sourceAccountId = walletInfoProvider.getWalletInfo().accountId
 
             val transaction =
                 TransactionBuilder(networkParams, sourceAccountId)

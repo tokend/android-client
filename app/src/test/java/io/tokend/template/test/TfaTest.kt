@@ -2,10 +2,10 @@ package io.tokend.template.test
 
 import com.marcelkliemannel.kotlinonetimepassword.GoogleAuthenticator
 import io.reactivex.Completable
-import io.tokend.template.di.providers.AccountProviderFactory
-import io.tokend.template.di.providers.ApiProviderFactory
-import io.tokend.template.di.providers.RepositoryProviderImpl
-import io.tokend.template.di.providers.WalletInfoProviderFactory
+import io.tokend.template.logic.providers.AccountProviderFactory
+import io.tokend.template.logic.providers.ApiProviderFactory
+import io.tokend.template.logic.providers.RepositoryProviderImpl
+import io.tokend.template.logic.providers.WalletInfoProviderFactory
 import io.tokend.template.features.tfa.logic.DisableTfaUseCase
 import io.tokend.template.features.tfa.logic.EnableTfaUseCase
 import io.tokend.template.features.tfa.model.TfaFactorCreationResult

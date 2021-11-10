@@ -6,7 +6,7 @@ import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.tokend.template.data.model.AccountRecord
 import io.tokend.template.data.repository.AccountRepository
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.balances.storage.BalancesRepository
 
 /**
@@ -64,7 +64,7 @@ abstract class BindDepositAccountUseCase(
     private fun getAccountId(): Single<String> {
         return walletInfoProvider
             .getWalletInfo()
-            ?.accountId
+            .accountId
             .toMaybe()
             .switchIfEmpty(Single.error(IllegalStateException("Missing account ID")))
     }

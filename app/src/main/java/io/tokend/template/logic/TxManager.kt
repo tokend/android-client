@@ -3,7 +3,7 @@ package io.tokend.template.logic
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import io.tokend.template.di.providers.ApiProvider
+import io.tokend.template.logic.providers.ApiProvider
 import io.tokend.template.util.confirmation.ConfirmationProvider
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.transactions.model.SubmitTransactionResponse

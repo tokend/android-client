@@ -6,10 +6,10 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.tokend.template.data.model.AtomicSwapAskRecord
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.RepositoryProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.RepositoryProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.assets.buy.model.AtomicSwapInvoice
 import io.tokend.template.logic.TxManager
 import org.tokend.rx.extensions.toSingle
@@ -88,7 +88,7 @@ class CreateAtomicSwapBidUseCase(
     private fun getAccountId(): Single<String> {
         return walletInfoProvider
             .getWalletInfo()
-            ?.accountId
+            .accountId
             .toMaybe()
             .switchIfEmpty(Single.error(IllegalStateException("Missing account ID")))
     }
@@ -111,8 +111,7 @@ class CreateAtomicSwapBidUseCase(
             ext = CreateAtomicSwapBidRequestOp.CreateAtomicSwapBidRequestOpExt.EmptyVersion()
         )
 
-        val account = accountProvider.getAccount()
-            ?: return Single.error(IllegalStateException("Cannot obtain current account"))
+        val account = accountProvider.getDefaultAccount()
 
         return TxManager.createSignedTransaction(
             networkParams, accountId, account,
@@ -144,7 +143,6 @@ class CreateAtomicSwapBidUseCase(
 
     private fun getInvoiceFromRequest(): Single<AtomicSwapInvoice> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         class NoRequestYetException : Exception()
         class NoInvoiceYetException : Exception()

@@ -2,7 +2,7 @@ package io.tokend.template.features.offers.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.fees.logic.FeeManager
 import io.tokend.template.features.history.model.SimpleFeeRecord
@@ -47,7 +47,7 @@ class CreateOfferRequestUseCase(
     private fun getAccountId(): Single<String> {
         return walletInfoProvider
             .getWalletInfo()
-            ?.accountId
+            .accountId
             .toMaybe()
             .switchIfEmpty(
                 Single.error(

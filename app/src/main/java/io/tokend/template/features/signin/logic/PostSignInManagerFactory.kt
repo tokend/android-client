@@ -1,6 +1,6 @@
 package io.tokend.template.features.signin.logic
 
-import io.tokend.template.di.providers.RepositoryProvider
+import io.tokend.template.logic.providers.RepositoryProvider
 import io.tokend.template.util.ConnectionStateUtil
 
 class PostSignInManagerFactory(

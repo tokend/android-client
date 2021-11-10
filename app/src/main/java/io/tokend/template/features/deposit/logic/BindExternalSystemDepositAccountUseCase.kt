@@ -4,8 +4,8 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
 import io.tokend.template.data.model.AccountRecord
 import io.tokend.template.data.repository.AccountRepository
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.extensions.tryOrNull
 import io.tokend.template.features.balances.storage.BalancesRepository
 import io.tokend.template.features.systeminfo.storage.SystemInfoRepository
@@ -75,8 +75,7 @@ class BindExternalSystemDepositAccountUseCase(
         val bindOp = BindExternalAccountOp(externalSystemType)
         operations.add(Operation.OperationBody.BindExternalSystemAccountId(bindOp))
 
-        val account = accountProvider.getAccount()
-            ?: throw IllegalStateException("Cannot obtain current account")
+        val account = accountProvider.getDefaultAccount()
 
         return TxManager.createSignedTransaction(
             networkParams, accountId, account,

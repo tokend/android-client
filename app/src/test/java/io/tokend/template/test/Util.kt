@@ -1,6 +1,5 @@
 package io.tokend.template.test
 
-import io.tokend.template.di.providers.*
 import io.tokend.template.features.assets.logic.CreateBalanceUseCase
 import io.tokend.template.features.signin.logic.PostSignInManager
 import io.tokend.template.features.signin.logic.SignInUseCase
@@ -8,6 +7,7 @@ import io.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import io.tokend.template.features.urlconfig.model.UrlConfig
 import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
+import io.tokend.template.logic.providers.*
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.v3.assets.params.AssetsPageParams

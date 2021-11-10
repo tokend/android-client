@@ -1,9 +1,9 @@
-package io.tokend.template.di.providers
+package io.tokend.template.logic.providers
 
 import org.tokend.wallet.Account
 
 interface AccountProvider {
-    fun getAccount(): Account?
+    fun getDefaultAccount(): Account
 
     fun getAccount(accountId: String): Account?
 

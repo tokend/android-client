@@ -2,7 +2,7 @@ package io.tokend.template.features.send.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.balances.model.BalanceRecord
 import io.tokend.template.features.send.model.PaymentFee
 import io.tokend.template.features.send.model.PaymentRecipient
@@ -43,7 +43,7 @@ class CreatePaymentRequestUseCase(
     private fun getSenderAccount(): Single<String> {
         return walletInfoProvider
             .getWalletInfo()
-            ?.accountId
+            .accountId
             .toMaybe()
             .switchIfEmpty(Single.error(IllegalStateException("Missing account ID")))
     }

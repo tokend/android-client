@@ -3,9 +3,9 @@ package io.tokend.template.features.invest.repository
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.reactivex.Single
 import io.tokend.template.data.storage.repository.pagination.SimplePagedDataRepository
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.UrlConfigProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.UrlConfigProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.extensions.tryOrNull
 import io.tokend.template.features.invest.model.SaleRecord
 import org.tokend.rx.extensions.toSingle
@@ -32,11 +32,9 @@ class SalesRepository(
         page: String?,
         order: PagingOrder,
     ): Single<DataPage<SaleRecord>> {
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
 
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         val requestParams = SalesPageParamsV3(
             pagingParams = PagingParamsV2(
@@ -68,11 +66,9 @@ class SalesRepository(
     }
 
     fun getSingle(id: Long): Single<SaleRecord> {
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
 
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         val params = SaleParamsV3(
             include = listOf(

@@ -2,7 +2,7 @@ package io.tokend.template.features.send.amount.logic
 
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.fees.logic.FeeManager
 import io.tokend.template.features.history.model.SimpleFeeRecord
 import io.tokend.template.features.send.model.PaymentFee
@@ -24,8 +24,7 @@ class PaymentFeeLoader(
         assetCode: String,
         recipientAccount: String
     ): Single<PaymentFee> {
-        val senderAccount = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
+        val senderAccount = walletInfoProvider.getWalletInfo().accountId
 
         if (amount.signum() == 0) {
             return Single.just(PaymentFee(SimpleFeeRecord.ZERO, SimpleFeeRecord.ZERO))

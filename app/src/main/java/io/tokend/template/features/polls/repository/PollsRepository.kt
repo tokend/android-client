@@ -3,8 +3,8 @@ package io.tokend.template.features.polls.repository
 import io.reactivex.Single
 import io.tokend.template.data.storage.repository.MultipleItemsRepository
 import io.tokend.template.data.storage.repository.RepositoryCache
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.extensions.tryOrNull
 import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import io.tokend.template.features.keyvalue.storage.KeyValueEntriesRepository
@@ -86,10 +86,8 @@ class PollsRepository(
     }
 
     private fun getVotes(): Single<Map<String, Int>> {
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         val loader = SimplePagedResourceLoader({ nextCursor ->
             signedApi

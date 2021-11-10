@@ -1,4 +1,4 @@
-package io.tokend.template.di.providers
+package io.tokend.template.logic.providers
 
 import okhttp3.CookieJar
 import org.tokend.sdk.tfa.TfaCallback
@@ -13,8 +13,9 @@ class ApiProviderFactory {
     ): ApiProvider {
         return createApiProvider(
             urlConfigProvider,
-            AccountProviderFactory().createAccountProvider(account?.let { listOf(it) }
-                ?: emptyList()),
+            AccountProviderFactory().createAccountProvider(
+                account?.let { listOf(it) } ?: emptyList()),
+            WalletInfoProviderFactory().createWalletInfoProvider(),
             tfaCallback,
             cookieJar
         )
@@ -23,9 +24,16 @@ class ApiProviderFactory {
     fun createApiProvider(
         urlConfigProvider: UrlConfigProvider,
         accountProvider: AccountProvider,
+        walletInfoProvider: WalletInfoProvider,
         tfaCallback: TfaCallback? = null,
         cookieJar: CookieJar? = null
     ): ApiProvider {
-        return ApiProviderImpl(urlConfigProvider, accountProvider, tfaCallback, cookieJar)
+        return ApiProviderImpl(
+            urlConfigProvider,
+            accountProvider,
+            walletInfoProvider,
+            tfaCallback,
+            cookieJar
+        )
     }
 }

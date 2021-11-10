@@ -9,7 +9,7 @@ import android.widget.ImageView
 import androidx.annotation.Dimension
 import androidx.core.content.ContextCompat
 import io.tokend.template.R
-import io.tokend.template.di.providers.UrlConfigProvider
+import io.tokend.template.logic.providers.UrlConfigProvider
 import io.tokend.template.features.kyc.model.ActiveKyc
 import io.tokend.template.features.kyc.model.KycForm
 import io.tokend.template.features.kyc.model.KycFormWithAvatar

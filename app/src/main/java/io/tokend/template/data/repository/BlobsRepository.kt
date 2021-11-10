@@ -3,8 +3,8 @@ package io.tokend.template.data.repository
 import androidx.collection.LruCache
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
-import io.tokend.template.di.providers.ApiProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.blobs.model.Blob
 
@@ -27,9 +27,6 @@ class BlobsRepository(
         val api =
             if (isPrivate)
                 apiProvider.getSignedApi()
-                    ?: return Single.error(
-                        IllegalStateException("Cannot get signed API to load private blob")
-                    )
             else
                 apiProvider.getApi()
 
@@ -47,9 +44,7 @@ class BlobsRepository(
 
     fun create(blob: Blob): Single<Blob> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
-        val accountId = walletInfoProvider.getWalletInfo()?.accountId
-            ?: return Single.error(IllegalStateException("No wallet info found"))
+        val accountId = walletInfoProvider.getWalletInfo().accountId
 
         return signedApi
             .blobs

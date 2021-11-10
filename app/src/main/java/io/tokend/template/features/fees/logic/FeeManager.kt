@@ -1,7 +1,7 @@
 package io.tokend.template.features.fees.logic
 
 import io.reactivex.Single
-import io.tokend.template.di.providers.ApiProvider
+import io.tokend.template.logic.providers.ApiProvider
 import io.tokend.template.features.history.model.SimpleFeeRecord
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.v3.fees.params.FeeCalculationParams
@@ -29,7 +29,6 @@ class FeeManager(
         accountId: String, asset: String, amount: BigDecimal
     ): Single<SimpleFeeRecord> {
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         val params = FeeCalculationParams(
             asset = asset,

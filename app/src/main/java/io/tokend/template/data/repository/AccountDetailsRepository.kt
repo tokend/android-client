@@ -2,7 +2,7 @@ package io.tokend.template.data.repository
 
 import io.reactivex.Single
 import io.tokend.template.data.model.IdentityRecord
-import io.tokend.template.di.providers.ApiProvider
+import io.tokend.template.logic.providers.ApiProvider
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.identity.params.IdentitiesPageParams
 import retrofit2.HttpException
@@ -70,7 +70,6 @@ class AccountDetailsRepository(
         }
 
         val signedApi = apiProvider.getSignedApi()
-            ?: return Single.error(IllegalStateException("No signed API instance found"))
 
         return signedApi
             .identities

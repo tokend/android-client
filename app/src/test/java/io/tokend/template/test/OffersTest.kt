@@ -1,6 +1,5 @@
 package io.tokend.template.test
 
-import io.tokend.template.di.providers.*
 import io.tokend.template.features.assets.model.SimpleAsset
 import io.tokend.template.features.fees.logic.FeeManager
 import io.tokend.template.features.history.model.details.BalanceChangeCause
@@ -10,6 +9,7 @@ import io.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import io.tokend.template.features.offers.model.OfferRecord
 import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
+import io.tokend.template.logic.providers.*
 import junit.framework.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test

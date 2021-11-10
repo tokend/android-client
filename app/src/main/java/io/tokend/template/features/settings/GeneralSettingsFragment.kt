@@ -115,7 +115,6 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
         val accountIdPreference = findPreference("account_id")
         accountIdPreference?.setOnPreferenceClickListener {
             val walletInfo = walletInfoProvider.getWalletInfo()
-                ?: return@setOnPreferenceClickListener false
 
             activity?.let { parentActivity ->
                 Navigator.from(parentActivity).openAccountQrShare(walletInfo)
@@ -137,7 +136,7 @@ class GeneralSettingsFragment : SettingsFragment(), ToolbarProvider {
 
     private fun initSecretSeedItem() {
         val seedPreference = findPreference("secret_seed") ?: return
-        val account = accountProvider.getAccount() ?: return
+        val account = accountProvider.getDefaultAccount()
 
         seedPreference.setOnPreferenceClickListener {
             SecretSeedDialog(

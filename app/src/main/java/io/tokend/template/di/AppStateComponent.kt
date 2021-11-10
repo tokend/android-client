@@ -2,8 +2,6 @@ package io.tokend.template.di
 
 import dagger.Component
 import io.tokend.template.activities.BaseActivity
-import io.tokend.template.di.providers.AppModule
-import io.tokend.template.di.providers.SessionModule
 import io.tokend.template.features.dashboard.balances.view.AssetDistributionChart
 import io.tokend.template.features.settings.SettingsFragment
 import io.tokend.template.fragments.BaseFragment

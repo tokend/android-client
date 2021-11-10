@@ -1,7 +1,7 @@
 package io.tokend.template.features.urlconfig.logic
 
 import io.tokend.template.data.storage.persistence.ObjectPersistence
-import io.tokend.template.di.providers.UrlConfigProvider
+import io.tokend.template.logic.providers.UrlConfigProvider
 import io.tokend.template.features.urlconfig.model.UrlConfig
 import org.tokend.sdk.factory.GsonFactory
 

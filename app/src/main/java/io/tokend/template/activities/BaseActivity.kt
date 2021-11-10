@@ -12,7 +12,6 @@ import io.reactivex.rxkotlin.addTo
 import io.tokend.template.App
 import io.tokend.template.BuildConfig
 import io.tokend.template.data.storage.persistence.ObjectPersistence
-import io.tokend.template.di.providers.*
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.balances.model.BalanceRecord
 import io.tokend.template.features.kyc.storage.ActiveKycPersistence
@@ -25,6 +24,7 @@ import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import io.tokend.template.logic.credentials.persistence.WalletInfoPersistence
 import io.tokend.template.logic.persistence.BackgroundLockManager
+import io.tokend.template.logic.providers.*
 import io.tokend.template.util.ConnectionStateUtil
 import io.tokend.template.util.ObservableTransformers
 import io.tokend.template.util.cipher.DataCipher
@@ -139,7 +139,7 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
             }
         }
 
-        if (accountProvider.getAccount() != null || allowUnauthorized) {
+        if (accountProvider.getDefaultAccount() != null || allowUnauthorized) {
             onCreateAllowed(savedInstanceState)
         } else {
             (application as App).signOut(this, soft = true)

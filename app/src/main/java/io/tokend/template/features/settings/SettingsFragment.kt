@@ -11,10 +11,10 @@ import androidx.preference.PreferenceGroup
 import io.reactivex.disposables.CompositeDisposable
 import io.tokend.template.App
 import io.tokend.template.R
-import io.tokend.template.di.providers.AccountProvider
-import io.tokend.template.di.providers.RepositoryProvider
-import io.tokend.template.di.providers.UrlConfigProvider
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.RepositoryProvider
+import io.tokend.template.logic.providers.UrlConfigProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import io.tokend.template.features.settings.view.PreferenceDividerDecoration
 import io.tokend.template.logic.session.Session

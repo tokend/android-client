@@ -2,7 +2,7 @@ package io.tokend.template.features.withdraw.logic
 
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
-import io.tokend.template.di.providers.WalletInfoProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.balances.model.BalanceRecord
 import io.tokend.template.features.fees.logic.FeeManager
 import io.tokend.template.features.history.model.SimpleFeeRecord
@@ -45,7 +45,7 @@ class CreateWithdrawalRequestUseCase(
     private fun getAccount(): Single<String> {
         return walletInfoProvider
             .getWalletInfo()
-            ?.accountId
+            .accountId
             .toMaybe()
             .switchIfEmpty(Single.error(IllegalStateException("Missing account ID")))
     }

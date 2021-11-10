@@ -295,7 +295,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     private fun openAccountIdShare() {
-        val walletInfo = walletInfoProvider.getWalletInfo() ?: return
+        val walletInfo = walletInfoProvider.getWalletInfo()
 
         Navigator.from(this@MainActivity).openAccountQrShare(walletInfo)
 
