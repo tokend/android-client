@@ -71,7 +71,7 @@ open class DefaultErrorHandler(
                     TransactionFailedException.OP_MALFORMED ->
                         context.getString(R.string.error_tx_malformed)
                     TransactionFailedException.OP_ACCOUNT_BLOCKED ->
-                        context.getString(R.string.error_tx_account_blocked)
+                        context.getString(R.string.error_account_blocked)
                     TransactionFailedException.OP_INVALID_FEE ->
                         context.getString(R.string.error_tx_invalid_fee)
                     TransactionFailedException.OP_NOT_ALLOWED,

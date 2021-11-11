@@ -130,7 +130,7 @@ class RepositoryProviderImpl(
             else
                 MemoryOnlyObjectPersistence<AccountRecord>()
 
-        AccountRepository(apiProvider, walletInfoProvider, persistence)
+        AccountRepository(apiProvider, walletInfoProvider, keyValueEntries, persistence)
     }
 
     override val sales: SalesRepository by lazy {
@@ -209,7 +209,7 @@ class RepositoryProviderImpl(
     }
 
     override val activeKyc: ActiveKycRepository by lazy {
-        ActiveKycRepository(account, blobs, keyValueEntries, activeKycPersistence)
+        ActiveKycRepository(account, blobs, activeKycPersistence)
     }
 
     private val balanceChangesRepositoriesByBalanceId =

@@ -2,11 +2,11 @@ package io.tokend.template.view.util
 
 import android.content.Context
 import io.tokend.template.R
+import io.tokend.template.features.account.data.model.AccountRole
 import io.tokend.template.features.fees.adapter.FeeListItem
 import io.tokend.template.features.history.model.BalanceChangeAction
 import io.tokend.template.features.history.model.details.BalanceChangeCause
 import io.tokend.template.features.history.view.adapter.BalanceChangeListItem
-import io.tokend.template.features.kyc.model.KycForm
 import io.tokend.template.view.assetchart.AssetChartScale
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.StatsOpType
@@ -108,12 +108,13 @@ class LocalizedName(private val context: Context) {
         }
     }
 
-    fun forKycForm(kycFormType: KycForm?): String {
-        return when (kycFormType) {
-            is KycForm.General -> context.getString(R.string.kyc_form_type_general)
-            is KycForm.Corporate -> context.getString(R.string.kyc_form_type_corporate)
-            is KycForm.Empty -> context.getString(R.string.kyc_form_type_unknown)
-            null -> context.getString(R.string.kyc_form_type_unknown)
+    fun forAccountRole(accountRole: AccountRole): String {
+        return when (accountRole) {
+            AccountRole.UNVERIFIED -> context.getString(R.string.account_role_unverified)
+            AccountRole.GENERAL -> context.getString(R.string.account_role_general)
+            AccountRole.CORPORATE -> context.getString(R.string.account_role_corporate)
+            AccountRole.BLOCKED -> context.getString(R.string.account_role_blocked)
+            AccountRole.UNKNOWN -> context.getString(R.string.account_role_unknown)
         }
     }
 

@@ -3,6 +3,7 @@ package io.tokend.template.features.account.data.model
 import com.fasterxml.jackson.databind.JsonNode
 import com.google.gson.annotations.SerializedName
 import io.tokend.template.features.assets.model.AssetRecord
+import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import org.tokend.sdk.api.generated.inner.ExternalSystemData
 import org.tokend.sdk.api.generated.resources.AccountResource
 import org.tokend.sdk.api.generated.resources.ExternalSystemIDResource
@@ -14,8 +15,8 @@ import java.util.*
 class AccountRecord(
     @SerializedName("id")
     val id: String,
-    @SerializedName("role_id")
-    var roleId: Long,
+    @SerializedName("role")
+    var role: ResolvedAccountRole,
     @SerializedName("kyc_recovery_status")
     var kycRecoveryStatus: KycRecoveryStatus,
     @SerializedName("kyc_blob_id")
@@ -71,21 +72,29 @@ class AccountRecord(
         }
     }
 
-    constructor(source: AccountResource) : this(
+    /**
+     * @param keyValueEntries role-related key-value entries to resolve [AccountRole]
+     *
+     * @see NoSuchAccountRoleException
+     */
+    constructor(
+        source: AccountResource,
+        keyValueEntries: Collection<KeyValueEntryRecord>
+    ) : this(
         id = source.id,
-        roleId = source.role.id.toLong(),
+        role = ResolvedAccountRole(source.role.id.toLong(), keyValueEntries),
         kycRecoveryStatus = source
             .kycRecoveryStatus
             ?.name
             ?.toUpperCase(Locale.ENGLISH)
             ?.let(KycRecoveryStatus::valueOf)
             ?: KycRecoveryStatus.NONE,
-        kycBlob = source
-            .kycData
-            ?.kycData
-            ?.get("blob_id")
+        kycBlob = source.kycData?.kycData
+            // Classics.
+            ?.run { get("blob_id") ?: get("blobId") }
             ?.takeIf(JsonNode::isTextual)
-            ?.asText(),
+            ?.asText()
+            ?.takeIf(String::isNotEmpty),
         depositAccounts = source.externalSystemIds?.map(::DepositAccount)?.toHashSet()
             ?: mutableSetOf()
     )

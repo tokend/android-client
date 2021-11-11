@@ -5,20 +5,18 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import io.tokend.template.logic.providers.ApiProvider
-import io.tokend.template.logic.providers.RepositoryProvider
 import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import io.tokend.template.features.localaccount.logic.LocalAccountRetryDecryptor
 import io.tokend.template.features.localaccount.model.LocalAccount
 import io.tokend.template.features.userkey.logic.UserKeyProvider
-import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.credentials.model.WalletInfoRecord
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.RepositoryProvider
+import io.tokend.template.logic.session.Session
 import io.tokend.template.util.cipher.DataCipher
 import org.tokend.rx.extensions.toCompletable
 import org.tokend.sdk.keyserver.KeyServer
-import org.tokend.sdk.keyserver.models.KdfAttributes
-import org.tokend.sdk.keyserver.models.LoginParams
 import org.tokend.sdk.keyserver.models.SignerData
 import org.tokend.sdk.utils.extentions.isConflict
 import org.tokend.wallet.Account
@@ -147,15 +145,9 @@ class SignInWithLocalAccountUseCase(
         val accountId = account.accountId
 
         return WalletInfoRecord(
-            walletId = "",
             accountId = accountId,
             login = accountId.substring(0..3) + "..." +
-                    accountId.substring(accountId.length - 4, accountId.length),
-            loginParams = LoginParams(
-                "", 0,
-                KdfAttributes("", 0, 0, 0, 0, byteArrayOf())
-            ),
-            seeds = emptyList()
+                    accountId.substring(accountId.length - 4, accountId.length)
         ).toSingle()
     }
 

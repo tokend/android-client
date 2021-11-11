@@ -26,7 +26,7 @@ class KeyValueEntriesRepository(
                 .get(
                     PagingParamsV2(
                         order = PagingOrder.ASC,
-                        limit = 20,
+                        limit = 40,
                         page = nextCursor
                     )
                 )

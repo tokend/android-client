@@ -13,6 +13,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.tokend.template.R
 import io.tokend.template.activities.BaseActivity
 import io.tokend.template.extensions.dip
+import io.tokend.template.extensions.textOrGone
 import io.tokend.template.features.kyc.capture.model.CameraCaptureResult
 import io.tokend.template.features.kyc.capture.model.CameraCaptureTarget
 import io.tokend.template.features.kyc.files.model.LocalFile
@@ -200,7 +201,7 @@ class SetKycActivity : BaseActivity() {
             .subscribe {
                 if (kycRequestStateRepository.isNeverUpdated) {
                     error_empty_view.showError(it, errorHandlerFactory.getDefault()) {
-                        update()
+                        update(force = true)
                     }
                 } else {
                     errorHandlerFactory.getDefault().handle(it)
@@ -225,6 +226,19 @@ class SetKycActivity : BaseActivity() {
                 kycStatusTextView.text =
                     getString(R.string.kyc_recovery_permanently_rejected_message)
             }
+            it != null && it is KycRequestState.Submitted.ApprovedToBlock -> {
+                error_empty_view.showError(
+                    error =
+                    if (it.blockReason != null)
+                        getString(
+                            R.string.template_error_account_blocked_reason,
+                            it.blockReason
+                        )
+                    else
+                        getString(R.string.error_account_blocked),
+                    buttonAction = null
+                )
+            }
             else -> {
                 kycRequestStateInfoLayout.visibility = View.GONE
                 kycRejectReasonTextView.visibility = View.GONE
@@ -232,11 +246,11 @@ class SetKycActivity : BaseActivity() {
         }
     }
 
-    private fun showRejectView(rejectReason: String) {
+    private fun showRejectView(rejectReason: String?) {
         kycRequestStateInfoLayout.visibility = View.VISIBLE
         kycRejectReasonTextView.visibility = View.VISIBLE
         kycStatusTextView.setTextColor(ContextCompat.getColor(this, R.color.error))
-        kycRejectReasonTextView.text =
+        kycRejectReasonTextView.textOrGone =
             getString(R.string.template_rejection_reason, rejectReason)
     }
 

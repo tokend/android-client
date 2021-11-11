@@ -163,7 +163,8 @@
     <string name="error_tx_insufficient_balance">@string/error_insufficient_balance</string>
     <string name="error_tx_invalid_amount">Некорректная сумма в транзакции</string>
     <string name="error_tx_malformed">Некорректная транзакция</string>
-    <string name="error_tx_account_blocked">Ваш аккаунт заблокирован</string>
+    <string name="error_account_blocked">Ваш аккаунт заблокирован</string>
+    <string name="template_error_account_blocked_reason">Ваш аккаунт заблокирован: %1$s</string>
     <string name="error_tx_invalid_fee">Неправильная комиссия в транзакции</string>
     <string name="error_tx_not_allowed">Вам не разрешено это действие</string>
     <string name="error_tx_cross_self">Ордер совпадает с одним из уже существующих</string>
@@ -367,10 +368,11 @@
 
     <string name="template_to_withdraw">%1$s к выводу</string>
 
-    <string name="kyc_form_type_general">Стандартный аккаунт</string>
-    <string name="kyc_form_type_corporate">Корпоративный аккаунт</string>
-    <string name="kyc_form_type_unknown">Верифицированный аккаунт</string>
-    <string name="unverified_account">Неверифицированный аккаунт</string>
+    <string name="account_role_general">Стандартный аккаунт</string>
+    <string name="account_role_corporate">Корпоративный аккаунт</string>
+    <string name="account_role_unverified">Неверифицированный аккаунт</string>
+    <string name="account_role_blocked">Заблокированный аккаунт</string>
+    <string name="account_role_unknown">Неизвестный тип аккаунта</string>
 
     <string name="template_amount_with_converted">%1$s ≈ %2$s</string>
     <string name="template_converted_amount">≈ %1$s</string>

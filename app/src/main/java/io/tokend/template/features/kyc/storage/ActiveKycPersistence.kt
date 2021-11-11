@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 import io.tokend.template.data.storage.persistence.ObjectPersistenceOnPrefs
+import io.tokend.template.features.account.data.model.AccountRole
 import io.tokend.template.features.kyc.model.ActiveKyc
 import io.tokend.template.features.kyc.model.KycForm
 
@@ -13,8 +14,8 @@ class ActiveKycPersistence(
     private class Container(
         @SerializedName("is_missing")
         val isMissing: Boolean,
-        @SerializedName("form_class")
-        val formClass: String?,
+        @SerializedName("role")
+        val role: AccountRole?,
         @SerializedName("form_data")
         val serializedForm: JsonElement?
     )
@@ -24,13 +25,13 @@ class ActiveKycPersistence(
             when (item) {
                 is ActiveKyc.Missing -> Container(
                     isMissing = true,
+                    role = null,
                     serializedForm = null,
-                    formClass = null
                 )
                 is ActiveKyc.Form -> Container(
                     isMissing = false,
+                    role = item.formData.getRole(),
                     serializedForm = gson.toJsonTree(item.formData),
-                    formClass = item.formData::class.java.name
                 )
             }
         )
@@ -42,12 +43,7 @@ class ActiveKycPersistence(
             if (container.isMissing)
                 ActiveKyc.Missing
             else
-                ActiveKyc.Form(
-                    gson.fromJson<KycForm>(
-                        container.serializedForm!!,
-                        Class.forName(container.formClass!!)
-                    )
-                )
+                ActiveKyc.Form(KycForm.fromJson(container.serializedForm!!, container.role!!))
         } catch (e: Exception) {
             e.printStackTrace()
             null

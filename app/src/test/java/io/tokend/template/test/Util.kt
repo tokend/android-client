@@ -5,11 +5,12 @@ import io.tokend.template.features.signin.logic.PostSignInManager
 import io.tokend.template.features.signin.logic.SignInUseCase
 import io.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import io.tokend.template.features.urlconfig.model.UrlConfig
-import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
 import io.tokend.template.logic.providers.*
+import io.tokend.template.logic.session.Session
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
+import org.tokend.sdk.api.generated.resources.ReviewableRequestResource
 import org.tokend.sdk.api.v3.assets.params.AssetsPageParams
 import org.tokend.sdk.api.v3.requests.model.RequestState
 import org.tokend.sdk.api.v3.requests.params.AssetRequestPageParams
@@ -18,6 +19,7 @@ import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.sdk.utils.extentions.bitmask
 import org.tokend.sdk.utils.extentions.decodeHex
 import org.tokend.sdk.utils.extentions.encodeHexString
+import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.*
@@ -94,7 +96,7 @@ object Util {
         systemInfoRepository: SystemInfoRepository,
         txManager: TxManager
     ) {
-        val accountId = walletInfoProvider.getWalletInfo()!!.accountId
+        val accountId = walletInfoProvider.getWalletInfo().accountId
         val api = apiProvider.getApi()
 
         val roleToSet = api
@@ -315,7 +317,7 @@ object Util {
                 urlConfigProvider = getUrlConfigProvider(),
                 account = Config.ADMIN_ACCOUNT
             )
-                .getSignedApi()!!
+                .getSignedApi()
                 .v3
                 .requests
                 .getAssetCreateRequests(
@@ -333,7 +335,23 @@ object Util {
                 .items
                 .firstOrNull()
 
-        if (requestToReview != null && requestToReview.stateI == RequestState.PENDING.i) {
+        if (requestToReview != null) {
+            reviewRequestIfNeeded(requestToReview, netParams, txManager)
+        }
+
+        return code
+    }
+
+    fun reviewRequestIfNeeded(
+        requestToReview: ReviewableRequestResource,
+        networkParams: NetworkParams,
+        txManager: TxManager
+    ) {
+        if (requestToReview.stateI == RequestState.PENDING.i) {
+            val requestType = ReviewableRequestType
+                .values()
+                .first { it.value == requestToReview.xdrType.value }
+
             val reviewOp = ReviewRequestOp(
                 requestID = requestToReview.id.toLong(),
                 requestHash = XdrByteArrayFixed32(requestToReview.hash.decodeHex()),
@@ -341,23 +359,20 @@ object Util {
                 reason = "",
                 reviewDetails = ReviewDetails(
                     0, requestToReview.pendingTasks.toInt(),
-                    "", ReviewDetails.ReviewDetailsExt.EmptyVersion()
+                    "{}", ReviewDetails.ReviewDetailsExt.EmptyVersion()
                 ),
                 ext = ReviewRequestOp.ReviewRequestOpExt.EmptyVersion(),
                 requestDetails = object :
-                    ReviewRequestOp.ReviewRequestOpRequestDetails(ReviewableRequestType.CREATE_ASSET) {}
+                    ReviewRequestOp.ReviewRequestOpRequestDetails(requestType) {}
             )
 
-            val reviewTx = TransactionBuilder(netParams, sourceAccount.accountId)
+            val reviewTx = TransactionBuilder(networkParams, Config.ADMIN_ACCOUNT.accountId)
                 .addOperation(Operation.OperationBody.ReviewRequest(reviewOp))
+                .addSigner(Config.ADMIN_ACCOUNT)
                 .build()
-
-            reviewTx.addSignature(sourceAccount)
 
             txManager.submit(reviewTx).blockingGet()
         }
-
-        return code
     }
 
     private val random = java.util.Random()
@@ -378,6 +393,6 @@ object Util {
 
         val pickRandom: (List<String>) -> String = { it[random.nextInt(it.size)] }
 
-        return "${pickRandom(adjectives)}${pickRandom(nouns).capitalize()}$salt@$domain"
+        return "${pickRandom(adjectives)}+${pickRandom(nouns).capitalize()}+$salt@$domain"
     }
 }

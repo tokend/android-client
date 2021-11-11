@@ -163,7 +163,8 @@
     <string name="error_tx_insufficient_balance">@string/error_insufficient_balance</string>
     <string name="error_tx_invalid_amount">Некоректна сума в транзакції</string>
     <string name="error_tx_malformed">Некоректна транзакція</string>
-    <string name="error_tx_account_blocked">Ваш акаунт заблоковано</string>
+    <string name="error_account_blocked">Ваш акаунт заблоковано</string>
+    <string name="template_error_account_blocked_reason">Ваш акаунт заблоковано: %1$s</string>
     <string name="error_tx_invalid_fee">Неправильна комісія в транзакції</string>
     <string name="error_tx_not_allowed">Вам не дозволена ця дія</string>
     <string name="error_tx_cross_self">Ордер співпадає з одним із вже існуючих</string>
@@ -367,10 +368,11 @@
 
     <string name="template_to_withdraw">%1$s до виводу</string>
 
-    <string name="kyc_form_type_general">Стандартний акаунт</string>
-    <string name="kyc_form_type_corporate">Корпоративний акаунт</string>
-    <string name="kyc_form_type_unknown">Верифікований акаунт</string>
-    <string name="unverified_account">Неверифікований акаунт</string>
+    <string name="account_role_general">Стандартний акаунт</string>
+    <string name="account_role_corporate">Корпоративний акаунт</string>
+    <string name="account_role_unverified">Неверифікований акаунт</string>
+    <string name="account_role_blocked">Заблокований акаунт</string>
+    <string name="account_role_unknown">Невідомий тип акаунта</string>
 
     <string name="template_amount_with_converted">%1$s ≈ %2$s</string>
     <string name="template_converted_amount">≈ %1$s</string>

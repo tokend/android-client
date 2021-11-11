@@ -164,7 +164,8 @@
     <string name="error_tx_insufficient_balance">@string/error_insufficient_balance</string>
     <string name="error_tx_invalid_amount">Transaction amount is invalid</string>
     <string name="error_tx_malformed">Transaction is malformed</string>
-    <string name="error_tx_account_blocked">Your account is blocked</string>
+    <string name="error_account_blocked">Your account is blocked</string>
+    <string name="template_error_account_blocked_reason">Your account is blocked: %1$s</string>
     <string name="error_tx_invalid_fee">Transaction fee is invalid</string>
     <string name="error_tx_not_allowed">You are not allowed to perform this action</string>
     <string name="error_tx_cross_self">Current order crosses one of your existing orders</string>
@@ -368,10 +369,11 @@
 
     <string name="template_to_withdraw">%1$s to withdraw</string>
 
-    <string name="kyc_form_type_general">General account</string>
-    <string name="kyc_form_type_corporate">Corporate account</string>
-    <string name="kyc_form_type_unknown">Verified account</string>
-    <string name="unverified_account">Unverified account</string>
+    <string name="account_role_general">General account</string>
+    <string name="account_role_corporate">Corporate account</string>
+    <string name="account_role_unverified">Unverified account</string>
+    <string name="account_role_blocked">Blocked account</string>
+    <string name="account_role_unknown">Unknown type account</string>
 
     <string name="template_amount_with_converted">%1$s ≈ %2$s</string>
     <string name="template_converted_amount">≈ %1$s</string>

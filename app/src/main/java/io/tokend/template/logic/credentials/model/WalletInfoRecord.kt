@@ -2,6 +2,7 @@ package io.tokend.template.logic.credentials.model
 
 import com.google.gson.annotations.SerializedName
 import org.tokend.crypto.ecdsa.erase
+import org.tokend.sdk.keyserver.models.KdfAttributes
 import org.tokend.sdk.keyserver.models.LoginParams
 import org.tokend.sdk.keyserver.models.WalletCreateResult
 import org.tokend.sdk.keyserver.models.WalletInfo
@@ -33,6 +34,20 @@ data class WalletInfoRecord(
         walletId = walletCreateResult.walletId,
         login = walletCreateResult.walletData.attributes.email,
         loginParams = walletCreateResult.loginParams
+    )
+
+    constructor(
+        accountId: String,
+        login: String
+    ) : this(
+        accountId = accountId,
+        login = login,
+        walletId = "",
+        loginParams = LoginParams(
+            "", 0,
+            KdfAttributes("", 0, 0, 0, 0, byteArrayOf())
+        ),
+        seeds = emptyList()
     )
 
     var seedsAreErased = false

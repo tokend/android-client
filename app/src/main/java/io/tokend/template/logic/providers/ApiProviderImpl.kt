@@ -60,7 +60,8 @@ class ApiProviderImpl(
     override fun getSignedApi(): TokenDApi = synchronized(this) {
         val account = accountProvider.getDefaultAccount()
         val originalAccountId = walletInfoProvider.getWalletInfo().accountId
-        val hash = arrayOf(account.accountId, url).contentHashCode()
+
+        val hash = arrayOf(account.accountId, originalAccountId, url).contentHashCode()
 
         val signedApi =
             signedApiByHash
@@ -70,7 +71,10 @@ class ApiProviderImpl(
                 ?.second
                 ?: TokenDApi(
                     url,
-                    AccountRequestSigner(account, originalAccountId),
+                    AccountRequestSigner(
+                        account = account,
+                        originalAccountId = originalAccountId
+                    ),
                     tfaCallback,
                     cookieJarProvider,
                     withLogs = withLogs

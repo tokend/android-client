@@ -4,15 +4,16 @@ import android.content.ContentResolver
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
-import io.tokend.template.logic.providers.AccountProvider
-import io.tokend.template.logic.providers.ApiProvider
-import io.tokend.template.logic.providers.RepositoryProvider
-import io.tokend.template.logic.providers.WalletInfoProvider
+import io.tokend.template.features.account.data.model.ResolvedAccountRole
 import io.tokend.template.features.kyc.files.model.LocalFile
 import io.tokend.template.features.kyc.model.KycForm
 import io.tokend.template.features.kyc.model.KycRequestState
 import io.tokend.template.features.kyc.storage.KycRequestStateRepository
 import io.tokend.template.logic.TxManager
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.RepositoryProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import org.tokend.sdk.api.base.model.RemoteFile
 
 /**
@@ -36,7 +37,7 @@ class UpdateCurrentKycRequestUseCase(
 ) {
     private data class CurrentRequestAttributes(
         val id: Long,
-        val roleToSet: Long?
+        val roleToSet: ResolvedAccountRole?
     )
 
     private lateinit var currentRequestAttributes: CurrentRequestAttributes

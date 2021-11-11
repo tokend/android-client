@@ -6,16 +6,18 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import io.tokend.template.logic.providers.AccountProvider
-import io.tokend.template.logic.providers.ApiProvider
-import io.tokend.template.logic.providers.RepositoryProvider
-import io.tokend.template.logic.providers.WalletInfoProvider
+import io.tokend.template.features.account.data.model.ResolvedAccountRole
 import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import io.tokend.template.features.kyc.files.model.LocalFile
 import io.tokend.template.features.kyc.model.ActiveKyc
 import io.tokend.template.features.kyc.model.KycForm
 import io.tokend.template.features.kyc.model.KycRequestState
+import io.tokend.template.features.kyc.storage.KycRequestStateRepository
 import io.tokend.template.logic.TxManager
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.RepositoryProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.blobs.model.Blob
@@ -29,6 +31,16 @@ import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.*
 import java.util.*
 
+/**
+ * Creates and submits change-role request with general KYC data.
+ * Sets new KYC state in [KycRequestStateRepository] on complete.
+ * The role is defined by the [form] ([KycForm.getRole])
+ *
+ * @param form form to submit, without documents
+ * @param alreadySubmittedDocuments documents from the current form, if there are any
+ * @param newDocuments documents that needs to be uploaded and combined with [alreadySubmittedDocuments]
+ * @param contentResolver used to upload new documents
+ */
 class SubmitKycRequestUseCase(
     private val form: KycForm,
     private val walletInfoProvider: WalletInfoProvider,
@@ -40,14 +52,14 @@ class SubmitKycRequestUseCase(
     private val newDocuments: Map<String, LocalFile>? = null,
     private val contentResolver: ContentResolver? = null,
     private val requestIdToSubmit: Long = 0L,
-    private val explicitRoleToSet: Long? = null
+    private val explicitRoleToSet: ResolvedAccountRole? = null
 ) {
     private data class SubmittedRequestAttributes(
         val id: Long,
-        val isReviewRequired: Boolean
+        val isReviewRequired: Boolean,
     )
 
-    private var roleToSet: Long = 0L
+    private lateinit var roleToSet: ResolvedAccountRole
     private lateinit var uploadedDocuments: Map<String, RemoteFile>
     private lateinit var formBlobId: String
     private lateinit var networkParams: NetworkParams
@@ -106,18 +118,20 @@ class SubmitKycRequestUseCase(
             .ignoreElement()
     }
 
-    private fun getRoleToSet(): Single<Long> {
-        if (explicitRoleToSet != null && explicitRoleToSet > 0) {
+    private fun getRoleToSet(): Single<ResolvedAccountRole> {
+        if (explicitRoleToSet != null) {
             return Single.just(explicitRoleToSet)
         }
 
-        val key = form.getRoleKey()
+        // If the role is defined by the form, resolve an ID for it.
+        val formRole = form.getRole()
         return repositoryProvider
             .keyValueEntries
-            .ensureEntries(listOf(key))
-            .map { it[key] }
+            .ensureEntries(listOf(formRole.key))
+            .map { it[formRole.key] }
             .map { it as KeyValueEntryRecord.Number }
             .map { it.value }
+            .map { ResolvedAccountRole(it, formRole) }
     }
 
     private fun uploadNewDocuments(): Single<Map<String, RemoteFile>> {
@@ -205,7 +219,7 @@ class SubmitKycRequestUseCase(
             val operation = CreateChangeRoleRequestOp(
                 requestID = requestIdToSubmit,
                 destinationAccount = PublicKeyFactory.fromAccountId(accountId),
-                accountRoleToSet = roleToSet,
+                accountRoleToSet = roleToSet.id,
                 creatorDetails = "{\"blob_id\":\"$formBlobId\"}",
                 allTasks = null,
                 ext = CreateChangeRoleRequestOp.CreateChangeRoleRequestOpExt.EmptyVersion()

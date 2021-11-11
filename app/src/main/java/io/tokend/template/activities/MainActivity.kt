@@ -21,6 +21,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.tokend.template.BuildConfig
 import io.tokend.template.R
+import io.tokend.template.features.account.data.model.AccountRole
+import io.tokend.template.features.account.data.storage.AccountRepository
 import io.tokend.template.features.assets.view.ExploreAssetsFragment
 import io.tokend.template.features.dashboard.view.DashboardFragment
 import io.tokend.template.features.deposit.view.DepositFragment
@@ -65,6 +67,9 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
     private val activeKycRepository: ActiveKycRepository
         get() = repositoryProvider.activeKyc
+
+    private val accountRepository: AccountRepository
+        get() = repositoryProvider.account
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
@@ -158,7 +163,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
             .withSelectionListEnabledForSingleProfile(false)
             .withProfileImagesVisible(true)
             .withDividerBelowHeader(true)
-            .addProfiles(getProfileHeaderItem(email, null))
+            .addProfiles(getProfileHeaderItem(email, null, accountRepository.item!!.role.role))
             .withOnAccountHeaderListener { _, _, _ ->
                 openAccountIdShare()
                 true
@@ -172,21 +177,16 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
     private fun getProfileHeaderItem(
         email: String?,
-        activeKyc: ActiveKyc?
+        activeKyc: ActiveKyc?,
+        accountRole: AccountRole
     ): ProfileDrawerItem {
-        val form = (activeKyc as? ActiveKyc.Form)?.formData
         val avatarUrl = ProfileUtil.getAvatarUrl(activeKyc, urlConfigProvider)
+        val roleName = LocalizedName(this).forAccountRole(accountRole)
 
         return ProfileDrawerItem()
             .withIdentifier(1)
             .withName(email)
-            .withEmail(
-                when {
-                    activeKyc == null -> getString(R.string.loading_data)
-                    form == null -> getString(R.string.unverified_account)
-                    else -> LocalizedName(this).forKycForm(form)
-                }
-            )
+            .withEmail(roleName)
             .apply {
                 avatarUrl?.also { withIcon(it) }
             }
@@ -288,8 +288,9 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     private fun updateProfileHeader() {
         val login = session.login
         val activeKyc = activeKycRepository.item
+        val accountRole = accountRepository.item!!.role.role
 
-        val h = getProfileHeaderItem(login, activeKyc)
+        val h = getProfileHeaderItem(login, activeKyc, accountRole)
         accountHeader?.updateProfile(h)
         landscapeAccountHeader?.updateProfile(h)
     }
