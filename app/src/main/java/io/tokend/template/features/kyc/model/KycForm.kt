@@ -107,9 +107,10 @@ sealed class KycForm(
         }
 
         /**
-         * Finds out KYC form type by the name of corresponding [roleId]
+         * @return KYC form parsed from [json] corresponding to the [accountRole]
          *
          * @param json KYC form JSON
+         * @param accountRole role of the account to find out proper form type
          */
         fun fromJson(
             json: String,
@@ -122,9 +123,10 @@ sealed class KycForm(
         }
 
         /**
-         * Finds out KYC form type by the name of corresponding [roleId]
+         * @return KYC form parsed from [json] corresponding to the [accountRole]
          *
          * @param json KYC form JSON
+         * @param accountRole role of the account to find out proper form type
          */
         fun fromJson(
             json: JsonElement,

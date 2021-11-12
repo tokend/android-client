@@ -151,9 +151,9 @@ class KycRequestStateRepository(
 
                 KycRequestAttributes(
                     state = RequestState.fromI(request.stateI),
-                    blobId =
-                    // Classics.
-                    (creatorDetails.get("blob_id") ?: creatorDetails.get("blobId"))
+                    blobId = creatorDetails
+                        // Classics.
+                        ?.run { get("blob_id") ?: get("blobId") }
                         ?.takeIf(JsonNode::isTextual)
                         ?.asText()
                         ?.takeIf(String::isNotEmpty),
