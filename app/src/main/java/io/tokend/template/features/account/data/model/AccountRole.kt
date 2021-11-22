@@ -20,11 +20,11 @@ enum class AccountRole {
         const val KEY_PREFIX = "account_role"
 
         /**
-         * @see NoSuchAccountRoleException
+         * @return actual account role or [UNKNOWN] if no such role found.
          */
-        fun valueOfKey(key: String) =
+        fun valueOfKeyOrUnknown(key: String) =
             values().find { it.key == key }
-                ?: throw NoSuchAccountRoleException(key)
+                ?: UNKNOWN
 
         /**
          * @return values of all the keys except for the unknown ones

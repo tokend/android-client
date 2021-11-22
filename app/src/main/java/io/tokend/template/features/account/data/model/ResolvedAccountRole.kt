@@ -19,15 +19,19 @@ data class ResolvedAccountRole(
     ) : this(
         id = id,
         role =
-        keyValueEntries
+        (keyValueEntries
             .find {
                 it is KeyValueEntryRecord.Number
                         && it.key.startsWith(AccountRole.KEY_PREFIX)
                         && it.value == id
             }
-            ?.let { AccountRole.valueOfKey(it.key) }
-            ?: AccountRole.UNKNOWN
+            ?.let { AccountRole.valueOfKeyOrUnknown(it.key) }
+            ?: AccountRole.UNKNOWN)
             // Throw the exception instead of UNKNOWN to limit access to the app for unknown roles.
-            //?: throw NoSuchAccountRoleException(id.toString())
+//            .also { role ->
+//                if (role == AccountRole.UNKNOWN) {
+//                    throw NoSuchAccountRoleException(id.toString())
+//                }
+//            }
     )
 }
