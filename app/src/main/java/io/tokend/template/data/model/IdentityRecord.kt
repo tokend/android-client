@@ -6,11 +6,11 @@ import org.tokend.sdk.api.identity.model.IdentityResource
  * Holds account identity data
  */
 data class IdentityRecord(
-    val email: String,
+    val login: String,
     val accountId: String
 ) {
     constructor(source: IdentityResource) : this(
-        email = source.email,
+        login = source.email,
         accountId = source.address
     )
 }

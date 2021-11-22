@@ -24,13 +24,13 @@
             <include layout="@layout/layout_network_field" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/email_edit_text"
+                android:id="@+id/login_edit_text"
                 style="@style/EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/email"
-                android:inputType="textEmailAddress"
-                app:met_floatingLabelText="@string/email" />
+                android:autofillHints="username"
+                android:hint="@string/login"
+                app:met_floatingLabelText="@string/login" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

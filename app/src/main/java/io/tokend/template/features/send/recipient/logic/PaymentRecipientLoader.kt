@@ -15,7 +15,7 @@ class PaymentRecipientLoader(
         Exception("No recipient account ID found for $recipient")
 
     /**
-     * Loads payment recipient info if [recipient] is an email or just
+     * Loads payment recipient info if [recipient] is a login or just
      * returns it immediately if [recipient] is an account ID
      *
      * @see NoRecipientFoundException
@@ -29,7 +29,7 @@ class PaymentRecipientLoader(
             Single.just(PaymentRecipient(recipient))
         else
             accountDetailsRepository
-                .getAccountIdByEmail(recipient)
+                .getAccountIdByLogin(recipient)
                 .map { accountId ->
                     PaymentRecipient(
                         accountId = accountId,

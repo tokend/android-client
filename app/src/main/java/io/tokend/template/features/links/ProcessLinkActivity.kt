@@ -60,7 +60,7 @@ class ProcessLinkActivity : BaseActivity() {
             .compose(ObservableTransformers.defaultSchedulersCompletable())
             .subscribeBy(
                 onComplete = {
-                    toastManager.short(R.string.email_verified)
+                    toastManager.short(R.string.registration_has_been_verified)
                     Navigator.from(this).toSignIn(true)
                 },
                 onError = {

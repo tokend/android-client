@@ -29,7 +29,6 @@ import io.tokend.template.fragments.BaseFragment
 import io.tokend.template.util.ObservableTransformers
 import io.tokend.template.util.PermissionManager
 import io.tokend.template.util.QrScannerUtil
-import io.tokend.template.util.validator.EmailValidator
 import io.tokend.template.view.ContentLoadingProgressBar
 import io.tokend.template.view.util.ElevationUtil
 import io.tokend.template.view.util.LoadingIndicatorManager
@@ -244,13 +243,10 @@ class PaymentRecipientFragment : BaseFragment() {
             Base32Check.VersionByte.ACCOUNT_ID,
             filtered.toCharArray()
         )
-        val validEmail = EmailValidator.isValid(filtered)
 
         return when {
             validAccountId -> Base32Check.encodeAccountId(Base32Check.decodeAccountId(filtered))
-            validEmail -> filtered
-            filtered.isEmpty() -> ""
-            else -> null
+            else -> filtered
         }
     }
 

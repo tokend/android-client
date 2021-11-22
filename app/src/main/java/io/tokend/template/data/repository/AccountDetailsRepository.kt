@@ -17,39 +17,39 @@ class AccountDetailsRepository(
     private val identities = mutableSetOf<IdentityRecord>()
 
     /**
-     * Loads account ID for given email.
+     * Loads account ID for given login.
      * Result will be cached.
      *
      * @see NoIdentityAvailableException
      */
-    fun getAccountIdByEmail(email: String): Single<String> {
-        val formattedEmail = email.toLowerCase(Locale.ENGLISH)
-        val existing = identities.find { it.email == formattedEmail }?.accountId
+    fun getAccountIdByLogin(login: String): Single<String> {
+        val formattedLogin = login.toLowerCase(Locale.ENGLISH)
+        val existing = identities.find { it.login == formattedLogin }?.accountId
         if (existing != null) {
             return Single.just(existing)
         }
 
-        return getIdentity(IdentitiesPageParams(email = formattedEmail))
+        return getIdentity(IdentitiesPageParams(email = formattedLogin))
             .map(IdentityRecord::accountId)
     }
 
     /**
-     * Loads email for given account ID.
+     * Loads login for given account ID.
      * Result will be cached.
      *
      * @see NoIdentityAvailableException
      */
-    fun getEmailByAccountId(accountId: String): Single<String> {
-        val existing = identities.find { it.accountId == accountId }?.email
+    fun getLoginByAccountId(accountId: String): Single<String> {
+        val existing = identities.find { it.accountId == accountId }?.login
         if (existing != null) {
             return Single.just(existing)
         }
 
         return getIdentity(IdentitiesPageParams(address = accountId))
-            .map(IdentityRecord::email)
+            .map(IdentityRecord::login)
     }
 
-    fun getEmailsByAccountIds(accountIds: List<String>): Single<Map<String, String>> {
+    fun getLoginsByAccountIds(accountIds: List<String>): Single<Map<String, String>> {
         val toReturn = mutableMapOf<String, String>()
         val toRequest = mutableListOf<String>()
 
@@ -59,7 +59,7 @@ class AccountDetailsRepository(
             .forEach { accountId ->
                 val cached = identitiesByAccountId[accountId]
                 if (cached != null) {
-                    toReturn[accountId] = cached.email
+                    toReturn[accountId] = cached.login
                 } else {
                     toRequest.add(accountId)
                 }
@@ -83,7 +83,7 @@ class AccountDetailsRepository(
                 toReturn.putAll(
                     identities
                         .associateBy(IdentityRecord::accountId)
-                        .mapValues { it.value.email }
+                        .mapValues { it.value.login }
                 )
                 toReturn
             }

@@ -25,7 +25,7 @@ class TfaPasswordDialog(
     tfaVerifierInterface: TfaVerifier.Interface,
     credentialsPersistence: CredentialsPersistence?,
     private val tfaException: NeedTfaException,
-    private val email: String,
+    private val login: String,
     private val toastManager: ToastManager?,
 ) : TfaDialog(context, errorHandler, tfaVerifierInterface) {
     private val biometricAuthManager = credentialsPersistence?.let {
@@ -82,7 +82,7 @@ class TfaPasswordDialog(
     }
 
     override fun getOtp(input: CharArray): String {
-        return PasswordTfaOtpGenerator().generate(tfaException, email, input)
+        return PasswordTfaOtpGenerator().generate(tfaException, login, input)
     }
 
     override fun getMessage(): String {

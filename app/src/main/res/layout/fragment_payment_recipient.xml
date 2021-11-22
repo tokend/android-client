@@ -31,7 +31,6 @@
                 android:layout_marginTop="@dimen/standard_padding"
                 android:completionThreshold="0"
                 android:hint="@string/recipient_label"
-                android:inputType="text|textEmailAddress"
                 android:paddingEnd="42dp"
                 android:paddingRight="42dp"
                 app:layout_constraintEnd_toEndOf="parent"

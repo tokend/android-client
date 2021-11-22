@@ -5,11 +5,11 @@ import org.tokend.rx.extensions.toCompletable
 import org.tokend.sdk.api.TokenDApi
 
 /**
- * Requests email verification letter resend
+ * Requests verification confirmation resend
  *
  * @param walletId id of the related wallet
  */
-class ResendVerificationEmailUseCase(
+class ResendVerificationConfirmationUseCase(
     private val walletId: String,
     private val api: TokenDApi
 ) {

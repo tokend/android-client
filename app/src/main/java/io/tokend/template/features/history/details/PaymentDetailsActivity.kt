@@ -34,7 +34,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         displaySubject(details)
         displayFeePaidBySenderIfNeeded(item, details)
 
-        loadAndDisplayCounterpartyEmail(details, accountId)
+        loadAndDisplayCounterpartyLogin(details, accountId)
     }
 
     private fun displayFeePaidBySenderIfNeeded(
@@ -56,11 +56,11 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         adapter.onItemClick { _, item ->
             if (item.id == COUNTERPARTY_ITEM_ID) {
                 val counterpartyAccount = cause.getCounterpartyAccountId(accountId)
-                val counterpartyEmail = cause.getCounterpartyName(accountId)
+                val counterpartyLogin = cause.getCounterpartyName(accountId)
 
                 val content =
-                    if (counterpartyLoadingFinished && counterpartyEmail != null)
-                        counterpartyEmail + "\n\n" + counterpartyAccount
+                    if (counterpartyLoadingFinished && counterpartyLogin != null)
+                        counterpartyLogin + "\n\n" + counterpartyAccount
                     else
                         counterpartyAccount
 
@@ -80,7 +80,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         accountId: String
     ) {
         val counterpartyAccount = cause.getCounterpartyAccountId(accountId)
-        val counterpartyEmail = cause.getCounterpartyName(accountId)
+        val counterpartyLogin = cause.getCounterpartyName(accountId)
         val isReceived = cause.isReceived(accountId)
 
         val accountIdHintStringRes =
@@ -96,7 +96,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
                 if (!counterpartyLoadingFinished)
                     getString(R.string.loading_data)
                 else
-                    counterpartyEmail ?: counterpartyAccount,
+                    counterpartyLogin ?: counterpartyAccount,
                 hint = getString(accountIdHintStringRes),
                 icon = ContextCompat.getDrawable(this, R.drawable.ic_account),
                 singleLineText = true
@@ -117,7 +117,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
         )
     }
 
-    private fun loadAndDisplayCounterpartyEmail(
+    private fun loadAndDisplayCounterpartyLogin(
         cause: BalanceChangeCause.Payment,
         accountId: String
     ) {
@@ -126,15 +126,15 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
             .switchIfEmpty(
                 repositoryProvider
                     .accountDetails
-                    .getEmailByAccountId(cause.getCounterpartyAccountId(accountId))
+                    .getLoginByAccountId(cause.getCounterpartyAccountId(accountId))
             )
             .compose(ObservableTransformers.defaultSchedulersSingle())
             .doOnEvent { _, _ ->
                 counterpartyLoadingFinished = true
             }
             .subscribeBy(
-                onSuccess = { email ->
-                    cause.setCounterpartyName(accountId, email)
+                onSuccess = { login ->
+                    cause.setCounterpartyName(accountId, login)
                     displayCounterparty(cause, accountId)
                 },
                 onError = {

@@ -37,10 +37,10 @@ class RecoveryActivity : BaseActivity() {
     override val allowUnauthorized = true
 
     companion object {
-        private const val EMAIL_EXTRA = "email"
+        private const val LOGIN_EXTRA = "login"
 
-        fun getBundle(email: String?) = Bundle().apply {
-            putString(EMAIL_EXTRA, email)
+        fun getBundle(login: String?) = Bundle().apply {
+            putString(LOGIN_EXTRA, login)
         }
     }
 
@@ -64,7 +64,7 @@ class RecoveryActivity : BaseActivity() {
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
 
     private val email: String
-        get() = intent.getStringExtra(EMAIL_EXTRA, "")
+        get() = intent.getStringExtra(LOGIN_EXTRA, "")
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_recovery)
@@ -84,15 +84,15 @@ class RecoveryActivity : BaseActivity() {
         initNetworkField()
 
         if (email.isNotEmpty()) {
-            email_edit_text.setText(email)
-            email_edit_text.setSelection(email.length)
+            login_edit_text.setText(email)
+            login_edit_text.setSelection(email.length)
             password_edit_text.requestFocus()
         } else {
-            email_edit_text.requestFocus()
+            login_edit_text.requestFocus()
         }
 
-        email_edit_text.addTextChangedListener(SimpleTextWatcher {
-            email_edit_text.error = null
+        login_edit_text.addTextChangedListener(SimpleTextWatcher {
+            login_edit_text.error = null
             updateRecoveryAvailability()
         })
 
@@ -123,7 +123,7 @@ class RecoveryActivity : BaseActivity() {
             activityRequestsBag
         )
         wrapper.onNetworkUpdated {
-            email_edit_text.text = email_edit_text.text
+            login_edit_text.text = login_edit_text.text
             updateRecoveryAvailability()
         }
     }
@@ -149,9 +149,9 @@ class RecoveryActivity : BaseActivity() {
 
     private fun updateRecoveryAvailability() {
         canRecover = !isLoading
-                && !email_edit_text.text.isNullOrBlank()
+                && !login_edit_text.text.isNullOrBlank()
                 && !password_edit_text.text.isNullOrEmpty()
-                && !email_edit_text.hasError()
+                && !login_edit_text.hasError()
                 && !password_edit_text.hasError()
                 && arePasswordsMatch()
     }
@@ -176,7 +176,7 @@ class RecoveryActivity : BaseActivity() {
     }
 
     private fun recover() {
-        val email = email_edit_text.text.toString()
+        val email = login_edit_text.text.toString()
         val password = password_edit_text.text.getChars()
 
         RecoverPasswordUseCase(
@@ -210,12 +210,12 @@ class RecoveryActivity : BaseActivity() {
 
     private val recoveryErrorHandler: ErrorHandler
         get() = CompositeErrorHandler(
-            EditTextErrorHandler(email_edit_text) { error ->
+            EditTextErrorHandler(login_edit_text) { error ->
                 when (error) {
                     is InvalidCredentialsException ->
-                        getString(R.string.error_invalid_email)
+                        getString(R.string.error_invalid_login)
                     is EmailNotVerifiedException ->
-                        getString(R.string.error_email_not_verified)
+                        getString(R.string.error_registration_not_verified)
                     else ->
                         null
                 }

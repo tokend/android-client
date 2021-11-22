@@ -52,12 +52,12 @@ object ProfileUtil {
 
     fun setAvatar(
         view: ImageView,
-        email: String,
+        login: String,
         urlConfigProvider: UrlConfigProvider,
         activeKyc: ActiveKyc?,
         sizePx: Int = (view.layoutParams as ViewGroup.LayoutParams).width
     ) {
-        val placeholderDrawable = getAvatarPlaceholder(email, view.context, sizePx)
+        val placeholderDrawable = getAvatarPlaceholder(login, view.context, sizePx)
         val avatarUrl = getAvatarUrl(activeKyc, urlConfigProvider)
 
         ImageViewUtil.loadImageCircle(view, avatarUrl, placeholderDrawable)

@@ -77,7 +77,7 @@ class BiometricAuthManager {
     /**
      * @param onStart will be called when auth is available and started
      * @param onSuccess will be called after successful auth, receives
-     * saved email and password
+     * saved login and password
      * @param onUserCancel will be called when auth is canceled by user, not by [cancelAuth]
      * @param onError will be called on auth error, receives system error message
      */

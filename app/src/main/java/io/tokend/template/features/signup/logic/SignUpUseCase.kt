@@ -32,7 +32,7 @@ class SignUpUseCase(
     private lateinit var walletCreateResult: WalletCreateResult
 
     fun perform(): Single<WalletCreateResult> {
-        return ensureEmailIsFree()
+        return ensureLoginIsFree()
             .flatMap {
                 generateAccounts()
             }
@@ -56,7 +56,7 @@ class SignUpUseCase(
             }
     }
 
-    private fun ensureEmailIsFree(): Single<Boolean> {
+    private fun ensureLoginIsFree(): Single<Boolean> {
         return keyServer
             .getLoginParams(login)
             .toSingle()

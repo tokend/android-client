@@ -1,7 +1,6 @@
 package io.tokend.template.features.signup
 
 import android.Manifest
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import io.reactivex.rxkotlin.addTo
@@ -58,8 +57,6 @@ class SignUpActivity : BaseActivity() {
 
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
 
-    private var toSignInOnResume: Boolean = false
-
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_sign_up)
         setSupportActionBar(toolbar)
@@ -77,9 +74,9 @@ class SignUpActivity : BaseActivity() {
     private fun initFields() {
         initNetworkField()
 
-        email_edit_text.requestFocus()
-        email_edit_text.addTextChangedListener(SimpleTextWatcher {
-            email_edit_text.error = null
+        login_edit_text.requestFocus()
+        login_edit_text.addTextChangedListener(SimpleTextWatcher {
+            login_edit_text.error = null
             updateSignUpAvailability()
         })
 
@@ -140,9 +137,9 @@ class SignUpActivity : BaseActivity() {
 
     private fun updateSignUpAvailability() {
         canSignUp = !isLoading
-                && !email_edit_text.text.isNullOrBlank()
+                && !login_edit_text.text.isNullOrBlank()
                 && !password_edit_text.text.isNullOrEmpty()
-                && !email_edit_text.hasError()
+                && !login_edit_text.hasError()
                 && !password_edit_text.hasError()
                 && arePasswordsMatch()
                 && terms_of_service_checkbox.isChecked
@@ -171,7 +168,7 @@ class SignUpActivity : BaseActivity() {
         val password = password_edit_text.text.getChars()
 
         SignUpUseCase(
-            login = email_edit_text.text.toString().trim(),
+            login = login_edit_text.text.toString().trim(),
             password = password,
             keyServer = KeyServer(apiProvider.getApi().wallets),
             repositoryProvider = repositoryProvider,
@@ -195,10 +192,10 @@ class SignUpActivity : BaseActivity() {
 
     private val signUpErrorHandler: ErrorHandler
         get() = CompositeErrorHandler(
-            EditTextErrorHandler(email_edit_text) { error ->
+            EditTextErrorHandler(login_edit_text) { error ->
                 when (error) {
                     is EmailAlreadyTakenException ->
-                        getString(R.string.error_email_already_taken)
+                        getString(R.string.error_login_already_taken)
                     else ->
                         null
                 }
@@ -220,26 +217,16 @@ class SignUpActivity : BaseActivity() {
         if (walletCreateResult.walletData.attributes.isVerified) {
             tryToSignIn()
         } else {
-            showNotVerifiedEmailDialogAndFinish()
+            showRegistrationNotVerifiedDialogAndFinish()
         }
     }
 
-    private fun showNotVerifiedEmailDialogAndFinish() {
+    private fun showRegistrationNotVerifiedDialogAndFinish() {
         AlertDialog.Builder(this, R.style.AlertDialogStyle)
             .setTitle(R.string.almost_done)
-            .setMessage(R.string.check_your_email_to_verify_account)
+            .setMessage(R.string.check_confirmation_message_to_verify_account)
             .setPositiveButton(R.string.ok) { _, _ ->
                 toSignIn()
-            }
-            .setNeutralButton(R.string.open_email_app) { _, _ ->
-                toSignInOnResume = true
-                startActivity(
-                    Intent.createChooser(
-                        Intent(Intent.ACTION_MAIN)
-                            .addCategory(Intent.CATEGORY_APP_EMAIL),
-                        getString(R.string.open_email_app)
-                    )
-                )
             }
             .setOnCancelListener {
                 toSignIn()
@@ -251,18 +238,11 @@ class SignUpActivity : BaseActivity() {
         Navigator.from(this).toSignIn(false)
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (toSignInOnResume) {
-            toSignIn()
-        }
-    }
-
     private fun tryToSignIn() {
         val password = password_edit_text.text.getChars()
 
         AfterSignUpSignInUseCase(
-            login = email_edit_text.text!!.toString(),
+            login = login_edit_text.text!!.toString(),
             password = password,
             session = session,
             credentialsPersistence = credentialsPersistence,

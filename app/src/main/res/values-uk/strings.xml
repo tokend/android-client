@@ -4,7 +4,7 @@
 
     <string name="sign_up">Реєстрація</string>
     <string name="sign_in">Увійти</string>
-    <string name="email">Email</string>
+    <string name="login">Логін</string>
     <string name="password">Пароль</string>
     <string name="confirm_password">Підтвердіть пароль</string>
     <string name="forgot_password">Забули пароль?</string>
@@ -19,15 +19,16 @@
     <string name="retry">Повторити</string>
     <string name="share">Поділитися</string>
     <string name="share_account_id">Поділитися акаунтом</string>
-    <string name="check_your_email_to_verify_account">Дотримуйтесь інструкції з листа щоб підтвердити email</string>
+    <string name="check_confirmation_message_to_verify_account">Дотримуйтесь інструкції з повідомлення щоб підтвердити реєстрацію</string>
     <string name="continue_action">Далі</string>
     <string name="cancel">Відміна</string>
     <string name="ok">OK</string>
     <string name="no">Ні</string>
-    <string name="email_not_verified_explanation">Цей email не підтверджено.
-        Перевірте папку Спам або запросіть новий лист
+    <string name="registration_not_verified_explanation">
+        Ващу реєстрацію ще не підтверджено.
+        Перевірте папку Спам або запросіть нове підтвердження
     </string>
-    <string name="resend_letter">Повторити відправку</string>
+    <string name="resend_registration_confirmation">Надіслати ще</string>
     <string name="paste">Вставити</string>
     <string name="no_transaction_history">Історія операцій порожня</string>
     <string name="no_trades_history">Історія торгів порожня</string>
@@ -58,7 +59,7 @@
     <string name="template_file_download_location">Файл будет завантажено до папки \"%1$s\"</string>
     <string name="template_asset_balance_created">Баланс %1$s створено</string>
     <string name="search">Пошук</string>
-    <string name="recipient_label">Email чи акаунт отримувача</string>
+    <string name="recipient_label">Логін чи акаунт отримувача</string>
     <string name="payment_description_label">Коментар (опціонально)</string>
     <string name="payment_successfully_sent">Платіж відправлено</string>
     <string name="no_offers">Немає ордерів</string>
@@ -78,7 +79,7 @@
     <string name="cancel_offer_action">Скасувати ордер</string>
     <string name="cancel_offer_confirmation">Ви впевнені, що хочете скасувати ордер?</string>
     <string name="offer_canceled">Ордер скасовано</string>
-    <string name="email_verified">Email підтверджено</string>
+    <string name="registration_has_been_verified">Вашу реєстрацію підтверджено</string>
     <string name="touch_sensor">Доторкніться до сенсора</string>
     <string name="aml_alert_reason">Причина</string>
     <string name="aml_alert_reason_unknown">Невідомо</string>
@@ -140,13 +141,13 @@
     <string name="change_password_title">Змінити пароль</string>
 
     <string name="error_cannot_be_empty">Не може бути порожнім</string>
-    <string name="error_invalid_email">Некоректний email</string>
+    <string name="error_invalid_login">Некоректний логін</string>
     <string name="error_weak_password">Слабкий пароль</string>
-    <string name="error_email_already_taken">Email вже зареєстровано</string>
+    <string name="error_login_already_taken">Цей логін вже зайнято</string>
     <string name="error_try_again">Виникла помилка. Спробуйте пізніше</string>
     <string name="error_connection_try_again">Помилка мережі. Спробуйте пізніше</string>
     <string name="error_invalid_password">Неправильний пароль</string>
-    <string name="error_email_not_verified">Email не підтверджено</string>
+    <string name="error_registration_not_verified">Вашу реєстрацію не підтверджено</string>
     <string name="error_insufficient_balance">Недостатньо коштів</string>
     <string name="error_no_transferable_assets">Немає активів для відправки</string>
     <string name="error_invalid_recipient">Некоректний отримувач</string>
@@ -171,8 +172,8 @@
     <string name="error_tx_not_found">Елемент не знайдено</string>
 
     <string name="tfa_dialog_title">Двофакторна аутентифікація</string>
-    <string name="tfa_default_dialog_message">Введіть перевірочний код</string>
-    <string name="totp_dialog_message">Введіть код з аутентифікатора</string>
+    <string name="tfa_default_dialog_message">Введіть код</string>
+    <string name="totp_dialog_message">Введіть тимчасовий код з аутентифікатора</string>
     <string name="email_otp_dialog_message">Введіть код з листа</string>
     <string name="otp_verification_code">Перевірочний код</string>
     <string name="error_invalid_otp_code">Неправильний код</string>
@@ -412,7 +413,6 @@
     <string name="kyc_recovery_rejected_message">Ваш запит відхилено. Спробуйте ще раз</string>
     <string name="share_sale">Поділитися кампанією</string>
     <string name="lock_app_in_background">Блокувати додаток у фоні</string>
-    <string name="open_email_app">Відкрити пошту</string>
     <string name="almost_done">Майже готово</string>
     <string name="use_local_account_sign_in">Увійти з локальним ключем</string>
     <string name="local_account_explanation">Локальний ключ створюється та зберігається на вашому

@@ -61,7 +61,7 @@ class UnlockAppActivity : BaseActivity() {
         val login = credentialsPersistence.getSavedLogin()
         if (login == null) {
             errorHandlerFactory.getDefault().handle(
-                IllegalStateException("No saved email, unlock is not possible")
+                IllegalStateException("No saved login, unlock is not possible")
             )
             (application as? App)?.signOut(this)
             return
@@ -80,7 +80,7 @@ class UnlockAppActivity : BaseActivity() {
     private fun initViews() {
         initButtons()
         initErrorEmptyView()
-        user_email_text.text = login
+        user_login_text.text = login
         ProfileUtil.setAvatar(user_logo, login, urlConfigProvider, activeKycPersistence.loadItem())
     }
 
@@ -173,8 +173,8 @@ class UnlockAppActivity : BaseActivity() {
 
     private fun requestFingerprintAuthIfAvailable() {
         biometricAuthManager.requestAuthIfPossible(
-            onSuccess = { email, password ->
-                unlock(email, password, isPasswordEnteredManually = false)
+            onSuccess = { login, password ->
+                unlock(login, password, isPasswordEnteredManually = false)
             },
             onError = {
                 toastManager.short(it?.toString())
@@ -204,7 +204,7 @@ class UnlockAppActivity : BaseActivity() {
         unlock(login, savedPassword, isPasswordEnteredManually = false)
     }
 
-    private fun unlock(email: String, password: CharArray, isPasswordEnteredManually: Boolean) {
+    private fun unlock(login: String, password: CharArray, isPasswordEnteredManually: Boolean) {
         if (lastEnteredPassword !== password) {
             lastEnteredPassword?.erase()
         }
@@ -212,7 +212,7 @@ class UnlockAppActivity : BaseActivity() {
         lastTimePasswordWasEnteredManually = isPasswordEnteredManually
 
         SignInUseCase(
-            email,
+            login,
             password,
             apiProvider.getKeyServer(),
             session,

@@ -13,7 +13,7 @@ import org.tokend.wallet.Account
  * Recovers user's password, first step of KYC recovery
  */
 class RecoverPasswordUseCase(
-    private val email: String,
+    private val login: String,
     private val newPassword: CharArray,
     private val apiProvider: ApiProvider
 ) {
@@ -37,7 +37,7 @@ class RecoverPasswordUseCase(
     private fun recoverPassword(): Single<WalletCreateResult> {
         return KeyServer(apiProvider.getApi().wallets)
             .recoverWalletPassword(
-                email,
+                login,
                 newPassword,
                 newAccount
             )

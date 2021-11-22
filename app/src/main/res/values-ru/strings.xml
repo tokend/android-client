@@ -4,7 +4,7 @@
 
     <string name="sign_up">Регистрация</string>
     <string name="sign_in">Войти</string>
-    <string name="email">Email</string>
+    <string name="login">Логин</string>
     <string name="password">Пароль</string>
     <string name="confirm_password">Подтвердите пароль</string>
     <string name="forgot_password">Забыли пароль?</string>
@@ -19,15 +19,16 @@
     <string name="retry">Повторить</string>
     <string name="share">Поделиться</string>
     <string name="share_account_id">Поделиться аккаунтом</string>
-    <string name="check_your_email_to_verify_account">Следуйте инструкциям из письма чтобы подтвердить email</string>
+    <string name="check_confirmation_message_to_verify_account">Следуйте инструкциям из сообщения чтобы подтвердить регистрацию</string>
     <string name="continue_action">Продолжить</string>
     <string name="cancel">Отмена</string>
     <string name="ok">OK</string>
     <string name="no">Нет</string>
-    <string name="email_not_verified_explanation">Этот email не подтвержден.
-        Проверьте папку Спам или запросите новое письмо
+    <string name="registration_not_verified_explanation">
+        Ваща регистрация еще не подтверждена.
+        Проверьте папку Спам или запросите новое подтверждение
     </string>
-    <string name="resend_letter">Повторить отправку</string>
+    <string name="resend_registration_confirmation">Отправить снова</string>
     <string name="paste">Вставить</string>
     <string name="no_transaction_history">История операций пуста</string>
     <string name="no_trades_history">История торгов пуста</string>
@@ -58,7 +59,7 @@
     <string name="template_file_download_location">Файл будет скачан в папку \"%1$s\"</string>
     <string name="template_asset_balance_created">Баланс %1$s создан</string>
     <string name="search">Поиск</string>
-    <string name="recipient_label">Email или аккаунт получателя</string>
+    <string name="recipient_label">Логин или аккаунт получателя</string>
     <string name="payment_description_label">Комментарий (опционально)</string>
     <string name="payment_successfully_sent">Платеж отправлен</string>
     <string name="no_offers">Нет ордеров</string>
@@ -78,7 +79,7 @@
     <string name="cancel_offer_action">Отменить ордер</string>
     <string name="cancel_offer_confirmation">Вы уверены, что хотите отменить ордер?</string>
     <string name="offer_canceled">Ордер отменен</string>
-    <string name="email_verified">Email подтвержден</string>
+    <string name="registration_has_been_verified">Ваша регистрация подтверждена</string>
     <string name="touch_sensor">Прикоснитесь к сенсору</string>
     <string name="aml_alert_reason">Причина</string>
     <string name="aml_alert_reason_unknown">Неизвестно</string>
@@ -140,13 +141,13 @@
     <string name="change_password_title">Изменить пароль</string>
 
     <string name="error_cannot_be_empty">Не может быть пустым</string>
-    <string name="error_invalid_email">Некорректный email</string>
+    <string name="error_invalid_login">Некорректный логин</string>
     <string name="error_weak_password">Слабый пароль</string>
-    <string name="error_email_already_taken">Email уже зарегистрирован</string>
+    <string name="error_login_already_taken">Этот логин занят</string>
     <string name="error_try_again">Возникла ошибка. Попробуйте позже</string>
     <string name="error_connection_try_again">Ошибка соединения. Попробуйте позже</string>
     <string name="error_invalid_password">Неправильный пароль</string>
-    <string name="error_email_not_verified">Email не подтвержден</string>
+    <string name="error_registration_not_verified">Ваша регистрация не подтверждена</string>
     <string name="error_insufficient_balance">Недостаточно средств</string>
     <string name="error_no_transferable_assets">Нет пересылаемых активов</string>
     <string name="error_invalid_recipient">Некорректный получатель</string>
@@ -171,8 +172,8 @@
     <string name="error_tx_not_found">Элемент не найден</string>
 
     <string name="tfa_dialog_title">Двухфакторная аутентификация</string>
-    <string name="tfa_default_dialog_message">Введите проверочный код</string>
-    <string name="totp_dialog_message">Введите код из аутентификатора</string>
+    <string name="tfa_default_dialog_message">Введите код</string>
+    <string name="totp_dialog_message">Введите временный код из аутентификатора</string>
     <string name="email_otp_dialog_message">Введите код из письма</string>
     <string name="otp_verification_code">Проверочный код</string>
     <string name="error_invalid_otp_code">Неправильный код</string>
@@ -412,7 +413,6 @@
     <string name="kyc_recovery_rejected_message">Ваш запрос отклонен. Попробуйте еще раз</string>
     <string name="share_sale">Поделиться кампанией</string>
     <string name="lock_app_in_background">Блокировать приложение в фоне</string>
-    <string name="open_email_app">Открыть почту</string>
     <string name="almost_done">Почти готово</string>
     <string name="use_local_account_sign_in">Войти с локальным ключом</string>
     <string name="local_account_explanation">Локальный ключ создается и хранится на вашем устройстве

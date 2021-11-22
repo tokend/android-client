@@ -188,9 +188,9 @@ class Navigator private constructor() {
             ?.also { performIntent(it) }
     }
 
-    fun openRecovery(email: String? = null) = createAndPerformIntent(
+    fun openRecovery(login: String? = null) = createAndPerformIntent(
         RecoveryActivity::class.java,
-        RecoveryActivity.getBundle(email)
+        RecoveryActivity.getBundle(login)
     )
 
     fun toSignIn(finishAffinity: Boolean = false) {

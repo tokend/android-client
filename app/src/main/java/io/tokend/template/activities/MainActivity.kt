@@ -152,7 +152,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
         this.landscapeAccountHeader = landscapeAccountHeader
     }
 
-    private fun getHeaderInstance(email: String?): AccountHeader {
+    private fun getHeaderInstance(login: String?): AccountHeader {
         return AccountHeaderBuilder()
             .withActivity(this)
             .withAccountHeader(R.layout.navigation_drawer_header)
@@ -163,7 +163,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
             .withSelectionListEnabledForSingleProfile(false)
             .withProfileImagesVisible(true)
             .withDividerBelowHeader(true)
-            .addProfiles(getProfileHeaderItem(email, null, accountRepository.item!!.role.role))
+            .addProfiles(getProfileHeaderItem(login, null, accountRepository.item!!.role.role))
             .withOnAccountHeaderListener { _, _, _ ->
                 openAccountIdShare()
                 true
@@ -176,7 +176,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
     }
 
     private fun getProfileHeaderItem(
-        email: String?,
+        login: String?,
         activeKyc: ActiveKyc?,
         accountRole: AccountRole
     ): ProfileDrawerItem {
@@ -185,7 +185,7 @@ class MainActivity : BaseActivity(), WalletEventsListener {
 
         return ProfileDrawerItem()
             .withIdentifier(1)
-            .withName(email)
+            .withName(login)
             .withEmail(roleName)
             .apply {
                 avatarUrl?.also { withIcon(it) }

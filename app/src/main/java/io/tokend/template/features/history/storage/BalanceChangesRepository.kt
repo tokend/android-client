@@ -86,10 +86,10 @@ class BalanceChangesRepository(
                 )
             }
             .toSingle()
-            .flatMap(this::loadAndSetEmails)
+            .flatMap(this::loadAndSetLogins)
     }
 
-    private fun loadAndSetEmails(changesPage: DataPage<BalanceChange>): Single<DataPage<BalanceChange>> {
+    private fun loadAndSetLogins(changesPage: DataPage<BalanceChange>): Single<DataPage<BalanceChange>> {
         val payments = changesPage
             .items
             .map(BalanceChange::cause)
@@ -102,12 +102,12 @@ class BalanceChangesRepository(
 
         return if (accounts.isNotEmpty() && accountDetailsRepository != null) {
             accountDetailsRepository
-                .getEmailsByAccountIds(accounts)
+                .getLoginsByAccountIds(accounts)
                 .onErrorReturnItem(emptyMap())
-                .map { emailsMap ->
+                .map { loginsMap ->
                     payments.forEach { payment ->
-                        payment.sourceName = emailsMap[payment.sourceAccountId]
-                        payment.destName = emailsMap[payment.destAccountId]
+                        payment.sourceName = loginsMap[payment.sourceAccountId]
+                        payment.destName = loginsMap[payment.destAccountId]
                     }
                 }
                 .map { changesPage }

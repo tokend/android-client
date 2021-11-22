@@ -14,7 +14,7 @@ import io.tokend.template.R
 import io.tokend.template.activities.BaseActivity
 import io.tokend.template.extensions.*
 import io.tokend.template.features.account.data.model.AccountRecord
-import io.tokend.template.features.signin.logic.ResendVerificationEmailUseCase
+import io.tokend.template.features.signin.logic.ResendVerificationConfirmationUseCase
 import io.tokend.template.features.signin.logic.SignInMethod
 import io.tokend.template.features.signin.logic.SignInUseCase
 import io.tokend.template.features.urlconfig.view.NetworkFieldWrapper
@@ -102,12 +102,12 @@ class SignInActivity : BaseActivity() {
     private fun initFields() {
         initNetworkField()
 
-        email_edit_text.requestFocus()
+        login_edit_text.requestFocus()
         SimpleTextWatcher {
             password_edit_text.error = null
             updateSignInAvailability()
         }.also {
-            email_edit_text.addTextChangedListener(it)
+            login_edit_text.addTextChangedListener(it)
             password_edit_text.addTextChangedListener(it)
         }
 
@@ -140,7 +140,7 @@ class SignInActivity : BaseActivity() {
         }
 
         recovery_button.setOnClickListener {
-            Navigator.from(this).openRecovery(email_edit_text.text.toString())
+            Navigator.from(this).openRecovery(login_edit_text.text.toString())
         }
 
         if (BuildConfig.ENABLE_LOCAL_ACCOUNT_SIGN_IN) {
@@ -162,16 +162,16 @@ class SignInActivity : BaseActivity() {
 
     private fun updateSignInAvailability() {
         canSignIn = !isLoading
-                && !email_edit_text.text.isNullOrBlank()
+                && !login_edit_text.text.isNullOrBlank()
                 && !password_edit_text.text.isNullOrEmpty()
                 && !password_edit_text.hasError()
-                && !email_edit_text.hasError()
+                && !login_edit_text.hasError()
     }
 
     private fun tryToSignIn() {
         when {
-            email_edit_text.text.isNullOrBlank() ->
-                email_edit_text.setErrorAndFocus(R.string.error_cannot_be_empty)
+            login_edit_text.text.isNullOrBlank() ->
+                login_edit_text.setErrorAndFocus(R.string.error_cannot_be_empty)
             password_edit_text.text.isNullOrEmpty() ->
                 password_edit_text.setErrorAndFocus(R.string.error_cannot_be_empty)
             canSignIn -> {
@@ -182,7 +182,7 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun signIn() {
-        val email = email_edit_text.text.toString()
+        val email = login_edit_text.text.toString()
         val password = password_edit_text.text.getChars()
 
         SignInUseCase(
@@ -236,7 +236,7 @@ class SignInActivity : BaseActivity() {
             SimpleErrorHandler { error ->
                 when (error) {
                     is EmailNotVerifiedException -> {
-                        displayEmailNotVerifiedDialog(error.walletId)
+                        showRegistrationNotVerifiedDialog(error.walletId)
                         true
                     }
                     else -> false
@@ -278,19 +278,19 @@ class SignInActivity : BaseActivity() {
         recovery_button.isEnabled = isEnabled
     }
 
-    private fun displayEmailNotVerifiedDialog(walletId: String) {
+    private fun showRegistrationNotVerifiedDialog(walletId: String) {
         AlertDialog.Builder(this, R.style.AlertDialogStyle)
-            .setTitle(R.string.error_email_not_verified)
-            .setMessage(R.string.email_not_verified_explanation)
+            .setTitle(R.string.error_registration_not_verified)
+            .setMessage(R.string.registration_not_verified_explanation)
             .setPositiveButton(R.string.ok, null)
-            .setNeutralButton(R.string.resend_letter) { _, _ ->
-                resendVerificationEmail(walletId)
+            .setNeutralButton(R.string.resend_registration_confirmation) { _, _ ->
+                resendVerificationConfirmation(walletId)
             }
             .show()
     }
 
-    private fun resendVerificationEmail(walletId: String) {
-        ResendVerificationEmailUseCase(
+    private fun resendVerificationConfirmation(walletId: String) {
+        ResendVerificationConfirmationUseCase(
             walletId,
             apiProvider.getApi()
         )
@@ -298,7 +298,7 @@ class SignInActivity : BaseActivity() {
             .compose(ObservableTransformers.defaultSchedulersCompletable())
             .subscribeBy(
                 onComplete = {
-                    toastManager.long(R.string.check_your_email_to_verify_account)
+                    toastManager.long(R.string.check_confirmation_message_to_verify_account)
                 },
                 onError = {
                     errorHandlerFactory.getDefault().handle(it)

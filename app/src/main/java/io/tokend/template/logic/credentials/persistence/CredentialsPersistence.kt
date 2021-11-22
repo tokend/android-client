@@ -10,7 +10,7 @@ interface CredentialsPersistence : CredentialsProvider {
     fun saveCredentials(login: String, password: CharArray)
 
     /**
-     * @return saved email or null if it's missing
+     * @return saved login or null if it's missing
      */
     fun getSavedLogin(): String?
 
