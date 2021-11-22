@@ -5,6 +5,7 @@ import io.tokend.template.features.signin.logic.PostSignInManager
 import io.tokend.template.features.signin.logic.SignInUseCase
 import io.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import io.tokend.template.features.urlconfig.model.UrlConfig
+import io.tokend.template.logic.providers.UrlConfigProvider
 import io.tokend.template.logic.TxManager
 import io.tokend.template.logic.providers.*
 import io.tokend.template.logic.session.Session

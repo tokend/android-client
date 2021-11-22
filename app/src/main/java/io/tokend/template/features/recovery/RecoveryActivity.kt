@@ -3,10 +3,8 @@ package io.tokend.template.features.recovery
 import android.Manifest
 import android.app.Activity
 import android.os.Bundle
-import android.view.View
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import io.tokend.template.BuildConfig
 import io.tokend.template.R
 import io.tokend.template.activities.BaseActivity
 import io.tokend.template.extensions.getChars
@@ -14,10 +12,9 @@ import io.tokend.template.extensions.getStringExtra
 import io.tokend.template.extensions.hasError
 import io.tokend.template.extensions.onEditorAction
 import io.tokend.template.features.recovery.logic.RecoverPasswordUseCase
-import io.tokend.template.features.urlconfig.logic.UrlConfigManager
+import io.tokend.template.features.urlconfig.view.NetworkFieldWrapper
 import io.tokend.template.util.ObservableTransformers
 import io.tokend.template.util.PermissionManager
-import io.tokend.template.util.QrScannerUtil
 import io.tokend.template.util.errorhandler.CompositeErrorHandler
 import io.tokend.template.util.errorhandler.ErrorHandler
 import io.tokend.template.util.navigation.Navigator
@@ -65,7 +62,6 @@ class RecoveryActivity : BaseActivity() {
         }
 
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
-    private lateinit var urlConfigManager: UrlConfigManager
 
     private val email: String
         get() = intent.getStringExtra(EMAIL_EXTRA, "")
@@ -75,15 +71,6 @@ class RecoveryActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         setTitle(R.string.recover_account)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistence)
-        urlConfigManager.onConfigUpdated {
-            initNetworkField()
-
-            email_edit_text.text = email_edit_text.text
-
-            updateRecoveryAvailability()
-        }
 
         initFields()
         initButtons()
@@ -128,15 +115,16 @@ class RecoveryActivity : BaseActivity() {
     }
 
     private fun initNetworkField() {
-        if (BuildConfig.IS_NETWORK_SPECIFIED_BY_USER) {
-            network_field_layout.visibility = View.VISIBLE
-            urlConfigManager.get()?.also { network_edit_text.setText(it.apiDomain) }
-
-            scan_qr_button.setOnClickListener {
-                tryOpenQrScanner()
-            }
-        } else {
-            network_field_layout.visibility = View.GONE
+        val wrapper = NetworkFieldWrapper(
+            this,
+            network_field_layout,
+            cameraPermission,
+            compositeDisposable,
+            activityRequestsBag
+        )
+        wrapper.onNetworkUpdated {
+            email_edit_text.text = email_edit_text.text
+            updateRecoveryAvailability()
         }
     }
 
@@ -150,14 +138,6 @@ class RecoveryActivity : BaseActivity() {
         }
     }
     // endregion
-
-    private fun tryOpenQrScanner() {
-        cameraPermission.check(this) {
-            QrScannerUtil.openScanner(this)
-                .addTo(activityRequestsBag)
-                .doOnSuccess { urlConfigManager.setFromJson(it) }
-        }
-    }
 
     private fun checkPasswordStrength() {
         if (!PasswordValidator.isValid(password_edit_text.text)) {
@@ -174,7 +154,6 @@ class RecoveryActivity : BaseActivity() {
                 && !email_edit_text.hasError()
                 && !password_edit_text.hasError()
                 && arePasswordsMatch()
-                && urlConfigProvider.hasConfig()
     }
 
     private fun arePasswordsMatch(): Boolean {

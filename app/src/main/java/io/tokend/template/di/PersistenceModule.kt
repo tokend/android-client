@@ -4,15 +4,16 @@ import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import io.tokend.template.data.storage.persistence.ObjectPersistence
+import io.tokend.template.data.storage.persistence.ObjectPersistenceOnPrefs
 import io.tokend.template.features.kyc.storage.ActiveKycPersistence
 import io.tokend.template.features.localaccount.model.LocalAccount
 import io.tokend.template.features.localaccount.storage.LocalAccountPersistenceOnPrefs
 import io.tokend.template.features.urlconfig.model.UrlConfig
-import io.tokend.template.features.urlconfig.storage.UrlConfigPersistence
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistenceImpl
 import io.tokend.template.logic.credentials.persistence.WalletInfoPersistence
 import io.tokend.template.logic.credentials.persistence.WalletInfoPersistenceImpl
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -35,8 +36,13 @@ class PersistenceModule(
 
     @Provides
     @Singleton
+    @Named("url_config")
     fun urlConfigPersistence(): ObjectPersistence<UrlConfig> {
-        return UrlConfigPersistence(networkPreferences)
+        return ObjectPersistenceOnPrefs(
+            UrlConfig::class.java,
+            networkPreferences,
+            "url_config"
+        )
     }
 
     @Provides
@@ -53,6 +59,7 @@ class PersistenceModule(
 
     @Provides
     @Singleton
+    @Named("local_account")
     fun localAccountPersistence(): ObjectPersistence<LocalAccount> {
         return LocalAccountPersistenceOnPrefs(localAccountPreferences)
     }

@@ -30,13 +30,10 @@ import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subjects.BehaviorSubject
 import io.tokend.template.db.AppDatabase
 import io.tokend.template.di.*
-import io.tokend.template.logic.providers.AccountProviderFactory
-import io.tokend.template.di.AppModule
-import io.tokend.template.di.SessionModule
-import io.tokend.template.logic.providers.WalletInfoProviderFactory
 import io.tokend.template.extensions.defaultSharedPreferences
 import io.tokend.template.features.urlconfig.model.UrlConfig
-import io.tokend.template.features.urlconfig.storage.UrlConfigPersistence
+import io.tokend.template.logic.providers.AccountProviderFactory
+import io.tokend.template.logic.providers.WalletInfoProviderFactory
 import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.session.SessionInfoStorage
 import io.tokend.template.util.locale.AppLocaleManager
@@ -269,20 +266,15 @@ class App : MultiDexApplication() {
 
         database = getDatabase()
 
-        val defaultUrlConfig = UrlConfig(
-            BuildConfig.API_URL, BuildConfig.STORAGE_URL,
-            BuildConfig.CLIENT_URL
-        )
-
         stateComponent = DaggerAppStateComponent.builder()
             .appModule(AppModule(this))
-            .urlConfigProviderModule(
-                UrlConfigProviderModule(
-                    if (BuildConfig.IS_NETWORK_SPECIFIED_BY_USER)
-                        UrlConfigPersistence(getNetworkPreferences()).loadItem()
-                            ?: defaultUrlConfig
-                    else
-                        defaultUrlConfig
+            .urlConfigModule(
+                UrlConfigModule(
+                    defaultConfig = UrlConfig(
+                        BuildConfig.API_URL,
+                        BuildConfig.STORAGE_URL,
+                        BuildConfig.CLIENT_URL
+                    )
                 )
             )
             .apiProviderModule(

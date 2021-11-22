@@ -252,7 +252,7 @@
 
     <string name="tokend_network_hint">Network</string>
     <string name="not_specified">Not specified</string>
-    <string name="error_network_not_specified">Network is not specified</string>
+    <string name="error_incorrect_network_qr">This is not a valid network QR</string>
 
     <string name="open_source_licenses_title">Open source licenses</string>
     <string name="settings_information_group">Information</string>

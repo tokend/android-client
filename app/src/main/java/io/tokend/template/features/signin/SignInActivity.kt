@@ -17,10 +17,9 @@ import io.tokend.template.features.account.data.model.AccountRecord
 import io.tokend.template.features.signin.logic.ResendVerificationEmailUseCase
 import io.tokend.template.features.signin.logic.SignInMethod
 import io.tokend.template.features.signin.logic.SignInUseCase
-import io.tokend.template.features.urlconfig.logic.UrlConfigManager
+import io.tokend.template.features.urlconfig.view.NetworkFieldWrapper
 import io.tokend.template.util.ObservableTransformers
 import io.tokend.template.util.PermissionManager
-import io.tokend.template.util.QrScannerUtil
 import io.tokend.template.util.errorhandler.CompositeErrorHandler
 import io.tokend.template.util.errorhandler.ErrorHandler
 import io.tokend.template.util.errorhandler.SimpleErrorHandler
@@ -49,8 +48,6 @@ class SignInActivity : BaseActivity() {
 
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
 
-    private lateinit var urlConfigManager: UrlConfigManager
-
     private var isLoading: Boolean = false
         set(value) {
             field = value
@@ -74,13 +71,6 @@ class SignInActivity : BaseActivity() {
         setContentView(R.layout.activity_sign_in)
         setSupportActionBar(toolbar)
         setTitle(R.string.sign_in)
-
-        urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistence)
-        urlConfigManager.onConfigUpdated {
-            initNetworkField()
-            password_edit_text.error = null
-            updateSignInAvailability()
-        }
 
         initVersion()
         initFields()
@@ -127,15 +117,16 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun initNetworkField() {
-        if (BuildConfig.IS_NETWORK_SPECIFIED_BY_USER) {
-            network_field_layout.visibility = View.VISIBLE
-            urlConfigManager.get()?.also { network_edit_text.setText(it.apiDomain) }
-
-            scan_qr_button.setOnClickListener {
-                tryOpenQrScanner()
-            }
-        } else {
-            network_field_layout.visibility = View.GONE
+        val wrapper = NetworkFieldWrapper(
+            this,
+            network_field_layout,
+            cameraPermission,
+            compositeDisposable,
+            activityRequestsBag
+        )
+        wrapper.onNetworkUpdated {
+            password_edit_text.error = null
+            updateSignInAvailability()
         }
     }
 
@@ -162,14 +153,6 @@ class SignInActivity : BaseActivity() {
     }
     // endregion
 
-    private fun tryOpenQrScanner() {
-        cameraPermission.check(this) {
-            QrScannerUtil.openScanner(this)
-                .addTo(activityRequestsBag)
-                .doOnSuccess { urlConfigManager.setFromJson(it) }
-        }
-    }
-
     private fun openLocalAccountSignIn() {
         Navigator.from(this)
             .openLocalAccountSignIn()
@@ -183,7 +166,6 @@ class SignInActivity : BaseActivity() {
                 && !password_edit_text.text.isNullOrEmpty()
                 && !password_edit_text.hasError()
                 && !email_edit_text.hasError()
-                && urlConfigProvider.hasConfig()
     }
 
     private fun tryToSignIn() {

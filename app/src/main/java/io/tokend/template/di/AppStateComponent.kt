@@ -17,7 +17,7 @@ import javax.inject.Singleton
         ApiProviderModule::class,
         RepositoriesModule::class,
         PersistenceModule::class,
-        UrlConfigProviderModule::class,
+        UrlConfigModule::class,
         UtilModule::class,
         AppModule::class,
         SessionModule::class,

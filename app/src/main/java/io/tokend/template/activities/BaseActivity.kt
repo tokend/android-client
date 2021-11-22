@@ -11,7 +11,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.tokend.template.App
 import io.tokend.template.BuildConfig
-import io.tokend.template.data.storage.persistence.ObjectPersistence
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.balances.model.BalanceRecord
 import io.tokend.template.features.kyc.storage.ActiveKycPersistence
@@ -19,12 +18,11 @@ import io.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import io.tokend.template.features.signin.logic.PostSignInManagerFactory
 import io.tokend.template.features.tfa.logic.AppTfaCallback
 import io.tokend.template.features.tfa.view.TfaDialogFactory
-import io.tokend.template.features.urlconfig.model.UrlConfig
-import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import io.tokend.template.logic.credentials.persistence.WalletInfoPersistence
 import io.tokend.template.logic.persistence.BackgroundLockManager
 import io.tokend.template.logic.providers.*
+import io.tokend.template.logic.session.Session
 import io.tokend.template.util.ConnectionStateUtil
 import io.tokend.template.util.ObservableTransformers
 import io.tokend.template.util.cipher.DataCipher
@@ -62,9 +60,6 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
 
     @Inject
     lateinit var urlConfigProvider: UrlConfigProvider
-
-    @Inject
-    lateinit var urlConfigPersistence: ObjectPersistence<UrlConfig>
 
     @Inject
     lateinit var errorHandlerFactory: ErrorHandlerFactory

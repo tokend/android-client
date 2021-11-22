@@ -251,7 +251,7 @@
 
     <string name="tokend_network_hint">Сеть</string>
     <string name="not_specified">Не указано</string>
-    <string name="error_network_not_specified">Не указана сеть</string>
+    <string name="error_incorrect_network_qr">Просканирован некорректный QR код сети</string>
 
     <string name="open_source_licenses_title">Лицензии открытого ПО</string>
     <string name="settings_information_group">Информация</string>

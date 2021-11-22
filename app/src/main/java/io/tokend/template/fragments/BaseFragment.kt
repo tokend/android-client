@@ -10,7 +10,11 @@ import io.tokend.template.activities.OnBackPressedListener
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.balances.model.BalanceRecord
 import io.tokend.template.features.tfa.logic.AppTfaCallback
-import io.tokend.template.logic.providers.*
+import io.tokend.template.logic.providers.UrlConfigProvider
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.RepositoryProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.util.errorhandler.ErrorHandlerFactory
 import io.tokend.template.util.navigation.ActivityRequest
 import io.tokend.template.view.ToastManager

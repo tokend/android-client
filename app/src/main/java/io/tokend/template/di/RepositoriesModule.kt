@@ -9,7 +9,12 @@ import io.tokend.template.data.storage.persistence.ObjectPersistence
 import io.tokend.template.db.AppDatabase
 import io.tokend.template.features.kyc.storage.ActiveKycPersistence
 import io.tokend.template.features.localaccount.model.LocalAccount
-import io.tokend.template.logic.providers.*
+import io.tokend.template.logic.providers.UrlConfigProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.RepositoryProvider
+import io.tokend.template.logic.providers.RepositoryProviderImpl
+import io.tokend.template.logic.providers.WalletInfoProvider
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -23,6 +28,7 @@ class RepositoriesModule {
         mapper: ObjectMapper,
         context: Context,
         activeKycPersistence: ActiveKycPersistence,
+        @Named("local_account")
         localAccountPersistence: ObjectPersistence<LocalAccount>,
         persistencePreferences: SharedPreferences,
         database: AppDatabase

@@ -3,11 +3,9 @@ package io.tokend.template.features.signup
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AlertDialog
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import io.tokend.template.BuildConfig
 import io.tokend.template.R
 import io.tokend.template.activities.BaseActivity
 import io.tokend.template.extensions.browse
@@ -15,10 +13,9 @@ import io.tokend.template.extensions.getChars
 import io.tokend.template.extensions.hasError
 import io.tokend.template.features.signup.logic.AfterSignUpSignInUseCase
 import io.tokend.template.features.signup.logic.SignUpUseCase
-import io.tokend.template.features.urlconfig.logic.UrlConfigManager
+import io.tokend.template.features.urlconfig.view.NetworkFieldWrapper
 import io.tokend.template.util.ObservableTransformers
 import io.tokend.template.util.PermissionManager
-import io.tokend.template.util.QrScannerUtil
 import io.tokend.template.util.errorhandler.CompositeErrorHandler
 import io.tokend.template.util.errorhandler.ErrorHandler
 import io.tokend.template.util.navigation.Navigator
@@ -60,7 +57,6 @@ class SignUpActivity : BaseActivity() {
         }
 
     private val cameraPermission = PermissionManager(Manifest.permission.CAMERA, 404)
-    private lateinit var urlConfigManager: UrlConfigManager
 
     private var toSignInOnResume: Boolean = false
 
@@ -69,12 +65,6 @@ class SignUpActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         setTitle(R.string.sign_up)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        urlConfigManager = UrlConfigManager(urlConfigProvider, urlConfigPersistence)
-        urlConfigManager.onConfigUpdated {
-            initNetworkField()
-            updateSignUpAvailability()
-        }
 
         initFields()
         initButtons()
@@ -113,15 +103,15 @@ class SignUpActivity : BaseActivity() {
     }
 
     private fun initNetworkField() {
-        if (BuildConfig.IS_NETWORK_SPECIFIED_BY_USER) {
-            network_field_layout.visibility = View.VISIBLE
-            urlConfigManager.get()?.also { network_edit_text.setText(it.apiDomain) }
-
-            scan_qr_button.setOnClickListener {
-                tryOpenQrScanner()
-            }
-        } else {
-            network_field_layout.visibility = View.GONE
+        val wrapper = NetworkFieldWrapper(
+            this,
+            network_field_layout,
+            cameraPermission,
+            compositeDisposable,
+            activityRequestsBag
+        )
+        wrapper.onNetworkUpdated {
+            updateSignUpAvailability()
         }
     }
 
@@ -135,22 +125,10 @@ class SignUpActivity : BaseActivity() {
         }
 
         terms_text_view.setOnClickListener {
-            if (urlConfigProvider.hasConfig()) {
-                browse(urlConfigProvider.getConfig().terms)
-            } else {
-                toastManager.short(R.string.error_network_not_specified)
-            }
+            browse(urlConfigProvider.getConfig().terms)
         }
     }
     // endregion
-
-    private fun tryOpenQrScanner() {
-        cameraPermission.check(this) {
-            QrScannerUtil.openScanner(this)
-                .addTo(activityRequestsBag)
-                .doOnSuccess { urlConfigManager.setFromJson(it) }
-        }
-    }
 
     private fun checkPasswordStrength() {
         if (!PasswordValidator.isValid(password_edit_text.text)) {
@@ -168,7 +146,6 @@ class SignUpActivity : BaseActivity() {
                 && !password_edit_text.hasError()
                 && arePasswordsMatch()
                 && terms_of_service_checkbox.isChecked
-                && urlConfigProvider.hasConfig()
     }
 
     private fun arePasswordsMatch(): Boolean {
