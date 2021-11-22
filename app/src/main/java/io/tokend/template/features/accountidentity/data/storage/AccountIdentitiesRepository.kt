@@ -1,7 +1,8 @@
-package io.tokend.template.data.repository
+package io.tokend.template.features.accountidentity.data.storage
 
 import io.reactivex.Single
-import io.tokend.template.data.model.IdentityRecord
+import io.tokend.template.features.accountidentity.data.model.AccountIdentityRecord
+import io.tokend.template.features.accountidentity.data.model.NoIdentityAvailableException
 import io.tokend.template.logic.providers.ApiProvider
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.identity.params.IdentitiesPageParams
@@ -9,28 +10,29 @@ import retrofit2.HttpException
 import java.net.HttpURLConnection
 import java.util.*
 
-class AccountDetailsRepository(
+class AccountIdentitiesRepository(
     private val apiProvider: ApiProvider
 ) {
-    class NoIdentityAvailableException : Exception()
-
-    private val identities = mutableSetOf<IdentityRecord>()
+    private val identities = mutableSetOf<AccountIdentityRecord>()
+    private val notExistingIdentifiers = mutableSetOf<String>()
 
     /**
      * Loads account ID for given login.
      * Result will be cached.
      *
+     * @param login - email or phone number
+     *
      * @see NoIdentityAvailableException
      */
     fun getAccountIdByLogin(login: String): Single<String> {
-        val formattedLogin = login.toLowerCase(Locale.ENGLISH)
-        val existing = identities.find { it.login == formattedLogin }?.accountId
+        val formattedIdentifier = login.toLowerCase(Locale.ENGLISH)
+        val existing = identities.find { it.login == formattedIdentifier }?.accountId
         if (existing != null) {
             return Single.just(existing)
         }
 
-        return getIdentity(IdentitiesPageParams(email = formattedLogin))
-            .map(IdentityRecord::accountId)
+        return getIdentity(IdentitiesPageParams(identifier = formattedIdentifier))
+            .map(AccountIdentityRecord::accountId)
     }
 
     /**
@@ -46,21 +48,21 @@ class AccountDetailsRepository(
         }
 
         return getIdentity(IdentitiesPageParams(address = accountId))
-            .map(IdentityRecord::login)
+            .map(AccountIdentityRecord::login)
     }
 
-    fun getLoginsByAccountIds(accountIds: List<String>): Single<Map<String, String>> {
+    fun getLoginsByAccountIds(accountIds: Collection<String>): Single<Map<String, String>> {
         val toReturn = mutableMapOf<String, String>()
         val toRequest = mutableListOf<String>()
 
-        val identitiesByAccountId = identities.associateBy(IdentityRecord::accountId)
+        val identitiesByAccountId = identities.associateBy(AccountIdentityRecord::accountId)
 
         accountIds
             .forEach { accountId ->
                 val cached = identitiesByAccountId[accountId]
                 if (cached != null) {
                     toReturn[accountId] = cached.login
-                } else {
+                } else if (!notExistingIdentifiers.contains(accountId)) {
                     toRequest.add(accountId)
                 }
             }
@@ -76,20 +78,26 @@ class AccountDetailsRepository(
             .getForAccounts(toRequest)
             .toSingle()
             .map {
-                it.map(::IdentityRecord)
+                it.map(::AccountIdentityRecord)
             }
             .map { identities ->
                 this.identities.addAll(identities)
                 toReturn.putAll(
                     identities
-                        .associateBy(IdentityRecord::accountId)
+                        .associateBy(AccountIdentityRecord::accountId)
                         .mapValues { it.value.login }
                 )
                 toReturn
             }
     }
 
-    private fun getIdentity(params: IdentitiesPageParams): Single<IdentityRecord> {
+    private fun getIdentity(params: IdentitiesPageParams): Single<AccountIdentityRecord> {
+        val identifier = params.identifier ?: params.address
+
+        if (identifier != null && notExistingIdentifiers.contains(identifier)) {
+            return Single.error(NoIdentityAvailableException())
+        }
+
         return apiProvider
             .getApi()
             .identities
@@ -105,7 +113,20 @@ class AccountDetailsRepository(
                 else
                     Single.error(it)
             }
-            .map(::IdentityRecord)
+            .map(::AccountIdentityRecord)
             .doOnSuccess { identities.add(it) }
+            .doOnError {
+                if (it is NoIdentityAvailableException && identifier != null) {
+                    notExistingIdentifiers.add(identifier)
+                }
+            }
+    }
+
+    fun getCachedIdentity(accountId: String): AccountIdentityRecord? {
+        return identities.find { it.accountId == accountId }
+    }
+
+    fun invalidateCachedIdentity(accountId: String) {
+        identities.remove(getCachedIdentity(accountId))
     }
 }

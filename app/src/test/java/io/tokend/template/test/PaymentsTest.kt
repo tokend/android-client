@@ -1,17 +1,17 @@
 package io.tokend.template.test
 
-import io.tokend.template.logic.providers.AccountProviderFactory
-import io.tokend.template.logic.providers.ApiProviderFactory
-import io.tokend.template.logic.providers.RepositoryProviderImpl
-import io.tokend.template.logic.providers.WalletInfoProviderFactory
 import io.tokend.template.features.fees.logic.FeeManager
 import io.tokend.template.features.history.model.details.BalanceChangeCause
 import io.tokend.template.features.send.amount.logic.PaymentFeeLoader
 import io.tokend.template.features.send.logic.ConfirmPaymentRequestUseCase
 import io.tokend.template.features.send.logic.CreatePaymentRequestUseCase
 import io.tokend.template.features.send.recipient.logic.PaymentRecipientLoader
-import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
+import io.tokend.template.logic.providers.AccountProviderFactory
+import io.tokend.template.logic.providers.ApiProviderFactory
+import io.tokend.template.logic.providers.RepositoryProviderImpl
+import io.tokend.template.logic.providers.WalletInfoProviderFactory
+import io.tokend.template.logic.session.Session
 import org.junit.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -61,7 +61,7 @@ class PaymentsTest {
             repositoryProvider, session, txManager
         )
 
-        val recipient = PaymentRecipientLoader(repositoryProvider.accountDetails)
+        val recipient = PaymentRecipientLoader(repositoryProvider.accountIdentities)
             .load(recipientEmail)
             .blockingGet()
 
@@ -130,7 +130,7 @@ class PaymentsTest {
             repositoryProvider, session, txManager
         )
 
-        val recipient = PaymentRecipientLoader(repositoryProvider.accountDetails)
+        val recipient = PaymentRecipientLoader(repositoryProvider.accountIdentities)
             .load(recipientEmail)
             .blockingGet()
 
@@ -240,7 +240,7 @@ class PaymentsTest {
             repositoryProvider, session, txManager
         )
 
-        val recipient = PaymentRecipientLoader(repositoryProvider.accountDetails)
+        val recipient = PaymentRecipientLoader(repositoryProvider.accountIdentities)
             .load(recipientEmail)
             .blockingGet()
 

@@ -1,7 +1,8 @@
 package io.tokend.template.features.send.recipient.logic
 
 import io.reactivex.Single
-import io.tokend.template.data.repository.AccountDetailsRepository
+import io.tokend.template.features.accountidentity.data.model.NoIdentityAvailableException
+import io.tokend.template.features.accountidentity.data.storage.AccountIdentitiesRepository
 import io.tokend.template.features.send.model.PaymentRecipient
 import org.tokend.wallet.Base32Check
 
@@ -9,7 +10,7 @@ import org.tokend.wallet.Base32Check
  * Loads payment recipient info
  */
 class PaymentRecipientLoader(
-    private val accountDetailsRepository: AccountDetailsRepository
+    private val accountIdentitiesRepository: AccountIdentitiesRepository
 ) {
     class NoRecipientFoundException(recipient: String) :
         Exception("No recipient account ID found for $recipient")
@@ -28,7 +29,7 @@ class PaymentRecipientLoader(
         )
             Single.just(PaymentRecipient(recipient))
         else
-            accountDetailsRepository
+            accountIdentitiesRepository
                 .getAccountIdByLogin(recipient)
                 .map { accountId ->
                     PaymentRecipient(
@@ -37,7 +38,7 @@ class PaymentRecipientLoader(
                     )
                 }
                 .onErrorResumeNext { error ->
-                    if (error is AccountDetailsRepository.NoIdentityAvailableException)
+                    if (error is NoIdentityAvailableException)
                         Single.error(NoRecipientFoundException(recipient))
                     else
                         Single.error(error)

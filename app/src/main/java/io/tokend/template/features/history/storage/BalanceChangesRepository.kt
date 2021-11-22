@@ -1,16 +1,16 @@
 package io.tokend.template.features.history.storage
 
 import io.reactivex.Single
-import io.tokend.template.data.repository.AccountDetailsRepository
 import io.tokend.template.data.storage.repository.pagination.advanced.AdvancedCursorPagedDataRepository
 import io.tokend.template.data.storage.repository.pagination.advanced.CursorPagedDataCache
-import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.features.accountidentity.data.storage.AccountIdentitiesRepository
 import io.tokend.template.features.history.logic.ParticipantEffectConverter
 import io.tokend.template.features.history.model.BalanceChange
 import io.tokend.template.features.history.model.BalanceChangeAction
 import io.tokend.template.features.history.model.SimpleFeeRecord
 import io.tokend.template.features.history.model.details.BalanceChangeCause
 import io.tokend.template.features.send.model.PaymentRequest
+import io.tokend.template.logic.providers.ApiProvider
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.DataPage
 import org.tokend.sdk.api.base.params.PagingOrder
@@ -31,7 +31,7 @@ class BalanceChangesRepository(
     private val accountId: String?,
     private val apiProvider: ApiProvider,
     private val participantEffectConverter: ParticipantEffectConverter,
-    private val accountDetailsRepository: AccountDetailsRepository?,
+    private val accountIdentitiesRepository: AccountIdentitiesRepository?,
     cache: CursorPagedDataCache<BalanceChange>,
 ) : AdvancedCursorPagedDataRepository<BalanceChange>(
     pagingOrder = PagingOrder.DESC,
@@ -100,8 +100,8 @@ class BalanceChangesRepository(
             .toMutableList()
         accounts.addAll(payments.map(BalanceChangeCause.Payment::destAccountId))
 
-        return if (accounts.isNotEmpty() && accountDetailsRepository != null) {
-            accountDetailsRepository
+        return if (accounts.isNotEmpty() && accountIdentitiesRepository != null) {
+            accountIdentitiesRepository
                 .getLoginsByAccountIds(accounts)
                 .onErrorReturnItem(emptyMap())
                 .map { loginsMap ->

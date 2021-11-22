@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import androidx.collection.LruCache
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.tokend.template.BuildConfig
-import io.tokend.template.data.repository.AccountDetailsRepository
 import io.tokend.template.data.repository.AtomicSwapAsksRepository
 import io.tokend.template.data.repository.BlobsRepository
 import io.tokend.template.data.storage.persistence.MemoryOnlyObjectPersistence
@@ -17,6 +16,7 @@ import io.tokend.template.db.AppDatabase
 import io.tokend.template.extensions.getOrPut
 import io.tokend.template.features.account.data.model.AccountRecord
 import io.tokend.template.features.account.data.storage.AccountRepository
+import io.tokend.template.features.accountidentity.data.storage.AccountIdentitiesRepository
 import io.tokend.template.features.assets.storage.AssetChartRepository
 import io.tokend.template.features.assets.storage.AssetsDbCache
 import io.tokend.template.features.assets.storage.AssetsRepository
@@ -89,8 +89,8 @@ class RepositoryProviderImpl(
         )
     }
 
-    override val accountDetails: AccountDetailsRepository by lazy {
-        AccountDetailsRepository(apiProvider)
+    override val accountIdentities: AccountIdentitiesRepository by lazy {
+        AccountIdentitiesRepository(apiProvider)
     }
 
     override val systemInfo: SystemInfoRepository by lazy {
@@ -229,7 +229,7 @@ class RepositoryProviderImpl(
                 walletInfoProvider.getWalletInfo().accountId,
                 apiProvider,
                 DefaultParticipantEffectConverter(),
-                accountDetails,
+                accountIdentities,
                 cache
             )
         }

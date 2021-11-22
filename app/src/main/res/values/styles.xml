@@ -43,6 +43,7 @@
         <item name="met_floatingLabel">highlight</item>
         <item name="android:textSize">18sp</item>
         <item name="android:maxLines">1</item>
+        <item name="android:inputType">text</item>
     </style>
 
     <style name="PrimaryButton.Overlay" parent="ThemeOverlay.AppCompat">

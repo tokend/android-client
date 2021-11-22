@@ -125,7 +125,7 @@ class PaymentDetailsActivity : BalanceChangeDetailsActivity() {
             .toMaybe()
             .switchIfEmpty(
                 repositoryProvider
-                    .accountDetails
+                    .accountIdentities
                     .getLoginByAccountId(cause.getCounterpartyAccountId(accountId))
             )
             .compose(ObservableTransformers.defaultSchedulersSingle())

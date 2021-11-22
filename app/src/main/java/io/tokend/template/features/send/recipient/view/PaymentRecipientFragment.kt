@@ -281,7 +281,7 @@ class PaymentRecipientFragment : BaseFragment() {
         recipientLoadingDisposable?.dispose()
         recipientLoadingDisposable =
             PaymentRecipientLoader(
-                repositoryProvider.accountDetails
+                repositoryProvider.accountIdentities
             )
                 .load(recipient)
                 .compose(ObservableTransformers.defaultSchedulersSingle())
