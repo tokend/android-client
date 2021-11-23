@@ -6,7 +6,6 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.google.gson.Gson
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.assets.model.AssetDbEntity
 import io.tokend.template.features.assets.model.SimpleAsset
@@ -15,6 +14,7 @@ import io.tokend.template.features.balances.model.BalanceDbEntity
 import io.tokend.template.features.balances.storage.BalancesDao
 import io.tokend.template.features.history.storage.BalanceChangeDbEntity
 import io.tokend.template.features.history.storage.BalanceChangesDao
+import org.tokend.sdk.factory.JsonApiToolsProvider
 import org.tokend.sdk.utils.BigDecimalUtil
 import java.math.BigDecimal
 import java.util.*
@@ -31,8 +31,6 @@ import java.util.*
 @TypeConverters(AppDatabase.Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     class Converters {
-        private val gsonWithoutNulls = Gson()
-
         @TypeConverter
         fun dateToUnix(value: Date?): Long? {
             return value?.let { it.time / 1000 }
@@ -55,12 +53,16 @@ abstract class AppDatabase : RoomDatabase() {
 
         @TypeConverter
         fun assetFromJson(value: String?): Asset? {
-            return value?.let { gsonWithoutNulls.fromJson(value, SimpleAsset::class.java) }
+            return value?.let {
+                JsonApiToolsProvider.getObjectMapper().readValue(value, SimpleAsset::class.java)
+            }
         }
 
         @TypeConverter
         fun assetToJson(value: Asset?): String? {
-            return value?.let { gsonWithoutNulls.toJson(SimpleAsset(it)) }
+            return value?.let {
+                JsonApiToolsProvider.getObjectMapper().writeValueAsString(SimpleAsset(it))
+            }
         }
     }
 

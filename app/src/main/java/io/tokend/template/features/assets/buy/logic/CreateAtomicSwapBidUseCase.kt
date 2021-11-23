@@ -6,12 +6,12 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.tokend.template.data.model.AtomicSwapAskRecord
+import io.tokend.template.features.assets.buy.model.AtomicSwapInvoice
+import io.tokend.template.logic.TxManager
 import io.tokend.template.logic.providers.AccountProvider
 import io.tokend.template.logic.providers.ApiProvider
 import io.tokend.template.logic.providers.RepositoryProvider
 import io.tokend.template.logic.providers.WalletInfoProvider
-import io.tokend.template.features.assets.buy.model.AtomicSwapInvoice
-import io.tokend.template.logic.TxManager
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
@@ -177,8 +177,7 @@ class CreateAtomicSwapBidUseCase(
                         throw RequestRejectedException()
                     }
 
-                    request.externalDetails
-                        ?.withArray(REQUEST_DATA_ARRAY_KEY)
+                    request.externalDetails[REQUEST_DATA_ARRAY_KEY]
                         ?.get(0)
                         ?.get(INVOICE_KEY)
                         ?: throw NoInvoiceYetException()

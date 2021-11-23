@@ -1,23 +1,24 @@
 package io.tokend.template.logic.credentials.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.tokend.crypto.ecdsa.erase
 import org.tokend.sdk.keyserver.models.KdfAttributes
 import org.tokend.sdk.keyserver.models.LoginParams
-import org.tokend.sdk.keyserver.models.WalletCreateResult
+import org.tokend.sdk.keyserver.models.WalletCreationResult
 import org.tokend.sdk.keyserver.models.WalletInfo
 import org.tokend.wallet.Account
 
 data class WalletInfoRecord(
-    @SerializedName("wallet_id")
+    @JsonProperty("wallet_id")
     val walletId: String,
-    @SerializedName("account_id")
+    @JsonProperty("account_id")
     val accountId: String,
-    @SerializedName("login")
+    @JsonProperty("login")
     val login: String,
-    @SerializedName("login_params")
+    @JsonProperty("login_params")
     val loginParams: LoginParams,
-    @SerializedName("seeds")
+    @JsonProperty("seeds")
     var seeds: List<CharArray>
 ) {
     constructor(walletInfo: WalletInfo) : this(
@@ -28,12 +29,12 @@ data class WalletInfoRecord(
         seeds = walletInfo.secretSeeds
     )
 
-    constructor(walletCreateResult: WalletCreateResult) : this(
-        accountId = walletCreateResult.walletData.attributes.accountId,
-        seeds = walletCreateResult.accounts.map { it.secretSeed!! },
-        walletId = walletCreateResult.walletId,
-        login = walletCreateResult.walletData.attributes.email,
-        loginParams = walletCreateResult.loginParams
+    constructor(walletCreationResult: WalletCreationResult) : this(
+        accountId = walletCreationResult.creationData.attributes.accountId,
+        seeds = walletCreationResult.accounts.map { it.secretSeed!! },
+        walletId = walletCreationResult.walletId,
+        login = walletCreationResult.creationData.attributes.email,
+        loginParams = walletCreationResult.loginParams
     )
 
     constructor(
@@ -50,6 +51,7 @@ data class WalletInfoRecord(
         seeds = emptyList()
     )
 
+    @JsonIgnore
     var seedsAreErased = false
         private set
 
@@ -67,6 +69,7 @@ data class WalletInfoRecord(
     /**
      * @see eraseSeeds
      */
+    @JsonIgnore
     fun getAccounts(): List<Account> =
         if (!seedsAreErased)
             seeds.map(Account.Companion::fromSecretSeed)

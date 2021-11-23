@@ -1,7 +1,7 @@
 package io.tokend.template.features.account.data.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.JsonNode
-import com.google.gson.annotations.SerializedName
 import io.tokend.template.features.assets.model.AssetRecord
 import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import org.tokend.sdk.api.generated.inner.ExternalSystemData
@@ -13,22 +13,26 @@ import java.io.Serializable
 import java.util.*
 
 class AccountRecord(
-    @SerializedName("id")
+    @JsonProperty("id")
     val id: String,
-    @SerializedName("role")
+    @JsonProperty("role")
     var role: ResolvedAccountRole,
-    @SerializedName("kyc_recovery_status")
+    @JsonProperty("kyc_recovery_status")
     var kycRecoveryStatus: KycRecoveryStatus,
-    @SerializedName("kyc_blob_id")
+    @JsonProperty("kyc_blob_id")
     val kycBlob: String?,
-    @SerializedName("deposit_accounts")
+    @JsonProperty("deposit_accounts")
     val depositAccounts: MutableSet<DepositAccount>
 ) : Serializable {
 
     class DepositAccount(
+        @JsonProperty("type")
         val type: Int,
+        @JsonProperty("address")
         val address: String,
+        @JsonProperty("payload")
         val payload: String?,
+        @JsonProperty("expiration_date")
         val expirationDate: Date?
     ) : Serializable {
         constructor(source: ExternalSystemIDResource) : this(

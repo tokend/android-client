@@ -1,9 +1,9 @@
 package io.tokend.template.logic.credentials.persistence
 
 import android.content.SharedPreferences
-import io.tokend.template.logic.credentials.model.WalletInfoRecord
 import io.tokend.template.data.storage.persistence.SecureStorage
-import org.tokend.sdk.factory.GsonFactory
+import io.tokend.template.logic.credentials.model.WalletInfoRecord
+import org.tokend.sdk.factory.JsonApiToolsProvider
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
@@ -21,8 +21,9 @@ class WalletInfoPersistenceImpl(
         walletInfo: WalletInfoRecord,
         password: CharArray
     ) {
-        val safeWalletInfoBytes = GsonFactory().getBaseGson().toJson(walletInfo.withoutSeeds())
-            .toByteArray(Charsets.UTF_8)
+        val safeWalletInfoBytes =
+            JsonApiToolsProvider.getObjectMapper().writeValueAsString(walletInfo.withoutSeeds())
+                .toByteArray(Charsets.UTF_8)
         val seedsBytes = serializeSeeds(walletInfo.seeds)
 
         secureStorage.saveWithPassword(
@@ -43,7 +44,7 @@ class WalletInfoPersistenceImpl(
             password = password
         ) ?: return null
 
-        val walletInfo = GsonFactory().getBaseGson().fromJson(
+        val walletInfo = JsonApiToolsProvider.getObjectMapper().readValue(
             String(safeWalletInfoBytes, Charsets.UTF_8),
             WalletInfoRecord::class.java
         )

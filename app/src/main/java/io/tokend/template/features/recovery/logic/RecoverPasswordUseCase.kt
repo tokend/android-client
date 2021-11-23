@@ -6,7 +6,7 @@ import io.tokend.template.logic.providers.ApiProvider
 import org.tokend.rx.extensions.randomSingle
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.keyserver.KeyServer
-import org.tokend.sdk.keyserver.models.WalletCreateResult
+import org.tokend.sdk.keyserver.models.WalletCreationResult
 import org.tokend.wallet.Account
 
 /**
@@ -34,7 +34,7 @@ class RecoverPasswordUseCase(
         return Account.randomSingle()
     }
 
-    private fun recoverPassword(): Single<WalletCreateResult> {
+    private fun recoverPassword(): Single<WalletCreationResult> {
         return KeyServer(apiProvider.getApi().wallets)
             .recoverWalletPassword(
                 login,

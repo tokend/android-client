@@ -69,12 +69,11 @@ class PollRecord(
             val subject = details.get("question").asText()
 
             val mapper = JsonApiToolsProvider.getObjectMapper()
-            val choicesData = details
-                .withArray("choices")
+            val choicesData = details["choices"]
                 .map { mapper.treeToValue(it, ChoiceData::class.java) }
                 .sortedBy(ChoiceData::number)
 
-            val outcome = details.get("outcome")
+            val outcome = details["outcome"]
             val votesByChoices = choicesData
                 .associateBy(ChoiceData::number)
                 .mapValues { outcome?.get(it.key.toString())?.asInt() ?: 0 }

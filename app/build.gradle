@@ -112,6 +112,15 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
@@ -145,7 +154,7 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.28.3'
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
-    implementation "org.tokend:sdk:3.8.1-x.0"
+    implementation "org.tokend:sdk:4.0.0-nogson-x.0"
     implementation "org.tokend:rx-sdk:2.4.0"
 
     implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'

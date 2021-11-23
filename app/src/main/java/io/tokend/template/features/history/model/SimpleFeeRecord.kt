@@ -1,5 +1,7 @@
 package io.tokend.template.features.history.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.tokend.sdk.api.generated.inner.Fee
 import org.tokend.sdk.api.generated.resources.CalculatedFeeResource
 import org.tokend.wallet.NetworkParams
@@ -7,7 +9,9 @@ import java.io.Serializable
 import java.math.BigDecimal
 
 class SimpleFeeRecord(
+    @JsonProperty("fixed")
     val fixed: BigDecimal,
+    @JsonProperty("percent")
     val percent: BigDecimal
 ) : Serializable {
     constructor(feeResponse: Fee) : this(feeResponse.fixed, feeResponse.calculatedPercent)
@@ -17,6 +21,7 @@ class SimpleFeeRecord(
         feeResponse.calculatedPercent
     )
 
+    @JsonIgnore
     val total = fixed + percent
 
     fun toXdrFee(networkParams: NetworkParams): org.tokend.wallet.xdr.Fee {

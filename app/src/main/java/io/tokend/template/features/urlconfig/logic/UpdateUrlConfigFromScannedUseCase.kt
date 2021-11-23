@@ -7,7 +7,7 @@ import io.tokend.template.features.urlconfig.model.InvalidUrlConfigSourceExcepti
 import io.tokend.template.features.urlconfig.model.UrlConfig
 import io.tokend.template.logic.providers.UrlConfigProvider
 import okhttp3.HttpUrl
-import org.tokend.sdk.factory.GsonFactory
+import org.tokend.sdk.factory.JsonApiToolsProvider
 
 /**
  * Updates [urlConfigProvider] with the [UrlConfig] obtained from the [scannedContent].
@@ -36,7 +36,7 @@ class UpdateUrlConfigFromScannedUseCase(
     }
 
     private fun getParsedUrlConfig(): UrlConfig? = tryOrNull {
-        GsonFactory().getBaseGson().fromJson(scannedContent, UrlConfig::class.java)
+        JsonApiToolsProvider.getObjectMapper().readValue(scannedContent, UrlConfig::class.java)
             .apply {
                 assert(api.isNotEmpty())
                 assert(storage.isNotEmpty())
