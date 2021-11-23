@@ -112,7 +112,7 @@ class AccountRolesAndKycTest {
             )
             Assert.assertTrue(
                 "There must be an actual role in the account repo once the form is submitted",
-                repositoryProvider.account.item!!.role.role == form.getRole()
+                repositoryProvider.account.item!!.role.role == form.role
             )
             Assert.assertTrue(
                 "There must be an actual form in the active KYC repo once the form is submitted",
@@ -211,7 +211,7 @@ class AccountRolesAndKycTest {
             repositoryProvider.account.updateDeferred().blockingAwait()
             Assert.assertTrue(
                 "The account role must be actual once the request is approved",
-                repositoryProvider.account.item!!.role.role == form.getRole()
+                repositoryProvider.account.item!!.role.role == form.role
             )
 
             repositoryProvider.activeKyc.updateDeferred().blockingAwait()

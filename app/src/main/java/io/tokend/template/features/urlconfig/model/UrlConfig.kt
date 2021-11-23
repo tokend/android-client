@@ -3,17 +3,15 @@ package io.tokend.template.features.urlconfig.model
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.JsonNode
 import okhttp3.HttpUrl
 import java.io.Serializable
 
 class UrlConfig
 @JsonCreator
 constructor(
-    @JsonProperty("api")
     api: String,
-    @JsonProperty("storage")
     storage: String,
-    @JsonProperty("client")
     client: String
 ) : Serializable {
     private val mApi: String = api
@@ -55,7 +53,7 @@ constructor(
         get() = HttpUrl.parse(api)?.host() ?: api
 
     private fun String.addTrailSlashIfNeeded(): String {
-        return if (this.endsWith('/')) this else this + "/"
+        return if (this.endsWith('/')) this else "$this/"
     }
 
     private fun String.addProtocolIfNeeded(): String {
@@ -70,5 +68,27 @@ constructor(
     companion object {
         private const val TERMS_ROUTE = "terms"
         private const val KYC_ROUTE = "settings/verification"
+
+        fun fromQrJson(qrJson: JsonNode) = UrlConfig(
+            api = qrJson
+                .get("api")
+                ?.takeIf(JsonNode::isTextual)
+                ?.asText()
+                ?.takeIf(String::isNotEmpty)
+                ?: throw IllegalArgumentException("Invalid API URL: $qrJson"),
+            storage = qrJson
+                .get("storage")
+                ?.takeIf(JsonNode::isTextual)
+                ?.asText()
+                ?.takeIf(String::isNotEmpty)
+                ?: throw IllegalArgumentException("Invalid storage URL: $qrJson"),
+            client = qrJson
+                .get("terms")
+                ?.takeIf(JsonNode::isTextual)
+                ?.asText()
+                ?.takeIf(String::isNotEmpty)
+                ?.substringBefore(TERMS_ROUTE)
+                ?: throw IllegalArgumentException("Invalid terms URL: $qrJson")
+        )
     }
 }

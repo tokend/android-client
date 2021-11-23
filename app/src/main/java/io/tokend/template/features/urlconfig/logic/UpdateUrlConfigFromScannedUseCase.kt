@@ -36,12 +36,7 @@ class UpdateUrlConfigFromScannedUseCase(
     }
 
     private fun getParsedUrlConfig(): UrlConfig? = tryOrNull {
-        JsonApiToolsProvider.getObjectMapper().readValue(scannedContent, UrlConfig::class.java)
-            .apply {
-                assert(api.isNotEmpty())
-                assert(storage.isNotEmpty())
-                assert(client.isNotEmpty())
-            }
+        UrlConfig.fromQrJson(JsonApiToolsProvider.getObjectMapper().readTree(scannedContent))
     }
 
     private fun getParsedWebClientUrl(): HttpUrl? = tryOrNull {
