@@ -2,8 +2,8 @@ package io.tokend.template.features.history.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
-import org.tokend.sdk.api.generated.inner.Fee
-import org.tokend.sdk.api.generated.resources.CalculatedFeeResource
+import org.tokend.sdk.api.v3.model.generated.inner.Fee
+import org.tokend.sdk.api.v3.model.generated.resources.CalculatedFeeResource
 import org.tokend.wallet.NetworkParams
 import java.io.Serializable
 import java.math.BigDecimal

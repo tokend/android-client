@@ -17,8 +17,8 @@ import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.TokenDApi
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
-import org.tokend.sdk.api.generated.resources.ChangeRoleRequestResource
-import org.tokend.sdk.api.generated.resources.ReviewableRequestResource
+import org.tokend.sdk.api.v3.model.generated.resources.ChangeRoleRequestResource
+import org.tokend.sdk.api.v3.model.generated.resources.ReviewableRequestResource
 import org.tokend.sdk.api.v3.requests.model.RequestState
 import org.tokend.sdk.api.v3.requests.params.ChangeRoleRequestPageParams
 import org.tokend.sdk.api.v3.requests.params.RequestParamsV3

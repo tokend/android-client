@@ -6,13 +6,13 @@ import com.fasterxml.jackson.databind.JsonNode
 import io.tokend.template.features.account.data.model.AccountRole
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.blobs.model.Blob
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 
 /**
  * KYC form data with documents
  */
 sealed class KycForm(
-    @field:JsonProperty("documents")
+    @get:JsonProperty("documents")
     var documents: MutableMap<String, RemoteFile>? = mutableMapOf()
 ) {
     @get:JsonIgnore
@@ -119,7 +119,7 @@ sealed class KycForm(
             json: String,
             accountRole: AccountRole
         ): KycForm {
-            return fromJson(JsonApiToolsProvider.getObjectMapper().readTree(json), accountRole)
+            return fromJson(JsonApiTools.objectMapper.readTree(json), accountRole)
         }
 
         /**
@@ -132,7 +132,7 @@ sealed class KycForm(
             json: JsonNode,
             accountRole: AccountRole
         ): KycForm {
-            val mapper = JsonApiToolsProvider.getObjectMapper()
+            val mapper = JsonApiTools.objectMapper
 
             return when (accountRole) {
                 General.ROLE ->

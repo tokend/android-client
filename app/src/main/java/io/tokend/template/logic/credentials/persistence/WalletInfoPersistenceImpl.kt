@@ -3,7 +3,9 @@ package io.tokend.template.logic.credentials.persistence
 import android.content.SharedPreferences
 import io.tokend.template.data.storage.persistence.SecureStorage
 import io.tokend.template.logic.credentials.model.WalletInfoRecord
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.crypto.ecdsa.erase
+import org.tokend.sdk.factory.JsonApiTools
+import org.tokend.wallet.Account
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
@@ -21,13 +23,13 @@ class WalletInfoPersistenceImpl(
         walletInfo: WalletInfoRecord,
         password: CharArray
     ) {
+        // Will be serialized without accounts.
         val safeWalletInfoBytes =
-            JsonApiToolsProvider.getObjectMapper().writeValueAsString(walletInfo.withoutSeeds())
-                .toByteArray(Charsets.UTF_8)
-        val seedsBytes = serializeSeeds(walletInfo.seeds)
+            JsonApiTools.objectMapper.writeValueAsBytes(walletInfo)
+        val accountsBytes = serializeAccounts(walletInfo.accounts)
 
         secureStorage.saveWithPassword(
-            data = seedsBytes,
+            data = accountsBytes,
             key = getSeedsKeyKey(walletInfo.walletId),
             password = password
         )
@@ -44,17 +46,17 @@ class WalletInfoPersistenceImpl(
             password = password
         ) ?: return null
 
-        val walletInfo = JsonApiToolsProvider.getObjectMapper().readValue(
-            String(safeWalletInfoBytes, Charsets.UTF_8),
+        val walletInfo = JsonApiTools.objectMapper.readValue(
+            safeWalletInfoBytes,
             WalletInfoRecord::class.java
         )
 
-        val seeds = secureStorage.loadWithPassword(
+        val accounts = secureStorage.loadWithPassword(
             key = getSeedsKeyKey(walletInfo.walletId),
             password = password
-        )?.let(this::deserializeSeeds) ?: return null
+        )?.let(this::deserializeAccounts) ?: return null
 
-        walletInfo.seeds = seeds
+        walletInfo.accounts = accounts
 
         return walletInfo
     }
@@ -71,27 +73,28 @@ class WalletInfoPersistenceImpl(
         return SEEDS_KEY_PREFIX + "_" + walletId.hashCode()
     }
 
-    private fun serializeSeeds(seeds: List<CharArray>): ByteArray {
+    private fun serializeAccounts(accounts: List<Account>): ByteArray {
         val byteArrayOutputStream = ByteArrayOutputStream()
         DataOutputStream(byteArrayOutputStream).apply {
             use {
-                writeByte(SEEDS_SERIALIZATION_VERSION)
-                seeds.forEach { seed ->
-                    writeInt(seed.size)
-                    seed.forEach { writeChar(it.toInt()) }
+                writeByte(ACCOUNTS_SERIALIZATION_VERSION)
+                accounts.forEach { account ->
+                    writeInt(account.secretSeed.size)
+                    account.secretSeed.forEach { writeChar(it.toInt()) }
                 }
             }
         }
+
         return byteArrayOutputStream.toByteArray()
     }
 
-    private fun deserializeSeeds(serialized: ByteArray): List<CharArray> {
+    private fun deserializeAccounts(serialized: ByteArray): List<Account> {
         val result = mutableListOf<CharArray>()
         val byteArrayInputStream = ByteArrayInputStream(serialized)
         DataInputStream(byteArrayInputStream).apply {
             use {
-                require(readByte() == SEEDS_SERIALIZATION_VERSION.toByte()) {
-                    "Unknown seeds serialization version"
+                require(readByte() == ACCOUNTS_SERIALIZATION_VERSION.toByte()) {
+                    "Unknown accounts serialization version"
                 }
 
                 while (available() > 0) {
@@ -103,11 +106,16 @@ class WalletInfoPersistenceImpl(
                 }
             }
         }
+
         return result
+            .map { seed ->
+                Account.fromSecretSeed(seed)
+                    .also { seed.erase() }
+            }
     }
 
     companion object {
-        private const val SEEDS_SERIALIZATION_VERSION = 1
+        private const val ACCOUNTS_SERIALIZATION_VERSION = 1
         private const val SEEDS_KEY_PREFIX = "(◕‿◕✿)"
         private const val WALLET_INFO_KEY_PREFIX = "ಠ_ಠ"
     }

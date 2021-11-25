@@ -33,7 +33,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 class LocalAccountDetailsActivity : BaseActivity() {
     override val allowUnauthorized = true
 
-    protected val adapter = DetailsItemsAdapter()
+    private val adapter = DetailsItemsAdapter()
 
     private lateinit var localAccount: LocalAccount
 
@@ -132,7 +132,7 @@ class LocalAccountDetailsActivity : BaseActivity() {
 
         var disposable: Disposable? = null
 
-        val progress = ProgressDialogFactory.getDialog(this, cancelListener = { _ ->
+        val progress = ProgressDialogFactory.getDialog(this, cancelListener = {
             disposable?.dispose()
         })
 

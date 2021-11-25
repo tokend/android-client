@@ -7,7 +7,7 @@ import io.tokend.template.features.assets.model.AssetRecord
 import io.tokend.template.features.assets.model.SimpleAsset
 import io.tokend.template.features.urlconfig.model.UrlConfig
 import io.tokend.template.util.RecordWithPolicy
-import org.tokend.sdk.api.generated.resources.AssetPairResource
+import org.tokend.sdk.api.v3.model.generated.resources.AssetPairResource
 import org.tokend.wallet.xdr.AssetPairPolicy
 import java.io.Serializable
 import java.math.BigDecimal

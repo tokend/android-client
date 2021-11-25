@@ -1,21 +1,22 @@
 package io.tokend.template.test
 
-import io.tokend.template.logic.providers.AccountProviderFactory
-import io.tokend.template.logic.providers.ApiProviderFactory
-import io.tokend.template.logic.providers.RepositoryProviderImpl
-import io.tokend.template.logic.providers.WalletInfoProviderFactory
 import io.tokend.template.features.fees.logic.FeeManager
 import io.tokend.template.features.history.model.details.BalanceChangeCause
 import io.tokend.template.features.withdraw.logic.ConfirmWithdrawalRequestUseCase
 import io.tokend.template.features.withdraw.logic.CreateWithdrawalRequestUseCase
-import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
-import junit.framework.Assert
+import io.tokend.template.logic.providers.AccountProviderFactory
+import io.tokend.template.logic.providers.ApiProviderFactory
+import io.tokend.template.logic.providers.RepositoryProviderImpl
+import io.tokend.template.logic.providers.WalletInfoProviderFactory
+import io.tokend.template.logic.session.Session
+import org.junit.Assert
 import org.junit.BeforeClass
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
+import org.tokend.sdk.utils.extentions.toNetworkParams
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.*
 import org.tokend.wallet.xdr.utils.XdrDataOutputStream
@@ -59,8 +60,9 @@ class WithdrawTest {
 
             val systemInfo =
                 apiProvider.getApi()
-                    .general
-                    .getSystemInfo()
+                    .v3
+                    .info
+                    .getInfo()
                     .execute()
                     .get()
             val netParams = systemInfo.toNetworkParams()
@@ -90,7 +92,7 @@ class WithdrawTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(
@@ -129,7 +131,7 @@ class WithdrawTest {
         )
         Assert.assertEquals(
             "Withdrawal request account ID must be equal to the actual one",
-            session.getWalletInfo()!!.accountId, request.accountId
+            session.getWalletInfo().accountId, request.accountId
         )
     }
 
@@ -148,7 +150,7 @@ class WithdrawTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(
@@ -233,12 +235,13 @@ class WithdrawTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
-        val (_, rootAccount) = Util.getVerifiedWallet(
+        val (_, accounts) = Util.getVerifiedWallet(
             email, password, apiProvider, session, repositoryProvider
         )
+        val rootAccount = accounts.first()
 
         val txManager = TxManager(apiProvider)
 

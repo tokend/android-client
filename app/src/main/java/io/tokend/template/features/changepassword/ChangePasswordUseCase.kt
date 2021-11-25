@@ -3,15 +3,15 @@ package io.tokend.template.features.changepassword
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
+import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
+import io.tokend.template.logic.credentials.model.WalletInfoRecord
+import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
+import io.tokend.template.logic.credentials.persistence.WalletInfoPersistence
 import io.tokend.template.logic.providers.AccountProvider
 import io.tokend.template.logic.providers.ApiProvider
 import io.tokend.template.logic.providers.RepositoryProvider
 import io.tokend.template.logic.providers.WalletInfoProvider
-import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import io.tokend.template.logic.session.Session
-import io.tokend.template.logic.credentials.model.WalletInfoRecord
-import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
-import io.tokend.template.logic.credentials.persistence.WalletInfoPersistence
 import org.tokend.rx.extensions.randomSingle
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.keyserver.KeyServer
@@ -135,7 +135,7 @@ class ChangePasswordUseCase(
 
         return KeyServer(signedApi.wallets)
             .updateWalletPassword(
-                currentWalletInfo = currentWalletInfo.toSdkWalletInfo(),
+                currentWallet = currentWalletInfo.toSdkWallet(),
                 currentAccount = currentAccount,
                 currentSigners = currentSigners,
                 defaultSignerRole = defaultSignerRole,
@@ -159,6 +159,5 @@ class ChangePasswordUseCase(
         // Update in persistent storage
         credentialsPersistence?.saveCredentials(session.login, newPassword)
         walletInfoPersistence?.saveWalletInfo(newWalletInfo, newPassword)
-        newWalletInfo.eraseSeeds()
     }
 }

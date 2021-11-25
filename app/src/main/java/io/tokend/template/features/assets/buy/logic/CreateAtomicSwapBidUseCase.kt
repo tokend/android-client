@@ -18,7 +18,7 @@ import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.v3.requests.model.RequestState
 import org.tokend.sdk.api.v3.requests.params.RequestParamsV3
 import org.tokend.sdk.api.v3.requests.params.RequestsPageParamsV3
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.Transaction
 import org.tokend.wallet.xdr.*
@@ -41,7 +41,7 @@ class CreateAtomicSwapBidUseCase(
     private val accountProvider: AccountProvider,
     private val txManager: TxManager
 ) {
-    private val objectMapper = JsonApiToolsProvider.getObjectMapper()
+    private val objectMapper = JsonApiTools.objectMapper
     private lateinit var accountId: String
     private lateinit var networkParams: NetworkParams
     private lateinit var transaction: Transaction

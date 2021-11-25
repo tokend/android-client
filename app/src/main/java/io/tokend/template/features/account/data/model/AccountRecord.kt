@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.JsonNode
 import io.tokend.template.features.assets.model.AssetRecord
 import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
-import org.tokend.sdk.api.generated.inner.ExternalSystemData
-import org.tokend.sdk.api.generated.resources.AccountResource
-import org.tokend.sdk.api.generated.resources.ExternalSystemIDResource
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.api.v3.model.generated.inner.ExternalSystemData
+import org.tokend.sdk.api.v3.model.generated.resources.AccountResource
+import org.tokend.sdk.api.v3.model.generated.resources.ExternalSystemIDResource
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.wallet.xdr.ExternalSystemAccountIDPoolEntry
 import java.io.Serializable
 import java.util.*
@@ -44,7 +44,7 @@ class AccountRecord(
         constructor(source: ExternalSystemAccountIDPoolEntry) : this(
             type = source.externalSystemType,
             expirationDate = Date(source.expiresAt * 1000L),
-            data = JsonApiToolsProvider.getObjectMapper().readValue(
+            data = JsonApiTools.objectMapper.readValue(
                 source.data,
                 ExternalSystemData::class.java
             )

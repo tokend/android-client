@@ -1,7 +1,7 @@
 package io.tokend.template.features.history.logic
 
 import io.tokend.template.features.history.model.BalanceChange
-import org.tokend.sdk.api.generated.resources.ParticipantsEffectResource
+import org.tokend.sdk.api.v3.model.generated.resources.ParticipantsEffectResource
 
 /**
  * Converts list of [ParticipantEffectResource] to the list of [BalanceChange]

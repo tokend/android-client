@@ -6,7 +6,7 @@ import io.tokend.template.features.history.model.BalanceChange
 import io.tokend.template.features.history.model.BalanceChangeAction
 import io.tokend.template.features.history.model.SimpleFeeRecord
 import io.tokend.template.features.history.model.details.BalanceChangeCause
-import org.tokend.sdk.api.generated.resources.*
+import org.tokend.sdk.api.v3.model.generated.resources.*
 
 class DefaultParticipantEffectConverter : ParticipantEffectConverter {
     override fun toBalanceChanges(participantEffects: Collection<ParticipantsEffectResource>)

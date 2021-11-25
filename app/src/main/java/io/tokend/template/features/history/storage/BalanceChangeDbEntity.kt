@@ -8,7 +8,7 @@ import io.tokend.template.features.history.model.BalanceChange
 import io.tokend.template.features.history.model.BalanceChangeAction
 import io.tokend.template.features.history.model.SimpleFeeRecord
 import io.tokend.template.features.history.model.details.BalanceChangeCause
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import java.math.BigDecimal
 import java.util.*
 
@@ -37,7 +37,7 @@ data class BalanceChangeDbEntity(
     val cause: BalanceChangeCause
 ) {
     class Converters {
-        private val mapper = JsonApiToolsProvider.getObjectMapper()
+        private val mapper = JsonApiTools.objectMapper
 
         @TypeConverter
         fun causeFromJson(value: String?): BalanceChangeCause? {

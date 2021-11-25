@@ -4,7 +4,7 @@ import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.assets.model.SimpleAsset
 import io.tokend.template.features.history.model.BalanceChange
 import io.tokend.template.features.history.model.details.BalanceChangeCause
-import org.tokend.sdk.api.generated.resources.OfferResource
+import org.tokend.sdk.api.v3.model.generated.resources.OfferResource
 import org.tokend.wallet.Base32Check
 import java.io.Serializable
 import java.math.BigDecimal

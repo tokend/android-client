@@ -24,7 +24,7 @@ import io.tokend.template.util.locale.AppLocaleManager
 import io.tokend.template.view.ToastManager
 import io.tokend.template.view.util.formatter.AmountFormatter
 import io.tokend.template.view.util.formatter.DefaultAmountFormatter
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import java.util.*
 import javax.inject.Singleton
 
@@ -100,7 +100,7 @@ class UtilModule {
     @Provides
     @Singleton
     fun objectMapper(): ObjectMapper {
-        return JsonApiToolsProvider.getObjectMapper()
+        return JsonApiTools.objectMapper
     }
 
     @Provides

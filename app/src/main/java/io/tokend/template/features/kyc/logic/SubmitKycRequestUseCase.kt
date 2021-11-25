@@ -23,7 +23,7 @@ import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.blobs.model.Blob
 import org.tokend.sdk.api.blobs.model.BlobType
 import org.tokend.sdk.api.documents.model.DocumentType
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.Transaction
@@ -197,7 +197,7 @@ class SubmitKycRequestUseCase(
             putAll(uploadedDocuments)
         }
 
-        val formJson = JsonApiToolsProvider.getObjectMapper().writeValueAsString(form)
+        val formJson = JsonApiTools.objectMapper.writeValueAsString(form)
 
         return repositoryProvider
             .blobs

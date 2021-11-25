@@ -5,7 +5,7 @@ import io.tokend.template.features.assets.model.SimpleAsset
 import io.tokend.template.features.history.model.SimpleFeeRecord
 import io.tokend.template.features.send.model.PaymentRequest
 import io.tokend.template.util.RecordWithPolicy
-import org.tokend.sdk.api.generated.resources.*
+import org.tokend.sdk.api.v3.model.generated.resources.*
 import org.tokend.wallet.xdr.AssetPairPolicy
 import java.io.Serializable
 import java.math.BigDecimal

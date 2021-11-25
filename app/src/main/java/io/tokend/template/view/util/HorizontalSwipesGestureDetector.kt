@@ -2,6 +2,7 @@ package io.tokend.template.view.util
 
 import android.view.GestureDetector
 import android.view.MotionEvent
+import kotlin.math.abs
 
 class HorizontalSwipesGestureDetector(
     private val onSwipeToLeft: (() -> Unit)? = null,
@@ -27,9 +28,9 @@ class HorizontalSwipesGestureDetector(
         val distanceX = e2.x - e1.x
         val distanceY = e2.y - e1.y
 
-        val absDistanceX = Math.abs(distanceX)
-        val absDistanceY = Math.abs(distanceY)
-        val absVelocity = Math.abs(velocityX)
+        val absDistanceX = abs(distanceX)
+        val absDistanceY = abs(distanceY)
+        val absVelocity = abs(velocityX)
 
         if (absDistanceX > absDistanceY
             && absDistanceX > SWIPE_DISTANCE_THRESHOLD

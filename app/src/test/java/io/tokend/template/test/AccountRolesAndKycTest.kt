@@ -14,7 +14,7 @@ import org.junit.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.KeyValueEntryValue
@@ -38,7 +38,7 @@ class AccountRolesAndKycTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(
@@ -67,7 +67,7 @@ class AccountRolesAndKycTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(
@@ -142,7 +142,7 @@ class AccountRolesAndKycTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(

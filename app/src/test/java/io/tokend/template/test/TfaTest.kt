@@ -16,7 +16,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.tokend.sdk.api.tfa.model.TfaFactor
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.sdk.tfa.TfaCallback
@@ -70,7 +70,7 @@ class TfaTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session, tfaCallback)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(
@@ -144,7 +144,7 @@ class TfaTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session, tfaCallback)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(

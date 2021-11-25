@@ -207,7 +207,7 @@ class AssetChartCard : LinearLayout {
             AssetChartScale.YEAR -> data?.year
         } ?: emptyList()
 
-        val displayCount = Math.min(points.size, chartScale.pointsToDisplay)
+        val displayCount = points.size.coerceAtMost(chartScale.pointsToDisplay)
 
         if (points.isNotEmpty()) {
             val step =

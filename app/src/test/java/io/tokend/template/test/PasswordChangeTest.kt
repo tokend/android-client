@@ -1,15 +1,15 @@
 package io.tokend.template.test
 
+import io.tokend.template.features.changepassword.ChangePasswordUseCase
 import io.tokend.template.logic.providers.AccountProviderFactory
 import io.tokend.template.logic.providers.ApiProviderFactory
 import io.tokend.template.logic.providers.RepositoryProviderImpl
 import io.tokend.template.logic.providers.WalletInfoProviderFactory
-import io.tokend.template.features.changepassword.ChangePasswordUseCase
 import io.tokend.template.logic.session.Session
 import org.junit.Assert
 import org.junit.Test
 import org.tokend.sdk.api.tfa.model.TfaFactor
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.PasswordTfaOtpGenerator
 import org.tokend.sdk.tfa.TfaCallback
@@ -49,11 +49,12 @@ class PasswordChangeTest {
 
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
-        val (originalWalletData, rootAccount)
+        val (originalWalletData, accounts)
                 = Util.getVerifiedWallet(email, password, apiProvider, session, repositoryProvider)
+        val rootAccount = accounts.first()
 
         val useCase = ChangePasswordUseCase(
             newPassword,
@@ -73,12 +74,12 @@ class PasswordChangeTest {
         val signers = apiProvider.getApi()
             .v3
             .signers
-            .get(session.getWalletInfo()!!.accountId)
+            .get(session.getWalletInfo().accountId)
             .execute()
             .get()
 
         // Check that account has been updated to the actual.
-        val currentAccount = session.getDefaultAccount()!!
+        val currentAccount = session.getDefaultAccount()
         Assert.assertNotEquals(
             "Account in AccountProvider must be updated",
             rootAccount.accountId, currentAccount.accountId
@@ -99,13 +100,13 @@ class PasswordChangeTest {
         // Check that wallet info has been updated to the actual.
         Assert.assertNotEquals(
             "Wallet info in WalletInfoProvider must be updated",
-            originalWalletData.id, session.getWalletInfo()!!.walletId
+            originalWalletData.walletId, session.getWalletInfo().walletId
         )
 
         // Check that we after all can sign in with new password.
         Assert.assertNotNull(
             "Sign in with a new password must complete",
-            apiProvider.getKeyServer().getWalletInfo(email, newPassword)
+            apiProvider.getKeyServer().getWallet(email, newPassword).execute()
         )
     }
 }

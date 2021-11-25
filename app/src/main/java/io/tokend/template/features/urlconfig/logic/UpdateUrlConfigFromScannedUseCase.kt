@@ -7,7 +7,7 @@ import io.tokend.template.features.urlconfig.model.InvalidUrlConfigSourceExcepti
 import io.tokend.template.features.urlconfig.model.UrlConfig
 import io.tokend.template.logic.providers.UrlConfigProvider
 import okhttp3.HttpUrl
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 
 /**
  * Updates [urlConfigProvider] with the [UrlConfig] obtained from the [scannedContent].
@@ -36,7 +36,7 @@ class UpdateUrlConfigFromScannedUseCase(
     }
 
     private fun getParsedUrlConfig(): UrlConfig? = tryOrNull {
-        UrlConfig.fromQrJson(JsonApiToolsProvider.getObjectMapper().readTree(scannedContent))
+        UrlConfig.fromQrJson(JsonApiTools.objectMapper.readTree(scannedContent))
     }
 
     private fun getParsedWebClientUrl(): HttpUrl? = tryOrNull {

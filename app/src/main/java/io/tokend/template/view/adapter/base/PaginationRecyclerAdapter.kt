@@ -50,8 +50,7 @@ abstract class PaginationRecyclerAdapter<ItemType, ViewHolderType>
     }
 
     override fun onBindViewHolder(holder: ViewHolderType, position: Int) {
-        val viewType = getItemViewType(position)
-        when (viewType) {
+        when (getItemViewType(position)) {
             VIEW_TYPE_LOADING_FOOTER -> bindFooterViewHolder(holder)
             else -> super.onBindViewHolder(holder, position)
         }

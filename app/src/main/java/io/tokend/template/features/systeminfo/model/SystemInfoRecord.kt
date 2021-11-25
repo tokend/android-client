@@ -2,7 +2,7 @@ package io.tokend.template.features.systeminfo.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
-import org.tokend.sdk.api.generated.resources.HorizonStateResource
+import org.tokend.sdk.api.v3.model.generated.resources.HorizonStateResource
 import org.tokend.wallet.NetworkParams
 import java.util.*
 import kotlin.math.log10

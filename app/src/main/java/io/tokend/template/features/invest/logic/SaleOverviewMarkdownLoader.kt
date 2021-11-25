@@ -6,7 +6,7 @@ import io.tokend.template.BuildConfig
 import io.tokend.template.data.repository.BlobsRepository
 import org.tokend.sdk.api.blobs.model.Blob
 import org.tokend.sdk.factory.HttpClientFactory
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import ru.noties.markwon.Markwon
 import ru.noties.markwon.SpannableConfiguration
 import ru.noties.markwon.il.AsyncDrawableLoader
@@ -49,7 +49,7 @@ class SaleOverviewMarkdownLoader(
             .map { rawValue ->
                 try {
                     // Unescape content.
-                    JsonApiToolsProvider.getObjectMapper()
+                    JsonApiTools.objectMapper
                         .readTree("\"${rawValue}\"")
                         .asText()
                 } catch (e: Exception) {

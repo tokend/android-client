@@ -14,7 +14,7 @@ import io.tokend.template.features.balances.model.BalanceDbEntity
 import io.tokend.template.features.balances.storage.BalancesDao
 import io.tokend.template.features.history.storage.BalanceChangeDbEntity
 import io.tokend.template.features.history.storage.BalanceChangesDao
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.sdk.utils.BigDecimalUtil
 import java.math.BigDecimal
 import java.util.*
@@ -54,14 +54,14 @@ abstract class AppDatabase : RoomDatabase() {
         @TypeConverter
         fun assetFromJson(value: String?): Asset? {
             return value?.let {
-                JsonApiToolsProvider.getObjectMapper().readValue(value, SimpleAsset::class.java)
+                JsonApiTools.objectMapper.readValue(value, SimpleAsset::class.java)
             }
         }
 
         @TypeConverter
         fun assetToJson(value: Asset?): String? {
             return value?.let {
-                JsonApiToolsProvider.getObjectMapper().writeValueAsString(SimpleAsset(it))
+                JsonApiTools.objectMapper.writeValueAsString(SimpleAsset(it))
             }
         }
     }

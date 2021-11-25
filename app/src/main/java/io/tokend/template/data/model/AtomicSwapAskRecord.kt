@@ -2,8 +2,8 @@ package io.tokend.template.data.model
 
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.assets.model.SimpleAsset
-import org.tokend.sdk.api.generated.resources.AtomicSwapAskResource
-import org.tokend.sdk.api.generated.resources.AtomicSwapQuoteAssetResource
+import org.tokend.sdk.api.v3.model.generated.resources.AtomicSwapAskResource
+import org.tokend.sdk.api.v3.model.generated.resources.AtomicSwapQuoteAssetResource
 import java.io.Serializable
 import java.math.BigDecimal
 

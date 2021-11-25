@@ -83,12 +83,17 @@ constructor(
                 ?.takeIf(String::isNotEmpty)
                 ?: throw IllegalArgumentException("Invalid storage URL: $qrJson"),
             client = qrJson
-                .get("terms")
+                .get("client")
                 ?.takeIf(JsonNode::isTextual)
                 ?.asText()
                 ?.takeIf(String::isNotEmpty)
-                ?.substringBefore(TERMS_ROUTE)
-                ?: throw IllegalArgumentException("Invalid terms URL: $qrJson")
+                ?: (qrJson
+                    .get("terms")
+                    ?.takeIf(JsonNode::isTextual)
+                    ?.asText()
+                    ?.takeIf(String::isNotEmpty)
+                    ?.substringBefore(TERMS_ROUTE)
+                    ?: throw IllegalArgumentException("Invalid terms URL: $qrJson"))
         )
     }
 }

@@ -16,7 +16,7 @@ import org.junit.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.wallet.Base32Check
 import org.tokend.wallet.xdr.FeeType
 import org.tokend.wallet.xdr.PaymentFeeType
@@ -43,7 +43,7 @@ class PaymentsTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         val (_) = Util.getVerifiedWallet(
@@ -111,7 +111,7 @@ class PaymentsTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         val (_) = Util.getVerifiedWallet(
@@ -206,16 +206,17 @@ class PaymentsTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         val (_, _) = Util.getVerifiedWallet(
             recipientEmail, password, apiProvider, session, null
         )
 
-        val (_, rootAccount) = Util.getVerifiedWallet(
+        val (_, accounts) = Util.getVerifiedWallet(
             email, password, apiProvider, session, repositoryProvider
         )
+        val rootAccount = accounts.first()
 
         val txManager = TxManager(apiProvider)
 

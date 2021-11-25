@@ -3,7 +3,7 @@ package io.tokend.template.data.storage.persistence
 import android.content.SharedPreferences
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.tokend.template.data.storage.persistence.ObjectPersistenceOnPrefs.Companion.forType
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 
 /**
  * Implements persistence for an object of type [T]
@@ -17,7 +17,7 @@ open class ObjectPersistenceOnPrefs<T : Any>(
     protected open val key: String
 ) : ObjectPersistence<T> {
     protected open var loadedItem: T? = null
-    protected open val mapper: ObjectMapper = JsonApiToolsProvider.getObjectMapper()
+    protected open val mapper: ObjectMapper = JsonApiTools.objectMapper
 
     override fun loadItem(): T? {
         return loadedItem

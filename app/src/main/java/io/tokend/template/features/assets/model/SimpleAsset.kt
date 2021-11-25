@@ -2,7 +2,7 @@ package io.tokend.template.features.assets.model
 
 import com.fasterxml.jackson.databind.node.NullNode
 import io.tokend.template.data.model.RecordWithLogo
-import org.tokend.sdk.api.generated.resources.AssetResource
+import org.tokend.sdk.api.v3.model.generated.resources.AssetResource
 
 class SimpleAsset(
     override val code: String,

@@ -18,8 +18,7 @@ abstract class BaseRecyclerAdapter<ItemType, ViewHolderType>
     protected val items = mutableListOf<ItemType>()
 
     override fun onBindViewHolder(holder: ViewHolderType, position: Int) {
-        val viewType = getItemViewType(position)
-        when (viewType) {
+        when (getItemViewType(position)) {
             VIEW_TYPE_ITEM -> bindItemViewHolder(holder, position)
         }
     }

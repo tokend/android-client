@@ -8,7 +8,7 @@ import io.tokend.template.logic.TxManager
 import io.tokend.template.logic.providers.*
 import org.junit.Assert
 import org.junit.Test
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.CreateExternalSystemAccountIdPoolEntryActionInput
 import org.tokend.wallet.xdr.ManageExternalSystemAccountIdPoolEntryOp
@@ -30,7 +30,7 @@ class BindExternalDepositAccountTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         val txManager = TxManager(apiProvider)

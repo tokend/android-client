@@ -124,6 +124,6 @@ class AssetPairsRepository(
     }
 
     companion object {
-        private val PAGE_LIMIT = 20
+        private const val PAGE_LIMIT = 20
     }
 }

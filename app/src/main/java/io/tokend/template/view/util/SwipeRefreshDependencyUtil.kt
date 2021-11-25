@@ -12,10 +12,8 @@ object SwipeRefreshDependencyUtil {
             canRefresh
         }
 
-        appBar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                canRefresh = verticalOffset != 0
-            }
+        appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            canRefresh = verticalOffset != 0
         })
     }
 }

@@ -2,7 +2,7 @@ package io.tokend.template.features.trade.orderbook.model
 
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.assets.model.SimpleAsset
-import org.tokend.sdk.api.generated.resources.OrderBookResource
+import org.tokend.sdk.api.v3.model.generated.resources.OrderBookResource
 import java.math.BigDecimal
 
 class OrderBook(
