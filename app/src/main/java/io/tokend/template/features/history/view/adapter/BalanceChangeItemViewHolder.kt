@@ -59,9 +59,9 @@ class BalanceChangeItemViewHolder(
 
     private fun displayAmount(item: BalanceChangeListItem) {
         val color =
-            when {
-                item.isReceived == true -> incomingColor
-                item.isReceived == false -> outgoingColor
+            when (item.isReceived) {
+                true -> incomingColor
+                false -> outgoingColor
                 else -> defaultAmountColor
             }
 

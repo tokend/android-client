@@ -7,7 +7,7 @@ import io.tokend.template.features.signup.logic.SignUpUseCase
 import org.junit.Assert
 import org.junit.Test
 import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.sdk.keyserver.KeyServer
 
 class SignUpTest {
@@ -21,7 +21,7 @@ class SignUpTest {
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, WalletInfoProviderImpl(),
             urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         val useCase = SignUpUseCase(
@@ -33,12 +33,13 @@ class SignUpTest {
 
         try {
             val walletInfo = KeyServer(apiProvider.getApi().wallets)
-                .getWalletInfo(email, password, false)
-                .execute().get()
+                .getWallet(email, password, false)
+                .execute()
+                .get()
 
             Assert.assertTrue(
-                "Wallet email must be the same as the used one for sign up",
-                email.equals(walletInfo.email, true)
+                "Wallet login must be the same as the used one for sign up",
+                email.equals(walletInfo.login, true)
             )
         } catch (e: Exception) {
             Assert.fail("Wallet must be accessible with specified credentials")
@@ -55,7 +56,7 @@ class SignUpTest {
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, WalletInfoProviderImpl(),
             urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         val useCase = SignUpUseCase(

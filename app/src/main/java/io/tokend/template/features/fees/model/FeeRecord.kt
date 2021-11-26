@@ -2,7 +2,7 @@ package io.tokend.template.features.fees.model
 
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.assets.model.SimpleAsset
-import org.tokend.sdk.api.generated.resources.FeeRecordResource
+import org.tokend.sdk.api.v3.model.generated.resources.FeeRecordResource
 import java.io.Serializable
 import java.math.BigDecimal
 

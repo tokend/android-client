@@ -5,7 +5,7 @@ import org.junit.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import org.tokend.sdk.factory.GsonFactory
+import org.tokend.sdk.factory.JsonApiTools
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class UrlConfigTest {
@@ -17,7 +17,7 @@ class UrlConfigTest {
                 "\"storage\":\"https://s3.eu-west-1.amazonaws.com/demo-identity-storage-festive-colden\"," +
                 "\"kyc\":\"${client}verification\",\"terms\":\"${client}terms\"}"
 
-        val config = GsonFactory().getBaseGson().fromJson(source, UrlConfig::class.java)
+        val config = UrlConfig.fromQrJson(JsonApiTools.objectMapper.readTree(source))
 
         Assert.assertEquals(
             "Client URL must be obtained from legacy field",
@@ -34,7 +34,7 @@ class UrlConfigTest {
                 "\"storage\":\"https://s3.eu-west-1.amazonaws.com/demo-identity-storage-festive-colden\"," +
                 "\"client\":\"$client\"}"
 
-        val config = GsonFactory().getBaseGson().fromJson(source, UrlConfig::class.java)
+        val config = UrlConfig.fromQrJson(JsonApiTools.objectMapper.readTree(source))
 
         Assert.assertEquals(
             "Client URL must be obtained from JSON",

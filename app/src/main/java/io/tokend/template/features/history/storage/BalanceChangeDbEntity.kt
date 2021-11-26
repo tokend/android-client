@@ -1,13 +1,14 @@
 package io.tokend.template.features.history.storage
 
 import androidx.room.*
-import com.google.gson.JsonObject
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.ObjectNode
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.history.model.BalanceChange
 import io.tokend.template.features.history.model.BalanceChangeAction
 import io.tokend.template.features.history.model.SimpleFeeRecord
 import io.tokend.template.features.history.model.details.BalanceChangeCause
-import org.tokend.sdk.factory.GsonFactory
+import org.tokend.sdk.factory.JsonApiTools
 import java.math.BigDecimal
 import java.util.*
 
@@ -36,16 +37,16 @@ data class BalanceChangeDbEntity(
     val cause: BalanceChangeCause
 ) {
     class Converters {
-        private val gson = GsonFactory().getBaseGson()
+        private val mapper = JsonApiTools.objectMapper
 
         @TypeConverter
         fun causeFromJson(value: String?): BalanceChangeCause? {
-            val json = value?.let { gson.fromJson(it, JsonObject::class.java) }
+            val json = value?.let { mapper.readTree(it) }
                 ?: return null
-            return gson.fromJson<BalanceChangeCause>(
+            return mapper.treeToValue(
                 json,
                 Class.forName(
-                    json[CAUSE_CLASS_NAME_PROPERTY].asString
+                    json[CAUSE_CLASS_NAME_PROPERTY].asText()
                         .replace(
                             "org.tokend.template.data.model.history",
                             "org.tokend.template.features.history.model"
@@ -55,25 +56,25 @@ data class BalanceChangeDbEntity(
                             "io.tokend.template.features.history.model"
                         )
                 )
-            )
+            ) as BalanceChangeCause
         }
 
         @TypeConverter
         fun causeToJson(value: BalanceChangeCause?): String? {
             value ?: return null
-            val tree = gson.toJsonTree(value)
-            (tree as? JsonObject)?.addProperty(CAUSE_CLASS_NAME_PROPERTY, value::class.java.name)
+            val tree = mapper.valueToTree<JsonNode>(value)
+            (tree as? ObjectNode)?.put(CAUSE_CLASS_NAME_PROPERTY, value::class.java.name)
             return tree.toString()
         }
 
         @TypeConverter
         fun feeFromJson(value: String?): SimpleFeeRecord? {
-            return value?.let { gson.fromJson(value, SimpleFeeRecord::class.java) }
+            return value?.let { mapper.readValue(value, SimpleFeeRecord::class.java) }
         }
 
         @TypeConverter
         fun feeToJson(value: SimpleFeeRecord?): String? {
-            return value?.let { gson.toJson(it) }
+            return value?.let { mapper.writeValueAsString(it) }
         }
     }
 

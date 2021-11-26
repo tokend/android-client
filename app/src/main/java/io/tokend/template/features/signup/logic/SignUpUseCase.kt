@@ -1,22 +1,24 @@
 package io.tokend.template.features.signup.logic
 
 import io.reactivex.Single
-import io.tokend.template.logic.providers.RepositoryProvider
 import io.tokend.template.features.signin.logic.SignInUseCase
-import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.credentials.model.WalletInfoRecord
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import io.tokend.template.logic.credentials.persistence.WalletInfoPersistence
+import io.tokend.template.logic.providers.RepositoryProvider
+import io.tokend.template.logic.session.Session
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
 import org.tokend.sdk.api.wallets.model.InvalidCredentialsException
 import org.tokend.sdk.keyserver.KeyServer
 import org.tokend.sdk.keyserver.models.SignerData
-import org.tokend.sdk.keyserver.models.WalletCreateResult
+import org.tokend.sdk.keyserver.models.WalletCreationResult
 import org.tokend.wallet.Account
 
 /**
  * Creates wallet with given credentials and submits it
+ *
+ * Sets up providers if they are set and the created wallet is verified.
  */
 class SignUpUseCase(
     private val login: String,
@@ -29,9 +31,9 @@ class SignUpUseCase(
 ) {
     private lateinit var accounts: List<Account>
     private lateinit var signers: Collection<SignerData>
-    private lateinit var walletCreateResult: WalletCreateResult
+    private lateinit var walletCreateResult: WalletCreationResult
 
-    fun perform(): Single<WalletCreateResult> {
+    fun perform(): Single<WalletCreationResult> {
         return ensureLoginIsFree()
             .flatMap {
                 generateAccounts()
@@ -50,7 +52,7 @@ class SignUpUseCase(
             }
             .doOnSuccess { walletCreateResult ->
                 this.walletCreateResult = walletCreateResult
-                if (walletCreateResult.walletData.attributes.isVerified) {
+                if (walletCreateResult.isVerified) {
                     setUpProvidersIfPossible()
                 }
             }
@@ -86,7 +88,7 @@ class SignUpUseCase(
         )
     }
 
-    private fun createAndSaveWallet(): Single<WalletCreateResult> {
+    private fun createAndSaveWallet(): Single<WalletCreationResult> {
         return keyServer.createAndSaveWallet(
             email = login,
             password = password,

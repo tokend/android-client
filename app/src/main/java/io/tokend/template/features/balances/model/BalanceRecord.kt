@@ -5,8 +5,8 @@ import io.tokend.template.extensions.equalsArithmetically
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.assets.model.AssetRecord
 import io.tokend.template.features.urlconfig.model.UrlConfig
-import org.tokend.sdk.api.generated.resources.BalanceResource
-import org.tokend.sdk.api.generated.resources.ConvertedBalanceStateResource
+import org.tokend.sdk.api.v3.model.generated.resources.BalanceResource
+import org.tokend.sdk.api.v3.model.generated.resources.ConvertedBalanceStateResource
 import org.tokend.sdk.utils.BigDecimalUtil
 import java.io.Serializable
 import java.math.BigDecimal

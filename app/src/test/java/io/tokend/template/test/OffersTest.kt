@@ -7,14 +7,15 @@ import io.tokend.template.features.offers.logic.CancelOfferUseCase
 import io.tokend.template.features.offers.logic.ConfirmOfferRequestUseCase
 import io.tokend.template.features.offers.logic.CreateOfferRequestUseCase
 import io.tokend.template.features.offers.model.OfferRecord
-import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
 import io.tokend.template.logic.providers.*
+import io.tokend.template.logic.session.Session
 import junit.framework.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
+import org.tokend.sdk.utils.extentions.toNetworkParams
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.AssetPairPolicy
 import org.tokend.wallet.xdr.ManageAssetPairAction
@@ -43,7 +44,7 @@ class OffersTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(
@@ -84,7 +85,7 @@ class OffersTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(
@@ -163,7 +164,7 @@ class OffersTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(
@@ -235,7 +236,7 @@ class OffersTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(
@@ -324,8 +325,9 @@ class OffersTest {
 
         val systemInfo =
             apiProvider.getApi()
-                .general
-                .getSystemInfo()
+                .v3
+                .info
+                .getInfo()
                 .execute()
                 .get()
         val netParams = systemInfo.toNetworkParams()

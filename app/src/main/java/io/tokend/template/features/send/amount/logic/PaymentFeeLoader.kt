@@ -43,7 +43,7 @@ class PaymentFeeLoader(
                 amount,
                 false
             ),
-            BiFunction { senderFee: SimpleFeeRecord, recipientFee: SimpleFeeRecord ->
+            { senderFee: SimpleFeeRecord, recipientFee: SimpleFeeRecord ->
                 PaymentFee(senderFee, recipientFee)
             }
         )

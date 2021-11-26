@@ -1,12 +1,12 @@
 package io.tokend.template.features.invest.logic
 
 import android.content.Context
-import com.google.gson.JsonParser
 import io.reactivex.Single
 import io.tokend.template.BuildConfig
 import io.tokend.template.data.repository.BlobsRepository
 import org.tokend.sdk.api.blobs.model.Blob
 import org.tokend.sdk.factory.HttpClientFactory
+import org.tokend.sdk.factory.JsonApiTools
 import ru.noties.markwon.Markwon
 import ru.noties.markwon.SpannableConfiguration
 import ru.noties.markwon.il.AsyncDrawableLoader
@@ -49,7 +49,9 @@ class SaleOverviewMarkdownLoader(
             .map { rawValue ->
                 try {
                     // Unescape content.
-                    JsonParser().parse(rawValue).asString
+                    JsonApiTools.objectMapper
+                        .readTree("\"${rawValue}\"")
+                        .asText()
                 } catch (e: Exception) {
                     rawValue
                 }

@@ -2,9 +2,9 @@ package io.tokend.template.features.polls.model
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import org.tokend.sdk.api.generated.resources.PollResource
+import org.tokend.sdk.api.v3.model.generated.resources.PollResource
 import org.tokend.sdk.api.v3.polls.model.PollState
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import java.util.*
 
 class PollRecord(
@@ -68,13 +68,12 @@ class PollRecord(
 
             val subject = details.get("question").asText()
 
-            val mapper = JsonApiToolsProvider.getObjectMapper()
-            val choicesData = details
-                .withArray("choices")
+            val mapper = JsonApiTools.objectMapper
+            val choicesData = details["choices"]
                 .map { mapper.treeToValue(it, ChoiceData::class.java) }
                 .sortedBy(ChoiceData::number)
 
-            val outcome = details.get("outcome")
+            val outcome = details["outcome"]
             val votesByChoices = choicesData
                 .associateBy(ChoiceData::number)
                 .mapValues { outcome?.get(it.key.toString())?.asInt() ?: 0 }

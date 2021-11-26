@@ -9,7 +9,7 @@ import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
 import org.junit.Assert
 import org.junit.Test
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 
 class CreateBalanceTest {
     @Test
@@ -27,7 +27,7 @@ class CreateBalanceTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(

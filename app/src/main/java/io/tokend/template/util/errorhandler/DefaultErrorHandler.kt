@@ -22,11 +22,11 @@ open class DefaultErrorHandler(
      * @return [true] if [error] was handled, [false] otherwise
      */
     override fun handle(error: Throwable): Boolean {
-        when (error) {
+        return when (error) {
             is CancellationException ->
-                return true
+                true
             else -> {
-                return getErrorMessage(error)?.let {
+                getErrorMessage(error)?.let {
                     toastManager.short(it)
                     true
                 } ?: false

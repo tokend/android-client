@@ -5,21 +5,21 @@ import io.tokend.template.features.signin.logic.PostSignInManager
 import io.tokend.template.features.signin.logic.SignInUseCase
 import io.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import io.tokend.template.features.urlconfig.model.UrlConfig
-import io.tokend.template.logic.providers.UrlConfigProvider
 import io.tokend.template.logic.TxManager
 import io.tokend.template.logic.providers.*
 import io.tokend.template.logic.session.Session
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
-import org.tokend.sdk.api.generated.resources.ReviewableRequestResource
 import org.tokend.sdk.api.v3.assets.params.AssetsPageParams
+import org.tokend.sdk.api.v3.model.generated.resources.ReviewableRequestResource
 import org.tokend.sdk.api.v3.requests.model.RequestState
 import org.tokend.sdk.api.v3.requests.params.AssetRequestPageParams
-import org.tokend.sdk.factory.GsonFactory
-import org.tokend.sdk.keyserver.models.WalletCreateResult
+import org.tokend.sdk.factory.JsonApiTools
+import org.tokend.sdk.keyserver.models.WalletCreationResult
 import org.tokend.sdk.utils.extentions.bitmask
 import org.tokend.sdk.utils.extentions.decodeHex
 import org.tokend.sdk.utils.extentions.encodeHexString
+import org.tokend.sdk.utils.extentions.toNetworkParams
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.TransactionBuilder
@@ -41,13 +41,13 @@ object Util {
         apiProvider: ApiProvider,
         session: Session,
         repositoryProvider: RepositoryProvider?
-    ): WalletCreateResult {
+    ): WalletCreationResult {
         val createResult = apiProvider.getKeyServer()
             .createAndSaveWallet(email, password, apiProvider.getApi().v3.keyValue)
             .execute().get()
 
         println("Email is $email")
-        println("Account id is " + createResult.rootAccount.accountId)
+        println("Account id is " + createResult.accountId)
         println(
             "Password is " +
                     password.joinToString("")
@@ -201,7 +201,7 @@ object Util {
         val sourceAccount = Config.ADMIN_ACCOUNT
 
         val netParams =
-            apiProvider.getApi().general.getSystemInfo().execute().get().toNetworkParams()
+            apiProvider.getApi().v3.info.getInfo().execute().get().toNetworkParams()
 
         val fixedFee = netParams.amountToPrecised(BigDecimal("0.050000"))
         val percentFee = netParams.amountToPrecised(BigDecimal("0.001000"))
@@ -244,8 +244,9 @@ object Util {
 
         val systemInfo =
             apiProvider.getApi()
-                .general
-                .getSystemInfo()
+                .v3
+                .info
+                .getInfo()
                 .execute()
                 .get()
         val netParams = systemInfo.toNetworkParams()
@@ -260,7 +261,7 @@ object Util {
                 .items
                 .isNotEmpty()
 
-        val assetDetailsJson = GsonFactory().getBaseGson().toJson(
+        val assetDetailsJson = JsonApiTools.objectMapper.writeValueAsString(
             mapOf(
                 "name" to "$code token",
                 "external_system_type" to externalSystemType
@@ -281,7 +282,7 @@ object Util {
                 AssetCreationRequest(
                     code = code,
                     preissuedAssetSigner = PublicKeyFactory.fromAccountId(
-                        systemInfo.adminAccountId
+                        systemInfo.masterAccountId
                     ),
                     maxIssuanceAmount = netParams.amountToPrecised(BigDecimal("10000")),
                     policies = policies,

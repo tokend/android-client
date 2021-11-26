@@ -1,7 +1,7 @@
 package io.tokend.template.features.localaccount.storage
 
 import android.content.SharedPreferences
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.tokend.template.data.storage.persistence.ObjectPersistenceOnPrefs
 import io.tokend.template.features.localaccount.model.LocalAccount
 import org.tokend.sdk.utils.extentions.decodeHex
@@ -11,9 +11,9 @@ class LocalAccountPersistenceOnPrefs(
     preferences: SharedPreferences
 ) : ObjectPersistenceOnPrefs<LocalAccount>(LocalAccount::class.java, preferences, KEY) {
     private class LocalAccountData(
-        @SerializedName("account_id")
+        @JsonProperty("account_id")
         val accountId: String,
-        @SerializedName("serialized_encrypted_source_hex")
+        @JsonProperty("serialized_encrypted_source_hex")
         val serializedEncryptedSourceHex: String
     ) {
         fun toLocalAccount(): LocalAccount {
@@ -37,12 +37,12 @@ class LocalAccountPersistenceOnPrefs(
     }
 
     override fun serializeItem(item: LocalAccount): String {
-        return gson.toJson(LocalAccountData.fromLocalAccount(item))
+        return mapper.writeValueAsString(LocalAccountData.fromLocalAccount(item))
     }
 
     override fun deserializeItem(serialized: String): LocalAccount? {
         return try {
-            gson.fromJson(serialized, LocalAccountData::class.java).toLocalAccount()
+            mapper.readValue(serialized, LocalAccountData::class.java).toLocalAccount()
         } catch (e: Exception) {
             e.printStackTrace()
             null

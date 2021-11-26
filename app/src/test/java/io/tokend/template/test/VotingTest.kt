@@ -2,14 +2,14 @@ package io.tokend.template.test
 
 import io.tokend.template.features.polls.logic.AddVoteUseCase
 import io.tokend.template.features.polls.logic.RemoveVoteUseCase
-import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.TxManager
 import io.tokend.template.logic.providers.*
+import io.tokend.template.logic.session.Session
 import org.junit.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.*
@@ -34,11 +34,12 @@ class VotingTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
-        val (_, rootAccount) =
+        val (_, accounts) =
             Util.getVerifiedWallet(email, password, apiProvider, session, repositoryProvider)
+        val rootAccount = accounts.first()
 
         Util.makeAccountCorporate(
             session, apiProvider, repositoryProvider.systemInfo,
@@ -98,11 +99,12 @@ class VotingTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
-        val (_, rootAccount) =
+        val (_, accounts) =
             Util.getVerifiedWallet(email, password, apiProvider, session, repositoryProvider)
+        val rootAccount = accounts.first()
 
         Util.makeAccountCorporate(
             session, apiProvider, repositoryProvider.systemInfo,

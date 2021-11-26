@@ -49,12 +49,7 @@ public class SingleCheckDialog {
                 new ContextThemeWrapper(context, R.style.AlertDialogStyle),
                 R.style.AlertDialogStyle
         );
-        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        dialogBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
     }
 
     public SingleCheckDialog(Context context, List<? extends CharSequence> items, List<Integer> itemsColors) {
@@ -144,13 +139,10 @@ public class SingleCheckDialog {
 
         dialogBuilder
                 .setView(parentLayout, itemSpacingLeft, itemsSpacing, itemsSpacing, 0)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (positiveButtonListener != null) {
-                            positiveButtonListener.onClick(dialogInterface,
-                                    radioGroup.getCheckedRadioButtonId());
-                        }
+                .setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+                    if (positiveButtonListener != null) {
+                        positiveButtonListener.onClick(dialogInterface,
+                                radioGroup.getCheckedRadioButtonId());
                     }
                 })
                 .setOnCancelListener(cancelListener);

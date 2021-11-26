@@ -26,22 +26,14 @@ public class ContentLoadingProgressBar extends ProgressBar {
     private boolean mIsShown;
     private long mStartTime = -1L;
 
-    private final Runnable mDelayedHide = new Runnable() {
-
-        @Override
-        public void run() {
-            AnimationUtil.INSTANCE.collapseView(ContentLoadingProgressBar.this, null);
-            mStartTime = -1L;
-        }
+    private final Runnable mDelayedHide = () -> {
+        AnimationUtil.INSTANCE.collapseView(ContentLoadingProgressBar.this, null);
+        mStartTime = -1L;
     };
 
-    private final Runnable mDelayedShow = new Runnable() {
-
-        @Override
-        public void run() {
-            mStartTime = SystemClock.uptimeMillis();
-            AnimationUtil.INSTANCE.expandView(ContentLoadingProgressBar.this);
-        }
+    private final Runnable mDelayedShow = () -> {
+        mStartTime = SystemClock.uptimeMillis();
+        AnimationUtil.INSTANCE.expandView(ContentLoadingProgressBar.this);
     };
 
     public ContentLoadingProgressBar(Context context) {

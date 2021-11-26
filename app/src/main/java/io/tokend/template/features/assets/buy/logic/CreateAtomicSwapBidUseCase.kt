@@ -6,19 +6,19 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toSingle
 import io.tokend.template.data.model.AtomicSwapAskRecord
+import io.tokend.template.features.assets.buy.model.AtomicSwapInvoice
+import io.tokend.template.logic.TxManager
 import io.tokend.template.logic.providers.AccountProvider
 import io.tokend.template.logic.providers.ApiProvider
 import io.tokend.template.logic.providers.RepositoryProvider
 import io.tokend.template.logic.providers.WalletInfoProvider
-import io.tokend.template.features.assets.buy.model.AtomicSwapInvoice
-import io.tokend.template.logic.TxManager
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
 import org.tokend.sdk.api.v3.requests.model.RequestState
 import org.tokend.sdk.api.v3.requests.params.RequestParamsV3
 import org.tokend.sdk.api.v3.requests.params.RequestsPageParamsV3
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.Transaction
 import org.tokend.wallet.xdr.*
@@ -41,7 +41,7 @@ class CreateAtomicSwapBidUseCase(
     private val accountProvider: AccountProvider,
     private val txManager: TxManager
 ) {
-    private val objectMapper = JsonApiToolsProvider.getObjectMapper()
+    private val objectMapper = JsonApiTools.objectMapper
     private lateinit var accountId: String
     private lateinit var networkParams: NetworkParams
     private lateinit var transaction: Transaction
@@ -177,8 +177,7 @@ class CreateAtomicSwapBidUseCase(
                         throw RequestRejectedException()
                     }
 
-                    request.externalDetails
-                        ?.withArray(REQUEST_DATA_ARRAY_KEY)
+                    request.externalDetails[REQUEST_DATA_ARRAY_KEY]
                         ?.get(0)
                         ?.get(INVOICE_KEY)
                         ?: throw NoInvoiceYetException()

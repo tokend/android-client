@@ -27,7 +27,7 @@ class SecretSeedDialog(
     }
 
     private fun showSecretSeed() {
-        val seed = account.secretSeed ?: return
+        val seed = account.secretSeed
 
         CopyDataDialogFactory.getDialog(
             context = context,

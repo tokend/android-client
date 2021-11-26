@@ -14,7 +14,7 @@ import org.junit.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.TransactionBuilder
 import org.tokend.wallet.xdr.KeyValueEntryValue
@@ -38,7 +38,7 @@ class AccountRolesAndKycTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(
@@ -67,7 +67,7 @@ class AccountRolesAndKycTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(
@@ -112,7 +112,7 @@ class AccountRolesAndKycTest {
             )
             Assert.assertTrue(
                 "There must be an actual role in the account repo once the form is submitted",
-                repositoryProvider.account.item!!.role.role == form.getRole()
+                repositoryProvider.account.item!!.role.role == form.role
             )
             Assert.assertTrue(
                 "There must be an actual form in the active KYC repo once the form is submitted",
@@ -142,7 +142,7 @@ class AccountRolesAndKycTest {
             ApiProviderFactory().createApiProvider(urlConfigProvider, session)
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         Util.getVerifiedWallet(
@@ -211,7 +211,7 @@ class AccountRolesAndKycTest {
             repositoryProvider.account.updateDeferred().blockingAwait()
             Assert.assertTrue(
                 "The account role must be actual once the request is approved",
-                repositoryProvider.account.item!!.role.role == form.getRole()
+                repositoryProvider.account.item!!.role.role == form.role
             )
 
             repositoryProvider.activeKyc.updateDeferred().blockingAwait()

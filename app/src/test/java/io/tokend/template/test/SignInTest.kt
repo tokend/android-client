@@ -8,17 +8,17 @@ import io.tokend.template.features.signin.logic.PostSignInManager
 import io.tokend.template.features.signin.logic.SignInUseCase
 import io.tokend.template.features.signin.logic.SignInWithLocalAccountUseCase
 import io.tokend.template.features.userkey.logic.UserKeyProvider
-import io.tokend.template.logic.session.Session
 import io.tokend.template.logic.credentials.model.WalletInfoRecord
 import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
 import io.tokend.template.logic.credentials.persistence.WalletInfoPersistence
 import io.tokend.template.logic.providers.*
+import io.tokend.template.logic.session.Session
 import io.tokend.template.util.cipher.Aes256GcmDataCipher
 import org.junit.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import org.tokend.sdk.factory.JsonApiToolsProvider
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.wallet.Account
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -35,7 +35,7 @@ class SignInTest {
         val email = Util.getEmail()
         val password = Config.DEFAULT_PASSWORD
 
-        val (walletData, rootAccount)
+        val (walletData, accounts)
                 = apiProvider.getKeyServer()
             .createAndSaveWallet(email, password, apiProvider.getApi().v3.keyValue)
             .execute().get()
@@ -44,7 +44,7 @@ class SignInTest {
 
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper()
+            JsonApiTools.objectMapper
         )
 
         val credentialsPersistor = getDummyCredentialsStorage()
@@ -64,11 +64,15 @@ class SignInTest {
 
         Assert.assertEquals(
             "WalletInfoProvider must hold an actual wallet data",
-            walletData.attributes.accountId, session.getWalletInfo()!!.accountId
+            walletData.accountId, session.getWalletInfo().accountId
         )
         Assert.assertArrayEquals(
-            "AccountProvider must hold an actual account",
-            rootAccount.secretSeed, session.getDefaultAccount()?.secretSeed
+            "AccountProvider must hold an actual accounts",
+            accounts.toTypedArray(), session.getAccounts().toTypedArray()
+        )
+        Assert.assertEquals(
+            "AccountProvider default account must be the first one",
+            accounts.first(), session.getDefaultAccount()
         )
         Assert.assertNotEquals(
             "WalletInfo must be saved for the actual email",
@@ -100,7 +104,7 @@ class SignInTest {
 
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper(),
+            JsonApiTools.objectMapper,
             localAccountPersistence = getDummyLocalAccountsStorage()
         )
 
@@ -109,7 +113,7 @@ class SignInTest {
         val localAccountRepository = repositoryProvider.localAccount
         localAccountRepository.useAccount(
             LocalAccount.fromSecretSeed(
-                account.secretSeed!!, cipher, userKey
+                account.secretSeed, cipher, userKey
             )
         )
         val userKeyProvider = object : UserKeyProvider {
@@ -151,11 +155,11 @@ class SignInTest {
 
         Assert.assertEquals(
             "WalletInfoProvider must hold wallet data with actual account ID",
-            account.accountId, session.getWalletInfo()!!.accountId
+            account.accountId, session.getWalletInfo().accountId
         )
         Assert.assertArrayEquals(
             "AccountProvider must hold an actual account",
-            account.secretSeed, session.getDefaultAccount()?.secretSeed
+            account.secretSeed, session.getDefaultAccount().secretSeed
         )
         Assert.assertFalse(
             "Credentials persistor must be cleaned",
@@ -178,7 +182,7 @@ class SignInTest {
 
         val repositoryProvider = RepositoryProviderImpl(
             apiProvider, session, urlConfigProvider,
-            JsonApiToolsProvider.getObjectMapper(),
+            JsonApiTools.objectMapper,
             localAccountPersistence = getDummyLocalAccountsStorage()
         )
 
@@ -187,7 +191,7 @@ class SignInTest {
         val localAccountRepository = repositoryProvider.localAccount
         localAccountRepository.useAccount(
             LocalAccount.fromSecretSeed(
-                account.secretSeed!!, cipher, userKey
+                account.secretSeed, cipher, userKey
             )
         )
         val userKeyProvider = object : UserKeyProvider {

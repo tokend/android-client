@@ -8,8 +8,8 @@ import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.assets.model.SimpleAsset
 import io.tokend.template.features.urlconfig.model.UrlConfig
 import org.tokend.sdk.api.base.model.RemoteFile
-import org.tokend.sdk.api.generated.resources.SaleQuoteAssetResource
-import org.tokend.sdk.api.generated.resources.SaleResource
+import org.tokend.sdk.api.v3.model.generated.resources.SaleQuoteAssetResource
+import org.tokend.sdk.api.v3.model.generated.resources.SaleResource
 import org.tokend.sdk.api.v3.sales.model.SaleState
 import org.tokend.wallet.xdr.SaleType
 import java.io.Serializable

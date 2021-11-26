@@ -3,7 +3,7 @@ package io.tokend.template.features.assets.model
 import androidx.room.*
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.v3.assets.model.AssetState
-import org.tokend.sdk.factory.GsonFactory
+import org.tokend.sdk.factory.JsonApiTools
 import java.math.BigDecimal
 
 @Entity(tableName = "asset")
@@ -40,16 +40,16 @@ data class AssetDbEntity(
     val isConnectedToCoinpayments: Boolean
 ) {
     class Converters {
-        private val gson = GsonFactory().getBaseGson()
+        private val mapper = JsonApiTools.objectMapper
 
         @TypeConverter
         fun remoteFileFromJson(value: String?): RemoteFile? {
-            return value?.let { gson.fromJson(value, RemoteFile::class.java) }
+            return value?.let { mapper.readValue(value, RemoteFile::class.java) }
         }
 
         @TypeConverter
         fun remoteFileToJson(value: RemoteFile?): String? {
-            return value?.let { gson.toJson(it) }
+            return value?.let { mapper.writeValueAsString(it) }
         }
     }
 

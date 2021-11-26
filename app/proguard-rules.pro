@@ -1,95 +1,42 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+-dontobfuscate
+-android
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
-
-# General reflection
--keepattributes Signature, InnerClasses, EnclosingMethod
--keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
--dontwarn javax.annotation.**
--keepclassmembers enum * { *; }
-
-# Retrofit
--dontwarn org.codehaus.**
--keepclassmembers,allowshrinking,allowobfuscation interface * {
-    @retrofit2.http.* <methods>;
-}
-
-# Jackson
--keep class com.fasterxml.** { *; }
--keep @com.fasterxml.jackson.annotation.** class * { *; }
--dontwarn com.fasterxml.jackson.databind.**
-
-# JSONAPI
--keepclassmembers class * { @com.github.jasminb.jsonapi.annotations.Id <fields>; }
--keep class * implements com.github.jasminb.jsonapi.ResourceIdHandler
-
-# Wallet
-# Uncomment this if you would like to decode XDRs
--keep class org.tokend.wallet.xdr.* { *; }
--dontnote org.tokend.wallet.xdr.*
-
-# General
--keepattributes SourceFile,LineNumberTable,*Annotation*,EnclosingMethod,Signature,Exceptions,InnerClasses
--keep public class * extends java.lang.Exception
-
-# Optimize
--repackageclasses
--optimizations !method/removal/parameter
-
-# Markdown
--dontwarn com.caverock.androidsvg.**
-
-# Kotlin issue
-# https://youtrack.jetbrains.com/issue/KT-24986
--keepclassmembers class  *  {
-   void $$clinit();
-}
-
-# MultiDex
--keep class androidx.multidex.**
-
-# Support library
--keep class androidx.appcompat.widget.SearchView { *; }
-
-# KYC state storage
--keepnames class io.tokend.template.features.kyc.model.** { *; }
-
-# Keep JsonCreator
--keepclassmembers class * {
-     @com.fasterxml.jackson.annotation.JsonCreator *;
-}
-
-# Legacy Picasso downloader
--dontwarn com.squareup.picasso.OkHttpDownloader
-
-# Balance changes caching
--keepnames class io.tokend.template.features.history.model.** { *; }
-
-# ProGuard issue
-# https://sourceforge.net/p/proguard/bugs/573/
--optimizations !class/unboxing/enum
-
-# These classes are used via kotlin reflection and the keep might not be required anymore once Proguard supports
-# Kotlin reflection directly.
--keep class kotlin.Metadata
+# Keep everything in kept classes and enums, because I'm tired of this.
+#-keepclassmembers class **  { *; }
+-keepclassmembers class io.tokend.template.**  { *; }
+-keepclassmembers class org.tokend.sdk.**  { *; }
+-keepclassmembers enum ** { *; }
+-keepattributes **
 
 # class [META-INF/versions/9/module-info.class] unexpectedly contains class [module-info]
 -dontwarn module-info
+
+# ProGuard issues
+# https://sourceforge.net/p/proguard/bugs/573/
+-optimizations !class/unboxing/enum
+-optimizations !method/removal/parameter
+
+# Somthing general
+-dontwarn javax.annotation.**
+
+# SVG library
+-dontwarn com.caverock.androidsvg.**
+
+# --- TokenD SDK ---
+
+# Crypto
+-dontwarn net.i2p.crypto.**
+-keep class net.i2p.crypto.** { *; }
+
+# JSONAPI and Jackson
+-dontwarn com.fasterxml.**
+-keep class com.fasterxml.**  { *; }
+-keep class com.github.jasminb.jsonapi.**  { *; }
+-keep @interface kotlin.Metadata { *; } # Very important
+-keep class kotlin.reflect.**  { *; }
+
+# Wallet
+-keep class org.tokend.wallet.xdr.*  { *; }
+-dontnote org.tokend.wallet.xdr.*
+
+# ------------------

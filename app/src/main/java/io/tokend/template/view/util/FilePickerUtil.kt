@@ -41,13 +41,12 @@ object FilePickerUtil {
         allowedMimeTypes: Array<out String>,
         withCamera: Boolean
     ): ActivityRequest<LocalFile> {
-        val context = activity
 
-        val cameraOutputFile = getCameraOutputFile(context)
+        val cameraOutputFile = getCameraOutputFile(activity)
 
-        val request = getRequest(context, cameraOutputFile)
+        val request = getRequest(activity, cameraOutputFile)
 
-        val intent = getFilePickerIntent(context, allowedMimeTypes, withCamera, cameraOutputFile)
+        val intent = getFilePickerIntent(activity, allowedMimeTypes, withCamera, cameraOutputFile)
 
         activity.startActivityForResult(intent, request.code)
 
@@ -55,8 +54,7 @@ object FilePickerUtil {
     }
 
     private fun getRequest(context: Context, cameraOutputFile: File): ActivityRequest<LocalFile> {
-
-        val request = ActivityRequest { intent ->
+        return ActivityRequest { intent ->
             val intentUri = intent?.data
             val resultUriString =
                 (intentUri ?: Uri.fromFile(cameraOutputFile))
@@ -64,8 +62,6 @@ object FilePickerUtil {
                     .replace("file%3A/", "")
             LocalFile.fromUri(Uri.parse(resultUriString), context.contentResolver)
         }
-
-        return request
     }
 
     private fun getFilePickerIntent(

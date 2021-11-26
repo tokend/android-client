@@ -1,26 +1,24 @@
 package io.tokend.template.features.deposit.logic
 
-import com.google.gson.annotations.SerializedName
-import com.google.gson.reflect.TypeToken
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.type.TypeReference
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
 import io.tokend.template.features.account.data.model.AccountRecord
 import io.tokend.template.features.account.data.storage.AccountRepository
-import io.tokend.template.logic.providers.AccountProvider
-import io.tokend.template.logic.providers.ApiProvider
-import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.balances.storage.BalancesRepository
 import io.tokend.template.features.systeminfo.storage.SystemInfoRepository
 import io.tokend.template.logic.TxManager
+import io.tokend.template.logic.providers.AccountProvider
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.view.util.formatter.AmountFormatter
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.model.AttributesEntity
 import org.tokend.sdk.api.base.model.DataEntity
 import org.tokend.sdk.utils.extentions.isServerError
 import retrofit2.HttpException
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 import java.math.BigDecimal
 import java.util.*
 
@@ -46,9 +44,9 @@ class BindCoinpaymentsDepositAccountUseCase(
     accountRepository
 ) {
     private class CoinpaymentsDepositResponse(
-        @SerializedName("address")
+        @JsonProperty("address")
         val address: String,
-        @SerializedName("timeout")
+        @JsonProperty("timeout")
         val timeout: Long
     )
 
@@ -94,18 +92,10 @@ class BindCoinpaymentsDepositAccountUseCase(
 
         return signedApi
             .customRequests
-            .post<DataEntity<AttributesEntity<CoinpaymentsDepositResponse>>>(
+            .post(
                 url = "integrations/coinpayments/deposit",
-                responseType = object : ParameterizedType {
-                    override fun getRawType(): Type = DataEntity::class.java
-
-                    override fun getOwnerType(): Type? = null
-
-                    override fun getActualTypeArguments(): Array<Type> = arrayOf(
-                        object : TypeToken<AttributesEntity<CoinpaymentsDepositResponse>>() {}
-                            .type
-                    )
-                },
+                responseType = object :
+                    TypeReference<DataEntity<AttributesEntity<CoinpaymentsDepositResponse>>>() {},
                 body = DataEntity(
                     AttributesEntity(
                         mapOf(

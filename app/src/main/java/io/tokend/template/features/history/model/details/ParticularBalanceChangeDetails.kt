@@ -1,7 +1,7 @@
 package io.tokend.template.features.history.model.details
 
 import io.tokend.template.features.history.model.SimpleFeeRecord
-import org.tokend.sdk.api.generated.inner.ParticularBalanceChangeEffect
+import org.tokend.sdk.api.v3.model.generated.inner.ParticularBalanceChangeEffect
 import java.io.Serializable
 import java.math.BigDecimal
 

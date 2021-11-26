@@ -1,6 +1,6 @@
 package io.tokend.template.features.account.data.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 
 /**
@@ -8,9 +8,9 @@ import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
  * which is defined by the environment key-value
  */
 data class ResolvedAccountRole(
-    @SerializedName("id")
+    @JsonProperty("id")
     val id: Long,
-    @SerializedName("role")
+    @JsonProperty("role")
     val role: AccountRole,
 ) {
     constructor(

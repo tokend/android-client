@@ -1,13 +1,13 @@
 package io.tokend.template.data.storage.persistence
 
 import android.content.SharedPreferences
-import com.google.gson.Gson
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.tokend.template.data.storage.persistence.ObjectPersistenceOnPrefs.Companion.forType
-import org.tokend.sdk.factory.GsonFactory
+import org.tokend.sdk.factory.JsonApiTools
 
 /**
  * Implements persistence for an object of type [T]
- * based on [SharedPreferences] with [Gson] serialization
+ * based on [SharedPreferences] with [ObjectMapper] serialization
  *
  * @see forType
  */
@@ -17,7 +17,7 @@ open class ObjectPersistenceOnPrefs<T : Any>(
     protected open val key: String
 ) : ObjectPersistence<T> {
     protected open var loadedItem: T? = null
-    protected open val gson = GsonFactory().getBaseGson()
+    protected open val mapper: ObjectMapper = JsonApiTools.objectMapper
 
     override fun loadItem(): T? {
         return loadedItem
@@ -48,11 +48,11 @@ open class ObjectPersistenceOnPrefs<T : Any>(
     }
 
     protected open fun serializeItem(item: T): String =
-        gson.toJson(item)
+        mapper.writeValueAsString(item)
 
     protected open fun deserializeItem(serialized: String): T? =
         try {
-            gson.fromJson(serialized, itemClass)
+            mapper.readValue(serialized, itemClass)
         } catch (e: Exception) {
             e.printStackTrace()
             null

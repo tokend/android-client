@@ -7,7 +7,7 @@ import io.tokend.template.features.urlconfig.model.UrlConfig
 class UrlConfigProviderFactory {
     fun createUrlConfigProvider(
         defaultConfig: UrlConfig,
-        persistence: ObjectPersistence<UrlConfig> = MemoryOnlyObjectPersistence<UrlConfig>()
+        persistence: ObjectPersistence<UrlConfig> = MemoryOnlyObjectPersistence()
     ): UrlConfigProvider {
         return UrlConfigProviderWithPersistence(
             defaultConfig,

@@ -194,7 +194,7 @@ private constructor(
                 accountId = account.accountId,
                 encryptedSource = encryptedSource,
                 entropy = entropy,
-                secretSeed = account.secretSeed!!
+                secretSeed = account.secretSeed
             )
         }
 

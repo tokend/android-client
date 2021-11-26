@@ -32,7 +32,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.tokend.crypto.ecdsa.erase
 import org.tokend.sdk.api.wallets.model.EmailAlreadyTakenException
 import org.tokend.sdk.keyserver.KeyServer
-import org.tokend.sdk.keyserver.models.WalletCreateResult
+import org.tokend.sdk.keyserver.models.WalletCreationResult
 
 class SignUpActivity : BaseActivity() {
     override val allowUnauthorized = true
@@ -213,8 +213,8 @@ class SignUpActivity : BaseActivity() {
         cameraPermission.handlePermissionResult(requestCode, permissions, grantResults)
     }
 
-    private fun onSuccessfulSignUp(walletCreateResult: WalletCreateResult) {
-        if (walletCreateResult.walletData.attributes.isVerified) {
+    private fun onSuccessfulSignUp(walletCreateResult: WalletCreationResult) {
+        if (walletCreateResult.isVerified) {
             tryToSignIn()
         } else {
             showRegistrationNotVerifiedDialogAndFinish()

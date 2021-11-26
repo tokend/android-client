@@ -23,7 +23,7 @@ import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.blobs.model.Blob
 import org.tokend.sdk.api.blobs.model.BlobType
 import org.tokend.sdk.api.documents.model.DocumentType
-import org.tokend.sdk.factory.GsonFactory
+import org.tokend.sdk.factory.JsonApiTools
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.PublicKeyFactory
 import org.tokend.wallet.Transaction
@@ -124,7 +124,7 @@ class SubmitKycRequestUseCase(
         }
 
         // If the role is defined by the form, resolve an ID for it.
-        val formRole = form.getRole()
+        val formRole = form.role
         return repositoryProvider
             .keyValueEntries
             .ensureEntries(listOf(formRole.key))
@@ -197,7 +197,7 @@ class SubmitKycRequestUseCase(
             putAll(uploadedDocuments)
         }
 
-        val formJson = GsonFactory().getBaseGson().toJson(form)
+        val formJson = JsonApiTools.objectMapper.writeValueAsString(form)
 
         return repositoryProvider
             .blobs

@@ -1,8 +1,8 @@
 package io.tokend.template.features.kyc.storage
 
 import android.content.SharedPreferences
-import com.google.gson.JsonElement
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.JsonNode
 import io.tokend.template.data.storage.persistence.ObjectPersistenceOnPrefs
 import io.tokend.template.features.account.data.model.AccountRole
 import io.tokend.template.features.kyc.model.ActiveKyc
@@ -12,16 +12,16 @@ class ActiveKycPersistence(
     preferences: SharedPreferences
 ) : ObjectPersistenceOnPrefs<ActiveKyc>(ActiveKyc::class.java, preferences, "active_kyc") {
     private class Container(
-        @SerializedName("is_missing")
+        @JsonProperty("is_missing")
         val isMissing: Boolean,
-        @SerializedName("role")
+        @JsonProperty("role")
         val role: AccountRole?,
-        @SerializedName("form_data")
-        val serializedForm: JsonElement?
+        @JsonProperty("form_data")
+        val serializedForm: JsonNode?
     )
 
     override fun serializeItem(item: ActiveKyc): String {
-        return gson.toJson(
+        return mapper.writeValueAsString(
             when (item) {
                 is ActiveKyc.Missing -> Container(
                     isMissing = true,
@@ -30,8 +30,8 @@ class ActiveKycPersistence(
                 )
                 is ActiveKyc.Form -> Container(
                     isMissing = false,
-                    role = item.formData.getRole(),
-                    serializedForm = gson.toJsonTree(item.formData),
+                    role = item.formData.role,
+                    serializedForm = mapper.valueToTree(item.formData),
                 )
             }
         )
@@ -39,12 +39,12 @@ class ActiveKycPersistence(
 
     override fun deserializeItem(serialized: String): ActiveKyc? {
         return try {
-            val container = gson.fromJson(serialized, Container::class.java)
+            val container = mapper.readValue(serialized, Container::class.java)
             if (container.isMissing)
                 ActiveKyc.Missing
             else
                 ActiveKyc.Form(KycForm.fromJson(container.serializedForm!!, container.role!!))
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
             null
         }
