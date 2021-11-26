@@ -44,7 +44,7 @@ class ActiveKycPersistence(
                 ActiveKyc.Missing
             else
                 ActiveKyc.Form(KycForm.fromJson(container.serializedForm!!, container.role!!))
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
             null
         }

@@ -12,6 +12,7 @@ import org.tokend.sdk.factory.JsonApiTools
  * KYC form data with documents
  */
 sealed class KycForm(
+    @param:JsonProperty("documents")
     @get:JsonProperty("documents")
     var documents: MutableMap<String, RemoteFile>? = mutableMapOf()
 ) {

@@ -10,8 +10,11 @@ import java.io.Serializable
 class UrlConfig
 @JsonCreator
 constructor(
+    @JsonProperty("api")
     api: String,
+    @JsonProperty("storage")
     storage: String,
+    @JsonProperty("client")
     client: String
 ) : Serializable {
     private val mApi: String = api
