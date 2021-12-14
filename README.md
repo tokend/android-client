@@ -17,6 +17,8 @@ This is a template wallet app that provides access to any TokenD-based system. R
 * Fees view
 * Polls
 * Direct asset buy
+* Simple general KYC
+* Handling of account roles
 
 ## Customization
 The app configuration is placed in `app_config.gradle` file. There you can change application ID, version info, network params, colors, and features availability.

@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [1.16.0] 2021-12-14
+
+### Changed
+- Email to Login, now you can use the app to work with networks
+where the login is a phone number or something else
+
+### Added
+- Ability to scan a QR code only with a web client URL to switch the network
+- Handling of account roles
+- Simple general KYC
+
+### Fixed
+- Sign in after sign up when no verification is needed
+
+### Internal
+- Updated SDK version to 4.0.0 which removed Gson
+- Changed root package to `io.tokend.template`
+- Migrated from Picasso to Glide
+- Removed Anko
+- Enabled official Kotlin code style
+- Made wallet, account and API providers getters non-nullable,
+as nullability there has proven to be useless
+- Refactored `UrlConfig`, `RepositoryProvider`, `logic` package and other minor things
+
 ## [1.15.3] 2021-10-04
 
 ### Changed
@@ -381,7 +405,8 @@ with ability to copy
 
 - Error on sign in when user has balances with unknown asset details
 
-[Unreleased]: https://github.com/tokend/android-client/compare/1.15.3(26)...HEAD
+[Unreleased]: https://github.com/tokend/android-client/compare/1.16.0(27)...HEAD
+[1.16.0]: https://github.com/tokend/android-client/compare/1.15.3(26)...1.16.0(27)
 [1.15.3]: https://github.com/tokend/android-client/compare/1.15.2(25)...1.15.3(26)
 [1.15.2]: https://github.com/tokend/android-client/compare/1.15.1(24)...1.15.2(25)
 [1.15.1]: https://github.com/tokend/android-client/compare/1.15.0(23)...1.15.1(24)
