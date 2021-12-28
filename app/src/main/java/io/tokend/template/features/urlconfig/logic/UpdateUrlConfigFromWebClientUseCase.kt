@@ -34,7 +34,7 @@ class UpdateUrlConfigFromWebClientUseCase(
 
     private fun getUrlConfig(): Single<UrlConfig> = Single.defer {
         val cleanWebClientUrl = UrlConfig(
-            client = webClientUrl.host(),
+            client = "${webClientUrl.scheme()}://${webClientUrl.host()}",
             api = "",
             storage = ""
         ).client
