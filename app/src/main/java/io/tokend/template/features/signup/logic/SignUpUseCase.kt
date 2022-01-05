@@ -26,8 +26,6 @@ class SignUpUseCase(
     private val keyServer: KeyServer,
     private val repositoryProvider: RepositoryProvider,
     private val session: Session? = null,
-    private val credentialsPersistence: CredentialsPersistence? = null,
-    private val walletInfoPersistence: WalletInfoPersistence? = null,
 ) {
     private lateinit var accounts: List<Account>
     private lateinit var signers: Collection<SignerData>
@@ -104,8 +102,8 @@ class SignUpUseCase(
                 session = session,
                 password = password,
                 accounts = accounts,
-                credentialsPersistence = credentialsPersistence,
-                walletInfoPersistence = walletInfoPersistence,
+                credentialsPersistence = null,
+                walletInfoPersistence = null,
                 signInMethod = null
             )
         }
