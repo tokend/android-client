@@ -4,13 +4,13 @@ import android.content.Context
 import com.fasterxml.jackson.databind.ObjectMapper
 import dagger.Module
 import dagger.Provides
-import io.tokend.template.logic.providers.RepositoryProvider
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.balances.model.BalanceRecord
 import io.tokend.template.features.localaccount.mnemonic.logic.EnglishMnemonicWords
 import io.tokend.template.features.localaccount.mnemonic.logic.MnemonicCode
 import io.tokend.template.features.signin.logic.PostSignInManagerFactory
 import io.tokend.template.logic.persistence.BackgroundLockManager
+import io.tokend.template.logic.providers.RepositoryProvider
 import io.tokend.template.util.ConnectionStateUtil
 import io.tokend.template.util.cipher.Aes256GcmDataCipher
 import io.tokend.template.util.cipher.DataCipher
@@ -98,7 +98,6 @@ class UtilModule {
     }
 
     @Provides
-    @Singleton
     fun objectMapper(): ObjectMapper {
         return JsonApiTools.objectMapper
     }
