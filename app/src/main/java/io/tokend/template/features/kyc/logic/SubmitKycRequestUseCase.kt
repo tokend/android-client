@@ -34,7 +34,7 @@ import java.util.*
 /**
  * Creates and submits change-role request with general KYC data.
  * Sets new KYC state in [KycRequestStateRepository] on complete.
- * The role is defined by the [form] ([KycForm.getRole])
+ * The role is defined by the [form] ([KycForm.role])
  *
  * @param form form to submit, without documents
  * @param alreadySubmittedDocuments documents from the current form, if there are any
