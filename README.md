@@ -56,7 +56,7 @@ It is recommended to use local [TokenD Developer edition](https://github.com/tok
 for tests because they create a lot of users, assets, asset pairs, etc.
 
 ## Connecting to Developer edition
-In order to connect the wallet to your [TokenD Developer edition](https://github.com/tokend/developer-edition) instance follow [this guide](https://mobile-qr.tokend.services/).
+In order to connect the wallet to your [TokenD Developer edition](https://github.com/tokend/developer-edition) instance follow [this guide](https://tokend.github.io/mobile-qr/).
 
 ## Credits
 ⛏ <a href="https://distributedlab.com/" target="_blank">Distributed Lab</a>, 2021
