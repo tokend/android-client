@@ -121,6 +121,14 @@
                 android:layout_marginTop="@dimen/standard_padding"
                 android:text="@string/sign_out" />
 
+            <TextView
+                android:id="@+id/network_text_view"
+                style="@style/HintText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_margin"
+                android:gravity="center" />
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

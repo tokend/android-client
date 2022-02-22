@@ -81,6 +81,7 @@ class UnlockAppActivity : BaseActivity() {
         initButtons()
         initErrorEmptyView()
         user_login_text.text = login
+        network_text_view.text = urlConfigProvider.getConfig().apiDomain
         ProfileUtil.setAvatar(user_logo, login, urlConfigProvider, activeKycPersistence.loadItem())
     }
 
