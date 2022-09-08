@@ -185,7 +185,10 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
         verifierInterface: TfaVerifier.Interface
     ) {
         runOnUiThread {
-            val login = session.login
+            var login: String? = null
+            if (session.hasWalletInfo()) {
+                login = session.login
+            }
             TfaDialogFactory(
                 this, errorHandlerFactory.getDefault(),
                 credentialsPersistence, toastManager
