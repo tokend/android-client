@@ -19,6 +19,7 @@ This is a template wallet app that provides access to any TokenD-based system. R
 * Direct asset buy
 * Simple general KYC
 * Handling of account roles
+* Quick connection to an environment by QR code
 
 ## Customization
 The app configuration is placed in `app_config.gradle` file. There you can change application ID, version info, network params, colors, and features availability.
@@ -59,4 +60,4 @@ for tests because they create a lot of users, assets, asset pairs, etc.
 In order to connect the wallet to your [TokenD Developer edition](https://github.com/tokend/developer-edition) instance follow [this guide](https://tokend.github.io/mobile-qr/).
 
 ## Credits
-⛏ <a href="https://distributedlab.com/" target="_blank">Distributed Lab</a>, 2021
+⛏ <a href="https://distributedlab.com/" target="_blank">Distributed Lab</a>, 2022
