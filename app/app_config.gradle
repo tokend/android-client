@@ -17,7 +17,7 @@ ext {
     api_url = 'https://api.demo.tokend.io'
 
     // Storage URL - Root URL of file storage
-    storage_url = 'https://s3.eu-west-1.amazonaws.com/demo-identity-storage-festive-colden/'
+    storage_url = 'https://s3.us-east-2.amazonaws.com/demo-tokend-identity-storage-close-camel/'
 
     // App host - Host of the related web-client,
     // used to open verification and referral links in app
