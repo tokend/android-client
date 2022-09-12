@@ -16,10 +16,12 @@ object QrScannerUtil {
      * no beep, no orientation lock, no labels
      */
     fun openScanner(
-        activity: Activity
+        activity: Activity,
+        prompt: String = "",
     ) = ActivityRequest(IntentIntegrator.REQUEST_CODE, this::getStringFromResult).also {
         IntentIntegrator(activity)
             .defaultSetup()
+            .setPrompt(prompt)
             .initiateScan()
     }
 
@@ -28,11 +30,13 @@ object QrScannerUtil {
      * no beep, no orientation lock, no labels
      */
     fun openScanner(
-        fragment: Fragment
+        fragment: Fragment,
+        prompt: String = "",
     ) = ActivityRequest(IntentIntegrator.REQUEST_CODE, this::getStringFromResult).also {
         IntentIntegrator
             .forSupportFragment(fragment)
             .defaultSetup()
+            .setPrompt(prompt)
             .initiateScan()
     }
 
@@ -40,7 +44,7 @@ object QrScannerUtil {
         return this
             .setBeepEnabled(false)
             .setOrientationLocked(true)
-            .setPrompt("")
+            .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
             .setCaptureActivity(ScanQrActivity::class.java)
     }
 

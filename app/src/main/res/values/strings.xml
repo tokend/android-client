@@ -253,6 +253,10 @@
     <string name="tokend_network_hint">Network</string>
     <string name="not_specified">Not specified</string>
     <string name="error_incorrect_network_qr">This is not a valid network QR</string>
+    <string name="network_qr_scan_prompt">Scan one of the supported QR codes:\n
+        - Network configuration (big one)\n
+        - Web client URL\n
+    </string>
 
     <string name="open_source_licenses_title">Open source licenses</string>
     <string name="settings_information_group">Information</string>

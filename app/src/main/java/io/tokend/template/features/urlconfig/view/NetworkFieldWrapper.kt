@@ -92,7 +92,8 @@ private constructor(
     private fun tryOpenQrScanner() {
         activity?.also { activity ->
             cameraPermission.check(activity) {
-                QrScannerUtil.openScanner(activity)
+                QrScannerUtil
+                    .openScanner(activity, activity.getString(R.string.network_qr_scan_prompt))
                     .addTo(activityRequestsBag)
                     .doOnSuccess(this::tryToUpdateUrlConfig)
             }
@@ -100,7 +101,8 @@ private constructor(
 
         fragment?.also { fragment ->
             cameraPermission.check(fragment) {
-                QrScannerUtil.openScanner(fragment)
+                QrScannerUtil
+                    .openScanner(fragment, fragment.getString(R.string.network_qr_scan_prompt))
                     .addTo(activityRequestsBag)
                     .doOnSuccess(this::tryToUpdateUrlConfig)
             }

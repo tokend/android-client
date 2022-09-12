@@ -252,7 +252,11 @@
 
     <string name="tokend_network_hint">Мережа</string>
     <string name="not_specified">Не вказано</string>
-    <string name="error_incorrect_network_qr">Проскановано некоректний QR код мережі</string>
+    <string name="error_incorrect_network_qr">Відскановано некоректний QR код мережі</string>
+    <string name="network_qr_scan_prompt">Відскануйте один з допустимих QR кодів:\n
+        - Конфігурація мережі (великий код)\n
+        - URL веб-клієнта\n
+    </string>
 
     <string name="open_source_licenses_title">Ліцензії відкритого ПЗ</string>
     <string name="settings_information_group">Інформація</string>

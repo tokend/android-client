@@ -253,6 +253,10 @@
     <string name="tokend_network_hint">Сеть</string>
     <string name="not_specified">Не указано</string>
     <string name="error_incorrect_network_qr">Просканирован некорректный QR код сети</string>
+    <string name="network_qr_scan_prompt">Отсканируйте один из поддерживаемых QR кодов:\n
+        - Конфигурация сети (большой код)\n
+        - URL веб-клиента\n
+    </string>
 
     <string name="open_source_licenses_title">Лицензии открытого ПО</string>
     <string name="settings_information_group">Информация</string>
