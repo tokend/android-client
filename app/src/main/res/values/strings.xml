@@ -320,6 +320,8 @@
     <string name="sale_cancelled">Sale is cancelled</string>
     <string name="sale_closed">Sale is closed</string>
     <string name="sale_ended">Sale is ended</string>
+    <string name="sale_video">Sale video</string>
+    <string name="play_video">Play video</string>
 
     <string name="seed_alert_dialog">You are about to show sensitive data.\nAnyone
         who knows the secret seed can gain access to your account.\nDo

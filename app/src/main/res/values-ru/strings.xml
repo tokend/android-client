@@ -321,6 +321,8 @@
     <string name="sale_cancelled">Кампания отменена</string>
     <string name="sale_closed">Кампания закрыта</string>
     <string name="sale_ended">Кампания завершена</string>
+    <string name="sale_video">Видео кампании</string>
+    <string name="play_video">Воспроизвести видео</string>
 
     <string name="seed_alert_dialog">Вы собираетесь отобразить важную информацию.\nЛюбой, кто знает
         ваш секретный ключ, может получить доступ к вашему аккаунту.\nЖелаете продолжить?</string>

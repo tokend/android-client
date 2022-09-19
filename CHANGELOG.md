@@ -20,6 +20,7 @@ To fix the existing accounts, sign in from the app and change the password
 - Improper handling of ended but opened and opened but not started sales
 - Missing full description on sale overview screen
 - Missing YouTube videos on sale overview screen
+- Disproportional video preview on sale overview screen
 
 ### Changed
 - Prettified sale progress metrics alignment

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -102,20 +101,12 @@ class SaleOverviewFragment : SaleFragment() {
     private fun displayYoutubePreview() {
         video_preview_layout.visibility = View.VISIBLE
 
-        video_preview_image_view.post {
-            val width = video_preview_layout.width
-            val height = (width * 720f / 1280f).toInt()
-
-            video_preview_image_view.layoutParams = RelativeLayout.LayoutParams(width, height)
-
-            ImageViewUtil.loadImage(
-                video_preview_image_view,
-                sale.youtubeVideo?.previewUrl,
-                picturePlaceholder
-            ) {
-                override(width, height)
-                centerCrop()
-            }
+        ImageViewUtil.loadImage(
+            video_preview_image_view,
+            sale.youtubeVideo?.previewUrl,
+            picturePlaceholder
+        ) {
+            centerCrop()
         }
 
         video_preview_layout.setOnClickListener {

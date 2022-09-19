@@ -57,27 +57,34 @@
                     android:layout_width="0dp"
                     android:layout_height="@dimen/standard_padding" />
 
-                <RelativeLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/video_preview_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/standard_padding"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <ImageView
                         android:id="@+id/video_preview_image_view"
-                        android:layout_width="128dp"
-                        android:layout_height="72dp" />
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:contentDescription="@string/sale_video"
+                        app:layout_constraintDimensionRatio="16:9"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:background="@color/accent_highlight" />
 
                     <ImageView
+                        android:contentDescription="@string/play_video"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/double_padding"
-                        android:layout_alignStart="@id/video_preview_image_view"
-                        android:layout_alignEnd="@id/video_preview_image_view"
-                        android:layout_centerVertical="true"
+                        android:layout_height="0dp"
                         android:scaleType="fitCenter"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintHeight_percent="0.35"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_youtube_play" />
-                </RelativeLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:id="@+id/sale_overview_text_view"
