@@ -18,6 +18,8 @@ for further information about branching and tagging conventions.
 - Accounts signed up with versions 1.16.0..1.16.1 are inaccessible from the web client.
 To fix the existing accounts, sign in from the app and change the password
 - Improper handling of ended but opened and opened but not started sales
+- Missing full description on sale overview screen
+- Missing YouTube videos on sale overview screen
 
 ### Changed
 - Prettified sale progress metrics alignment

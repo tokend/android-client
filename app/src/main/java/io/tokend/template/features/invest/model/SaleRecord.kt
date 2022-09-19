@@ -7,6 +7,7 @@ import io.tokend.template.data.model.RecordWithLogo
 import io.tokend.template.features.assets.model.Asset
 import io.tokend.template.features.assets.model.SimpleAsset
 import io.tokend.template.features.urlconfig.model.UrlConfig
+import okhttp3.HttpUrl
 import org.tokend.sdk.api.base.model.RemoteFile
 import org.tokend.sdk.api.v3.model.generated.resources.SaleQuoteAssetResource
 import org.tokend.sdk.api.v3.model.generated.resources.SaleResource
@@ -95,7 +96,12 @@ class SaleRecord(
     class YoutubeVideo(
         val url: String,
         val previewUrl: String
-    ) : Serializable
+    ) : Serializable {
+        constructor(videoId: String) : this(
+            url = "https://m.youtube.com/watch?v=$videoId",
+            previewUrl = "https://img.youtube.com/vi/$videoId/hqdefault.jpg"
+        )
+    }
 
     companion object {
         fun fromResource(
@@ -103,16 +109,17 @@ class SaleRecord(
             urlConfig: UrlConfig?,
             mapper: ObjectMapper
         ): SaleRecord {
-
             val name = source.details.get("name").asText()
 
             val shortDescription = source.details.get("short_description")
                 ?.takeIf { it !is NullNode }
                 ?.asText()
-                ?: ""
+                ?.takeIf(String::isNotEmpty)
 
-            val fullDescription = source.details.get("description")?.takeIf { it !is NullNode }
+            val fullDescriptionBlob = source.details.get("description")
+                ?.takeIf { it !is NullNode }
                 ?.asText()
+                ?.takeIf(String::isNotEmpty)
 
             val defaultQuoteAsset = QuoteAsset(source.defaultQuoteAsset)
             val quoteAssets = source.quoteAssets.map(::QuoteAsset)
@@ -128,12 +135,20 @@ class SaleRecord(
             val youtubeVideo = source.details.get("youtube_video_id")
                 ?.takeIf { it !is NullNode }
                 ?.asText()
-                ?.takeIf { it.isNotEmpty() }
-                ?.let {
-                    YoutubeVideo(
-                        url = "https://m.youtube.com/watch?v=$it",
-                        previewUrl = "https://img.youtube.com/vi/$it/hqdefault.jpg"
-                    )
+                ?.takeIf(String::isNotEmpty)
+                ?.let { rawVideoId ->
+                    // New web clients submit YouTube URL instead of video ID.
+                    val httpUrl = HttpUrl.parse(rawVideoId)
+                    if (httpUrl == null) {
+                        YoutubeVideo(videoId = rawVideoId)
+                    } else {
+                        val videoIdQueryParam = httpUrl.queryParameter("v")
+                        if (videoIdQueryParam != null) {
+                            YoutubeVideo(videoId = videoIdQueryParam)
+                        } else {
+                            null
+                        }
+                    }
                 }
 
             return SaleRecord(
@@ -143,7 +158,7 @@ class SaleRecord(
                 quoteAssets = quoteAssets,
                 defaultQuoteAsset = defaultQuoteAsset,
                 description = shortDescription,
-                fullDescriptionBlob = fullDescription,
+                fullDescriptionBlob = fullDescriptionBlob,
                 logoUrl = urlConfig?.storage?.let { logo?.getUrl(it) },
                 startDate = source.startTime,
                 endDate = source.endTime,

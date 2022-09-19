@@ -50,7 +50,7 @@ class SaleOverviewMarkdownLoader(
                 try {
                     // Unescape content.
                     JsonApiTools.objectMapper
-                        .readTree("\"${rawValue}\"")
+                        .readTree(rawValue)
                         .asText()
                 } catch (e: Exception) {
                     rawValue
