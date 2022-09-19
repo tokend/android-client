@@ -170,6 +170,7 @@
     <string name="error_tx_not_allowed">You are not allowed to perform this action</string>
     <string name="error_tx_cross_self">Current order crosses one of your existing orders</string>
     <string name="error_tx_not_found">Requested entry not found</string>
+    <string name="error_tx_sale_already_ended">The sale is already ended</string>
 
     <string name="tfa_dialog_title">Two-factor authentication</string>
     <string name="tfa_default_dialog_message">Enter the code</string>

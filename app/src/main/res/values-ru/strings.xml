@@ -170,6 +170,7 @@
     <string name="error_tx_not_allowed">Вам не разрешено это действие</string>
     <string name="error_tx_cross_self">Ордер совпадает с одним из уже существующих</string>
     <string name="error_tx_not_found">Элемент не найден</string>
+    <string name="error_tx_sale_already_ended">Кампания уже завершена</string>
 
     <string name="tfa_dialog_title">Двухфакторная аутентификация</string>
     <string name="tfa_default_dialog_message">Введите код</string>

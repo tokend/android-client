@@ -86,6 +86,8 @@ open class DefaultErrorHandler(
                     TransactionFailedException.OP_NOT_FOUND,
                     TransactionFailedException.OP_NO_ENTRY ->
                         context.getString(R.string.error_tx_not_found)
+                    TransactionFailedException.OP_ENDED_SALE ->
+                        context.getString(R.string.error_tx_sale_already_ended)
                     else ->
                         context.getString(R.string.error_tx_general)
                 }
