@@ -22,6 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textAlignment="textStart"
             tools:text="15%" />
 
         <TextView
@@ -29,13 +30,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
+            android:textAlignment="center"
             tools:text="$1,000 invested" />
 
         <TextView
             android:id="@+id/sale_remain_time_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.5"
+            android:layout_weight="1"
+            android:textAlignment="textEnd"
             tools:text="2 days left" />
     </LinearLayout>
 </LinearLayout>
