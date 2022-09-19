@@ -185,15 +185,12 @@ abstract class BaseActivity : AppCompatActivity(), TfaCallback {
         verifierInterface: TfaVerifier.Interface
     ) {
         runOnUiThread {
-            var login: String? = null
-            if (session.hasWalletInfo()) {
-                login = session.login
-            }
             TfaDialogFactory(
-                this, errorHandlerFactory.getDefault(),
-                credentialsPersistence, toastManager
+                context = this,
+                errorHandler = errorHandlerFactory.getDefault(),
+                session = session
             )
-                .getForException(exception, verifierInterface, login)
+                .getForException(exception, verifierInterface)
                 ?.show()
                 ?: verifierInterface.cancelVerification()
         }

@@ -32,10 +32,13 @@
                 android:hint="@string/login"
                 app:met_floatingLabelText="@string/login" />
 
-            <RelativeLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_padding">
+                android:layout_marginTop="@dimen/standard_padding"
+                app:hintEnabled="false"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/icons">
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/password_edit_text"
@@ -46,7 +49,7 @@
                     android:inputType="textPassword"
                     app:met_floatingLabelText="@string/password" />
 
-            </RelativeLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <include
                 layout="@layout/layout_progress"

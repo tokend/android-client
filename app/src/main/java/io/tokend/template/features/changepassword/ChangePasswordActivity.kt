@@ -2,7 +2,6 @@ package io.tokend.template.features.changepassword
 
 import android.app.Activity
 import android.os.Bundle
-import android.view.View
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.tokend.template.R
@@ -12,7 +11,6 @@ import io.tokend.template.extensions.hasError
 import io.tokend.template.extensions.onEditorAction
 import io.tokend.template.extensions.setErrorAndFocus
 import io.tokend.template.util.ObservableTransformers
-import io.tokend.template.util.biometric.BiometricAuthManager
 import io.tokend.template.util.validator.PasswordValidator
 import io.tokend.template.view.util.ElevationUtil
 import io.tokend.template.view.util.LoadingIndicatorManager
@@ -45,10 +43,6 @@ class ChangePasswordActivity : BaseActivity() {
             field = value
             change_password_button.isEnabled = value
         }
-
-    private val biometricAuthManager by lazy {
-        BiometricAuthManager(this, credentialsPersistence)
-    }
 
     override fun onCreateAllowed(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_change_password)
@@ -92,35 +86,6 @@ class ChangePasswordActivity : BaseActivity() {
         change_password_button.setOnClickListener {
             tryToChangePassword()
         }
-
-        fingerprint_button.visibility =
-            if (biometricAuthManager.isAuthPossible)
-                View.VISIBLE
-            else
-                View.GONE
-
-        fingerprint_button.setOnClickListener {
-            requestFingerprintAuthIfAvailable()
-        }
-    }
-    // endregion
-
-    // region Fingerprint
-    private fun requestFingerprintAuthIfAvailable() {
-        biometricAuthManager.requestAuthIfPossible(
-            onSuccess = { _, password ->
-                current_password_edit_text.setText(password, 0, password.size)
-                new_password_edit_text.requestFocus()
-                password.fill('0')
-            },
-            onError = {
-                toastManager.short(it?.toString())
-            }
-        )
-    }
-
-    private fun cancelFingerprintAuth() {
-        biometricAuthManager.cancelAuth()
     }
     // endregion
 
@@ -243,8 +208,4 @@ class ChangePasswordActivity : BaseActivity() {
         finish()
     }
 
-    override fun onPause() {
-        super.onPause()
-        cancelFingerprintAuth()
-    }
 }

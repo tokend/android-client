@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
+import com.google.android.material.textfield.TextInputLayout
 import com.rengwuxian.materialedittext.MaterialEditText
 import io.tokend.template.R
 import io.tokend.template.extensions.*
@@ -28,7 +29,7 @@ abstract class TfaDialog(
     private val tfaVerifierInterface: TfaVerifier.Interface
 ) {
     protected val inputEditText: MaterialEditText
-    protected val inputButtonImageView: AppCompatImageView
+    protected val inputEditTextLayout: TextInputLayout
     protected val messageTextView: TextView
     protected lateinit var progress: ProgressBar
     protected val dialog: AlertDialog
@@ -47,7 +48,7 @@ abstract class TfaDialog(
         progress = view.findViewById(R.id.progress)
         messageTextView = view.findViewById(R.id.tfa_message_text_view)
         inputEditText = view.findViewById(R.id.tfa_input_edit_text)
-        inputButtonImageView = view.findViewById(R.id.tfa_input_button_image_view)
+        inputEditTextLayout = view.findViewById(R.id.tfa_input_edit_text_layout)
 
         dialog = AlertDialog.Builder(context, R.style.AlertDialogStyle)
             .setTitle(R.string.tfa_dialog_title)

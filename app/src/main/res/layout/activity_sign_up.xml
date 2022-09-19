@@ -49,15 +49,23 @@
                     app:met_floatingLabelText="@string/password" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/confirm_password_edit_text"
-                style="@style/EditText"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/standard_padding"
-                android:hint="@string/confirm_password"
-                android:inputType="textPassword"
-                app:met_floatingLabelText="@string/confirm_password" />
+                app:hintEnabled="false"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/icons">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/confirm_password_edit_text"
+                    style="@style/EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/confirm_password"
+                    android:inputType="textPassword"
+                    app:met_floatingLabelText="@string/confirm_password" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

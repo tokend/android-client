@@ -1,9 +1,8 @@
 package io.tokend.template.features.tfa.view
 
 import android.content.Context
-import io.tokend.template.logic.credentials.persistence.CredentialsPersistence
+import io.tokend.template.logic.session.Session
 import io.tokend.template.util.errorhandler.ErrorHandler
-import io.tokend.template.view.ToastManager
 import org.tokend.sdk.api.tfa.model.TfaFactor
 import org.tokend.sdk.tfa.NeedTfaException
 import org.tokend.sdk.tfa.TfaVerifier
@@ -11,26 +10,26 @@ import org.tokend.sdk.tfa.TfaVerifier
 class TfaDialogFactory(
     private val context: Context,
     private val errorHandler: ErrorHandler,
-    private val credentialsPersistence: CredentialsPersistence?,
-    private val toastManager: ToastManager?
+    private val session: Session
 ) {
     /**
      * @return verification dialog for specified exception.
      * If there is no special dialog for given TFA factor type
      * then [TfaDefaultDialog] will be returned
      */
-    @JvmOverloads
     fun getForException(
         tfaException: NeedTfaException,
         verifierInterface: TfaVerifier.Interface,
-        login: String? = null
     ): TfaDialog? {
         return when (tfaException.factorType) {
             TfaFactor.Type.PASSWORD -> {
+                val login = session
+                    .takeIf(Session::hasWalletInfo)
+                    ?.login
+
                 if (login != null)
                     TfaPasswordDialog(
-                        context, errorHandler, verifierInterface,
-                        credentialsPersistence, tfaException, login, toastManager
+                        context, errorHandler, verifierInterface, tfaException, login
                     )
                 else
                     null

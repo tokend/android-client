@@ -111,12 +111,12 @@ class UnlockAppActivity : BaseActivity() {
             Navigator.from(this).openRecovery(login)
         }
 
-        fingerprint_button.visibility =
+        use_biometrics_button.visibility =
             if (biometricAuthManager.isAuthPossible)
                 View.VISIBLE
             else
                 View.GONE
-        fingerprint_button.setOnClickListener {
+        use_biometrics_button.setOnClickListener {
             requestFingerprintAuthIfAvailable()
         }
     }
@@ -145,6 +145,7 @@ class UnlockAppActivity : BaseActivity() {
         progress.visibility = View.GONE
         password_layout.visibility = View.VISIBLE
         error_empty_view.hide()
+        use_biometrics_button.visibility = View.VISIBLE
         sign_out_button.visibility = View.VISIBLE
     }
 
@@ -153,6 +154,7 @@ class UnlockAppActivity : BaseActivity() {
         progress.visibility = View.VISIBLE
         password_layout.visibility = View.INVISIBLE
         error_empty_view.hide()
+        use_biometrics_button.visibility = View.GONE
         sign_out_button.visibility = View.GONE
     }
 
@@ -164,6 +166,7 @@ class UnlockAppActivity : BaseActivity() {
                 unlock(login, it, isPasswordEnteredManually = lastTimePasswordWasEnteredManually)
             }
         }
+        use_biometrics_button.visibility = View.VISIBLE
         sign_out_button.visibility = View.VISIBLE
     }
 
