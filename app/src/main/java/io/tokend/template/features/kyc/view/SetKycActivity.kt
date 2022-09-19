@@ -349,7 +349,6 @@ class SetKycActivity : BaseActivity() {
         } else {
             toastManager.long(R.string.personal_info_update_request_created)
         }
-        finish()
     }
 
     private fun initTextFields() {
