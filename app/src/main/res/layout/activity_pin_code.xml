@@ -31,7 +31,8 @@
             android:layout_marginTop="@dimen/half_standard_margin"
             android:ems="8"
             android:gravity="center_horizontal"
-            android:inputType="numberPassword" />
+            android:inputType="numberPassword"
+            app:met_floatingLabel="none" />
 
         <include layout="@layout/include_biometrics_field_hint" />
 

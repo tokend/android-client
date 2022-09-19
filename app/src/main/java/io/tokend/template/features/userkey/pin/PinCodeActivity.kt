@@ -43,17 +43,21 @@ open class PinCodeActivity : UserKeyActivity() {
     }
 
     private fun initFields() {
-        pin_code_edit_text.filters = arrayOf(
-            InputFilter.LengthFilter(PIN_CODE_LENGTH)
-        )
+        pin_code_edit_text.apply {
+            filters = arrayOf(
+                InputFilter.LengthFilter(PIN_CODE_LENGTH)
+            )
 
-        pin_code_edit_text.addTextChangedListener(
-            SimpleTextWatcher { pin ->
-                if (pin != null && pin.length == PIN_CODE_LENGTH) {
-                    onUserKeyEntered(pin.getChars())
+            addTextChangedListener(
+                SimpleTextWatcher { pin ->
+                    if (pin != null && pin.length == PIN_CODE_LENGTH) {
+                        onUserKeyEntered(pin.getChars())
+                    }
                 }
-            }
-        )
+            )
+
+            hint = "• ".repeat(PIN_CODE_LENGTH).trimEnd()
+        }
     }
 
     protected open fun hideBiometricsHint() {
