@@ -38,14 +38,20 @@ class SaleRecord(
 ) : Serializable, RecordWithLogo, RecordWithDescription {
 
     val isAvailableForInvestment: Boolean
-        get() = isOpen && !isEnded
+        get() = isOpen && isStarted && !isEnded
 
+    // region Date-related states
     val isUpcoming: Boolean
         get() = startDate.after(Date())
 
+    val isStarted: Boolean
+        get() = startDate.before(Date())
+
     val isEnded: Boolean
         get() = endDate.before(Date())
+    // endregion
 
+    // Entity states
     val isOpen: Boolean
         get() = state == SaleState.OPEN
 
@@ -54,6 +60,7 @@ class SaleRecord(
 
     val isCanceled: Boolean
         get() = state == SaleState.CANCELED
+    // endregion
 
     override fun equals(other: Any?): Boolean {
         return other is SaleRecord && other.id == this.id

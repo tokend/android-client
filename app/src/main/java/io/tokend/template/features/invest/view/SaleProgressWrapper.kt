@@ -51,35 +51,8 @@ class SaleProgressWrapper(
         rootView.sale_progress_percent_text_view.text = SpannableString(funded)
             .apply { highlight(percent, highlightColor) }
 
+        // Preserve order.
         when {
-            sale.isUpcoming || sale.isAvailableForInvestment -> {
-                rootView.sale_remain_time_text_view.visibility = View.VISIBLE
-
-                val date =
-                    if (sale.isAvailableForInvestment)
-                        sale.endDate
-                    else
-                        sale.startDate
-
-                val (timeValue, timeUnit) = RemainedTimeUtil.getRemainedTime(date)
-
-                val templateRes =
-                    if (sale.isAvailableForInvestment)
-                        R.string.template_sale_days_to_go
-                    else
-                        R.string.template_sale_starts_in
-
-                val daysString =
-                    context.getString(
-                        templateRes,
-                        timeValue,
-                        localizedName.forTimeUnit(timeUnit, timeValue)
-                    )
-                val toHighlight = daysString.substringBefore('\n')
-
-                rootView.sale_remain_time_text_view.text = SpannableString(daysString)
-                    .apply { highlight(toHighlight, highlightColor) }
-            }
             sale.isCanceled -> {
                 rootView.sale_remain_time_text_view.apply {
                     visibility = View.VISIBLE
@@ -97,6 +70,34 @@ class SaleProgressWrapper(
                     visibility = View.VISIBLE
                     text = context.getString(R.string.sale_ended)
                 }
+            }
+            sale.isUpcoming || sale.isStarted -> {
+                rootView.sale_remain_time_text_view.visibility = View.VISIBLE
+
+                val date =
+                    if (sale.isUpcoming)
+                        sale.startDate
+                    else
+                        sale.endDate
+
+                val (timeValue, timeUnit) = RemainedTimeUtil.getRemainedTime(date)
+
+                val templateRes =
+                    if (sale.isUpcoming)
+                        R.string.template_sale_starts_in
+                    else
+                        R.string.template_sale_days_to_go
+
+                val daysString =
+                    context.getString(
+                        templateRes,
+                        timeValue,
+                        localizedName.forTimeUnit(timeUnit, timeValue)
+                    )
+                val toHighlight = daysString.substringBefore('\n')
+
+                rootView.sale_remain_time_text_view.text = SpannableString(daysString)
+                    .apply { highlight(toHighlight, highlightColor) }
             }
             else -> {
                 rootView.sale_remain_time_text_view.visibility = View.GONE
