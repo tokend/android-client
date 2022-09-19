@@ -56,7 +56,7 @@ class SaleProgressWrapper(
             sale.isCanceled -> {
                 rootView.sale_remain_time_text_view.apply {
                     visibility = View.VISIBLE
-                    text = context.getString(R.string.sale_cancelled)
+                    text = context.getString(R.string.sale_canceled)
                 }
             }
             sale.isClosed -> {
@@ -84,15 +84,14 @@ class SaleProgressWrapper(
 
                 val templateRes =
                     if (sale.isUpcoming)
-                        R.string.template_sale_starts_in
+                        R.string.template_sale_time_to_start
                     else
-                        R.string.template_sale_days_to_go
+                        R.string.template_sale_time_to_go
 
                 val daysString =
                     context.getString(
                         templateRes,
-                        timeValue,
-                        localizedName.forTimeUnit(timeUnit, timeValue)
+                        localizedName.forTimeWithUnit(timeUnit, timeValue)
                     )
                 val toHighlight = daysString.substringBefore('\n')
 

@@ -3,9 +3,7 @@
         <scale android:scaleWidth="100%">
             <shape>
                 <solid android:color="@color/accent_highlight" />
-                <corners
-                    android:bottomLeftRadius="@dimen/modern_card_corner_radius"
-                    android:topLeftRadius="@dimen/modern_card_corner_radius" />
+                <corners android:radius="@dimen/modern_card_corner_radius" />
                 <size android:width="0dp" />
             </shape>
         </scale>

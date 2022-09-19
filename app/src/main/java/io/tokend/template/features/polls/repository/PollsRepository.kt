@@ -3,12 +3,12 @@ package io.tokend.template.features.polls.repository
 import io.reactivex.Single
 import io.tokend.template.data.storage.repository.MultipleItemsRepository
 import io.tokend.template.data.storage.repository.RepositoryCache
-import io.tokend.template.logic.providers.ApiProvider
-import io.tokend.template.logic.providers.WalletInfoProvider
 import io.tokend.template.extensions.tryOrNull
 import io.tokend.template.features.keyvalue.model.KeyValueEntryRecord
 import io.tokend.template.features.keyvalue.storage.KeyValueEntriesRepository
 import io.tokend.template.features.polls.model.PollRecord
+import io.tokend.template.logic.providers.ApiProvider
+import io.tokend.template.logic.providers.WalletInfoProvider
 import org.tokend.rx.extensions.toSingle
 import org.tokend.sdk.api.base.params.PagingOrder
 import org.tokend.sdk.api.base.params.PagingParamsV2
@@ -27,12 +27,13 @@ class PollsRepository(
     override fun getItems(): Single<List<PollRecord>> {
         return Single.zip(
             getPolls(),
-            getVotes(),
-            { polls: List<PollRecord>, votes: Map<String, Int> ->
-                polls.forEach {
-                    it.currentChoice = votes[it.id]
+            getVotesByPollId(),
+            { polls: List<PollRecord>, voteByPollId: Map<String, Int> ->
+                polls.apply {
+                    forEach {
+                        it.currentChoiceIndex = voteByPollId[it.id]
+                    }
                 }
-                polls.sortedBy { !it.isEnded }
             }
         )
     }
@@ -85,7 +86,7 @@ class PollsRepository(
             }
     }
 
-    private fun getVotes(): Single<Map<String, Int>> {
+    private fun getVotesByPollId(): Single<Map<String, Int>> {
         val accountId = walletInfoProvider.getWalletInfo().accountId
         val signedApi = apiProvider.getSignedApi()
 
@@ -120,12 +121,12 @@ class PollsRepository(
 
     fun updatePollChoiceLocally(
         pollId: String,
-        choice: Int?,
+        choiceIndex: Int?,
     ) {
         itemsList
             .find { it.id == pollId }
             ?.also { pollToUpdate ->
-                pollToUpdate.currentChoice = choice
+                pollToUpdate.currentChoiceIndex = choiceIndex
                 broadcast()
             }
     }

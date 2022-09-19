@@ -3,10 +3,10 @@ package io.tokend.template.features.polls.logic
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import io.tokend.template.logic.TxManager
 import io.tokend.template.logic.providers.AccountProvider
 import io.tokend.template.logic.providers.RepositoryProvider
 import io.tokend.template.logic.providers.WalletInfoProvider
-import io.tokend.template.logic.TxManager
 import org.tokend.wallet.NetworkParams
 import org.tokend.wallet.Transaction
 import org.tokend.wallet.TransactionBuilder

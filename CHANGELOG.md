@@ -21,12 +21,17 @@ To fix the existing accounts, sign in from the app and change the password
 - Missing full description on sale overview screen
 - Missing YouTube videos on sale overview screen
 - Disproportional video preview on sale overview screen
+- Improper handling of upcoming polls
+- Sharp corners of poll choice option with result background
 
 ### Changed
 - Prettified sale progress metrics alignment
 
 ### Removed
 - Biometrics from sensitive use-cases: password change, 2FA
+
+### Internal
+- Refactored `PollRecord` to handle all the possible states
 
 ## [1.16.1] 2022-09-12
 

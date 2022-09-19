@@ -31,6 +31,7 @@ import io.tokend.template.util.ObservableTransformers
 import io.tokend.template.view.balancepicker.BalancePickerBottomDialog
 import io.tokend.template.view.util.ElevationUtil
 import io.tokend.template.view.util.LoadingIndicatorManager
+import io.tokend.template.view.util.LocalizedName
 import io.tokend.template.view.util.ProgressDialogFactory
 import kotlinx.android.synthetic.main.appbar.*
 import kotlinx.android.synthetic.main.fragment_polls.*
@@ -236,7 +237,14 @@ class PollsFragment : BaseFragment(), ToolbarProvider {
     }
 
     private fun displayPolls(polls: List<PollRecord>) {
-        adapter.setData(polls.map(::PollListItem))
+        val localizedName = LocalizedName(requireContext())
+        adapter.setData(polls.map {
+            PollListItem(
+                source = it,
+                context = requireContext(),
+                localizedName = localizedName
+            )
+        })
     }
 
     private fun subscribeToBalances() {

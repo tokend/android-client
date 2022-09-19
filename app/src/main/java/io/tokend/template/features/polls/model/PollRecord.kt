@@ -10,12 +10,16 @@ import java.util.*
 class PollRecord(
     val id: String,
     val ownerAccountId: String,
-    val subject: String,
-    val choices: List<Choice>,
-    var currentChoice: Int?,
-    val isEnded: Boolean,
+    val question: String,
+    val choiceOptions: List<String>,
+    /**
+     * Index of choice from 0
+     */
+    var currentChoiceIndex: Int?,
     val isChoiceChangeAllowed: Boolean,
-    val endDate: Date
+    val startDate: Date,
+    val endDate: Date,
+    val state: State,
 ) {
     private class ChoiceData
     @JsonCreator
@@ -26,26 +30,45 @@ class PollRecord(
         val description: String
     )
 
-    class Choice(
-        val name: String,
-        val result: Result?
-    ) {
-        class Result(
-            val votesCount: Int,
-            val percentOfTotal: Double
-        ) {
-            constructor(votesCount: Int, totalVotes: Long) : this(
-                votesCount = votesCount,
-                percentOfTotal = if (totalVotes != 0L)
-                    (votesCount.toDouble() / totalVotes) * 100
-                else
-                    0.toDouble()
-            )
+//    enum class SSState {
+//        UPCOMING,
+//        ACTIVE,
+//        ENDED,
+//        PASSED,
+//        FAILED,
+//        CANCELED
+//    }
+
+    sealed class State {
+        // Start date hasn't come.
+        object Upcoming : State()
+
+        // Between start and end dates.
+        object Active : State()
+
+        // End date has come but the poll is not closed.
+        object Ended : State()
+
+        // The poll is closed successfully or not.
+        class Closed(
+            /**
+             * Whether the state is [PollState.PASSED] or [PollState.FAILED]
+             */
+            val isPassed: Boolean,
+            /**
+             * Number of votes by choice option index.
+             */
+            val outcomeByChoiceOption: List<Int>,
+        ) : State() {
+            val totalVotes: Int = outcomeByChoiceOption.sum()
         }
+
+        // The poll has been cancelled.
+        object Canceled : State()
     }
 
     val canVote: Boolean
-        get() = (currentChoice == null || isChoiceChangeAllowed) && !isEnded
+        get() = state == State.Active && (currentChoiceIndex == null || isChoiceChangeAllowed)
 
     override fun hashCode(): Int {
         return id.hashCode()
@@ -66,48 +89,82 @@ class PollRecord(
         ): PollRecord {
             val details = source.creatorDetails
 
-            val subject = details.get("question").asText()
+            val question = details.get("question").asText()
+
+            val numberOfChoices = source.numberOfChoices
 
             val mapper = JsonApiTools.objectMapper
-            val choicesData = details["choices"]
+            val choiceOptions = details["choices"]
                 .map { mapper.treeToValue(it, ChoiceData::class.java) }
                 .sortedBy(ChoiceData::number)
+                .also { choiceData ->
+                    check(choiceData.size.toLong() == numberOfChoices) {
+                        "Expected to have $numberOfChoices in details, but only there are only ${choiceData.size}\n" +
+                                details
+                    }
 
-            val outcome = details["outcome"]
-            val votesByChoices = choicesData
-                .associateBy(ChoiceData::number)
-                .mapValues { outcome?.get(it.key.toString())?.asInt() ?: 0 }
-            val totalVotes = votesByChoices.values.map(Int::toLong).sum()
-
-            val pollIsEnded = source.pollState.value == PollState.PASSED.value
-                    || source.pollState.value == PollState.FAILED.value
-
-            val choices = choicesData
-                .map {
-                    Choice(
-                        name = it.description,
-                        result =
-                        if (pollIsEnded)
-                            Choice.Result(
-                                votesCount = votesByChoices[it.number] ?: 0,
-                                totalVotes = totalVotes
-                            )
-                        else
-                            null
-                    )
+                    (1..numberOfChoices).forEach { choiceNumber ->
+                        checkNotNull(choiceData.getOrNull(choiceNumber.toInt() - 1)) {
+                            "Expected to have a choice option for number $choiceNumber\n" +
+                                    details
+                        }
+                    }
                 }
+                .map(ChoiceData::description)
 
             val isChoiceChangeAllowed = source.permissionType == permissionTypeAllowChoiceChange
+
+            val sourceState = PollState.fromValue(source.pollState.value)
+            val now = Date()
+            val state = when {
+                // Preserve order.
+                sourceState == PollState.OPEN && now.before(source.startTime) -> {
+                    State.Upcoming
+                }
+                sourceState == PollState.OPEN && now.before(source.endTime) -> {
+                    State.Active
+                }
+                sourceState == PollState.OPEN && (now == source.endTime || now.after(source.endTime)) -> {
+                    State.Ended
+                }
+                sourceState == PollState.CANCELLED -> {
+                    State.Canceled
+                }
+                sourceState == PollState.PASSED || sourceState == PollState.FAILED -> {
+                    /**
+                     * Outcome provided by the default poll closer service is the following:
+                     * outcome: {2: 1, 3: 2}
+                     * Key is a choice number, which is index+1
+                     */
+                    val outcomeByChoiceNumber = details["outcome"]
+                    val outcomeByChoiceOption = (1..numberOfChoices).map { choiceOptionNumber ->
+                        outcomeByChoiceNumber
+                            .get(choiceOptionNumber.toString())
+                            ?.intValue()
+                            ?: 0
+                    }
+
+                    State.Closed(
+                        isPassed = sourceState == PollState.PASSED,
+                        outcomeByChoiceOption = outcomeByChoiceOption
+                    )
+                }
+                else ->
+                    throw IllegalStateException("Can't parse poll state for poll ${source.id}")
+            }
+
 
             return PollRecord(
                 id = source.id,
                 ownerAccountId = source.owner.id,
-                subject = subject,
-                choices = choices,
-                currentChoice = null,
-                isEnded = pollIsEnded,
+                question = question,
+                choiceOptions = choiceOptions,
+                // Poll resource doesn't contain data on user's current choice.
+                currentChoiceIndex = null,
                 isChoiceChangeAllowed = isChoiceChangeAllowed,
-                endDate = source.endTime
+                startDate = source.startTime,
+                endDate = source.endTime,
+                state = state
             )
         }
     }

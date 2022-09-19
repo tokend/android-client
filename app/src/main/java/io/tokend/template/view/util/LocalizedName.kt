@@ -118,13 +118,25 @@ class LocalizedName(private val context: Context) {
         }
     }
 
-    fun forTimeUnit(unit: TimeUnit, value: Int): String {
+    fun forTimeWithUnit(unit: TimeUnit, value: Int): String {
         val absoluteValue = value.absoluteValue
         return when (unit) {
-            TimeUnit.DAYS -> context.resources.getQuantityString(R.plurals.day, absoluteValue)
-            TimeUnit.HOURS -> context.resources.getQuantityString(R.plurals.hour, absoluteValue)
-            TimeUnit.MINUTES -> context.resources.getQuantityString(R.plurals.minute, absoluteValue)
-            else -> unit.name.toLowerCase(Locale.getDefault())
+            TimeUnit.DAYS -> context.resources.getQuantityString(
+                R.plurals.day,
+                absoluteValue,
+                absoluteValue
+            )
+            TimeUnit.HOURS -> context.resources.getQuantityString(
+                R.plurals.hour,
+                absoluteValue,
+                absoluteValue
+            )
+            TimeUnit.MINUTES -> context.resources.getQuantityString(
+                R.plurals.minute,
+                absoluteValue,
+                absoluteValue
+            )
+            else -> "$value " + unit.name.toLowerCase(Locale.getDefault())
         }
     }
 

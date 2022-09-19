@@ -71,7 +71,7 @@ class VotingTest {
 
         Assert.assertEquals(
             "Poll choice must be updated locally in the repository",
-            choice, repo.itemsList.first().currentChoice
+            choice, repo.itemsList.first().currentChoiceIndex
         )
 
         Thread.sleep(5000)
@@ -80,7 +80,7 @@ class VotingTest {
 
         Assert.assertEquals(
             "Remote poll choice must be the same as submitted one",
-            choice, repo.itemsList.first().currentChoice
+            choice, repo.itemsList.first().currentChoiceIndex
         )
     }
 
@@ -149,7 +149,7 @@ class VotingTest {
 
         Assert.assertNull(
             "Poll choice must be updated locally in repository and should be null",
-            repo.itemsList.first().currentChoice
+            repo.itemsList.first().currentChoiceIndex
         )
 
         Thread.sleep(5000)
@@ -158,7 +158,7 @@ class VotingTest {
 
         Assert.assertNull(
             "Remote poll choice also must be null",
-            repo.itemsList.first().currentChoice
+            repo.itemsList.first().currentChoiceIndex
         )
     }
 

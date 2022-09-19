@@ -2,21 +2,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ImpliedQuantity">
 
     <plurals name="day">
-        <item quantity="one">день</item>
-        <item quantity="few">дні</item>
-        <item quantity="many">днів</item>
+        <item quantity="one">%1$d день</item>
+        <item quantity="few">%1$d дні</item>
+        <item quantity="many">%1$d днів</item>
     </plurals>
 
     <plurals name="hour">
-        <item quantity="one">година</item>
-        <item quantity="few">години</item>
-        <item quantity="many">годин</item>
+        <item quantity="one">%1$d година</item>
+        <item quantity="few">%1$d години</item>
+        <item quantity="many">%1$d годин</item>
     </plurals>
 
     <plurals name="minute">
-        <item quantity="one">хвилина</item>
-        <item quantity="few">хвилини</item>
-        <item quantity="many">хвилин</item>
+        <item quantity="one">%1$d хвилина</item>
+        <item quantity="few">%1$d хвилини</item>
+        <item quantity="many">%1$d хвилин</item>
     </plurals>
 
     <plurals name="vote_with_percent">

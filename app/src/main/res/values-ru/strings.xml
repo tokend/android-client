@@ -224,8 +224,10 @@
 
     <string name="template_sale_invested">%1$s\nвнесено</string>
     <string name="template_sale_funded">%1$s\nсобрано</string>
-    <string name="template_sale_days_to_go">%1$d %2$s\nдо конца</string>
-    <string name="template_sale_starts_in">%1$d %2$s\nдо начала</string>
+    <string name="template_sale_time_to_go">%1$s\nдо конца</string>
+    <string name="template_sale_time_to_start">%1$s\nдо начала</string>
+    <string name="template_time_to_go">%1$s до конца</string>
+    <string name="template_time_to_start">%1$s до начала</string>
     <string name="template_sale_max_investment">Максимальная инвестиция – %1$s</string>
     <string name="template_sale_name_asset">%1$s (%2$s)</string>
     <string name="sales_search_asset_hint">Код</string>
@@ -318,7 +320,7 @@
     <string name="sale_info_soft_cap">Цель</string>
     <string name="sale_info_hard_cap">Максимум</string>
     <string name="sale_info_to_sell_template">%1$s к продаже</string>
-    <string name="sale_cancelled">Кампания отменена</string>
+    <string name="sale_canceled">Кампания отменена</string>
     <string name="sale_closed">Кампания закрыта</string>
     <string name="sale_ended">Кампания завершена</string>
     <string name="sale_video">Видео кампании</string>
@@ -411,9 +413,7 @@
     <string name="template_send_to_address">Отправьте %1$s на этот адрес</string>
     <string name="template_atomic_swap_invoice_share_text">Отправьте %1$s на этот адрес для покупки %2$s:\n%3$s</string>
     <string name="address_payload">Примечание</string>
-    <string name="poll_ended">Завершен</string>
     <string name="you_have_no_balances">Балансов нет</string>
-    <string name="template_days_to_go">%1$d %2$s до конца</string>
     <string name="settings_app_group">Приложение</string>
     <string name="language">Язык</string>
     <string name="select_language">Выберите язык</string>
@@ -493,4 +493,8 @@
     <string name="personal_info_update_request_created">Запрос на изменния персональных данных успешно создан</string>
     <string name="template_rejection_reason">Причина отказа: %1$s</string>
     <string name="kyc_recovery_permanently_rejected_message">Ваш запрос был окончательно отклонен. Попробуйте снова</string>
+    <string name="poll_ended">Опрос завершен</string>
+    <string name="poll_canceled">Опрос отменен</string>
+    <string name="poll_passed">Опрос успешен</string>
+    <string name="poll_failed">Опрос провален</string>
 </resources>

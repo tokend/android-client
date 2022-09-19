@@ -224,8 +224,10 @@
 
     <string name="template_sale_invested">%1$s\ninvested</string>
     <string name="template_sale_funded">%1$s\nfunded</string>
-    <string name="template_sale_days_to_go">%1$d %2$s\nto go</string>
-    <string name="template_sale_starts_in">%1$d %2$s\nto start</string>
+    <string name="template_sale_time_to_go">%1$s\nto go</string>
+    <string name="template_sale_time_to_start">%1$s\nto start</string>
+    <string name="template_time_to_go">%1$s to go</string>
+    <string name="template_time_to_start">%1$s to start</string>
     <string name="template_sale_max_investment">Max investment is %1$s</string>
     <string name="template_sale_name_asset">%1$s (%2$s)</string>
     <string name="sales_search_asset_hint">Asset code</string>
@@ -317,7 +319,7 @@
     <string name="sale_info_soft_cap">Soft cap</string>
     <string name="sale_info_hard_cap">Hard cap</string>
     <string name="sale_info_to_sell_template">%1$s to sell</string>
-    <string name="sale_cancelled">Sale is cancelled</string>
+    <string name="sale_canceled">Sale is canceled</string>
     <string name="sale_closed">Sale is closed</string>
     <string name="sale_ended">Sale is ended</string>
     <string name="sale_video">Sale video</string>
@@ -411,9 +413,7 @@
     <string name="template_send_to_address">Send %1$s to this address</string>
     <string name="template_atomic_swap_invoice_share_text">Send %1$s to this address to buy %2$s:\n%3$s</string>
     <string name="address_payload">Payload</string>
-    <string name="poll_ended">Ended</string>
     <string name="you_have_no_balances">You have no balances yet</string>
-    <string name="template_days_to_go">%1$d %2$s to go</string>
     <string name="settings_app_group">App</string>
     <string name="language">Language</string>
     <string name="select_language">Select language</string>
@@ -496,4 +496,8 @@
     <string name="personal_info_update_request_created">Personal info update request created successfully</string>
     <string name="template_rejection_reason">Rejection reason: %1$s</string>
     <string name="kyc_recovery_permanently_rejected_message">Your request has been permanently rejected. Try again</string>
+    <string name="poll_ended">Poll is ended</string>
+    <string name="poll_canceled">Poll is canceled</string>
+    <string name="poll_passed">Poll is passed</string>
+    <string name="poll_failed">Poll is failed</string>
 </resources>

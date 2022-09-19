@@ -224,8 +224,10 @@
 
     <string name="template_sale_invested">%1$s\nвнесено</string>
     <string name="template_sale_funded">%1$s\nзібрано</string>
-    <string name="template_sale_days_to_go">%1$d %2$s\nдо кінця</string>
-    <string name="template_sale_starts_in">%1$d %2$s\nдо початку</string>
+    <string name="template_sale_time_to_go">%1$s\nдо кінця</string>
+    <string name="template_sale_time_to_start">%1$s\nдо початку</string>
+    <string name="template_time_to_go">%1$s до кінця</string>
+    <string name="template_time_to_start">%1$s до початку</string>
     <string name="template_sale_max_investment">Максимальна інвестиція – %1$s</string>
     <string name="template_sale_name_asset">%1$s (%2$s)</string>
     <string name="sales_search_asset_hint">Код</string>
@@ -318,7 +320,7 @@
     <string name="sale_info_soft_cap">Ціль</string>
     <string name="sale_info_hard_cap">Максимум</string>
     <string name="sale_info_to_sell_template">%1$s до продажу</string>
-    <string name="sale_cancelled">Кампанію скасовано</string>
+    <string name="sale_canceled">Кампанію скасовано</string>
     <string name="sale_closed">Кампанію закрито</string>
     <string name="sale_ended">Кампанію завершено</string>
     <string name="sale_video">Відео кампанії</string>
@@ -411,9 +413,7 @@
     <string name="template_send_to_address">Відправте %1$s на цю адресу</string>
     <string name="template_atomic_swap_invoice_share_text">Відправте %1$s на цю адресу для купівлі %2$s:\n%3$s</string>
     <string name="address_payload">Примітка</string>
-    <string name="poll_ended">Завершене</string>
     <string name="you_have_no_balances">Балансів немає</string>
-    <string name="template_days_to_go">%1$d %2$s до кінця</string>
     <string name="settings_app_group">Додаток</string>
     <string name="language">Мова</string>
     <string name="select_language">Оберіть мову</string>
@@ -493,4 +493,8 @@
     <string name="personal_info_update_request_created">Запит на зміну персональних даних успішно створено</string>
     <string name="template_rejection_reason">Причина відмови: %1$s</string>
     <string name="kyc_recovery_permanently_rejected_message">Ваш запит назавжди відхилено. Спробуйте ще раз</string>
+    <string name="poll_ended">Опитування завершено</string>
+    <string name="poll_canceled">Опитування скасовано</string>
+    <string name="poll_passed">Опитування вдалося</string>
+    <string name="poll_failed">Опитування не вдалося</string>
 </resources>

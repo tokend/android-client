@@ -10,10 +10,6 @@ import io.tokend.template.R
 import io.tokend.template.extensions.forEachChildWithIndex
 import io.tokend.template.extensions.layoutInflater
 import io.tokend.template.view.adapter.base.BaseViewHolder
-import io.tokend.template.view.util.LocalizedName
-import io.tokend.template.view.util.RemainedTimeUtil
-import java.util.*
-import kotlin.math.absoluteValue
 
 class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
     private val context = view.context
@@ -27,13 +23,9 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
         context.getString(R.string.vote_action)
     private val actionButtonRemoveVoteTitle =
         context.getString(R.string.remove_vote_action)
-    private val pollEndedTitle =
-        context.getString(R.string.poll_ended)
 
     private val votesCountTopMargin =
         context.resources.getDimensionPixelSize(R.dimen.quarter_standard_margin)
-
-    private val localizedName = LocalizedName(view.context)
 
     /**
      * @param actionListener receives current list item and selected choice
@@ -43,33 +35,34 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
         item: PollListItem,
         actionListener: PollActionListener?
     ) {
-        subjectTextView.text = item.subject
-        endedHintTextView.text = if (item.isEnded) pollEndedTitle else getTimeToGo(item.endDate)
+        subjectTextView.text = item.question
+        endedHintTextView.text =
+            item.status//if (item.isEnded) pollEndedTitle else getTimeToGo(item.endDate)
 
         val themedHintTextContext = ContextThemeWrapper(context, R.style.HintText)
 
         choicesLayout.removeAllViews()
-        item.choices.forEachIndexed { i, choice ->
+        item.choiceOptions.forEachIndexed { i, choiceOption ->
             val choiceView = context.layoutInflater
                 .inflate(R.layout.list_item_poll_choice, choicesLayout, false)
                     as TextView
             choicesLayout.addView(choiceView)
 
-            choiceView.text = choice.name
+            choiceView.text = choiceOption
             choiceView.tag = i
 
             if (item.canChoose) {
                 choiceView.setOnClickListener { onNewChoice(i, item, actionListener) }
             }
 
-            val resultData = choice.result
-            if (resultData != null) {
+            if (item.outcomeByChoiceOption != null) {
+                val outcome = item.outcomeByChoiceOption[i]
                 val votesCountTextView = TextView(themedHintTextContext, null, R.style.HintText)
                 votesCountTextView.text = context.resources.getQuantityString(
                     R.plurals.vote_with_percent,
-                    resultData.votesCount.absoluteValue,
-                    resultData.votesCount,
-                    resultData.percentOfTotal
+                    outcome.votesCount,
+                    outcome.votesCount,
+                    outcome.percentOfTotal
                 )
                 val layoutParams = LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -111,12 +104,8 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
                     ContextCompat.getDrawable(context, R.drawable.poll_choice_background))
                     ?.mutate()
 
-            val resultData = item.choices.getOrNull(choiceIndex)?.result
-            backgroundDrawable?.level =
-                if (resultData != null)
-                    (resultData.percentOfTotal * 100).toInt()
-                else
-                    0
+            val outcome = item.outcomeByChoiceOption?.get(choiceIndex)
+            backgroundDrawable?.level = 100 * (outcome?.percentOfTotal?.toInt() ?: 0)
 
             choiceView.background = backgroundDrawable
         }
@@ -156,15 +145,5 @@ class PollItemViewHolder(view: View) : BaseViewHolder<PollListItem>(view) {
                 }
             }
         }
-    }
-
-    private fun getTimeToGo(endDate: Date): String {
-        val (timeValue, timeUnit) = RemainedTimeUtil.getRemainedTime(endDate)
-
-        return context.getString(
-            R.string.template_days_to_go,
-            timeValue,
-            localizedName.forTimeUnit(timeUnit, timeValue)
-        )
     }
 }
