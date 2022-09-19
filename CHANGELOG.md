@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [Unreleased]
+
+### Added
+- Password visibility toggles to all the password inputs
+- Hint indicating PIN chars count to the PIN input screen
+- Message for already ended sale transaction error
+
+### Fixed
+- Accounts signed up with versions 1.16.0..1.16.1 are inaccessible from the web client.
+To fix the existing accounts, sign in from the app and change the password
+
+### Changed
+- Prettified sale progress metrics alignment
+
+### Removed
+- Biometrics from sensitive use-cases: password change, 2FA
+
 ## [1.16.1] 2022-09-12
 
 ### Added
