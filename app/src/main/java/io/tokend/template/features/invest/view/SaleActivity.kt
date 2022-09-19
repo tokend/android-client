@@ -60,7 +60,7 @@ class SaleActivity : BaseActivity(), InvestmentInfoHolder {
     private fun initInvestButton() {
         val accountId = walletInfoProvider.getWalletInfo().accountId
 
-        val canInvest = sale.isAvailable
+        val canInvest = sale.isAvailableForInvestment
                 && sale.ownerAccountId != accountId
 
         invest_button.visibility =

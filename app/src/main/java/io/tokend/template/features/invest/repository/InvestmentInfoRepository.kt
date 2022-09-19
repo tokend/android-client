@@ -47,7 +47,7 @@ class InvestmentInfoRepository(
     }
 
     private fun getDetailedSaleIfNeeded(): Single<SaleRecord> {
-        return if (sale.isAvailable)
+        return if (sale.isAvailableForInvestment)
             getDetailedSale()
         else Single.just(sale)
     }

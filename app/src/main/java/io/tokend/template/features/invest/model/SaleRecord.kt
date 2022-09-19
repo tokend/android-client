@@ -37,14 +37,17 @@ class SaleRecord(
     val ownerAccountId: String
 ) : Serializable, RecordWithLogo, RecordWithDescription {
 
-    val isAvailable: Boolean
-        get() = !isUpcoming && !isEnded
+    val isAvailableForInvestment: Boolean
+        get() = isOpen && !isEnded
 
     val isUpcoming: Boolean
         get() = startDate.after(Date())
 
     val isEnded: Boolean
-        get() = isClosed || isCanceled
+        get() = endDate.before(Date())
+
+    val isOpen: Boolean
+        get() = state == SaleState.OPEN
 
     val isClosed: Boolean
         get() = state == SaleState.CLOSED

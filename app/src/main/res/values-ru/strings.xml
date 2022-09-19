@@ -318,6 +318,9 @@
     <string name="sale_info_soft_cap">Цель</string>
     <string name="sale_info_hard_cap">Максимум</string>
     <string name="sale_info_to_sell_template">%1$s к продаже</string>
+    <string name="sale_cancelled">Кампания отменена</string>
+    <string name="sale_closed">Кампания закрыта</string>
+    <string name="sale_ended">Кампания завершена</string>
 
     <string name="seed_alert_dialog">Вы собираетесь отобразить важную информацию.\nЛюбой, кто знает
         ваш секретный ключ, может получить доступ к вашему аккаунту.\nЖелаете продолжить?</string>
