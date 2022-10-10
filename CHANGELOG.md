@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [Unreleased]
+## [1.16.2] 2022-10-10
 
 ### Added
 - Password visibility toggles to all the password inputs
@@ -442,7 +442,8 @@ with ability to copy
 
 - Error on sign in when user has balances with unknown asset details
 
-[Unreleased]: https://github.com/tokend/android-client/compare/1.16.1(28)...HEAD
+[Unreleased]: https://github.com/tokend/android-client/compare/1.16.2(29)...HEAD
+[1.16.2]: https://github.com/tokend/android-client/compare/1.16.1(28)...1.16.2(29)
 [1.16.1]: https://github.com/tokend/android-client/compare/1.16.0(27)...1.16.1(28)
 [1.16.0]: https://github.com/tokend/android-client/compare/1.15.3(26)...1.16.0(27)
 [1.15.3]: https://github.com/tokend/android-client/compare/1.15.2(25)...1.15.3(26)
