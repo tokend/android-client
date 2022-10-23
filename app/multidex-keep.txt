@@ -1,4 +1,3 @@
-androidx/multidex/BuildConfig.class
 androidx/multidex/MultiDex$V14.class
 androidx/multidex/MultiDex$V19.class
 androidx/multidex/MultiDex$V4.class
