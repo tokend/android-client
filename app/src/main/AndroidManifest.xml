@@ -49,6 +49,7 @@
         <activity
             android:name=".features.signin.SignInActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+            android:exported="true"
             android:theme="@style/SplashTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible">
             <intent-filter>
